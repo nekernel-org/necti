@@ -86,7 +86,7 @@ public class CompileCommand
 
             changed ~= ".masm";
 
-            mcc_summon_executable("/usr/local/bin/bin/masm -marc " ~ changed);
+            mcc_summon_executable("/usr/local/bin/bin/masm -m64000 " ~ changed);
         }
 
         if (compile_only)
@@ -123,7 +123,7 @@ public class CompileCommand
         output_object ~= " -o ";
         output_object ~= output;
 
-        mcc_summon_executable("/usr/local/bin/bin/ld -marc " ~
+        mcc_summon_executable("/usr/local/bin/bin/ld -m64000 " ~
         obj ~ output_object);
     }
 }

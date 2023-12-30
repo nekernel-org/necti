@@ -37,9 +37,10 @@
 #define kWhite  "\e[0;97m"
 #define kYellow "\e[0;33m"
 
-static char           kOutputArch = CxxKit::kPefArchRISCV;
+static char         kOutputArch = CxxKit::kPefArchRISCV;
 
-static std::vector<bool> kLabelLevel;
+static std::vector<bool>        kLabelLevel;
+static std::vector<std::string> kTypes = { "void", "byte", "qword", "hword", "dword" };
 
 //! base relocation address for every mp-ux app.
 static UInt32       kErrorLimit = 10;
@@ -47,12 +48,13 @@ static UInt32       kAcceptableErrors = 0;
 
 static std::size_t  kCounter = 1UL;
 
-static std::vector<char> kBytes;
+static std::vector<char>     kBytes;
 static CxxKit::AERecordHeader kCurrentRecord{ .fName = "", .fKind = CxxKit::kPefCode, .fSize = 0, .fOffset = 0 };
 
 static std::vector<CxxKit::AERecordHeader> kRecords;
 static std::vector<std::string> kUndefinedSymbols;
 static const std::string kUndefinedSymbol = ":ld:";
+static const std::string kRelocSymbol = ":mld:";
 
 // \brief forward decl.
 static std::string masm_check_line(std::string& line, const std::string& file);
@@ -124,7 +126,7 @@ int main(int argc, char** argv)
                 return 0;
             }
 
-            if (strcmp(argv[i], "-marc") == 0)
+            if (strcmp(argv[i], "-m64000") == 0)
             {
                 kOutputArch = CxxKit::kPefArchARC;
                 continue;
@@ -513,6 +515,14 @@ static std::string masm_check_line(std::string& line, const std::string& file)
         }
     }
 
+    for (auto& type : kTypes)
+    {
+        if (ParserKit::find_word(line, type))
+        {
+            return err_str;
+        }
+    }
+
     err_str += "Unknown syntax, ";
     err_str += line;
 
@@ -533,7 +543,8 @@ static void masm_read_labels(std::string& line)
     }
     else if (ParserKit::find_word(line, "end"))
     {
-        kLabelLevel.pop_back();
+        if (kLabelLevel.size() > 0)
+            kLabelLevel.pop_back();
     }
 }
 
@@ -750,11 +761,11 @@ masm_write_label:
 
                 while (cpy_jump_label.find(',') != std::string::npos)
                 {
-                    detail::print_error("internal assembler error", "masm");
+                    detail::print_error("missing ',' for relocation label", "masm");
                 }
 
                 auto mld_reloc_str = std::to_string(cpy_jump_label.size());
-                mld_reloc_str += ":mld_reloc:";
+                mld_reloc_str += kRelocSymbol;
                 mld_reloc_str += cpy_jump_label;
 
                 bool ignore_back_slash = false;
