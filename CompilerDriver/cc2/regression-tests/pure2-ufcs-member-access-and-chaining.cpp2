@@ -1,0 +1,43 @@
+main: () -> int = {
+    i := 42;
+    _ = i.ufcs();
+
+    j := fun();
+    _ = j.ufcs();
+
+    _ = fun().ufcs();
+
+    k := fun();
+    _ = k.ufcs();
+
+    _ = get_i(j).ufcs();
+
+    _ = get_i(fun()).ufcs();
+
+    res := (42).ufcs();
+
+    _ = (j).ufcs();
+
+    42.no_return();
+
+    res.no_return();
+}
+
+no_return: (_) = { }
+
+ufcs: (i:int) -> int = {
+    return i+2;
+}
+
+fun: () -> (i:int) = {
+    i = 42;
+    return;
+}
+
+get_i: (r:_) -> int = {
+    return r;
+}
+
+//  And a test for non-local UFCS, which shouldn't do a [&] capture
+f: (_)->int = 0;
+y: int = 0.f();

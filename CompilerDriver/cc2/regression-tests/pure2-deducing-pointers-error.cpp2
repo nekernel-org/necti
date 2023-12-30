@@ -1,0 +1,47 @@
+fun: (inout i:int) -> *int = {
+    return i&;
+}
+
+fun2: (inout i:int) -> (result : *int) = {
+    result = i&;
+}
+
+main: () -> int = {
+    a:     int = 2;
+    pa:   *int = a&;
+    ppa: **int = pa&;
+
+    pa = 0;       // caught
+
+    pa2:= ppa*;
+    pa2 = 0;      // caught
+
+    pa3 := a&;
+    pa3 = 0;      // caught
+    pa3 += 2;     // caught
+
+    ppa2 := pa2&;
+    pa4 := ppa2*;
+    pa4 = 0;      // caught
+
+    pppa := ppa&;
+    pa5 := pppa**;
+    pa5 = 0;      // caught
+
+    //  TODO: @filipsajdak please take a look
+    //  The bugfix in get_declaration_of(t) to add `&& ri->position() <= t.position()`
+    //  to the condition is correct; it fixes issue #669 by not looking past the first
+    //  declaration of the name in t. However, that change made the following two
+    //  "caught" cases no longer be caught.
+    fun(a)++;     // caught
+    fp := fun(a);
+    fp = 0;       // caught
+
+    f := fun(a)*;
+    _ = f;
+
+    fp2 := fun2(a).result;
+    fp2--;        // not caught :(
+
+    return a * pa* * ppa**; // 8
+}

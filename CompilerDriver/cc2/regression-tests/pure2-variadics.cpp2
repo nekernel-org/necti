@@ -1,0 +1,32 @@
+
+//  Type pack expansion
+x: <Ts...: type> type = {
+    tup: std::tuple<Ts...> = ();
+}
+
+left_fold_print: <Args...: type> (inout out: std::ostream, args...: Args) = {
+    //  Binary left fold expression
+    (out << ... << args);
+}
+
+all: <Args...: type> (args...: Args) -> bool =
+    //  Unary left fold expression
+    (... && args);
+
+make_string: <Args...> (forward args...: Args)  :std::string = args...;
+
+make:     <T, Args...> (forward args...: Args)  :T = args...;
+
+main: ()
+= {
+    _: x<int, long, std::string> = ();
+
+    std::cout << std::string("xyzzy", 3) << "\n";
+    std::cout << make_string("plugh", :u8=3) << "\n";
+    std::cout << make<std::string>("abracadabra", :u8=3) << "\n";
+
+    left_fold_print( std::cout, 3.14, "word", -1500 );
+
+    std::cout << "\nfirst all() returned (all(true, true, true, false))$";
+    std::cout << "\nsecond all() returned " << all(true, true, true, true) as std::string;
+}

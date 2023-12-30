@@ -1,0 +1,28 @@
+
+#include <iostream>
+#include <random>
+
+main: () -> int = {
+    x: int = 42;
+    y: int = 43;
+    p: *int;
+
+    // ... more code ...
+    if flip_a_coin() {
+        p = y&;
+    }
+    else {
+        p = x&;
+    }
+
+    print_and_decorate( p* );
+}
+
+print_and_decorate: (thing:_) =
+    std::cout << ">> " << thing << "\n";
+
+bool flip_a_coin() {
+    // Change std::mt19937 to std::random_device for non-deterministic PRNG
+    static std::mt19937 rand; 
+    return rand() % 2 == 1;
+}

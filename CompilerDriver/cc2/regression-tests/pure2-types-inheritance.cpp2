@@ -1,0 +1,53 @@
+
+Human: @interface type = {
+    speak: (this);
+}
+
+N: namespace = {
+    Machine: @polymorphic_base <I:int> type = {
+        operator=: (out this, _: std::string) = {}
+        work:      (virtual this);
+    }
+}
+
+Cyborg: type = {
+    name:    std::string;
+    this:    Human = ();
+    address: std::string = "123 Main St.";
+    this:    N::Machine<99>;
+
+    operator=: (out this, n: std::string) = {
+        name = n;
+        N::Machine<99> = "Acme Corp. engineer tech";
+        std::cout << "(name)$ checks in for the day's shift\n";
+    }
+
+    speak: (override this) =
+        std::cout << "(name)$ cracks a few jokes with a coworker\n";
+
+    work: (override this) =
+        std::cout << "(name)$ carries some half-tonne crates of Fe2O3 to cold storage\n";
+
+    print: (this) =
+        std::cout << "printing: (name)$ lives at (address)$\n";
+
+    operator=: (move this) =
+        std::cout << "Tired but satisfied after another successful day, (name)$ checks out and goes home to their family\n";
+}
+
+make_speak: ( h: Human ) = {
+    std::cout << "-> [vcall: make_speak] ";
+    h.speak();
+}
+
+do_work: ( m: N::Machine<99> ) = {
+    std::cout << "-> [vcall: do_work] ";
+    m.work();
+}
+
+main: () = {
+    c: Cyborg = "Parsnip";
+    c.print();
+    c.make_speak();
+    c.do_work();
+}

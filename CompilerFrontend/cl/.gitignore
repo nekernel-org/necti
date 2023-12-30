@@ -1,0 +1,14 @@
+bin/elf2pef
+bin/ld
+bin/cpp
+bin/cc
+bin/masm
+bin/mkcdfs
+bin/ccplus
+bin/cpp2
+
+*.c.pp
+*.cxx.pp
+test/*.c
+test/*.masm
+*.pp

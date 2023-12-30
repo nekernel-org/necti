@@ -1,0 +1,12 @@
+
+f1: <T, U>           (t:T, u:U)   t+u;
+f2: <T:type, U:type> (t:T, u:U)   t+u;
+f3: <T:_, U:_>       ()           T+U;
+f4: <T: i8, U: i16>  ()           T+U;
+
+main: () = {
+    std::cout << "f1: (f1(1,1))$\n";
+    std::cout << "f2: (f2(2,2))$\n";
+    std::cout << "f3: (f3<3,3>())$\n";
+    std::cout << "f4: (f4<4,4>())$\n";
+}

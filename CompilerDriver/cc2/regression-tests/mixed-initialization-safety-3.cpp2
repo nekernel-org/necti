@@ -1,0 +1,30 @@
+#include <random>
+#include <string>
+#include <vector>
+
+main: () -> int = {
+    x: std::string;         // note: uninitialized!
+
+    if flip_a_coin() {
+        x = "xyzzy";
+    } else {
+        fill( out x, "plugh", 40 ); // note: constructs x!
+    }
+    print_decorated(x);
+}
+
+fill: (
+    out x: std::string,
+    value: std::string,
+    count: int
+    )
+    pre( value.ssize() >= count, "fill: value must contain at least count elements" )
+= {
+    x = value.substr(0, count);
+}
+
+print_decorated: (x:_) = std::cout << ">> [" << x << "]\n";
+
+// for test determinism, force "xyzzy" branch
+// the standard mandates that std::mt19937()() == 3499211612
+flip_a_coin: () -> bool = std::mt19937()() % 2 == 0;
