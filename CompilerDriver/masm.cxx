@@ -11,7 +11,7 @@
 
 // @file masm.cxx
 // @brief The MP-UX Assembler, outputs an AE object.
-// This assembler was made for NewCPU, a brand-new RISC architecture.
+// This assembler is made for the RISC chip X64000.
 
 // REMINDER: when dealing with an undefined symbol use (string size):ld:(string)
 // so that ld will look for it.
@@ -588,7 +588,7 @@ static bool masm_write_number(std::size_t pos, std::string& jump_label)
         case 'x':
         {
             if (auto res = strtoq(jump_label.substr(pos + 2).c_str(),
-                                  nullptr, 2);
+                                  nullptr, 16);
                     !res)
             {
                 if (errno != 0)
@@ -767,12 +767,15 @@ static void masm_read_instruction(std::string& line, const std::string& file)
                         // remember! register to register!
                         if (found_some == 1)
                         {
-                            detail::print_error("unrecognized register found.\ntip: each NewCPU register starts with 'r'.\nline: " + line, file);
+                            detail::print_error("unrecognized register found.\ntip: each masm register starts with 'r'.\nline: " + line, file);
                         }
                     }
 
                     if (found_some < 1 &&
-                        name != "psh")
+                        name != "psh" &&
+                        name != "ldw" &&
+                        name != "lda" &&
+                        name != "stw")
                     {
                         detail::print_error("invalid combination of opcode and registers.\nline: " + line, file);
                     }
@@ -780,7 +783,7 @@ static void masm_read_instruction(std::string& line, const std::string& file)
                     if (found_some > 0 &&
                         name == "pop")
                     {
-                        detail::print_error("invalid combination of opcode and register for 'pop'.\nline: " + line, file);
+                        detail::print_error("invalid combination for opcode 'pop'.\ntip: it expects nothing.\nline: " + line, file);
                     }
                 }
                 default:
@@ -831,7 +834,9 @@ masm_write_label:
                 if (cpy_jump_label.find('\n') != std::string::npos)
                     cpy_jump_label.erase(cpy_jump_label.find('\n'), 1);
 
-                if (cpy_jump_label.find("__import") != std::string::npos)
+                if (cpy_jump_label.find("__import") == std::string::npos)
+                    detail::print_error("__import not found on jump label, please add one.", file.c_str());
+                else if (cpy_jump_label.find("__import") != std::string::npos)
                     cpy_jump_label.erase(cpy_jump_label.find("__import"), strlen("__import"));
 
                 while (cpy_jump_label.find(' ') != std::string::npos)
