@@ -837,11 +837,6 @@ masm_write_label:
                 while (cpy_jump_label.find(' ') != std::string::npos)
                     cpy_jump_label.erase(cpy_jump_label.find(' '), 1);
 
-                while (cpy_jump_label.find(',') == std::string::npos)
-                {
-                    detail::print_error("missing ',' for relocation label", "masm");
-                }
-
                 auto mld_reloc_str = std::to_string(cpy_jump_label.size());
                 mld_reloc_str += kRelocSymbol;
                 mld_reloc_str += cpy_jump_label;
