@@ -37,10 +37,9 @@
 #define kWhite  "\e[0;97m"
 #define kYellow "\e[0;33m"
 
-static char         kOutputArch = CxxKit::kPefArchRISCV;
+#define kStdOut          (std::cout << kWhite)
 
-static std::vector<bool>        kLabelLevel;
-static std::vector<std::string> kTypes = { "void", "byte", "qword", "hword", "dword" };
+static char         kOutputArch = CxxKit::kPefArch64000;
 
 //! base relocation address for every mp-ux app.
 static UInt32       kErrorLimit = 10;
@@ -48,19 +47,21 @@ static UInt32       kAcceptableErrors = 0;
 
 static std::size_t  kCounter = 1UL;
 
+static bool         kVerbose = false;
+
 static std::vector<char>     kBytes;
 static CxxKit::AERecordHeader kCurrentRecord{ .fName = "", .fKind = CxxKit::kPefCode, .fSize = 0, .fOffset = 0 };
 
 static std::vector<CxxKit::AERecordHeader> kRecords;
 static std::vector<std::string> kUndefinedSymbols;
+
 static const std::string kUndefinedSymbol = ":ld:";
 static const std::string kRelocSymbol = ":mld:";
 
 // \brief forward decl.
 static std::string masm_check_line(std::string& line, const std::string& file);
-static void masm_check_export(std::string& line);
-static void masm_read_labels(std::string& line);
-static void masm_read_instr(std::string& line, const std::string& file);
+static bool masm_read_attributes(std::string& line);
+static void masm_read_instruction(std::string& line, const std::string& file);
 
 namespace detail
 {
@@ -69,8 +70,8 @@ namespace detail
         if (reason[0] == '\n')
             reason.erase(0, 1);
 
-        std::cout << kRed << "[ masm ] " << kWhite << ((file == "masm") ? "internal assembler error " : ("in file, " + file)) << kBlank << std::endl;
-        std::cout << kRed << "[ masm ] " << kWhite << reason << kBlank << std::endl;
+        kStdOut << kRed << "[ masm ] " << kWhite << ((file == "masm") ? "internal assembler error " : ("in file, " + file)) << kBlank << std::endl;
+        kStdOut << kRed << "[ masm ] " << kWhite << reason << kBlank << std::endl;
 
         if (kAcceptableErrors > kErrorLimit)
             std::exit(3);
@@ -85,10 +86,10 @@ namespace detail
 
         if (!file.empty())
         {
-            std::cout << kYellow << "[ file ] " << kWhite << file << kBlank << std::endl;
+            kStdOut << kYellow << "[ file ] " << kWhite << file << kBlank << std::endl;
         }
 
-        std::cout << kYellow << "[ masm ] " << kWhite << reason << kBlank << std::endl;
+        kStdOut << kYellow << "[ masm ] " << kWhite << reason << kBlank << std::endl;
     }
 }
 
@@ -122,7 +123,19 @@ int main(int argc, char** argv)
         {
             if (strcmp(argv[i], "-v") == 0)
             {
-                std::cout << "masm: The MP-UX Assembler.\nmasm: Copyright (c) 2023 WestCo.\n";
+                kStdOut << "masm: The MP-UX Assembler.\nmasm: Copyright (c) 2023 WestCo.\n";
+                return 0;
+            }
+
+            if (strcmp(argv[i], "-h") == 0)
+            {
+                kStdOut << "masm: The MP-UX Assembler.\nmasm: Copyright (c) 2023 WestCo.\n";
+                kStdOut << "-v: Print program version.\n";
+                kStdOut << "--verbose: Print verbose output.\n";
+                kStdOut << "-m64000: Compile for the X64000 instruction set.\n";
+                kStdOut << "-m68000: Compile for the NXP 68000 instruction set.\n";
+                kStdOut << "-mppc64: Compile for the PowerPC instruction set.\n";
+
                 return 0;
             }
 
@@ -132,7 +145,13 @@ int main(int argc, char** argv)
                 continue;
             }
 
-            std::cout << "masm: ignore " << argv[i] << "\n";
+            if (strcmp(argv[i], "--verbose") == 0)
+            {
+                kVerbose = true;
+                continue;
+            }
+
+            kStdOut << "masm: ignore " << argv[i] << "\n";
             continue;
         }
 
@@ -181,10 +200,12 @@ int main(int argc, char** argv)
             if (ParserKit::find_word(line, "#"))
                 continue;
 
-            masm_check_export(line);
-            masm_read_labels(line);
-            masm_read_instr(line, argv[i]);
+            masm_read_attributes(line);
+            masm_read_instruction(line, argv[i]);
         }
+
+        if (kVerbose)
+            kStdOut << "masm: writing to file...\n";
 
         // this is the final step, write everything to the file.
 
@@ -206,6 +227,9 @@ int main(int argc, char** argv)
 
         for (auto& rec : kRecords)
         {
+            if (kVerbose)
+                kStdOut << "masm: wrote record " << rec.fName << " to file...\n";
+
             rec.fFlags |= CxxKit::kKindRelocationAtRuntime;
             rec.fOffset = record_count;
             ++record_count;
@@ -220,6 +244,9 @@ int main(int argc, char** argv)
         {
             CxxKit::AERecordHeader _record_hdr{ 0 };
 
+            if (kVerbose)
+                kStdOut << "masm: wrote symbol " << sym << " to file...\n";
+
             _record_hdr.fKind = kAEInvalidOpcode;
             _record_hdr.fSize = sym.size();
             _record_hdr.fOffset = record_count;
@@ -227,7 +254,6 @@ int main(int argc, char** argv)
             ++record_count;
 
             memset(_record_hdr.fPad, kAEInvalidOpcode, kAEPad);
-
             memcpy(_record_hdr.fName, sym.c_str(), sym.size());
 
             file_ptr_out << _record_hdr;
@@ -252,22 +278,32 @@ int main(int argc, char** argv)
             file_ptr_out.write(reinterpret_cast<const char *>(&byte), sizeof(byte));
         }
 
+        if (kVerbose)
+            kStdOut << "masm: wrote program bytes to file...\n";
+
         file_ptr_out.flush();
         file_ptr_out.close();
+    
+        if (kVerbose)
+            kStdOut << "masm: exit succeed with 0.\n";
 
         return 0;
     }
 
-    return 0;
+    if (kVerbose)
+        kStdOut << "masm: exit succeed with -1.\n";
+
+    return -1;
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
-// @brief Check for exported symbols
+// @brief Check for attributes
+// returns true if any was found.
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
-static void masm_check_export(std::string& line)
+static bool masm_read_attributes(std::string& line)
 {
     // __import is the opposite of export, it signals to the ld
     // that we need this symbol.
@@ -327,7 +363,7 @@ static void masm_check_export(std::string& line)
 
         kRecords.emplace_back(kCurrentRecord);
 
-        return;
+        return true;
     }
 
     // __export is a special keyword used by masm to tell the AE output stage to mark this section as a header.
@@ -383,7 +419,11 @@ static void masm_check_export(std::string& line)
         memset(kCurrentRecord.fPad, kAEInvalidOpcode, kAEPad);
 
         kRecords.emplace_back(kCurrentRecord);
+
+        return true;
     }
+
+    return false;
 }
 
 // \brief algorithms and helpers.
@@ -426,8 +466,6 @@ static std::string masm_check_line(std::string& line, const std::string& file)
     if (line.empty() ||
         ParserKit::find_word(line, "__import") ||
         ParserKit::find_word(line, "__export") ||
-        ParserKit::find_word(line, "begin")  ||
-        ParserKit::find_word(line, "end") ||
         ParserKit::find_word(line, "#") ||
         ParserKit::find_word(line, "layout"))
     {
@@ -515,15 +553,7 @@ static std::string masm_check_line(std::string& line, const std::string& file)
         }
     }
 
-    for (auto& type : kTypes)
-    {
-        if (ParserKit::find_word(line, type))
-        {
-            return err_str;
-        }
-    }
-
-    err_str += "Unknown syntax, ";
+    err_str += "Unknown syntax: ";
     err_str += line;
 
     return err_str;
@@ -531,22 +561,9 @@ static std::string masm_check_line(std::string& line, const std::string& file)
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
-// @brief Check if a line starts a new label.
+// @brief internal namespace
 
 /////////////////////////////////////////////////////////////////////////////////////////
-
-static void masm_read_labels(std::string& line)
-{
-    if (ParserKit::find_word(line, "begin"))
-    {
-        kLabelLevel.emplace_back(true);
-    }
-    else if (ParserKit::find_word(line, "end"))
-    {
-        if (kLabelLevel.size() > 0)
-            kLabelLevel.pop_back();
-    }
-}
 
 namespace detail
 {
@@ -563,6 +580,9 @@ namespace detail
 
 static bool masm_write_number(std::size_t pos, std::string& jump_label)
 {
+    if (!isdigit(jump_label[pos]))
+        return false;
+
     switch (jump_label[pos+1])
     {
         case 'x':
@@ -573,6 +593,7 @@ static bool masm_write_number(std::size_t pos, std::string& jump_label)
             {
                 if (errno != 0)
                 {
+                    detail::print_error("invalid hex number: " + jump_label, "masm");
                     return false;
                 }
             }
@@ -585,6 +606,11 @@ static bool masm_write_number(std::size_t pos, std::string& jump_label)
                 kBytes.push_back(i);
             }
 
+            if (kVerbose)
+            {
+                kStdOut << "masm: found a base 16 number... " << jump_label.substr(pos) << "\n";
+            }
+
             return true;
         }
         case 'b':
@@ -595,12 +621,46 @@ static bool masm_write_number(std::size_t pos, std::string& jump_label)
             {
                 if (errno != 0)
                 {
+                    detail::print_error("invalid binary number: " + jump_label, "masm");
                     return false;
                 }
             }
 
             detail::number_type num(strtoq(jump_label.substr(pos + 2).c_str(),
                                    nullptr, 2));
+
+            if (kVerbose)
+            {
+                kStdOut << "masm: found a base 2 number... " << jump_label.substr(pos) << "\n";
+            }
+
+            for (char i : num.number)
+            {
+                kBytes.push_back(i);
+            }
+
+            return true;
+        }
+        case '0':
+        {
+            if (auto res = strtoq(jump_label.substr(pos + 2).c_str(),
+                                  nullptr, 7);
+                !res)
+            {
+                if (errno != 0)
+                {
+                    detail::print_error("invalid octal number: " + jump_label, "masm");
+                    return false;
+                }
+            }
+
+            detail::number_type num(strtoq(jump_label.substr(pos + 2).c_str(),
+                                   nullptr, 7));
+
+            if (kVerbose)
+            {
+                kStdOut << "masm: found a base 8 number... " << jump_label.substr(pos) << "\n";
+            }
 
             for (char i : num.number)
             {
@@ -625,29 +685,30 @@ static bool masm_write_number(std::size_t pos, std::string& jump_label)
             return false;
         }
     }
-    else
+
+    detail::number_type num(strtoq(jump_label.substr(pos).c_str(),
+                                        nullptr, 10));
+
+    for (char i : num.number)
     {
-        detail::number_type num(strtoq(jump_label.substr(pos).c_str(),
-                                       nullptr, 10));
-
-        for (char i : num.number)
-        {
-            kBytes.push_back(i);
-        }
-
-        return true;
+        kBytes.push_back(i);
     }
 
-    return false;
+    if (kVerbose)
+    {
+        kStdOut << "masm: found a base 10 number... " << jump_label.substr(pos) << "\n";
+    }
+
+    return true;
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
-// @brief Read and write instruction to file.
+// @brief Read and write instruction to kBytes array.
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
-static void masm_read_instr(std::string& line, const std::string& file)
+static void masm_read_instruction(std::string& line, const std::string& file)
 {
     for (auto& opcodes : kOpcodesStd)
     {
@@ -670,19 +731,36 @@ static void masm_read_instr(std::string& line, const std::string& file)
                     // \brief how many registers we found.
                     std::size_t found_some = 0UL;
 
-                    for (int reg_index = 0; reg_index < kAsmRegisterLimit; ++reg_index)
+                    for (size_t line_index = 0UL; line_index < line.size(); line_index++)
                     {
-                        std::string register_syntax = kAsmRegisterPrefix;
-                        register_syntax += std::to_string(reg_index);
-
-                        // if we found one
-                        if (ParserKit::find_word(line, register_syntax))
+                        if (line[line_index] == 'r' &&
+                            isdigit(line[line_index + 1]))
                         {
-                            // emplace it.
-                            kBytes.emplace_back(reg_index);
-                            ++found_some;
+                            std::string register_syntax = kAsmRegisterPrefix;
+                            register_syntax += line[line_index + 1];
+
+                            if (isdigit(line[line_index + 2]))
+                                register_syntax += line[line_index + 2];
+
+                            std::string reg_str;
+                            reg_str += line[line_index + 1];
+                            reg_str += line[line_index + 2];
+
+                            std::size_t reg_index = strtoq(
+                                reg_str.c_str(),
+                                nullptr,
+                                10);
+
+                            // if we found one
+                            if (ParserKit::find_word(line, register_syntax))
+                            {
+                                // emplace it.
+                                kBytes.emplace_back(reg_index);
+                                ++found_some;
+                            }
                         }
                     }
+                    
 
                     if (opcodes.fFunct7 != kAsmImmediate)
                     {

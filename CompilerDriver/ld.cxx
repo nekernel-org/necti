@@ -37,12 +37,12 @@
 #define kPefNoCpu       0U
 #define kPefNoSubCpu    0U
 
-#define kWhite "\e[0;97m"
+#define kWhite           "\e[0;97m"
 #define kStdOut          (std::cout << kWhite)
 
 #define kPefDefaultStart 0x8000000
 #define kPefLinkerNumId  0x333D
-#define kPefAbiId        "Container:Abi:MultiProcessor-UNIX"
+#define kPefAbiId        "Container:Abi:MP-UX"
 
 enum { kAbiMpUx = 0xDEAD1 };
 
@@ -84,7 +84,9 @@ int main(int argc, char** argv)
             kStdOut << kToolVersion << "\n";
             kStdOut << "-v: Print program version.\n";
             kStdOut << "-shared: Output as a shared library.\n";
-            kStdOut << "-marc, -m64000: Compile to specific ISA.\n";
+            kStdOut << "-m64000: Link for the X64000 instruction set.\n";
+            kStdOut << "-m68000: Link for the NXP 68000 instruction set.\n";
+            kStdOut << "-mppc64: Link for the PowerPC instruction set.\n";
             kStdOut << "--fat-binary: Output as FAT PEF.\n";
             kStdOut << "-o: Select output filename.\n";	
 
@@ -126,11 +128,6 @@ int main(int argc, char** argv)
             is_executable = false;
 
             continue;
-        }
-        else if (StringCompare(argv[i], "-marc") == 0)
-        {
-            kArch = CxxKit::kPefArchARC;
-            continue;	
         }
         else if (StringCompare(argv[i], "-o") == 0)
         {
@@ -236,7 +233,7 @@ int main(int argc, char** argv)
                     std::string(command_header.Name).find(".data") == std::string::npos &&
                     std::string(command_header.Name).find(".page_zero") == std::string::npos)
                 {
-                    if (std::string(command_header.Name).find("$__start") == std::string::npos &&
+                    if (std::string(command_header.Name).find(kPefStart) == std::string::npos &&
                         *command_header.Name == 0)
                     {
                         if (std::string(command_header.Name).find(kLdDefineSymbol) != std::string::npos)

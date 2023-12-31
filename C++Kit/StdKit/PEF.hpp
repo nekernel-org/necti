@@ -30,6 +30,7 @@ namespace CxxKit
         kPefArchRISCV,
 	    kPefArchARC, /* Advanced RISC architecture. */
         kPefArchNewCPU = kPefArchARC,
+        kPefArch64000 = kPefArchNewCPU,
         kPefArchPowerPC,
         kPefArchARM64,
         kPefArchInvalid = 0xFF,
