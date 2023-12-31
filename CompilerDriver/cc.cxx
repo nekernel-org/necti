@@ -210,813 +210,95 @@ namespace detail
     };
 }
 
+// @name kAssignOpTypes
+// @brief assignop types
+
+std::vector<std::string> kAssignOpTypes = { "int", "float", 
+"double", "long", 
+"short", "unsigned" };
+
+std::vector<std::string> kControlKeyword = { "if", "else", "while", "for", "struct", "enum"
+                                            "union", "typedef"};
+
 /////////////////////////////////////////////////////////////////////////////////////////
 
 // @name Compile
-// @brief Generate MASM from a C source.
+// @brief Generate MASM from a C assignement.
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
 void CompilerBackendClang::Compile(const char* text, const char* file)
 {
-std::string _text = text;
+    if (!strstr(text, "="))
+        return;
 
-    auto syntax_tree = ParserKit::SyntaxLeafList::SyntaxLeaf();
-    bool type_found = false;
-    bool function_found = false;
-
-    // start parsing
-    for (size_t text_index = 0; text_index < _text.size(); ++text_index)
+    for (auto& key : kControlKeyword)
     {
-        uuid_t out{0};
-
-        uuid_generate_random(out);
-        detail::number_type time_off = (UInt64)out;
-
-        if (!type_found)
-        {
-            auto substr = _text.substr(text_index);
-            std::string match_type;
-
-            for (size_t y = 0; y < substr.size(); ++y)
-            {
-                if (substr[y] == ' ')
-                {
-                    while (match_type.find(' ') != std::string::npos) {
-                        match_type.erase(match_type.find(' '));
-                    }
-
-                    for (auto& clType : kCompilerTypes)
-                    {
-                        if (clType.fName == match_type)
-                        {
-                            match_type.clear();
-
-                            std::string buf;
-
-                            buf += clType.fValue;
-                            buf += ' ';
-
-                            if (clType.fName == "struct" ||
-                                clType.fName == "union")
-                            {
-                                for (size_t a = y + 1; a < substr.size(); a++)
-                                {
-                                    if (substr[a] == ' ')
-                                    {
-                                        break;
-                                    }
-
-                                    if (substr[a] == '\n')
-                                        break;
-
-                                    buf += substr[a];
-                                }
-                            }
-
-                            if (substr.find('=') != std::string::npos)
-                            {
-                                break;
-                            }
-
-                            if (_text.find('(') != std::string::npos)
-                            {
-                                syntax_tree.fUserValue = buf;
-
-                                kState.fSyntaxTree->fLeafList.push_back(syntax_tree);
-                            }
-
-                            type_found = true;
-                            break;
-                        }
-                    }
-
-                    break;
-                }
-
-                match_type += substr[y];
-            }
-        }
-
-        if (_text[text_index] == '{')
-        {
-            if (kInStruct)
-            {
-                continue;
-            }
-
-            kInBraces = true;
-            ++kBracesCount;
-
-            if (kOnWhileLoop ||
-                kOnForLoop)
-            {
-                syntax_tree.fUserValue = "void __export .text _L";
-                syntax_tree.fUserValue += std::to_string(kBracesCount) + "_" + std::to_string(time_off.raw);
-            }
-
-            kState.fSyntaxTree->fLeafList.push_back(syntax_tree);
-        }
-
-        // return keyword handler
-        if (_text[text_index] == 'r')
-        {
-            std::string return_keyword;
-            return_keyword += "return";
-
-            std::size_t index = 0UL;
-
-            std::string value;
-
-            for (size_t return_index = text_index; return_index < _text.size(); ++return_index)
-            {
-                if (_text[return_index] != return_keyword[index])
-                {
-                    for (size_t value_index = return_index; value_index < _text.size(); ++value_index)
-                    {
-                        if (_text[value_index] == ';')
-                            break;
-
-                        value += _text[value_index];
-                    }
-
-                    break;
-                }
-
-                ++index;
-            }
-
-            if (index == return_keyword.size())
-            {
-                if (!value.empty())
-                {
-                    if (value.find('(') != std::string::npos)
-                    {
-                        value.erase(value.find('('));
-                    }
-
-                    if (!isdigit(value[value.find('(') + 2]))
-                    {
-                        std::string tmp = value;
-
-                        value.clear();
-                        value += " __import";
-                        value += tmp;
-                    }
-                    
-                    syntax_tree.fUserValue = "\tldw r31, ";
-
-                    // make it pretty.
-                    if (value.find('\t') != std::string::npos)
-                        value.erase(value.find('\t'), 1);
-
-                    syntax_tree.fUserValue += value + "\n";
-                }
-
-                syntax_tree.fUserValue += "\tjlr r31";
-
-                kState.fSyntaxTree->fLeafList.push_back(syntax_tree);
-
-                break;
-            }
-        }
-
-        if (_text[text_index] == 'i' &&
-            _text[text_index + 1] == 'f')
-        {
-            std::string format = "ldw r15, %s\nldw r16, %s2\n";
-            std::string expr = format;
-
-            if (ParserKit::find_word(_text, "=="))
-            {
-                expr += "\nbeq";
-            }
-            
-            if (ParserKit::find_word(_text, "!="))
-            {
-                expr += "\nbneq";
-            }
-            
-            if (ParserKit::find_word(_text, ">="))
-            {
-                expr += "\nbge";
-            }
-            else if (ParserKit::find_word(_text, ">"))
-            {
-                expr += "\nbg";
-            }
-
-            if (ParserKit::find_word(_text, "<="))
-            {
-                expr += "\nble";
-            }
-            else if (ParserKit::find_word(_text, "<"))
-            {
-                expr += "\nbl";
-            }
-
-            std::string substr = expr;
-
-            std::string buf;
-
-            for (size_t text_index_2 = (_text.find("if") + std::string("if").size()); text_index_2 < _text.size(); ++text_index_2)
-            {
-                if (_text[text_index_2] == ';')
-                {
-                    buf.clear();
-
-                    for (size_t text_index_3 = text_index_2 + 1; text_index_3 < _text.size(); text_index_3++)
-                    {
-                        if (_text[text_index_3] == '{')
-                            continue;
-
-                        if (_text[text_index_3] == '}')
-                            continue;
-
-                        if (_text[text_index_3] == ' ')
-                            continue;
-
-                        if (_text[text_index_3] == '=')
-                            continue;
-
-                        if (_text[text_index_3] == '<' &&
-                            _text[text_index_3+1] == '=' ||
-                            _text[text_index_3] == '=' &&
-                            _text[text_index_3+1] == '=' ||
-                            _text[text_index_3] == '>' &&
-                            _text[text_index_3+1] == '=' ||
-                            _text[text_index_3] == '>' ||
-                            _text[text_index_3] == '<' &&
-                            _text[text_index_3+1] == '=' ||
-                            _text[text_index_3] == '!')
-                        {
-                            buf += ", ";
-                            continue;
-                        }
-                        else if (_text[text_index_3] == '=')
-                        {
-                            continue;
-                        }
-
-                        buf += _text[text_index_3];
-                    }
-
-                    break;
-                }
-
-                if (_text[text_index_2] == '{')
-                    continue;
-
-                if (_text[text_index_2] == '}')
-                    continue;
-
-                if (_text[text_index_2] == '<' &&
-                    _text[text_index_2+1] == '=' ||
-                    _text[text_index_2] == '=' &&
-                    _text[text_index_2+1] == '=' ||
-                    _text[text_index_2] == '>' &&
-                    _text[text_index_2+1] == '=' ||
-                    _text[text_index_2] == '>' ||
-                    _text[text_index_2] == '<' &&
-                    _text[text_index_2+1] == '=' ||
-                    _text[text_index_2] == '!')
-                {
-                    buf += ", ";
-                    continue;
-                }
-                else if (_text[text_index_2] == '=')
-                {
-                    continue;
-                }
-
-                buf += _text[text_index_2];
-            }
-
-            if (buf.find(",") == std::string::npos &&
-                buf.find("(") != std::string::npos &&
-                buf.find(")") != std::string::npos )
-            {
-
-                std::string cond = buf.substr(buf.find("(") + 1, buf.find(")") - 1);
-                cond.erase(cond.find("("));
-
-                std::string cond2 = buf.substr(buf.find("(") + 1, buf.find(")") - 1);
-                cond2.erase(cond2.find(")"));
-
-                substr.replace(substr.find("%s"), 2, cond);
-                substr.replace(substr.find("%s2"), 3, cond2);
-
-                buf.replace(buf.find(cond), cond.size(), "r15");
-                buf.replace(buf.find(cond2), cond2.size(), "r16");
-
-                substr += buf;
-
-                syntax_tree.fUserValue = substr + "\n";
-
-                kState.fSyntaxTree->fLeafList.push_back(syntax_tree);
-
-                break;
-            }
-            else
-            {
-                continue;
-            }
-
-            // dealing with pointer
-            if (buf.find("*") != std::string::npos)
-            {
-                buf.erase(buf.find("*"), 1);
-            }
-
-            std::string cond = buf.substr(buf.find("(") + 1, buf.find(",") - 1);
-            cond.erase(cond.find(","));
-
-            std::string cond2 = buf.substr(buf.find(",") + 1, buf.find(")") - 1);
-            cond2.erase(cond2.find(")"));
-
-            substr.replace(substr.find("%s"), 2, cond);
-            substr.replace(substr.find("%s2"), 3, cond2);
-            
-            buf.replace(buf.find(cond), cond.size(), "r15");
-            buf.replace(buf.find(cond2), cond2.size(), "r16");
-
-            substr += buf;
-
-            syntax_tree.fUserValue = substr + "\n";
-
-            kState.fSyntaxTree->fLeafList.push_back(syntax_tree);
-
-            break;
-        }
-
-        // Parse expressions and instructions here.
-        // what does this mean?
-        // we encounter an assignment, or we reached the end of an expression.
-        if (_text[text_index] == '=' ||
-            _text[text_index] == ';')
-        {
-            if (function_found)
-                continue;
-
-            if (_text[text_index] == ';' &&
-                kInStruct)
-                continue;
-
-            if (_text.find("typedef ") != std::string::npos)
-                continue;
-
-            if (_text[text_index] == '=' &&
-                kInStruct)
-            {
-                continue;
-            }
-
-            if (_text[text_index+1] == '=' ||
-                _text[text_index-1] == '!' ||
-                _text[text_index-1] == '<' ||
-                _text[text_index-1] == '>')
-            {
-                continue;
-            }
-
-            std::string substr;
-
-            if (_text.find('=') != std::string::npos &&
-                kInBraces)
-            {
-                if (_text.find("*") != std::string::npos)
-                {
-                    if (_text.find("=") > _text.find("*"))
-                        substr += "\tlda ";
-                    else
-                        substr += "\tldw ";
-                }
-                else
-                {
-                    substr += "\tldw ";
-                }
-            }
-            else if (_text.find('=') != std::string::npos &&
-                !kInBraces)
-            {
-                substr += "stw __export .data ";
-            }
-
-            int first_encountered = 0;
-
-            std::string str_name;
-
-            for (size_t text_index_2 = 0; text_index_2 < _text.size(); ++text_index_2)
-            {
-                if (_text[text_index_2] == '\"')
-                {
-                    ++text_index_2;
-
-                    // want to add this, so that the parser recognizes that this is a string.
-                    substr += '"';
-
-                    for (; text_index_2 < _text.size(); ++text_index_2)
-                    {
-                        if (_text[text_index_2] == '\"')
-                            break;
-
-                        kLatestVar += _text[text_index_2];
-                        substr += _text[text_index_2];
-                    }
-                }
-
-                if (_text[text_index_2] == '{' ||
-                    _text[text_index_2] == '}')
-                    continue;
-
-                if (_text[text_index_2] == ';')
-                {
-                    break;
-                }
-
-                if (_text[text_index_2] == ' ' ||
-                    _text[text_index_2] == '\t')
-                {
-                    if (first_encountered != 2)
-                    {
-                        if (_text[text_index] != '=' &&
-                            substr.find("__export .data") == std::string::npos &&
-                            !kInStruct &&
-                            _text.find("struct") == std::string::npos &&
-                            _text.find("extern") == std::string::npos &&
-                             _text.find("union") == std::string::npos &&
-                             _text.find("typedef") == std::string::npos)
-                            substr += "__export .data ";
-                    }
-
-                    ++first_encountered;
-
-                    continue;
-                }
-
-                if (_text[text_index_2] == '=')
-                {
-                    if (!kInBraces)
-                    {
-                        substr.replace(substr.find("__export .data"), strlen("__export .data"), "__export .page_zero ");
-                    }
-
-                    substr += ",";
-                    continue;
-                }
-
-                kLatestVar += _text[text_index_2];
-                substr += _text[text_index_2];
-            }
-
-            for (auto& clType : kCompilerTypes)
-            {
-                if (substr.find(clType.fName) != std::string::npos)
-                {
-                    if (substr.find(clType.fName) > substr.find('"'))
-                        continue;
-
-                    substr.erase(substr.find(clType.fName), clType.fName.size());
-                }
-                else if (substr.find(clType.fValue) != std::string::npos)
-                {
-                    if (substr.find(clType.fValue) > substr.find('"'))
-                        continue;
-
-                    if (clType.fName == "const")
-                        continue;
-
-                    substr.erase(substr.find(clType.fValue), clType.fValue.size());
-                }
-            }
-
-            if (substr.find("struct") != std::string::npos)
-            {
-                substr.replace(substr.find("struct"), strlen("struct"), "ldw ");
-                substr += ", 0";
-            }
-
-            if (substr.find("union") != std::string::npos)
-            {
-                substr.replace(substr.find("union"), strlen("union"), "ldw ");
-                substr += ", 0";
-            }
-
-            if (substr.find("static") != std::string::npos)
-            {
-                substr.replace(substr.find("static"), strlen("static"), "__export .data ");
-            }
-            else if (substr.find("extern") != std::string::npos)
-            {
-                substr.replace(substr.find("extern"), strlen("extern"), "__import ");
-
-                if (substr.find("__export .data") != std::string::npos)
-                    substr.erase(substr.find("__export .data"), strlen("__export .data"));
-            }
-            
-            auto var_to_find = std::find_if(kCompilerVariables.cbegin(), kCompilerVariables.cend(), [&](detail::CompilerType type) {
-                return type.fName.find(substr) != std::string::npos;
-            });
-
-            std::string reg = kAsmRegisterPrefix;
-            reg += std::to_string(kRegisterCounter);
-
-            if (var_to_find == kCompilerVariables.cend())
-            {
-                ++kRegisterCounter;
-
-                kState.kStackFrame.push_back({ .fName = substr, .fRegister = reg });
-                kCompilerVariables.push_back({ .fName = substr });
-            }
-            
-            syntax_tree.fUserValue += substr;
-            kState.fSyntaxTree->fLeafList.push_back(syntax_tree);
-
-            if (_text[text_index] == '=')
-                break;
-        }
-
-        // function handler.
-
-        if (_text[text_index] == '(' &&
-            !function_found)
-        {
-            std::string substr;
-            std::string args_buffer;
-            std::string args;
-
-            bool type_crossed = false;
-
-            for (size_t idx = _text.find('(') + 1; idx < _text.size(); ++idx)
-            {
-                if (_text[idx] == ',')
-                    continue;
-
-                if (_text[idx] == ' ')
-                    continue;
-
-                if (_text[idx] == ')')
-                    break;
-            }
-
-            for (char substr_first_index : _text)
-            {
-                args_buffer += substr_first_index;
-
-                if (substr_first_index == ';')
-                {
-                    args_buffer = args_buffer.erase(0, args_buffer.find('('));
-                    args_buffer = args_buffer.erase(args_buffer.find(';'), 1);
-                    args_buffer = args_buffer.erase(args_buffer.find(')'), 1);
-                    args_buffer = args_buffer.erase(args_buffer.find('('), 1);
-
-                    if (!args_buffer.empty())
-                        args += "\tpsh ";
-
-                    while (args_buffer.find(',') != std::string::npos)
-                    {
-                        args_buffer.replace(args_buffer.find(','), 1, "\n\tpsh ");
-                    }
-
-                    args += args_buffer;
-                    args += "\n\tjlr __import ";
-                }
-            }
-
-            for (char _text_i : _text)
-            {
-                if (_text_i == '\t' ||
-                    _text_i == ' ')
-                {
-                    if (!type_crossed)
-                    {
-                        substr.clear();
-                        type_crossed = true;
-                    }
-
-                    continue;
-                }
-
-                if (_text_i == '(')
-                    break;
-
-                substr += _text_i;
-            }
-            
-            if (kInBraces)
-            {
-                syntax_tree.fUserValue = args;
-
-                syntax_tree.fUserValue += substr;
-
-                kState.fSyntaxTree->fLeafList.push_back(syntax_tree);
-
-                function_found = true;
-            }
-            else
-            {
-                syntax_tree.fUserValue.clear();
-
-                syntax_tree.fUserValue += "__export .text ";
-
-                syntax_tree.fUserValue += substr;
-                syntax_tree.fUserValue += "\n";
-
-                kState.fSyntaxTree->fLeafList.push_back(syntax_tree);
-
-                function_found = true;
-            }
-
-            kCompilerFunctions.push_back(_text);
-        }
-
-        if (_text[text_index] == 's')
-        {
-            if (_text.find("struct") != text_index)
-                continue;
-
-            if (_text.find(";") == std::string::npos)
-                kInStruct = true;
-        }
-
-        if (_text[text_index] == 'u')
-        {
-            if (_text.find("union") != text_index)
-                continue;
-
-            if (_text.find(";") == std::string::npos)
-                kInStruct = true;
-        }
-
-        if (_text[text_index] == 'e')
-        {
-            if (_text.find("enum") != text_index)
-                continue;
-
-            if (_text.find(";") == std::string::npos)
-                kInStruct = true;
-        }
-
-        if (_text[text_index] == '-' &&
-            _text[text_index+1] == '-')
-        {
-            _text = _text.replace(_text.find("--"), strlen("--"), "");
-
-            for (int _text_i = 0; _text_i < _text.size(); ++_text_i)
-            {
-                if (_text[_text_i] == '\t' ||
-                    _text[_text_i] == ' ')
-                    _text.erase(_text_i, 1);
-            }
-
-            syntax_tree.fUserValue += "dec ";
-            syntax_tree.fUserValue += _text;
-
-            kState.fSyntaxTree->fLeafList.push_back(syntax_tree);
-            break;
-        }
-
-        // while loop
-        if (_text[text_index] == 'w')
-        {
-            if (_text.find("while") == std::string::npos)
-                continue;
-
-            if (_text.find("while") != text_index)
-                continue;
-
-            syntax_tree.fUserValue = "jrl [r32+0x04]";
-
-            std::string symbol_loop = "_loop_while_";
-            symbol_loop += std::to_string(time_off.raw);
-            symbol_loop += " ";
-
-            syntax_tree.fUserValue = "beq ";
-            syntax_tree.fUserValue += kState.kStackFrame[kState.kStackFrame.size() - 2].fRegister;
-            syntax_tree.fUserValue += ",";
-            syntax_tree.fUserValue += kState.kStackFrame[kState.kStackFrame.size() - 1].fRegister;
-            syntax_tree.fUserValue += ", __end%s\njb __continue%s\n__export .text __end%s\njlr r31\nvoid __export .text __continue%s\njb _L";
-            syntax_tree.fUserValue += std::to_string(kBracesCount + 1) + "_" + std::to_string(time_off.raw);
-
-            while (syntax_tree.fUserValue.find("%s") != std::string::npos)
-            {
-                syntax_tree.fUserValue.replace(syntax_tree.fUserValue.find("%s"), strlen("%s"), symbol_loop);
-            }
-
-            kState.fSyntaxTree->fLeafList.push_back(syntax_tree);
-
-            kOnWhileLoop = true;
-
-            break;
-        }
-
-        if (_text[text_index] == 'f')
-        {
-            if (_text.find("for") == std::string::npos)
-                continue;
-
-            if (_text.find("for") != text_index)
-                continue;
-
-            syntax_tree.fUserValue = "jrl [r32+0x1]\n";
-
-            // actually set registers now.
-
-            auto expr = _text.substr(_text.find("for") + strlen("for"));
-
-            kLatestVar.clear();
-
-            kState.fSyntaxTree->fLeafList.push_back(syntax_tree);
-
-            kOnForLoop = true;
-            break;
-        }
-
-        if (_text[text_index] == '+' &&
-            _text[text_index+1] == '+')
-        {
-            _text = _text.replace(_text.find("++"), strlen("++"), "");
-
-            for (int _text_i = 0; _text_i < _text.size(); ++_text_i)
-            {
-                if (_text[_text_i] == '\t' ||
-                    _text[_text_i] == ' ')
-                    _text.erase(_text_i, 1);
-            }
-
-            syntax_tree.fUserValue += "add ";
-            syntax_tree.fUserValue += _text;
-
-            if (syntax_tree.fUserValue.find(";") != std::string::npos)
-                syntax_tree.fUserValue.erase(syntax_tree.fUserValue.find(";"), 1);
-
-            kState.fSyntaxTree->fLeafList.push_back(syntax_tree);
-        }
-
-        if (_text[text_index] == '}')
-        {
-            kRegisterCounter = kStartUsable;
-
-            --kBracesCount;
-
-            if (kBracesCount < 1)
-            {
-                kInBraces = false;
-                kBracesCount = 0;
-            }
-
-            if (kInStruct)
-                kInStruct = false;
-
-            if (!kInBraces)
-            {
-                syntax_tree.fUserValue += kAddIfAnyEnd;
-
-                kAddIfAnyEnd.clear();
-
-                kState.fSyntaxTree->fLeafList.push_back(syntax_tree);
-            }
-            else
-            {
-                if (kOnWhileLoop ||
-                    kOnForLoop)
-                {
-                    if (kOnForLoop)
-                        kOnForLoop = false;
-
-                    if (kOnWhileLoop)
-                        kOnWhileLoop = false;
-
-                    std::string symbol_loop = "_loop_for_";
-                    symbol_loop += std::to_string(time_off.raw);
-                    symbol_loop += " ";
-
-                    syntax_tree.fUserValue = "beq ";
-                    syntax_tree.fUserValue += kState.kStackFrame[kState.kStackFrame.size() - 2].fRegister;
-                    syntax_tree.fUserValue += ",";
-                    syntax_tree.fUserValue += kState.kStackFrame[kState.kStackFrame.size() - 1].fRegister;
-                    syntax_tree.fUserValue += ", __end%s\njb __continue%s\n__export .text __end%s\njlr r31\nvoid __export .text __continue%s\njb _L";
-                    syntax_tree.fUserValue += std::to_string(kBracesCount + 1) + "_" + std::to_string(time_off.raw);
-
-                    while (syntax_tree.fUserValue.find("%s") != std::string::npos)
-                    {
-                        syntax_tree.fUserValue.replace(syntax_tree.fUserValue.find("%s"), strlen("%s"), symbol_loop);
-                    }
-
-                    kState.fSyntaxTree->fLeafList.push_back(syntax_tree);
-                }
-                else
-                {
-                    kState.fSyntaxTree->fLeafList.push_back(syntax_tree);
-                }
-            }
-        }
-
-        syntax_tree.fUserValue.clear();
+        if (strstr(text, key.c_str()))
+            return;
     }
 
-    syntax_tree.fUserValue = "\n";
-    kState.fSyntaxTree->fLeafList.push_back(syntax_tree);
+    ParserKit::SyntaxLeafList::SyntaxLeaf leaf{};
+    bool decl = false;
+
+    std::string substr = text;
+
+    for (auto& builtin: kAssignOpTypes)
+    {
+        if (strstr(text, builtin.c_str()))
+        {
+            decl = true;
+            substr = strstr(text, builtin.c_str());
+
+            if (substr.find(builtin) != std::string::npos)
+            {
+                substr.erase(substr.find(builtin), builtin.size());
+            }
+
+            break;
+        }
+    }
+    
+    if (substr.find(";") != std::string::npos)
+    {
+        substr.erase(substr.find(";"), 1);
+    }
+
+    if (substr.find(",") != std::string::npos)
+    {
+        substr.erase(substr.find(","), 1);
+    }
+
+    std::string val;
+
+    if (substr.find('=') != std::string::npos)
+    {
+        val = substr.substr(substr.find('=') + 1);
+        substr.erase(substr.find('='), 1);
+    }
+
+    if (substr.find(val) != std::string::npos)
+    {
+        substr.erase(substr.find(val), val.size());
+    }
+
+    while (substr.find(' ') != std::string::npos)
+    {
+        substr.erase(substr.find(' '), 1);
+    }
+
+    leaf.fUserValue += "stw ";
+
+    std::string register_nc = "r";
+    register_nc += std::to_string(kRegisterCounter);
+
+    ++kRegisterCounter;
+
+    leaf.fUserValue += register_nc + ",";
+    leaf.fUserValue += substr + "," + val + "\n";
+
+
+    kState.fSyntaxTree->fLeafList.push_back(leaf);
 }
 
 static bool kShouldHaveBraces = false;
@@ -1264,7 +546,10 @@ cc_error_value:
             if (keyword.find(".") != std::string::npos)
                 return err_str;
 
-            err_str += "\nUndefined value: " + keyword;
+            
+            if (isalnum(keyword[0]))
+                err_str += "\nUndefined value: " + keyword;
+
             return err_str;
         }
 
@@ -1642,14 +927,14 @@ public:
         kState.fSyntaxTreeList.push_back(syntax);
         kState.fSyntaxTree = &kState.fSyntaxTreeList[kState.fSyntaxTreeList.size() - 1];
 
-        std::string source;
+        std::string line_src;
 
-        while (std::getline(src_fp, source))
+        while (std::getline(src_fp, line_src))
         {
-            if (auto err = kCompilerBackend->Check(source.c_str(), src.CData());
+            if (auto err = kCompilerBackend->Check(line_src.c_str(), src.CData());
                 err.empty())
             {
-                kCompilerBackend->Compile(source.c_str(), src.CData());
+                kCompilerBackend->Compile(line_src.c_str(), src.CData());
             }
             else
             {
@@ -1792,7 +1077,7 @@ int main(int argc, char** argv)
         {
             if (kState.kVerbose)
             {
-                std::cerr << argv[index] << " is not a valid C source.\n";
+                std::cerr << argv[index] << " is not a valid C line_src.\n";
             }
 
             return -1;

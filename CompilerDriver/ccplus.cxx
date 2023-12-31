@@ -460,7 +460,9 @@ cxx_error_value:
             if (keyword.find(".") != std::string::npos)
                 return err_str;
 
-            err_str += "\nUndefined value: " + keyword;
+            if (isalnum(keyword[0]))
+                err_str += "\nUndefined value: " + keyword;
+
             return err_str;
         }
 

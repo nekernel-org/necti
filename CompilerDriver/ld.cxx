@@ -66,9 +66,10 @@ static Int32 kArch = kPefNoCpu;
 static Bool  kFatBinaryEnable = false;
 static Bool kStartFound = false;
 static Bool kDuplicateSymbols = false;
+static Bool kVerbose = false;
 
 static const char* kLdDefineSymbol = ":ld:";
-static const char* kLdDynamicSym = ":mld_reloc:";
+static const char* kLdDynamicSym = ":mld:";
 
 static std::vector<char> kObjectBytes;
 static std::vector<std::string> kObjectList;
@@ -118,6 +119,11 @@ int main(int argc, char** argv)
         
             continue;
         }
+        else if (StringCompare(argv[i], "--verbose") == 0)
+        {
+            kVerbose = true;
+            continue;
+        }
         else if (StringCompare(argv[i], "-shared") == 0)
         {
             if (kOutput.find(".out") != std::string::npos)
@@ -152,10 +158,22 @@ int main(int argc, char** argv)
         kStdOut << "ld: no input files." << std::endl;
         return CXXKIT_EXEC_ERROR;
     }
+    else
+    {
+        // check for exisiting files.
+        for (auto& obj : kObjectList)
+        {
+            if (!std::filesystem::exists(obj))
+            {
+                kStdOut << "ld: no such file: " << obj << std::endl;
+                return CXXKIT_EXEC_ERROR;
+            }
+        }
+    }
 
     if (kArch == 0)
     {
-        kStdOut << "ld: no architecture set, can't continue." << std::endl;
+        kStdOut << "ld: no target architecture set, can't continue." << std::endl;
         return CXXKIT_EXEC_ERROR;
     }
 
