@@ -641,7 +641,7 @@ static bool masm_write_number(std::size_t pos, std::string& jump_label)
 
             return true;
         }
-        case '0':
+        case 'o':
         {
             if (auto res = strtoq(jump_label.substr(pos + 2).c_str(),
                                   nullptr, 7);
