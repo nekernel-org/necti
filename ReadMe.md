@@ -1,5 +1,5 @@
 # Compiler Kit
-## C/C++ Toolkit
+## Compiler Toolkit
 <br>
 Consists of cpp/cc/ld/masm, ld and masm can be used for anything.
 <br>
