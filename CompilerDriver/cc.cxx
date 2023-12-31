@@ -313,12 +313,6 @@ std::string _text = text;
             {
                 syntax_tree.fUserValue = "void __export .text _L";
                 syntax_tree.fUserValue += std::to_string(kBracesCount) + "_" + std::to_string(time_off.raw);
-                syntax_tree.fUserValue += "\nbegin";
-            }
-            else
-            {
-                syntax_tree.fUserValue = "begin\n";
-                syntax_tree.fUserValue += kAddIfAnyBegin;
             }
 
             kState.fSyntaxTree->fLeafList.push_back(syntax_tree);
@@ -901,9 +895,8 @@ std::string _text = text;
             syntax_tree.fUserValue += kState.kStackFrame[kState.kStackFrame.size() - 2].fRegister;
             syntax_tree.fUserValue += ",";
             syntax_tree.fUserValue += kState.kStackFrame[kState.kStackFrame.size() - 1].fRegister;
-            syntax_tree.fUserValue += ", __end%s\njb __continue%s\n__export .text __end%s\nbegin\njlr r31\nend\nvoid __export .text __continue%s\nbegin\njb _L";
+            syntax_tree.fUserValue += ", __end%s\njb __continue%s\n__export .text __end%s\njlr r31\nvoid __export .text __continue%s\njb _L";
             syntax_tree.fUserValue += std::to_string(kBracesCount + 1) + "_" + std::to_string(time_off.raw);
-            syntax_tree.fUserValue += "\nend\nend";
 
             while (syntax_tree.fUserValue.find("%s") != std::string::npos)
             {
@@ -978,7 +971,6 @@ std::string _text = text;
             if (!kInBraces)
             {
                 syntax_tree.fUserValue += kAddIfAnyEnd;
-                syntax_tree.fUserValue = "\nend ";
 
                 kAddIfAnyEnd.clear();
 
@@ -1003,9 +995,8 @@ std::string _text = text;
                     syntax_tree.fUserValue += kState.kStackFrame[kState.kStackFrame.size() - 2].fRegister;
                     syntax_tree.fUserValue += ",";
                     syntax_tree.fUserValue += kState.kStackFrame[kState.kStackFrame.size() - 1].fRegister;
-                    syntax_tree.fUserValue += ", __end%s\njb __continue%s\n__export .text __end%s\nbegin\njlr r31\nend\nvoid __export .text __continue%s\nbegin\njb _L";
+                    syntax_tree.fUserValue += ", __end%s\njb __continue%s\n__export .text __end%s\njlr r31\nvoid __export .text __continue%s\njb _L";
                     syntax_tree.fUserValue += std::to_string(kBracesCount + 1) + "_" + std::to_string(time_off.raw);
-                    syntax_tree.fUserValue += "\nend\nend";
 
                     while (syntax_tree.fUserValue.find("%s") != std::string::npos)
                     {
@@ -1016,7 +1007,6 @@ std::string _text = text;
                 }
                 else
                 {
-                    syntax_tree.fUserValue = "\nend ";
                     kState.fSyntaxTree->fLeafList.push_back(syntax_tree);
                 }
             }
