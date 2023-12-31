@@ -834,7 +834,10 @@ masm_write_label:
                 if (cpy_jump_label.find('\n') != std::string::npos)
                     cpy_jump_label.erase(cpy_jump_label.find('\n'), 1);
 
-                if (cpy_jump_label.find("__import") == std::string::npos)
+                if (cpy_jump_label.find("__import") == std::string::npos &&
+                    name == "psh" ||
+                    cpy_jump_label.find("__import") == std::string::npos &&
+                    name == "jb")
                     detail::print_error("__import not found on jump label, please add one.", file.c_str());
                 else if (cpy_jump_label.find("__import") != std::string::npos)
                     cpy_jump_label.erase(cpy_jump_label.find("__import"), strlen("__import"));
@@ -866,7 +869,7 @@ masm_write_label:
                 }
             }
 
-            kBytes.push_back(0);
+            kBytes.push_back('\0');
         }
     }
 

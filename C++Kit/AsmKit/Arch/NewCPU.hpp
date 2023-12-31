@@ -35,7 +35,7 @@ struct NCOpcode
 };
 
 inline std::vector<NCOpcode> kOpcodesStd = {
-        kAsmOpcodeDecl("nop", 0b0100011, 0x0000000, kAsmImmediate) // mv r0, r0
+        kAsmOpcodeDecl("nop", 0b0100011, 0b0000000, kAsmImmediate) // mv r0, r0
         kAsmOpcodeDecl("jb", 0b1110011, 0b0000011, kAsmJump) // jump to branch
         kAsmOpcodeDecl("jlr", 0b1110011, 0b0000111, kAsmJump) // jump and link return register
         kAsmOpcodeDecl("jrl", 0b1110011, 0b0001111, kAsmJump) // jump to register link
