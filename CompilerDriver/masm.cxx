@@ -200,8 +200,17 @@ int main(int argc, char** argv)
             if (ParserKit::find_word(line, "#"))
                 continue;
 
-            masm_read_attributes(line);
-            masm_read_instruction(line, argv[i]);
+            try
+            {
+                masm_read_attributes(line);
+                masm_read_instruction(line, argv[i]);
+            }
+            catch(const std::exception& e)
+            {
+                std::filesystem::remove(object_output);
+                goto masm_fail_exit;
+            }
+            
         }
 
         if (kVerbose)
@@ -285,13 +294,15 @@ int main(int argc, char** argv)
         file_ptr_out.close();
     
         if (kVerbose)
-            kStdOut << "masm: exit succeed with 0.\n";
+            kStdOut << "masm: exit succeeded with code 0.\n";
 
         return 0;
     }
 
+masm_fail_exit:
+
     if (kVerbose)
-        kStdOut << "masm: exit succeed with -1.\n";
+        kStdOut << "masm: exit failed with code -1.\n";
 
     return -1;
 }
@@ -530,7 +541,7 @@ static std::string masm_check_line(std::string& line, const std::string& file)
         }
     }
 
-    std::vector<std::string> opcodes_list = { "jb", "psh", "stw", "ldw", "lda" };
+    std::vector<std::string> opcodes_list = { "jb", "psh", "stw", "ldw", "lda", "sta" };
 
     for (auto& opcodes : kOpcodesStd)
     {
@@ -608,7 +619,7 @@ static bool masm_write_number(std::size_t pos, std::string& jump_label)
 
             if (kVerbose)
             {
-                kStdOut << "masm: found a base 16 number... " << jump_label.substr(pos) << "\n";
+                kStdOut << "masm: found a base 16 number here: " << jump_label.substr(pos) << "\n";
             }
 
             return true;
@@ -631,7 +642,7 @@ static bool masm_write_number(std::size_t pos, std::string& jump_label)
 
             if (kVerbose)
             {
-                kStdOut << "masm: found a base 2 number... " << jump_label.substr(pos) << "\n";
+                kStdOut << "masm: found a base 2 number here: " << jump_label.substr(pos) << "\n";
             }
 
             for (char i : num.number)
@@ -659,7 +670,7 @@ static bool masm_write_number(std::size_t pos, std::string& jump_label)
 
             if (kVerbose)
             {
-                kStdOut << "masm: found a base 8 number... " << jump_label.substr(pos) << "\n";
+                kStdOut << "masm: found a base 8 number here: " << jump_label.substr(pos) << "\n";
             }
 
             for (char i : num.number)
@@ -696,7 +707,7 @@ static bool masm_write_number(std::size_t pos, std::string& jump_label)
 
     if (kVerbose)
     {
-        kStdOut << "masm: found a base 10 number... " << jump_label.substr(pos) << "\n";
+        kStdOut << "masm: found a base 10 number here: " << jump_label.substr(pos) << "\n";
     }
 
     return true;
@@ -751,6 +762,12 @@ static void masm_read_instruction(std::string& line, const std::string& file)
                                 nullptr,
                                 10);
 
+                            if (reg_index > kAsmRegisterLimit)
+                            {
+                                detail::print_error("invalid register index, r" + reg_str, file);
+                                throw std::runtime_error("invalid_register_index");
+                            }
+
                             // if we found one
                             if (ParserKit::find_word(line, register_syntax))
                             {
@@ -761,7 +778,7 @@ static void masm_read_instruction(std::string& line, const std::string& file)
                         }
                     }
                     
-
+                    // we're not in immediate addressing, reg to reg.
                     if (opcodes.fFunct7 != kAsmImmediate)
                     {
                         // remember! register to register!
@@ -796,7 +813,8 @@ static void masm_read_instruction(std::string& line, const std::string& file)
                 name == "jb" ||
                 name == "stw" ||
                 name == "ldw" ||
-                name == "lda")
+                name == "lda" ||
+                name == "sta")
             {
                 auto where_string = name;
 
@@ -823,7 +841,23 @@ static void masm_read_instruction(std::string& line, const std::string& file)
 
                 if (!masm_write_number(0, jump_label))
                 {
+                    // sta expects this: sta 0x000000, r0
+                    if (name == "sta")
+                    {
+                        detail::print_error("invalid combination of opcode and operands.\nhere ->" + line, file);
+                        break;
+                    }
+                    
                     goto masm_write_label;
+                }
+                else
+                {
+                    if (name == "sta" &&
+                        cpy_jump_label.find("__import") != std::string::npos)
+                    {
+                        detail::print_error("invalid usage __import on 'sta', here: " + line, file);
+                        break;
+                    }
                 }
             }
 
@@ -840,7 +874,14 @@ masm_write_label:
                     name == "jb")
                     detail::print_error("__import not found on jump label, please add one.", file.c_str());
                 else if (cpy_jump_label.find("__import") != std::string::npos)
+                { 
+                    if (name == "sta")
+                    {
+                        detail::print_error("__import is not allowed on a sta operation.", file.c_str());
+                    }
+
                     cpy_jump_label.erase(cpy_jump_label.find("__import"), strlen("__import"));
+                }
 
                 while (cpy_jump_label.find(' ') != std::string::npos)
                     cpy_jump_label.erase(cpy_jump_label.find(' '), 1);

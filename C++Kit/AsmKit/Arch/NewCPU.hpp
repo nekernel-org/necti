@@ -53,6 +53,7 @@ inline std::vector<NCOpcode> kOpcodesStd = {
         kAsmOpcodeDecl("stw", 0b0100011, 0b100, kAsmImmediate)
         kAsmOpcodeDecl("ldw", 0b0000011, 0b100, kAsmImmediate)
         kAsmOpcodeDecl("lda", 0b0000011, 0b101, kAsmImmediate)
+        kAsmOpcodeDecl("sta", 0b0000011, 0b001, kAsmImmediate)
         kAsmOpcodeDecl("add", 0b0101011, 0b100, kAsmImmediate)
         kAsmOpcodeDecl("dec", 0b0101011, 0b101, kAsmImmediate)
         kAsmOpcodeDecl("scall", 0b1110011, 0b00, kAsmSyscall)
@@ -77,7 +78,7 @@ inline std::vector<NCOpcode> kOpcodesStd = {
 
 // SYSTEM CALL ADDRESSING
 
-// | OPCODE | FUNCT3 | FUNCT7 | OFF                 |
+// | OPCODE | FUNCT3 | FUNCT7 | STACK POINTER.
 
 // IMMEDIATE ADDRESSING
 
