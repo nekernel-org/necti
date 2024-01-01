@@ -771,8 +771,10 @@ static void masm_read_instruction(std::string& line, const std::string& file)
 
                             std::string reg_str;
                             reg_str += line[line_index + 1];
-                            reg_str += line[line_index + 2];
 
+                            if (isdigit(line[line_index + 2]))
+                                reg_str += line[line_index + 2];
+                            
                             std::size_t reg_index = strtoq(
                                 reg_str.c_str(),
                                 nullptr,
@@ -784,12 +786,13 @@ static void masm_read_instruction(std::string& line, const std::string& file)
                                 throw std::runtime_error("invalid_register_index");
                             }
 
-                            // if we found one
-                            if (ParserKit::find_word(line, register_syntax))
+                            kBytes.emplace_back(reg_index);
+                            ++found_some;
+
+                            if (kVerbose)
                             {
-                                // emplace it.
-                                kBytes.emplace_back(reg_index);
-                                ++found_some;
+                                kStdOut << "masm: Found register: " << register_syntax << "\n";
+                                kStdOut << "masm: Register count: " << found_some << "\n";
                             }
                         }
                     }
