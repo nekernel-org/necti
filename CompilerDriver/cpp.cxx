@@ -291,38 +291,10 @@ void cpp_parse_file(std::ifstream& hdr_file, std::ofstream& pp_out)
 	{
 		while (std::getline(hdr_file, hdr_line))
 		{
+			// make cc, ccplus life easier
             if (hdr_line.find("//") != std::string::npos)
             {
                 hdr_line.erase(hdr_line.find("//"));
-            }
-
-            if (hdr_line.find("/*") != std::string::npos)
-            {
-                comment = true;
-            }
-
-            if (comment)
-            {
-                /*
-                 * first case
-                 */
-                if (hdr_line.find("*/") != std::string::npos)
-                {
-                    if (hdr_line.find("/*") != std::string::npos)
-                    {
-                        hdr_line.erase(hdr_line.find("/*"), hdr_line.find("*/"));
-                        comment = false;
-                    }
-                    else
-                    {
-                        comment = false;
-                    }
-
-                    hdr_line.erase(hdr_line.find("*/"), strlen("*/"));
-                }
-
-                if (comment)
-                    continue;
             }
 
 			if (hdr_line[0] == '#' &&
