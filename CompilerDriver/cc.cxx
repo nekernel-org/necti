@@ -18,7 +18,7 @@
 
 #define kOk 0
 
-/* WestCo C driver */
+/* Optimized C driver */
 /* This is part of MP-UX C SDK. */
 /* (c) WestCo */
 
@@ -131,7 +131,7 @@ static bool kOnForLoop = false;
 static bool kInBraces = false;
 static size_t kBracesCount = 0UL;
 
-/* @brief C compiler backend for WestCo C */
+/* @brief C compiler backend for Optimized C */
 class CompilerBackendClang final : public ParserKit::CompilerBackend
 {
 public:
@@ -143,7 +143,7 @@ public:
     std::string Check(const char* text, const char* file);
     void Compile(const char* text, const char* file) override;
 
-    const char* Language() override { return "C"; }
+    const char* Language() override { return "Optimized X64000 C"; }
 
 };
 
@@ -367,7 +367,7 @@ void CompilerBackendClang::Compile(const char* text, const char* file)
                         value += tmp;
                     }
                     
-                    syntax_tree.fUserValue = "\tldw r31, ";
+                    syntax_tree.fUserValue = "\tldw r15, ";
 
                     // make it pretty.
                     if (value.find('\t') != std::string::npos)
@@ -376,7 +376,7 @@ void CompilerBackendClang::Compile(const char* text, const char* file)
                     syntax_tree.fUserValue += value + "\n";
                 }
 
-                syntax_tree.fUserValue += "\tjlr r31";
+                syntax_tree.fUserValue += "\tjlr";
 
                 kState.fSyntaxTree->fLeafList.push_back(syntax_tree);
 
@@ -898,7 +898,7 @@ void CompilerBackendClang::Compile(const char* text, const char* file)
             syntax_tree.fUserValue += kState.kStackFrame[kState.kStackFrame.size() - 2].fRegister;
             syntax_tree.fUserValue += ",";
             syntax_tree.fUserValue += kState.kStackFrame[kState.kStackFrame.size() - 1].fRegister;
-            syntax_tree.fUserValue += ", __end%s\njb __continue%s\n__export .text __end%s\njlr r31\nvoid __export .text __continue%s\njb _L";
+            syntax_tree.fUserValue += ", __end%s\njb __continue%s\n__export .text __end%s\njlr\nvoid __export .text __continue%s\njb _L";
             syntax_tree.fUserValue += std::to_string(kBracesCount + 1) + "_" + std::to_string(time_off.raw);
 
             while (syntax_tree.fUserValue.find("%s") != std::string::npos)
@@ -998,7 +998,7 @@ void CompilerBackendClang::Compile(const char* text, const char* file)
                     syntax_tree.fUserValue += kState.kStackFrame[kState.kStackFrame.size() - 2].fRegister;
                     syntax_tree.fUserValue += ",";
                     syntax_tree.fUserValue += kState.kStackFrame[kState.kStackFrame.size() - 1].fRegister;
-                    syntax_tree.fUserValue += ", __end%s\njb __continue%s\n__export .text __end%s\njlr r31\nvoid __export .text __continue%s\njb _L";
+                    syntax_tree.fUserValue += ", __end%s\njb __continue%s\n__export .text __end%s\njlr\nvoid __export .text __continue%s\njb _L";
                     syntax_tree.fUserValue += std::to_string(kBracesCount + 1) + "_" + std::to_string(time_off.raw);
 
                     while (syntax_tree.fUserValue.find("%s") != std::string::npos)
@@ -1531,7 +1531,9 @@ next:
                 ln.find("static") == std::string::npos &&
                 ln.find("inline") == std::string::npos &&
                 ln.find("|") == std::string::npos &&
-                ln.find("&") == std::string::npos)
+                ln.find("&") == std::string::npos &&
+                ln.find("(") == std::string::npos &&
+                ln.find(")") == std::string::npos)
             {
                 err_str += "\n Missing ';' or type, here -> ";
                 err_str += ln;
@@ -1720,7 +1722,7 @@ public:
                         }
                     }
 
-                    if (ParserKit::find_word(leaf.fUserValue, "r31"))
+                    if (ParserKit::find_word(leaf.fUserValue, "r20"))
                     {
                         ++cnt;
                     }

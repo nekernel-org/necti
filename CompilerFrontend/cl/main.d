@@ -50,8 +50,12 @@ void main(string[] args)
             if (arg == "--version" ||
                 arg == "-v")
             {
-                writeln("mpcc: version 1.00, (c) WestCo all rights reserved.");
-                
+                writeln("mpcc: version 1.01, (c) WestCo all rights reserved.");
+                return;
+            }
+            else if (arg == "--dialect")
+            {
+                mcc_summon_executable("/usr/local/bin/bin/cc --asm=masm --compiler=dolvik --dialect");
                 return;
             }
             else if (arg == "--help" ||

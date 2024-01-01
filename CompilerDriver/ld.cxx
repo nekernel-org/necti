@@ -182,7 +182,7 @@ int main(int argc, char** argv)
     pef_container.SubCpu = kSubArch;
     pef_container.Cpu = kArch;
     pef_container.Linker = kPefLinkerNumId; // WestCo Linker
-    pef_container.Abi = kAbi; // Multi-Processor UNIX ABI
+    pef_container.Abi = kAbi; // Multi-Processor UX ABI
     pef_container.Magic[0] = kPefMagic[kFatBinaryEnable ? 2 : 0];
     pef_container.Magic[1] = kPefMagic[1];
     pef_container.Magic[2] = kPefMagic[kFatBinaryEnable ? 0 : 2];

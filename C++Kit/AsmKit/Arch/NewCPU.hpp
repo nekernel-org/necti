@@ -72,6 +72,8 @@ inline std::vector<NCOpcode> kOpcodesStd = {
 #define kAsmPcRegister     17
 #define kAsmCrRegister     18
 #define kAsmSpRegister     5
+
+/* return address register */
 #define kAsmRetRegister    20
 
 /////////////////////////////////////////////////////////////////////////////
