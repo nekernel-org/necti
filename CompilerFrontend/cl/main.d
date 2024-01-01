@@ -67,12 +67,12 @@ void main(string[] args)
                 compile_only = true;
                 continue;
             }
-            else if (arg == "--kernel")
+            else if (arg == "-kernel")
             {
                 kernel_driver = true;
                 continue;
             }
-            else if (arg == "--shared")
+            else if (arg == "-shared")
             {
                 output_file = "a.lib";
                 shared_library = true;

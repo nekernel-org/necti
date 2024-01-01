@@ -131,7 +131,7 @@ int main(int argc, char** argv)
             {
                 kStdOut << "masm: The MP-UX Assembler.\nmasm: Copyright (c) 2023 WestCo.\n";
                 kStdOut << "-v: Print program version.\n";
-                kStdOut << "--verbose: Print verbose output.\n";
+                kStdOut << "-verbose: Print verbose output.\n";
                 kStdOut << "-m64000: Compile for the X64000 instruction set.\n";
                 kStdOut << "-m68000: Compile for the NXP 68000 instruction set.\n";
                 kStdOut << "-mppc64: Compile for the PowerPC instruction set.\n";
@@ -145,7 +145,7 @@ int main(int argc, char** argv)
                 continue;
             }
 
-            if (strcmp(argv[i], "--verbose") == 0)
+            if (strcmp(argv[i], "-verbose") == 0)
             {
                 kVerbose = true;
                 continue;

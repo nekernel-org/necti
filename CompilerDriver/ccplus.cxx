@@ -916,7 +916,7 @@ int main(int argc, char** argv)
                 return kOk;
             }
 
-            if (strcmp(argv[index], "--verbose") == 0)
+            if (strcmp(argv[index], "-verbose") == 0)
             {
                 kState.kVerbose = true;
 

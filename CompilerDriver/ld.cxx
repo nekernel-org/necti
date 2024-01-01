@@ -84,11 +84,12 @@ int main(int argc, char** argv)
         {
             kStdOut << kToolVersion << "\n";
             kStdOut << "-v: Print program version.\n";
+            kStdOut << "-verbose: Print program backtrace (verbose mode).\n";
             kStdOut << "-shared: Output as a shared library.\n";
-            kStdOut << "-m64000: Link for the X64000 instruction set.\n";
-            kStdOut << "-m68000: Link for the NXP 68000 instruction set.\n";
-            kStdOut << "-mppc64: Link for the PowerPC instruction set.\n";
-            kStdOut << "--fat-binary: Output as FAT PEF.\n";
+            kStdOut << "-m64000: Link for the X64000.\n";
+            kStdOut << "-m88000: Link for the X88000.\n";
+            kStdOut << "-mppc64: Link for the PowerPC.\n";
+            kStdOut << "-fatbin: Output as FAT PEF.\n";
             kStdOut << "-o: Select output filename.\n";	
 
             // bye
@@ -113,13 +114,13 @@ int main(int argc, char** argv)
         
             continue;
         }
-        else if (StringCompare(argv[i], "--fat-binary") == 0)
+        else if (StringCompare(argv[i], "-fatbin") == 0)
         {
             kFatBinaryEnable = true;
         
             continue;
         }
-        else if (StringCompare(argv[i], "--verbose") == 0)
+        else if (StringCompare(argv[i], "-verbose") == 0)
         {
             kVerbose = true;
             continue;
