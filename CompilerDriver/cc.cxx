@@ -1722,11 +1722,6 @@ public:
                         }
                     }
 
-                    if (ParserKit::find_word(leaf.fUserValue, "r20"))
-                    {
-                        ++cnt;
-                    }
-
                     if (cnt > 1 && keyword != "mv" && keyword != "add" && keyword != "dec")
                     {
                         leaf.fUserValue.replace(leaf.fUserValue.find(keyword), keyword.size(), "mv");

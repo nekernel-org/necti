@@ -419,7 +419,7 @@ ld_continue_search:
     if (!kStartFound && is_executable)
     {
         if (kVerbose)
-            kStdOut << "ld: undefined symbol: __start, you may have forget to link agaisnt your runtime library.\n";
+            kStdOut << "ld: undefined symbol: __start, you may have forget to link against your runtime library.\n";
 
         kStdOut << "ld: undefined entrypoint " << kPefStart << " for executable " << kOutput << "\n";
     }

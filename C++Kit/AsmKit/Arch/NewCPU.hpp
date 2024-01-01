@@ -35,31 +35,30 @@ struct NCOpcode
 };
 
 inline std::vector<NCOpcode> kOpcodesStd = {
-        kAsmOpcodeDecl("nop", 0b0100011, 0b0000000, kAsmImmediate) // mv r0, r0
+        kAsmOpcodeDecl("np", 0b0100011, 0b0000000, kAsmImmediate) // mv r0, r0
         kAsmOpcodeDecl("jb", 0b1110011, 0b0000011, kAsmJump) // jump to branch
         kAsmOpcodeDecl("jlr", 0b1110011, 0b0000111, kAsmJump) // jump and link return register
         kAsmOpcodeDecl("jrl", 0b1110011, 0b0001111, kAsmJump) // jump to register link
         kAsmOpcodeDecl("jr", 0b1110011, 0b0001011, kAsmJump) // jump to register
         kAsmOpcodeDecl("jal", 0b1110011, 0b0000001, kAsmJump)
         kAsmOpcodeDecl("mv", 0b0100011, 0b101, kAsmRegToReg)
-        kAsmOpcodeDecl("psh", 0b0101011, 0b0, kAsmImmediate) // push to sp
-        kAsmOpcodeDecl("pop", 0b0101011, 0b1, kAsmImmediate) // pop from sp.
+        kAsmOpcodeDecl("psh", 0b1101011, 0b0, kAsmImmediate) // push to sp
+        kAsmOpcodeDecl("pop", 0b0111011, 0b1, kAsmImmediate) // pop from sp.
         kAsmOpcodeDecl("bg", 0b1100011, 0b111, kAsmRegToReg)
-        kAsmOpcodeDecl("bl", 0b1100011, 0b011, kAsmRegToReg)
-        kAsmOpcodeDecl("beq", 0b1100011, 0b000, kAsmRegToReg)
-        kAsmOpcodeDecl("bne", 0b1100011, 0b001, kAsmRegToReg)
+        kAsmOpcodeDecl("bl", 0b1101011, 0b011, kAsmRegToReg)
+        kAsmOpcodeDecl("beq", 0b1101011, 0b000, kAsmRegToReg)
+        kAsmOpcodeDecl("bne", 0b1100111, 0b001, kAsmRegToReg)
         kAsmOpcodeDecl("bge", 0b1100011, 0b101, kAsmRegToReg)
-        kAsmOpcodeDecl("ble", 0b1100011, 0b100, kAsmRegToReg)
-        kAsmOpcodeDecl("stw", 0b0100011, 0b100, kAsmImmediate)
-        kAsmOpcodeDecl("ldw", 0b0000011, 0b100, kAsmImmediate)
-        kAsmOpcodeDecl("lda", 0b0000011, 0b101, kAsmImmediate)
-        kAsmOpcodeDecl("sta", 0b0000011, 0b001, kAsmImmediate)
+        kAsmOpcodeDecl("ble", 0b1111011, 0b100, kAsmRegToReg)
+        kAsmOpcodeDecl("stw", 0b1100011, 0b100, kAsmImmediate)
+        kAsmOpcodeDecl("ldw", 0b1010011, 0b100, kAsmImmediate)
+        kAsmOpcodeDecl("lda", 0b0001111, 0b101, kAsmImmediate)
+        kAsmOpcodeDecl("sta", 0b0000111, 0b001, kAsmImmediate)
         kAsmOpcodeDecl("add", 0b0101011, 0b100, kAsmImmediate)
         kAsmOpcodeDecl("dec", 0b0101011, 0b101, kAsmImmediate)
         kAsmOpcodeDecl("scall", 0b1110011, 0b00, kAsmSyscall)
         kAsmOpcodeDecl("sbreak", 0b1110011, 0b01, kAsmSyscall)
-        // Machine halt
-        kAsmOpcodeDecl("mh", 0b1111111, 0b11, kAsmImmediate)
+        kAsmOpcodeDecl("mh", 0b1110011, 0b011111, kAsmJump)
 };
 
 // \brief NewCPU register prefix
@@ -68,13 +67,13 @@ inline std::vector<NCOpcode> kOpcodesStd = {
 // r0 -> hw zero
 
 #define kAsmRegisterPrefix "r"
-#define kAsmRegisterLimit  21
+#define kAsmRegisterLimit  20
 #define kAsmPcRegister     17
 #define kAsmCrRegister     18
 #define kAsmSpRegister     5
 
 /* return address register */
-#define kAsmRetRegister    20
+#define kAsmRetRegister    19
 
 /////////////////////////////////////////////////////////////////////////////
 

@@ -469,4 +469,104 @@
     <wire from="(940,1450)" to="(940,1720)"/>
     <wire from="(950,1450)" to="(950,1840)"/>
   </circuit>
+  <circuit name="X1001">
+    <a name="appearance" val="logisim_evolution"/>
+    <a name="circuit" val="X1001"/>
+    <a name="circuitnamedboxfixedsize" val="true"/>
+    <a name="simulationFrequency" val="1.0"/>
+    <comp lib="0" loc="(1050,750)" name="Pull Resistor">
+      <a name="facing" val="east"/>
+    </comp>
+    <comp lib="0" loc="(1060,700)" name="Pin">
+      <a name="appearance" val="classic"/>
+      <a name="output" val="true"/>
+    </comp>
+    <comp lib="0" loc="(1080,810)" name="Pin">
+      <a name="appearance" val="classic"/>
+    </comp>
+    <comp lib="0" loc="(1080,850)" name="Pin">
+      <a name="appearance" val="classic"/>
+    </comp>
+    <comp lib="0" loc="(1210,850)" name="Transistor"/>
+    <comp lib="0" loc="(680,520)" name="Pin">
+      <a name="appearance" val="classic"/>
+      <a name="label" val="LA"/>
+    </comp>
+    <comp lib="0" loc="(680,630)" name="Pin">
+      <a name="appearance" val="classic"/>
+      <a name="label" val="LB"/>
+    </comp>
+    <comp lib="0" loc="(690,770)" name="Pull Resistor">
+      <a name="facing" val="east"/>
+    </comp>
+    <comp lib="0" loc="(700,720)" name="Pin">
+      <a name="appearance" val="classic"/>
+      <a name="output" val="true"/>
+    </comp>
+    <comp lib="0" loc="(720,830)" name="Pin">
+      <a name="appearance" val="classic"/>
+    </comp>
+    <comp lib="0" loc="(720,870)" name="Pin">
+      <a name="appearance" val="classic"/>
+    </comp>
+    <comp lib="0" loc="(730,580)" name="Pull Resistor">
+      <a name="facing" val="east"/>
+    </comp>
+    <comp lib="0" loc="(770,490)" name="Pin">
+      <a name="appearance" val="classic"/>
+      <a name="label" val="DRAIN"/>
+      <a name="output" val="true"/>
+    </comp>
+    <comp lib="0" loc="(770,670)" name="Pin">
+      <a name="appearance" val="classic"/>
+      <a name="label" val="SRC"/>
+    </comp>
+    <comp lib="0" loc="(790,480)" name="Pull Resistor"/>
+    <comp lib="0" loc="(850,870)" name="Transistor"/>
+    <comp lib="0" loc="(890,560)" name="Transistor"/>
+    <comp lib="0" loc="(890,670)" name="Transistor"/>
+    <comp lib="1" loc="(740,520)" name="NOT Gate"/>
+    <comp lib="1" loc="(740,630)" name="NOT Gate"/>
+    <comp lib="1" loc="(770,830)" name="NOT Gate"/>
+    <wire from="(1050,750)" to="(1090,750)"/>
+    <wire from="(1060,700)" to="(1090,700)"/>
+    <wire from="(1080,810)" to="(1190,810)"/>
+    <wire from="(1080,850)" to="(1170,850)"/>
+    <wire from="(1090,700)" to="(1090,750)"/>
+    <wire from="(1090,750)" to="(1090,780)"/>
+    <wire from="(1090,780)" to="(1260,780)"/>
+    <wire from="(1190,810)" to="(1190,830)"/>
+    <wire from="(1210,850)" to="(1260,850)"/>
+    <wire from="(1260,780)" to="(1260,850)"/>
+    <wire from="(680,520)" to="(710,520)"/>
+    <wire from="(680,630)" to="(710,630)"/>
+    <wire from="(690,770)" to="(730,770)"/>
+    <wire from="(700,720)" to="(730,720)"/>
+    <wire from="(720,830)" to="(740,830)"/>
+    <wire from="(720,870)" to="(810,870)"/>
+    <wire from="(730,580)" to="(770,580)"/>
+    <wire from="(730,720)" to="(730,770)"/>
+    <wire from="(730,770)" to="(730,800)"/>
+    <wire from="(730,800)" to="(900,800)"/>
+    <wire from="(740,520)" to="(870,520)"/>
+    <wire from="(740,630)" to="(870,630)"/>
+    <wire from="(770,490)" to="(790,490)"/>
+    <wire from="(770,560)" to="(770,580)"/>
+    <wire from="(770,560)" to="(850,560)"/>
+    <wire from="(770,580)" to="(770,600)"/>
+    <wire from="(770,600)" to="(940,600)"/>
+    <wire from="(770,670)" to="(850,670)"/>
+    <wire from="(770,830)" to="(830,830)"/>
+    <wire from="(790,480)" to="(790,490)"/>
+    <wire from="(790,490)" to="(940,490)"/>
+    <wire from="(830,830)" to="(830,850)"/>
+    <wire from="(850,870)" to="(900,870)"/>
+    <wire from="(870,520)" to="(870,540)"/>
+    <wire from="(870,630)" to="(870,650)"/>
+    <wire from="(890,560)" to="(940,560)"/>
+    <wire from="(890,670)" to="(940,670)"/>
+    <wire from="(900,800)" to="(900,870)"/>
+    <wire from="(940,490)" to="(940,560)"/>
+    <wire from="(940,600)" to="(940,670)"/>
+  </circuit>
 </project>

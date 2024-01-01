@@ -66,7 +66,7 @@ public class CompileCommand
 
             import std.datetime;
 
-            mcc_summon_executable("/usr/local/bin/bin/cpp --define __LP64__ 1 --define __64000__ 1 --define __STDC__ 1 --define __OPTIMIZED_C__ 1 " ~
+            mcc_summon_executable("/usr/local/bin/bin/cpp --define __LP64__ 1 --define __64000__ 1 --define __OPTIMIZED_C__ 1 " ~
                                  "--define __FILE__ " ~ file ~ " --define __DATE__ " ~ Clock.currTime(UTC()).toString() 
                                  ~ " " ~
                                 " --working-dir ./ --include-dir " ~ includePath ~ " " ~ file);
