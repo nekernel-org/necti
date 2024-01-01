@@ -112,7 +112,7 @@ static int kMachine = 0;
 /////////////////////////////////////////
 
 static size_t kRegisterCnt = kAsmRegisterLimit;
-static size_t kStartUsable = 1;
+static size_t kStartUsable = 6;
 static size_t kUsableLimit = 14;
 static size_t kRegisterCounter = kStartUsable;
 static std::string kRegisterPrefix = kAsmRegisterPrefix;

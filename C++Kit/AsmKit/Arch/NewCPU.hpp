@@ -68,17 +68,17 @@ inline std::vector<NCOpcode> kOpcodesStd = {
 // r0 -> hw zero
 
 #define kAsmRegisterPrefix "r"
-#define kAsmRegisterLimit  35
-#define kAsmPcRegister     33
-#define kAsmCrRegister     34
-#define kAsmSpRegister     32
-#define kAsmRetRegister    31
+#define kAsmRegisterLimit  21
+#define kAsmPcRegister     17
+#define kAsmCrRegister     18
+#define kAsmSpRegister     5
+#define kAsmRetRegister    20
 
 /////////////////////////////////////////////////////////////////////////////
 
 // SYSTEM CALL ADDRESSING
 
-// | OPCODE | FUNCT3 | FUNCT7 | STACK POINTER.
+// | OPCODE | FUNCT3 | FUNCT7 |              OFF                 |
 
 // IMMEDIATE ADDRESSING
 

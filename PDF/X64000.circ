@@ -148,6 +148,7 @@
     <appear>
       <rect fill="none" height="61" stroke="#000000" width="39" x="231" y="50"/>
       <circ-anchor facing="east" x="220" y="80"/>
+      <circ-port dir="in" pin="220,520" x="50" y="100"/>
       <circ-port dir="in" pin="240,250" x="50" y="60"/>
       <circ-port dir="in" pin="240,370" x="50" y="70"/>
       <circ-port dir="out" pin="640,980" x="50" y="90"/>
@@ -161,8 +162,10 @@
       <a name="facing" val="north"/>
       <a name="label" val="RegWrite"/>
     </comp>
-    <comp lib="0" loc="(220,490)" name="Constant">
+    <comp lib="0" loc="(220,520)" name="Pin">
+      <a name="appearance" val="classic"/>
       <a name="facing" val="south"/>
+      <a name="label" val="RegAccept"/>
     </comp>
     <comp lib="0" loc="(240,250)" name="Pin">
       <a name="appearance" val="classic"/>
@@ -251,7 +254,7 @@
     </comp>
     <wire from="(180,470)" to="(180,600)"/>
     <wire from="(200,650)" to="(200,670)"/>
-    <wire from="(220,490)" to="(220,600)"/>
+    <wire from="(220,520)" to="(220,600)"/>
     <wire from="(240,250)" to="(420,250)"/>
     <wire from="(240,370)" to="(330,370)"/>
     <wire from="(250,1000)" to="(250,1060)"/>
@@ -307,5 +310,163 @@
     <wire from="(700,350)" to="(780,350)"/>
     <wire from="(720,720)" to="(730,720)"/>
     <wire from="(860,600)" to="(860,1080)"/>
+  </circuit>
+  <circuit name="Register64">
+    <a name="appearance" val="logisim_evolution"/>
+    <a name="circuit" val="Register64"/>
+    <a name="circuitnamedboxfixedsize" val="true"/>
+    <a name="simulationFrequency" val="1.0"/>
+    <comp lib="0" loc="(1010,1400)" name="Splitter">
+      <a name="facing" val="south"/>
+      <a name="fanout" val="8"/>
+      <a name="incoming" val="8"/>
+    </comp>
+    <comp lib="0" loc="(1040,1300)" name="Tunnel">
+      <a name="facing" val="north"/>
+      <a name="label" val="ValueIn"/>
+      <a name="width" val="64"/>
+    </comp>
+    <comp lib="0" loc="(1130,1260)" name="Tunnel">
+      <a name="facing" val="north"/>
+      <a name="label" val="Line"/>
+      <a name="width" val="8"/>
+    </comp>
+    <comp lib="0" loc="(1180,1300)" name="Tunnel">
+      <a name="facing" val="north"/>
+      <a name="label" val="IsAddress"/>
+    </comp>
+    <comp lib="0" loc="(1240,250)" name="Tunnel">
+      <a name="label" val="R2Index"/>
+      <a name="width" val="8"/>
+    </comp>
+    <comp lib="0" loc="(1240,280)" name="Tunnel">
+      <a name="label" val="R2Value"/>
+      <a name="width" val="64"/>
+    </comp>
+    <comp lib="0" loc="(1270,1050)" name="Pin">
+      <a name="appearance" val="classic"/>
+      <a name="facing" val="west"/>
+      <a name="label" val="Magic"/>
+      <a name="radix" val="10unsigned"/>
+      <a name="width" val="8"/>
+    </comp>
+    <comp lib="0" loc="(1270,1080)" name="Pin">
+      <a name="appearance" val="classic"/>
+      <a name="facing" val="west"/>
+      <a name="label" val="IsAddress"/>
+    </comp>
+    <comp lib="0" loc="(1270,950)" name="Pin">
+      <a name="appearance" val="classic"/>
+      <a name="facing" val="west"/>
+      <a name="label" val="InValue"/>
+      <a name="width" val="64"/>
+    </comp>
+    <comp lib="0" loc="(460,1760)" name="Tunnel">
+      <a name="facing" val="east"/>
+      <a name="label" val="R2Accept"/>
+    </comp>
+    <comp lib="0" loc="(610,1480)" name="Tunnel">
+      <a name="facing" val="east"/>
+      <a name="label" val="R2ValueIn"/>
+      <a name="width" val="64"/>
+    </comp>
+    <comp lib="0" loc="(730,1320)" name="Tunnel">
+      <a name="facing" val="south"/>
+      <a name="label" val="ValueIn"/>
+      <a name="width" val="64"/>
+    </comp>
+    <comp lib="0" loc="(800,1320)" name="Tunnel">
+      <a name="facing" val="south"/>
+      <a name="label" val="Line"/>
+      <a name="width" val="8"/>
+    </comp>
+    <comp lib="0" loc="(810,180)" name="Tunnel">
+      <a name="facing" val="east"/>
+      <a name="label" val="R2ValueIn"/>
+      <a name="width" val="64"/>
+    </comp>
+    <comp lib="0" loc="(850,200)" name="Constant">
+      <a name="value" val="0x2"/>
+      <a name="width" val="8"/>
+    </comp>
+    <comp lib="0" loc="(860,1430)" name="Tunnel">
+      <a name="facing" val="east"/>
+      <a name="label" val="R2Line"/>
+      <a name="width" val="8"/>
+    </comp>
+    <comp lib="0" loc="(870,1430)" name="Splitter">
+      <a name="facing" val="south"/>
+      <a name="fanout" val="8"/>
+      <a name="incoming" val="8"/>
+    </comp>
+    <comp lib="0" loc="(870,260)" name="Tunnel">
+      <a name="facing" val="north"/>
+      <a name="label" val="R2Line"/>
+      <a name="width" val="8"/>
+    </comp>
+    <comp lib="0" loc="(910,320)" name="Tunnel">
+      <a name="facing" val="east"/>
+      <a name="label" val="R2Accept"/>
+    </comp>
+    <comp lib="1" loc="(1020,1800)" name="NOT Gate">
+      <a name="facing" val="west"/>
+    </comp>
+    <comp lib="1" loc="(650,1760)" name="AND Gate">
+      <a name="facing" val="west"/>
+    </comp>
+    <comp lib="1" loc="(810,1820)" name="AND Gate">
+      <a name="facing" val="west"/>
+    </comp>
+    <comp lib="1" loc="(850,1740)" name="AND Gate">
+      <a name="facing" val="west"/>
+    </comp>
+    <comp lib="1" loc="(890,1840)" name="NOT Gate">
+      <a name="facing" val="west"/>
+    </comp>
+    <comp lib="8" loc="(1009,884)" name="Text">
+      <a name="text" val="Register input"/>
+    </comp>
+    <comp loc="(1180,180)" name="RegisterUnit">
+      <a name="label" val="RegUni"/>
+    </comp>
+    <wire from="(1040,950)" to="(1040,1300)"/>
+    <wire from="(1040,950)" to="(1270,950)"/>
+    <wire from="(1050,1800)" to="(1090,1800)"/>
+    <wire from="(1080,1420)" to="(1080,1760)"/>
+    <wire from="(1090,1420)" to="(1090,1800)"/>
+    <wire from="(1130,1050)" to="(1130,1260)"/>
+    <wire from="(1130,1050)" to="(1270,1050)"/>
+    <wire from="(1180,1080)" to="(1180,1300)"/>
+    <wire from="(1180,1080)" to="(1270,1080)"/>
+    <wire from="(1180,180)" to="(1220,180)"/>
+    <wire from="(1180,200)" to="(1200,200)"/>
+    <wire from="(1200,200)" to="(1200,280)"/>
+    <wire from="(1200,280)" to="(1240,280)"/>
+    <wire from="(1220,180)" to="(1220,250)"/>
+    <wire from="(1220,250)" to="(1240,250)"/>
+    <wire from="(460,1760)" to="(650,1760)"/>
+    <wire from="(610,1480)" to="(730,1480)"/>
+    <wire from="(700,1740)" to="(850,1740)"/>
+    <wire from="(700,1780)" to="(760,1780)"/>
+    <wire from="(730,1320)" to="(730,1480)"/>
+    <wire from="(760,1780)" to="(760,1820)"/>
+    <wire from="(760,1820)" to="(810,1820)"/>
+    <wire from="(800,1320)" to="(800,1400)"/>
+    <wire from="(800,1400)" to="(1010,1400)"/>
+    <wire from="(810,180)" to="(960,180)"/>
+    <wire from="(850,200)" to="(870,200)"/>
+    <wire from="(860,1430)" to="(870,1430)"/>
+    <wire from="(860,1800)" to="(1020,1800)"/>
+    <wire from="(860,1840)" to="(890,1840)"/>
+    <wire from="(870,200)" to="(870,260)"/>
+    <wire from="(870,200)" to="(960,200)"/>
+    <wire from="(900,1720)" to="(940,1720)"/>
+    <wire from="(900,1760)" to="(1080,1760)"/>
+    <wire from="(910,320)" to="(930,320)"/>
+    <wire from="(920,1840)" to="(950,1840)"/>
+    <wire from="(930,220)" to="(930,320)"/>
+    <wire from="(930,220)" to="(960,220)"/>
+    <wire from="(940,1450)" to="(940,1720)"/>
+    <wire from="(950,1450)" to="(950,1840)"/>
   </circuit>
 </project>
