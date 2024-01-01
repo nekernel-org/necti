@@ -40,7 +40,7 @@
 #define kWhite           "\e[0;97m"
 #define kStdOut          (std::cout << kWhite)
 
-#define kPefDefaultStart 0x8000000
+#define kPefDeaultOrg    (uint64_t)0x10000
 #define kPefLinkerNumId  0x333D
 #define kPefAbiId        "Container:Abi:MP-UX"
 
@@ -87,8 +87,6 @@ int main(int argc, char** argv)
             kStdOut << "-verbose: Print program backtrace (verbose mode).\n";
             kStdOut << "-shared: Output as a shared library.\n";
             kStdOut << "-m64000: Link for the X64000.\n";
-            kStdOut << "-m88000: Link for the X88000.\n";
-            kStdOut << "-mppc64: Link for the PowerPC.\n";
             kStdOut << "-fatbin: Output as FAT PEF.\n";
             kStdOut << "-o: Select output filename.\n";	
 
@@ -99,7 +97,6 @@ int main(int argc, char** argv)
             StringCompare(argv[i], "--version") == 0)
         {
             kStdOut << kToolVersion << std::endl;
-
             // bye :D
             return 0;
         }
@@ -150,7 +147,7 @@ int main(int argc, char** argv)
             continue;
         }
 
-        kStdOut << "ld: ignore: " << argv[i] << "\n";
+        kStdOut << "ld: ignore flag: " << argv[i] << "\n";
     }
     
     // sanity check.
@@ -192,11 +189,27 @@ int main(int argc, char** argv)
     pef_container.Version = kPefVersion;
 
     // specify the start address.
-    pef_container.Start = kPefDefaultStart;
+    pef_container.Start = kPefDeaultOrg;
     pef_container.HdrSz = sizeof(CxxKit::PEFContainer);
 
     std::ofstream output_fc(kOutput, std::ofstream::binary);
+
+    if (output_fc.bad())
+    {
+        if (kVerbose)
+        {
+            kStdOut << "ld: error: " << strerror(errno) << "\n";
+        }
+
+        return -CXXKIT_FILE_NOT_FOUND;
+    }
+
     output_fc << pef_container;
+
+    if (kVerbose)
+    {
+        kStdOut << "ld: PEF: wrote container header.\n";
+    }
 
     //! Read AE to convert as PEF.
 
@@ -217,12 +230,25 @@ int main(int argc, char** argv)
         
         if (ae_header.fArch != kArch)
         {
+            if (kVerbose)
+                kStdOut << "ld: PEF: is a fat binary? : ";
+
             if (!kFatBinaryEnable)
-            {
+            { 
+                if (kVerbose)
+                    kStdOut << "NO\n";
+
                 kStdOut << "ld: error: object " << i << " is a different kind of architecture and output isn't treated as FAT binary." << std::endl;
 
                 std::remove(kOutput.c_str());
                 return -CXXKIT_FAT_ERROR;
+            }
+            else
+            {          
+                if (kVerbose)
+                {
+                    kStdOut << "YES\n";
+                }
             }
         }
 
@@ -231,6 +257,9 @@ int main(int argc, char** argv)
 	        ae_header.fSize == sizeof(CxxKit::AEHeader))
         {
             std::size_t cnt = ae_header.fCount;
+
+            if (kVerbose)
+                kStdOut << "ld: AE: header found, record count: " << cnt << "\n";
 
             pef_container.Count = cnt;
 
@@ -278,6 +307,9 @@ ld_mark_header:
 				command_header.Kind = ae_records[ae_record_index].fKind;
 				command_header.Size = ae_records[ae_record_index].fSize;
 
+                if (kVerbose)
+                    kStdOut << "ld: AE: record: " << ae_records[ae_record_index].fName << " was marked.\n";
+
                 pef_command_hdrs.emplace_back(command_header);
             }
 
@@ -319,6 +351,9 @@ ld_mark_header:
             std::string(pef_command_hdr.Name).find(kLdDynamicSym) ==
             std::string::npos)
         {
+            if (kVerbose)
+                kStdOut << "ld: found undefined symbol: " << pef_command_hdr.Name << "\n";
+
             if (auto it = std::find(not_found.begin(), not_found.end(), std::string(pef_command_hdr.Name));
                     it == not_found.end())
             {
@@ -367,6 +402,9 @@ ld_mark_header:
 
                     not_found.erase(it);
 
+                    if (kVerbose)
+                        kStdOut << "ld: found symbol: " << pef_command_hdr.Name << "\n";
+
                     break;
                 }
             }
@@ -380,6 +418,9 @@ ld_continue_search:
 
     if (!kStartFound && is_executable)
     {
+        if (kVerbose)
+            kStdOut << "ld: undefined symbol: __start, you may have forget to link agaisnt your runtime library.\n";
+
         kStdOut << "ld: undefined entrypoint " << kPefStart << " for executable " << kOutput << "\n";
     }
 
@@ -476,6 +517,9 @@ ld_continue_search:
                     duplicate_symbols.push_back(pef_command_hdr.Name);
                 }
 
+                if (kVerbose)
+                    kStdOut << "ld: found duplicate symbol: " << pef_command_hdr.Name << "\n";
+
                 kDuplicateSymbols = true;
             }
         }
@@ -498,6 +542,9 @@ ld_continue_search:
     {
         output_fc << byte;
     }
+
+    if (kVerbose)
+        kStdOut << "ld: wrote code for: " << kOutput << "\n";
 
     // step 3: check if we have those symbols
 
@@ -525,6 +572,9 @@ ld_continue_search:
         std::filesystem::exists(kOutput) ||
         !unreferenced_symbols.empty())
     {
+        if (kVerbose)
+            kStdOut << "ld: code for: " << kOutput << ", is corrupt, removing file...\n";
+
         std::remove(kOutput.c_str());
         return -CXXKIT_EXEC_ERROR;
     }

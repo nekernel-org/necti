@@ -133,19 +133,15 @@ int main(int argc, char** argv)
                 kStdOut << "-v: Print program version.\n";
                 kStdOut << "-verbose: Print verbose output.\n";
                 kStdOut << "-m64000: Compile for the X64000 instruction set.\n";
-                kStdOut << "-m68000: Compile for the NXP 68000 instruction set.\n";
-                kStdOut << "-mppc64: Compile for the PowerPC instruction set.\n";
 
                 return 0;
             }
-
-            if (strcmp(argv[i], "-m64000") == 0)
+            else if (strcmp(argv[i], "-m64000") == 0)
             {
                 kOutputArch = CxxKit::kPefArchARC;
                 continue;
             }
-
-            if (strcmp(argv[i], "-verbose") == 0)
+            else if (strcmp(argv[i], "-verbose") == 0)
             {
                 kVerbose = true;
                 continue;
@@ -170,6 +166,14 @@ int main(int argc, char** argv)
         std::ifstream file_ptr(argv[i]);
         std::ofstream file_ptr_out(object_output,
                                    std::ofstream::binary);
+
+        if (file_ptr_out.bad())
+        {
+            if (kVerbose)
+            {
+                kStdOut << "masm: error: " << strerror(errno) << "\n";
+            }
+        }
 
         std::string line;
 
@@ -207,6 +211,12 @@ int main(int argc, char** argv)
             }
             catch(const std::exception& e)
             {
+                if (kVerbose)
+                {
+                    std::string what = e.what();
+                    detail::print_warning("exit because of: " + what, "masm");
+                }
+
                 std::filesystem::remove(object_output);
                 goto masm_fail_exit;
             }
@@ -605,6 +615,8 @@ static bool masm_write_number(std::size_t pos, std::string& jump_label)
                 if (errno != 0)
                 {
                     detail::print_error("invalid hex number: " + jump_label, "masm");
+                    throw std::runtime_error("invalid_hex");
+
                     return false;
                 }
             }
@@ -633,6 +645,8 @@ static bool masm_write_number(std::size_t pos, std::string& jump_label)
                 if (errno != 0)
                 {
                     detail::print_error("invalid binary number: " + jump_label, "masm");
+                    throw std::runtime_error("invalid_bin");
+
                     return false;
                 }
             }
@@ -661,6 +675,8 @@ static bool masm_write_number(std::size_t pos, std::string& jump_label)
                 if (errno != 0)
                 {
                     detail::print_error("invalid octal number: " + jump_label, "masm");
+                    throw std::runtime_error("invalid_octal");
+
                     return false;
                 }
             }
@@ -785,6 +801,7 @@ static void masm_read_instruction(std::string& line, const std::string& file)
                         if (found_some == 1)
                         {
                             detail::print_error("unrecognized register found.\ntip: each masm register starts with 'r'.\nline: " + line, file);
+                            throw std::runtime_error("not_a_register");
                         }
                     }
 
@@ -795,12 +812,14 @@ static void masm_read_instruction(std::string& line, const std::string& file)
                         name != "stw")
                     {
                         detail::print_error("invalid combination of opcode and registers.\nline: " + line, file);
+                        throw std::runtime_error("invalid_comb_op_reg");
                     }
 
                     if (found_some > 0 &&
                         name == "pop")
                     {
                         detail::print_error("invalid combination for opcode 'pop'.\ntip: it expects nothing.\nline: " + line, file);
+                        throw std::runtime_error("invalid_comb_op_pop");
                     }
                 }
                 default:
@@ -845,6 +864,8 @@ static void masm_read_instruction(std::string& line, const std::string& file)
                     if (name == "sta")
                     {
                         detail::print_error("invalid combination of opcode and operands.\nhere ->" + line, file);
+                        throw std::runtime_error("invalid_comb_op_ops");
+
                         break;
                     }
                     
@@ -856,6 +877,7 @@ static void masm_read_instruction(std::string& line, const std::string& file)
                         cpy_jump_label.find("__import") != std::string::npos)
                     {
                         detail::print_error("invalid usage __import on 'sta', here: " + line, file);
+                        throw std::runtime_error("invalid_sta_usage");
                         break;
                     }
                 }
@@ -872,12 +894,16 @@ masm_write_label:
                     name == "psh" ||
                     cpy_jump_label.find("__import") == std::string::npos &&
                     name == "jb")
+                {
                     detail::print_error("__import not found on jump label, please add one.", file.c_str());
+                    throw std::runtime_error("import_jmp_lbl");
+                }
                 else if (cpy_jump_label.find("__import") != std::string::npos)
                 { 
                     if (name == "sta")
                     {
                         detail::print_error("__import is not allowed on a sta operation.", file.c_str());
+                        throw std::runtime_error("import_sta_op");
                     }
 
                     cpy_jump_label.erase(cpy_jump_label.find("__import"), strlen("__import"));
