@@ -259,7 +259,7 @@ int main(int argc, char** argv)
             std::size_t cnt = ae_header.fCount;
 
             if (kVerbose)
-                kStdOut << "ld: AE: header found, record count: " << cnt << "\n";
+                kStdOut << "ld: object header found, record count: " << cnt << "\n";
 
             pef_container.Count = cnt;
 
@@ -308,7 +308,7 @@ ld_mark_header:
 				command_header.Size = ae_records[ae_record_index].fSize;
 
                 if (kVerbose)
-                    kStdOut << "ld: AE: record: " << ae_records[ae_record_index].fName << " was marked.\n";
+                    kStdOut << "ld: object record: " << ae_records[ae_record_index].fName << " was marked.\n";
 
                 pef_command_hdrs.emplace_back(command_header);
             }
@@ -582,4 +582,4 @@ ld_continue_search:
     return 0;
 }
 
-// Last rev 28-12-23
+// Last rev 2-1-23

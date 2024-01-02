@@ -18,7 +18,7 @@
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
-#include <C++Kit/AsmKit/Arch/NewCPU.hpp>
+#include <C++Kit/AsmKit/Arch/64k.hpp>
 #include <C++Kit/ParserKit.hpp>
 #include <C++Kit/StdKit/PEF.hpp>
 #include <C++Kit/StdKit/AE.hpp>

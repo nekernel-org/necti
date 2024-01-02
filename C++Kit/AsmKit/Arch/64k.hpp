@@ -11,9 +11,8 @@
 
 #include <C++Kit/Defines.hpp>
 
-// @brief NewCPU backend for C++ Kit a RISC architecture.
-// It aims to be as simple as the Motorola 68k
-// @file Arch/NewCPU.hpp
+// @brief 64x0 support.
+// @file Arch/64k.hpp
 
 #define kAsmOpcodeDecl(__NAME, __OPCODE, __FUNCT3, __FUNCT7) \
     { .fName = __NAME, .fOpcode = __OPCODE, .fFunct3 = __FUNCT3, .fFunct7 = __FUNCT7 },
@@ -42,23 +41,23 @@ inline std::vector<NCOpcode> kOpcodesStd = {
         kAsmOpcodeDecl("jr", 0b1110011, 0b0001011, kAsmJump) // jump to register
         kAsmOpcodeDecl("jal", 0b1110011, 0b0000001, kAsmJump)
         kAsmOpcodeDecl("mv", 0b0100011, 0b101, kAsmRegToReg)
-        kAsmOpcodeDecl("psh", 0b1101011, 0b0, kAsmImmediate) // push to sp
+        kAsmOpcodeDecl("psh", 0b0111011, 0b0, kAsmImmediate) // push to sp
         kAsmOpcodeDecl("pop", 0b0111011, 0b1, kAsmImmediate) // pop from sp.
-        kAsmOpcodeDecl("bg", 0b1100011, 0b111, kAsmRegToReg)
-        kAsmOpcodeDecl("bl", 0b1101011, 0b011, kAsmRegToReg)
-        kAsmOpcodeDecl("beq", 0b1101011, 0b000, kAsmRegToReg)
+        kAsmOpcodeDecl("bg", 0b1100111, 0b111, kAsmRegToReg)
+        kAsmOpcodeDecl("bl", 0b1100111, 0b011, kAsmRegToReg)
+        kAsmOpcodeDecl("beq", 0b1100111, 0b000, kAsmRegToReg)
         kAsmOpcodeDecl("bne", 0b1100111, 0b001, kAsmRegToReg)
-        kAsmOpcodeDecl("bge", 0b1100011, 0b101, kAsmRegToReg)
-        kAsmOpcodeDecl("ble", 0b1111011, 0b100, kAsmRegToReg)
-        kAsmOpcodeDecl("stw", 0b1100011, 0b100, kAsmImmediate)
-        kAsmOpcodeDecl("ldw", 0b1010011, 0b100, kAsmImmediate)
+        kAsmOpcodeDecl("bge", 0b1100111, 0b101, kAsmRegToReg)
+        kAsmOpcodeDecl("ble", 0b1100111, 0b100, kAsmRegToReg)
+        kAsmOpcodeDecl("stw", 0b0001111, 0b100, kAsmImmediate)
+        kAsmOpcodeDecl("ldw", 0b0001111, 0b100, kAsmImmediate)
         kAsmOpcodeDecl("lda", 0b0001111, 0b101, kAsmImmediate)
-        kAsmOpcodeDecl("sta", 0b0000111, 0b001, kAsmImmediate)
+        kAsmOpcodeDecl("sta", 0b0001111, 0b001, kAsmImmediate)
         kAsmOpcodeDecl("add", 0b0101011, 0b100, kAsmImmediate)
         kAsmOpcodeDecl("dec", 0b0101011, 0b101, kAsmImmediate)
         kAsmOpcodeDecl("scall", 0b1110011, 0b00, kAsmSyscall)
         kAsmOpcodeDecl("sbreak", 0b1110011, 0b01, kAsmSyscall)
-        kAsmOpcodeDecl("mh", 0b1110011, 0b011111, kAsmJump)
+        kAsmOpcodeDecl("mh", 0b1110011, 0b1111111, kAsmJump)
 };
 
 // \brief NewCPU register prefix

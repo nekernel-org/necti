@@ -13,7 +13,7 @@
 #include <fstream>
 #include <iostream>
 #include <uuid/uuid.h>
-#include <C++Kit/AsmKit/Arch/NewCPU.hpp>
+#include <C++Kit/AsmKit/Arch/64k.hpp>
 #include <C++Kit/ParserKit.hpp>
 
 #define kOk 0
