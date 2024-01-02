@@ -141,7 +141,7 @@ public:
     CXXKIT_COPY_DEFAULT(CompilerBackendClang);
 
     std::string Check(const char* text, const char* file);
-    void Compile(const char* text, const char* file) override;
+    bool Compile(const std::string& text, const char* file) override;
 
     const char* Language() override { return "Optimized X64000 C"; }
 
@@ -188,7 +188,7 @@ static std::string cc_parse_function_call(std::string& _text)
                 }
 
                 args += args_buffer;
-                args += "\n\tjlr __import ";
+                args += "\n\tjb __import ";
             }
         }
 
@@ -218,7 +218,7 @@ namespace detail
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
-void CompilerBackendClang::Compile(const char* text, const char* file)
+bool CompilerBackendClang::Compile(const std::string& text, const char* file)
 {
     std::string _text = text;
 
@@ -367,7 +367,7 @@ void CompilerBackendClang::Compile(const char* text, const char* file)
                         value += tmp;
                     }
                     
-                    syntax_tree.fUserValue = "\tldw r15, ";
+                    syntax_tree.fUserValue = "\tldw r19, ";
 
                     // make it pretty.
                     if (value.find('\t') != std::string::npos)
@@ -774,15 +774,20 @@ void CompilerBackendClang::Compile(const char* text, const char* file)
                     args_buffer = args_buffer.erase(args_buffer.find('('), 1);
 
                     if (!args_buffer.empty())
-                        args += "\tpsh ";
+                        args += "\tldw r6, ";
 
-                    while (args_buffer.find(',') != std::string::npos)
+                    std::size_t index = 0UL;
+
+                    while (ParserKit::find_word(args_buffer, ","))
                     {
-                        args_buffer.replace(args_buffer.find(','), 1, "\n\tpsh ");
+                        std::string register_type = kRegisterPrefix;
+                        register_type += std::to_string(index);
+
+                        args_buffer.replace(args_buffer.find(','), 1, "\n\tldw " + register_type + ",");
                     }
 
                     args += args_buffer;
-                    args += "\n\tjlr __import ";
+                    args += "\n\tjb __import ";
                 }
             }
 
@@ -1020,6 +1025,8 @@ void CompilerBackendClang::Compile(const char* text, const char* file)
 
     syntax_tree.fUserValue = "\n";
     kState.fSyntaxTree->fLeafList.push_back(syntax_tree);
+
+    return true;
 }
 
 static bool kShouldHaveBraces = false;
@@ -1748,7 +1755,7 @@ public:
 /////////////////////////////////////////////////////////////////////////////////////////
 
 #define kPrintF printf
-#define kSplashCxx() kPrintF(kWhite "%s\n", "X64000 C compiler, v1.13, (c) WestCo")
+#define kSplashCxx() kPrintF(kWhite "%s\n", "X64000 Optimized C compiler, v1.13, (c) WestCo")
 
 static void cc_print_help()
 {

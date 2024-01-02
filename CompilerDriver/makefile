@@ -15,7 +15,7 @@ LINK_OUTPUT=bin/ld
 PP_SRC=cpp.cxx
 PP_OUTPUT=bin/cpp
 
-CC2_OUTPUT=bin/cpp2
+CC2_OUTPUT=bin/cppfront
 CC2_SRC=cc2/source/cppfront.cpp
 
 CC_SRC=ccplus.cxx ../C++Kit/StdKit/*.cpp ../C++Kit/AsmKit/*.cpp

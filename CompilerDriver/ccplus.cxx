@@ -1,7 +1,7 @@
 /*
  *	========================================================
  *
- *	c++
+ *	ccplus
  * 	Copyright WestCo, all rights reserved.
  *
  * 	========================================================
@@ -12,13 +12,15 @@
 #include <string>
 #include <fstream>
 #include <iostream>
+#include <stack>
+#include <utility>
 #include <C++Kit/AsmKit/Arch/NewCPU.hpp>
 #include <C++Kit/ParserKit.hpp>
 
 #define kOk 0
 
-/* WestCo C++ driver */
-/* This is part of MP-UX C++ SDK. */
+/* WestCo C driver */
+/* This is part of MP-UX C SDK. */
 /* (c) WestCo */
 
 /////////////////////
@@ -33,7 +35,7 @@
 
 /////////////////////////////////////
 
-// INTERNAL STUFF OF THE C++ COMPILER
+// INTERNAL STUFF OF THE C COMPILER
 
 /////////////////////////////////////
 
@@ -76,14 +78,14 @@ namespace detail
 
         if (kState.fLastFile != file)
         {
-            std::cout << kRed << "[ c++ ] " << kWhite << ((file == "c++") ? "internal compiler error " : ("in file, " + file)) << kBlank << std::endl;
-            std::cout << kRed << "[ c++ ] " << kWhite << reason << kBlank << std::endl;
+            std::cout << kRed << "[ ccplus ] " << kWhite << ((file == "ccplus") ? "internal compiler error " : ("in file, " + file)) << kBlank << std::endl;
+            std::cout << kRed << "[ ccplus ] " << kWhite << reason << kBlank << std::endl;
 
             kState.fLastFile = file;
         }
         else
         {
-            std::cout << kRed << "[ c++ ] [ " << kState.fLastFile <<  " ] " << kWhite << reason << kBlank << std::endl;
+            std::cout << kRed << "[ ccplus ] [ " << kState.fLastFile <<  " ] " << kWhite << reason << kBlank << std::endl;
         }
 
         if (kAcceptableErrors > kErrorLimit)
@@ -115,6 +117,7 @@ static size_t kStartUsable = 1;
 static size_t kUsableLimit = 14;
 static size_t kRegisterCounter = kStartUsable;
 static std::string kRegisterPrefix = kAsmRegisterPrefix;
+static std::vector<std::string> kKeywords;
 
 /////////////////////////////////////////
 
@@ -130,7 +133,7 @@ static bool kOnForLoop = false;
 static bool kInBraces = false;
 static size_t kBracesCount = 0UL;
 
-/* @brief C++ compiler backend for WestCo C++ */
+/* @brief C compiler backend for WestCo C */
 class CompilerBackendClang final : public ParserKit::CompilerBackend
 {
 public:
@@ -139,17 +142,15 @@ public:
 
     CXXKIT_COPY_DEFAULT(CompilerBackendClang);
 
-    std::string Check(const char* text, const char* file);
-    void Compile(const char* text, const char* file) override;
+    bool Compile(const std::string& text, const char* file) override;
 
-    const char* Language() override { return "C++"; }
+    const char* Language() override { return "Optimized 64x0 C"; }
 
 };
 
 static CompilerBackendClang* kCompilerBackend = nullptr;
 static std::vector<detail::CompilerType> kCompilerVariables;
 static std::vector<std::string>          kCompilerFunctions;
-static std::vector<detail::CompilerType> kCompilerTypes;
 
 // @brief this hook code before the begin/end command.
 static std::string kAddIfAnyBegin;
@@ -213,574 +214,52 @@ namespace detail
 /////////////////////////////////////////////////////////////////////////////////////////
 
 // @name Compile
-// @brief Generate MASM from a C++ source.
+// @brief Generate MASM from a C source.
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
-void CompilerBackendClang::Compile(const char* text, const char* file)
-{
-    
-}
+bool CompilerBackendClang::Compile(const std::string& text, const char* file)
+{   
+    if (text.empty())
+        return false;
 
-static bool kShouldHaveBraces = false;
-static std::string kFnName;
+    // if (expr)
+    // int name = expr;
+    // expr;
 
-std::string CompilerBackendClang::Check(const char* text, const char* file)
-{
-    std::string err_str;
-    std::string ln = text;
+    std::size_t index = 0UL;
 
-    if (ln.empty())
+    auto syntax_tree = ParserKit::SyntaxLeafList::SyntaxLeaf();
+
+    syntax_tree.fUserData = text;
+    kState.fSyntaxTree->fLeafList.push_back(syntax_tree);
+
+    std::string text_cpy = text;
+
+    std::vector<std::pair<std::string, std::size_t>> keywords_list;
+
+    for (auto& keyword : kKeywords)
     {
-        return err_str;
-    }
-
-    bool non_ascii_found = false;
-
-    for (int i = 0; i < ln.size(); ++i) {
-        if (isalnum(ln[i]))
+        while (text_cpy.find(keyword) != std::string::npos)
         {
-            non_ascii_found = true;
-            break;
+            keywords_list.push_back(std::make_pair(keyword, index));
+            ++index;
+
+            text_cpy.erase(text_cpy.find(keyword), keyword.size());
         }
     }
 
-    if (kShouldHaveBraces &&
-        ln.find('{') != std::string::npos) {
-        kShouldHaveBraces = false;
+    // TODO: sort keywords
+
+    for (auto& keyword : keywords_list)
+    {
+        syntax_tree.fUserData = keyword.first;
+        kState.fSyntaxTree->fLeafList.push_back(syntax_tree);
+
+        std::cout << keyword.first << "\n";
     }
 
-    if (!non_ascii_found)
-        return err_str;
-
-    size_t string_index = 1UL;
-
-    if (ln.find('\'') != std::string::npos)
-    {
-        string_index = ln.find('\'') + 1;
-
-        for (; string_index < ln.size(); ++string_index)
-        {
-            if (ln[string_index] == '\'')
-            {
-                if (ln[string_index + 1] != ';')
-                {
-                    ln.erase(string_index, 1);
-                }
-
-                return err_str;
-            }
-        }
-    }
-    else if (ln.find('"') != std::string::npos)
-    {
-        string_index = ln.find('"') + 1;
-
-        for (; string_index < ln.size(); ++string_index)
-        {
-            if (ln[string_index] == '"')
-            {
-                if (ln[string_index + 1] != ';')
-                {
-                    ln.erase(string_index, 1);
-                }
-                else
-                {
-                    break;
-                }
-            }
-        }
-    }
-    else if (ln.find('"') == std::string::npos &&
-            ln.find('\'') == std::string::npos)
-    {
-        std::vector<std::string> forbidden_words;
-
-        forbidden_words.push_back("\\");
-        forbidden_words.push_back("?");
-        forbidden_words.push_back("@");
-        forbidden_words.push_back("/*");
-        forbidden_words.push_back("*/");
-
-        for (auto& forbidden : forbidden_words)
-        {
-            if (ParserKit::find_word(ln, forbidden))
-            {
-                err_str += "\nForbidden character detected: ";
-                err_str += forbidden;
-
-                return err_str;
-            }
-        }
-    }
-
-    struct CompilerVariableRange final
-    {
-        std::string fBegin;
-        std::string fEnd;
-    };
-
-    const std::vector<CompilerVariableRange> variables_list = {
-        { .fBegin = "static ", .fEnd = "="}, 
-        { .fBegin = "=", .fEnd = ";"},
-        { .fBegin = "if(",  .fEnd = "="},
-        { .fBegin = "if (", .fEnd = "="},
-        { .fBegin = "if(",  .fEnd = "<"},
-        { .fBegin = "if (", .fEnd = "<"},
-        { .fBegin = "if(",  .fEnd = ">"},
-        { .fBegin = "if (", .fEnd = ">"},
-        { .fBegin = "if(",  .fEnd = ")"},
-        { .fBegin = "if (", .fEnd = ")"},
-
-        { .fBegin = "else(",  .fEnd = "="},
-        { .fBegin = "else (", .fEnd = "="},
-        { .fBegin = "else(",  .fEnd = "<"},
-        { .fBegin = "else (", .fEnd = "<"},
-        { .fBegin = "else(",  .fEnd = ">"},
-        { .fBegin = "else (", .fEnd = ">"},
-        { .fBegin = "else(",  .fEnd = ")"},
-        { .fBegin = "else (", .fEnd = ")"},
-    };
-
-    for (auto& variable : variables_list)
-    {
-        if (ln.find(variable.fBegin) != std::string::npos)
-        {
-            string_index = ln.find(variable.fBegin) + variable.fBegin.size();
-
-            while (ln[string_index] == ' ')
-                ++string_index;
-
-            std::string keyword;
-
-            for (; string_index < ln.size(); ++string_index)
-            {
-                if (ln[string_index] == variable.fEnd[0])
-                {
-                    std::string varname = "";
-
-                    for (size_t index_keyword = ln.find(' '); ln[index_keyword] != variable.fBegin[0]; 
-                        ++index_keyword)
-                    {
-                        if (ln[index_keyword] == ' ')
-                        {
-                            continue;
-                        }
-
-                        if (isdigit(ln[index_keyword]))
-                        {
-                            goto cxx_next_loop;
-                        }
-
-                        varname += ln[index_keyword];
-                    }
-                    
-                    if (varname.find(' ') != std::string::npos)
-                    {
-                        varname.erase(0, varname.find(' '));
-
-                        if (variable.fBegin == "extern")
-                        {
-                            varname.erase(0, varname.find(' '));
-                        }
-                    }
-
-                    std::string reg = kAsmRegisterPrefix;
-                    reg += std::to_string(kRegisterCounter);
-                    
-                    kCompilerVariables.push_back({ .fValue = varname });
-                    goto cxx_check_done;
-                }
-
-                keyword.push_back(ln[string_index]);
-            }
-            
-            goto cxx_next_loop;
-
-        cxx_check_done:
-
-            // skip digit value.
-            if (isdigit(keyword[0]) ||
-                keyword[0] == '"')
-            {
-                goto cxx_next_loop;
-            }
-
-            while (keyword.find(' ') != std::string::npos)
-                keyword.erase(keyword.find(' '), 1);
-
-            for (auto& var : kCompilerVariables)
-            {
-                if (var.fValue.find(keyword) != std::string::npos)
-                {
-                    err_str.clear();
-                    goto cxx_next;
-                }
-            }
-
-            for (auto& fn : kCompilerFunctions)
-            {
-                if (fn.find(keyword[0]) != std::string::npos)
-                {
-                    auto where_begin = fn.find(keyword[0]);
-                    auto keyword_begin = 0UL;
-                    auto failed = false;
-
-                    for (; where_begin < keyword.size(); ++where_begin)
-                    {
-                        if (fn[where_begin] == '(' &&
-                            keyword[keyword_begin] == '(')
-                            break;
-
-                        if (fn[where_begin] != keyword[keyword_begin])
-                        {
-                            failed = true;
-                            break;
-                        }
-
-                        ++keyword_begin;
-                    }
-
-                    if (!failed)
-                    {
-                        err_str.clear();
-                        goto cxx_next;
-                    }
-                    else
-                    {
-                        continue;
-                    }
-                }
-            }
-
-cxx_error_value:
-            if (keyword.find("->") != std::string::npos)
-                return err_str;
-
-            if (keyword.find(".") != std::string::npos)
-                return err_str;
-
-            if (isalnum(keyword[0]))
-                err_str += "\nUndefined value: " + keyword;
-
-            return err_str;
-        }
-
-cxx_next_loop:
-        continue;
-    }
-
-cxx_next:
-
-    // extern doesnt declare anything, it imports a variable.
-    // so that's why it's not declare upper.
-    if (ParserKit::find_word(ln, "extern"))
-    {
-        auto substr = ln.substr(ln.find("extern") + strlen("extern"));
-        kCompilerVariables.push_back({ .fValue = substr });
-    }
-
-    if (kShouldHaveBraces &&
-        ln.find('{') == std::string::npos)
-    {
-        err_str += "Missing '{' for function ";
-        err_str += kFnName;
-        err_str += "\n";
-
-        kShouldHaveBraces = false;
-        kFnName.clear();
-    }
-    else if (kShouldHaveBraces &&
-             ln.find('{') != std::string::npos)
-    {
-        kShouldHaveBraces = false;
-        kFnName.clear();
-    }
-
-    bool type_not_found = true;
-
-    if (ln.find('\'') != std::string::npos)
-    {
-        ln.replace(ln.find('\''), 3, "0");
-    }
-
-    auto first = ln.find('"');
-    if (first != std::string::npos)
-    {
-        auto second = 0UL;
-        bool found_second_quote = false;
-
-        for (size_t i = first + 1; i < ln.size(); ++i)
-        {
-            if (ln[i] == '\"')
-            {
-                found_second_quote = true;
-                second = i;
-
-                break;
-            }
-        }
-
-        if (!found_second_quote)
-        {
-            err_str += "Missing terminating \".";
-            err_str += " here -> " + ln.substr(ln.find('"'), second);
-        }
-    }
-
-    if (ln.find(')') != std::string::npos &&
-        ln.find(';') == std::string::npos)
-    {
-        if (ln.find('{') == std::string::npos)
-        {
-            kFnName = ln;
-            kShouldHaveBraces = true;
-
-            goto skip_braces_check;
-        }
-        else if (ln.find('{') != std::string::npos)
-        {
-            kShouldHaveBraces = false;
-        }
-    }
-
-skip_braces_check:
-
-    for (auto& key : kCompilerTypes)
-    {
-        if (ParserKit::find_word(ln, key.fName))
-        {
-            if (isdigit(ln[ln.find(key.fName) + key.fName.size() + 1]))
-            {
-                err_str += "\nNumber cannot be set for ";
-                err_str += key.fName;
-                err_str += "'s name. here -> ";
-                err_str += ln;
-            }
-
-            if (ln.find(key.fName) == 0 ||
-                ln[ln.find(key.fName) - 1] == ' ' ||
-                ln[ln.find(key.fName) - 1] == '\t')
-            {
-                type_not_found = false;
-
-                if (ln[ln.find(key.fName) + key.fName.size()] != ' ')
-                {
-                    type_not_found = true;
-
-                    if (ln[ln.find(key.fName) + key.fName.size()] == '\t')
-                        type_not_found = false;
-
-                    goto next;
-                }
-                else if (ln[ln.find(key.fName) + key.fName.size()] != '\t')
-                {
-                    type_not_found = true;
-
-                    if (ln[ln.find(key.fName) + key.fName.size()] == ' ')
-                        type_not_found = false;
-
-                }
-            }
-
-next:
-
-            if (key.fName != "struct" ||
-                key.fName != "enum" ||
-                key.fName != "union")
-            {
-                if (ln.find(';') == std::string::npos)
-                {
-                    if (ln.find('(') != std::string::npos)
-                    {
-                        if (ln.find('=') == std::string::npos)
-                            continue;
-                    }
-
-                    err_str += "\nMissing ';', here -> ";
-                    err_str += ln;
-                }
-                else
-                {
-                    continue;
-                }
-
-                if (ln.find('=') != std::string::npos)
-                {
-                    if (ln.find('(') != std::string::npos)
-                    {
-                        if (ln.find(')') == std::string::npos)
-                        {
-                            err_str += "\nMissing ')', after '(' here -> ";
-                            err_str += ln.substr(ln.find('('));
-                        }
-                    }
-                }
-            }
-        }
-    }
-
-    if (kInBraces &&
-             ln.find("struct") != std::string::npos &&
-            ln.find("union") != std::string::npos &&
-            ln.find("enum") != std::string::npos &&
-            ln.find('=') != std::string::npos)
-    {
-        if (ln.find(';') == std::string::npos)
-        {
-            err_str += "\nMissing ';' after struct/union/enum declaration, here -> ";
-            err_str += ln;
-        }
-    }
-
-    if (ln.find(';') != std::string::npos &&
-        ln.find("for") == std::string::npos)
-    {
-        if (ln.find(';') + 1 != ln.size())
-        {
-            for (int i = 0; i < ln.substr(ln.find(';') + 1).size(); ++i)
-            {
-                if ((ln.substr(ln.find(';') + 1)[i] != ' ') ||
-                    (ln.substr(ln.find(';') + 1)[i] != '\t'))
-                {
-                    if (auto err = this->Check(ln.substr(ln.find(';') + 1).c_str(), file);
-                        !err.empty())
-                    {
-                        err_str += "\nUnexpected text after ';' -> ";
-                        err_str += ln.substr(ln.find(';'));
-                        err_str += err;
-                    }
-                }
-            }
-        }
-    }
-
-    if (ln.find('(') != std::string::npos)
-    {
-        if (ln.find(';') == std::string::npos &&
-            !ParserKit::find_word(ln, "|") &&
-            !ParserKit::find_word(ln, "||") &&
-            !ParserKit::find_word(ln, "&") &&
-            !ParserKit::find_word(ln, "&&") &&
-            !ParserKit::find_word(ln, "~"))
-        {
-            bool found_func = false;
-            size_t i = ln.find('(');
-            std::vector<char> opens;
-            std::vector<char> closes;
-
-            for (; i < ln.size(); ++i)
-            {
-                if (ln[i] == ')')
-                {
-                    closes.push_back(1);
-                }
-
-                if (ln[i] == '(')
-                {
-                    opens.push_back(1);
-                }
-            }
-
-            if (closes.size() != opens.size())
-                err_str += "Unterminated (), here -> " + ln;
-
-            bool space_found = false;
-
-            for (int i = 0; i < ln.size(); ++i)
-            {
-                if (ln[i] == ')' &&
-                    !space_found)
-                {
-                    space_found = true;
-                    continue;
-                }
-
-                if (space_found)
-                {
-                    if (ln[i] == ' ' &&
-                        isalnum(ln[i+1]))
-                    {
-                        err_str += "\nBad function format here -> ";
-                        err_str += ln;
-                    }
-                }
-            }
-        }
-
-        if (ln.find('(') < 1)
-        {
-            err_str += "\nMissing identifier before '(' here -> ";
-            err_str += ln;
-        }
-        else
-        {
-            if (type_not_found &&
-                ln.find(';') == std::string::npos &&
-                ln.find("if") == std::string::npos &&
-                ln.find("while") == std::string::npos &&
-                ln.find("for") == std::string::npos &&
-                ln.find("static") == std::string::npos &&
-                ln.find("inline") == std::string::npos &&
-                ln.find("|") == std::string::npos &&
-                ln.find("&") == std::string::npos)
-            {
-                err_str += "\n Missing ';' or type, here -> ";
-                err_str += ln;
-            }
-        }
-
-        if (ln.find(')') == std::string::npos)
-        {
-            err_str += "\nMissing ')', after '(' here -> ";
-            err_str += ln.substr(ln.find('('));
-        }
-    }
-    else
-    {
-        if (ln.find("for") != std::string::npos ||
-            ln.find("while") != std::string::npos)
-        {
-            err_str += "\nMissing '(', after \"for\", here -> ";
-            err_str += ln;
-        }
-    }
-
-    if (ln.find('}') != std::string::npos &&
-        !kInBraces)
-    {
-        if (!kInStruct &&
-            ln.find(';') == std::string::npos)
-        {
-            err_str += "\nMismatched '}', here -> ";
-            err_str += ln;
-        }
-    }
-
-    if (!ln.empty())
-    {
-        if (ln.find(';') == std::string::npos &&
-            ln.find("struct") == std::string::npos &&
-            ln.find("enum") == std::string::npos &&
-            ln.find("union") == std::string::npos &&
-            ln.find("for") == std::string::npos &&
-            ln.find("while") == std::string::npos &&
-            ln.find('{') == std::string::npos &&
-            ln.find('}') == std::string::npos &&
-            ln.find(')') == std::string::npos &&
-            ln.find('(') == std::string::npos &&
-            ln.find(',') == std::string::npos &&
-            ln.find("typedef") == std::string::npos)
-        {
-            if (ln.size() <= 2)
-                return err_str;
-
-            err_str += "\nMissing ';', here -> ";
-            err_str += ln;
-        }
-    }
-
-    return err_str;
+    return true;
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////
@@ -844,19 +323,144 @@ public:
 
         while (std::getline(src_fp, source))
         {
-            if (auto err = kCompilerBackend->Check(source.c_str(), src.CData());
-                err.empty())
-            {
-                kCompilerBackend->Compile(source.c_str(), src.CData());
-            }
-            else
-            {
-                detail::print_error(err, src.CData());
-            }
+            kCompilerBackend->Compile(source.c_str(), src.CData());
         }
 
         if (kAcceptableErrors > 0)
             return -1;
+
+        std::vector<std::string> lines;
+        
+        struct scope_type
+        {
+            std::vector<std::string> vals;
+            int reg_cnt;
+            int id;
+
+            bool operator==(const scope_type& typ) { return typ.id == id; }
+        };
+
+        std::vector<scope_type> scope;
+        bool found_type = false;
+        bool is_pointer = false;
+        bool found_expr = false;
+        bool found_func = false;
+
+        for (auto& leaf : kState.fSyntaxTree->fLeafList)
+        {
+            if (leaf.fUserData == "{")
+            {
+                scope.push_back({});
+            }
+
+            if (leaf.fUserData == "{")
+            {
+                scope.pop_back();
+            }
+
+            if (leaf.fUserData == "int" ||
+                leaf.fUserData == "long" ||
+                leaf.fUserData == "unsigned" ||
+                leaf.fUserData == "short" ||
+                leaf.fUserData == "char" ||
+                leaf.fUserData == "struct" ||
+                leaf.fUserData == "class")
+            {
+                found_type = true;
+            }
+
+            if (leaf.fUserData == "(")
+            {
+                if (found_type)
+                {
+                    found_expr = true;
+                    found_type = false;
+                    is_pointer = false;
+                }
+            }
+
+            if (leaf.fUserData == ")")
+            {
+                if (found_expr)
+                {
+                    found_expr = false;
+                    is_pointer = false;
+                }
+            }
+
+            if (leaf.fUserData == ",")
+            {
+                if (is_pointer)
+                {
+                    is_pointer = false;
+                }
+            }
+
+            if (leaf.fUserData == "*")
+            {
+                if (found_type && !found_expr)
+                    is_pointer = true;
+            }
+
+            if (leaf.fUserData == "=")
+            {
+                auto& front = scope.front();
+
+                if (found_type)
+                {
+                    std::string reg = "r";
+                    reg += std::to_string(front.reg_cnt);
+                    ++front.reg_cnt;
+                    
+                    leaf.fUserValue = !is_pointer ? "ldw %s, %s1\n" : "lda %s, %s1\n";
+
+                    for (auto& ln : lines)
+                    {
+                        if (ln.find(leaf.fUserData) != std::string::npos &&
+                            ln.find(";") != std::string::npos)
+                        {
+                            auto val = ln.substr(ln.find(leaf.fUserData) + leaf.fUserData.size());
+                            val.erase(val.find(";"), 1);
+
+                            leaf.fUserValue.replace(leaf.fUserValue.find("%s1"), strlen("%s1"), val);
+                        }
+                    }
+
+                    leaf.fUserValue.replace(leaf.fUserValue.find("%s"), strlen("%s"), reg);
+                }
+
+                is_pointer = false;
+                found_type = false;
+            }
+
+            if (leaf.fUserData == "return")
+            {
+                leaf.fUserValue = "ldw r19, %s\njlr";
+
+                if (!lines.empty())
+                {
+                    for (auto& ln : lines)
+                    {
+                        if (ln.find(leaf.fUserData) != std::string::npos &&
+                            ln.find(";") != std::string::npos)
+                        {
+                            auto val = ln.substr(ln.find(leaf.fUserData) + leaf.fUserData.size());
+                            val.erase(val.find(";"), 1);
+
+                            leaf.fUserValue.replace(leaf.fUserValue.find("%s"), strlen("%s"), val);
+                        }
+                    }
+                }
+                else
+                {
+                    leaf.fUserValue.replace(leaf.fUserValue.find("%s"), strlen("%s"), "0");
+                }
+
+                continue;
+            }
+
+            lines.push_back(leaf.fUserData);
+        }
 
         for (auto& leaf : kState.fSyntaxTree->fLeafList)
         {
@@ -876,13 +480,13 @@ public:
 /////////////////////////////////////////////////////////////////////////////////////////
 
 #define kPrintF printf
-#define kSplashCxx() kPrintF(kWhite "%s\n", "X64000 C++ compiler, v1.13, (c) WestCo")
+#define kSplashCxx() kPrintF(kWhite "%s\n", "X64000 C compiler, v1.13, (c) WestCo")
 
 static void cxx_print_help()
 {
     kSplashCxx();
     kPrintF(kWhite "--asm={MACHINE}: %s\n", "Compile to a specific assembler syntax. (masm)");
-    kPrintF(kWhite "--compiler={COMPILER}: %s\n", "Select compiler engine (builtin -> dolvik++).");
+    kPrintF(kWhite "--compiler={COMPILER}: %s\n", "Select compiler engine (builtin -> vanhalen++).");
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////
@@ -891,11 +495,59 @@ static void cxx_print_help()
 
 int main(int argc, char** argv)
 {
-    kCompilerTypes.push_back({ .fName = "void", .fValue = "void" });
-    kCompilerTypes.push_back({ .fName = "char", .fValue = "byte" });
-    kCompilerTypes.push_back({ .fName = "short", .fValue = "hword" });
-    kCompilerTypes.push_back({ .fName = "int", .fValue = "dword" });
-    kCompilerTypes.push_back({ .fName = "long", .fValue = "qword" });
+    kKeywords.push_back("auto");
+    kKeywords.push_back("else");
+    kKeywords.push_back("break");
+    kKeywords.push_back("switch");
+    kKeywords.push_back("enum");
+    kKeywords.push_back("register");
+    kKeywords.push_back("do");
+    kKeywords.push_back("return");
+    kKeywords.push_back("if");
+    kKeywords.push_back("default");
+    kKeywords.push_back("struct");
+    kKeywords.push_back("_Packed");
+    kKeywords.push_back("extern");
+    kKeywords.push_back("volatile");
+    kKeywords.push_back("static");
+    kKeywords.push_back("for");
+    kKeywords.push_back("class");
+    kKeywords.push_back("{");
+    kKeywords.push_back("}");
+    kKeywords.push_back("(");
+    kKeywords.push_back(")");
+    kKeywords.push_back("char");
+    kKeywords.push_back("int");
+    kKeywords.push_back("short");
+    kKeywords.push_back("long");
+    kKeywords.push_back("float");
+    kKeywords.push_back("double");
+    kKeywords.push_back("unsigned");
+    kKeywords.push_back("__export__");
+    kKeywords.push_back("__packed__");
+    kKeywords.push_back("namespace");
+    kKeywords.push_back("while");
+    kKeywords.push_back("sizeof");
+    kKeywords.push_back("private");
+    kKeywords.push_back("->");
+    kKeywords.push_back(".");
+    kKeywords.push_back("::");
+    kKeywords.push_back("*");
+    kKeywords.push_back("+");
+    kKeywords.push_back("-");
+    kKeywords.push_back("/");
+    kKeywords.push_back("=");
+    kKeywords.push_back("==");
+    kKeywords.push_back("!=");
+    kKeywords.push_back(">=");
+    kKeywords.push_back("<=");
+    kKeywords.push_back(">");
+    kKeywords.push_back("<");
+    kKeywords.push_back(":");
+    kKeywords.push_back(",");
+    kKeywords.push_back(";");
+    kKeywords.push_back("public");
+    kKeywords.push_back("protected");
 
     bool skip = false;
 
@@ -949,7 +601,7 @@ int main(int argc, char** argv)
                 continue;
             }
 
-            if (strcmp(argv[index], "--compiler=dolvik") == 0)
+            if (strcmp(argv[index], "--compiler=vanhalen") == 0)
             {
                 if (!kCompilerBackend)
                     kCompilerBackend = new CompilerBackendClang();
@@ -977,7 +629,7 @@ int main(int argc, char** argv)
             std::string err = "Unknown command: ";
             err += argv[index];
 
-            detail::print_error(err, "c++");
+            detail::print_error(err, "ccplus");
 
             continue;
         }
@@ -990,7 +642,7 @@ int main(int argc, char** argv)
         {
             if (kState.kVerbose)
             {
-                std::cerr << argv[index] << " is not a valid C++ source.\n";
+                std::cerr << argv[index] << " is not a valid C source.\n";
             }
 
             return -1;

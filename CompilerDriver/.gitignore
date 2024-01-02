@@ -4,7 +4,7 @@ bin/cc
 bin/masm
 bin/mkcdfs
 bin/ccplus
-bin/cpp2
+bin/cppfront
 
 bin/SourceUnitTest/*.c.pp
 bin/SourceUnitTest/*.c

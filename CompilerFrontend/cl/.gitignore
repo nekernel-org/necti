@@ -5,7 +5,7 @@ bin/cc
 bin/masm
 bin/mkcdfs
 bin/ccplus
-bin/cpp2
+bin/cppfront
 
 *.c.pp
 *.cxx.pp
