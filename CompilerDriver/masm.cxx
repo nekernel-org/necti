@@ -10,8 +10,7 @@
 /////////////////////////////////////////////////////////////////////////////////////////
 
 // @file masm.cxx
-// @brief The MP-UX Assembler, outputs an AE object.
-// This assembler is made for the RISC chip X64000.
+// @brief MP-UX 64x0 Assembler.
 
 // REMINDER: when dealing with an undefined symbol use (string size):ld:(string)
 // so that ld will look for it.
@@ -200,9 +199,6 @@ int main(int argc, char** argv)
                 detail::print_error(ln, argv[i]);
                 continue;
             }
-
-            if (ParserKit::find_word(line, "#"))
-                continue;
 
             try
             {
@@ -488,11 +484,17 @@ static std::string masm_check_line(std::string& line, const std::string& file)
         ParserKit::find_word(line, "__import") ||
         ParserKit::find_word(line, "__export") ||
         ParserKit::find_word(line, "#") ||
+        ParserKit::find_word(line, ";") ||
         ParserKit::find_word(line, "layout"))
     {
         if (line.find('#') != std::string::npos)
         {
             line.erase(line.find('#'));
+        }
+
+        if (line.find(';') != std::string::npos)
+        {
+            line.erase(line.find(';'));
         }
 
         return err_str;
