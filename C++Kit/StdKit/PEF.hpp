@@ -28,11 +28,8 @@ namespace CxxKit
         kPefArchIntel86S = 100,
         kPefArchAMD64,
         kPefArchRISCV,
-	    kPefArchARC, /* Advanced RISC architecture. */
-        kPefArchNewCPU = kPefArchARC,
-        kPefArch64000 = kPefArchNewCPU,
-        kPefArchPowerPC,
-        kPefArchARM64,
+	    kPefArch64000, /* Advanced RISC architecture. */
+        kPefArch32000,
         kPefArchInvalid = 0xFF,
     };
 
@@ -86,4 +83,3 @@ namespace CxxKit
 #define kPefDylibExt ".so"
 #define kPefObjectExt ".o"
 #define kPefDebugExt ".dbg"
-#define kPefOrgMagic 0xFFAABBAA00

@@ -41,10 +41,10 @@
 #define kStdOut          (std::cout << kWhite)
 
 #define kPefDeaultOrg    (uint64_t)0x10000
-#define kPefLinkerNumId  0x333D
+#define kPefLinkerNumId  0x5046FF
 #define kPefAbiId        "Container:Abi:MP-UX"
 
-enum { kAbiMpUx = 0xDEAD1 };
+enum { kAbiMpUx = 0x5046 /* PF */ };
 
 std::ofstream& operator<<(std::ofstream& fp, CxxKit::PEFContainer& container)
 {
@@ -107,7 +107,7 @@ int main(int argc, char** argv)
         //
         else if (StringCompare(argv[i], "-m64000") == 0)
         {
-            kArch = CxxKit::kPefArchARC;
+            kArch = CxxKit::kPefArch64000;
         
             continue;
         }

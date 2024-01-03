@@ -137,7 +137,7 @@ int main(int argc, char** argv)
             }
             else if (strcmp(argv[i], "-m64000") == 0)
             {
-                kOutputArch = CxxKit::kPefArchARC;
+                kOutputArch = CxxKit::kPefArch64000;
                 continue;
             }
             else if (strcmp(argv[i], "-verbose") == 0)
