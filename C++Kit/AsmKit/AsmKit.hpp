@@ -27,11 +27,12 @@ namespace CxxKit
 		CXXKIT_COPY_DEFAULT(AssemblyMountpoint);
 
 		//@ brief compile to object file.
-		// Example C++ -> Assembly -> AE object.
+		// Example C++ -> MASM -> AE object.
 		virtual Int32 CompileToFormat(StringView& src, Int32 arch) = 0;
 
 	};
 	
+    /// @brief Simple assembly factory
     class AssemblyFactory final
     {
     public:
@@ -44,9 +45,8 @@ namespace CxxKit
 		enum
 		{
 			kArchAMD64,
-			kArchARM64,
-			kArchPowerPC,
-			kArchARC,
+			kArch32x0,
+			kArch64x0,
 			kArchRISCV,
 			kArchUnknown,
 		};

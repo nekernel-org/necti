@@ -28,9 +28,9 @@
 #include <C++Kit/StdKit/AE.hpp>
 
 //! @brief standard PEF entry.
-#define kPefStart "__start"
+#define kPefStart    "__start"
 
-#define kToolVersion "ld v1.15, (c) Western Company"
+#define kToolVersion "ld v1.17, (c) Western Company"
 
 #define StringCompare(dst, src) strcmp(dst, src)
 
@@ -59,7 +59,6 @@ std::ofstream& operator<<(std::ofstream& fp, CxxKit::PEFCommandHeader& container
 }
 
 static std::string kOutput = "a.out";
-
 static Int32 kAbi = kAbiMpUx;
 static Int32 kSubArch = kPefNoSubCpu;
 static Int32 kArch = kPefNoCpu;
@@ -88,7 +87,7 @@ int main(int argc, char** argv)
             kStdOut << "-v: Print program version.\n";
             kStdOut << "-verbose: Print program backtrace (verbose mode).\n";
             kStdOut << "-shared: Output as a shared library.\n";
-            kStdOut << "-m64000: Link for the X64000.\n";
+            kStdOut << "-m64000: Link for the 64x0.\n";
             kStdOut << "-fatbin: Output as FAT PEF.\n";
             kStdOut << "-o: Select output filename.\n";	
 
@@ -165,12 +164,15 @@ int main(int argc, char** argv)
         {
             if (!std::filesystem::exists(obj))
             {
+                // if filesystem doesn't find file
+                //          -> throw error.
                 kStdOut << "ld: no such file: " << obj << std::endl;
                 return CXXKIT_EXEC_ERROR;
             }
         }
     }
 
+    // PEF expects a valid architecture when outputing a binary.
     if (kArch == 0)
     {
         kStdOut << "ld: no target architecture set, can't continue." << std::endl;
@@ -179,10 +181,11 @@ int main(int argc, char** argv)
 
     CxxKit::PEFContainer pef_container{};
 
+    int32_t archs = kArch;
+
     pef_container.Count = 0UL;
     pef_container.Kind = CxxKit::kPefKindExec;
     pef_container.SubCpu = kSubArch;
-    pef_container.Cpu = kArch;
     pef_container.Linker = kPefLinkerNumId; // Western Company Linker
     pef_container.Abi = kAbi; // Multi-Processor UX ABI
     pef_container.Magic[0] = kPefMagic[kFatBinaryEnable ? 2 : 0];
@@ -190,7 +193,7 @@ int main(int argc, char** argv)
     pef_container.Magic[2] = kPefMagic[kFatBinaryEnable ? 0 : 2];
     pef_container.Version = kPefVersion;
 
-    // specify the start address.
+    // specify the start address, can be 0x10000
     pef_container.Start = kPefDeaultOrg;
     pef_container.HdrSz = sizeof(CxxKit::PEFContainer);
 
@@ -204,13 +207,6 @@ int main(int argc, char** argv)
         }
 
         return -CXXKIT_FILE_NOT_FOUND;
-    }
-
-    output_fc << pef_container;
-
-    if (kVerbose)
-    {
-        kStdOut << "ld: PEF: wrote container header.\n";
     }
 
     //! Read AE to convert as PEF.
@@ -233,12 +229,12 @@ int main(int argc, char** argv)
         if (ae_header.fArch != kArch)
         {
             if (kVerbose)
-                kStdOut << "ld: PEF: is a fat binary? : ";
+                kStdOut << "ld: pef: is a fat binary? : ";
 
             if (!kFatBinaryEnable)
             { 
                 if (kVerbose)
-                    kStdOut << "NO\n";
+                    kStdOut << "no.\n";
 
                 kStdOut << "ld: error: object " << i << " is a different kind of architecture and output isn't treated as FAT binary." << std::endl;
 
@@ -249,7 +245,7 @@ int main(int argc, char** argv)
             {          
                 if (kVerbose)
                 {
-                    kStdOut << "YES\n";
+                    kStdOut << "yes.\n";
                 }
             }
         }
@@ -258,6 +254,8 @@ int main(int argc, char** argv)
             ae_header.fMagic[1] == kAEMag1 &&
 	        ae_header.fSize == sizeof(CxxKit::AEHeader))
         {
+            // append arch type to archs varaible.
+            archs |= ae_header.fArch;
             std::size_t cnt = ae_header.fCount;
 
             if (kVerbose)
@@ -331,11 +329,20 @@ ld_mark_header:
             continue;  
         }
 
-        kStdOut << "ld: not an object " << i << std::endl;
+        kStdOut << "ld: not an object: " << i << std::endl;
         std::remove(kOutput.c_str());
 
         // don't continue, it is a fatal error.
         return -CXXKIT_EXEC_ERROR;
+    }
+
+    pef_container.Cpu = archs;
+
+    output_fc << pef_container;
+
+    if (kVerbose)
+    {
+        kStdOut << "ld: pef: wrote container header.\n";
     }
 
     output_fc.seekp(std::streamsize(pef_container.HdrSz));

@@ -1,7 +1,7 @@
 /*
  *	========================================================
  *
- *	hCore
+ *	CxxKit
  * 	Copyright Western Company, all rights reserved.
  *
  * 	========================================================
@@ -227,4 +227,4 @@ namespace CxxKit
 
         return *this;
     }
-} // namespace hCore
+} // namespace CxxKit

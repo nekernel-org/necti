@@ -1,4 +1,5 @@
 bin/ld
+bin/mld
 bin/cpp
 bin/cc
 bin/masm

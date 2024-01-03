@@ -1,7 +1,7 @@
 /*
  *	========================================================
  *
- *	NewOS
+ *	CxxKit
  * 	Copyright Western Company, all rights reserved.
  *
  * 	========================================================
@@ -69,4 +69,4 @@ namespace CxxKit
         static bool Equals(const char *lhs, const char *rhs);
 
     };
-} // namespace NewOS
+} // namespace CxxKit

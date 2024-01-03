@@ -25,7 +25,7 @@
 #define kAsmSyscall 0x02
 #define kAsmJump 0x03
 
-struct NCOpcode
+struct CpuCode64x0
 {
     const char fName[16];
     char fOpcode;
@@ -33,7 +33,7 @@ struct NCOpcode
     char fFunct7;
 };
 
-inline std::vector<NCOpcode> kOpcodesStd = {
+inline std::vector<CpuCode64x0> kOpcodes64x0 = {
         kAsmOpcodeDecl("np", 0b0100011, 0b0000000, kAsmImmediate) // mv r0, r0
         kAsmOpcodeDecl("jb", 0b1110011, 0b0000011, kAsmJump) // jump to branch
         kAsmOpcodeDecl("jlr", 0b1110011, 0b0000111, kAsmJump) // jump and link return register

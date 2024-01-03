@@ -464,18 +464,18 @@ public:
 /////////////////////////////////////////////////////////////////////////////////////////
 
 #define kPrintF printf
-#define kSplashCxx() kPrintF(kWhite "%s\n", "ccplus, v1.13, (c) Western Company.")
+#define kSplashCxx() kPrintF(kWhite "%s\n", "ccplus, v1.14, (c) Western Company.")
 
 static void cxx_print_help()
 {
     kSplashCxx();
-    kPrintF(kWhite "--asm={MACHINE}: %s\n", "Compile to a specific assembler syntax. (masm)");
+    kPrintF(kWhite "--asm={MACHINE}: %s\n", "Compile with a specific syntax. (64x0, 32x0)");
     kPrintF(kWhite "--compiler={COMPILER}: %s\n", "Select compiler engine (builtin -> vanhalen++).");
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
-#define kExt ".c"
+#define kExt ".cc"
 
 int main(int argc, char** argv)
 {

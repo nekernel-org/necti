@@ -28,7 +28,7 @@
 #define kAsmHWord 1
 #define kAsmWord  2
 
-struct NCOpcode
+struct CpuCode32x0
 {
     const char fName[16];
     char fOpcode;
@@ -41,7 +41,7 @@ struct NCOpcode
 #define kAsmHWordStr ".h"
 #define kAsmByteStr  ".b"
 
-inline std::vector<NCOpcode> kOpcodesStd = {
+inline std::vector<CpuCode32x0> kOpcodes32x0 = {
         kAsmOpcodeDecl("nop", 0b0100011, 0b0000000, kAsmImmediate) // nothing to do.
         kAsmOpcodeDecl("jmp", 0b1110011, 0b0000011, kAsmJump) // jump to branch
         kAsmOpcodeDecl("move", 0b0100011, 0b101, kAsmImmediate)

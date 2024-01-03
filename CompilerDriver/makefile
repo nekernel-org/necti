@@ -9,30 +9,31 @@
 
 LINK_CC=g++ -std=c++20
 LINK_INC=-I../ -I../C++Kit
-LINK_SRC=ld.cxx
+LINK_SRC=ld.cc
 LINK_OUTPUT=bin/ld
+LINK_ALT_OUTPUT=bin/mld
 
-PP_SRC=cpp.cxx
+PP_SRC=cpp.cc
 PP_OUTPUT=bin/cpp
 
 CC2_OUTPUT=bin/cppfront
 CC2_SRC=cc2/source/cppfront.cpp
 
-CC_SRC=ccplus.cxx ../C++Kit/StdKit/*.cpp ../C++Kit/AsmKit/*.cpp
+CC_SRC=ccplus.cc ../C++Kit/StdKit/*.cc ../C++Kit/AsmKit/*.cc
 CC_OUTPUT=bin/ccplus
 
-CC_SRC=cc.cxx ../C++Kit/StdKit/*.cpp ../C++Kit/AsmKit/*.cpp
+CC_SRC=cc.cc ../C++Kit/StdKit/*.cc ../C++Kit/AsmKit/*.cc
 CC_OUTPUT=bin/cc
 
-CXX_SRC=ccplus.cxx ../C++Kit/StdKit/*.cpp ../C++Kit/AsmKit/*.cpp
+CXX_SRC=ccplus.cc ../C++Kit/StdKit/*.cc ../C++Kit/AsmKit/*.cc
 CXX_OUTPUT=bin/ccplus
 
-MASM_SRC=masm.cxx ../C++Kit/StdKit/*.cpp ../C++Kit/AsmKit/*.cpp
+MASM_SRC=masm.cc ../C++Kit/StdKit/*.cc ../C++Kit/AsmKit/*.cc
 MASM_OUTPUT=bin/masm
 
 .PHONY: all
 all: cxx
-	@echo "[make] done build"
+	@echo "[make] done build."
 
 .PHONY: cxx
 cxx: ld
@@ -45,6 +46,7 @@ cxx: ld
 .PHONY: ld
 ld:
 	$(LINK_CC) $(LINK_INC) $(LINK_SRC) -o $(LINK_OUTPUT)
+	cp $(LINK_OUTPUT) $(LINK_ALT_OUTPUT)
 
 .PHONY: help
 help:

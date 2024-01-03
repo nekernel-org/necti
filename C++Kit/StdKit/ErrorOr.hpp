@@ -1,7 +1,7 @@
 /*
  *	========================================================
  *
- *	NewOS
+ *	CxxKit
  * 	Copyright Western Company, all rights reserved.
  *
  * 	========================================================
@@ -55,4 +55,4 @@ class ErrorOr final
 
 using ErrorOrAny = ErrorOr<voidPtr>;
 
-} // namespace NewOS
+} // namespace CxxKit

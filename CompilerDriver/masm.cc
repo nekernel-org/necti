@@ -36,7 +36,7 @@
 #define kWhite  "\e[0;97m"
 #define kYellow "\e[0;33m"
 
-#define kStdOut          (std::cout << kWhite)
+#define kStdOut     (std::cout << kWhite)
 
 static char         kOutputArch = CxxKit::kPefArch64000;
 
@@ -122,7 +122,7 @@ int main(int argc, char** argv)
         {
             if (strcmp(argv[i], "-v") == 0)
             {
-                kStdOut << "masm: The MP-UX Assembler.\nmasm: Copyright (c) 2023 Western Company.\n";
+                kStdOut << "masm: The MP-UX Assembler.\nmasm: v1.10\nmasm: Copyright (c) 2023 Western Company.\n";
                 return 0;
             }
 
@@ -135,9 +135,16 @@ int main(int argc, char** argv)
 
                 return 0;
             }
-            else if (strcmp(argv[i], "-m64000") == 0)
+            else if (strcmp(argv[i], "-m64000") == 0 ||
+                    strcmp(argv[i], "-m64x0") == 0)
             {
                 kOutputArch = CxxKit::kPefArch64000;
+                
+                if (kVerbose)
+                {
+                    kStdOut << "masm: Select 64x0 as object output.\n";
+                }
+
                 continue;
             }
             else if (strcmp(argv[i], "-verbose") == 0)
@@ -555,7 +562,7 @@ static std::string masm_check_line(std::string& line, const std::string& file)
 
     std::vector<std::string> opcodes_list = { "jb", "psh", "stw", "ldw", "lda", "sta" };
 
-    for (auto& opcodes : kOpcodesStd)
+    for (auto& opcodes : kOpcodes64x0)
     {
         if (line.find(opcodes.fName) != std::string::npos)
         {
@@ -739,7 +746,7 @@ static bool masm_write_number(std::size_t pos, std::string& jump_label)
 
 static void masm_read_instruction(std::string& line, const std::string& file)
 {
-    for (auto& opcodes : kOpcodesStd)
+    for (auto& opcodes : kOpcodes64x0)
     {
         if (ParserKit::find_word(line, opcodes.fName))
         {
