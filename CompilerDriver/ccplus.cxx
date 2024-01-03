@@ -304,7 +304,7 @@ public:
         }
 
         /* According to pef abi. */
-        dest += kAsmFileExt;
+        dest += kAsmFileExt64x0;
 
         kState.fOutputAssembly = std::make_unique<std::ofstream>(dest);
 

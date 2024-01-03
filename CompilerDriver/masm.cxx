@@ -156,9 +156,9 @@ int main(int argc, char** argv)
 
         std::string object_output(argv[i]);
 
-        if (object_output.find(kAsmFileExt) != std::string::npos)
+        if (object_output.find(kAsmFileExt64x0) != std::string::npos)
         {
-            object_output.erase(object_output.find(kAsmFileExt), std::size(kAsmFileExt));
+            object_output.erase(object_output.find(kAsmFileExt64x0), std::size(kAsmFileExt64x0));
         }
 
         object_output += kObjectFileExt;

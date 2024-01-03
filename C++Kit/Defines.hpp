@@ -129,7 +129,7 @@ namespace CxxKit
     }
 }
 
-#define kObjectFileExt ".o"
-#define kAsmFileExt    ".masm"
+#define kObjectFileExt     ".o"
+#define kAsmFileExt64x0    ".64x"
 
 #endif /* ifndef __CXXKIT_DEFINES_HPP__ */
