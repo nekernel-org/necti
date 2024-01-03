@@ -2,7 +2,7 @@
  *	========================================================
  *
  *	C++Kit
- * 	Copyright WestCo, all rights reserved.
+ * 	Copyright Western Company, all rights reserved.
  *
  * 	========================================================
  */

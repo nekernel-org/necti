@@ -2,7 +2,7 @@
  *	========================================================
  *
  *	C++Kit
- * 	Copyright WestCo, all rights reserved.
+ * 	Copyright Western Company, all rights reserved.
  *
  * 	========================================================
  */
@@ -122,13 +122,13 @@ int main(int argc, char** argv)
         {
             if (strcmp(argv[i], "-v") == 0)
             {
-                kStdOut << "masm: The MP-UX Assembler.\nmasm: Copyright (c) 2023 WestCo.\n";
+                kStdOut << "masm: The MP-UX Assembler.\nmasm: Copyright (c) 2023 Western Company.\n";
                 return 0;
             }
 
             if (strcmp(argv[i], "-h") == 0)
             {
-                kStdOut << "masm: The MP-UX Assembler.\nmasm: Copyright (c) 2023 WestCo.\n";
+                kStdOut << "masm: The MP-UX Assembler.\nmasm: Copyright (c) 2023 Western Company.\n";
                 kStdOut << "-v: Print program version.\n";
                 kStdOut << "-verbose: Print verbose output.\n";
                 kStdOut << "-m64000: Compile for the X64000 instruction set.\n";
@@ -590,9 +590,9 @@ static std::string masm_check_line(std::string& line, const std::string& file)
 
 namespace detail
 {
-    union number_type
+    union number_cast
     {
-        explicit number_type(UInt64 raw)
+        explicit number_cast(UInt64 raw)
                 : raw(raw)
         {}
 
@@ -623,10 +623,10 @@ static bool masm_write_number(std::size_t pos, std::string& jump_label)
                 }
             }
 
-            detail::number_type num(strtoq(jump_label.substr(pos + 2).c_str(),
+            detail::number_cast num(strtoq(jump_label.substr(pos + 2).c_str(),
                                    nullptr, 16));
 
-            for (char i : num.number)
+            for (char& i : num.number)
             {
                 kBytes.push_back(i);
             }
@@ -653,7 +653,7 @@ static bool masm_write_number(std::size_t pos, std::string& jump_label)
                 }
             }
 
-            detail::number_type num(strtoq(jump_label.substr(pos + 2).c_str(),
+            detail::number_cast num(strtoq(jump_label.substr(pos + 2).c_str(),
                                    nullptr, 2));
 
             if (kVerbose)
@@ -661,7 +661,7 @@ static bool masm_write_number(std::size_t pos, std::string& jump_label)
                 kStdOut << "masm: found a base 2 number here: " << jump_label.substr(pos) << "\n";
             }
 
-            for (char i : num.number)
+            for (char& i : num.number)
             {
                 kBytes.push_back(i);
             }
@@ -683,7 +683,7 @@ static bool masm_write_number(std::size_t pos, std::string& jump_label)
                 }
             }
 
-            detail::number_type num(strtoq(jump_label.substr(pos + 2).c_str(),
+            detail::number_cast num(strtoq(jump_label.substr(pos + 2).c_str(),
                                    nullptr, 7));
 
             if (kVerbose)
@@ -691,7 +691,7 @@ static bool masm_write_number(std::size_t pos, std::string& jump_label)
                 kStdOut << "masm: found a base 8 number here: " << jump_label.substr(pos) << "\n";
             }
 
-            for (char i : num.number)
+            for (char& i : num.number)
             {
                 kBytes.push_back(i);
             }
@@ -715,10 +715,10 @@ static bool masm_write_number(std::size_t pos, std::string& jump_label)
         }
     }
 
-    detail::number_type num(strtoq(jump_label.substr(pos).c_str(),
+    detail::number_cast num(strtoq(jump_label.substr(pos).c_str(),
                                         nullptr, 10));
 
-    for (char i : num.number)
+    for (char& i : num.number)
     {
         kBytes.push_back(i);
     }

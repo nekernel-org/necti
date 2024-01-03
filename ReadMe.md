@@ -1,11 +1,8 @@
-# Compiler Kit
-## Compiler Toolkit
+# MPCC
+## MP-UX Compiler Collection.
 <br>
-Consists of cpp/cc/ld/masm, ld and masm can be used for anything.
+Contains of cpp/ccplus/cc/ld/masm, cc/ccplus can output non standard C code!
 <br>
-As long as you give it MASM code and AE object files.
-
+Author: Amlal El Mahrouss
 <br>
-Author: amlel
-<br>
-Copyright WestCo, all rights reserved.
+Copyright Western Company, all rights reserved.

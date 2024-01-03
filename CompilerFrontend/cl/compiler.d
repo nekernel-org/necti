@@ -2,7 +2,7 @@
  *	========================================================
  *
  *	MP-UX C Compiler
- * 	Copyright WestCo, all rights reserved.
+ * 	Copyright Western Company, all rights reserved.
  *
  * 	========================================================
  */

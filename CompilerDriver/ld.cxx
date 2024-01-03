@@ -2,7 +2,7 @@
  *	========================================================
  *
  *	C++Kit
- * 	Copyright WestCo, all rights reserved.
+ * 	Copyright Western Company, all rights reserved.
  *
  * 	========================================================
  */
@@ -30,7 +30,7 @@
 //! @brief standard PEF entry.
 #define kPefStart "__start"
 
-#define kToolVersion "MP-UX linker v1.14, (c) WestCo"
+#define kToolVersion "ld v1.15, (c) Western Company"
 
 #define StringCompare(dst, src) strcmp(dst, src)
 
@@ -68,11 +68,13 @@ static Bool kStartFound = false;
 static Bool kDuplicateSymbols = false;
 static Bool kVerbose = false;
 
+/* ld is to be found, mld is to be found at runtime. */
 static const char* kLdDefineSymbol = ":ld:";
 static const char* kLdDynamicSym = ":mld:";
 
-static std::vector<char> kObjectBytes;
+/* object code and list. */
 static std::vector<std::string> kObjectList;
+static std::vector<char> kObjectBytes;
 
 int main(int argc, char** argv)
 {
@@ -94,7 +96,7 @@ int main(int argc, char** argv)
             return 0;
         }
         else if (StringCompare(argv[i], "-v") == 0 ||
-            StringCompare(argv[i], "--version") == 0)
+                StringCompare(argv[i], "--version") == 0)
         {
             kStdOut << kToolVersion << std::endl;
             // bye :D
@@ -181,7 +183,7 @@ int main(int argc, char** argv)
     pef_container.Kind = CxxKit::kPefKindExec;
     pef_container.SubCpu = kSubArch;
     pef_container.Cpu = kArch;
-    pef_container.Linker = kPefLinkerNumId; // WestCo Linker
+    pef_container.Linker = kPefLinkerNumId; // Western Company Linker
     pef_container.Abi = kAbi; // Multi-Processor UX ABI
     pef_container.Magic[0] = kPefMagic[kFatBinaryEnable ? 2 : 0];
     pef_container.Magic[1] = kPefMagic[1];
@@ -582,4 +584,4 @@ ld_continue_search:
     return 0;
 }
 
-// Last rev 2-1-23
+// Last rev 3-1-24

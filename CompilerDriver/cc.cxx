@@ -2,7 +2,7 @@
  *	========================================================
  *
  *	cc
- * 	Copyright WestCo, all rights reserved.
+ * 	Copyright Western Company, all rights reserved.
  *
  * 	========================================================
  */
@@ -20,7 +20,7 @@
 
 /* Optimized C driver */
 /* This is part of MP-UX C SDK. */
-/* (c) WestCo */
+/* (c) Western Company */
 
 /////////////////////
 
@@ -143,7 +143,7 @@ public:
     std::string Check(const char* text, const char* file);
     bool Compile(const std::string& text, const char* file) override;
 
-    const char* Language() override { return "Optimized X64000 C"; }
+    const char* Language() override { return "Optimized 64x0 C"; }
 
 };
 
@@ -200,9 +200,9 @@ static std::string cc_parse_function_call(std::string& _text)
 
 namespace detail
 {
-    union number_type
+    union number_cast
     {
-        number_type(UInt64 raw)
+        number_cast(UInt64 raw)
                 : raw(raw)
         {}
 
@@ -232,7 +232,7 @@ bool CompilerBackendClang::Compile(const std::string& text, const char* file)
         uuid_t out{0};
 
         uuid_generate_random(out);
-        detail::number_type time_off = (UInt64)out;
+        detail::number_cast time_off = (UInt64)out;
 
         if (!type_found)
         {
@@ -1755,7 +1755,7 @@ public:
 /////////////////////////////////////////////////////////////////////////////////////////
 
 #define kPrintF printf
-#define kSplashCxx() kPrintF(kWhite "%s\n", "X64000 Optimized C compiler, v1.13, (c) WestCo")
+#define kSplashCxx() kPrintF(kWhite "%s\n", "cc, v1.13, (c) Western Company")
 
 static void cc_print_help()
 {

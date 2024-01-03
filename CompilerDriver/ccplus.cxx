@@ -2,7 +2,7 @@
  *	========================================================
  *
  *	ccplus
- * 	Copyright WestCo, all rights reserved.
+ * 	Copyright Western Company, all rights reserved.
  *
  * 	========================================================
  */
@@ -14,14 +14,15 @@
 #include <iostream>
 #include <stack>
 #include <utility>
+#include <uuid/uuid.h>
 #include <C++Kit/AsmKit/Arch/64k.hpp>
 #include <C++Kit/ParserKit.hpp>
 
 #define kOk 0
 
-/* WestCo C driver */
+/* Western Company C driver */
 /* This is part of MP-UX C SDK. */
-/* (c) WestCo */
+/* (c) Western Company */
 
 /////////////////////
 
@@ -133,7 +134,7 @@ static bool kOnForLoop = false;
 static bool kInBraces = false;
 static size_t kBracesCount = 0UL;
 
-/* @brief C compiler backend for WestCo C */
+/* @brief C compiler backend for Western Company C */
 class CompilerBackendClang final : public ParserKit::CompilerBackend
 {
 public:
@@ -144,70 +145,53 @@ public:
 
     bool Compile(const std::string& text, const char* file) override;
 
-    const char* Language() override { return "Optimized 64x0 C"; }
+    const char* Language() override { return "Optimized 64x0 C++"; }
 
 };
 
-static CompilerBackendClang* kCompilerBackend = nullptr;
-static std::vector<detail::CompilerType> kCompilerVariables;
-static std::vector<std::string>          kCompilerFunctions;
-
-// @brief this hook code before the begin/end command.
-static std::string kAddIfAnyBegin;
-static std::string kAddIfAnyEnd;
-static std::string kLatestVar;
-
-static std::string cxx_parse_function_call(std::string& _text)
-{
-    if (_text[0] == '(') {
-        std::string substr;
-        std::string args_buffer;
-        std::string args;
-
-        bool type_crossed = false;
-
-        for (char substr_first_index: _text)
-        {
-            args_buffer += substr_first_index;
-
-            if (substr_first_index == ';')
-            {
-                args_buffer = args_buffer.erase(0, args_buffer.find('('));
-                args_buffer = args_buffer.erase(args_buffer.find(';'), 1);
-                args_buffer = args_buffer.erase(args_buffer.find(')'), 1);
-                args_buffer = args_buffer.erase(args_buffer.find('('), 1);
-
-                if (!args_buffer.empty())
-                    args += "\tpsh ";
-
-                while (args_buffer.find(',') != std::string::npos)
-                {
-                    args_buffer.replace(args_buffer.find(','), 1, "\n\tpsh ");
-                }
-
-                args += args_buffer;
-                args += "\n\tjlr __import ";
-            }
-        }
-
-        return args;
-    }
-
-    return "";
-}
-
-#include <uuid/uuid.h>
+static CompilerBackendClang*                kCompilerBackend = nullptr;
+static std::vector<detail::CompilerType>    kCompilerVariables;
+static std::vector<std::string>             kCompilerFunctions;
 
 namespace detail
 {
-    union number_type
+    union number_cast
     {
-        number_type(UInt64 raw)
+        number_cast(UInt64 raw)
                 : raw(raw)
         {}
 
         char number[8];
         UInt64 raw;
+        
+    };
+
+    struct ast_interface
+    {
+        explicit ast_interface(std::string& value)
+            : mValue(value)
+        {
+            this->_Compile();
+        }
+
+        ~ast_interface() = default;
+
+        CXXKIT_COPY_DEFAULT(ast_interface);
+
+    private:
+        std::string mProcessed;
+        std::string mValue;
+
+        void _Compile() noexcept
+        {
+            if (mValue.empty())
+            {
+                return;
+            }
+
+
+        }
+
     };
 }
 
@@ -480,7 +464,7 @@ public:
 /////////////////////////////////////////////////////////////////////////////////////////
 
 #define kPrintF printf
-#define kSplashCxx() kPrintF(kWhite "%s\n", "X64000 C compiler, v1.13, (c) WestCo")
+#define kSplashCxx() kPrintF(kWhite "%s\n", "ccplus, v1.13, (c) Western Company.")
 
 static void cxx_print_help()
 {

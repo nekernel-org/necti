@@ -3,7 +3,7 @@
  *	========================================================
  *
  *	NewOS
- * 	Copyright WestCo, all rights reserved.
+ * 	Copyright Western Company, all rights reserved.
  *
  * 	========================================================
  */
@@ -14,7 +14,7 @@
 
 namespace CxxKit
 {
-    // @author WestCo
+    // @author Western Company
     // @brief Reference class, refers to a pointer of data in static memory.
     template <typename T>
     class Ref final
