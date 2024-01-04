@@ -8,6 +8,7 @@
  */
 
 // @file ld.cxx
+// @author Amlal El Mahrouss (amlel)
 // @brief AE to PEF linker.
 // Use this to compile to PEF compliant OS.
 

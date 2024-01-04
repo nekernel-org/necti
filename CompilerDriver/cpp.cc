@@ -13,6 +13,10 @@
 #include <iostream>
 #include <fstream>
 
+// @author Amlal El Mahrouss (amlel)
+// @file cpp.cc
+// @brief C Preprocessor.
+
 typedef Int32(*cpp_parser_fn_t)(std::string& line, std::ifstream& hdr_file, std::ofstream& pp_out);
 
 /////////////////////////////////////////////////////////////////////////////////////////

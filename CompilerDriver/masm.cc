@@ -10,6 +10,7 @@
 /////////////////////////////////////////////////////////////////////////////////////////
 
 // @file masm.cxx
+// @author Amlal El Mahrouss
 // @brief MP-UX 64x0 Assembler.
 
 // REMINDER: when dealing with an undefined symbol use (string size):ld:(string)

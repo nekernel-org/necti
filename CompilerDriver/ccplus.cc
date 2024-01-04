@@ -20,9 +20,13 @@
 
 #define kOk 0
 
-/* Western Company C driver */
-/* This is part of MP-UX C SDK. */
+/* Western Company C++ driver */
+/* This is part of MP-UX C++ SDK. */
 /* (c) Western Company */
+
+// @author Amlal El Mahrouss (amlel)
+// @file cc.cc
+// @brief Optimized C++ Compiler.
 
 /////////////////////
 
