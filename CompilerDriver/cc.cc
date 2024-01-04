@@ -50,6 +50,12 @@ namespace detail
         std::string fRegister;
     };
 
+    struct CompilerClass
+    {
+        CompilerRegisterMap fRootRegister;
+        std::vector<CompilerRegisterMap> fRegisters;
+    };
+
     struct CompilerState
     {
         std::vector<ParserKit::SyntaxLeafList> fSyntaxTreeList;
@@ -652,6 +658,7 @@ bool CompilerBackendClang::Compile(const std::string& text, const char* file)
                             _text.find("struct") == std::string::npos &&
                             _text.find("extern") == std::string::npos &&
                              _text.find("union") == std::string::npos &&
+                             _text.find("class") == std::string::npos &&
                              _text.find("typedef") == std::string::npos)
                             substr += "__export .data ";
                     }

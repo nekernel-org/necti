@@ -71,17 +71,33 @@ public class CompileCommand
                                  ~ " " ~
                                 " --working-dir ./ --include-dir " ~ includePath ~ " " ~ file);
 
-            mcc_summon_executable("/usr/local/bin/bin/cc --asm=masm -fmax-exceptions 20 --compiler=dolvik " ~
-                                    file ~ ".pp");
-
             string changed;
+            string ext;
+            bool ext_now = false;
 
             foreach (ch; file)
             {
                 if (ch == '.')
+                {
+                    ext_now = true;
                     break;
+                }
 
-                changed ~= ch;
+                if (!ext_now)
+                    changed ~= ch;
+                else
+                    ext ~= ch;
+            }
+
+            if (ext == ".cc")
+            {
+                mcc_summon_executable("/usr/local/bin/bin/ccplus --asm=masm -fmax-exceptions 20 --compiler=dolvik " ~
+                file ~ ".pp");
+            }
+            else
+            {
+                mcc_summon_executable("/usr/local/bin/bin/cc --asm=masm -fmax-exceptions 20 --compiler=dolvik " ~
+                file ~ ".pp");
             }
 
             changed ~= ".64x";

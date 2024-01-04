@@ -144,12 +144,16 @@ int main(int argc, char** argv)
         }
         else
         {
+            if (argv[i][0] == '-')
+            {
+                kStdOut << "ld: unknown flag: " << argv[i] << "\n";
+                return -CXXKIT_EXEC_ERROR;
+            }
+
             kObjectList.emplace_back(argv[i]);
 
             continue;
         }
-
-        kStdOut << "ld: ignore flag: " << argv[i] << "\n";
     }
     
     // sanity check.
@@ -319,8 +323,8 @@ ld_mark_header:
             std::vector<char> bytes;
             bytes.resize(ae_header.fCodeSize);
 
-            input_object.seekg(ae_header.fStartCode);
-            input_object.read(bytes.data(), ae_header.fCodeSize);
+            input_object.seekg(std::streamsize(ae_header.fStartCode));
+            input_object.read(bytes.data(), std::streamsize(ae_header.fCodeSize));
 
             for (auto& byte : bytes)
             {
@@ -481,6 +485,7 @@ ld_continue_search:
     // prepare a symbol vector.
     std::vector<std::string> undefined_symbols;
     std::vector<std::string> duplicate_symbols;
+    std::vector<std::string> symbols_to_resolve;
 
     // Finally write down the command headers.
     // And check for any duplications
@@ -524,7 +529,7 @@ ld_continue_search:
             {
                 if (std::find(duplicate_symbols.cbegin(), duplicate_symbols.cend(), pef_command_hdr.Name) == duplicate_symbols.cend())
                 {
-                    duplicate_symbols.push_back(pef_command_hdr.Name);
+                    duplicate_symbols.emplace_back(pef_command_hdr.Name);
                 }
 
                 if (kVerbose)

@@ -6,7 +6,8 @@ bin/masm
 bin/mkcdfs
 bin/ccplus
 bin/cppfront
-
+test/*.cc
+test/*.64x
 *.c.pp
 *.cxx.pp
 test/*.c
