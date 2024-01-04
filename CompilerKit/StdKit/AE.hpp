@@ -9,7 +9,7 @@
 
 #pragma once
 
-#include <C++Kit/Defines.hpp>
+#include <CompilerKit/Defines.hpp>
 
 #define kAEMag0 'A'
 #define kAEMag1 'E'
@@ -23,7 +23,7 @@
 // Reloctable by offset is the default strategy.
 // You can also relocate at runtime but that's up to the operating system loader.
 
-namespace CxxKit
+namespace CompilerKit
 {
 	// @brief Advanced Executable Header
 	// One thing to keep in mind.

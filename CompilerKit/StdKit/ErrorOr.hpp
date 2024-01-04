@@ -1,7 +1,7 @@
 /*
  *	========================================================
  *
- *	CxxKit
+ *	CompilerKit
  * 	Copyright Western Company, all rights reserved.
  *
  * 	========================================================
@@ -9,10 +9,10 @@
 
 #pragma once
 
-#include <C++Kit/Defines.hpp>
-#include <C++Kit/StdKit/Ref.hpp>
+#include <CompilerKit/Defines.hpp>
+#include <CompilerKit/StdKit/Ref.hpp>
 
-namespace CxxKit
+namespace CompilerKit
 {
 using ErrorT = UInt32;
 
@@ -55,4 +55,4 @@ class ErrorOr final
 
 using ErrorOrAny = ErrorOr<voidPtr>;
 
-} // namespace CxxKit
+} // namespace CompilerKit

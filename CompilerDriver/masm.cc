@@ -18,10 +18,10 @@
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
-#include <C++Kit/AsmKit/Arch/64k.hpp>
-#include <C++Kit/ParserKit.hpp>
-#include <C++Kit/StdKit/PEF.hpp>
-#include <C++Kit/StdKit/AE.hpp>
+#include <CompilerKit/AsmKit/Arch/64k.hpp>
+#include <CompilerKit/ParserKit.hpp>
+#include <CompilerKit/StdKit/PEF.hpp>
+#include <CompilerKit/StdKit/AE.hpp>
 #include <filesystem>
 #include <iostream>
 #include <fstream>
@@ -39,7 +39,7 @@
 
 #define kStdOut     (std::cout << kWhite)
 
-static char         kOutputArch = CxxKit::kPefArch64000;
+static char         kOutputArch = CompilerKit::kPefArch64000;
 
 //! base relocation address for every mp-ux app.
 static UInt32       kErrorLimit = 10;
@@ -50,9 +50,9 @@ static std::size_t  kCounter = 1UL;
 static bool         kVerbose = false;
 
 static std::vector<char>     kBytes;
-static CxxKit::AERecordHeader kCurrentRecord{ .fName = "", .fKind = CxxKit::kPefCode, .fSize = 0, .fOffset = 0 };
+static CompilerKit::AERecordHeader kCurrentRecord{ .fName = "", .fKind = CompilerKit::kPefCode, .fSize = 0, .fOffset = 0 };
 
-static std::vector<CxxKit::AERecordHeader> kRecords;
+static std::vector<CompilerKit::AERecordHeader> kRecords;
 static std::vector<std::string> kUndefinedSymbols;
 
 static const std::string kUndefinedSymbol = ":ld:";
@@ -95,16 +95,16 @@ namespace detail
 
 // provide operator<< for AE
 
-std::ofstream& operator<<(std::ofstream& fp, CxxKit::AEHeader& container)
+std::ofstream& operator<<(std::ofstream& fp, CompilerKit::AEHeader& container)
 {
-    fp.write((char*)&container, sizeof(CxxKit::AEHeader));
+    fp.write((char*)&container, sizeof(CompilerKit::AEHeader));
 
     return fp;
 }
 
-std::ofstream& operator<<(std::ofstream& fp, CxxKit::AERecordHeader& container)
+std::ofstream& operator<<(std::ofstream& fp, CompilerKit::AERecordHeader& container)
 {
-    fp.write((char*)&container, sizeof(CxxKit::AERecordHeader));
+    fp.write((char*)&container, sizeof(CompilerKit::AERecordHeader));
 
     return fp;
 }
@@ -139,7 +139,7 @@ int main(int argc, char** argv)
             else if (strcmp(argv[i], "-m64000") == 0 ||
                     strcmp(argv[i], "-m64x0") == 0)
             {
-                kOutputArch = CxxKit::kPefArch64000;
+                kOutputArch = CompilerKit::kPefArch64000;
                 
                 if (kVerbose)
                 {
@@ -184,13 +184,13 @@ int main(int argc, char** argv)
 
         std::string line;
 
-        CxxKit::AEHeader hdr{ 0 };
+        CompilerKit::AEHeader hdr{ 0 };
 
         memset(hdr.fPad, kAEInvalidOpcode, kAEPad);
 
         hdr.fMagic[0] = kAEMag0;
         hdr.fMagic[1] = kAEMag1;
-        hdr.fSize = sizeof(CxxKit::AEHeader);
+        hdr.fSize = sizeof(CompilerKit::AEHeader);
         hdr.fArch = kOutputArch;
 
         /////////////////////////////////////////////////////////////////////////////////////////
@@ -253,7 +253,7 @@ int main(int argc, char** argv)
             if (kVerbose)
                 kStdOut << "masm: wrote record " << rec.fName << " to file...\n";
 
-            rec.fFlags |= CxxKit::kKindRelocationAtRuntime;
+            rec.fFlags |= CompilerKit::kKindRelocationAtRuntime;
             rec.fOffset = record_count;
             ++record_count;
 
@@ -265,7 +265,7 @@ int main(int argc, char** argv)
 
         for (auto& sym : kUndefinedSymbols)
         {
-            CxxKit::AERecordHeader _record_hdr{ 0 };
+            CompilerKit::AERecordHeader _record_hdr{ 0 };
 
             if (kVerbose)
                 kStdOut << "masm: wrote symbol " << sym << " to file...\n";
@@ -353,17 +353,17 @@ static bool masm_read_attributes(std::string& line)
         if (name.find(".text") != std::string::npos)
         {
             // data is treated as code.
-            kCurrentRecord.fKind = CxxKit::kPefCode;
+            kCurrentRecord.fKind = CompilerKit::kPefCode;
         }
         else if (name.find(".data") != std::string::npos)
         {
             // no code will be executed from here.
-            kCurrentRecord.fKind = CxxKit::kPefData;
+            kCurrentRecord.fKind = CompilerKit::kPefData;
         }
         else if (name.find(".page_zero") != std::string::npos)
         {
             // this is a bss section.
-            kCurrentRecord.fKind = CxxKit::kPefZero;
+            kCurrentRecord.fKind = CompilerKit::kPefZero;
         }
 
         // this is a special case for the start stub.
@@ -371,7 +371,7 @@ static bool masm_read_attributes(std::string& line)
 
         if (name == "__start")
         {
-            kCurrentRecord.fKind = CxxKit::kPefCode;
+            kCurrentRecord.fKind = CompilerKit::kPefCode;
         }
 
         // now we can tell the code size of the previous kCurrentRecord.
@@ -410,17 +410,17 @@ static bool masm_read_attributes(std::string& line)
         if (name.find(".text") != std::string::npos)
         {
             // data is treated as code.
-            kCurrentRecord.fKind = CxxKit::kPefCode;
+            kCurrentRecord.fKind = CompilerKit::kPefCode;
         }
         else if (name.find(".data") != std::string::npos)
         {
             // no code will be executed from here.
-            kCurrentRecord.fKind = CxxKit::kPefData;
+            kCurrentRecord.fKind = CompilerKit::kPefData;
         }
         else if (name.find(".page_zero") != std::string::npos)
         {
             // this is a bss section.
-            kCurrentRecord.fKind = CxxKit::kPefZero;
+            kCurrentRecord.fKind = CompilerKit::kPefZero;
         }
 
         // this is a special case for the start stub.
@@ -428,7 +428,7 @@ static bool masm_read_attributes(std::string& line)
 
         if (name == "__start")
         {
-            kCurrentRecord.fKind = CxxKit::kPefCode;
+            kCurrentRecord.fKind = CompilerKit::kPefCode;
         }
 
         // now we can tell the code size of the previous kCurrentRecord.
@@ -563,15 +563,14 @@ static std::string masm_check_line(std::string& line, const std::string& file)
 
     std::vector<std::string> opcodes_list = { "jb", "psh", "stw", "ldw", "lda", "sta" };
 
-    for (auto& opcodes : kOpcodes64x0)
+    for (auto& opcode64x0 : kOpcodes64x0)
     {
-        if (line.find(opcodes.fName) != std::string::npos)
+        if (line.find(opcode64x0.fName) != std::string::npos)
         {
             for (auto& op : opcodes_list)
             {
-                if (line == op ||
-                    line.find(op) != std::string::npos &&
-                    !isspace(line[line.find(op) + op.size()]))
+                // if only instruction found.
+                if (line == op)
                 {
                     err_str += "\nmalformed ";
                     err_str += op;
@@ -580,11 +579,20 @@ static std::string masm_check_line(std::string& line, const std::string& file)
                 }
             }
 
+            // if it is like that -> addr1, 0x0
+            if (!isspace(line[line.find(opcode64x0.fName) + strlen(opcode64x0.fName)]))
+            {
+                err_str += "\nmissing space between ";
+                err_str += opcode64x0.fName;
+                err_str += " and operands.\nhere -> ";
+                err_str += line;
+            }
+
             return err_str;
         }
     }
 
-    err_str += "Unknown syntax: ";
+    err_str += "unknown syntax: ";
     err_str += line;
 
     return err_str;
@@ -626,8 +634,6 @@ static bool masm_write_number(std::size_t pos, std::string& jump_label)
                 {
                     detail::print_error("invalid hex number: " + jump_label, "masm");
                     throw std::runtime_error("invalid_hex");
-
-                    return false;
                 }
             }
 
@@ -656,8 +662,6 @@ static bool masm_write_number(std::size_t pos, std::string& jump_label)
                 {
                     detail::print_error("invalid binary number: " + jump_label, "masm");
                     throw std::runtime_error("invalid_bin");
-
-                    return false;
                 }
             }
 
@@ -686,8 +690,6 @@ static bool masm_write_number(std::size_t pos, std::string& jump_label)
                 {
                     detail::print_error("invalid octal number: " + jump_label, "masm");
                     throw std::runtime_error("invalid_octal");
-
-                    return false;
                 }
             }
 
@@ -747,19 +749,23 @@ static bool masm_write_number(std::size_t pos, std::string& jump_label)
 
 static void masm_read_instruction(std::string& line, const std::string& file)
 {
-    for (auto& opcodes : kOpcodes64x0)
+    if (ParserKit::find_word(line, "__export"))
+        return;
+
+    for (auto& opcode64x0 : kOpcodes64x0)
     {
-        if (ParserKit::find_word(line, opcodes.fName))
+        // strict check here
+        if (ParserKit::find_word(line, opcode64x0.fName))
         {
-            std::string name(opcodes.fName);
+            std::string name(opcode64x0.fName);
             std::string jump_label, cpy_jump_label;
 
-            kBytes.emplace_back(opcodes.fOpcode);
-            kBytes.emplace_back(opcodes.fFunct3);
-            kBytes.emplace_back(opcodes.fFunct7);
+            kBytes.emplace_back(opcode64x0.fOpcode);
+            kBytes.emplace_back(opcode64x0.fFunct3);
+            kBytes.emplace_back(opcode64x0.fFunct7);
 
             // check funct7
-            switch (opcodes.fFunct7)
+            switch (opcode64x0.fFunct7)
             {
                 // reg to reg means register to register transfer operation.
                 case kAsmRegToReg:
@@ -784,6 +790,16 @@ static void masm_read_instruction(std::string& line, const std::string& file)
 
                             if (isdigit(line[line_index + 2]))
                                 reg_str += line[line_index + 2];
+
+                            if (kOutputArch == CompilerKit::kPefArch64000)
+                            {
+                                if (isdigit(line[line_index + 3]))
+                                {
+                                    reg_str += line[line_index + 3];
+                                    detail::print_error("invalid register index, r" + reg_str + "\nnote: 64x0 accepts registers from r0 to r20.", file);
+                                    throw std::runtime_error("invalid_register_index");
+                                }
+                            }
                             
                             std::size_t reg_index = strtoq(
                                 reg_str.c_str(),
@@ -808,7 +824,7 @@ static void masm_read_instruction(std::string& line, const std::string& file)
                     }
                     
                     // we're not in immediate addressing, reg to reg.
-                    if (opcodes.fFunct7 != kAsmImmediate)
+                    if (opcode64x0.fFunct7 != kAsmImmediate)
                     {
                         // remember! register to register!
                         if (found_some == 1)
@@ -846,13 +862,17 @@ static void masm_read_instruction(std::string& line, const std::string& file)
                 name == "stw" ||
                 name == "ldw" ||
                 name == "lda" ||
-                name == "sta")
+                name == "sta" ||
+                name == "add" ||
+                name == "dec")
             {
                 auto where_string = name;
 
                 if (name == "stw" ||
                     name == "ldw" ||
-                    name == "lda")
+                    name == "lda" ||
+                    name == "add" ||
+                    name == "dec")
                     where_string = ",";
 
                 jump_label = line.substr(line.find(where_string) + where_string.size());
@@ -878,8 +898,6 @@ static void masm_read_instruction(std::string& line, const std::string& file)
                     {
                         detail::print_error("invalid combination of opcode and operands.\nhere ->" + line, file);
                         throw std::runtime_error("invalid_comb_op_ops");
-
-                        break;
                     }
                     
                     goto masm_write_label;
@@ -891,12 +909,11 @@ static void masm_read_instruction(std::string& line, const std::string& file)
                     {
                         detail::print_error("invalid usage __import on 'sta', here: " + line, file);
                         throw std::runtime_error("invalid_sta_usage");
-                        break;
                     }
                 }
             }
 
-            // if jump to branch
+            // This is the case where we jump to a label, it is also used as a goto.
             if (name == "jb")
             {
 masm_write_label:
@@ -908,14 +925,14 @@ masm_write_label:
                     cpy_jump_label.find("__import") == std::string::npos &&
                     name == "jb")
                 {
-                    detail::print_error("__import not found on jump label, please add one.", file.c_str());
+                    detail::print_error("__import not found on jump label, please add one.", file);
                     throw std::runtime_error("import_jmp_lbl");
                 }
                 else if (cpy_jump_label.find("__import") != std::string::npos)
                 { 
                     if (name == "sta")
                     {
-                        detail::print_error("__import is not allowed on a sta operation.", file.c_str());
+                        detail::print_error("__import is not allowed on a sta operation.", file);
                         throw std::runtime_error("import_sta_op");
                     }
 

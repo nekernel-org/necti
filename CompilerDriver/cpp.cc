@@ -7,8 +7,8 @@
  * 	========================================================
  */
 
-#include <C++Kit/StdKit/ErrorID.hpp>
-#include <C++Kit/ParserKit.hpp>
+#include <CompilerKit/StdKit/ErrorID.hpp>
+#include <CompilerKit/ParserKit.hpp>
 #include <sstream>
 #include <iostream>
 #include <fstream>
@@ -58,8 +58,8 @@ namespace details
 
 		CXXKIT_COPY_DEFAULT(cpp_pragma);
 
-		std::string fMacroName{ "" };
-		Int32(*fParse)(std::string& line, std::ifstream& hdr_file, std::ofstream& pp_out);
+		std::string fMacroName;
+		cpp_parser_fn_t fParse;
 
 	};
 }
@@ -144,15 +144,15 @@ int32_t cpp_parse_if_condition(details::cpp_macro_condition& cond,
 
 	std::string number;
 
-	for (auto& macro : kMacros)
+	for (auto& macro_num : kMacros)
 	{
-		if (substr_macro.find(macro.fName) != std::string::npos)
+		if (substr_macro.find(macro_num.fName) != std::string::npos)
 		{
-			for (size_t i = 0; i < macro.fName.size(); ++i)
+			for (size_t i = 0; i < macro_num.fName.size(); ++i)
 			{
-				if (isdigit(macro.fValue[i]))
+				if (isdigit(macro_num.fValue[i]))
 				{
-					number += macro.fValue[i];
+					number += macro_num.fValue[i];
 				}
 				else
 				{
@@ -287,9 +287,7 @@ void cpp_parse_file(std::ifstream& hdr_file, std::ofstream& pp_out)
 	std::string line_after_include;
 
 	bool inactive_code = false;
-	bool comment = false;
 	bool defined = false;
-	bool else_branch = false;
 
 	try
 	{
@@ -473,15 +471,15 @@ void cpp_parse_file(std::ifstream& hdr_file, std::ofstream& pp_out)
 							
 							std::string symbol;
 
-							for (size_t i = 0; i < macro.fValue.size(); i++)
+							for (char i : macro.fValue)
 							{
-								if (macro.fValue[i] == '(')
+								if (i == '(')
 									break;
 
-								if (macro.fValue[i] == '\\')
+								if (i == '\\')
 									continue;
 								
-								symbol += macro.fValue[i];
+								symbol += i;
 							}
 							
 							hdr_line.replace(hdr_line.find(macro.fName), macro.fName.size(), symbol);
@@ -596,8 +594,6 @@ void cpp_parse_file(std::ifstream& hdr_file, std::ofstream& pp_out)
 
 					continue;
 				}
-
-				else_branch = true;
 			}
 			else if (hdr_line[0] == '#' &&
 				hdr_line.find("ifdef") != std::string::npos)
@@ -845,7 +841,11 @@ kIncludeFile:
 
 					for (auto& include : kIncludes)
 					{
-						std::ifstream header(include + '/' + path);
+                        std::string header_path = include;
+                        header_path.push_back('/');
+                        header_path += path;
+
+                        std::ifstream header(header_path);
 
 						if (!header.is_open())
 							continue;
@@ -857,7 +857,7 @@ kIncludeFile:
 						break;
 					}
 
-					if (open == false)
+					if (!open)
 					{
 						throw std::runtime_error("cpp: no such include file: " + path);
 					}

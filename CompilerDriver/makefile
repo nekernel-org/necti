@@ -8,7 +8,7 @@
  #
 
 LINK_CC=g++ -std=c++20
-LINK_INC=-I../ -I../C++Kit
+LINK_INC=-I../ -I../CompilerKit
 LINK_SRC=ld.cc
 LINK_OUTPUT=bin/ld
 LINK_ALT_OUTPUT=bin/mld
@@ -19,16 +19,16 @@ PP_OUTPUT=bin/cpp
 CC2_OUTPUT=bin/cppfront
 CC2_SRC=cc2/source/cppfront.cpp
 
-CC_SRC=ccplus.cc ../C++Kit/StdKit/*.cc ../C++Kit/AsmKit/*.cc
+CC_SRC=ccplus.cc ../CompilerKit/StdKit/*.cc ../CompilerKit/AsmKit/*.cc
 CC_OUTPUT=bin/ccplus
 
-CC_SRC=cc.cc ../C++Kit/StdKit/*.cc ../C++Kit/AsmKit/*.cc
+CC_SRC=cc.cc ../CompilerKit/StdKit/*.cc ../CompilerKit/AsmKit/*.cc
 CC_OUTPUT=bin/cc
 
-CXX_SRC=ccplus.cc ../C++Kit/StdKit/*.cc ../C++Kit/AsmKit/*.cc
+CXX_SRC=ccplus.cc ../CompilerKit/StdKit/*.cc ../CompilerKit/AsmKit/*.cc
 CXX_OUTPUT=bin/ccplus
 
-MASM_SRC=masm.cc ../C++Kit/StdKit/*.cc ../C++Kit/AsmKit/*.cc
+MASM_SRC=masm.cc ../CompilerKit/StdKit/*.cc ../CompilerKit/AsmKit/*.cc
 MASM_OUTPUT=bin/masm
 
 .PHONY: all

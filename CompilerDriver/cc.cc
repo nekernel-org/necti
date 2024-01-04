@@ -13,8 +13,8 @@
 #include <fstream>
 #include <iostream>
 #include <uuid/uuid.h>
-#include <C++Kit/AsmKit/Arch/64k.hpp>
-#include <C++Kit/ParserKit.hpp>
+#include <CompilerKit/AsmKit/Arch/64k.hpp>
+#include <CompilerKit/ParserKit.hpp>
 
 #define kOk 0
 
@@ -134,7 +134,7 @@ static std::string kRegisterPrefix = kAsmRegisterPrefix;
 /////////////////////////////////////////
 
 static std::vector<std::string> kFileList;
-static CxxKit::AssemblyFactory kFactory;
+static CompilerKit::AssemblyFactory kFactory;
 static bool kInStruct = false;
 static bool kOnWhileLoop = false;
 static bool kOnForLoop = false;
@@ -1619,7 +1619,7 @@ next:
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
-class AssemblyMountpointClang final : public CxxKit::AssemblyMountpoint
+class AssemblyMountpointClang final : public CompilerKit::AssemblyMountpoint
 {
 public:
     explicit AssemblyMountpointClang() = default;
@@ -1627,9 +1627,9 @@ public:
 
     CXXKIT_COPY_DEFAULT(AssemblyMountpointClang);
 
-    [[maybe_unused]] static Int32 Arch() noexcept { return CxxKit::AssemblyFactory::kArchRISCV; }
+    [[maybe_unused]] static Int32 Arch() noexcept { return CompilerKit::AssemblyFactory::kArchRISCV; }
 
-    Int32 CompileToFormat(CxxKit::StringView& src, Int32 arch) override
+    Int32 CompileToFormat(CompilerKit::StringView& src, Int32 arch) override
     {
         if (arch != AssemblyMountpointClang::Arch())
             return -1;
@@ -1657,7 +1657,7 @@ public:
 
         kState.fOutputAssembly = std::make_unique<std::ofstream>(dest);
 
-        auto fmt = CxxKit::current_date();
+        auto fmt = CompilerKit::current_date();
 
         (*kState.fOutputAssembly) << "# Path: " << src_file << "\n";
         (*kState.fOutputAssembly) << "# Language: MP-UX Assembly\n";
@@ -1687,6 +1687,10 @@ public:
             return -1;
 
         std::vector<std::string> keywords = { "ldw", "stw", "lda", "sta", "add", "dec", "mv"};
+
+        ///
+        /// Replace, optimize, fix assembly output.
+        ///
 
         for (auto& leaf : kState.fSyntaxTree->fLeafList)
         {
@@ -1835,7 +1839,7 @@ int main(int argc, char** argv)
                 delete kFactory.Unmount();
 
                 kFactory.Mount(new AssemblyMountpointClang());
-                kMachine = CxxKit::AssemblyFactory::kArchRISCV;
+                kMachine = CompilerKit::AssemblyFactory::kArchRISCV;
 
                 continue;
             }
@@ -1875,7 +1879,7 @@ int main(int argc, char** argv)
 
         kFileList.emplace_back(argv[index]);
 
-        CxxKit::StringView srcFile = CxxKit::StringBuilder::Construct(argv[index]);
+        CompilerKit::StringView srcFile = CompilerKit::StringBuilder::Construct(argv[index]);
 
         if (strstr(argv[index], kExt) == nullptr)
         {

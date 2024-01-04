@@ -15,8 +15,8 @@
 #include <stack>
 #include <utility>
 #include <uuid/uuid.h>
-#include <C++Kit/AsmKit/Arch/64k.hpp>
-#include <C++Kit/ParserKit.hpp>
+#include <CompilerKit/AsmKit/Arch/64k.hpp>
+#include <CompilerKit/ParserKit.hpp>
 
 #define kOk 0
 
@@ -131,7 +131,7 @@ static std::vector<std::string> kKeywords;
 /////////////////////////////////////////
 
 static std::vector<std::string> kFileList;
-static CxxKit::AssemblyFactory kFactory;
+static CompilerKit::AssemblyFactory kFactory;
 static bool kInStruct = false;
 static bool kOnWhileLoop = false;
 static bool kOnForLoop = false;
@@ -220,7 +220,7 @@ bool CompilerBackendClang::Compile(const std::string& text, const char* file)
     auto syntax_tree = ParserKit::SyntaxLeafList::SyntaxLeaf();
 
     syntax_tree.fUserData = text;
-    kState.fSyntaxTree->fLeafList.push_back(syntax_tree);
+    kState.fSyntaxTree->fLeafList.emplace_back(syntax_tree);
 
     std::string text_cpy = text;
 
@@ -230,7 +230,7 @@ bool CompilerBackendClang::Compile(const std::string& text, const char* file)
     {
         while (text_cpy.find(keyword) != std::string::npos)
         {
-            keywords_list.push_back(std::make_pair(keyword, index));
+            keywords_list.emplace_back(std::make_pair(keyword, index));
             ++index;
 
             text_cpy.erase(text_cpy.find(keyword), keyword.size());
@@ -242,7 +242,7 @@ bool CompilerBackendClang::Compile(const std::string& text, const char* file)
     for (auto& keyword : keywords_list)
     {
         syntax_tree.fUserData = keyword.first;
-        kState.fSyntaxTree->fLeafList.push_back(syntax_tree);
+        kState.fSyntaxTree->fLeafList.emplace_back(syntax_tree);
 
         std::cout << keyword.first << "\n";
     }
@@ -258,7 +258,7 @@ bool CompilerBackendClang::Compile(const std::string& text, const char* file)
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
-class AssemblyMountpointClang final : public CxxKit::AssemblyMountpoint
+class AssemblyMountpointClang final : public CompilerKit::AssemblyMountpoint
 {
 public:
     explicit AssemblyMountpointClang() = default;
@@ -266,9 +266,9 @@ public:
 
     CXXKIT_COPY_DEFAULT(AssemblyMountpointClang);
 
-    [[maybe_unused]] static Int32 Arch() noexcept { return CxxKit::AssemblyFactory::kArchRISCV; }
+    [[maybe_unused]] static Int32 Arch() noexcept { return CompilerKit::AssemblyFactory::kArchRISCV; }
 
-    Int32 CompileToFormat(CxxKit::StringView& src, Int32 arch) override
+    Int32 CompileToFormat(CompilerKit::StringView& src, Int32 arch) override
     {
         if (arch != AssemblyMountpointClang::Arch())
             return -1;
@@ -296,7 +296,7 @@ public:
 
         kState.fOutputAssembly = std::make_unique<std::ofstream>(dest);
 
-        auto fmt = CxxKit::current_date();
+        auto fmt = CompilerKit::current_date();
 
         (*kState.fOutputAssembly) << "# Path: " << src_file << "\n";
         (*kState.fOutputAssembly) << "# Language: MP-UX Assembly\n";
@@ -304,7 +304,7 @@ public:
 
         ParserKit::SyntaxLeafList syntax;
 
-        kState.fSyntaxTreeList.push_back(syntax);
+        kState.fSyntaxTreeList.emplace_back(syntax);
         kState.fSyntaxTree = &kState.fSyntaxTreeList[kState.fSyntaxTreeList.size() - 1];
 
         std::string source;
@@ -338,7 +338,7 @@ public:
         {
             if (leaf.fUserData == "{")
             {
-                scope.push_back({});
+                scope.emplace_back();
             }
 
             if (leaf.fUserData == "{")
@@ -447,7 +447,7 @@ public:
                 continue;
             }
 
-            lines.push_back(leaf.fUserData);
+            lines.emplace_back(leaf.fUserData);
         }
 
         for (auto& leaf : kState.fSyntaxTree->fLeafList)
@@ -483,59 +483,59 @@ static void cxx_print_help()
 
 int main(int argc, char** argv)
 {
-    kKeywords.push_back("auto");
-    kKeywords.push_back("else");
-    kKeywords.push_back("break");
-    kKeywords.push_back("switch");
-    kKeywords.push_back("enum");
-    kKeywords.push_back("register");
-    kKeywords.push_back("do");
-    kKeywords.push_back("return");
-    kKeywords.push_back("if");
-    kKeywords.push_back("default");
-    kKeywords.push_back("struct");
-    kKeywords.push_back("_Packed");
-    kKeywords.push_back("extern");
-    kKeywords.push_back("volatile");
-    kKeywords.push_back("static");
-    kKeywords.push_back("for");
-    kKeywords.push_back("class");
-    kKeywords.push_back("{");
-    kKeywords.push_back("}");
-    kKeywords.push_back("(");
-    kKeywords.push_back(")");
-    kKeywords.push_back("char");
-    kKeywords.push_back("int");
-    kKeywords.push_back("short");
-    kKeywords.push_back("long");
-    kKeywords.push_back("float");
-    kKeywords.push_back("double");
-    kKeywords.push_back("unsigned");
-    kKeywords.push_back("__export__");
-    kKeywords.push_back("__packed__");
-    kKeywords.push_back("namespace");
-    kKeywords.push_back("while");
-    kKeywords.push_back("sizeof");
-    kKeywords.push_back("private");
-    kKeywords.push_back("->");
-    kKeywords.push_back(".");
-    kKeywords.push_back("::");
-    kKeywords.push_back("*");
-    kKeywords.push_back("+");
-    kKeywords.push_back("-");
-    kKeywords.push_back("/");
-    kKeywords.push_back("=");
-    kKeywords.push_back("==");
-    kKeywords.push_back("!=");
-    kKeywords.push_back(">=");
-    kKeywords.push_back("<=");
-    kKeywords.push_back(">");
-    kKeywords.push_back("<");
-    kKeywords.push_back(":");
-    kKeywords.push_back(",");
-    kKeywords.push_back(";");
-    kKeywords.push_back("public");
-    kKeywords.push_back("protected");
+    kKeywords.emplace_back("auto");
+    kKeywords.emplace_back("else");
+    kKeywords.emplace_back("break");
+    kKeywords.emplace_back("switch");
+    kKeywords.emplace_back("enum");
+    kKeywords.emplace_back("register");
+    kKeywords.emplace_back("do");
+    kKeywords.emplace_back("return");
+    kKeywords.emplace_back("if");
+    kKeywords.emplace_back("default");
+    kKeywords.emplace_back("struct");
+    kKeywords.emplace_back("_Packed");
+    kKeywords.emplace_back("extern");
+    kKeywords.emplace_back("volatile");
+    kKeywords.emplace_back("static");
+    kKeywords.emplace_back("for");
+    kKeywords.emplace_back("class");
+    kKeywords.emplace_back("{");
+    kKeywords.emplace_back("}");
+    kKeywords.emplace_back("(");
+    kKeywords.emplace_back(")");
+    kKeywords.emplace_back("char");
+    kKeywords.emplace_back("int");
+    kKeywords.emplace_back("short");
+    kKeywords.emplace_back("long");
+    kKeywords.emplace_back("float");
+    kKeywords.emplace_back("double");
+    kKeywords.emplace_back("unsigned");
+    kKeywords.emplace_back("__export__");
+    kKeywords.emplace_back("__packed__");
+    kKeywords.emplace_back("namespace");
+    kKeywords.emplace_back("while");
+    kKeywords.emplace_back("sizeof");
+    kKeywords.emplace_back("private");
+    kKeywords.emplace_back("->");
+    kKeywords.emplace_back(".");
+    kKeywords.emplace_back("::");
+    kKeywords.emplace_back("*");
+    kKeywords.emplace_back("+");
+    kKeywords.emplace_back("-");
+    kKeywords.emplace_back("/");
+    kKeywords.emplace_back("=");
+    kKeywords.emplace_back("==");
+    kKeywords.emplace_back("!=");
+    kKeywords.emplace_back(">=");
+    kKeywords.emplace_back("<=");
+    kKeywords.emplace_back(">");
+    kKeywords.emplace_back("<");
+    kKeywords.emplace_back(":");
+    kKeywords.emplace_back(",");
+    kKeywords.emplace_back(";");
+    kKeywords.emplace_back("public");
+    kKeywords.emplace_back("protected");
 
     bool skip = false;
 
@@ -584,7 +584,7 @@ int main(int argc, char** argv)
                 delete kFactory.Unmount();
 
                 kFactory.Mount(new AssemblyMountpointClang());
-                kMachine = CxxKit::AssemblyFactory::kArchRISCV;
+                kMachine = CompilerKit::AssemblyFactory::kArchRISCV;
 
                 continue;
             }
@@ -624,7 +624,7 @@ int main(int argc, char** argv)
 
         kFileList.emplace_back(argv[index]);
 
-        CxxKit::StringView srcFile = CxxKit::StringBuilder::Construct(argv[index]);
+        CompilerKit::StringView srcFile = CompilerKit::StringBuilder::Construct(argv[index]);
 
         if (strstr(argv[index], kExt) == nullptr)
         {

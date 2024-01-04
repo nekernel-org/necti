@@ -2,7 +2,7 @@
 /*
  *	========================================================
  *
- *	CxxKit
+ *	CompilerKit
  * 	Copyright Western Company, all rights reserved.
  *
  * 	========================================================
@@ -10,9 +10,9 @@
 
 #pragma once
 
-#include <C++Kit/Defines.hpp>
+#include <CompilerKit/Defines.hpp>
 
-namespace CxxKit
+namespace CompilerKit
 {
     // @author Western Company
     // @brief Reference class, refers to a pointer of data in static memory.
@@ -86,4 +86,4 @@ namespace CxxKit
         Ref<T> m_Ref{ nullptr };
         
     };
-} // namespace CxxKit
+} // namespace CompilerKit

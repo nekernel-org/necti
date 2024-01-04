@@ -15,7 +15,7 @@
 //! @file AsmKit.cpp
 //! @brief AssemblyKit
 
-namespace CxxKit
+namespace CompilerKit
 {
 	//! @brief Compile for specific format (ELF, PEF, ZBIN)
 	Int32 AssemblyFactory::Compile(StringView& sourceFile, 

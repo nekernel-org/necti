@@ -16,17 +16,17 @@
 // It will be loaded when program will start up!
 // Unlike $$dynamic$$ these containers will be loaded before CUS will do its job.
 
-#include <C++Kit/StdKit/ErrorID.hpp>
+#include <CompilerKit/StdKit/ErrorID.hpp>
 
 #include <fstream>
 #include <iostream>
 #include <uuid/uuid.h>
 
 //! Portable Executable Format
-#include <C++Kit/StdKit/PEF.hpp>
+#include <CompilerKit/StdKit/PEF.hpp>
 
 //! Advanced Executable Object Format
-#include <C++Kit/StdKit/AE.hpp>
+#include <CompilerKit/StdKit/AE.hpp>
 
 //! @brief standard PEF entry.
 #define kPefStart    "__start"
@@ -47,15 +47,15 @@
 
 enum { kAbiMpUx = 0x5046 /* PF */ };
 
-std::ofstream& operator<<(std::ofstream& fp, CxxKit::PEFContainer& container)
+std::ofstream& operator<<(std::ofstream& fp, CompilerKit::PEFContainer& container)
 {
-    fp.write((char*)&container, sizeof(CxxKit::PEFContainer));
+    fp.write((char*)&container, sizeof(CompilerKit::PEFContainer));
     return fp;
 }
 
-std::ofstream& operator<<(std::ofstream& fp, CxxKit::PEFCommandHeader& container)
+std::ofstream& operator<<(std::ofstream& fp, CompilerKit::PEFCommandHeader& container)
 {
-    fp.write((char*)&container, sizeof(CxxKit::PEFCommandHeader));
+    fp.write((char*)&container, sizeof(CompilerKit::PEFCommandHeader));
     return fp;
 }
 
@@ -109,7 +109,7 @@ int main(int argc, char** argv)
         //
         else if (StringCompare(argv[i], "-m64000") == 0)
         {
-            kArch = CxxKit::kPefArch64000;
+            kArch = CompilerKit::kPefArch64000;
         
             continue;
         }
@@ -184,12 +184,12 @@ int main(int argc, char** argv)
         return CXXKIT_EXEC_ERROR;
     }
 
-    CxxKit::PEFContainer pef_container{};
+    CompilerKit::PEFContainer pef_container{};
 
     int32_t archs = kArch;
 
     pef_container.Count = 0UL;
-    pef_container.Kind = CxxKit::kPefKindExec;
+    pef_container.Kind = CompilerKit::kPefKindExec;
     pef_container.SubCpu = kSubArch;
     pef_container.Linker = kPefLinkerNumId; // Western Company Linker
     pef_container.Abi = kAbi; // Multi-Processor UX ABI
@@ -200,7 +200,7 @@ int main(int argc, char** argv)
 
     // specify the start address, can be 0x10000
     pef_container.Start = kPefDeaultOrg;
-    pef_container.HdrSz = sizeof(CxxKit::PEFContainer);
+    pef_container.HdrSz = sizeof(CompilerKit::PEFContainer);
 
     std::ofstream output_fc(kOutput, std::ofstream::binary);
 
@@ -216,18 +216,18 @@ int main(int argc, char** argv)
 
     //! Read AE to convert as PEF.
 
-    std::vector<CxxKit::PEFCommandHeader> pef_command_hdrs;
+    std::vector<CompilerKit::PEFCommandHeader> pef_command_hdrs;
 
     for (const auto& i : kObjectList)
     {
         if (!std::filesystem::exists(i))
             continue;
 
-        CxxKit::AEHeader hdr{};
+        CompilerKit::AEHeader hdr{};
         
         std::ifstream input_object(i, std::ifstream::binary);
 
-        input_object.read((char*)&hdr, sizeof(CxxKit::AEHeader));
+        input_object.read((char*)&hdr, sizeof(CompilerKit::AEHeader));
     
         auto ae_header = hdr;
         
@@ -257,7 +257,7 @@ int main(int argc, char** argv)
 
         if (ae_header.fMagic[0] == kAEMag0 &&
             ae_header.fMagic[1] == kAEMag1 &&
-	        ae_header.fSize == sizeof(CxxKit::AEHeader))
+	        ae_header.fSize == sizeof(CompilerKit::AEHeader))
         {
             // append arch type to archs varaible.
             archs |= ae_header.fArch;
@@ -268,16 +268,16 @@ int main(int argc, char** argv)
 
             pef_container.Count = cnt;
 
-            char* raw_ae_records = new char[cnt * sizeof(CxxKit::AERecordHeader)];
-            memset(raw_ae_records, 0, cnt * sizeof(CxxKit::AERecordHeader));
+            char* raw_ae_records = new char[cnt * sizeof(CompilerKit::AERecordHeader)];
+            memset(raw_ae_records, 0, cnt * sizeof(CompilerKit::AERecordHeader));
 
-            input_object.read(raw_ae_records, std::streamsize(cnt * sizeof(CxxKit::AERecordHeader)));
+            input_object.read(raw_ae_records, std::streamsize(cnt * sizeof(CompilerKit::AERecordHeader)));
 
-            auto* ae_records = (CxxKit::AERecordHeader*)raw_ae_records;
+            auto* ae_records = (CompilerKit::AERecordHeader*)raw_ae_records;
 
             for (size_t ae_record_index = 0; ae_record_index < cnt; ++ae_record_index)
             {
-				CxxKit::PEFCommandHeader command_header{ 0 };
+				CompilerKit::PEFCommandHeader command_header{ 0 };
 
 				memcpy(command_header.Name, ae_records[ae_record_index].fName, kPefNameLen);
 
@@ -440,7 +440,7 @@ ld_continue_search:
 
     // step 4: write some pef commands.
 
-    CxxKit::PEFCommandHeader date_header{};
+    CompilerKit::PEFCommandHeader date_header{};
 
     time_t timestamp = time(nullptr);
 
@@ -450,24 +450,24 @@ ld_continue_search:
     strcpy(date_header.Name, timestamp_str.c_str());
 
     date_header.Flags = 0;
-    date_header.Kind = CxxKit::kPefData;
+    date_header.Kind = CompilerKit::kPefData;
     date_header.Offset = output_fc.tellp();
     date_header.Size = timestamp_str.size();
 
     output_fc << date_header;
 
-    CxxKit::PEFCommandHeader abi_header{};
+    CompilerKit::PEFCommandHeader abi_header{};
 
     memcpy(abi_header.Name, kPefAbiId, strlen(kPefAbiId));
 
     abi_header.Size = strlen(kPefAbiId);
     abi_header.Offset = output_fc.tellp();
     abi_header.Flags = 0;
-    abi_header.Kind = CxxKit::kPefLinkerID;
+    abi_header.Kind = CompilerKit::kPefLinkerID;
 
     output_fc << abi_header;
 
-    CxxKit::PEFCommandHeader uuid_header{};
+    CompilerKit::PEFCommandHeader uuid_header{};
 
     uuid_t uuid{ 0 };
     uuid_generate_random(uuid);

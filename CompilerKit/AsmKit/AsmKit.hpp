@@ -10,10 +10,10 @@
 #pragma once
 
 #include <CompilerKit/Compiler.hpp>
-#include <C++Kit/Defines.hpp>
-#include <C++Kit/StdKit/String.hpp>
+#include <CompilerKit/Defines.hpp>
+#include <CompilerKit/StdKit/String.hpp>
 
-namespace CxxKit
+namespace CompilerKit
 {
 	//
 	//	@brief Frontend to Assembly mountpoint.

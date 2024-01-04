@@ -9,7 +9,7 @@
 
 #pragma once
 
-#include <C++Kit/Defines.hpp>
+#include <CompilerKit/Defines.hpp>
 
 #define kPefMagic    "PEF"
 #define kPefMagicFat "FEP"
@@ -21,7 +21,7 @@
 
 // Protable Executable Format, a format designed for any computer.
 
-namespace CxxKit
+namespace CompilerKit
 {
     enum
     {

@@ -9,11 +9,11 @@
 
 #pragma once
 
-#include <C++Kit/AsmKit/AsmKit.hpp>
+#include <CompilerKit/AsmKit/AsmKit.hpp>
 
 namespace ParserKit
 {
-    using namespace CxxKit;
+    using namespace CompilerKit;
 
     class CompilerBackend
     {
@@ -83,5 +83,11 @@ namespace ParserKit
 
         return not_part_of_word(index - 1) &&
                 not_part_of_word(index + needle.size());
+    }
+
+    inline bool find_word_strict(const std::string& haystack, const std::string& needle) noexcept
+    {
+        return ParserKit::find_word(haystack, needle) &&
+              isspace(haystack[haystack.find(needle) + needle.size() + 1]);
     }
 }

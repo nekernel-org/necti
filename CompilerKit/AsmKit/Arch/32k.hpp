@@ -9,7 +9,7 @@
 
 #pragma once
 
-#include <C++Kit/Defines.hpp>
+#include <CompilerKit/Defines.hpp>
 
 // @brief 32x0 support.
 // @file Arch/64k.hpp

@@ -88,7 +88,7 @@
 #include <ctime>
 #include <string>
 
-namespace CxxKit
+namespace CompilerKit
 {
     inline constexpr int BASE_YEAR = 1900;
 

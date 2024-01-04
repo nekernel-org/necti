@@ -1,7 +1,7 @@
 /*
  *	========================================================
  *
- *	CxxKit
+ *	CompilerKit
  * 	Copyright Western Company, all rights reserved.
  *
  * 	========================================================
@@ -9,10 +9,10 @@
 
 #pragma once
 
-#include <C++Kit/Defines.hpp>
-#include <C++Kit/StdKit/ErrorOr.hpp>
+#include <CompilerKit/Defines.hpp>
+#include <CompilerKit/StdKit/ErrorOr.hpp>
 
-namespace CxxKit
+namespace CompilerKit
 {
     class StringView final
     {
@@ -69,4 +69,4 @@ namespace CxxKit
         static bool Equals(const char *lhs, const char *rhs);
 
     };
-} // namespace CxxKit
+} // namespace CompilerKit

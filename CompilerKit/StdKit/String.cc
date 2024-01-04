@@ -1,7 +1,7 @@
 /*
  *	========================================================
  *
- *	CxxKit
+ *	CompilerKit
  * 	Copyright Western Company, all rights reserved.
  *
  * 	========================================================
@@ -10,7 +10,7 @@
 #include "String.hpp"
 #include <utility>
 
-namespace CxxKit
+namespace CompilerKit
 {
     CharType* StringView::Data()
     {
@@ -227,4 +227,4 @@ namespace CxxKit
 
         return *this;
     }
-} // namespace CxxKit
+} // namespace CompilerKit

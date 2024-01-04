@@ -15,5 +15,6 @@ bin/SourceUnitTest/*.cxx.pp
 bin/SourceUnitTest/*.cxx
 bin/SourceUnitTest/*.masm
 bin/SourceUnitTest/*.h
+bin/SourceUnitTest/*.64x
 
 *.cxx.pp
