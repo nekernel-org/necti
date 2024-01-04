@@ -156,7 +156,7 @@ static std::vector<detail::CompilerType> kCompilerVariables;
 static std::vector<std::string>          kCompilerFunctions;
 static std::vector<detail::CompilerType> kCompilerTypes;
 
-// @brief this hook code before the begin/end command.
+// @brief this hook code before the start/end command.
 static std::string kAddIfAnyBegin;
 static std::string kAddIfAnyEnd;
 static std::string kLatestVar;
@@ -1291,7 +1291,7 @@ cc_next_loop:
 
 cc_next:
 
-    // extern doesnt declare anything, it imports a variable.
+    // extern does not declare anything, it imports a variable.
     // so that's why it's not declare upper.
     if (ParserKit::find_word(ln, "extern"))
     {
@@ -1668,7 +1668,7 @@ public:
             if (auto err = kCompilerBackend->Check(line_src.c_str(), src.CData());
                 err.empty())
             {
-                kCompilerBackend->Compile(line_src.c_str(), src.CData());
+                kCompilerBackend->Compile(line_src, src.CData());
             }
             else
             {

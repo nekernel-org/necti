@@ -1,13 +1,13 @@
  #
  #	========================================================
  #
- #	MP-UX C Compiler
+ #	MP-UX Tools
  # 	Copyright Western Company, all rights reserved.
  #
  # 	========================================================
  #
 
 # build mpcc
-.PHONY: mpcc-build
-mpcc-build:
-	dmd -I../ $(wildcard *.d) -ofmpcc
+.PHONY: build-installer
+build-installer:
+	dmd -I../ install.d -ofinstall.out

@@ -10,9 +10,9 @@
 // @file main.d
 // @brief CLI of the X64000 C/C++ compiler
 
-module cl.main;
+module mpcc.main;
 
-import cl.compiler;
+import mpcc.compiler;
 import std.container.dlist;
 
 ///Authors: Amlal EL Mahrouss

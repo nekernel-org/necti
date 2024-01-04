@@ -7,7 +7,7 @@
  * 	========================================================
  */
 
-module cl.compiler;
+module mpcc.compiler;
 
 ///Authors: amlel
 ///Bugs: None
@@ -84,7 +84,7 @@ public class CompileCommand
                 changed ~= ch;
             }
 
-            changed ~= ".masm";
+            changed ~= ".64x";
 
             mcc_summon_executable("/usr/local/bin/bin/masm -m64000 " ~ changed);
         }
