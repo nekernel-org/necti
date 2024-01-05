@@ -336,8 +336,8 @@ public:
         struct scope_type
         {
             std::vector<std::string> vals;
-            int reg_cnt;
-            int id;
+            int reg_cnt{ 0 };
+            int id{ 0 };
 
             bool operator==(const scope_type& typ) { return typ.id == id; }
         };
