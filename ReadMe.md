@@ -1,8 +1,18 @@
 # MPCC
 ## MP-UX Compiler Collection.
+### Actually contains:
+
 <br>
-Contains of cpp/ccplus/cc/ld/masm, cc/ccplus can output non standard C code!
+cpp: C/C++ preprocessor
+<br>
+ccplus: C++ compiler
+<br>
+cc: C compiler
+<br>
+ld: mp-ux linker
+<br>
+masm: mp-ux assembler
 <br>
 Author: Amlal El Mahrouss
-<br>
-Copyright Western Company, all rights reserved.
+
+##### Copyright Western Company, all rights reserved.
