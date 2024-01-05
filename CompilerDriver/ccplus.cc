@@ -49,13 +49,27 @@ namespace detail
     struct CompilerRegisterMap
     {
         std::string fName;
-        std::string fRegister;
+        std::string fReg;
+    };
+
+    // \brief Offset based struct/class
+    struct CompilerStructMap
+    {
+        std::string fName;
+        std::string fReg;
+        
+        // offset counter
+        std::size_t fOffsetsCnt;
+
+        // offset array
+        std::vector<std::pair<Int32, std::string>> fOffsets;
     };
 
     struct CompilerState
     {
         std::vector<ParserKit::SyntaxLeafList> fSyntaxTreeList;
         std::vector<CompilerRegisterMap> kStackFrame;
+        std::vector<CompilerStructMap> kStructMap;
         ParserKit::SyntaxLeafList* fSyntaxTree{ nullptr };
         std::unique_ptr<std::ofstream> fOutputAssembly;
         std::string fLastFile;

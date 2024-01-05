@@ -18,6 +18,8 @@
 
 #define kOk 0
 
+// TODO: support structs and ., ->
+
 /* Optimized C driver */
 /* This is part of MP-UX C SDK. */
 /* (c) Western Company */
@@ -44,22 +46,35 @@
 
 namespace detail
 {
+    // \brief name to register struct.
     struct CompilerRegisterMap
     {
         std::string fName;
-        std::string fRegister;
+        std::string fReg;
     };
 
-    struct CompilerClass
+    // \brief Map for C structs
+    // \author amlel
+    struct CompilerStructMap
     {
-        CompilerRegisterMap fRootRegister;
-        std::vector<CompilerRegisterMap> fRegisters;
+        // 'my_foo'
+        std::string fName;
+        
+        // if instance: stores a valid register.
+        std::string fReg;
+        
+        // offset count
+        std::size_t fOffsetsCnt;
+
+        // offset array.
+        std::vector<std::pair<Int32, std::string>> fOffsets;
     };
 
     struct CompilerState
     {
         std::vector<ParserKit::SyntaxLeafList> fSyntaxTreeList;
         std::vector<CompilerRegisterMap> kStackFrame;
+        std::vector<CompilerStructMap> kStructMap;
         ParserKit::SyntaxLeafList* fSyntaxTree{ nullptr };
         std::unique_ptr<std::ofstream> fOutputAssembly;
         std::string fLastFile;
@@ -581,6 +596,43 @@ bool CompilerBackendClang::Compile(const std::string& text, const char* file)
             if (_text[text_index] == '=' &&
                 kInStruct)
             {
+                detail::print_error("assignement of value in struct " + _text, file);
+                continue;
+            }
+
+            if (_text[text_index] == ';' &&
+                kInStruct)
+            {
+                bool space_found_ = false;
+                std::string sym;
+
+                for (auto& ch : _text)
+                {
+                    if (ch == ' ')
+                    {
+                        space_found_ = true;
+                    }
+
+                    if (ch == ';')
+                        break;
+
+                    if (space_found_)
+                        sym.push_back(ch);
+                }
+
+                kState.kStructMap[kState.kStructMap.size() - 1].fOffsets.push_back(
+                    std::make_pair(kState.kStructMap[kState.kStructMap.size() - 1].fOffsetsCnt + 4, sym)
+                );
+
+                kState.kStructMap[kState.kStructMap.size() - 1].fOffsetsCnt = kState.kStructMap[kState.kStructMap.size() - 1].fOffsetsCnt + 4;
+
+                continue;
+            }
+
+
+            if (_text[text_index] == '=' &&
+                kInStruct)
+            {
                 continue;
             }
 
@@ -739,7 +791,7 @@ bool CompilerBackendClang::Compile(const std::string& text, const char* file)
             {
                 ++kRegisterCounter;
 
-                kState.kStackFrame.push_back({ .fName = substr, .fRegister = reg });
+                kState.kStackFrame.push_back({ .fName = substr, .fReg = reg });
                 kCompilerVariables.push_back({ .fName = substr });
             }
             
@@ -856,6 +908,11 @@ bool CompilerBackendClang::Compile(const std::string& text, const char* file)
 
             if (_text.find(";") == std::string::npos)
                 kInStruct = true;
+
+            detail::CompilerStructMap struct_map;
+            struct_map.fName = _text.substr(_text.find("struct") + strlen("struct"));
+
+            kState.kStructMap.emplace_back(struct_map);
         }
 
         if (_text[text_index] == 'u')
@@ -911,9 +968,9 @@ bool CompilerBackendClang::Compile(const std::string& text, const char* file)
             symbol_loop += " ";
 
             syntax_tree.fUserValue = "beq ";
-            syntax_tree.fUserValue += kState.kStackFrame[kState.kStackFrame.size() - 2].fRegister;
+            syntax_tree.fUserValue += kState.kStackFrame[kState.kStackFrame.size() - 2].fReg;
             syntax_tree.fUserValue += ",";
-            syntax_tree.fUserValue += kState.kStackFrame[kState.kStackFrame.size() - 1].fRegister;
+            syntax_tree.fUserValue += kState.kStackFrame[kState.kStackFrame.size() - 1].fReg;
             syntax_tree.fUserValue += ", __end%s\njb __continue%s\n__export .text __end%s\njlr\nvoid __export .text __continue%s\njb _L";
             syntax_tree.fUserValue += std::to_string(kBracesCount + 1) + "_" + std::to_string(time_off.raw);
 
@@ -1011,9 +1068,9 @@ bool CompilerBackendClang::Compile(const std::string& text, const char* file)
                     symbol_loop += " ";
 
                     syntax_tree.fUserValue = "beq ";
-                    syntax_tree.fUserValue += kState.kStackFrame[kState.kStackFrame.size() - 2].fRegister;
+                    syntax_tree.fUserValue += kState.kStackFrame[kState.kStackFrame.size() - 2].fReg;
                     syntax_tree.fUserValue += ",";
-                    syntax_tree.fUserValue += kState.kStackFrame[kState.kStackFrame.size() - 1].fRegister;
+                    syntax_tree.fUserValue += kState.kStackFrame[kState.kStackFrame.size() - 1].fReg;
                     syntax_tree.fUserValue += ", __end%s\njb __continue%s\n__export .text __end%s\njlr\nvoid __export .text __continue%s\njb _L";
                     syntax_tree.fUserValue += std::to_string(kBracesCount + 1) + "_" + std::to_string(time_off.raw);
 
@@ -1694,6 +1751,19 @@ public:
 
         for (auto& leaf : kState.fSyntaxTree->fLeafList)
         {
+            std::vector<std::string> access_keywords = { "->", "." };
+
+            for (auto& access_ident : access_keywords)
+            {
+                if (ParserKit::find_word(leaf.fUserValue, access_ident))
+                {
+                    for (auto& struc : kState.kStructMap)
+                    {
+
+                    }
+                }
+            }
+
             for (auto& keyword : keywords)
             {
                 if (ParserKit::find_word(leaf.fUserValue, keyword))
@@ -1730,7 +1800,7 @@ public:
                         if (ParserKit::find_word(leaf.fUserValue, needle))
                         {
                             leaf.fUserValue.replace(leaf.fUserValue.find(needle),
-                                                    needle.size(), reg.fRegister);
+                                                    needle.size(), reg.fReg);
 
                             if (leaf.fUserValue.find("__import") != std::string::npos)
                             {
