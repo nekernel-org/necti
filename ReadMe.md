@@ -1,8 +1,19 @@
 # MPCC
 ## MP-UX Compiler Collection.
+
+### What is this?
+
+It is a suite of compilers, assembler, linker, preprocessor
+In order to help the programmer achieve its task.
+
+### Supported languages
+
+- Optimized C++
+- Optimized C
+- MP-UX Assembler (64x0 syntax)
+
 ### Actually contains:
 
-<br>
 cpp: C/C++ preprocessor
 <br>
 ccplus: C++ compiler
