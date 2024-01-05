@@ -59,7 +59,7 @@ std::ofstream& operator<<(std::ofstream& fp, CompilerKit::PEFCommandHeader& cont
     return fp;
 }
 
-static std::string kOutput = "a.out";
+static std::string kOutput = "a" kPefExt;
 static Int32 kAbi = kAbiMpUx;
 static Int32 kSubArch = kPefNoSubCpu;
 static Int32 kArch = kPefNoCpu;
@@ -126,10 +126,10 @@ int main(int argc, char** argv)
         }
         else if (StringCompare(argv[i], "-shared") == 0)
         {
-            if (kOutput.find(".out") != std::string::npos)
-                kOutput.erase(kOutput.find(".out"), strlen(".out"));
+            if (kOutput.find(kPefExt) != std::string::npos)
+                kOutput.erase(kOutput.find(kPefExt), strlen(kPefExt));
 
-            kOutput += ".lib";
+            kOutput += kPefDylibExt;
 
             is_executable = false;
 

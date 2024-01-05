@@ -79,7 +79,7 @@ namespace CompilerKit
     };
 }
 
-#define kPefExt ".o"
-#define kPefDylibExt ".so"
+#define kPefExt ".out"
+#define kPefDylibExt ".lib"
 #define kPefObjectExt ".o"
 #define kPefDebugExt ".dbg"
