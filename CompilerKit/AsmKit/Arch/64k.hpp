@@ -38,8 +38,6 @@ inline std::vector<CpuCode64x0> kOpcodes64x0 = {
         kAsmOpcodeDecl("jb", 0b1110011, 0b0000011, kAsmJump) // jump to branch
         kAsmOpcodeDecl("jlr", 0b1110011, 0b0000111, kAsmJump) // jump and link return register
         kAsmOpcodeDecl("jrl", 0b1110011, 0b0001111, kAsmJump) // jump to register link
-        kAsmOpcodeDecl("jr", 0b1110011, 0b0001011, kAsmJump) // jump to register
-        kAsmOpcodeDecl("jal", 0b1110011, 0b0000001, kAsmJump)
         kAsmOpcodeDecl("mv", 0b0100011, 0b101, kAsmRegToReg)
         kAsmOpcodeDecl("psh", 0b0111011, 0b0, kAsmImmediate) // push to sp
         kAsmOpcodeDecl("pop", 0b0111011, 0b1, kAsmImmediate) // pop from sp.

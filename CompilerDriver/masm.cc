@@ -561,13 +561,17 @@ static std::string masm_check_line(std::string& line, const std::string& file)
         }
     }
 
-    std::vector<std::string> opcodes_list = { "jb", "psh", "stw", "ldw", "lda", "sta" };
+    // these do take an argument.
+    std::vector<std::string> operands_inst = { "jb", "psh", "stw", "ldw", "lda", "sta" };
+
+    // these don't.
+    std::vector<std::string> filter_inst = { "jlr", "jrl", "scall", "sbreak" };
 
     for (auto& opcode64x0 : kOpcodes64x0)
     {
         if (line.find(opcode64x0.fName) != std::string::npos)
         {
-            for (auto& op : opcodes_list)
+            for (auto& op : operands_inst)
             {
                 // if only instruction found.
                 if (line == op)
@@ -580,12 +584,16 @@ static std::string masm_check_line(std::string& line, const std::string& file)
             }
 
             // if it is like that -> addr1, 0x0
-            if (!isspace(line[line.find(opcode64x0.fName) + strlen(opcode64x0.fName)]))
+            if (auto it = std::find(filter_inst.begin(), filter_inst.end(), opcode64x0.fName);
+                it == filter_inst.cend())
             {
-                err_str += "\nmissing space between ";
-                err_str += opcode64x0.fName;
-                err_str += " and operands.\nhere -> ";
-                err_str += line;
+                if (!isspace(line[line.find(opcode64x0.fName) + strlen(opcode64x0.fName)]))
+                {
+                    err_str += "\nmissing space between ";
+                    err_str += opcode64x0.fName;
+                    err_str += " and operands.\nhere -> ";
+                    err_str += line;
+                }
             }
 
             return err_str;
@@ -617,7 +625,7 @@ namespace detail
     };
 }
 
-static bool masm_write_number(std::size_t pos, std::string& jump_label)
+static bool masm_write_number(const std::size_t& pos, std::string& jump_label)
 {
     if (!isdigit(jump_label[pos]))
         return false;
@@ -942,6 +950,12 @@ masm_write_label:
                 while (cpy_jump_label.find(' ') != std::string::npos)
                 {
                     cpy_jump_label.erase(cpy_jump_label.find(' '), 1);
+                }
+
+                if (cpy_jump_label.size() < 1)
+                {
+                    detail::print_error("label is empty, can't jump on it.", file);
+                    throw std::runtime_error("label_empty");
                 }
 
                 auto mld_reloc_str = std::to_string(cpy_jump_label.size());
