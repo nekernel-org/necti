@@ -46,14 +46,14 @@
 
 namespace detail
 {
-    struct CompilerRegisterMap
+    struct CompilerRegisterMap final
     {
         std::string fName;
         std::string fReg;
     };
 
     // \brief Offset based struct/class
-    struct CompilerStructMap
+    struct CompilerStructMap final
     {
         std::string fName;
         std::string fReg;
@@ -65,7 +65,7 @@ namespace detail
         std::vector<std::pair<Int32, std::string>> fOffsets;
     };
 
-    struct CompilerState
+    struct CompilerState final
     {
         std::vector<ParserKit::SyntaxLeafList> fSyntaxTreeList;
         std::vector<CompilerRegisterMap> kStackFrame;

@@ -47,7 +47,7 @@
 namespace detail
 {
     // \brief name to register struct.
-    struct CompilerRegisterMap
+    struct CompilerRegisterMap final
     {
         std::string fName;
         std::string fReg;
@@ -55,7 +55,7 @@ namespace detail
 
     // \brief Map for C structs
     // \author amlel
-    struct CompilerStructMap
+    struct CompilerStructMap final
     {
         // 'my_foo'
         std::string fName;
@@ -70,7 +70,7 @@ namespace detail
         std::vector<std::pair<Int32, std::string>> fOffsets;
     };
 
-    struct CompilerState
+    struct CompilerState final
     {
         std::vector<ParserKit::SyntaxLeafList> fSyntaxTreeList;
         std::vector<CompilerRegisterMap> kStackFrame;
@@ -118,7 +118,7 @@ namespace detail
         ++kAcceptableErrors;
     }
 
-    struct CompilerType
+    struct CompilerType final
     {
         std::string fName;
         std::string fValue;
@@ -172,7 +172,7 @@ public:
 
 };
 
-static CompilerBackendClang* kCompilerBackend = nullptr;
+static CompilerBackendClang*             kCompilerBackend = nullptr;
 static std::vector<detail::CompilerType> kCompilerVariables;
 static std::vector<std::string>          kCompilerFunctions;
 static std::vector<detail::CompilerType> kCompilerTypes;
@@ -952,62 +952,6 @@ bool CompilerBackendClang::Compile(const std::string& text, const char* file)
             break;
         }
 
-        // while loop
-        if (_text[text_index] == 'w')
-        {
-            if (_text.find("while") == std::string::npos)
-                continue;
-
-            if (_text.find("while") != text_index)
-                continue;
-
-            syntax_tree.fUserValue = "jrl [r32+0x04]";
-
-            std::string symbol_loop = "_loop_while_";
-            symbol_loop += std::to_string(time_off.raw);
-            symbol_loop += " ";
-
-            syntax_tree.fUserValue = "beq ";
-            syntax_tree.fUserValue += kState.kStackFrame[kState.kStackFrame.size() - 2].fReg;
-            syntax_tree.fUserValue += ",";
-            syntax_tree.fUserValue += kState.kStackFrame[kState.kStackFrame.size() - 1].fReg;
-            syntax_tree.fUserValue += ", __end%s\njb __continue%s\nexport .text __end%s\njlr\nvoid export .text __continue%s\njb _L";
-            syntax_tree.fUserValue += std::to_string(kBracesCount + 1) + "_" + std::to_string(time_off.raw);
-
-            while (syntax_tree.fUserValue.find("%s") != std::string::npos)
-            {
-                syntax_tree.fUserValue.replace(syntax_tree.fUserValue.find("%s"), strlen("%s"), symbol_loop);
-            }
-
-            kState.fSyntaxTree->fLeafList.push_back(syntax_tree);
-
-            kOnWhileLoop = true;
-
-            break;
-        }
-
-        if (_text[text_index] == 'f')
-        {
-            if (_text.find("for") == std::string::npos)
-                continue;
-
-            if (_text.find("for") != text_index)
-                continue;
-
-            syntax_tree.fUserValue = "jrl [r32+0x1]\n";
-
-            // actually set registers now.
-
-            auto expr = _text.substr(_text.find("for") + strlen("for"));
-
-            kLatestVar.clear();
-
-            kState.fSyntaxTree->fLeafList.push_back(syntax_tree);
-
-            kOnForLoop = true;
-            break;
-        }
-
         if (_text[text_index] == '+' &&
             _text[text_index+1] == '+')
         {
@@ -1054,37 +998,7 @@ bool CompilerBackendClang::Compile(const std::string& text, const char* file)
             }
             else
             {
-                if (kOnWhileLoop ||
-                    kOnForLoop)
-                {
-                    if (kOnForLoop)
-                        kOnForLoop = false;
-
-                    if (kOnWhileLoop)
-                        kOnWhileLoop = false;
-
-                    std::string symbol_loop = "_loop_for_";
-                    symbol_loop += std::to_string(time_off.raw);
-                    symbol_loop += " ";
-
-                    syntax_tree.fUserValue = "beq ";
-                    syntax_tree.fUserValue += kState.kStackFrame[kState.kStackFrame.size() - 2].fReg;
-                    syntax_tree.fUserValue += ",";
-                    syntax_tree.fUserValue += kState.kStackFrame[kState.kStackFrame.size() - 1].fReg;
-                    syntax_tree.fUserValue += ", __end%s\njb __continue%s\nexport .text __end%s\njlr\nvoid export .text __continue%s\njb _L";
-                    syntax_tree.fUserValue += std::to_string(kBracesCount + 1) + "_" + std::to_string(time_off.raw);
-
-                    while (syntax_tree.fUserValue.find("%s") != std::string::npos)
-                    {
-                        syntax_tree.fUserValue.replace(syntax_tree.fUserValue.find("%s"), strlen("%s"), symbol_loop);
-                    }
-
-                    kState.fSyntaxTree->fLeafList.push_back(syntax_tree);
-                }
-                else
-                {
-                    kState.fSyntaxTree->fLeafList.push_back(syntax_tree);
-                }
+                kState.fSyntaxTree->fLeafList.push_back(syntax_tree);
             }
         }
 
@@ -1801,14 +1715,6 @@ public:
                         {
                             leaf.fUserValue.replace(leaf.fUserValue.find(needle),
                                                     needle.size(), reg.fReg);
-
-                            if (leaf.fUserValue.find("import") != std::string::npos)
-                            {
-                                if (leaf.fUserValue.find("import") < leaf.fUserValue.find(needle))
-                                {
-                                    leaf.fUserValue.erase(leaf.fUserValue.find("import"), strlen("import"));
-                                }
-                            }
 
                             ++cnt;
                         }

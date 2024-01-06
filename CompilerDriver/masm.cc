@@ -801,7 +801,8 @@ static void masm_read_instruction(std::string& line, const std::string& file)
 
                             if (kOutputArch == CompilerKit::kPefArch64000)
                             {
-                                if (isdigit(line[line_index + 3]))
+                                if (isdigit(line[line_index + 3]) &&
+                                    isdigit(line[line_index + 2]))
                                 {
                                     reg_str += line[line_index + 3];
                                     detail::print_error("invalid register index, r" + reg_str + "\nnote: 64x0 accepts registers from r0 to r20.", file);
