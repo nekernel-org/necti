@@ -2,7 +2,7 @@
  *	========================================================
  *
  *	cpp
- * 	Copyright Western Company, all rights reserved.
+ * 	Copyright Mahrouss Logic, all rights reserved.
  *
  * 	========================================================
  */
@@ -930,14 +930,14 @@ int main(int argc, char** argv)
 				if (strcmp(argv[index], "-v") == 0 ||
 					strcmp(argv[index], "--version") == 0)
 				{
-					printf("%s\n", "cpp v1.11, (c) Western Company");
+					printf("%s\n", "cpp v1.11, (c) Mahrouss Logic");
 					return 0;
 				}
 
 				if (strcmp(argv[index], "-h") == 0 ||
 					strcmp(argv[index], "--help") == 0)
 				{
-					printf("%s\n", "cpp v1.11, (c) Western Company");
+					printf("%s\n", "cpp v1.11, (c) Mahrouss Logic");
 					printf("%s\n", "--working-dir: set directory to working path.");
 					printf("%s\n", "--include-dir: add directory to include path.");
 					printf("%s\n", "--define: define macro.");

@@ -2,7 +2,7 @@
  *	========================================================
  *
  *	C++Kit
- * 	Copyright Western Company, all rights reserved.
+ * 	Copyright Mahrouss Logic, all rights reserved.
  *
  * 	========================================================
  */
@@ -123,13 +123,13 @@ int main(int argc, char** argv)
         {
             if (strcmp(argv[i], "-v") == 0)
             {
-                kStdOut << "masm: The MP-UX Assembler.\nmasm: v1.10\nmasm: Copyright (c) 2023 Western Company.\n";
+                kStdOut << "masm: The MP-UX Assembler.\nmasm: v1.10\nmasm: Copyright (c) 2023 Mahrouss Logic.\n";
                 return 0;
             }
 
             if (strcmp(argv[i], "-h") == 0)
             {
-                kStdOut << "masm: The MP-UX Assembler.\nmasm: Copyright (c) 2023 Western Company.\n";
+                kStdOut << "masm: The MP-UX Assembler.\nmasm: Copyright (c) 2023 Mahrouss Logic.\n";
                 kStdOut << "-v: Print program version.\n";
                 kStdOut << "-verbose: Print verbose output.\n";
                 kStdOut << "-m64000: Compile for the X64000 instruction set.\n";

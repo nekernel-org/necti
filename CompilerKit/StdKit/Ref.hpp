@@ -3,7 +3,7 @@
  *	========================================================
  *
  *	CompilerKit
- * 	Copyright Western Company, all rights reserved.
+ * 	Copyright Mahrouss Logic, all rights reserved.
  *
  * 	========================================================
  */
@@ -14,7 +14,7 @@
 
 namespace CompilerKit
 {
-    // @author Western Company
+    // @author Mahrouss Logic
     // @brief Reference class, refers to a pointer of data in static memory.
     template <typename T>
     class Ref final

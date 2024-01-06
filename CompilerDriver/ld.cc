@@ -2,7 +2,7 @@
  *	========================================================
  *
  *	C++Kit
- * 	Copyright Western Company, all rights reserved.
+ * 	Copyright Mahrouss Logic, all rights reserved.
  *
  * 	========================================================
  */
@@ -31,7 +31,7 @@
 //! @brief standard PEF entry.
 #define kPefStart    "__start"
 
-#define kToolVersion "ld v1.17, (c) Western Company"
+#define kToolVersion "ld v1.17, (c) Mahrouss Logic"
 
 #define StringCompare(dst, src) strcmp(dst, src)
 
@@ -191,7 +191,7 @@ int main(int argc, char** argv)
     pef_container.Count = 0UL;
     pef_container.Kind = CompilerKit::kPefKindExec;
     pef_container.SubCpu = kSubArch;
-    pef_container.Linker = kPefLinkerNumId; // Western Company Linker
+    pef_container.Linker = kPefLinkerNumId; // Mahrouss Logic Linker
     pef_container.Abi = kAbi; // Multi-Processor UX ABI
     pef_container.Magic[0] = kPefMagic[kFatBinaryEnable ? 2 : 0];
     pef_container.Magic[1] = kPefMagic[1];

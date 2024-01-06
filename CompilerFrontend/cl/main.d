@@ -2,7 +2,7 @@
  *	========================================================
  *
  *	MP-UX C Compiler
- * 	Copyright Western Company, all rights reserved.
+ * 	Copyright Mahrouss Logic, all rights reserved.
  *
  * 	========================================================
  */
@@ -50,7 +50,7 @@ void main(string[] args)
             if (arg == "--version" ||
                 arg == "-v")
             {
-                writeln("mpcc: version 1.01, (c) Western Company all rights reserved.");
+                writeln("mpcc: version 1.01, (c) Mahrouss Logic all rights reserved.");
                 return;
             }
             else if (arg == "--dialect")

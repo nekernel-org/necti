@@ -2,7 +2,7 @@
  *	========================================================
  *
  *	cc
- * 	Copyright Western Company, all rights reserved.
+ * 	Copyright Mahrouss Logic, all rights reserved.
  *
  * 	========================================================
  */
@@ -22,7 +22,7 @@
 
 /* Optimized C driver */
 /* This is part of MP-UX C SDK. */
-/* (c) Western Company */
+/* (c) Mahrouss Logic */
 
 // @author Amlal El Mahrouss (amlel)
 // @file cc.cc
@@ -1840,7 +1840,7 @@ public:
 /////////////////////////////////////////////////////////////////////////////////////////
 
 #define kPrintF printf
-#define kSplashCxx() kPrintF(kWhite "%s\n", "cc, v1.14, (c) Western Company")
+#define kSplashCxx() kPrintF(kWhite "%s\n", "cc, v1.14, (c) Mahrouss Logic")
 
 static void cc_print_help()
 {

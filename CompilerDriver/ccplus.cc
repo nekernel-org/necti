@@ -2,7 +2,7 @@
  *	========================================================
  *
  *	ccplus
- * 	Copyright Western Company, all rights reserved.
+ * 	Copyright Mahrouss Logic, all rights reserved.
  *
  * 	========================================================
  */
@@ -20,9 +20,9 @@
 
 #define kOk 0
 
-/* Western Company C++ driver */
+/* Mahrouss Logic C++ driver */
 /* This is part of MP-UX C++ SDK. */
-/* (c) Western Company */
+/* (c) Mahrouss Logic */
 
 // @author Amlal El Mahrouss (amlel)
 // @file cc.cc
@@ -152,7 +152,7 @@ static bool kOnForLoop = false;
 static bool kInBraces = false;
 static size_t kBracesCount = 0UL;
 
-/* @brief C compiler backend for Western Company C */
+/* @brief C compiler backend for Mahrouss Logic C */
 class CompilerBackendClang final : public ParserKit::CompilerBackend
 {
 public:
@@ -482,7 +482,7 @@ public:
 /////////////////////////////////////////////////////////////////////////////////////////
 
 #define kPrintF printf
-#define kSplashCxx() kPrintF(kWhite "%s\n", "ccplus, v1.14, (c) Western Company.")
+#define kSplashCxx() kPrintF(kWhite "%s\n", "ccplus, v1.14, (c) Mahrouss Logic.")
 
 static void cxx_print_help()
 {

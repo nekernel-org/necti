@@ -2,7 +2,7 @@
  *	========================================================
  *
  *	CompilerKit
- * 	Copyright Western Company, all rights reserved.
+ * 	Copyright Mahrouss Logic, all rights reserved.
  *
  * 	========================================================
  */
