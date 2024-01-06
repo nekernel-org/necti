@@ -59,10 +59,10 @@ namespace detail
     {
         // 'my_foo'
         std::string fName;
-        
+
         // if instance: stores a valid register.
         std::string fReg;
-        
+
         // offset count
         std::size_t fOffsetsCnt;
 
@@ -75,7 +75,7 @@ namespace detail
         std::vector<ParserKit::SyntaxLeafList> fSyntaxTreeList;
         std::vector<CompilerRegisterMap> kStackFrame;
         std::vector<CompilerStructMap> kStructMap;
-        ParserKit::SyntaxLeafList* fSyntaxTree{ nullptr };
+        ParserKit::SyntaxLeafList *fSyntaxTree{nullptr};
         std::unique_ptr<std::ofstream> fOutputAssembly;
         std::string fLastFile;
         std::string fLastError;
@@ -109,7 +109,7 @@ namespace detail
         }
         else
         {
-            std::cout << kRed << "[ cc ] [ " << kState.fLastFile <<  " ] " << kWhite << reason << kBlank << std::endl;
+            std::cout << kRed << "[ cc ] [ " << kState.fLastFile << " ] " << kWhite << reason << kBlank << std::endl;
         }
 
         if (kAcceptableErrors > kErrorLimit)
@@ -137,8 +137,8 @@ static int kMachine = 0;
 /////////////////////////////////////////
 
 static size_t kRegisterCnt = kAsmRegisterLimit;
-static size_t kStartUsable = 6;
-static size_t kUsableLimit = 14;
+static size_t kStartUsable = 2;
+static size_t kUsableLimit = 15;
 static size_t kRegisterCounter = kStartUsable;
 static std::string kRegisterPrefix = kAsmRegisterPrefix;
 
@@ -165,16 +165,15 @@ public:
 
     CXXKIT_COPY_DEFAULT(CompilerBackendClang);
 
-    std::string Check(const char* text, const char* file);
-    bool Compile(const std::string& text, const char* file) override;
+    std::string Check(const char *text, const char *file);
+    bool Compile(const std::string &text, const char *file) override;
 
-    const char* Language() override { return "Optimized 64x0 C"; }
-
+    const char *Language() override { return "Optimized 64x0 C"; }
 };
 
-static CompilerBackendClang*             kCompilerBackend = nullptr;
+static CompilerBackendClang *kCompilerBackend = nullptr;
 static std::vector<detail::CompilerType> kCompilerVariables;
-static std::vector<std::string>          kCompilerFunctions;
+static std::vector<std::string> kCompilerFunctions;
 static std::vector<detail::CompilerType> kCompilerTypes;
 
 // @brief this hook code before the start/end command.
@@ -183,9 +182,9 @@ static std::string kAddIfAnyEnd;
 static std::string kLatestVar;
 
 // \brief parse a function call
-static std::string cc_parse_function_call(std::string& _text)
+static std::string cc_parse_function_call(std::string &_text)
 {
-    if (_text[0] == '(') 
+    if (_text[0] == '(')
     {
         std::string substr;
         std::string args_buffer;
@@ -193,7 +192,7 @@ static std::string cc_parse_function_call(std::string& _text)
 
         bool type_crossed = false;
 
-        for (char substr_first_index: _text)
+        for (char substr_first_index : _text)
         {
             args_buffer += substr_first_index;
 
@@ -228,8 +227,9 @@ namespace detail
     union number_cast
     {
         number_cast(UInt64 raw)
-                : raw(raw)
-        {}
+            : raw(raw)
+        {
+        }
 
         char number[8];
         UInt64 raw;
@@ -243,7 +243,7 @@ namespace detail
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
-bool CompilerBackendClang::Compile(const std::string& text, const char* file)
+bool CompilerBackendClang::Compile(const std::string &text, const char *file)
 {
     std::string _text = text;
 
@@ -268,11 +268,12 @@ bool CompilerBackendClang::Compile(const std::string& text, const char* file)
             {
                 if (substr[y] == ' ')
                 {
-                    while (match_type.find(' ') != std::string::npos) {
+                    while (match_type.find(' ') != std::string::npos)
+                    {
                         match_type.erase(match_type.find(' '));
                     }
 
-                    for (auto& clType : kCompilerTypes)
+                    for (auto &clType : kCompilerTypes)
                     {
                         if (clType.fName == match_type)
                         {
@@ -282,23 +283,6 @@ bool CompilerBackendClang::Compile(const std::string& text, const char* file)
 
                             buf += clType.fValue;
                             buf += ' ';
-
-                            if (clType.fName == "struct" ||
-                                clType.fName == "union")
-                            {
-                                for (size_t a = y + 1; a < substr.size(); a++)
-                                {
-                                    if (substr[a] == ' ')
-                                    {
-                                        break;
-                                    }
-
-                                    if (substr[a] == '\n')
-                                        break;
-
-                                    buf += substr[a];
-                                }
-                            }
 
                             if (substr.find('=') != std::string::npos)
                             {
@@ -385,13 +369,13 @@ bool CompilerBackendClang::Compile(const std::string& text, const char* file)
                     {
                         std::string tmp = value;
                         bool reg_to_reg = false;
-                        
+
                         value.clear();
 
                         value += " import";
                         value += tmp;
                     }
-                    
+
                     syntax_tree.fUserValue = "\tldw r19, ";
 
                     // make it pretty.
@@ -419,12 +403,12 @@ bool CompilerBackendClang::Compile(const std::string& text, const char* file)
             {
                 expr += "\nbeq";
             }
-            
+
             if (ParserKit::find_word(_text, "!="))
             {
                 expr += "\nbneq";
             }
-            
+
             if (ParserKit::find_word(_text, ">="))
             {
                 expr += "\nbge";
@@ -468,14 +452,14 @@ bool CompilerBackendClang::Compile(const std::string& text, const char* file)
                             continue;
 
                         if (_text[text_index_3] == '<' &&
-                            _text[text_index_3+1] == '=' ||
+                                _text[text_index_3 + 1] == '=' ||
                             _text[text_index_3] == '=' &&
-                            _text[text_index_3+1] == '=' ||
+                                _text[text_index_3 + 1] == '=' ||
                             _text[text_index_3] == '>' &&
-                            _text[text_index_3+1] == '=' ||
+                                _text[text_index_3 + 1] == '=' ||
                             _text[text_index_3] == '>' ||
                             _text[text_index_3] == '<' &&
-                            _text[text_index_3+1] == '=' ||
+                                _text[text_index_3 + 1] == '=' ||
                             _text[text_index_3] == '!')
                         {
                             buf += ", ";
@@ -499,14 +483,14 @@ bool CompilerBackendClang::Compile(const std::string& text, const char* file)
                     continue;
 
                 if (_text[text_index_2] == '<' &&
-                    _text[text_index_2+1] == '=' ||
+                        _text[text_index_2 + 1] == '=' ||
                     _text[text_index_2] == '=' &&
-                    _text[text_index_2+1] == '=' ||
+                        _text[text_index_2 + 1] == '=' ||
                     _text[text_index_2] == '>' &&
-                    _text[text_index_2+1] == '=' ||
+                        _text[text_index_2 + 1] == '=' ||
                     _text[text_index_2] == '>' ||
                     _text[text_index_2] == '<' &&
-                    _text[text_index_2+1] == '=' ||
+                        _text[text_index_2 + 1] == '=' ||
                     _text[text_index_2] == '!')
                 {
                     buf += ", ";
@@ -522,7 +506,7 @@ bool CompilerBackendClang::Compile(const std::string& text, const char* file)
 
             if (buf.find(",") == std::string::npos &&
                 buf.find("(") != std::string::npos &&
-                buf.find(")") != std::string::npos )
+                buf.find(")") != std::string::npos)
             {
 
                 std::string cond = buf.substr(buf.find("(") + 1, buf.find(")") - 1);
@@ -564,7 +548,7 @@ bool CompilerBackendClang::Compile(const std::string& text, const char* file)
 
             substr.replace(substr.find("%s"), 2, cond);
             substr.replace(substr.find("%s2"), 3, cond2);
-            
+
             buf.replace(buf.find(cond), cond.size(), "r15");
             buf.replace(buf.find(cond2), cond2.size(), "r16");
 
@@ -606,7 +590,7 @@ bool CompilerBackendClang::Compile(const std::string& text, const char* file)
                 bool space_found_ = false;
                 std::string sym;
 
-                for (auto& ch : _text)
+                for (auto &ch : _text)
                 {
                     if (ch == ' ')
                     {
@@ -621,14 +605,12 @@ bool CompilerBackendClang::Compile(const std::string& text, const char* file)
                 }
 
                 kState.kStructMap[kState.kStructMap.size() - 1].fOffsets.push_back(
-                    std::make_pair(kState.kStructMap[kState.kStructMap.size() - 1].fOffsetsCnt + 4, sym)
-                );
+                    std::make_pair(kState.kStructMap[kState.kStructMap.size() - 1].fOffsetsCnt + 4, sym));
 
                 kState.kStructMap[kState.kStructMap.size() - 1].fOffsetsCnt = kState.kStructMap[kState.kStructMap.size() - 1].fOffsetsCnt + 4;
 
                 continue;
             }
-
 
             if (_text[text_index] == '=' &&
                 kInStruct)
@@ -636,10 +618,10 @@ bool CompilerBackendClang::Compile(const std::string& text, const char* file)
                 continue;
             }
 
-            if (_text[text_index+1] == '=' ||
-                _text[text_index-1] == '!' ||
-                _text[text_index-1] == '<' ||
-                _text[text_index-1] == '>')
+            if (_text[text_index + 1] == '=' ||
+                _text[text_index - 1] == '!' ||
+                _text[text_index - 1] == '<' ||
+                _text[text_index - 1] == '>')
             {
                 continue;
             }
@@ -662,7 +644,7 @@ bool CompilerBackendClang::Compile(const std::string& text, const char* file)
                 }
             }
             else if (_text.find('=') != std::string::npos &&
-                !kInBraces)
+                     !kInBraces)
             {
                 substr += "stw export .data ";
             }
@@ -706,12 +688,7 @@ bool CompilerBackendClang::Compile(const std::string& text, const char* file)
                     {
                         if (_text[text_index] != '=' &&
                             substr.find("export .data") == std::string::npos &&
-                            !kInStruct &&
-                            _text.find("struct") == std::string::npos &&
-                            _text.find("extern") == std::string::npos &&
-                             _text.find("union") == std::string::npos &&
-                             _text.find("class") == std::string::npos &&
-                             _text.find("typedef") == std::string::npos)
+                            !kInStruct)
                             substr += "export .data ";
                     }
 
@@ -735,7 +712,7 @@ bool CompilerBackendClang::Compile(const std::string& text, const char* file)
                 substr += _text[text_index_2];
             }
 
-            for (auto& clType : kCompilerTypes)
+            for (auto &clType : kCompilerTypes)
             {
                 if (substr.find(clType.fName) != std::string::npos)
                 {
@@ -756,33 +733,20 @@ bool CompilerBackendClang::Compile(const std::string& text, const char* file)
                 }
             }
 
-            if (substr.find("struct") != std::string::npos)
-            {
-                substr.replace(substr.find("struct"), strlen("struct"), "ldw ");
-                substr += ", 0";
-            }
-
-            if (substr.find("union") != std::string::npos)
-            {
-                substr.replace(substr.find("union"), strlen("union"), "ldw ");
-                substr += ", 0";
-            }
-
-            if (substr.find("static") != std::string::npos)
-            {
-                substr.replace(substr.find("static"), strlen("static"), "export .data ");
-            }
-            else if (substr.find("extern") != std::string::npos)
+            if (substr.find("extern") != std::string::npos)
             {
                 substr.replace(substr.find("extern"), strlen("extern"), "import ");
 
                 if (substr.find("export .data") != std::string::npos)
                     substr.erase(substr.find("export .data"), strlen("export .data"));
             }
-            
-            auto var_to_find = std::find_if(kCompilerVariables.cbegin(), kCompilerVariables.cend(), [&](detail::CompilerType type) {
-                return type.fName.find(substr) != std::string::npos;
-            });
+
+            auto var_to_find = std::find_if(kCompilerVariables.cbegin(), kCompilerVariables.cend(), [&](detail::CompilerType type)
+                                            { return type.fName.find(substr) != std::string::npos; });
+
+            if (kRegisterCounter == 5 ||
+                kRegisterCounter == 6)
+                ++kRegisterCounter;
 
             std::string reg = kAsmRegisterPrefix;
             reg += std::to_string(kRegisterCounter);
@@ -791,10 +755,10 @@ bool CompilerBackendClang::Compile(const std::string& text, const char* file)
             {
                 ++kRegisterCounter;
 
-                kState.kStackFrame.push_back({ .fName = substr, .fReg = reg });
-                kCompilerVariables.push_back({ .fName = substr });
+                kState.kStackFrame.push_back({.fName = substr, .fReg = reg});
+                kCompilerVariables.push_back({.fName = substr});
             }
-            
+
             syntax_tree.fUserValue += substr;
             kState.fSyntaxTree->fLeafList.push_back(syntax_tree);
 
@@ -835,7 +799,7 @@ bool CompilerBackendClang::Compile(const std::string& text, const char* file)
                     args_buffer = args_buffer.erase(args_buffer.find(';'), 1);
                     args_buffer = args_buffer.erase(args_buffer.find(')'), 1);
                     args_buffer = args_buffer.erase(args_buffer.find('('), 1);
-
+                    
                     if (!args_buffer.empty())
                         args += "\tldw r6, ";
 
@@ -873,7 +837,7 @@ bool CompilerBackendClang::Compile(const std::string& text, const char* file)
 
                 substr += _text_i;
             }
-            
+
             if (kInBraces)
             {
                 syntax_tree.fUserValue = args;
@@ -901,20 +865,6 @@ bool CompilerBackendClang::Compile(const std::string& text, const char* file)
             kCompilerFunctions.push_back(_text);
         }
 
-        if (_text[text_index] == 's')
-        {
-            if (_text.find("struct") != text_index)
-                continue;
-
-            if (_text.find(";") == std::string::npos)
-                kInStruct = true;
-
-            detail::CompilerStructMap struct_map;
-            struct_map.fName = _text.substr(_text.find("struct") + strlen("struct"));
-
-            kState.kStructMap.emplace_back(struct_map);
-        }
-
         if (_text[text_index] == 'u')
         {
             if (_text.find("union") != text_index)
@@ -934,7 +884,7 @@ bool CompilerBackendClang::Compile(const std::string& text, const char* file)
         }
 
         if (_text[text_index] == '-' &&
-            _text[text_index+1] == '-')
+            _text[text_index + 1] == '-')
         {
             _text = _text.replace(_text.find("--"), strlen("--"), "");
 
@@ -953,7 +903,7 @@ bool CompilerBackendClang::Compile(const std::string& text, const char* file)
         }
 
         if (_text[text_index] == '+' &&
-            _text[text_index+1] == '+')
+            _text[text_index + 1] == '+')
         {
             _text = _text.replace(_text.find("++"), strlen("++"), "");
 
@@ -1014,7 +964,7 @@ bool CompilerBackendClang::Compile(const std::string& text, const char* file)
 static bool kShouldHaveBraces = false;
 static std::string kFnName;
 
-std::string CompilerBackendClang::Check(const char* text, const char* file)
+std::string CompilerBackendClang::Check(const char *text, const char *file)
 {
     std::string err_str;
     std::string ln = text;
@@ -1026,7 +976,8 @@ std::string CompilerBackendClang::Check(const char* text, const char* file)
 
     bool non_ascii_found = false;
 
-    for (int i = 0; i < ln.size(); ++i) {
+    for (int i = 0; i < ln.size(); ++i)
+    {
         if (isalnum(ln[i]))
         {
             non_ascii_found = true;
@@ -1035,7 +986,8 @@ std::string CompilerBackendClang::Check(const char* text, const char* file)
     }
 
     if (kShouldHaveBraces &&
-        ln.find('{') != std::string::npos) {
+        ln.find('{') != std::string::npos)
+    {
         kShouldHaveBraces = false;
     }
 
@@ -1081,7 +1033,7 @@ std::string CompilerBackendClang::Check(const char* text, const char* file)
         }
     }
     else if (ln.find('"') == std::string::npos &&
-            ln.find('\'') == std::string::npos)
+             ln.find('\'') == std::string::npos)
     {
         std::vector<std::string> forbidden_words;
 
@@ -1095,12 +1047,18 @@ std::string CompilerBackendClang::Check(const char* text, const char* file)
 
         // add them to avoid stupid mistakes.
         forbidden_words.push_back("namespace");
+        forbidden_words.push_back("struct");
+        forbidden_words.push_back("union");
+        forbidden_words.push_back("enum");
+        forbidden_words.push_back(".");
+        forbidden_words.push_back("->");
         forbidden_words.push_back("class");
+        forbidden_words.push_back("*");
         forbidden_words.push_back("extern \"C\"");
 
-        for (auto& forbidden : forbidden_words)
+        for (auto &forbidden : forbidden_words)
         {
-            if (ParserKit::find_word(ln, forbidden))
+            if (ln.find(forbidden) != std::string::npos)
             {
                 err_str += "\nForbidden character detected: ";
                 err_str += forbidden;
@@ -1117,28 +1075,28 @@ std::string CompilerBackendClang::Check(const char* text, const char* file)
     };
 
     const std::vector<CompilerVariableRange> variables_list = {
-        { .fBegin = "static ", .fEnd = "="}, 
-        { .fBegin = "=", .fEnd = ";"},
-        { .fBegin = "if(",  .fEnd = "="},
-        { .fBegin = "if (", .fEnd = "="},
-        { .fBegin = "if(",  .fEnd = "<"},
-        { .fBegin = "if (", .fEnd = "<"},
-        { .fBegin = "if(",  .fEnd = ">"},
-        { .fBegin = "if (", .fEnd = ">"},
-        { .fBegin = "if(",  .fEnd = ")"},
-        { .fBegin = "if (", .fEnd = ")"},
+        {.fBegin = "static ", .fEnd = "="},
+        {.fBegin = "=", .fEnd = ";"},
+        {.fBegin = "if(", .fEnd = "="},
+        {.fBegin = "if (", .fEnd = "="},
+        {.fBegin = "if(", .fEnd = "<"},
+        {.fBegin = "if (", .fEnd = "<"},
+        {.fBegin = "if(", .fEnd = ">"},
+        {.fBegin = "if (", .fEnd = ">"},
+        {.fBegin = "if(", .fEnd = ")"},
+        {.fBegin = "if (", .fEnd = ")"},
 
-        { .fBegin = "else(",  .fEnd = "="},
-        { .fBegin = "else (", .fEnd = "="},
-        { .fBegin = "else(",  .fEnd = "<"},
-        { .fBegin = "else (", .fEnd = "<"},
-        { .fBegin = "else(",  .fEnd = ">"},
-        { .fBegin = "else (", .fEnd = ">"},
-        { .fBegin = "else(",  .fEnd = ")"},
-        { .fBegin = "else (", .fEnd = ")"},
+        {.fBegin = "else(", .fEnd = "="},
+        {.fBegin = "else (", .fEnd = "="},
+        {.fBegin = "else(", .fEnd = "<"},
+        {.fBegin = "else (", .fEnd = "<"},
+        {.fBegin = "else(", .fEnd = ">"},
+        {.fBegin = "else (", .fEnd = ">"},
+        {.fBegin = "else(", .fEnd = ")"},
+        {.fBegin = "else (", .fEnd = ")"},
     };
 
-    for (auto& variable : variables_list)
+    for (auto &variable : variables_list)
     {
         if (ln.find(variable.fBegin) != std::string::npos)
         {
@@ -1155,8 +1113,8 @@ std::string CompilerBackendClang::Check(const char* text, const char* file)
                 {
                     std::string varname = "";
 
-                    for (size_t index_keyword = ln.find(' '); ln[index_keyword] != variable.fBegin[0]; 
-                        ++index_keyword)
+                    for (size_t index_keyword = ln.find(' '); ln[index_keyword] != variable.fBegin[0];
+                         ++index_keyword)
                     {
                         if (ln[index_keyword] == ' ')
                         {
@@ -1170,7 +1128,7 @@ std::string CompilerBackendClang::Check(const char* text, const char* file)
 
                         varname += ln[index_keyword];
                     }
-                    
+
                     if (varname.find(' ') != std::string::npos)
                     {
                         varname.erase(0, varname.find(' '));
@@ -1181,16 +1139,20 @@ std::string CompilerBackendClang::Check(const char* text, const char* file)
                         }
                     }
 
+                    if (kRegisterCounter == 5 ||
+                        kRegisterCounter == 6)
+                        ++kRegisterCounter;
+
                     std::string reg = kAsmRegisterPrefix;
                     reg += std::to_string(kRegisterCounter);
-                    
-                    kCompilerVariables.push_back({ .fValue = varname });
+
+                    kCompilerVariables.push_back({.fValue = varname});
                     goto cc_check_done;
                 }
 
                 keyword.push_back(ln[string_index]);
             }
-            
+
             goto cc_next_loop;
 
         cc_check_done:
@@ -1205,7 +1167,7 @@ std::string CompilerBackendClang::Check(const char* text, const char* file)
             while (keyword.find(' ') != std::string::npos)
                 keyword.erase(keyword.find(' '), 1);
 
-            for (auto& var : kCompilerVariables)
+            for (auto &var : kCompilerVariables)
             {
                 if (var.fValue.find(keyword) != std::string::npos)
                 {
@@ -1214,7 +1176,7 @@ std::string CompilerBackendClang::Check(const char* text, const char* file)
                 }
             }
 
-            for (auto& fn : kCompilerFunctions)
+            for (auto &fn : kCompilerFunctions)
             {
                 if (fn.find(keyword[0]) != std::string::npos)
                 {
@@ -1249,21 +1211,20 @@ std::string CompilerBackendClang::Check(const char* text, const char* file)
                 }
             }
 
-cc_error_value:
+        cc_error_value:
             if (keyword.find("->") != std::string::npos)
                 return err_str;
 
             if (keyword.find(".") != std::string::npos)
                 return err_str;
 
-            
             if (isalnum(keyword[0]))
                 err_str += "\nUndefined value: " + keyword;
 
             return err_str;
         }
 
-cc_next_loop:
+    cc_next_loop:
         continue;
     }
 
@@ -1274,7 +1235,7 @@ cc_next:
     if (ParserKit::find_word(ln, "extern"))
     {
         auto substr = ln.substr(ln.find("extern") + strlen("extern"));
-        kCompilerVariables.push_back({ .fValue = substr });
+        kCompilerVariables.push_back({.fValue = substr});
     }
 
     if (kShouldHaveBraces &&
@@ -1343,7 +1304,7 @@ cc_next:
 
 skip_braces_check:
 
-    for (auto& key : kCompilerTypes)
+    for (auto &key : kCompilerTypes)
     {
         if (ParserKit::find_word(ln, key.fName))
         {
@@ -1376,41 +1337,35 @@ skip_braces_check:
 
                     if (ln[ln.find(key.fName) + key.fName.size()] == ' ')
                         type_not_found = false;
-
                 }
             }
 
-next:
+        next:
 
-            if (key.fName != "struct" ||
-                key.fName != "enum" ||
-                key.fName != "union")
+            if (ln.find(';') == std::string::npos)
             {
-                if (ln.find(';') == std::string::npos)
+                if (ln.find('(') != std::string::npos)
                 {
-                    if (ln.find('(') != std::string::npos)
-                    {
-                        if (ln.find('=') == std::string::npos)
-                            continue;
-                    }
-
-                    err_str += "\nMissing ';', here -> ";
-                    err_str += ln;
-                }
-                else
-                {
-                    continue;
+                    if (ln.find('=') == std::string::npos)
+                        continue;
                 }
 
-                if (ln.find('=') != std::string::npos)
+                err_str += "\nMissing ';', here -> ";
+                err_str += ln;
+            }
+            else
+            {
+                continue;
+            }
+
+            if (ln.find('=') != std::string::npos)
+            {
+                if (ln.find('(') != std::string::npos)
                 {
-                    if (ln.find('(') != std::string::npos)
+                    if (ln.find(')') == std::string::npos)
                     {
-                        if (ln.find(')') == std::string::npos)
-                        {
-                            err_str += "\nMissing ')', after '(' here -> ";
-                            err_str += ln.substr(ln.find('('));
-                        }
+                        err_str += "\nMissing ')', after '(' here -> ";
+                        err_str += ln.substr(ln.find('('));
                     }
                 }
             }
@@ -1418,10 +1373,10 @@ next:
     }
 
     if (kInBraces &&
-             ln.find("struct") != std::string::npos &&
-            ln.find("union") != std::string::npos &&
-            ln.find("enum") != std::string::npos &&
-            ln.find('=') != std::string::npos)
+        ln.find("struct") != std::string::npos &&
+        ln.find("union") != std::string::npos &&
+        ln.find("enum") != std::string::npos &&
+        ln.find('=') != std::string::npos)
     {
         if (ln.find(';') == std::string::npos)
         {
@@ -1496,7 +1451,7 @@ next:
                 if (space_found)
                 {
                     if (ln[i] == ' ' &&
-                        isalnum(ln[i+1]))
+                        isalnum(ln[i + 1]))
                     {
                         err_str += "\nBad function format here -> ";
                         err_str += ln;
@@ -1515,10 +1470,6 @@ next:
             if (type_not_found &&
                 ln.find(';') == std::string::npos &&
                 ln.find("if") == std::string::npos &&
-                ln.find("while") == std::string::npos &&
-                ln.find("for") == std::string::npos &&
-                ln.find("static") == std::string::npos &&
-                ln.find("inline") == std::string::npos &&
                 ln.find("|") == std::string::npos &&
                 ln.find("&") == std::string::npos &&
                 ln.find("(") == std::string::npos &&
@@ -1559,17 +1510,11 @@ next:
     if (!ln.empty())
     {
         if (ln.find(';') == std::string::npos &&
-            ln.find("struct") == std::string::npos &&
-            ln.find("enum") == std::string::npos &&
-            ln.find("union") == std::string::npos &&
-            ln.find("for") == std::string::npos &&
-            ln.find("while") == std::string::npos &&
             ln.find('{') == std::string::npos &&
             ln.find('}') == std::string::npos &&
             ln.find(')') == std::string::npos &&
             ln.find('(') == std::string::npos &&
-            ln.find(',') == std::string::npos &&
-            ln.find("typedef") == std::string::npos)
+            ln.find(',') == std::string::npos)
         {
             if (ln.size() <= 2)
                 return err_str;
@@ -1600,7 +1545,7 @@ public:
 
     [[maybe_unused]] static Int32 Arch() noexcept { return CompilerKit::AssemblyFactory::kArchRISCV; }
 
-    Int32 CompileToFormat(CompilerKit::StringView& src, Int32 arch) override
+    Int32 CompileToFormat(CompilerKit::StringView &src, Int32 arch) override
     {
         if (arch != AssemblyMountpointClang::Arch())
             return -1;
@@ -1613,7 +1558,7 @@ public:
         std::ifstream src_fp = std::ifstream(src_file, std::ios::in);
         std::string dest;
 
-        for (auto& ch : src_file)
+        for (auto &ch : src_file)
         {
             if (ch == '.')
             {
@@ -1657,34 +1602,33 @@ public:
         if (kAcceptableErrors > 0)
             return -1;
 
-        std::vector<std::string> keywords = { "ldw", "stw", "lda", "sta", "add", "dec", "mv"};
+        std::vector<std::string> keywords = {"ldw", "stw", "lda", "sta", "add", "dec", "mv"};
 
         ///
         /// Replace, optimize, fix assembly output.
         ///
 
-        for (auto& leaf : kState.fSyntaxTree->fLeafList)
+        for (auto &leaf : kState.fSyntaxTree->fLeafList)
         {
-            std::vector<std::string> access_keywords = { "->", "." };
+            std::vector<std::string> access_keywords = {"->", "."};
 
-            for (auto& access_ident : access_keywords)
+            for (auto &access_ident : access_keywords)
             {
                 if (ParserKit::find_word(leaf.fUserValue, access_ident))
                 {
-                    for (auto& struc : kState.kStructMap)
+                    for (auto &struc : kState.kStructMap)
                     {
-
                     }
                 }
             }
 
-            for (auto& keyword : keywords)
+            for (auto &keyword : keywords)
             {
                 if (ParserKit::find_word(leaf.fUserValue, keyword))
                 {
                     std::size_t cnt = 0UL;
 
-                    for (auto & reg : kState.kStackFrame)
+                    for (auto &reg : kState.kStackFrame)
                     {
                         std::string needle;
 
@@ -1728,7 +1672,7 @@ public:
             }
         }
 
-        for (auto& leaf : kState.fSyntaxTree->fLeafList)
+        for (auto &leaf : kState.fSyntaxTree->fLeafList)
         {
             (*kState.fOutputAssembly) << leaf.fUserValue;
         }
@@ -1740,7 +1684,6 @@ public:
 
         return kOk;
     }
-
 };
 
 /////////////////////////////////////////////////////////////////////////////////////////
@@ -1760,13 +1703,13 @@ static void cc_print_help()
 
 #define kExt ".c"
 
-int main(int argc, char** argv)
+int main(int argc, char **argv)
 {
-    kCompilerTypes.push_back({ .fName = "void", .fValue = "void" });
-    kCompilerTypes.push_back({ .fName = "char", .fValue = "byte" });
-    kCompilerTypes.push_back({ .fName = "short", .fValue = "hword" });
-    kCompilerTypes.push_back({ .fName = "int", .fValue = "dword" });
-    kCompilerTypes.push_back({ .fName = "long", .fValue = "qword" });
+    kCompilerTypes.push_back({.fName = "void", .fValue = "void"});
+    kCompilerTypes.push_back({.fName = "char", .fValue = "byte"});
+    kCompilerTypes.push_back({.fName = "short", .fValue = "hword"});
+    kCompilerTypes.push_back({.fName = "int", .fValue = "dword"});
+    kCompilerTypes.push_back({.fName = "long", .fValue = "qword"});
 
     bool skip = false;
 
@@ -1834,7 +1777,7 @@ int main(int argc, char** argv)
                 {
                     kErrorLimit = std::strtol(argv[index + 1], nullptr, 10);
                 }
-                    // catch anything here
+                // catch anything here
                 catch (...)
                 {
                     kErrorLimit = 0;
