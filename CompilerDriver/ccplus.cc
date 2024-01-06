@@ -257,8 +257,6 @@ bool CompilerBackendClang::Compile(const std::string& text, const char* file)
     {
         syntax_tree.fUserData = keyword.first;
         kState.fSyntaxTree->fLeafList.emplace_back(syntax_tree);
-
-        std::cout << keyword.first << "\n";
     }
 
     return true;
@@ -343,6 +341,7 @@ public:
         };
 
         std::vector<scope_type> scope;
+
         bool found_type = false;
         bool is_pointer = false;
         bool found_expr = false;
@@ -406,14 +405,14 @@ public:
 
             if (leaf.fUserData == "=")
             {
-                auto& front = scope.front();
-
                 if (found_type)
                 {
+                    auto& front = scope.front();
+
                     std::string reg = "r";
                     reg += std::to_string(front.reg_cnt);
                     ++front.reg_cnt;
-                    
+
                     leaf.fUserValue = !is_pointer ? "ldw %s, %s1\n" : "lda %s, %s1\n";
 
                     for (auto& ln : lines)
@@ -422,17 +421,55 @@ public:
                             ln.find(";") != std::string::npos)
                         {
                             auto val = ln.substr(ln.find(leaf.fUserData) + leaf.fUserData.size());
-                            val.erase(val.find(";"), 1);
+
+                            if (val.find(";") != std::string::npos)
+                                val.erase(val.find(";"), 1);
 
                             leaf.fUserValue.replace(leaf.fUserValue.find("%s1"), strlen("%s1"), val);
                         }
                     }
 
                     leaf.fUserValue.replace(leaf.fUserValue.find("%s"), strlen("%s"), reg);
-                }
 
-                is_pointer = false;
-                found_type = false;
+                    found_type = false;
+                }
+                else
+                {
+                    leaf.fUserValue = !is_pointer ? "ldw %s, %s1\n" : "lda %s, %s1\n";
+
+                    for (auto& ln : lines)
+                    {
+                        if (ln.find(leaf.fUserData) != std::string::npos &&
+                            ln.find(";") != std::string::npos)
+                        {
+                            std::string nm;
+                            for (auto i = ln.find('=') + 1; i < ln.size(); ++i)
+                            {
+                                if (ln[i] == ';')
+                                    break;
+
+                                nm.push_back(ln[i]);
+                            }
+
+                            if (!nm.empty())
+                            {
+                                leaf.fUserValue.replace(leaf.fUserValue.find("%s1"), strlen("%s1"), nm);
+                                break;
+                            }
+                        }
+                    }
+
+                    auto& front = scope.front();
+
+                    std::string reg = "r";
+                    reg += std::to_string(front.reg_cnt - 1);
+                    leaf.fUserValue.replace(leaf.fUserValue.find("%s"), strlen("%s"), reg);
+
+                    if (is_pointer)
+                    {
+                        is_pointer = false;
+                    }
+                }
             }
 
             if (leaf.fUserData == "return")
@@ -461,6 +498,7 @@ public:
                 continue;
             }
 
+            std::cout << leaf.fUserData;
             lines.emplace_back(leaf.fUserData);
         }
 

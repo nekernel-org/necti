@@ -53,9 +53,7 @@ inline std::vector<CpuCode64x0> kOpcodes64x0 = {
         kAsmOpcodeDecl("sta", 0b0001111, 0b001, kAsmImmediate)
         kAsmOpcodeDecl("add", 0b0101011, 0b100, kAsmImmediate)
         kAsmOpcodeDecl("dec", 0b0101011, 0b101, kAsmImmediate)
-        kAsmOpcodeDecl("scall", 0b1110011, 0b00, kAsmSyscall)
-        kAsmOpcodeDecl("sbreak", 0b1110011, 0b01, kAsmSyscall)
-        kAsmOpcodeDecl("mh", 0b1110011, 0b1111111, kAsmJump)
+        kAsmOpcodeDecl("syscall", 0b1110011, 0b00, kAsmSyscall)
 };
 
 // \brief NewCPU register prefix

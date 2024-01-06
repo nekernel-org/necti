@@ -9,6 +9,8 @@ bin/cppfront
 
 bin/SourceUnitTest/*.c.pp
 bin/SourceUnitTest/*.c
+bin/SourceUnitTest/*.cc.pp
+bin/SourceUnitTest/*.cc
 bin/SourceUnitTest/*.cpp.pp
 bin/SourceUnitTest/*.cpp
 bin/SourceUnitTest/*.cxx.pp

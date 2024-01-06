@@ -213,7 +213,7 @@ static std::string cc_parse_function_call(std::string& _text)
                 }
 
                 args += args_buffer;
-                args += "\n\tjb __import ";
+                args += "\n\tjb import ";
             }
         }
 
@@ -337,7 +337,7 @@ bool CompilerBackendClang::Compile(const std::string& text, const char* file)
             if (kOnWhileLoop ||
                 kOnForLoop)
             {
-                syntax_tree.fUserValue = "void __export .text _L";
+                syntax_tree.fUserValue = "void export .text _L";
                 syntax_tree.fUserValue += std::to_string(kBracesCount) + "_" + std::to_string(time_off.raw);
             }
 
@@ -388,7 +388,7 @@ bool CompilerBackendClang::Compile(const std::string& text, const char* file)
                         
                         value.clear();
 
-                        value += " __import";
+                        value += " import";
                         value += tmp;
                     }
                     
@@ -664,7 +664,7 @@ bool CompilerBackendClang::Compile(const std::string& text, const char* file)
             else if (_text.find('=') != std::string::npos &&
                 !kInBraces)
             {
-                substr += "stw __export .data ";
+                substr += "stw export .data ";
             }
 
             int first_encountered = 0;
@@ -705,14 +705,14 @@ bool CompilerBackendClang::Compile(const std::string& text, const char* file)
                     if (first_encountered != 2)
                     {
                         if (_text[text_index] != '=' &&
-                            substr.find("__export .data") == std::string::npos &&
+                            substr.find("export .data") == std::string::npos &&
                             !kInStruct &&
                             _text.find("struct") == std::string::npos &&
                             _text.find("extern") == std::string::npos &&
                              _text.find("union") == std::string::npos &&
                              _text.find("class") == std::string::npos &&
                              _text.find("typedef") == std::string::npos)
-                            substr += "__export .data ";
+                            substr += "export .data ";
                     }
 
                     ++first_encountered;
@@ -724,7 +724,7 @@ bool CompilerBackendClang::Compile(const std::string& text, const char* file)
                 {
                     if (!kInBraces)
                     {
-                        substr.replace(substr.find("__export .data"), strlen("__export .data"), "__export .page_zero ");
+                        substr.replace(substr.find("export .data"), strlen("export .data"), "export .page_zero ");
                     }
 
                     substr += ",";
@@ -770,14 +770,14 @@ bool CompilerBackendClang::Compile(const std::string& text, const char* file)
 
             if (substr.find("static") != std::string::npos)
             {
-                substr.replace(substr.find("static"), strlen("static"), "__export .data ");
+                substr.replace(substr.find("static"), strlen("static"), "export .data ");
             }
             else if (substr.find("extern") != std::string::npos)
             {
-                substr.replace(substr.find("extern"), strlen("extern"), "__import ");
+                substr.replace(substr.find("extern"), strlen("extern"), "import ");
 
-                if (substr.find("__export .data") != std::string::npos)
-                    substr.erase(substr.find("__export .data"), strlen("__export .data"));
+                if (substr.find("export .data") != std::string::npos)
+                    substr.erase(substr.find("export .data"), strlen("export .data"));
             }
             
             auto var_to_find = std::find_if(kCompilerVariables.cbegin(), kCompilerVariables.cend(), [&](detail::CompilerType type) {
@@ -850,7 +850,7 @@ bool CompilerBackendClang::Compile(const std::string& text, const char* file)
                     }
 
                     args += args_buffer;
-                    args += "\n\tjb __import ";
+                    args += "\n\tjb import ";
                 }
             }
 
@@ -888,7 +888,7 @@ bool CompilerBackendClang::Compile(const std::string& text, const char* file)
             {
                 syntax_tree.fUserValue.clear();
 
-                syntax_tree.fUserValue += "__export .text ";
+                syntax_tree.fUserValue += "export .text ";
 
                 syntax_tree.fUserValue += substr;
                 syntax_tree.fUserValue += "\n";
@@ -971,7 +971,7 @@ bool CompilerBackendClang::Compile(const std::string& text, const char* file)
             syntax_tree.fUserValue += kState.kStackFrame[kState.kStackFrame.size() - 2].fReg;
             syntax_tree.fUserValue += ",";
             syntax_tree.fUserValue += kState.kStackFrame[kState.kStackFrame.size() - 1].fReg;
-            syntax_tree.fUserValue += ", __end%s\njb __continue%s\n__export .text __end%s\njlr\nvoid __export .text __continue%s\njb _L";
+            syntax_tree.fUserValue += ", __end%s\njb __continue%s\nexport .text __end%s\njlr\nvoid export .text __continue%s\njb _L";
             syntax_tree.fUserValue += std::to_string(kBracesCount + 1) + "_" + std::to_string(time_off.raw);
 
             while (syntax_tree.fUserValue.find("%s") != std::string::npos)
@@ -1071,7 +1071,7 @@ bool CompilerBackendClang::Compile(const std::string& text, const char* file)
                     syntax_tree.fUserValue += kState.kStackFrame[kState.kStackFrame.size() - 2].fReg;
                     syntax_tree.fUserValue += ",";
                     syntax_tree.fUserValue += kState.kStackFrame[kState.kStackFrame.size() - 1].fReg;
-                    syntax_tree.fUserValue += ", __end%s\njb __continue%s\n__export .text __end%s\njlr\nvoid __export .text __continue%s\njb _L";
+                    syntax_tree.fUserValue += ", __end%s\njb __continue%s\nexport .text __end%s\njlr\nvoid export .text __continue%s\njb _L";
                     syntax_tree.fUserValue += std::to_string(kBracesCount + 1) + "_" + std::to_string(time_off.raw);
 
                     while (syntax_tree.fUserValue.find("%s") != std::string::npos)
@@ -1802,11 +1802,11 @@ public:
                             leaf.fUserValue.replace(leaf.fUserValue.find(needle),
                                                     needle.size(), reg.fReg);
 
-                            if (leaf.fUserValue.find("__import") != std::string::npos)
+                            if (leaf.fUserValue.find("import") != std::string::npos)
                             {
-                                if (leaf.fUserValue.find("__import") < leaf.fUserValue.find(needle))
+                                if (leaf.fUserValue.find("import") < leaf.fUserValue.find(needle))
                                 {
-                                    leaf.fUserValue.erase(leaf.fUserValue.find("__import"), strlen("__import"));
+                                    leaf.fUserValue.erase(leaf.fUserValue.find("import"), strlen("import"));
                                 }
                             }
 
