@@ -183,40 +183,12 @@ namespace detail
         UInt64 raw;
         
     };
-
-    struct ast_interface
-    {
-        explicit ast_interface(std::string& value)
-            : mValue(value)
-        {
-            this->_Compile();
-        }
-
-        ~ast_interface() = default;
-
-        CXXKIT_COPY_DEFAULT(ast_interface);
-
-    private:
-        std::string mProcessed;
-        std::string mValue;
-
-        void _Compile() noexcept
-        {
-            if (mValue.empty())
-            {
-                return;
-            }
-
-
-        }
-
-    };
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
 // @name Compile
-// @brief Generate MASM from a C source.
+// @brief Generate MASM from a C++ source.
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
@@ -520,7 +492,7 @@ public:
 /////////////////////////////////////////////////////////////////////////////////////////
 
 #define kPrintF printf
-#define kSplashCxx() kPrintF(kWhite "%s\n", "ccplus, v1.14, (c) Mahrouss Logic.")
+#define kSplashCxx() kPrintF(kWhite "%s\n", "ccplus, v1.15, (c) Mahrouss Logic.")
 
 static void cxx_print_help()
 {

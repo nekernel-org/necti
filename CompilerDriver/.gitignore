@@ -6,9 +6,12 @@ bin/masm
 bin/mkcdfs
 bin/ccplus
 bin/cppfront
+bin/bccl
 
 bin/SourceUnitTest/*.c.pp
 bin/SourceUnitTest/*.c
+bin/SourceUnitTest/*.bccl
+bin/SourceUnitTest/*.bccl.pp
 bin/SourceUnitTest/*.cc.pp
 bin/SourceUnitTest/*.cc
 bin/SourceUnitTest/*.cpp.pp

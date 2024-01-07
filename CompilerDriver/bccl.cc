@@ -168,59 +168,13 @@ public:
     std::string Check(const char *text, const char *file);
     bool Compile(const std::string &text, const char *file) override;
 
-    const char *Language() override { return "Optimized 64x0 C"; }
+    const char* Language() override { return "MP-UX BCCL (64x0/32x0 target)"; }
 };
 
 static CompilerBackendClang *kCompilerBackend = nullptr;
 static std::vector<detail::CompilerType> kCompilerVariables;
 static std::vector<std::string> kCompilerFunctions;
 static std::vector<detail::CompilerType> kCompilerTypes;
-
-// @brief this hook code before the start/end command.
-static std::string kAddIfAnyBegin;
-static std::string kAddIfAnyEnd;
-static std::string kLatestVar;
-
-// \brief parse a function call
-static std::string cc_parse_function_call(std::string &_text)
-{
-    if (_text[0] == '(')
-    {
-        std::string substr;
-        std::string args_buffer;
-        std::string args;
-
-        bool type_crossed = false;
-
-        for (char substr_first_index : _text)
-        {
-            args_buffer += substr_first_index;
-
-            if (substr_first_index == ';')
-            {
-                args_buffer = args_buffer.erase(0, args_buffer.find('('));
-                args_buffer = args_buffer.erase(args_buffer.find(';'), 1);
-                args_buffer = args_buffer.erase(args_buffer.find(')'), 1);
-                args_buffer = args_buffer.erase(args_buffer.find('('), 1);
-
-                if (!args_buffer.empty())
-                    args += "\tpsh ";
-
-                while (args_buffer.find(',') != std::string::npos)
-                {
-                    args_buffer.replace(args_buffer.find(','), 1, "\n\tpsh ");
-                }
-
-                args += args_buffer;
-                args += "\n\tjb import ";
-            }
-        }
-
-        return args;
-    }
-
-    return "";
-}
 
 namespace detail
 {
@@ -667,7 +621,6 @@ bool CompilerBackendClang::Compile(const std::string &text, const char *file)
                         if (_text[text_index_2] == '\"')
                             break;
 
-                        kLatestVar += _text[text_index_2];
                         substr += _text[text_index_2];
                     }
                 }
@@ -708,7 +661,6 @@ bool CompilerBackendClang::Compile(const std::string &text, const char *file)
                     continue;
                 }
 
-                kLatestVar += _text[text_index_2];
                 substr += _text[text_index_2];
             }
 
@@ -938,18 +890,7 @@ bool CompilerBackendClang::Compile(const std::string &text, const char *file)
             if (kInStruct)
                 kInStruct = false;
 
-            if (!kInBraces)
-            {
-                syntax_tree.fUserValue += kAddIfAnyEnd;
-
-                kAddIfAnyEnd.clear();
-
-                kState.fSyntaxTree->fLeafList.push_back(syntax_tree);
-            }
-            else
-            {
-                kState.fSyntaxTree->fLeafList.push_back(syntax_tree);
-            }
+            kState.fSyntaxTree->fLeafList.push_back(syntax_tree);
         }
 
         syntax_tree.fUserValue.clear();
@@ -1657,6 +1598,12 @@ public:
 
                         if (ParserKit::find_word(leaf.fUserValue, needle))
                         {
+                            if (leaf.fUserValue.find("ldw r19") != std::string::npos)
+                            {
+                                if (leaf.fUserValue.find("import") != std::string::npos)
+                                    leaf.fUserValue.erase(leaf.fUserValue.find("import"), strlen("import"));
+                            }
+                            
                             leaf.fUserValue.replace(leaf.fUserValue.find(needle),
                                                     needle.size(), reg.fReg);
 
@@ -1689,7 +1636,7 @@ public:
 /////////////////////////////////////////////////////////////////////////////////////////
 
 #define kPrintF printf
-#define kSplashCxx() kPrintF(kWhite "%s\n", "cc, v1.14, (c) Mahrouss Logic")
+#define kSplashCxx() kPrintF(kWhite "%s\n", "cc, v1.15, (c) Mahrouss Logic")
 
 static void cc_print_help()
 {
@@ -1701,7 +1648,7 @@ static void cc_print_help()
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
-#define kExt ".c"
+#define kExt ".bccl"
 
 int main(int argc, char **argv)
 {

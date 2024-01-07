@@ -19,15 +19,15 @@ PP_OUTPUT=bin/cpp
 CC2_OUTPUT=bin/cppfront
 CC2_SRC=cc2/source/cppfront.cpp
 
-CC_SRC=ccplus.cc ../CompilerKit/StdKit/*.cc ../CompilerKit/AsmKit/*.cc
-CC_OUTPUT=bin/ccplus
+# BC Compiler
+CC_SRC=bccl.cc ../CompilerKit/StdKit/*.cc ../CompilerKit/AsmKit/*.cc
+CC_OUTPUT=bin/bccl
 
-CC_SRC=cc.cc ../CompilerKit/StdKit/*.cc ../CompilerKit/AsmKit/*.cc
-CC_OUTPUT=bin/cc
-
+# C++ Compiler
 CXX_SRC=ccplus.cc ../CompilerKit/StdKit/*.cc ../CompilerKit/AsmKit/*.cc
 CXX_OUTPUT=bin/ccplus
 
+# MP-UX Assembly
 MASM_SRC=masm.cc ../CompilerKit/StdKit/*.cc ../CompilerKit/AsmKit/*.cc
 MASM_OUTPUT=bin/masm
 

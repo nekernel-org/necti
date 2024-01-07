@@ -9,8 +9,7 @@
 
 // @file ld.cxx
 // @author Amlal El Mahrouss (amlel)
-// @brief AE to PEF linker.
-// Use this to compile to PEF compliant OS.
+// @brief MP-UX linker.
 
 // README: Do not look up for anything with .text/.data/.page_zero!
 // It will be loaded when program will start up!
@@ -31,9 +30,9 @@
 //! @brief standard PEF entry.
 #define kPefStart    "__start"
 
-#define kToolVersion "ld v1.17, (c) Mahrouss Logic"
+#define kToolVersion "ld v1.171, (c) Mahrouss Logic"
 
-#define StringCompare(dst, src) strcmp(dst, src)
+#define StringCompare(DST, SRC) strcmp(DST, SRC)
 
 #define kPefNoCpu       0U
 #define kPefNoSubCpu    0U

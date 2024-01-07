@@ -763,7 +763,8 @@ static void masm_read_instruction(std::string& line, const std::string& file)
     for (auto& opcode64x0 : kOpcodes64x0)
     {
         // strict check here
-        if (ParserKit::find_word(line, opcode64x0.fName))
+        if (ParserKit::find_word(line, opcode64x0.fName) &&
+            detail::algorithm::is_valid(line))
         {
             std::string name(opcode64x0.fName);
             std::string jump_label, cpy_jump_label;
@@ -847,7 +848,20 @@ static void masm_read_instruction(std::string& line, const std::string& file)
                         name != "psh" &&
                         name != "ldw" &&
                         name != "lda" &&
-                        name != "stw")
+                        name != "stw" &&
+                        name != "jb")
+                    {
+                        detail::print_error("invalid combination of opcode and registers.\nline: " + line, file);
+                        throw std::runtime_error("invalid_comb_op_reg");
+                    }
+                    else if (found_some == 1 &&
+                            name == "add" )
+                    {
+                        detail::print_error("invalid combination of opcode and registers.\nline: " + line, file);
+                        throw std::runtime_error("invalid_comb_op_reg");
+                    }
+                    else if (found_some == 1 &&
+                            name == "dec")
                     {
                         detail::print_error("invalid combination of opcode and registers.\nline: " + line, file);
                         throw std::runtime_error("invalid_comb_op_reg");
@@ -871,17 +885,15 @@ static void masm_read_instruction(std::string& line, const std::string& file)
                 name == "stw" ||
                 name == "ldw" ||
                 name == "lda" ||
-                name == "sta" ||
-                name == "add" ||
-                name == "dec")
+                name == "sta")
             {
                 auto where_string = name;
 
+                // if we load something, we'd need it's symbol/literal
                 if (name == "stw" ||
                     name == "ldw" ||
                     name == "lda" ||
-                    name == "add" ||
-                    name == "dec")
+                    name == "sta")
                     where_string = ",";
 
                 jump_label = line.substr(line.find(where_string) + where_string.size());
@@ -984,6 +996,7 @@ masm_write_label:
             }
 
             kBytes.push_back('\0');
+            break;
         }
     }
 

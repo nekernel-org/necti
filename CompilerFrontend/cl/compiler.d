@@ -66,7 +66,7 @@ public class CompileCommand
 
             import std.datetime;
 
-            mcc_summon_executable("/usr/local/bin/bin/cpp --define __64x0__ 1 --define __LP64__ 1 --define __64000__ 1 --define __OPTIMIZED_C__ 1 " ~
+            mcc_summon_executable("/usr/local/bin/bin/cpp --define __64x0__ 1 --define __LP64__ 1 --define __64000__ 1 --define __BCCL__ 1 " ~
                                  "--define __FILE__ " ~ file ~ " --define __DATE__ " ~ Clock.currTime(UTC()).toString() 
                                  ~ " " ~
                                 " --working-dir ./ --include-dir " ~ includePath ~ " " ~ file);
@@ -89,16 +89,8 @@ public class CompileCommand
                     ext ~= ch;
             }
 
-            if (ext == ".cc")
-            {
-                mcc_summon_executable("/usr/local/bin/bin/ccplus --asm=masm -fmax-exceptions 20 --compiler=dolvik " ~
-                file ~ ".pp");
-            }
-            else
-            {
-                mcc_summon_executable("/usr/local/bin/bin/cc --asm=masm -fmax-exceptions 20 --compiler=dolvik " ~
-                file ~ ".pp");
-            }
+            mcc_summon_executable("/usr/local/bin/bin/bccl --asm=masm -fmax-exceptions 20 --compiler=dolvik " ~
+            file ~ ".pp");
 
             changed ~= ".64x";
 
