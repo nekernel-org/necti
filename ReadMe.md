@@ -9,16 +9,17 @@ In order to help the programmer achieve its task.
 ### Supported languages
 
 - Optimized C++
-- Optimized C
-- MP-UX Assembler (64x0 syntax)
+- Optimized D
+- BCCL (Binary Compatible Computer Language, common target for mp based compilers.)
+- MP-UX Assembly (64x0 and 32x0 syntax)
 
 ### Actually contains:
 
 cpp: C/C++ preprocessor
 <br>
-ccplus: C++ compiler
+ccplus: Optimized C++ compiler
 <br>
-cc: C compiler
+bccl: C compiler
 <br>
 ld: mp-ux linker
 <br>
