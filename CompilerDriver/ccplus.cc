@@ -283,7 +283,7 @@ public:
         auto fmt = CompilerKit::current_date();
 
         (*kState.fOutputAssembly) << "# Path: " << src_file << "\n";
-        (*kState.fOutputAssembly) << "# Language: MP-UX Assembly\n";
+        (*kState.fOutputAssembly) << "# Language: MP-UX Assembly (Generated from C++)\n";
         (*kState.fOutputAssembly) << "# Build Date: " << fmt << "\n\n";
 
         ParserKit::SyntaxLeafList syntax;
@@ -295,6 +295,7 @@ public:
 
         while (std::getline(src_fp, source))
         {
+            // compile into AST.
             kCompilerBackend->Compile(source.c_str(), src.CData());
         }
 
@@ -303,6 +304,7 @@ public:
 
         std::vector<std::string> lines;
         
+        // \brief compiler scope type.
         struct scope_type
         {
             std::vector<std::string> vals;
@@ -318,6 +320,7 @@ public:
         bool is_pointer = false;
         bool found_expr = false;
         bool found_func = false;
+        std::string type;
 
         for (auto& leaf : kState.fSyntaxTree->fLeafList)
         {
@@ -339,6 +342,7 @@ public:
                 leaf.fUserData == "struct" ||
                 leaf.fUserData == "class")
             {
+                type += leaf.fUserData;
                 found_type = true;
             }
 
@@ -358,6 +362,30 @@ public:
                 {
                     found_expr = false;
                     is_pointer = false;
+                }
+                else
+                {
+                    leaf.fUserValue = "export .text _CppZ_ELMH_";
+                   
+                    for (auto& line : lines)
+                    {
+                        if (line.find(type) != std::string::npos &&
+                            line.find("(") != std::string::npos)
+                        {
+                            auto fn_name = line.substr(line.find(type), line.find("("));
+                            
+                            while (fn_name.find(' ') != std::string::npos)
+                                fn_name.replace(fn_name.find(' '), 1, "@");
+
+                            leaf.fUserValue += fn_name;
+
+                            break;
+                        }
+                    }
+
+                    leaf.fUserValue += "\n";
+
+                    found_func = true;
                 }
             }
 
@@ -536,6 +564,7 @@ int main(int argc, char** argv)
     kKeywords.emplace_back("double");
     kKeywords.emplace_back("unsigned");
     kKeywords.emplace_back("__export__");
+    kKeywords.emplace_back("__import__");
     kKeywords.emplace_back("__packed__");
     kKeywords.emplace_back("namespace");
     kKeywords.emplace_back("while");

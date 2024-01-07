@@ -19,7 +19,7 @@ cpp: C/C++ preprocessor
 <br>
 ccplus: Optimized C++ compiler
 <br>
-bccl: C compiler
+bccl: BCCL compiler
 <br>
 ld: mp-ux linker
 <br>
