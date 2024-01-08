@@ -332,9 +332,9 @@ static bool masm_read_attributes(std::string& line)
 {
     // import is the opposite of export, it signals to the ld
     // that we need this symbol.
-    if (ParserKit::find_word(line, "import"))
+    if (ParserKit::find_word(line, "import "))
     {
-        auto name = line.substr(line.find("import") + strlen("import"));
+        auto name = line.substr(line.find("import ") + strlen("import "));
 
         std::string result = std::to_string(name.size());
         result += kUndefinedSymbol;
@@ -393,9 +393,9 @@ static bool masm_read_attributes(std::string& line)
 
     // export is a special keyword used by masm to tell the AE output stage to mark this section as a header.
     // it currently supports .text, .data., page_zero
-    if (ParserKit::find_word(line, "export"))
+    if (ParserKit::find_word(line, "export "))
     {
-        auto name = line.substr(line.find("export") + strlen("export"));
+        auto name = line.substr(line.find("export ") + strlen("export "));
 
         for (char& j : name)
         {
@@ -465,8 +465,8 @@ namespace detail::algorithm
 
     bool is_valid(const std::string &str)
     {
-        if (ParserKit::find_word(str, "export") ||
-                ParserKit::find_word(str, "import"))
+        if (ParserKit::find_word(str, "export ") ||
+                ParserKit::find_word(str, "import "))
             return true;
 
         return find_if(str.begin(), str.end(), is_not_alnum_space) == str.end();
@@ -489,8 +489,8 @@ static std::string masm_check_line(std::string& line, const std::string& file)
         line.erase(line.find('\t'), 1);
 
     if (line.empty() ||
-        ParserKit::find_word(line, "import") ||
-        ParserKit::find_word(line, "export") ||
+        ParserKit::find_word(line, "import ") ||
+        ParserKit::find_word(line, "export ") ||
         ParserKit::find_word(line, "#") ||
         ParserKit::find_word(line, ";") ||
         ParserKit::find_word(line, "layout"))
@@ -757,7 +757,7 @@ static bool masm_write_number(const std::size_t& pos, std::string& jump_label)
 
 static void masm_read_instruction(std::string& line, const std::string& file)
 {
-    if (ParserKit::find_word(line, "export"))
+    if (ParserKit::find_word(line, "export "))
         return;
 
     for (auto& opcode64x0 : kOpcodes64x0)
@@ -926,7 +926,7 @@ static void masm_read_instruction(std::string& line, const std::string& file)
                 else
                 {
                     if (name == "sta" &&
-                        cpy_jump_label.find("import") != std::string::npos)
+                        cpy_jump_label.find("import ") != std::string::npos)
                     {
                         detail::print_error("invalid usage import on 'sta', here: " + line, file);
                         throw std::runtime_error("invalid_sta_usage");
@@ -941,15 +941,15 @@ masm_write_label:
                 if (cpy_jump_label.find('\n') != std::string::npos)
                     cpy_jump_label.erase(cpy_jump_label.find('\n'), 1);
 
-                if (cpy_jump_label.find("import") == std::string::npos &&
+                if (cpy_jump_label.find("import ") == std::string::npos &&
                     name == "psh" ||
-                    cpy_jump_label.find("import") == std::string::npos &&
+                    cpy_jump_label.find("import ") == std::string::npos &&
                     name == "jb")
                 {
                     detail::print_error("import not found on jump label, please add one.", file);
                     throw std::runtime_error("import_jmp_lbl");
                 }
-                else if (cpy_jump_label.find("import") != std::string::npos)
+                else if (cpy_jump_label.find("import ") != std::string::npos)
                 { 
                     if (name == "sta")
                     {
@@ -957,7 +957,7 @@ masm_write_label:
                         throw std::runtime_error("import_sta_op");
                     }
 
-                    cpy_jump_label.erase(cpy_jump_label.find("import"), strlen("import"));
+                    cpy_jump_label.erase(cpy_jump_label.find("import "), strlen("import "));
                 }
 
                 while (cpy_jump_label.find(' ') != std::string::npos)

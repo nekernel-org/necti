@@ -308,10 +308,10 @@ public:
         struct scope_type
         {
             std::vector<std::string> vals;
-            int reg_cnt{ 0 };
-            int id{ 0 };
+            std::size_t reg_cnt{ kRegisterCounter };
+            std::size_t id{ 0 };
 
-            bool operator==(const scope_type& typ) { return typ.id == id; }
+            bool operator==(const scope_type& typ) const { return typ.id == id; }
         };
 
         std::vector<scope_type> scope;
@@ -437,6 +437,13 @@ public:
                             if (val.find(";") != std::string::npos)
                                 val.erase(val.find(";"), 1);
 
+                            while (val.find(" ") != std::string::npos)
+                                val.erase(val.find(" "), 1);
+
+                            if (isalnum(val[0]) &&
+                                !isdigit(val[0]))
+                                val.insert(0, "import ");
+
                             leaf.fUserValue.replace(leaf.fUserValue.find("%s1"), strlen("%s1"), val);
                         }
                     }
@@ -490,7 +497,7 @@ public:
 
             if (leaf.fUserData == "return")
             {
-                leaf.fUserValue = "ldw r19, %s\njlr";
+                leaf.fUserValue = "mv r19, %s\njlr";
 
                 if (!lines.empty())
                 {
@@ -503,7 +510,7 @@ public:
                             val.erase(val.find(";"), 1);
 
                             std::string val_reg;
-                            std::size_t& reg_cnt = kRegisterCounter;
+                            std::size_t reg_cnt = kRegisterCounter;
 
                             for (int i = ln.find(leaf.fUserData) + leaf.fUserData.size(); i < ln.size(); ++i)
                             {
@@ -520,7 +527,6 @@ public:
                                         ln[i] == '|' ||
                                         ln[i] == ';')
                                     {
-                                        std::cout << val_reg;
                                         val.replace(val.find(val_reg), val_reg.size(), "r" + std::to_string(reg_cnt));
                                         val_reg.clear();
                                         ++reg_cnt;
@@ -536,6 +542,9 @@ public:
                                 if (isalnum(ln[i]))
                                     val_reg += ln[i];
                             }
+
+                            while (val.find(" ") != std::string::npos)
+                                val.erase(val.find(" "), 1);
 
                             leaf.fUserValue.replace(leaf.fUserValue.find("%s"), strlen("%s"), val);
                         }
