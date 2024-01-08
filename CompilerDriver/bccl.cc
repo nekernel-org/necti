@@ -1,7 +1,7 @@
 /*
  *	========================================================
  *
- *	cc
+ *	bccl
  * 	Copyright Mahrouss Logic, all rights reserved.
  *
  * 	========================================================
@@ -25,7 +25,7 @@
 /* (c) Mahrouss Logic */
 
 // @author Amlal El Mahrouss (amlel)
-// @file cc.cc
+// @file bccl.bccl
 // @brief Optimized C Compiler.
 
 /////////////////////
@@ -102,14 +102,14 @@ namespace detail
 
         if (kState.fLastFile != file)
         {
-            std::cout << kRed << "[ cc ] " << kWhite << ((file == "cc") ? "internal compiler error " : ("in file, " + file)) << kBlank << std::endl;
-            std::cout << kRed << "[ cc ] " << kWhite << reason << kBlank << std::endl;
+            std::cout << kRed << "[ bccl ] " << kWhite << ((file == "bccl") ? "internal compiler error " : ("in file, " + file)) << kBlank << std::endl;
+            std::cout << kRed << "[ bccl ] " << kWhite << reason << kBlank << std::endl;
 
             kState.fLastFile = file;
         }
         else
         {
-            std::cout << kRed << "[ cc ] [ " << kState.fLastFile << " ] " << kWhite << reason << kBlank << std::endl;
+            std::cout << kRed << "[ bccl ] [ " << kState.fLastFile << " ] " << kWhite << reason << kBlank << std::endl;
         }
 
         if (kAcceptableErrors > kErrorLimit)
@@ -178,15 +178,29 @@ static std::vector<detail::CompilerType> kCompilerTypes;
 
 namespace detail
 {
-    union number_cast
+    union number_cast final
     {
-        number_cast(UInt64 raw)
-            : raw(raw)
-        {
-        }
+    public:
+        number_cast(UInt64 _Raw) : _Raw(_Raw) {}
 
-        char number[8];
-        UInt64 raw;
+    public:
+        char _Num[8];
+        UInt64 _Raw;
+    
+    };
+
+    union double_cast final
+    {
+    public:
+        double_cast(float _Raw) : _Raw(_Raw) {}
+
+    public:
+        char _Sign;
+        char _Lh[8];
+        char _Rh[23];
+
+        float _Raw;
+    
     };
 }
 
@@ -271,13 +285,6 @@ bool CompilerBackendClang::Compile(const std::string &text, const char *file)
 
             kInBraces = true;
             ++kBracesCount;
-
-            if (kOnWhileLoop ||
-                kOnForLoop)
-            {
-                syntax_tree.fUserValue = "void export .text _L";
-                syntax_tree.fUserValue += std::to_string(kBracesCount) + "_" + std::to_string(time_off.raw);
-            }
 
             kState.fSyntaxTree->fLeafList.push_back(syntax_tree);
         }
@@ -1434,7 +1441,7 @@ public:
 /////////////////////////////////////////////////////////////////////////////////////////
 
 #define kPrintF printf
-#define kSplashCxx() kPrintF(kWhite "%s\n", "cc, v1.15, (c) Mahrouss Logic")
+#define kSplashCxx() kPrintF(kWhite "%s\n", "bccl, v1.15, (c) Mahrouss Logic")
 
 static void cc_print_help()
 {
@@ -1536,7 +1543,7 @@ int main(int argc, char **argv)
             std::string err = "Unknown command: ";
             err += argv[index];
 
-            detail::print_error(err, "cc");
+            detail::print_error(err, "bccl");
 
             continue;
         }
