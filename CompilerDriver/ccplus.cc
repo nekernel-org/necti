@@ -132,7 +132,7 @@ static int kMachine = 0;
 /////////////////////////////////////////
 
 static size_t kRegisterCnt = kAsmRegisterLimit;
-static size_t kStartUsable = 1;
+static size_t kStartUsable = 2;
 static size_t kUsableLimit = 14;
 static size_t kRegisterCounter = kStartUsable;
 static std::string kRegisterPrefix = kAsmRegisterPrefix;
@@ -315,6 +315,7 @@ public:
         };
 
         std::vector<scope_type> scope;
+        scope.emplace_back();
 
         bool found_type = false;
         bool is_pointer = false;
@@ -331,6 +332,7 @@ public:
 
             if (leaf.fUserData == "{")
             {
+                kRegisterCounter = kStartUsable;
                 scope.pop_back();
             }
 
@@ -395,6 +397,14 @@ public:
                 {
                     is_pointer = false;
                 }
+
+                auto& front = scope.front();
+
+                std::string reg = "r";
+                reg += std::to_string(front.reg_cnt);
+                ++front.reg_cnt;
+
+                front.vals.push_back(reg);
             }
 
             if (leaf.fUserData == "*")
@@ -412,6 +422,8 @@ public:
                     std::string reg = "r";
                     reg += std::to_string(front.reg_cnt);
                     ++front.reg_cnt;
+
+                    front.vals.push_back(reg);
 
                     leaf.fUserValue = !is_pointer ? "ldw %s, %s1\n" : "lda %s, %s1\n";
 
@@ -435,7 +447,7 @@ public:
                 }
                 else
                 {
-                    leaf.fUserValue = !is_pointer ? "ldw %s, %s1\n" : "lda %s, %s1\n";
+                    leaf.fUserValue = !is_pointer ? "ldw %s, %s1\n" : "lda 0(%s), %s1\n";
 
                     for (auto& ln : lines)
                     {
@@ -462,8 +474,12 @@ public:
                     auto& front = scope.front();
 
                     std::string reg = "r";
-                    reg += std::to_string(front.reg_cnt - 1);
+                    reg += std::to_string(front.reg_cnt);
+                    ++front.reg_cnt;
+
                     leaf.fUserValue.replace(leaf.fUserValue.find("%s"), strlen("%s"), reg);
+
+                    front.vals.push_back(reg);
 
                     if (is_pointer)
                     {
@@ -486,6 +502,41 @@ public:
                             auto val = ln.substr(ln.find(leaf.fUserData) + leaf.fUserData.size());
                             val.erase(val.find(";"), 1);
 
+                            std::string val_reg;
+                            std::size_t& reg_cnt = kRegisterCounter;
+
+                            for (int i = ln.find(leaf.fUserData) + leaf.fUserData.size(); i < ln.size(); ++i)
+                            {
+                                try
+                                {
+                                    if (ln[i] == ',' ||
+                                        ln[i] == '+' ||
+                                        ln[i] == '/' ||
+                                        ln[i] == '-' ||
+                                        ln[i] == '*' ||
+                                        ln[i] == '|' ||
+                                        ln[i] == '&' ||
+                                        ln[i] == '&' ||
+                                        ln[i] == '|' ||
+                                        ln[i] == ';')
+                                    {
+                                        std::cout << val_reg;
+                                        val.replace(val.find(val_reg), val_reg.size(), "r" + std::to_string(reg_cnt));
+                                        val_reg.clear();
+                                        ++reg_cnt;
+
+                                        continue;
+                                    }
+                                }
+                                catch (...)
+                                {
+
+                                }
+
+                                if (isalnum(ln[i]))
+                                    val_reg += ln[i];
+                            }
+
                             leaf.fUserValue.replace(leaf.fUserValue.find("%s"), strlen("%s"), val);
                         }
                     }
@@ -498,7 +549,6 @@ public:
                 continue;
             }
 
-            std::cout << leaf.fUserData;
             lines.emplace_back(leaf.fUserData);
         }
 
