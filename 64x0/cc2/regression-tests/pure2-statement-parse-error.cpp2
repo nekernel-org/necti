@@ -1,5 +1,0 @@
-func: () = {
-    a : int = 5;
-    int b = 4;
-    c: int = 3;
-}

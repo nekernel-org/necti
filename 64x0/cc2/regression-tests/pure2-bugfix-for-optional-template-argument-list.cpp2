@@ -1,2 +1,0 @@
-plus: const std::plus<> = ();
-main: () -> int         = std::plus<>()(0, 0);
