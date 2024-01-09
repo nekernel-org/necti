@@ -15,7 +15,7 @@ module mpcc.compiler;
 
 import std.stdio;
 
-public void mcc_summon_executable(string path) 
+public void mpcc_summon_executable(string path)
 {
 	import core.stdc.stdlib;
     import std.string;
@@ -66,7 +66,7 @@ public class CompileCommand
 
             import std.datetime;
 
-            mcc_summon_executable("/usr/local/bin/bin/cpp --define __64x0__ 1 --define __LP64__ 1 --define __64000__ 1 --define __BCCL__ 1 " ~
+            mpcc_summon_executable("/usr/local/bin/bin/cpp --define __64x0__ 1 --define __LP64__ 1 --define __64000__ 1 --define __BCCL__ 1 " ~
                                  "--define __FILE__ " ~ file ~ " --define __DATE__ " ~ Clock.currTime(UTC()).toString() 
                                  ~ " " ~
                                 " --working-dir ./ --include-dir " ~ includePath ~ " " ~ file);
@@ -89,12 +89,12 @@ public class CompileCommand
                     ext ~= ch;
             }
 
-            mcc_summon_executable("/usr/local/bin/bin/bccl --asm=masm -fmax-exceptions 20 --compiler=dolvik " ~
+            mpcc_summon_executable("/usr/local/bin/bin/bccl --asm=masm -fmax-exceptions 20 --compiler=dolvik " ~
             file ~ ".pp");
 
             changed ~= ".64x";
 
-            mcc_summon_executable("/usr/local/bin/bin/masm -m64000 " ~ changed);
+            mpcc_summon_executable("/usr/local/bin/bin/masm -m64000 " ~ changed);
         }
 
         if (compile_only)
@@ -131,7 +131,7 @@ public class CompileCommand
         output_object ~= " -o ";
         output_object ~= output;
 
-        mcc_summon_executable("/usr/local/bin/bin/ld -m64000 " ~
+        mpcc_summon_executable("/usr/local/bin/bin/ld -m64000 " ~
         obj ~ output_object);
     }
 }

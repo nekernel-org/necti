@@ -123,30 +123,18 @@ int main(int argc, char** argv)
         {
             if (strcmp(argv[i], "-v") == 0)
             {
-                kStdOut << "masm: The MP-UX Assembler.\nmasm: v1.10\nmasm: Copyright (c) 2023 Mahrouss Logic.\n";
+                kStdOut << "64asm: The MP-UX 64x0 Assembler.\n64asm: v1.10\n64asm: Copyright (c) 2023 Mahrouss Logic.\n";
                 return 0;
             }
 
             if (strcmp(argv[i], "-h") == 0)
             {
-                kStdOut << "masm: The MP-UX Assembler.\nmasm: Copyright (c) 2023 Mahrouss Logic.\n";
+                kStdOut << "64asm: The MP-UX 64x0 Assembler.\n64asm: Copyright (c) 2023 Mahrouss Logic.\n";
                 kStdOut << "-v: Print program version.\n";
                 kStdOut << "-verbose: Print verbose output.\n";
                 kStdOut << "-m64000: Compile for the X64000 instruction set.\n";
 
                 return 0;
-            }
-            else if (strcmp(argv[i], "-m64000") == 0 ||
-                    strcmp(argv[i], "-m64x0") == 0)
-            {
-                kOutputArch = CompilerKit::kPefArch64000;
-                
-                if (kVerbose)
-                {
-                    kStdOut << "masm: Select 64x0 as object output.\n";
-                }
-
-                continue;
             }
             else if (strcmp(argv[i], "-verbose") == 0)
             {
@@ -154,7 +142,7 @@ int main(int argc, char** argv)
                 continue;
             }
 
-            kStdOut << "masm: ignore " << argv[i] << "\n";
+            kStdOut << "64asm: ignore " << argv[i] << "\n";
             continue;
         }
 
@@ -178,7 +166,7 @@ int main(int argc, char** argv)
         {
             if (kVerbose)
             {
-                kStdOut << "masm: error: " << strerror(errno) << "\n";
+                kStdOut << "64asm: error: " << strerror(errno) << "\n";
             }
         }
 
@@ -228,7 +216,7 @@ int main(int argc, char** argv)
         }
 
         if (kVerbose)
-            kStdOut << "masm: writing to file...\n";
+            kStdOut << "64asm: writing to file...\n";
 
         // this is the final step, write everything to the file.
 
@@ -251,7 +239,7 @@ int main(int argc, char** argv)
         for (auto& rec : kRecords)
         {
             if (kVerbose)
-                kStdOut << "masm: wrote record " << rec.fName << " to file...\n";
+                kStdOut << "64asm: wrote record " << rec.fName << " to file...\n";
 
             rec.fFlags |= CompilerKit::kKindRelocationAtRuntime;
             rec.fOffset = record_count;
@@ -268,7 +256,7 @@ int main(int argc, char** argv)
             CompilerKit::AERecordHeader _record_hdr{ 0 };
 
             if (kVerbose)
-                kStdOut << "masm: wrote symbol " << sym << " to file...\n";
+                kStdOut << "64asm: wrote symbol " << sym << " to file...\n";
 
             _record_hdr.fKind = kAEInvalidOpcode;
             _record_hdr.fSize = sym.size();
@@ -302,13 +290,13 @@ int main(int argc, char** argv)
         }
 
         if (kVerbose)
-            kStdOut << "masm: wrote program bytes to file...\n";
+            kStdOut << "64asm: wrote program bytes to file...\n";
 
         file_ptr_out.flush();
         file_ptr_out.close();
     
         if (kVerbose)
-            kStdOut << "masm: exit succeeded with code 0.\n";
+            kStdOut << "64asm: exit succeeded with code 0.\n";
 
         return 0;
     }
@@ -316,7 +304,7 @@ int main(int argc, char** argv)
 masm_fail_exit:
 
     if (kVerbose)
-        kStdOut << "masm: exit failed with code -1.\n";
+        kStdOut << "64asm: exit failed with code -1.\n";
 
     return -1;
 }
@@ -655,7 +643,7 @@ static bool masm_write_number(const std::size_t& pos, std::string& jump_label)
 
             if (kVerbose)
             {
-                kStdOut << "masm: found a base 16 number here: " << jump_label.substr(pos) << "\n";
+                kStdOut << "64asm: found a base 16 number here: " << jump_label.substr(pos) << "\n";
             }
 
             return true;
@@ -678,7 +666,7 @@ static bool masm_write_number(const std::size_t& pos, std::string& jump_label)
 
             if (kVerbose)
             {
-                kStdOut << "masm: found a base 2 number here: " << jump_label.substr(pos) << "\n";
+                kStdOut << "64asm: found a base 2 number here: " << jump_label.substr(pos) << "\n";
             }
 
             for (char& i : num.number)
@@ -706,7 +694,7 @@ static bool masm_write_number(const std::size_t& pos, std::string& jump_label)
 
             if (kVerbose)
             {
-                kStdOut << "masm: found a base 8 number here: " << jump_label.substr(pos) << "\n";
+                kStdOut << "64asm: found a base 8 number here: " << jump_label.substr(pos) << "\n";
             }
 
             for (char& i : num.number)
@@ -743,7 +731,7 @@ static bool masm_write_number(const std::size_t& pos, std::string& jump_label)
 
     if (kVerbose)
     {
-        kStdOut << "masm: found a base 10 number here: " << jump_label.substr(pos) << "\n";
+        kStdOut << "64asm: found a base 10 number here: " << jump_label.substr(pos) << "\n";
     }
 
     return true;
@@ -831,11 +819,11 @@ static void masm_read_instruction(std::string& line, const std::string& file)
                             if (kVerbose)
                             {
                                 if (kOutputArch == CompilerKit::kPefArch64000)
-                                    kStdOut << "masm: 64x0 register found: " << register_syntax << "\n";
+                                    kStdOut << "64asm: 64x0 register found: " << register_syntax << "\n";
                                 else
-                                    kStdOut << "masm: register found: " << register_syntax << "\n";
+                                    kStdOut << "64asm: register found: " << register_syntax << "\n";
 
-                                kStdOut << "masm: Number of registers: " << found_some << "\n";
+                                kStdOut << "64asm: Number of registers: " << found_some << "\n";
                             }
                         }
                     }

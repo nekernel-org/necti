@@ -11,7 +11,7 @@ LINK_CC=g++ -std=c++20
 LINK_INC=-I../ -I../CompilerKit
 LINK_SRC=ld.cc
 LINK_OUTPUT=bin/ld
-LINK_ALT_OUTPUT=bin/mld
+LINK_ALT_OUTPUT=bin/64ld
 
 PP_SRC=bpp.cc
 PP_OUTPUT=bin/bpp
@@ -28,8 +28,8 @@ CXX_SRC=ccplus.cc ../CompilerKit/StdKit/*.cc ../CompilerKit/AsmKit/*.cc
 CXX_OUTPUT=bin/ccplus
 
 # MP-UX Assembly
-MASM_SRC=masm.cc ../CompilerKit/StdKit/*.cc ../CompilerKit/AsmKit/*.cc
-MASM_OUTPUT=bin/masm
+MASM_SRC=64asm.cc ../CompilerKit/StdKit/*.cc ../CompilerKit/AsmKit/*.cc
+MASM_OUTPUT=bin/64asm
 
 .PHONY: all
 all: cxx

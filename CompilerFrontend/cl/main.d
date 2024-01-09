@@ -16,8 +16,8 @@ import mpcc.compiler;
 import std.container.dlist;
 
 ///Authors: Amlal EL Mahrouss
-///Examples: mcc_summon_manual("foo"); 
-void mcc_summon_manual(string path)
+///Examples: mpcc_summon_manual("foo");
+void mpcc_summon_manual(string path)
 {
 	import core.stdc.stdlib;
     import std.string;
@@ -55,14 +55,14 @@ void main(string[] args)
             }
             else if (arg == "--dialect")
             {
-                mcc_summon_executable("/usr/local/bin/bin/cc --asm=masm --compiler=dolvik --dialect");
+                mpcc_summon_executable("/usr/local/bin/bin/cc --asm=masm --compiler=dolvik --dialect");
                 return;
             }
             else if (arg == "--help" ||
                      arg == "-h")
             {
                 writeln("mpcc: summoning manual entry for mpcc...");
-                mcc_summon_manual("mpcc");
+                mpcc_summon_manual("mpcc");
 
                 return;
             }
