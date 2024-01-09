@@ -1,5 +1,0 @@
-element: type = {
-  name: std::string;
-  operator=: (out this, forward n: std::string) = { name = n; }
-}
-main: () = { }
