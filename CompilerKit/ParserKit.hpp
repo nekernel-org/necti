@@ -85,9 +85,26 @@ namespace ParserKit
                 not_part_of_word(index + needle.size());
     }
 
-    inline bool find_word_strict(const std::string& haystack, const std::string& needle) noexcept
+    /// find a word within strict conditions and returns a range of it.
+    /// \param haystack
+    /// \param needle
+    /// \return position of needle.
+    inline std::size_t find_word_range(const std::string& haystack, const std::string& needle) noexcept
     {
-        return ParserKit::find_word(haystack, needle) &&
-              isspace(haystack[haystack.find(needle) + needle.size() + 1]);
+        auto index = haystack.find(needle);
+
+        // check for needle validity.
+        if (index == std::string::npos)
+            return false;
+
+        if (!isalnum((haystack[index + needle.size() + 1])) &&
+                !isdigit(haystack[index + needle.size() + 1]) &&
+                !isalnum((haystack[index - needle.size() - 1])) &&
+                !isdigit(haystack[index - needle.size() - 1]))
+        {
+            return index;
+        }
+
+        return false;
     }
 }

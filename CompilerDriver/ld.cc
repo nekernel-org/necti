@@ -17,15 +17,15 @@
 
 #include <CompilerKit/StdKit/ErrorID.hpp>
 
-#include <fstream>
-#include <iostream>
-#include <uuid/uuid.h>
-
 //! Portable Executable Format
 #include <CompilerKit/StdKit/PEF.hpp>
 
 //! Advanced Executable Object Format
 #include <CompilerKit/StdKit/AE.hpp>
+
+#include <fstream>
+#include <iostream>
+#include <uuid/uuid.h>
 
 //! @brief standard PEF entry.
 #define kPefStart    "__start"

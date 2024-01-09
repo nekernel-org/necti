@@ -1,6 +1,7 @@
 bin/ld
 bin/mld
 bin/cpp
+bin/bpp
 bin/cc
 bin/masm
 bin/mkcdfs

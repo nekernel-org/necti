@@ -7,6 +7,7 @@ bin/mkcdfs
 bin/ccplus
 bin/cppfront
 bin/bccl
+bin/bpp
 test/*.cc
 test/*.64x
 *.c.pp

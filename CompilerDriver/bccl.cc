@@ -20,13 +20,13 @@
 
 // TODO: support structs and ., ->
 
-/* Optimized C driver */
-/* This is part of MP-UX C SDK. */
+/* BCCL driver */
+/* This is part of MP-UX BCCL SDK. */
 /* (c) Mahrouss Logic */
 
 // @author Amlal El Mahrouss (amlel)
 // @file bccl.bccl
-// @brief Optimized C Compiler.
+// @brief BCCL Compiler.
 
 /////////////////////
 
@@ -40,7 +40,7 @@
 
 /////////////////////////////////////
 
-// INTERNAL STUFF OF THE C COMPILER
+// INTERNAL STUFF OF THE BCCL COMPILER
 
 /////////////////////////////////////
 
@@ -53,7 +53,7 @@ namespace detail
         std::string fReg;
     };
 
-    // \brief Map for C structs
+    // \brief Map for BCCL structs
     // \author amlel
     struct CompilerStructMap final
     {
@@ -156,22 +156,22 @@ static bool kOnForLoop = false;
 static bool kInBraces = false;
 static size_t kBracesCount = 0UL;
 
-/* @brief C compiler backend for Optimized C */
-class CompilerBackendClang final : public ParserKit::CompilerBackend
+/* @brief BCCL compiler backend for BCCL */
+class CompilerBackendBccl final : public ParserKit::CompilerBackend
 {
 public:
-    explicit CompilerBackendClang() = default;
-    ~CompilerBackendClang() override = default;
+    explicit CompilerBackendBccl() = default;
+    ~CompilerBackendBccl() override = default;
 
-    CXXKIT_COPY_DEFAULT(CompilerBackendClang);
+    CXXKIT_COPY_DEFAULT(CompilerBackendBccl);
 
     std::string Check(const char *text, const char *file);
     bool Compile(const std::string &text, const char *file) override;
 
-    const char *Language() override { return "MP-UX BCCL (64x0/32x0 target)"; }
+    const char *Language() override { return "MP-UX BCCL for 64x0/32x0"; }
 };
 
-static CompilerBackendClang *kCompilerBackend = nullptr;
+static CompilerBackendBccl *kCompilerBackend = nullptr;
 static std::vector<detail::CompilerType> kCompilerVariables;
 static std::vector<std::string> kCompilerFunctions;
 static std::vector<detail::CompilerType> kCompilerTypes;
@@ -207,11 +207,11 @@ namespace detail
 /////////////////////////////////////////////////////////////////////////////////////////
 
 // @name Compile
-// @brief Generate MASM from a C assignement.
+// @brief Generate MASM from a BCCL assignement.
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
-bool CompilerBackendClang::Compile(const std::string &text, const char *file)
+bool CompilerBackendBccl::Compile(const std::string &text, const char *file)
 {
     std::string _text = text;
 
@@ -705,7 +705,7 @@ bool CompilerBackendClang::Compile(const std::string &text, const char *file)
 static bool kShouldHaveBraces = false;
 static std::string kFnName;
 
-std::string CompilerBackendClang::Check(const char *text, const char *file)
+std::string CompilerBackendBccl::Check(const char *text, const char *file)
 {
     std::string err_str;
     std::string ln = text;
@@ -1271,24 +1271,24 @@ skip_braces_check:
 /////////////////////////////////////////////////////////////////////////////////////////
 
 /**
- * @brief C To Assembly mount-point.
+ * @brief BCCL To Assembly mount-point.
  */
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
-class AssemblyMountpointClang final : public CompilerKit::AssemblyMountpoint
+class AssemblyMountpointBccl final : public CompilerKit::AssemblyMountpoint
 {
 public:
-    explicit AssemblyMountpointClang() = default;
-    ~AssemblyMountpointClang() override = default;
+    explicit AssemblyMountpointBccl() = default;
+    ~AssemblyMountpointBccl() override = default;
 
-    CXXKIT_COPY_DEFAULT(AssemblyMountpointClang);
+    CXXKIT_COPY_DEFAULT(AssemblyMountpointBccl);
 
     [[maybe_unused]] static Int32 Arch() noexcept { return CompilerKit::AssemblyFactory::kArchRISCV; }
 
     Int32 CompileToFormat(CompilerKit::StringView &src, Int32 arch) override
     {
-        if (arch != AssemblyMountpointClang::Arch())
+        if (arch != AssemblyMountpointBccl::Arch())
             return -1;
 
         if (kCompilerBackend == nullptr)
@@ -1509,7 +1509,7 @@ int main(int argc, char **argv)
             {
                 delete kFactory.Unmount();
 
-                kFactory.Mount(new AssemblyMountpointClang());
+                kFactory.Mount(new AssemblyMountpointBccl());
                 kMachine = CompilerKit::AssemblyFactory::kArchRISCV;
 
                 continue;
@@ -1518,7 +1518,7 @@ int main(int argc, char **argv)
             if (strcmp(argv[index], "--compiler=dolvik") == 0)
             {
                 if (!kCompilerBackend)
-                    kCompilerBackend = new CompilerBackendClang();
+                    kCompilerBackend = new CompilerBackendBccl();
 
                 continue;
             }
@@ -1556,7 +1556,7 @@ int main(int argc, char **argv)
         {
             if (kState.kVerbose)
             {
-                std::cerr << argv[index] << " is not a valid C line_src.\n";
+                std::cerr << argv[index] << " is not a valid BCCL source.\n";
             }
 
             return -1;

@@ -13,9 +13,11 @@
 #include <iostream>
 #include <fstream>
 
+#define kMacroPrefix '%'
+
 // @author Amlal El Mahrouss (amlel)
 // @file cpp.cc
-// @brief C Preprocessor.
+// @brief MASM preprocessor.
 
 typedef Int32(*cpp_parser_fn_t)(std::string& line, std::ifstream& hdr_file, std::ofstream& pp_out);
 
@@ -74,7 +76,7 @@ static std::vector<std::string> kKeywords = {
 	"include",
 	"if",
 	"pragma",
-	"define",
+	"def",
 	"elif",
 	"ifdef",
 	"ifndef",
@@ -299,7 +301,7 @@ void cpp_parse_file(std::ifstream& hdr_file, std::ofstream& pp_out)
                 hdr_line.erase(hdr_line.find("//"));
             }
 
-			if (hdr_line[0] == '#' &&
+			if (hdr_line[0] == kMacroPrefix &&
 				hdr_line.find("endif") != std::string::npos)
 			{
 				if (!defined &&
@@ -331,14 +333,83 @@ void cpp_parse_file(std::ifstream& hdr_file, std::ofstream& pp_out)
                 if (ParserKit::find_word(hdr_line, macro.fName) &&
                     hdr_line.find("#define") == std::string::npos)
                 {
-                    hdr_line = hdr_line.replace(hdr_line.find(macro.fName), macro.fName.size(), macro.fValue);
+                    auto substr = hdr_line.substr(hdr_line.find(macro.fName) + macro.fName.size() + 1);
+
+                    std::vector<std::string> sym_vec;
+                    std::string sym_str;
+
+                    for (auto& subc : substr)
+                    {
+                        if (subc == ',' ||
+                            subc == ')')
+                        {
+                            if (sym_str.empty())
+                                continue;
+
+                            sym_vec.push_back(sym_str);
+                            sym_str.clear();
+
+                            continue;
+                        }
+
+                        if (isalnum(subc))
+                            sym_str.push_back(subc);
+                    }
+
+                    if (macro.fArgs.size() > 0)
+                    {
+
+                        for (auto& item : sym_vec)
+                        {
+                            std::size_t cnt = 0;
+
+                            for (auto& arg : macro.fArgs)
+                            {
+                                if (item == arg)
+                                    ++cnt;
+                            }
+
+                            if (cnt > 1)
+                            {
+                                auto it = std::find(macro.fArgs.begin(), macro.fArgs.end(), item);
+
+                                while (it !=  macro.fArgs.end())
+                                {
+                                    macro.fArgs.erase(it);
+                                    it = std::find(macro.fArgs.begin(), macro.fArgs.end(), item);
+                                }
+                            }
+                        }
+
+                        if (sym_vec.size() != macro.fArgs.size())
+                        {
+                            throw std::runtime_error("cpp: arguments count mismatch, except " + std::to_string(sym_vec.size()) + ", got: " + std::to_string(macro.fArgs.size()));
+                            return;
+                        }
+
+                        substr = macro.fValue;
+
+                        std::size_t cnt = 0UL;
+
+                        for (auto& val : macro.fArgs)
+                        {
+                            substr.replace(substr.find(val), val.size(), sym_vec[cnt]);
+                            ++cnt;
+                        }
+
+                        hdr_line = hdr_line.replace(hdr_line.find(macro.fName), macro.fName.size() + macro.fValue.size(), substr);
+                    }
+                    else
+                    {
+                        hdr_line = hdr_line.replace(hdr_line.find(macro.fName), macro.fName.size(), macro.fValue);
+                    }
                 }
             }
 
-			if (hdr_line[0] == '#' &&
-				hdr_line.find("define") != std::string::npos)
+			if (hdr_line[0] == kMacroPrefix &&
+				hdr_line.find("def") != std::string::npos)
 			{
-				auto line_after_define = hdr_line.substr(hdr_line.find("define") + strlen("define") + 1);
+				auto line_after_define = hdr_line.substr(hdr_line.find("def") + strlen("def") + 1);
 				
 				std::string macro_value;
 				std::string macro_key;
@@ -383,34 +454,52 @@ void cpp_parse_file(std::ifstream& hdr_file, std::ofstream& pp_out)
 					macro_key += ch;
 				}
 
-				for (auto& ch : line_after_define)
-				{
-					if (ch == '(')
-					{
-						std::string arg;
+                std::vector<std::string> dupls;
+                std::string str;
 
-						for (size_t i = pos+1; i < line_after_define.size(); i++)
-						{
-							if (line_after_define[i] == ')')
-								break;
+                line_after_define.erase(0, line_after_define.find("(") + 1);
 
-							if (line_after_define[i] == ' ')
-								continue;
-							
-							if (line_after_define[i] == ',')
-							{
-								args.push_back(arg);
-								arg.clear();
+                for (auto& subc : line_after_define)
+                {
+                    if (subc == ',' ||
+                        subc == ')')
+                    {
+                        if (str.empty())
+                            continue;
 
-								continue;
-							}
+                        dupls.push_back(str);
+                        args.push_back(str);
 
-							arg += line_after_define[i];
-						}
-						
-						break;
-					}		
-				}
+                        str.clear();
+
+                        continue;
+                    }
+
+                    if (isalnum(subc))
+                        str.push_back(subc);
+                }
+
+                for (auto& dupl : dupls)
+                {
+                    std::size_t cnt = 0;
+
+                    for (auto& arg : args)
+                    {
+                        if (dupl == arg)
+                            ++cnt;
+                    }
+
+                    if (cnt > 1)
+                    {
+                        auto it = std::find(args.begin(), args.end(), dupl);
+
+                        while (it != args.end())
+                        {
+                            args.erase(it);
+                            it = std::find(args.begin(), args.end(), dupl);
+                        }
+                    }
+                }
 
 				details::cpp_macro macro;
 
@@ -423,7 +512,7 @@ void cpp_parse_file(std::ifstream& hdr_file, std::ofstream& pp_out)
 				continue;
 			}
 
-			if (hdr_line[0] != '#')
+			if (hdr_line[0] != kMacroPrefix)
 			{
 				if (inactive_code)
 				{
@@ -523,7 +612,7 @@ void cpp_parse_file(std::ifstream& hdr_file, std::ofstream& pp_out)
 				continue;
 			}
 
-			if (hdr_line[0] == '#' &&
+			if (hdr_line[0] == kMacroPrefix &&
 				hdr_line.find("ifndef") != std::string::npos)
 			{
 				auto line_after_ifndef = hdr_line.substr(hdr_line.find("ifndef") + strlen("ifndef") + 1);
@@ -576,7 +665,7 @@ void cpp_parse_file(std::ifstream& hdr_file, std::ofstream& pp_out)
 					continue;
 				}
 			}
-			else if (hdr_line[0] == '#' &&
+			else if (hdr_line[0] == kMacroPrefix &&
 					hdr_line.find("else") != std::string::npos)
 			{
 				if (!defined &&
@@ -595,7 +684,7 @@ void cpp_parse_file(std::ifstream& hdr_file, std::ofstream& pp_out)
 					continue;
 				}
 			}
-			else if (hdr_line[0] == '#' &&
+			else if (hdr_line[0] == kMacroPrefix &&
 				hdr_line.find("ifdef") != std::string::npos)
 			{
 				auto line_after_ifdef = hdr_line.substr(hdr_line.find("ifdef") + strlen("ifdef") + 1);
@@ -641,7 +730,7 @@ void cpp_parse_file(std::ifstream& hdr_file, std::ofstream& pp_out)
 					}
 				}
 			}
-			else if (hdr_line[0] == '#' &&
+			else if (hdr_line[0] == kMacroPrefix &&
 					hdr_line.find("pragma") != std::string::npos)
 			{
 				line_after_include = hdr_line.substr(hdr_line.find("pragma once"));
@@ -655,7 +744,7 @@ void cpp_parse_file(std::ifstream& hdr_file, std::ofstream& pp_out)
 					goto kIncludeFile;	
 				}	
 			}
-			else if (hdr_line[0] == '#' &&
+			else if (hdr_line[0] == kMacroPrefix &&
 				hdr_line.find("if") != std::string::npos)
 			{
 				inactive_code = true;
@@ -751,7 +840,7 @@ void cpp_parse_file(std::ifstream& hdr_file, std::ofstream& pp_out)
 					}
 				}
 			}
-			else if (hdr_line[0] == '#' &&
+			else if (hdr_line[0] == kMacroPrefix &&
 					hdr_line.find("warning") != std::string::npos)
 			{
 				auto line_after_warning = hdr_line.substr(hdr_line.find("warning") + strlen("warning") + 1);
@@ -770,7 +859,7 @@ void cpp_parse_file(std::ifstream& hdr_file, std::ofstream& pp_out)
 
 				std::cout << "Warning: " << message << std::endl;
 			}
-			else if (hdr_line[0] == '#' &&
+			else if (hdr_line[0] == kMacroPrefix &&
 					hdr_line.find("error") != std::string::npos)
 			{
 				auto line_after_warning = hdr_line.substr(hdr_line.find("error") + strlen("error") + 1);
@@ -789,7 +878,7 @@ void cpp_parse_file(std::ifstream& hdr_file, std::ofstream& pp_out)
 
 				throw std::runtime_error("Error: " + message);
 			}
-			else if (hdr_line[0] == '#' &&
+			else if (hdr_line[0] == kMacroPrefix &&
 				hdr_line.find("include") != std::string::npos)
 			{
 				line_after_include = hdr_line.substr(hdr_line.find("include"));
@@ -930,7 +1019,7 @@ int main(int argc, char** argv)
 				if (strcmp(argv[index], "-v") == 0 ||
 					strcmp(argv[index], "--version") == 0)
 				{
-					printf("%s\n", "cpp v1.11, (c) Mahrouss Logic");
+					printf("%s\n", "bpp v1.11, (c) Mahrouss Logic");
 					return 0;
 				}
 

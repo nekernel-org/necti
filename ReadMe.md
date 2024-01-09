@@ -15,7 +15,7 @@ In order to help the programmer achieve its task.
 
 ### Actually contains:
 
-cpp: C/C++ preprocessor
+bpp: BCCL/MASM preprocessor
 <br>
 ccplus: Optimized C++ compiler
 <br>

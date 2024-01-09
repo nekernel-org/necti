@@ -13,8 +13,8 @@ LINK_SRC=ld.cc
 LINK_OUTPUT=bin/ld
 LINK_ALT_OUTPUT=bin/mld
 
-PP_SRC=cpp.cc
-PP_OUTPUT=bin/cpp
+PP_SRC=bpp.cc
+PP_OUTPUT=bin/bpp
 
 CC2_OUTPUT=bin/cppfront
 CC2_SRC=cc2/source/cppfront.cpp

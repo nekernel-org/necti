@@ -751,7 +751,7 @@ static bool masm_write_number(const std::size_t& pos, std::string& jump_label)
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
-// @brief Read and write instruction to kBytes array.
+// @brief Read and write an instruction to the output array.
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
@@ -773,7 +773,7 @@ static void masm_read_instruction(std::string& line, const std::string& file)
             kBytes.emplace_back(opcode64x0.fFunct3);
             kBytes.emplace_back(opcode64x0.fFunct7);
 
-            // check funct7
+            // check funct7 type.
             switch (opcode64x0.fFunct7)
             {
                 // reg to reg means register to register transfer operation.
@@ -800,6 +800,8 @@ static void masm_read_instruction(std::string& line, const std::string& file)
                             if (isdigit(line[line_index + 2]))
                                 reg_str += line[line_index + 2];
 
+                            // it ranges from r0 to r19
+                            // something like r190 doesn't exist in the instruction set.
                             if (kOutputArch == CompilerKit::kPefArch64000)
                             {
                                 if (isdigit(line[line_index + 3]) &&
@@ -810,7 +812,8 @@ static void masm_read_instruction(std::string& line, const std::string& file)
                                     throw std::runtime_error("invalid_register_index");
                                 }
                             }
-                            
+
+                            // finally cast to a size_t
                             std::size_t reg_index = strtoq(
                                 reg_str.c_str(),
                                 nullptr,
@@ -827,8 +830,12 @@ static void masm_read_instruction(std::string& line, const std::string& file)
 
                             if (kVerbose)
                             {
-                                kStdOut << "masm: Found register: " << register_syntax << "\n";
-                                kStdOut << "masm: Register count: " << found_some << "\n";
+                                if (kOutputArch == CompilerKit::kPefArch64000)
+                                    kStdOut << "masm: 64x0 register found: " << register_syntax << "\n";
+                                else
+                                    kStdOut << "masm: register found: " << register_syntax << "\n";
+
+                                kStdOut << "masm: Number of registers: " << found_some << "\n";
                             }
                         }
                     }

@@ -163,7 +163,7 @@ public:
 
     bool Compile(const std::string& text, const char* file) override;
 
-    const char* Language() override { return "Optimized 64x0 C++"; }
+    const char* Language() override { return "64x0/32x0 C++"; }
 
 };
 
