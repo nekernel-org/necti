@@ -167,13 +167,17 @@ public:
 
 };
 
+/// compiler variables
+
 static CompilerBackendClang*                kCompilerBackend = nullptr;
 static std::vector<detail::CompilerType>    kCompilerVariables;
 static std::vector<std::string>             kCompilerFunctions;
 
+/// detail namespaces
+
 namespace detail
 {
-    union number_cast
+    union number_cast final
     {
         number_cast(UInt64 raw)
                 : raw(raw)

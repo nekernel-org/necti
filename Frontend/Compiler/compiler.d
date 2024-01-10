@@ -94,7 +94,7 @@ public class CompileCommand
 
             changed ~= ".64x";
 
-            mpcc_summon_executable("/usr/local/bin/bin/masm -m64000 " ~ changed);
+            mpcc_summon_executable("/usr/local/bin/bin/64asm -m64000 " ~ changed);
         }
 
         if (compile_only)
@@ -131,7 +131,7 @@ public class CompileCommand
         output_object ~= " -o ";
         output_object ~= output;
 
-        mpcc_summon_executable("/usr/local/bin/bin/ld -m64000 " ~
+        mpcc_summon_executable("/usr/local/bin/bin/64ld -m64000 " ~
         obj ~ output_object);
     }
 }

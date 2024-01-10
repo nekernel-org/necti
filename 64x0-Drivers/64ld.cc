@@ -30,7 +30,7 @@
 //! @brief standard PEF entry.
 #define kPefStart    "__start"
 
-#define kToolVersion "64ld v1.171, (c) Mahrouss Logic"
+#define kToolVersion "64ld v2, (c) Mahrouss Logic"
 
 #define StringCompare(DST, SRC) strcmp(DST, SRC)
 
@@ -87,7 +87,7 @@ int main(int argc, char** argv)
             kStdOut << "-v: Print program version.\n";
             kStdOut << "-verbose: Print program backtrace (verbose mode).\n";
             kStdOut << "-shared: Output as a shared library.\n";
-            kStdOut << "-fatbin: Output as FAT PEF.\n";
+            kStdOut << "-fat-binary: Output as FAT PEF.\n";
             kStdOut << "-o: Select output filename.\n";	
 
             // bye
@@ -100,7 +100,7 @@ int main(int argc, char** argv)
             // bye :D
             return 0;
         }
-        else if (StringCompare(argv[i], "-fatbin") == 0)
+        else if (StringCompare(argv[i], "-fat-binary") == 0)
         {
             kFatBinaryEnable = true;
         
