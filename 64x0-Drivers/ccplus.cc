@@ -163,7 +163,7 @@ public:
 
     bool Compile(const std::string& text, const char* file) override;
 
-    const char* Language() override { return "64x0/32x0 C++"; }
+    const char* Language() override { return "64x0 C++, Generic MP/UX target."; }
 
 };
 
@@ -325,6 +325,7 @@ public:
         bool is_pointer = false;
         bool found_expr = false;
         bool found_func = false;
+        bool is_access_field = false;
         std::string type;
 
         for (auto& leaf : kState.fSyntaxTree->fLeafList)
@@ -362,6 +363,24 @@ public:
                 }
             }
 
+            if (leaf.fUserData == ";")
+            {
+                is_access_field = false;
+            }
+
+            if (leaf.fUserData.find(" this") != std::string::npos)
+            {
+                leaf.fUserData.replace(leaf.fUserData.find(" this"), strlen(" this"), "r6");
+                is_access_field = true;
+            }
+
+            if (leaf.fUserData.find("->") != std::string::npos)
+            {
+                leaf.fUserData.replace(leaf.fUserData.find("->"), strlen("->"), ", ");
+                
+                is_access_field = true;
+            }
+
             if (leaf.fUserData == ")")
             {
                 if (found_expr)
@@ -371,7 +390,7 @@ public:
                 }
                 else
                 {
-                    leaf.fUserValue = "export .text _CppZ_ELMH_";
+                    leaf.fUserValue = "export .text _CppZ_MPUX_";
                    
                     for (auto& line : lines)
                     {
@@ -411,7 +430,8 @@ public:
                 front.vals.push_back(reg);
             }
 
-            if (leaf.fUserData == "*")
+            if (leaf.fUserData == "*" ||
+                leaf.fUserData == "&")
             {
                 if (found_type && !found_expr)
                     is_pointer = true;
@@ -445,7 +465,8 @@ public:
                                 val.erase(val.find(" "), 1);
 
                             if (isalnum(val[0]) &&
-                                !isdigit(val[0]))
+                                !isdigit(val[0]) &&
+                                ln.find("r6") == std::string::npos)
                                 val.insert(0, "import ");
 
                             leaf.fUserValue.replace(leaf.fUserValue.find("%s1"), strlen("%s1"), val);
@@ -650,6 +671,7 @@ int main(int argc, char** argv)
     kKeywords.emplace_back(":");
     kKeywords.emplace_back(",");
     kKeywords.emplace_back(";");
+    kKeywords.emplace_back("&");
     kKeywords.emplace_back("public");
     kKeywords.emplace_back("protected");
 

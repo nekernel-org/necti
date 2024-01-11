@@ -875,8 +875,7 @@ static void masm_read_instruction(std::string& line, const std::string& file)
             }
 
             // try to fetch a number from the name
-            if (name == "psh" ||
-                name == "jb" ||
+            if (name == "jb" ||
                 name == "stw" ||
                 name == "ldw" ||
                 name == "lda" ||
@@ -886,12 +885,41 @@ static void masm_read_instruction(std::string& line, const std::string& file)
 
                 // if we load something, we'd need it's symbol/literal
                 if (name == "stw" ||
+                    name == "sta" ||
                     name == "ldw" ||
                     name == "lda" ||
                     name == "sta")
                     where_string = ",";
 
-                jump_label = line.substr(line.find(where_string) + where_string.size());
+                jump_label = line;
+
+                auto found_sym = false;
+
+                while (jump_label.find(where_string) != std::string::npos)
+                {
+                    jump_label = jump_label.substr(jump_label.find(where_string) + where_string.size());
+                
+                    while (jump_label.find(" ") != std::string::npos)
+                    {
+                        jump_label.erase(jump_label.find(" "), 1);
+                    }
+
+                    if (jump_label[0] != kAsmRegisterPrefix[0] &&
+                        !isdigit(jump_label[1]))
+                    {
+                        if (found_sym)
+                        {
+                            detail::print_error("invalid combination of opcode and operands.\nhere -> " + jump_label, file);
+                            throw std::runtime_error("invalid_comb_op_ops");
+                        }
+                        else
+                        {
+                            // death trap installed.
+                            found_sym = true;
+                        }
+                    }
+                }
+
                 cpy_jump_label = jump_label;
 
                 // replace any spaces with $

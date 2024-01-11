@@ -168,7 +168,7 @@ public:
     std::string Check(const char *text, const char *file);
     bool Compile(const std::string &text, const char *file) override;
 
-    const char *Language() override { return "MP-UX BCCL for 64x0/32x0"; }
+    const char *Language() override { return "BCCL 64x0, Generic MP/UX target."; }
 };
 
 static CompilerBackendBccl *kCompilerBackend = nullptr;
@@ -1317,7 +1317,7 @@ public:
         auto fmt = CompilerKit::current_date();
 
         (*kState.fOutputAssembly) << "# Path: " << src_file << "\n";
-        (*kState.fOutputAssembly) << "# Language: MP-UX Assembly\n";
+        (*kState.fOutputAssembly) << "# Language: MP-UX Assembly (Generated from BCCL)\n";
         (*kState.fOutputAssembly) << "# Build Date: " << fmt << "\n\n";
 
         ParserKit::SyntaxLeafList syntax;
