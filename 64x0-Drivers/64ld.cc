@@ -13,7 +13,6 @@
 
 // README: Do not look up for anything with .text/.data/.page_zero!
 // It will be loaded when program will start up!
-// Unlike $$dynamic$$ these containers will be loaded before CUS will do its job.
 
 #include <CompilerKit/StdKit/ErrorID.hpp>
 
