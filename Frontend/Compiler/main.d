@@ -55,7 +55,7 @@ void main(string[] args)
             }
             else if (arg == "--dialect")
             {
-                mpcc_summon_executable("/usr/local/bin/bin/cc --asm=masm --compiler=dolvik --dialect");
+                mpcc_summon_executable("/usr/local/bin/bin/cc --asm=masm --compiler=dalvik --dialect");
                 return;
             }
             else if (arg == "--help" ||

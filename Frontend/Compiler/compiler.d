@@ -89,7 +89,7 @@ public class CompileCommand
                     ext ~= ch;
             }
 
-            mpcc_summon_executable("/usr/local/bin/bin/bccl --asm=masm -fmax-exceptions 20 --compiler=dolvik " ~
+            mpcc_summon_executable("/usr/local/bin/bin/bccl --asm=masm -fmax-exceptions 20 --compiler=dalvik " ~
             file ~ ".pp");
 
             changed ~= ".64x";

@@ -1448,7 +1448,7 @@ static void cc_print_help()
     kSplashCxx();
 
     kPrintF(kWhite "--asm={ASSEMBLER}: %s\n", "Compile with a specific syntax. (64x0, 32x0)");
-    kPrintF(kWhite "--compiler={COMPILER}: %s\n", "Select compiler engine (builtin -> dolvik).");
+    kPrintF(kWhite "--compiler={COMPILER}: %s\n", "Select compiler engine (builtins are The dalvik engine).");
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////
@@ -1515,7 +1515,7 @@ int main(int argc, char **argv)
                 continue;
             }
 
-            if (strcmp(argv[index], "--compiler=dolvik") == 0)
+            if (strcmp(argv[index], "--compiler=dalvik") == 0)
             {
                 if (!kCompilerBackend)
                     kCompilerBackend = new CompilerBackendBccl();
