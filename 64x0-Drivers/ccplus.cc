@@ -501,7 +501,7 @@ public:
 
             if (leaf.fUserData == "return")
             {
-                leaf.fUserValue = "mv r19, %s\njlr";
+                leaf.fUserValue = "mv r1, %s\njlr";
 
                 if (!lines.empty())
                 {

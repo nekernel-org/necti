@@ -337,7 +337,7 @@ bool CompilerBackendBccl::Compile(const std::string &text, const char *file)
                         value += tmp;
                     }
 
-                    syntax_tree.fUserValue = "\tldw r19, ";
+                    syntax_tree.fUserValue = "\tldw r1, ";
 
                     // make it pretty.
                     if (value.find('\t') != std::string::npos)
