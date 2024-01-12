@@ -448,15 +448,11 @@ namespace detail::algorithm
     {
         return !(isalpha(c) || isdigit(c) || (c == ' ') || (c == '\t') || (c == ',') ||
                 (c == '(') || (c == ')') || (c == '"') || (c == '\'') || (c == '[') || (c == ']')
-                || (c == '+') || (c == '_'));
+                || (c == '+') || (c == '_') || (c == ':') || (c == '@') || (c == '.'));
     }
 
     bool is_valid(const std::string &str)
     {
-        if (ParserKit::find_word(str, "export ") ||
-                ParserKit::find_word(str, "import "))
-            return true;
-
         return find_if(str.begin(), str.end(), is_not_alnum_space) == str.end();
     }
 }
@@ -483,14 +479,23 @@ static std::string masm_check_line(std::string& line, const std::string& file)
         ParserKit::find_word(line, ";") ||
         ParserKit::find_word(line, "layout"))
     {
+        
         if (line.find('#') != std::string::npos)
         {
             line.erase(line.find('#'));
         }
-
-        if (line.find(';') != std::string::npos)
+        else if (line.find(';') != std::string::npos)
         {
             line.erase(line.find(';'));
+        }
+        else
+        {
+            // now check the line for validity
+            if (!detail::algorithm::is_valid(line))
+            {
+                err_str = "Line contains non alphanumeric characters.\nhere -> ";
+                err_str += line;
+            }
         }
 
         return err_str;
