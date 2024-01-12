@@ -20,9 +20,10 @@
 
 
 // placeholder for funct7/funct7-rs2
-#define kAsmImmediate 0x00
+#define kAsmImmediate 0x01
 #define kAsmSyscall 0x02
 #define kAsmJump 0x03
+#define kAsmNoArgs 0x04
 
 #define kAsmByte  0
 #define kAsmHWord 1
@@ -37,12 +38,12 @@ struct CpuCode32x0
     char fFunct7;
 };
 
-#define kAsmWordStr  ".w"
-#define kAsmHWordStr ".h"
-#define kAsmByteStr  ".b"
+#define kAsmWordStr  ".word"
+#define kAsmHWordStr ".half"
+#define kAsmByteStr  ".bbyte"
 
 inline std::vector<CpuCode32x0> kOpcodes32x0 = {
-        kAsmOpcodeDecl("nop", 0b0100011, 0b0000000, kAsmImmediate) // nothing to do.
+        kAsmOpcodeDecl("nop", 0b0100011, 0b0000000, kAsmNoArgs) // nothing to do.
         kAsmOpcodeDecl("jmp", 0b1110011, 0b0000011, kAsmJump) // jump to branch
         kAsmOpcodeDecl("move", 0b0100011, 0b101, kAsmImmediate)
         kAsmOpcodeDecl("push", 0b0111011, 0b0, kAsmImmediate) // push to sp
@@ -50,13 +51,13 @@ inline std::vector<CpuCode32x0> kOpcodes32x0 = {
         kAsmOpcodeDecl("int", 0b0111111, 0b0, kAsmSyscall) // raise interrupt
 };
 
-// \brief NewCPU register prefix
+// \brief 64x0 register prefix
 // example: r32, r0
 // r32 -> sp
 // r0 -> hw zero
 
 #define kAsmRegisterPrefix "r"
-#define kAsmRegisterLimit  20
+#define kAsmRegisterLimit  16
 #define kAsmPcRegister     17
 #define kAsmCrRegister     18
 #define kAsmSpRegister     5

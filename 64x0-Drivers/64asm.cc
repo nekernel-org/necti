@@ -558,15 +558,18 @@ static std::string masm_check_line(std::string& line, const std::string& file)
     std::vector<std::string> operands_inst = { "jb", "psh", "stw", "ldw", "lda", "sta" };
 
     // these don't.
-    std::vector<std::string> filter_inst = { "jlr", "jrl", "syscall" };
+    std::vector<std::string> filter_inst = { "jlr", "jrl", "int" };
 
     for (auto& opcode64x0 : kOpcodes64x0)
     {
         if (line.find(opcode64x0.fName) != std::string::npos)
         {
+            if (opcode64x0.fFunct7 == kAsmNoArgs)
+                return err_str;
+
             for (auto& op : operands_inst)
             {
-                // if only instruction found.
+                // if only the instruction was found.
                 if (line == op)
                 {
                     err_str += "\nmalformed ";
@@ -778,7 +781,7 @@ static void masm_read_instruction(std::string& line, const std::string& file)
 
                     for (size_t line_index = 0UL; line_index < line.size(); line_index++)
                     {
-                        if (line[line_index] == 'r' &&
+                        if (line[line_index] == kAsmRegisterPrefix[0] &&
                             isdigit(line[line_index + 1]))
                         {
                             std::string register_syntax = kAsmRegisterPrefix;
