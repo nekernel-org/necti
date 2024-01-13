@@ -134,7 +134,7 @@ MODULE(Linker64x0)
         {
             if (argv[i][0] == '-')
             {
-                kStdOut << "ld: unknown flag: " << argv[i] << "\n";
+                kStdOut << "64ld: unknown flag: " << argv[i] << "\n";
                 return -CXXKIT_EXEC_ERROR;
             }
 
@@ -147,7 +147,7 @@ MODULE(Linker64x0)
     // sanity check.
     if (kObjectList.empty())
     {
-        kStdOut << "ld: no input files." << std::endl;
+        kStdOut << "64ld: no input files." << std::endl;
         return CXXKIT_EXEC_ERROR;
     }
     else
@@ -159,7 +159,7 @@ MODULE(Linker64x0)
             {
                 // if filesystem doesn't find file
                 //          -> throw error.
-                kStdOut << "ld: no such file: " << obj << std::endl;
+                kStdOut << "64ld: no such file: " << obj << std::endl;
                 return CXXKIT_EXEC_ERROR;
             }
         }
@@ -168,7 +168,7 @@ MODULE(Linker64x0)
     // PEF expects a valid architecture when outputing a binary.
     if (kArch == 0)
     {
-        kStdOut << "ld: no target architecture set, can't continue." << std::endl;
+        kStdOut << "64ld: no target architecture set, can't continue." << std::endl;
         return CXXKIT_EXEC_ERROR;
     }
 
@@ -196,7 +196,7 @@ MODULE(Linker64x0)
     {
         if (kVerbose)
         {
-            kStdOut << "ld: error: " << strerror(errno) << "\n";
+            kStdOut << "64ld: error: " << strerror(errno) << "\n";
         }
 
         return -CXXKIT_FILE_NOT_FOUND;
@@ -222,14 +222,14 @@ MODULE(Linker64x0)
         if (ae_header.fArch != kArch)
         {
             if (kVerbose)
-                kStdOut << "ld: pef: is a fat binary? : ";
+                kStdOut << "64ld: pef: is a fat binary? : ";
 
             if (!kFatBinaryEnable)
             { 
                 if (kVerbose)
                     kStdOut << "no.\n";
 
-                kStdOut << "ld: error: object " << i << " is a different kind of architecture and output isn't treated as FAT binary." << std::endl;
+                kStdOut << "64ld: error: object " << i << " is a different kind of architecture and output isn't treated as FAT binary." << std::endl;
 
                 std::remove(kOutput.c_str());
                 return -CXXKIT_FAT_ERROR;
@@ -252,7 +252,7 @@ MODULE(Linker64x0)
             std::size_t cnt = ae_header.fCount;
 
             if (kVerbose)
-                kStdOut << "ld: object header found, record count: " << cnt << "\n";
+                kStdOut << "64ld: object header found, record count: " << cnt << "\n";
 
             pef_container.Count = cnt;
 
@@ -301,7 +301,7 @@ ld_mark_header:
 				command_header.Size = ae_records[ae_record_index].fSize;
 
                 if (kVerbose)
-                    kStdOut << "ld: object record: " << ae_records[ae_record_index].fName << " was marked.\n";
+                    kStdOut << "64ld: object record: " << ae_records[ae_record_index].fName << " was marked.\n";
 
                 pef_command_hdrs.emplace_back(command_header);
             }
@@ -322,7 +322,7 @@ ld_mark_header:
             continue;  
         }
 
-        kStdOut << "ld: not an object: " << i << std::endl;
+        kStdOut << "64ld: not an object: " << i << std::endl;
         std::remove(kOutput.c_str());
 
         // don't continue, it is a fatal error.
@@ -335,7 +335,7 @@ ld_mark_header:
 
     if (kVerbose)
     {
-        kStdOut << "ld: pef: wrote container header.\n";
+        kStdOut << "64ld: pef: wrote container header.\n";
     }
 
     output_fc.seekp(std::streamsize(pef_container.HdrSz));
@@ -354,7 +354,7 @@ ld_mark_header:
             std::string::npos)
         {
             if (kVerbose)
-                kStdOut << "ld: found undefined symbol: " << pef_command_hdr.Name << "\n";
+                kStdOut << "64ld: found undefined symbol: " << pef_command_hdr.Name << "\n";
 
             if (auto it = std::find(not_found.begin(), not_found.end(), std::string(pef_command_hdr.Name));
                     it == not_found.end())
@@ -405,7 +405,7 @@ ld_mark_header:
                     not_found.erase(it);
 
                     if (kVerbose)
-                        kStdOut << "ld: found symbol: " << pef_command_hdr.Name << "\n";
+                        kStdOut << "64ld: found symbol: " << pef_command_hdr.Name << "\n";
 
                     break;
                 }
@@ -421,9 +421,9 @@ ld_continue_search:
     if (!kStartFound && is_executable)
     {
         if (kVerbose)
-            kStdOut << "ld: undefined symbol: __start, you may have forget to link against your runtime library.\n";
+            kStdOut << "64ld: undefined symbol: __start, you may have forget to link against your runtime library.\n";
 
-        kStdOut << "ld: undefined entrypoint " << kPefStart << " for executable " << kOutput << "\n";
+        kStdOut << "64ld: undefined entrypoint " << kPefStart << " for executable " << kOutput << "\n";
     }
 
     // step 4: write some pef commands.
@@ -521,7 +521,7 @@ ld_continue_search:
                 }
 
                 if (kVerbose)
-                    kStdOut << "ld: found duplicate symbol: " << pef_command_hdr.Name << "\n";
+                    kStdOut << "64ld: found duplicate symbol: " << pef_command_hdr.Name << "\n";
 
                 kDuplicateSymbols = true;
             }
@@ -532,7 +532,7 @@ ld_continue_search:
     {
         for (auto& symbol : duplicate_symbols)
         {
-            kStdOut << "ld: multiple symbols of " << symbol << ".\n";
+            kStdOut << "64ld: multiple symbols of " << symbol << ".\n";
         }
 
         std::remove(kOutput.c_str());
@@ -547,7 +547,7 @@ ld_continue_search:
     }
 
     if (kVerbose)
-        kStdOut << "ld: wrote code for: " << kOutput << "\n";
+        kStdOut << "64ld: wrote code for: " << kOutput << "\n";
 
     // step 3: check if we have those symbols
 
@@ -566,7 +566,7 @@ ld_continue_search:
     {
         for (auto& unreferenced_symbol : unreferenced_symbols)
         {
-            kStdOut << "ld: undefined symbol " << unreferenced_symbol << "\n";
+            kStdOut << "64ld: undefined symbol " << unreferenced_symbol << "\n";
         }
     }
 
@@ -576,7 +576,7 @@ ld_continue_search:
         !unreferenced_symbols.empty())
     {
         if (kVerbose)
-            kStdOut << "ld: code for: " << kOutput << ", is corrupt, removing file...\n";
+            kStdOut << "64ld: code for: " << kOutput << ", is corrupt, removing file...\n";
 
         std::remove(kOutput.c_str());
         return -CXXKIT_EXEC_ERROR;
@@ -585,4 +585,4 @@ ld_continue_search:
     return 0;
 }
 
-// Last rev 8-1-24
+// Last rev 13-1-24

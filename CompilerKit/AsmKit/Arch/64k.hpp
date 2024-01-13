@@ -56,7 +56,8 @@ inline std::vector<CpuCode64x0> kOpcodes64x0 = {
         kAsmOpcodeDecl("addc", 0b0101011, 0b110, kAsmImmediate)
         kAsmOpcodeDecl("decc", 0b0101011, 0b111, kAsmImmediate)
         kAsmOpcodeDecl("int", 0b1110011, 0b00, kAsmSyscall)
-        kAsmOpcodeDecl("syscall", 0b1110011, 0b00, kAsmSyscall)
+        kAsmOpcodeDecl("sysenter", 0b1110011, 0b01, kAsmSyscall)
+        kAsmOpcodeDecl("sysexit", 0b1110011, 0b10, kAsmSyscall)
         kAsmOpcodeDecl("pha", 0b1110011, 0b00, kAsmNoArgs)
         kAsmOpcodeDecl("pla", 0b1110011, 0b01, kAsmNoArgs)
 };
@@ -69,6 +70,9 @@ inline std::vector<CpuCode64x0> kOpcodes64x0 = {
 #define kAsmFloatRegisterPrefix "f"
 #define kAsmFloatRegisterLimit  10
 
+#define kAsmFloatZeroRegister 0
+#define kAsmZeroRegister 0
+
 #define kAsmRegisterPrefix "r"
 #define kAsmRegisterLimit  20
 #define kAsmPcRegister     17
@@ -80,7 +84,7 @@ inline std::vector<CpuCode64x0> kOpcodes64x0 = {
 
 /////////////////////////////////////////////////////////////////////////////
 
-// SYSTEM CALL ADDRESSING
+// SYSTEM CALL/JUMP ADDRESSING
 
 // | OPCODE | FUNCT3 | FUNCT7 |              OFF                 |
 

@@ -244,7 +244,7 @@ MODULE(Assembler64x0)
         for (auto &rec : kRecords)
         {
             if (kVerbose)
-                kStdOut << "64asm: wrote record " << rec.fName << " to file...\n";
+                kStdOut << "64asm: Wrote record " << rec.fName << " to file...\n";
 
             rec.fFlags |= CompilerKit::kKindRelocationAtRuntime;
             rec.fOffset = record_count;
@@ -261,7 +261,7 @@ MODULE(Assembler64x0)
             CompilerKit::AERecordHeader _record_hdr{0};
 
             if (kVerbose)
-                kStdOut << "64asm: wrote symbol " << sym << " to file...\n";
+                kStdOut << "64asm: Wrote symbol " << sym << " to file...\n";
 
             _record_hdr.fKind = kAEInvalidOpcode;
             _record_hdr.fSize = sym.size();
@@ -295,13 +295,13 @@ MODULE(Assembler64x0)
         }
 
         if (kVerbose)
-            kStdOut << "64asm: wrote program bytes to file...\n";
+            kStdOut << "64asm: Wrote program bytes to file...\n";
 
         file_ptr_out.flush();
         file_ptr_out.close();
 
         if (kVerbose)
-            kStdOut << "64asm: exit succeeded with code 0.\n";
+            kStdOut << "64asm: Exit succeeded with code 0.\n";
 
         return 0;
     }
@@ -309,7 +309,7 @@ MODULE(Assembler64x0)
 asm_fail_exit:
 
     if (kVerbose)
-        kStdOut << "64asm: exit failed with code -1.\n";
+        kStdOut << "64asm: Exit failed with code -1.\n";
 
     return -1;
 }
@@ -479,23 +479,16 @@ namespace detail::algorithm
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
-std::string CompilerKit::PlatformAssembler64x0::CheckLine(std::string &line, const std::string &file)
+std::string CompilerKit::PlatformAssembler64x0::CheckLine(std::string& line, const std::string &file)
 {
-    (void)file;
-
     std::string err_str;
 
-    while (line.find('\t') != std::string::npos)
-        line.erase(line.find('\t'), 1);
-
     if (line.empty() ||
-        ParserKit::find_word(line, "import ") ||
-        ParserKit::find_word(line, "export ") ||
+        ParserKit::find_word(line, "import") ||
+        ParserKit::find_word(line, "export") ||
         ParserKit::find_word(line, "#") ||
-        ParserKit::find_word(line, ";") ||
-        ParserKit::find_word(line, "layout"))
+        ParserKit::find_word(line, ";"))
     {
-
         if (line.find('#') != std::string::npos)
         {
             line.erase(line.find('#'));
@@ -611,9 +604,6 @@ std::string CompilerKit::PlatformAssembler64x0::CheckLine(std::string &line, con
             return err_str;
         }
     }
-
-    err_str += "unknown syntax: ";
-    err_str += line;
 
     return err_str;
 }
@@ -801,7 +791,7 @@ bool CompilerKit::PlatformAssembler64x0::WriteLine(std::string &line, const std:
                                 isdigit(line[line_index + 2]))
                             {
                                 reg_str += line[line_index + 3];
-                                detail::print_error("invalid register index, r" + reg_str + "\nnote: 64x0 accepts registers from r0 to r20.", file);
+                                detail::print_error("invalid register index, r" + reg_str + "\nnote: The 64x0 accepts registers from r0 to r20.", file);
                                 throw std::runtime_error("invalid_register_index");
                             }
                         }
@@ -823,12 +813,8 @@ bool CompilerKit::PlatformAssembler64x0::WriteLine(std::string &line, const std:
 
                         if (kVerbose)
                         {
-                            if (kOutputArch == CompilerKit::kPefArch64000)
-                                kStdOut << "64asm: 64x0 register found: " << register_syntax << "\n";
-                            else
-                                kStdOut << "64asm: register found: " << register_syntax << "\n";
-
-                            kStdOut << "64asm: Number of registers: " << found_some << "\n";
+                            kStdOut << "64asm: Register found: " << register_syntax << "\n";
+                            kStdOut << "64asm: Register amount in instruction: " << found_some << "\n";
                         }
                     }
                 }
@@ -839,7 +825,7 @@ bool CompilerKit::PlatformAssembler64x0::WriteLine(std::string &line, const std:
                     // remember! register to register!
                     if (found_some == 1)
                     {
-                        detail::print_error("unrecognized register found.\ntip: each 64asm register starts with 'r'.\nline: " + line, file);
+                        detail::print_error("Unrecognized register found.\ntip: each 64asm register starts with 'r'.\nline: " + line, file);
                         throw std::runtime_error("not_a_register");
                     }
                 }
@@ -961,14 +947,32 @@ bool CompilerKit::PlatformAssembler64x0::WriteLine(std::string &line, const std:
             }
 
             // This is the case where we jump to a label, it is also used as a goto.
-            if (name == "jb")
+            if (name == "jb" ||
+                name == "lda" ||
+                name == "sta")
             {
 asm_write_label:
                 if (cpy_jump_label.find('\n') != std::string::npos)
                     cpy_jump_label.erase(cpy_jump_label.find('\n'), 1);
 
-                if (cpy_jump_label.find("import") == std::string::npos &&
-                    name == "jb")
+                if (cpy_jump_label.find("import") != std::string::npos)
+                {
+                    if (name == "sta")
+                    {
+                        detail::print_error("import is not allowed on a sta operation.", file);
+                        throw std::runtime_error("import_sta_op");
+                    }
+                    else
+                    {
+                        goto asm_end_label_cpy;
+                    }
+
+                    cpy_jump_label.erase(cpy_jump_label.find("import"), strlen("import"));
+                }                 
+
+                if (name == "jb" ||
+                    name == "lda" ||
+                    name == "sta")
                 {
                     for (auto &label : kOriginLabel)
                     {
@@ -976,7 +980,7 @@ asm_write_label:
                         {
                             if (kVerbose)
                             {
-                                kStdOut << "64asm: verbose: set label "
+                                kStdOut << "64asm: Replace label "
                                         << cpy_jump_label
                                         << " to address: "
                                         << label.second
@@ -995,18 +999,8 @@ asm_write_label:
                         }
                     }
 
-                    detail::print_error("import not found on jump label, please add one.", file);
+                    detail::print_error(cpy_jump_label + " not found on jump label, please add one.", file);
                     throw std::runtime_error("import_jmp_lbl");
-                }
-                else if (cpy_jump_label.find("import") != std::string::npos)
-                {
-                    if (name == "sta")
-                    {
-                        detail::print_error("import is not allowed on a sta operation.", file);
-                        throw std::runtime_error("import_sta_op");
-                    }
-
-                    cpy_jump_label.erase(cpy_jump_label.find("import"), strlen("import"));
                 }
 
                 if (cpy_jump_label.size() < 1)
@@ -1052,4 +1046,4 @@ asm_end_label_cpy:
     return true;
 }
 
-// Last rev 8-1-24
+// Last rev 13-1-24
