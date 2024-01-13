@@ -15,10 +15,3 @@ VNRP - Von Neumann, RISC Processor
 - L2 cache: 1024kb (512 instr, 512 data)
 
 - Clock speed: 1 Ghz
-
-Objective: 
-    - Not pricey
-    - And usable/prorammable.
-
-Problems:
-    - RAM

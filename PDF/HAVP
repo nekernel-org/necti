@@ -11,7 +11,3 @@ HAVP - Harvard Audio/Video Processor
 - Standard registers: [ r0, r9 ]
 - Floating point registers: [ f0, f2 ]
 - Builtin SRAM: 512kb
-
-Objective: 
-    - Not pricey
-    - And usable/prorammable.
