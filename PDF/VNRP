@@ -1,0 +1,24 @@
+VNRP - Von Neumann, RISC Processor
+
+- Encoding = RegToReg, Imm, Syscall, Jump, NoArgs
+
+- Data path = 128-bit (register data)
+- Addressing = 58-bit physical address size.
+
+- Registers (128-bit) = r0, r19
+- Float/Vector registers (128-bit) = f0, f9
+
+- Out of order (superscalar also added to the equation) = Yes
+- Superscalar = Yes
+
+- L1 cache: 16kb (8 instr, 8 data)
+- L2 cache: 1024kb (512 instr, 512 data)
+
+- Clock speed: 1 Ghz
+
+Objective: 
+    - Not pricey
+    - And usable/prorammable.
+
+Problems:
+    - RAM
