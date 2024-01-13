@@ -9,7 +9,7 @@
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
-// @file masm.cxx
+// @file 64asm.cxx
 // @author Amlal El Mahrouss
 // @brief MP-UX 64x0 Assembler.
 
@@ -17,6 +17,8 @@
 // so that ld will look for it.
 
 /////////////////////////////////////////////////////////////////////////////////////////
+
+#define __ASM_NEED_64x0__ 1
 
 #include <CompilerKit/AsmKit/Arch/64k.hpp>
 #include <CompilerKit/ParserKit.hpp>
@@ -32,25 +34,29 @@
 
 /////////////////////
 
-#define kBlank  "\e[0;30m"
-#define kRed    "\e[0;31m"
-#define kWhite  "\e[0;97m"
+#define kBlank "\e[0;30m"
+#define kRed "\e[0;31m"
+#define kWhite "\e[0;97m"
 #define kYellow "\e[0;33m"
 
-#define kStdOut     (std::cout << kWhite)
+#define kStdOut (std::cout << kWhite)
 
-static char         kOutputArch = CompilerKit::kPefArch64000;
+static char kOutputArch = CompilerKit::kPefArch64000;
 
 //! base relocation address for every mp-ux app.
-static UInt32       kErrorLimit = 10;
-static UInt32       kAcceptableErrors = 0;
+static UInt32 kErrorLimit = 10;
+static UInt32 kAcceptableErrors = 0;
 
-static std::size_t  kCounter = 1UL;
+static std::size_t kCounter = 1UL;
 
-static bool         kVerbose = false;
+static std::uintptr_t kOrigin = kPefBaseOrigin;
+static std::vector<std::pair<std::string, std::uintptr_t>> kOriginLabel;
 
-static std::vector<char>     kBytes;
-static CompilerKit::AERecordHeader kCurrentRecord{ .fName = "", .fKind = CompilerKit::kPefCode, .fSize = 0, .fOffset = 0 };
+static bool kVerbose = false;
+
+static std::vector<char> kBytes;
+
+static CompilerKit::AERecordHeader kCurrentRecord{.fName = "", .fKind = CompilerKit::kPefCode, .fSize = 0, .fOffset = 0};
 
 static std::vector<CompilerKit::AERecordHeader> kRecords;
 static std::vector<std::string> kUndefinedSymbols;
@@ -59,19 +65,17 @@ static const std::string kUndefinedSymbol = ":64ld:";
 static const std::string kRelocSymbol = ":mld:";
 
 // \brief forward decl.
-static std::string masm_check_line(std::string& line, const std::string& file);
-static bool masm_read_attributes(std::string& line);
-static void masm_read_instruction(std::string& line, const std::string& file);
+static bool asm_read_attributes(std::string &line);
 
 namespace detail
 {
-    void print_error(std::string reason, const std::string& file) noexcept
+    void print_error(std::string reason, const std::string &file) noexcept
     {
         if (reason[0] == '\n')
             reason.erase(0, 1);
 
-        kStdOut << kRed << "[ masm ] " << kWhite << ((file == "masm") ? "internal assembler error " : ("in file, " + file)) << kBlank << std::endl;
-        kStdOut << kRed << "[ masm ] " << kWhite << reason << kBlank << std::endl;
+        kStdOut << kRed << "[ 64asm ] " << kWhite << ((file == "64asm") ? "internal assembler error " : ("in file, " + file)) << kBlank << std::endl;
+        kStdOut << kRed << "[ 64asm ] " << kWhite << reason << kBlank << std::endl;
 
         if (kAcceptableErrors > kErrorLimit)
             std::exit(3);
@@ -79,7 +83,7 @@ namespace detail
         ++kAcceptableErrors;
     }
 
-    void print_warning(std::string reason, const std::string& file) noexcept
+    void print_warning(std::string reason, const std::string &file) noexcept
     {
         if (reason[0] == '\n')
             reason.erase(0, 1);
@@ -89,22 +93,22 @@ namespace detail
             kStdOut << kYellow << "[ file ] " << kWhite << file << kBlank << std::endl;
         }
 
-        kStdOut << kYellow << "[ masm ] " << kWhite << reason << kBlank << std::endl;
+        kStdOut << kYellow << "[ 64asm ] " << kWhite << reason << kBlank << std::endl;
     }
 }
 
 // provide operator<< for AE
 
-std::ofstream& operator<<(std::ofstream& fp, CompilerKit::AEHeader& container)
+std::ofstream &operator<<(std::ofstream &fp, CompilerKit::AEHeader &container)
 {
-    fp.write((char*)&container, sizeof(CompilerKit::AEHeader));
+    fp.write((char *)&container, sizeof(CompilerKit::AEHeader));
 
     return fp;
 }
 
-std::ofstream& operator<<(std::ofstream& fp, CompilerKit::AERecordHeader& container)
+std::ofstream &operator<<(std::ofstream &fp, CompilerKit::AERecordHeader &container)
 {
-    fp.write((char*)&container, sizeof(CompilerKit::AERecordHeader));
+    fp.write((char *)&container, sizeof(CompilerKit::AERecordHeader));
 
     return fp;
 }
@@ -115,7 +119,7 @@ std::ofstream& operator<<(std::ofstream& fp, CompilerKit::AERecordHeader& contai
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
-int main(int argc, char** argv)
+MODULE(Assembler64x0)
 {
     for (size_t i = 1; i < argc; ++i)
     {
@@ -172,7 +176,7 @@ int main(int argc, char** argv)
 
         std::string line;
 
-        CompilerKit::AEHeader hdr{ 0 };
+        CompilerKit::AEHeader hdr{0};
 
         memset(hdr.fPad, kAEInvalidOpcode, kAEPad);
 
@@ -187,9 +191,11 @@ int main(int argc, char** argv)
 
         /////////////////////////////////////////////////////////////////////////////////////////
 
+        CompilerKit::PlatformAssembler64x0 asm64;
+
         while (std::getline(file_ptr, line))
         {
-            if (auto ln = masm_check_line(line, argv[i]);
+            if (auto ln = asm64.CheckLine(line, argv[i]);
                 !ln.empty())
             {
                 detail::print_error(ln, argv[i]);
@@ -198,21 +204,20 @@ int main(int argc, char** argv)
 
             try
             {
-                masm_read_attributes(line);
-                masm_read_instruction(line, argv[i]);
+                asm_read_attributes(line);
+                asm64.WriteLine(line, argv[i]);
             }
-            catch(const std::exception& e)
+            catch (const std::exception &e)
             {
                 if (kVerbose)
                 {
                     std::string what = e.what();
-                    detail::print_warning("exit because of: " + what, "masm");
+                    detail::print_warning("exit because of: " + what, "64asm");
                 }
 
                 std::filesystem::remove(object_output);
-                goto masm_fail_exit;
+                goto asm_fail_exit;
             }
-            
         }
 
         if (kVerbose)
@@ -236,7 +241,7 @@ int main(int argc, char** argv)
 
         std::size_t record_count = 0UL;
 
-        for (auto& rec : kRecords)
+        for (auto &rec : kRecords)
         {
             if (kVerbose)
                 kStdOut << "64asm: wrote record " << rec.fName << " to file...\n";
@@ -251,9 +256,9 @@ int main(int argc, char** argv)
         // increment once again, so that we won't lie about the kUndefinedSymbols.
         ++record_count;
 
-        for (auto& sym : kUndefinedSymbols)
+        for (auto &sym : kUndefinedSymbols)
         {
-            CompilerKit::AERecordHeader _record_hdr{ 0 };
+            CompilerKit::AERecordHeader _record_hdr{0};
 
             if (kVerbose)
                 kStdOut << "64asm: wrote symbol " << sym << " to file...\n";
@@ -284,7 +289,7 @@ int main(int argc, char** argv)
         file_ptr_out.seekp(pos_end);
 
         // byte from byte, we write this.
-        for (auto& byte : kBytes)
+        for (auto &byte : kBytes)
         {
             file_ptr_out.write(reinterpret_cast<const char *>(&byte), sizeof(byte));
         }
@@ -294,14 +299,14 @@ int main(int argc, char** argv)
 
         file_ptr_out.flush();
         file_ptr_out.close();
-    
+
         if (kVerbose)
             kStdOut << "64asm: exit succeeded with code 0.\n";
 
         return 0;
     }
 
-masm_fail_exit:
+asm_fail_exit:
 
     if (kVerbose)
         kStdOut << "64asm: exit failed with code -1.\n";
@@ -316,7 +321,7 @@ masm_fail_exit:
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
-static bool masm_read_attributes(std::string& line)
+static bool asm_read_attributes(std::string &line)
 {
     // import is the opposite of export, it signals to the ld
     // that we need this symbol.
@@ -328,12 +333,11 @@ static bool masm_read_attributes(std::string& line)
         result += kUndefinedSymbol;
 
         // mangle this
-        for (char & j : name)
+        for (char &j : name)
         {
             if (j == ' ' ||
                 j == ',')
                 j = '$';
-
         }
 
         result += name;
@@ -341,6 +345,7 @@ static bool masm_read_attributes(std::string& line)
         if (name.find(".text") != std::string::npos)
         {
             // data is treated as code.
+
             kCurrentRecord.fKind = CompilerKit::kPefCode;
         }
         else if (name.find(".data") != std::string::npos)
@@ -378,18 +383,18 @@ static bool masm_read_attributes(std::string& line)
 
         return true;
     }
-
-    // export is a special keyword used by masm to tell the AE output stage to mark this section as a header.
+    // export is a special keyword used by 64asm to tell the AE output stage to mark this section as a header.
     // it currently supports .text, .data., page_zero
-    if (ParserKit::find_word(line, "export "))
+    else if (ParserKit::find_word(line, "export "))
     {
         auto name = line.substr(line.find("export ") + strlen("export "));
 
-        for (char& j : name)
+        std::string name_copy = name;
+
+        for (char &j : name)
         {
             if (j == ' ')
                 j = '$';
-
         }
 
         if (name.find(',') != std::string::npos)
@@ -398,16 +403,22 @@ static bool masm_read_attributes(std::string& line)
         if (name.find(".text") != std::string::npos)
         {
             // data is treated as code.
+
+            name_copy.erase(name_copy.find(".text"), strlen(".text"));
             kCurrentRecord.fKind = CompilerKit::kPefCode;
         }
         else if (name.find(".data") != std::string::npos)
         {
             // no code will be executed from here.
+
+            name_copy.erase(name_copy.find(".data"), strlen(".data"));
             kCurrentRecord.fKind = CompilerKit::kPefData;
         }
         else if (name.find(".page_zero") != std::string::npos)
         {
             // this is a bss section.
+
+            name_copy.erase(name_copy.find(".page_zero"), strlen(".page_zero"));
             kCurrentRecord.fKind = CompilerKit::kPefZero;
         }
 
@@ -418,6 +429,12 @@ static bool masm_read_attributes(std::string& line)
         {
             kCurrentRecord.fKind = CompilerKit::kPefCode;
         }
+
+        while (name_copy.find(" ") != std::string::npos)
+            name_copy.erase(name_copy.find(" "), 1);
+
+        kOriginLabel.push_back(std::make_pair(name_copy, kOrigin));
+        ++kOrigin;
 
         // now we can tell the code size of the previous kCurrentRecord.
 
@@ -447,8 +464,7 @@ namespace detail::algorithm
     static inline bool is_not_alnum_space(char c)
     {
         return !(isalpha(c) || isdigit(c) || (c == ' ') || (c == '\t') || (c == ',') ||
-                (c == '(') || (c == ')') || (c == '"') || (c == '\'') || (c == '[') || (c == ']')
-                || (c == '+') || (c == '_') || (c == ':') || (c == '@') || (c == '.'));
+                 (c == '(') || (c == ')') || (c == '"') || (c == '\'') || (c == '[') || (c == ']') || (c == '+') || (c == '_') || (c == ':') || (c == '@') || (c == '.'));
     }
 
     bool is_valid(const std::string &str)
@@ -463,7 +479,7 @@ namespace detail::algorithm
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
-static std::string masm_check_line(std::string& line, const std::string& file)
+std::string CompilerKit::PlatformAssembler64x0::CheckLine(std::string &line, const std::string &file)
 {
     (void)file;
 
@@ -479,7 +495,7 @@ static std::string masm_check_line(std::string& line, const std::string& file)
         ParserKit::find_word(line, ";") ||
         ParserKit::find_word(line, "layout"))
     {
-        
+
         if (line.find('#') != std::string::npos)
         {
             line.erase(line.find('#'));
@@ -534,7 +550,7 @@ static std::string masm_check_line(std::string& line, const std::string& file)
 
             auto substr = line.substr(line.find(',') + 1);
 
-            for (auto& ch : substr)
+            for (auto &ch : substr)
             {
                 if (ch != ' ' &&
                     ch != '\t')
@@ -555,19 +571,19 @@ static std::string masm_check_line(std::string& line, const std::string& file)
     }
 
     // these do take an argument.
-    std::vector<std::string> operands_inst = { "jb", "psh", "stw", "ldw", "lda", "sta" };
+    std::vector<std::string> operands_inst = {"jb", "stw", "ldw", "lda", "sta"};
 
     // these don't.
-    std::vector<std::string> filter_inst = { "jlr", "jrl", "int" };
+    std::vector<std::string> filter_inst = {"jlr", "jrl", "int"};
 
-    for (auto& opcode64x0 : kOpcodes64x0)
+    for (auto &opcode64x0 : kOpcodes64x0)
     {
         if (line.find(opcode64x0.fName) != std::string::npos)
         {
             if (opcode64x0.fFunct7 == kAsmNoArgs)
                 return err_str;
 
-            for (auto& op : operands_inst)
+            for (auto &op : operands_inst)
             {
                 // if only the instruction was found.
                 if (line == op)
@@ -602,126 +618,107 @@ static std::string masm_check_line(std::string& line, const std::string& file)
     return err_str;
 }
 
-/////////////////////////////////////////////////////////////////////////////////////////
-
-// @brief internal namespace
-
-/////////////////////////////////////////////////////////////////////////////////////////
-
-namespace detail
-{
-    union number_cast
-    {
-        explicit number_cast(UInt64 raw)
-                : raw(raw)
-        {}
-
-        char number[8];
-        UInt64 raw;
-    };
-}
-
-static bool masm_write_number(const std::size_t& pos, std::string& jump_label)
+bool CompilerKit::PlatformAssembler64x0::WriteNumber(const std::size_t &pos, std::string &jump_label)
 {
     if (!isdigit(jump_label[pos]))
         return false;
 
-    switch (jump_label[pos+1])
+    switch (jump_label[pos + 1])
     {
-        case 'x':
+    case 'x':
+    {
+        if (auto res = strtoq(jump_label.substr(pos + 2).c_str(),
+                              nullptr, 16);
+            !res)
         {
-            if (auto res = strtoq(jump_label.substr(pos + 2).c_str(),
-                                  nullptr, 16);
-                    !res)
+            if (errno != 0)
             {
-                if (errno != 0)
-                {
-                    detail::print_error("invalid hex number: " + jump_label, "masm");
-                    throw std::runtime_error("invalid_hex");
-                }
+                detail::print_error("invalid hex number: " + jump_label, "64asm");
+                throw std::runtime_error("invalid_hex");
             }
-
-            detail::number_cast num(strtoq(jump_label.substr(pos + 2).c_str(),
-                                   nullptr, 16));
-
-            for (char& i : num.number)
-            {
-                kBytes.push_back(i);
-            }
-
-            if (kVerbose)
-            {
-                kStdOut << "64asm: found a base 16 number here: " << jump_label.substr(pos) << "\n";
-            }
-
-            return true;
         }
-        case 'b':
+
+        CompilerKit::NumberCast num(strtoq(jump_label.substr(pos + 2).c_str(),
+                                       nullptr, 16));
+
+        for (char &i : num.number)
         {
-            if (auto res = strtoq(jump_label.substr(pos + 2).c_str(),
-                                  nullptr, 2);
-                !res)
-            {
-                if (errno != 0)
-                {
-                    detail::print_error("invalid binary number: " + jump_label, "masm");
-                    throw std::runtime_error("invalid_bin");
-                }
-            }
-
-            detail::number_cast num(strtoq(jump_label.substr(pos + 2).c_str(),
-                                   nullptr, 2));
-
-            if (kVerbose)
-            {
-                kStdOut << "64asm: found a base 2 number here: " << jump_label.substr(pos) << "\n";
-            }
-
-            for (char& i : num.number)
-            {
-                kBytes.push_back(i);
-            }
-
-            return true;
+            kBytes.push_back(i);
         }
-        case 'o':
+
+        if (kVerbose)
         {
-            if (auto res = strtoq(jump_label.substr(pos + 2).c_str(),
-                                  nullptr, 7);
-                !res)
-            {
-                if (errno != 0)
-                {
-                    detail::print_error("invalid octal number: " + jump_label, "masm");
-                    throw std::runtime_error("invalid_octal");
-                }
-            }
-
-            detail::number_cast num(strtoq(jump_label.substr(pos + 2).c_str(),
-                                   nullptr, 7));
-
-            if (kVerbose)
-            {
-                kStdOut << "64asm: found a base 8 number here: " << jump_label.substr(pos) << "\n";
-            }
-
-            for (char& i : num.number)
-            {
-                kBytes.push_back(i);
-            }
-
-            return true;
+            kStdOut << "64asm: found a base 16 number here: " << jump_label.substr(pos) << "\n";
         }
-        default:
+
+        return true;
+    }
+    case 'b':
+    {
+        if (auto res = strtoq(jump_label.substr(pos + 2).c_str(),
+                              nullptr, 2);
+            !res)
         {
-            break;
+            if (errno != 0)
+            {
+                detail::print_error("invalid binary number: " + jump_label, "64asm");
+                throw std::runtime_error("invalid_bin");
+            }
         }
+
+        CompilerKit::NumberCast num(strtoq(jump_label.substr(pos + 2).c_str(),
+                                       nullptr, 2));
+
+        if (kVerbose)
+        {
+            kStdOut << "64asm: found a base 2 number here: " << jump_label.substr(pos) << "\n";
+        }
+
+        for (char &i : num.number)
+        {
+            kBytes.push_back(i);
+        }
+
+        return true;
+    }
+    case 'o':
+    {
+        if (auto res = strtoq(jump_label.substr(pos + 2).c_str(),
+                              nullptr, 7);
+            !res)
+        {
+            if (errno != 0)
+            {
+                detail::print_error("invalid octal number: " + jump_label, "64asm");
+                throw std::runtime_error("invalid_octal");
+            }
+        }
+
+        CompilerKit::NumberCast num(strtoq(jump_label.substr(pos + 2).c_str(),
+                                       nullptr, 7));
+
+        if (kVerbose)
+        {
+            kStdOut << "64asm: found a base 8 number here: " << jump_label.substr(pos) << "\n";
+        }
+
+        for (char &i : num.number)
+        {
+            kBytes.push_back(i);
+        }
+
+        return true;
+    }
+    default:
+    {
+        break;
+    }
     }
 
     /* check for errno and stuff like that */
     if (auto res = strtoq(jump_label.substr(pos).c_str(),
                           nullptr, 10);
-            !res)
+        !res)
     {
         if (errno != 0)
         {
@@ -729,10 +726,10 @@ static bool masm_write_number(const std::size_t& pos, std::string& jump_label)
         }
     }
 
-    detail::number_cast num(strtoq(jump_label.substr(pos).c_str(),
-                                        nullptr, 10));
+    CompilerKit::NumberCast num(strtoq(jump_label.substr(pos).c_str(),
+                                   nullptr, 10));
 
-    for (char& i : num.number)
+    for (char &i : num.number)
     {
         kBytes.push_back(i);
     }
@@ -751,12 +748,12 @@ static bool masm_write_number(const std::size_t& pos, std::string& jump_label)
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
-static void masm_read_instruction(std::string& line, const std::string& file)
+bool CompilerKit::PlatformAssembler64x0::WriteLine(std::string &line, const std::string &file)
 {
     if (ParserKit::find_word(line, "export "))
-        return;
+        return true;
 
-    for (auto& opcode64x0 : kOpcodes64x0)
+    for (auto &opcode64x0 : kOpcodes64x0)
     {
         // strict check here
         if (ParserKit::find_word(line, opcode64x0.fName) &&
@@ -772,114 +769,112 @@ static void masm_read_instruction(std::string& line, const std::string& file)
             // check funct7 type.
             switch (opcode64x0.fFunct7)
             {
-                // reg to reg means register to register transfer operation.
-                case kAsmRegToReg:
-                case kAsmImmediate:
+            // reg to reg means register to register transfer operation.
+            case kAsmRegToReg:
+            case kAsmImmediate:
+            {
+                // \brief how many registers we found.
+                std::size_t found_some = 0UL;
+
+                for (size_t line_index = 0UL; line_index < line.size(); line_index++)
                 {
-                    // \brief how many registers we found.
-                    std::size_t found_some = 0UL;
-
-                    for (size_t line_index = 0UL; line_index < line.size(); line_index++)
+                    if (line[line_index] == kAsmRegisterPrefix[0] &&
+                        isdigit(line[line_index + 1]))
                     {
-                        if (line[line_index] == kAsmRegisterPrefix[0] &&
-                            isdigit(line[line_index + 1]))
+                        std::string register_syntax = kAsmRegisterPrefix;
+                        register_syntax += line[line_index + 1];
+
+                        if (isdigit(line[line_index + 2]))
+                            register_syntax += line[line_index + 2];
+
+                        std::string reg_str;
+                        reg_str += line[line_index + 1];
+
+                        if (isdigit(line[line_index + 2]))
+                            reg_str += line[line_index + 2];
+
+                        // it ranges from r0 to r19
+                        // something like r190 doesn't exist in the instruction set.
+                        if (kOutputArch == CompilerKit::kPefArch64000)
                         {
-                            std::string register_syntax = kAsmRegisterPrefix;
-                            register_syntax += line[line_index + 1];
-
-                            if (isdigit(line[line_index + 2]))
-                                register_syntax += line[line_index + 2];
-
-                            std::string reg_str;
-                            reg_str += line[line_index + 1];
-
-                            if (isdigit(line[line_index + 2]))
-                                reg_str += line[line_index + 2];
-
-                            // it ranges from r0 to r19
-                            // something like r190 doesn't exist in the instruction set.
-                            if (kOutputArch == CompilerKit::kPefArch64000)
+                            if (isdigit(line[line_index + 3]) &&
+                                isdigit(line[line_index + 2]))
                             {
-                                if (isdigit(line[line_index + 3]) &&
-                                    isdigit(line[line_index + 2]))
-                                {
-                                    reg_str += line[line_index + 3];
-                                    detail::print_error("invalid register index, r" + reg_str + "\nnote: 64x0 accepts registers from r0 to r20.", file);
-                                    throw std::runtime_error("invalid_register_index");
-                                }
-                            }
-
-                            // finally cast to a size_t
-                            std::size_t reg_index = strtoq(
-                                reg_str.c_str(),
-                                nullptr,
-                                10);
-
-                            if (reg_index > kAsmRegisterLimit)
-                            {
-                                detail::print_error("invalid register index, r" + reg_str, file);
+                                reg_str += line[line_index + 3];
+                                detail::print_error("invalid register index, r" + reg_str + "\nnote: 64x0 accepts registers from r0 to r20.", file);
                                 throw std::runtime_error("invalid_register_index");
                             }
-
-                            kBytes.emplace_back(reg_index);
-                            ++found_some;
-
-                            if (kVerbose)
-                            {
-                                if (kOutputArch == CompilerKit::kPefArch64000)
-                                    kStdOut << "64asm: 64x0 register found: " << register_syntax << "\n";
-                                else
-                                    kStdOut << "64asm: register found: " << register_syntax << "\n";
-
-                                kStdOut << "64asm: Number of registers: " << found_some << "\n";
-                            }
                         }
-                    }
-                    
-                    // we're not in immediate addressing, reg to reg.
-                    if (opcode64x0.fFunct7 != kAsmImmediate)
-                    {
-                        // remember! register to register!
-                        if (found_some == 1)
+
+                        // finally cast to a size_t
+                        std::size_t reg_index = strtoq(
+                            reg_str.c_str(),
+                            nullptr,
+                            10);
+
+                        if (reg_index > kAsmRegisterLimit)
                         {
-                            detail::print_error("unrecognized register found.\ntip: each masm register starts with 'r'.\nline: " + line, file);
-                            throw std::runtime_error("not_a_register");
+                            detail::print_error("invalid register index, r" + reg_str, file);
+                            throw std::runtime_error("invalid_register_index");
                         }
-                    }
 
-                    if (found_some < 1 &&
-                        name != "psh" &&
-                        name != "ldw" &&
-                        name != "lda" &&
-                        name != "stw" &&
-                        name != "jb")
-                    {
-                        detail::print_error("invalid combination of opcode and registers.\nline: " + line, file);
-                        throw std::runtime_error("invalid_comb_op_reg");
-                    }
-                    else if (found_some == 1 &&
-                            name == "add" )
-                    {
-                        detail::print_error("invalid combination of opcode and registers.\nline: " + line, file);
-                        throw std::runtime_error("invalid_comb_op_reg");
-                    }
-                    else if (found_some == 1 &&
-                            name == "dec")
-                    {
-                        detail::print_error("invalid combination of opcode and registers.\nline: " + line, file);
-                        throw std::runtime_error("invalid_comb_op_reg");
-                    }
+                        kBytes.emplace_back(reg_index);
+                        ++found_some;
 
-                    if (found_some > 0 &&
-                        name == "pop")
-                    {
-                        detail::print_error("invalid combination for opcode 'pop'.\ntip: it expects nothing.\nline: " + line, file);
-                        throw std::runtime_error("invalid_comb_op_pop");
+                        if (kVerbose)
+                        {
+                            if (kOutputArch == CompilerKit::kPefArch64000)
+                                kStdOut << "64asm: 64x0 register found: " << register_syntax << "\n";
+                            else
+                                kStdOut << "64asm: register found: " << register_syntax << "\n";
+
+                            kStdOut << "64asm: Number of registers: " << found_some << "\n";
+                        }
                     }
                 }
-                default:
-                    break;
 
+                // we're not in immediate addressing, reg to reg.
+                if (opcode64x0.fFunct7 != kAsmImmediate)
+                {
+                    // remember! register to register!
+                    if (found_some == 1)
+                    {
+                        detail::print_error("unrecognized register found.\ntip: each 64asm register starts with 'r'.\nline: " + line, file);
+                        throw std::runtime_error("not_a_register");
+                    }
+                }
+
+                if (found_some < 1 &&
+                    name != "ldw" &&
+                    name != "lda" &&
+                    name != "stw" &&
+                    name != "jb")
+                {
+                    detail::print_error("invalid combination of opcode and registers.\nline: " + line, file);
+                    throw std::runtime_error("invalid_comb_op_reg");
+                }
+                else if (found_some == 1 &&
+                         name == "add")
+                {
+                    detail::print_error("invalid combination of opcode and registers.\nline: " + line, file);
+                    throw std::runtime_error("invalid_comb_op_reg");
+                }
+                else if (found_some == 1 &&
+                         name == "dec")
+                {
+                    detail::print_error("invalid combination of opcode and registers.\nline: " + line, file);
+                    throw std::runtime_error("invalid_comb_op_reg");
+                }
+
+                if (found_some > 0 &&
+                    name == "pop")
+                {
+                    detail::print_error("invalid combination for opcode 'pop'.\ntip: it expects nothing.\nline: " + line, file);
+                    throw std::runtime_error("invalid_comb_op_pop");
+                }
+            }
+            default:
+                break;
             }
 
             // try to fetch a number from the name
@@ -906,7 +901,7 @@ static void masm_read_instruction(std::string& line, const std::string& file)
                 while (jump_label.find(where_string) != std::string::npos)
                 {
                     jump_label = jump_label.substr(jump_label.find(where_string) + where_string.size());
-                
+
                     while (jump_label.find(" ") != std::string::npos)
                     {
                         jump_label.erase(jump_label.find(" "), 1);
@@ -943,7 +938,7 @@ static void masm_read_instruction(std::string& line, const std::string& file)
                     }
                 }
 
-                if (!masm_write_number(0, jump_label))
+                if (!this->WriteNumber(0, jump_label))
                 {
                     // sta expects this: sta 0x000000, r0
                     if (name == "sta")
@@ -951,8 +946,8 @@ static void masm_read_instruction(std::string& line, const std::string& file)
                         detail::print_error("invalid combination of opcode and operands.\nhere ->" + line, file);
                         throw std::runtime_error("invalid_comb_op_ops");
                     }
-                    
-                    goto masm_write_label;
+
+                    goto asm_write_label;
                 }
                 else
                 {
@@ -968,32 +963,50 @@ static void masm_read_instruction(std::string& line, const std::string& file)
             // This is the case where we jump to a label, it is also used as a goto.
             if (name == "jb")
             {
-masm_write_label:
+asm_write_label:
                 if (cpy_jump_label.find('\n') != std::string::npos)
                     cpy_jump_label.erase(cpy_jump_label.find('\n'), 1);
 
-                if (cpy_jump_label.find("import ") == std::string::npos &&
-                    name == "psh" ||
-                    cpy_jump_label.find("import ") == std::string::npos &&
+                if (cpy_jump_label.find("import") == std::string::npos &&
                     name == "jb")
                 {
+                    for (auto &label : kOriginLabel)
+                    {
+                        if (cpy_jump_label == label.first)
+                        {
+                            if (kVerbose)
+                            {
+                                kStdOut << "64asm: verbose: set label "
+                                        << cpy_jump_label
+                                        << " to address: "
+                                        << label.second
+                                        << std::endl;
+                                
+                            }
+
+                            CompilerKit::NumberCast num(label.second);
+
+                            for (auto& num : num.number)
+                            {
+                                kBytes.push_back(num);
+                            }
+                            
+                            goto asm_end_label_cpy;
+                        }
+                    }
+
                     detail::print_error("import not found on jump label, please add one.", file);
                     throw std::runtime_error("import_jmp_lbl");
                 }
-                else if (cpy_jump_label.find("import ") != std::string::npos)
-                { 
+                else if (cpy_jump_label.find("import") != std::string::npos)
+                {
                     if (name == "sta")
                     {
                         detail::print_error("import is not allowed on a sta operation.", file);
                         throw std::runtime_error("import_sta_op");
                     }
 
-                    cpy_jump_label.erase(cpy_jump_label.find("import "), strlen("import "));
-                }
-
-                while (cpy_jump_label.find(' ') != std::string::npos)
-                {
-                    cpy_jump_label.erase(cpy_jump_label.find(' '), 1);
+                    cpy_jump_label.erase(cpy_jump_label.find("import"), strlen("import"));
                 }
 
                 if (cpy_jump_label.size() < 1)
@@ -1024,12 +1037,19 @@ masm_write_label:
 
                     kBytes.push_back(reloc_chr);
                 }
+
+                kBytes.push_back('\0');
+                goto asm_end_label_cpy;
             }
 
-            kBytes.push_back('\0');
+asm_end_label_cpy:
+            ++kOrigin;
+
             break;
         }
     }
+
+    return true;
 }
 
 // Last rev 8-1-24

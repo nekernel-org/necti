@@ -49,8 +49,12 @@ inline std::vector<CpuCode64x0> kOpcodes64x0 = {
         kAsmOpcodeDecl("ldw", 0b0001111, 0b100, kAsmImmediate)
         kAsmOpcodeDecl("lda", 0b0001111, 0b101, kAsmImmediate)
         kAsmOpcodeDecl("sta", 0b0001111, 0b001, kAsmImmediate)
+        // add/sub without carry flag
         kAsmOpcodeDecl("add", 0b0101011, 0b100, kAsmImmediate)
         kAsmOpcodeDecl("dec", 0b0101011, 0b101, kAsmImmediate)
+        // add/sub with carry flag
+        kAsmOpcodeDecl("addc", 0b0101011, 0b110, kAsmImmediate)
+        kAsmOpcodeDecl("decc", 0b0101011, 0b111, kAsmImmediate)
         kAsmOpcodeDecl("int", 0b1110011, 0b00, kAsmSyscall)
         kAsmOpcodeDecl("syscall", 0b1110011, 0b00, kAsmSyscall)
         kAsmOpcodeDecl("pha", 0b1110011, 0b00, kAsmNoArgs)

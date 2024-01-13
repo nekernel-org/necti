@@ -16,6 +16,8 @@
 
 #include <CompilerKit/StdKit/ErrorID.hpp>
 
+#include <CompilerKit/AsmKit/AsmKit.hpp>
+
 //! Portable Executable Format
 #include <CompilerKit/StdKit/PEF.hpp>
 
@@ -74,7 +76,7 @@ static const char* kLdDynamicSym = ":mld:";
 static std::vector<std::string> kObjectList;
 static std::vector<char> kObjectBytes;
 
-int main(int argc, char** argv)
+MODULE(Linker64x0)
 {
 	bool is_executable = true;
 	

@@ -11,15 +11,18 @@
 
 #include <CompilerKit/Defines.hpp>
 
+// @file PEF.hpp
+// @brief Preferred Executable Format
+
 #define kPefMagic    "PEF"
 #define kPefMagicFat "FEP"
 
 #define kPefMagicLen 3
 
-#define kPefVersion 1
+#define kPefVersion 2
 #define kPefNameLen 64
 
-// Protable Executable Format, a format designed for any computer.
+#define kPefBaseOrigin 0
 
 namespace CompilerKit
 {
@@ -51,7 +54,7 @@ namespace CompilerKit
         UInt32 Abi;
         UInt32 Cpu;
         UInt32 SubCpu; /* Cpu specific information */
-        UIntPtr Start;
+        UIntPtr Start; /* Origin of code */
         SizeType HdrSz; /* Size of header */
         SizeType Count; /* container header count */
     } __attribute__((packed)) PEFContainer;

@@ -60,4 +60,47 @@ namespace CompilerKit
 		AssemblyMountpoint* fMounted{ nullptr };
 
     };
+
+	class PlatformAssembler
+	{
+	public:
+		explicit PlatformAssembler() = default;
+		~PlatformAssembler() = default;
+
+		virtual std::string CheckLine(std::string &line, const std::string &file) = 0;
+		virtual bool WriteLine(std::string &line, const std::string &file) = 0;
+		virtual bool WriteNumber(const std::size_t &pos, std::string &from_what) = 0;
+
+	};
+
+#ifdef __ASM_NEED_64x0__
+
+	class PlatformAssembler64x0 final : public PlatformAssembler
+	{
+	public:
+		explicit PlatformAssembler64x0() = default;
+		~PlatformAssembler64x0() = default;
+
+		virtual std::string CheckLine(std::string &line, const std::string &file) override;
+		virtual bool WriteLine(std::string &line, const std::string &file) override;
+		virtual bool WriteNumber(const std::size_t& pos, std::string& from_what) override;
+
+	};
+
+#endif // __ASM_NEED_64x0__
+
+	union NumberCast final
+    {
+        explicit NumberCast(UInt64 raw) : raw(raw) {}
+		~NumberCast() { raw = 0; }
+
+        char number[8];
+        UInt64 raw;
+    };
 }
+
+#ifdef __MODULE_NEED__
+#	define MODULE(name) int name(int argc, char** argv)
+#else
+#	define MODULE(name) int main(int argc, char** argv)
+#endif /* ifdef __MODULE_NEED__ */
