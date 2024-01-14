@@ -34,7 +34,7 @@ struct CpuCode64x0
 };
 
 inline std::vector<CpuCode64x0> kOpcodes64x0 = {
-        kAsmOpcodeDecl("np", 0b0100011, 0b0000000, kAsmNoArgs) // no-operation.
+        kAsmOpcodeDecl("np", 0b0000000, 0b0000000, kAsmNoArgs) // no-operation.
         kAsmOpcodeDecl("jb", 0b1110011, 0b0000011, kAsmJump) // jump to branch
         kAsmOpcodeDecl("jlr", 0b1110011, 0b0000111, kAsmJump) // jump to linked return register
         kAsmOpcodeDecl("jrl", 0b1110011, 0b0001111, kAsmJump) // jump from return register.
