@@ -17,6 +17,8 @@ import javafx.scene.control.TabPane;
  */
 public class App extends Application {
 
+    private static int COUNTER = 0; 
+
     @Override
     public void start(Stage stage) {
         stage.setTitle("MetroWorks - Untitled");
@@ -34,7 +36,8 @@ public class App extends Application {
         Button buttonNewPane = new Button("New project...");
 
         buttonNewPane.onMouseClickedProperty().set((EventHandler<MouseEvent>) (MouseEvent c) -> {
-            Tab tabCode = new Tab("Untitled", new CodeEditor());
+            ++COUNTER;
+            Tab tabCode = new Tab("Untitled (" + Integer.toString(COUNTER) + ")", new CodeEditor());
             tabePane.getTabs().add(tabCode);
         });
 
