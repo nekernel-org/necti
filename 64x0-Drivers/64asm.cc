@@ -103,7 +103,7 @@ namespace detail
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
-MODULE(Assembler64x0)
+MPCC_MODULE(Assembler64x0)
 {
     for (size_t i = 1; i < argc; ++i)
     {

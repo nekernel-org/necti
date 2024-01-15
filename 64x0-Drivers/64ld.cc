@@ -64,7 +64,7 @@ static const char* kLdDynamicSym = ":mld:";
 static std::vector<std::string> kObjectList;
 static std::vector<char> kObjectBytes;
 
-MODULE(Linker64x0)
+MPCC_MODULE(Linker64x0)
 {
 	bool is_executable = true;
 	

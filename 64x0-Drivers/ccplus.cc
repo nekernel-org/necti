@@ -617,7 +617,7 @@ static void cxx_print_help()
 
 #define kExt ".cpp"
 
-MODULE(CompilerCPlusPlus64x0)
+MPCC_MODULE(CompilerCPlusPlus64x0)
 {
     kKeywords.emplace_back("auto");
     kKeywords.emplace_back("else");

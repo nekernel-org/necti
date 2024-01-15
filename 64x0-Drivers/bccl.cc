@@ -1455,7 +1455,7 @@ static void cc_print_help()
 
 #define kExt ".bccl"
 
-MODULE(CompilerBccl64x0)
+MPCC_MODULE(CompilerBccl64x0)
 {
     kCompilerTypes.push_back({.fName = "void", .fValue = "void"});
     kCompilerTypes.push_back({.fName = "char", .fValue = "byte"});

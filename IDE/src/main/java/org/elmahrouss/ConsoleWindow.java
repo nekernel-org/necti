@@ -7,10 +7,8 @@
  * 	========================================================
  */
 
-module org.elmahrouss {
-    requires javafx.graphics;
-    requires javafx.controls;
-    requires javafx.base;
+ package org.elmahrouss;
 
-    exports org.elmahrouss;
+public class ConsoleWindow {
+    
 }

@@ -100,7 +100,7 @@ namespace CompilerKit
 }
 
 #ifdef __MODULE_NEED__
-#	define MODULE(name) int name(int argc, char** argv)
+#	define MPCC_MODULE(name) int name(int argc, char** argv)
 #else
-#	define MODULE(name) int main(int argc, char** argv)
+#	define MPCC_MODULE(name) int main(int argc, char** argv)
 #endif /* ifdef __MODULE_NEED__ */

@@ -1,4 +1,13 @@
-package org.elmahrouss;
+/*
+ *	========================================================
+ *
+ *	MPCC
+ * 	Copyright Mahrouss Logic, all rights reserved.
+ *
+ * 	========================================================
+ */
+
+ package org.elmahrouss;
 
 import javafx.application.Application;
 import javafx.event.ActionEvent;
@@ -46,7 +55,7 @@ public class App extends Application {
 
         ed.getChildren().addAll(buttonNewPane);
 
-        ed.setContents("Welcome to MetroWorks!\nEmbedded code editor.");
+        ed.setContents("Welcome to MetroWorks!\nThe embedded code editor.");
         ed.getChildren().addAll();
 
         tabEditorWelcome.setClosable(false);

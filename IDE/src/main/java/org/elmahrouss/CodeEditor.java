@@ -1,4 +1,13 @@
-package org.elmahrouss;
+/*
+ *	========================================================
+ *
+ *	MPCC
+ * 	Copyright Mahrouss Logic, all rights reserved.
+ *
+ * 	========================================================
+ */
+
+ package org.elmahrouss;
 
 import javafx.beans.property.ObjectProperty;
 import javafx.collections.ObservableList;
@@ -12,10 +21,13 @@ import javafx.scene.layout.*;
 public class CodeEditor extends Pane {
     private Pane linePane;
     private Label lines;
+    private boolean readOnly;
 
-    CodeEditor() {
+    CodeEditor() 
+    {
         super();
 
+        readOnly = false;
         lines = new Label();
         
         lines.setStyle("-fx-font-size: 20");
@@ -35,6 +47,10 @@ public class CodeEditor extends Pane {
 
         this.setMinSize(1280, 720);
         this.setMaxSize(1920, 1080);
+
+        if (!readOnly) {
+
+        }
     }
 
     @Override
@@ -42,6 +58,17 @@ public class CodeEditor extends Pane {
         return super.getChildren();
     }
 
+    public boolean isReadOnly() { return readOnly; }
+
+    public void setReadOnly(Boolean readOnly) { this.readOnly = readOnly; }
+
     public String getContents() { return lines.getText(); }
-    public void setContents(String content) { lines.setText(content); }
+    
+    public void setContents(String content) 
+    { 
+        if (readOnly) 
+            return;
+    
+        lines.setText(content); 
+    }
 }
