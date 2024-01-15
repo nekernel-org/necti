@@ -17,17 +17,17 @@ public class CodeEditor extends Pane {
         super();
 
         lines = new Label();
-        lines.setText("#include <iostream>\n\nint main()\n{\n\tstd::cout << \"Hello, world!\";\n}\n");
-        lines.setStyle("-fx-font-size: 15");
+        
+        lines.setStyle("-fx-font-size: 20");
         lines.setWrapText(true);
         lines.setTranslateX(70);
         lines.setTranslateY(30);
 
         linePane = new Pane();
 
-        linePane.setStyle("-fx-background-color: #" + CodeEditorTheme.lineTheme + ";");
-        linePane.setMinSize(42, 720);
-        linePane.setMaxSize(42, 1080);
+        linePane.setStyle("-fx-background-color: #" + CodeEditorTheme.lineTheme);
+        linePane.setMinSize(52, 720);
+        linePane.setMaxSize(52, 1080);
 
         this.getChildren().addAll(linePane, lines);
 
