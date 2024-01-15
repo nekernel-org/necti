@@ -98,3 +98,15 @@ inline std::ofstream& operator<<(std::ofstream& fp, CompilerKit::PEFCommandHeade
     fp.write((char*)&container, sizeof(CompilerKit::PEFCommandHeader));
     return fp;
 }
+
+std::ifstream &operator>>(std::ifstream& fp, CompilerKit::PEFContainer& container)
+{
+	fp.read((char*)&container, sizeof(CompilerKit::PEFContainer));
+    return fp;
+}
+
+std::ifstream &operator>>(std::ifstream& fp, CompilerKit::PEFCommandHeader& container)
+{
+	fp.read((char*)&container, sizeof(CompilerKit::PEFCommandHeader));
+    return fp;
+}

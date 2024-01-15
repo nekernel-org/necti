@@ -29,36 +29,39 @@
 #include <uuid/uuid.h>
 
 //! @brief standard PEF entry.
-#define kPefStart    "__start"
+#define kPefStart "__start"
 
 #define kToolVersion "64ld v2, (c) Mahrouss Logic"
 
 #define StringCompare(DST, SRC) strcmp(DST, SRC)
 
-#define kPefNoCpu       0U
-#define kPefNoSubCpu    0U
+#define kPefNoCpu 0U
+#define kPefNoSubCpu 0U
 
-#define kWhite           "\e[0;97m"
-#define kStdOut          (std::cout << kWhite)
+#define kWhite "\e[0;97m"
+#define kStdOut (std::cout << kWhite)
 
-#define kPefDeaultOrg    (uint64_t)0x10000
-#define kPefLinkerNumId  0x5046FF
-#define kPefAbiId        "Container:Abi:64x0"
+#define kPefDeaultOrg (uint64_t)0x10000
+#define kPefLinkerNumId 0x5046FF
+#define kPefAbiId "Container:Abi:64x0"
 
-enum { kAbiMpUx = 0x5046 /* PF */ };
+enum
+{
+    kAbiMpUx = 0x5046 /* PF */
+};
 
 static std::string kOutput = "a" kPefExt;
 static Int32 kAbi = kAbiMpUx;
 static Int32 kSubArch = kPefNoSubCpu;
 static Int32 kArch = CompilerKit::kPefArch64000;
-static Bool  kFatBinaryEnable = false;
+static Bool kFatBinaryEnable = false;
 static Bool kStartFound = false;
 static Bool kDuplicateSymbols = false;
 static Bool kVerbose = false;
 
 /* ld is to be found, mld is to be found at runtime. */
-static const char* kLdDefineSymbol = ":64ld:";
-static const char* kLdDynamicSym = ":mld:";
+static const char *kLdDefineSymbol = ":64ld:";
+static const char *kLdDynamicSym = ":mld:";
 
 /* object code and list. */
 static std::vector<std::string> kObjectList;
@@ -66,8 +69,8 @@ static std::vector<char> kObjectBytes;
 
 MPCC_MODULE(Linker64x0)
 {
-	bool is_executable = true;
-	
+    bool is_executable = true;
+
     for (size_t i = 1; i < argc; ++i)
     {
         if (StringCompare(argv[i], "-h") == 0)
@@ -77,13 +80,13 @@ MPCC_MODULE(Linker64x0)
             kStdOut << "-verbose: Print program backtrace (verbose mode).\n";
             kStdOut << "-shared: Output as a shared library.\n";
             kStdOut << "-fat-binary: Output as FAT PEF.\n";
-            kStdOut << "-o: Select output filename.\n";	
+            kStdOut << "-o: Select output filename.\n";
 
             // bye
             return 0;
         }
         else if (StringCompare(argv[i], "-v") == 0 ||
-                StringCompare(argv[i], "--version") == 0)
+                 StringCompare(argv[i], "--version") == 0)
         {
             kStdOut << kToolVersion << std::endl;
             // bye :D
@@ -92,7 +95,7 @@ MPCC_MODULE(Linker64x0)
         else if (StringCompare(argv[i], "-fat-binary") == 0)
         {
             kFatBinaryEnable = true;
-        
+
             continue;
         }
         else if (StringCompare(argv[i], "-verbose") == 0)
@@ -113,7 +116,7 @@ MPCC_MODULE(Linker64x0)
         }
         else if (StringCompare(argv[i], "-o") == 0)
         {
-            kOutput = argv[i+1];
+            kOutput = argv[i + 1];
             ++i;
 
             continue;
@@ -131,7 +134,7 @@ MPCC_MODULE(Linker64x0)
             continue;
         }
     }
-    
+
     // sanity check.
     if (kObjectList.empty())
     {
@@ -141,7 +144,7 @@ MPCC_MODULE(Linker64x0)
     else
     {
         // check for exisiting files.
-        for (auto& obj : kObjectList)
+        for (auto &obj : kObjectList)
         {
             if (!std::filesystem::exists(obj))
             {
@@ -168,7 +171,7 @@ MPCC_MODULE(Linker64x0)
     pef_container.Kind = CompilerKit::kPefKindExec;
     pef_container.SubCpu = kSubArch;
     pef_container.Linker = kPefLinkerNumId; // Mahrouss Logic Linker
-    pef_container.Abi = kAbi; // Multi-Processor UX ABI
+    pef_container.Abi = kAbi;               // Multi-Processor UX ABI
     pef_container.Magic[0] = kPefMagic[kFatBinaryEnable ? 2 : 0];
     pef_container.Magic[1] = kPefMagic[1];
     pef_container.Magic[2] = kPefMagic[kFatBinaryEnable ? 0 : 2];
@@ -193,48 +196,48 @@ MPCC_MODULE(Linker64x0)
     //! Read AE to convert as PEF.
 
     std::vector<CompilerKit::PEFCommandHeader> pef_command_hdrs;
+    CompilerKit::Utils::AEReadableProtocol readProto{};
 
-    for (const auto& i : kObjectList)
+    for (const auto &i : kObjectList)
     {
         if (!std::filesystem::exists(i))
             continue;
 
         CompilerKit::AEHeader hdr{};
-        
-        std::ifstream input_object(i, std::ifstream::binary);
 
-        input_object.read((char*)&hdr, sizeof(CompilerKit::AEHeader));
-    
+        readProto.USED_FP = std::ifstream(i, std::ifstream::binary);
+        readProto.USED_FP >> hdr;
+
         auto ae_header = hdr;
-        
-        if (ae_header.fArch != kArch)
-        {
-            if (kVerbose)
-                kStdOut << "64ld: pef: is a fat binary? : ";
-
-            if (!kFatBinaryEnable)
-            { 
-                if (kVerbose)
-                    kStdOut << "no.\n";
-
-                kStdOut << "64ld: error: object " << i << " is a different kind of architecture and output isn't treated as FAT binary." << std::endl;
-
-                std::remove(kOutput.c_str());
-                return -CXXKIT_FAT_ERROR;
-            }
-            else
-            {          
-                if (kVerbose)
-                {
-                    kStdOut << "yes.\n";
-                }
-            }
-        }
 
         if (ae_header.fMagic[0] == kAEMag0 &&
             ae_header.fMagic[1] == kAEMag1 &&
-	        ae_header.fSize == sizeof(CompilerKit::AEHeader))
+            ae_header.fSize == sizeof(CompilerKit::AEHeader))
         {
+            if (ae_header.fArch != kArch)
+            {
+                if (kVerbose)
+                    kStdOut << "64ld: pef: is a fat binary? : ";
+
+                if (!kFatBinaryEnable)
+                {
+                    if (kVerbose)
+                        kStdOut << "no.\n";
+
+                    kStdOut << "64ld: error: object " << i << " is a different kind of architecture and output isn't treated as FAT binary." << std::endl;
+
+                    std::remove(kOutput.c_str());
+                    return -CXXKIT_FAT_ERROR;
+                }
+                else
+                {
+                    if (kVerbose)
+                    {
+                        kStdOut << "yes.\n";
+                    }
+                }
+            }
+
             // append arch type to archs varaible.
             archs |= ae_header.fArch;
             std::size_t cnt = ae_header.fCount;
@@ -244,18 +247,16 @@ MPCC_MODULE(Linker64x0)
 
             pef_container.Count = cnt;
 
-            char* raw_ae_records = new char[cnt * sizeof(CompilerKit::AERecordHeader)];
+            char_type *raw_ae_records = new char[cnt * sizeof(CompilerKit::AERecordHeader)];
             memset(raw_ae_records, 0, cnt * sizeof(CompilerKit::AERecordHeader));
 
-            input_object.read(raw_ae_records, std::streamsize(cnt * sizeof(CompilerKit::AERecordHeader)));
-
-            auto* ae_records = (CompilerKit::AERecordHeader*)raw_ae_records;
+            auto *ae_records = readProto.Read(raw_ae_records, cnt);
 
             for (size_t ae_record_index = 0; ae_record_index < cnt; ++ae_record_index)
             {
-				CompilerKit::PEFCommandHeader command_header{ 0 };
+                CompilerKit::PEFCommandHeader command_header{0};
 
-				memcpy(command_header.Name, ae_records[ae_record_index].fName, kPefNameLen);
+                memcpy(command_header.Name, ae_records[ae_record_index].fName, kPefNameLen);
 
                 // check this header if it's any valid.
                 if (std::string(command_header.Name).find(".text") == std::string::npos &&
@@ -283,10 +284,10 @@ MPCC_MODULE(Linker64x0)
                     pef_container.Start = ae_records[ae_record_index].fOffset;
                 }
 
-ld_mark_header:
-				command_header.Offset = ae_records[ae_record_index].fOffset;
-				command_header.Kind = ae_records[ae_record_index].fKind;
-				command_header.Size = ae_records[ae_record_index].fSize;
+            ld_mark_header:
+                command_header.Offset = ae_records[ae_record_index].fOffset;
+                command_header.Kind = ae_records[ae_record_index].fKind;
+                command_header.Size = ae_records[ae_record_index].fSize;
 
                 if (kVerbose)
                     kStdOut << "64ld: object record: " << ae_records[ae_record_index].fName << " was marked.\n";
@@ -299,15 +300,17 @@ ld_mark_header:
             std::vector<char> bytes;
             bytes.resize(ae_header.fCodeSize);
 
-            input_object.seekg(std::streamsize(ae_header.fStartCode));
-            input_object.read(bytes.data(), std::streamsize(ae_header.fCodeSize));
+            readProto.USED_FP.seekg(std::streamsize(ae_header.fStartCode));
+            readProto.USED_FP.read(bytes.data(), std::streamsize(ae_header.fCodeSize));
 
-            for (auto& byte : bytes)
+            for (auto &byte : bytes)
             {
                 kObjectBytes.push_back(byte);
             }
 
-            continue;  
+            readProto.USED_FP.close();
+
+            continue;
         }
 
         kStdOut << "64ld: not an object: " << i << std::endl;
@@ -333,19 +336,19 @@ ld_mark_header:
 
     // step 2: check for errors (multiple symbols, undefined ones)
 
-    for (auto & pef_command_hdr : pef_command_hdrs)
+    for (auto &pef_command_hdr : pef_command_hdrs)
     {
         // check if this symbol needs to be resolved.
         if (std::string(pef_command_hdr.Name).find(kLdDefineSymbol) !=
-            std::string::npos &&
+                std::string::npos &&
             std::string(pef_command_hdr.Name).find(kLdDynamicSym) ==
-            std::string::npos)
+                std::string::npos)
         {
             if (kVerbose)
                 kStdOut << "64ld: found undefined symbol: " << pef_command_hdr.Name << "\n";
 
             if (auto it = std::find(not_found.begin(), not_found.end(), std::string(pef_command_hdr.Name));
-                    it == not_found.end())
+                it == not_found.end())
             {
                 not_found.emplace_back(pef_command_hdr.Name);
             }
@@ -359,7 +362,7 @@ ld_mark_header:
     for (size_t not_found_idx = 0; not_found_idx < pef_command_hdrs.size(); ++not_found_idx)
     {
         if (auto it = std::find(not_found.begin(), not_found.end(), std::string(pef_command_hdrs[not_found_idx].Name));
-                it != not_found.end())
+            it != not_found.end())
         {
             std::string symbol_imp = *it;
 
@@ -375,7 +378,7 @@ ld_mark_header:
 
             // the reason we do is because, this may not match the symbol, and we need
             // to look for other matching symbols.
-            for (auto& pef_command_hdr : pef_command_hdrs)
+            for (auto &pef_command_hdr : pef_command_hdrs)
             {
                 if (std::string(pef_command_hdr.Name).find(symbol_imp) != std::string::npos &&
                     std::string(pef_command_hdr.Name).find(kLdDefineSymbol) == std::string::npos)
@@ -387,7 +390,6 @@ ld_mark_header:
                     {
                         if (result_of_sym[i] != symbol_imp[i])
                             goto ld_continue_search;
-
                     }
 
                     not_found.erase(it);
@@ -399,7 +401,7 @@ ld_mark_header:
                 }
             }
 
-ld_continue_search:
+        ld_continue_search:
             continue;
         }
     }
@@ -445,11 +447,11 @@ ld_continue_search:
 
     CompilerKit::PEFCommandHeader uuid_header{};
 
-    uuid_t uuid{ 0 };
+    uuid_t uuid{0};
     uuid_generate_random(uuid);
 
     memcpy(uuid_header.Name, "UUID_TYPE:4:", strlen("UUID_TYPE:4:"));
-    memcpy(uuid_header.Name + strlen("UUID_TYPE:4:"), uuid,  16);
+    memcpy(uuid_header.Name + strlen("UUID_TYPE:4:"), uuid, 16);
 
     uuid_header.Size = 16;
     uuid_header.Offset = output_fc.tellp();
@@ -468,9 +470,9 @@ ld_continue_search:
     for (size_t cmd_hdr = 0UL; cmd_hdr < pef_command_hdrs.size(); ++cmd_hdr)
     {
         if (std::string(pef_command_hdrs[cmd_hdr].Name).find(kLdDefineSymbol) !=
-            std::string::npos &&
+                std::string::npos &&
             std::string(pef_command_hdrs[cmd_hdr].Name).find(kLdDynamicSym) ==
-            std::string::npos)
+                std::string::npos)
         {
             // ignore :64ld: headers, they do not contain code.
             continue;
@@ -491,15 +493,20 @@ ld_continue_search:
                 continue;
 
             if (std::string(pef_command_hdrs[cmd_hdr_sub].Name).find(kLdDefineSymbol) !=
-                std::string::npos &&
+                    std::string::npos &&
                 std::string(pef_command_hdrs[cmd_hdr_sub].Name).find(kLdDynamicSym) ==
-                std::string::npos)
+                    std::string::npos)
             {
+                if (kVerbose)
+                {
+                    kStdOut << "64ld: ignore :64ld: command header...\n";
+                }
+
                 // ignore :64ld: headers, they do not contain code.
                 continue;
             }
 
-            auto& pef_command_hdr = pef_command_hdrs[cmd_hdr_sub];
+            auto &pef_command_hdr = pef_command_hdrs[cmd_hdr_sub];
 
             if (pef_command_hdr.Name == std::string(pef_command_hdrs[cmd_hdr].Name))
             {
@@ -518,7 +525,7 @@ ld_continue_search:
 
     if (!duplicate_symbols.empty())
     {
-        for (auto& symbol : duplicate_symbols)
+        for (auto &symbol : duplicate_symbols)
         {
             kStdOut << "64ld: multiple symbols of " << symbol << ".\n";
         }
@@ -526,7 +533,7 @@ ld_continue_search:
         std::remove(kOutput.c_str());
         return -CXXKIT_EXEC_ERROR;
     }
-    
+
     // step 2.5: write program bytes.
 
     for (auto byte : kObjectBytes)
@@ -541,10 +548,10 @@ ld_continue_search:
 
     std::vector<std::string> unreferenced_symbols;
 
-    for (auto & pef_command_hdr : pef_command_hdrs)
+    for (auto &pef_command_hdr : pef_command_hdrs)
     {
         if (auto it = std::find(not_found.begin(), not_found.end(), std::string(pef_command_hdr.Name));
-                it != not_found.end())
+            it != not_found.end())
         {
             unreferenced_symbols.emplace_back(pef_command_hdr.Name);
         }
@@ -552,7 +559,7 @@ ld_continue_search:
 
     if (!unreferenced_symbols.empty())
     {
-        for (auto& unreferenced_symbol : unreferenced_symbols)
+        for (auto &unreferenced_symbol : unreferenced_symbols)
         {
             kStdOut << "64ld: undefined symbol " << unreferenced_symbol << "\n";
         }
@@ -560,7 +567,7 @@ ld_continue_search:
 
     if (!kStartFound ||
         kDuplicateSymbols &&
-        std::filesystem::exists(kOutput) ||
+            std::filesystem::exists(kOutput) ||
         !unreferenced_symbols.empty())
     {
         if (kVerbose)

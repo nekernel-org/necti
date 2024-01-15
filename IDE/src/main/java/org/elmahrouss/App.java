@@ -12,6 +12,7 @@
 import javafx.application.Application;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
+import javafx.event.EventTarget;
 import javafx.scene.Scene;
 import javafx.scene.input.KeyCombination;
 import javafx.scene.input.MouseEvent;
@@ -24,10 +25,8 @@ import javafx.scene.control.TabPane;
 /**
  * JavaFX App
  */
-public class App extends Application {
-
-    private static int COUNTER = 0; 
-
+public class App extends Application 
+{
     @Override
     public void start(Stage stage) {
         stage.setTitle("MetroWorks - Untitled");
@@ -36,33 +35,35 @@ public class App extends Application {
         var projectPane = new VBox();
         projectPane.setSpacing(10);
 
-        TabPane tabePane = new TabPane();
+        TabPane tabPages = new TabPane();
 
-        Tab tabEditorWelcome = new Tab("Welcome!", new CodeEditor());
+        Tab tabEditorWelcome = new Tab("Welcome!", new CodeEditorView(false));
 
-        CodeEditor ed = ((CodeEditor) tabEditorWelcome.getContent());
+        CodeEditorView editorView = ((CodeEditorView) tabEditorWelcome.getContent());
         
-        Button buttonNewPane = new Button("New project...");
+        Button buttonNewPane = new Button("Add source...");
 
         buttonNewPane.onMouseClickedProperty().set((EventHandler<MouseEvent>) (MouseEvent c) -> {
-            ++COUNTER;
-            Tab tabCode = new Tab("Untitled (" + Integer.toString(COUNTER) + ")", new CodeEditor());
-            tabePane.getTabs().add(tabCode);
+            CodeEditorView view = new CodeEditorView(true);
+            Tab tabCode = new Tab("Untitled", view);
+
+            tabCode.setText("/tmp/metroworks/src/ (" + view.getFilename() + ")");
+            tabPages.getTabs().add(tabCode);
         });
 
         buttonNewPane.setTranslateX(70);
         buttonNewPane.setTranslateY(100);
 
-        ed.getChildren().addAll(buttonNewPane);
+        editorView.getChildren().addAll(buttonNewPane);
 
-        ed.setContents("Welcome to MetroWorks!\nThe embedded code editor.");
-        ed.getChildren().addAll();
+        editorView.setContents("Welcome to MetroWorks!\nThe embedded code editor.");
+        editorView.getChildren().addAll();
 
         tabEditorWelcome.setClosable(false);
 
-        tabePane.getTabs().add(tabEditorWelcome);
+        tabPages.getTabs().add(tabEditorWelcome);
 
-        projectPane.getChildren().addAll(tabePane);
+        projectPane.getChildren().addAll(tabPages);
 
         var scene = new Scene(projectPane, 1280, 720);
 

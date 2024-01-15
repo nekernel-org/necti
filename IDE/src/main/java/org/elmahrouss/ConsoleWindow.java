@@ -9,6 +9,13 @@
 
  package org.elmahrouss;
 
-public class ConsoleWindow {
-    
+ import javafx.collections.ObservableList;
+ import javafx.scene.Node;
+ import javafx.scene.control.Label;
+ import javafx.scene.layout.*;
+
+public class ConsoleWindow extends Pane {
+    ConsoleWindow() {
+        super();
+    }
 }

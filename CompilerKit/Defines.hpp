@@ -130,6 +130,8 @@ namespace CompilerKit
     }
 }
 
+typedef char char_type;
+
 #define kObjectFileExt     ".o"
 #define kAsmFileExt64x0    ".64x"
 

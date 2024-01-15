@@ -76,3 +76,47 @@ std::ofstream &operator<<(std::ofstream &fp, CompilerKit::AERecordHeader &contai
 
     return fp;
 }
+
+std::ifstream &operator>>(std::ifstream& fp, CompilerKit::AEHeader& container)
+{
+	fp.read((char*)&container, sizeof(CompilerKit::AEHeader));
+    return fp;
+}
+
+std::ifstream &operator>>(std::ifstream& fp, CompilerKit::AERecordHeader& container)
+{
+	fp.read((char*)&container, sizeof(CompilerKit::AERecordHeader));
+    return fp;
+}
+
+namespace CompilerKit::Utils
+{
+	class AEReadableProtocol final
+	{
+	public:
+		std::ifstream USED_FP;
+
+	public:
+		explicit AEReadableProtocol() = default;
+		~AEReadableProtocol() = default;
+
+		CXXKIT_COPY_DEFAULT(AEReadableProtocol);
+
+		AERecordHeaderPtr Read(char* raw, std::size_t sz)
+		{
+			if (!raw)
+				return nullptr;
+
+			return this->_Read<AERecordHeader>(raw, sz * sizeof(AERecordHeader));
+		}
+
+	private:
+		template <typename TypeClass>
+		TypeClass* _Read(char* raw, std::size_t sz)
+		{
+            USED_FP.read(raw, std::streamsize(sz));
+			return reinterpret_cast<TypeClass*>(raw);
+		}
+
+	};
+}
