@@ -97,22 +97,6 @@ namespace detail
     }
 }
 
-// provide operator<< for AE
-
-std::ofstream &operator<<(std::ofstream &fp, CompilerKit::AEHeader &container)
-{
-    fp.write((char *)&container, sizeof(CompilerKit::AEHeader));
-
-    return fp;
-}
-
-std::ofstream &operator<<(std::ofstream &fp, CompilerKit::AERecordHeader &container)
-{
-    fp.write((char *)&container, sizeof(CompilerKit::AERecordHeader));
-
-    return fp;
-}
-
 /////////////////////////////////////////////////////////////////////////////////////////
 
 // @brief Main entrypoint.

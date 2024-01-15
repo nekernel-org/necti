@@ -87,6 +87,7 @@
 
 #include <ctime>
 #include <string>
+#include <fstream>
 
 namespace CompilerKit
 {

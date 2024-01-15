@@ -17,6 +17,11 @@
 #define kPefMagic    "PEF"
 #define kPefMagicFat "FEP"
 
+#define kPefExt ".out"
+#define kPefDylibExt ".lib"
+#define kPefObjectExt ".o"
+#define kPefDebugExt ".dbg"
+
 #define kPefMagicLen 3
 
 #define kPefVersion 2
@@ -82,7 +87,14 @@ namespace CompilerKit
     };
 }
 
-#define kPefExt ".out"
-#define kPefDylibExt ".lib"
-#define kPefObjectExt ".o"
-#define kPefDebugExt ".dbg"
+inline std::ofstream& operator<<(std::ofstream& fp, CompilerKit::PEFContainer& container)
+{
+    fp.write((char*)&container, sizeof(CompilerKit::PEFContainer));
+    return fp;
+}
+
+inline std::ofstream& operator<<(std::ofstream& fp, CompilerKit::PEFCommandHeader& container)
+{
+    fp.write((char*)&container, sizeof(CompilerKit::PEFCommandHeader));
+    return fp;
+}

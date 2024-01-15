@@ -47,18 +47,6 @@
 
 enum { kAbiMpUx = 0x5046 /* PF */ };
 
-std::ofstream& operator<<(std::ofstream& fp, CompilerKit::PEFContainer& container)
-{
-    fp.write((char*)&container, sizeof(CompilerKit::PEFContainer));
-    return fp;
-}
-
-std::ofstream& operator<<(std::ofstream& fp, CompilerKit::PEFCommandHeader& container)
-{
-    fp.write((char*)&container, sizeof(CompilerKit::PEFCommandHeader));
-    return fp;
-}
-
 static std::string kOutput = "a" kPefExt;
 static Int32 kAbi = kAbiMpUx;
 static Int32 kSubArch = kPefNoSubCpu;

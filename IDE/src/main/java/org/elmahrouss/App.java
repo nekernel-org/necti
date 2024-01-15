@@ -2,6 +2,7 @@ package org.elmahrouss;
 
 import javafx.application.Application;
 import javafx.scene.Scene;
+import javafx.scene.input.KeyCombination;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
@@ -13,12 +14,13 @@ public class App extends Application {
     @Override
     public void start(Stage stage) {
         stage.setTitle("MetroWorks - Untitled");
+        stage.setResizable(false);
 
         var projectPane = new VBox();
         projectPane.setSpacing(10);
         
-        CodeEditor edCxx = new CodeEditor();
-        projectPane.getChildren().addAll(edCxx);
+        CodeEditor editorClass = new CodeEditor();
+        projectPane.getChildren().addAll(editorClass);
 
         var scene = new Scene(projectPane, 1280, 720);
 
