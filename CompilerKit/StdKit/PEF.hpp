@@ -36,7 +36,7 @@ namespace CompilerKit
         kPefArchIntel86S = 100,
         kPefArchAMD64,
         kPefArchRISCV,
-	    kPefArch64000, /* Advanced RISC architecture. */
+	    kPefArch64000, /* 64x0 RISC architecture. */
         kPefArch32000,
         kPefArchInvalid = 0xFF,
     };

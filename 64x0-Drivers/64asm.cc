@@ -1,7 +1,7 @@
 /*
  *	========================================================
  *
- *	MPCC
+ *	64asm
  * 	Copyright 2024, Mahrouss Logic, all rights reserved.
  *
  * 	========================================================
@@ -11,7 +11,7 @@
 
 // @file 64asm.cxx
 // @author Amlal El Mahrouss
-// @brief MP-UX 64x0 Assembler.
+// @brief 64x0 Assembler.
 
 // REMINDER: when dealing with an undefined symbol use (string size):LinkerFindSymbol:(string)
 // so that ld will look for it.
@@ -111,16 +111,16 @@ MPCC_MODULE(Assembler64x0)
         {
             if (strcmp(argv[i], "-v") == 0)
             {
-                kStdOut << "64asm: The MP-UX 64x0 Assembler.\n64asm: v1.10\n64asm: Copyright (c) 2023 Mahrouss Logic.\n";
+                kStdOut << "64asm: 64x0 Assembler.\n64asm: v1.10\n64asm: Copyright (c) 2023 Mahrouss Logic.\n";
                 return 0;
             }
 
             if (strcmp(argv[i], "-h") == 0)
             {
-                kStdOut << "64asm: The MP-UX 64x0 Assembler.\n64asm: Copyright (c) 2023 Mahrouss Logic.\n";
+                kStdOut << "64asm: 64x0 Assembler.\n64asm: Copyright (c) 2024 Mahrouss Logic.\n";
                 kStdOut << "-v: Print program version.\n";
                 kStdOut << "-verbose: Print verbose output.\n";
-                kStdOut << "-m64000: Compile for the X64000 instruction set.\n";
+                kStdOut << "-m640xx: Compile for a subset of the X64000.\n";
 
                 return 0;
             }

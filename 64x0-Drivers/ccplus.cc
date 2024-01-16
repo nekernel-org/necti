@@ -615,7 +615,7 @@ static void cxx_print_help()
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
-#define kExt ".cpp"
+#define kExt { ".cpp", ".cxx", ".cc", ".c++" }
 
 MPCC_MODULE(CompilerCPlusPlus64x0)
 {
@@ -752,7 +752,7 @@ MPCC_MODULE(CompilerCPlusPlus64x0)
                 continue;
             }
 
-            std::string err = "Unknown command: ";
+            std::string err = "Unknown option: ";
             err += argv[index];
 
             detail::print_error(err, "ccplus");
@@ -764,14 +764,23 @@ MPCC_MODULE(CompilerCPlusPlus64x0)
 
         CompilerKit::StringView srcFile = CompilerKit::StringBuilder::Construct(argv[index]);
 
-        if (strstr(argv[index], kExt) == nullptr)
-        {
-            if (kState.kVerbose)
-            {
-                std::cerr << argv[index] << " is not a valid C source.\n";
-            }
+        std::vector exts = kExt;
 
-            return -1;
+        for (auto& ext : exts)
+        {
+            if (strstr(argv[index], ext) == nullptr)
+            {
+                if (kState.kVerbose)
+                {
+                    std::cerr << argv[index] << " is not a valid C++ source.\n";
+                }
+
+                return -1;
+            }
+            else
+            {
+                break;
+            }
         }
 
         if (kFactory.Compile(srcFile, kMachine) != kOk)

@@ -1,7 +1,7 @@
 /*
  *	========================================================
  *
- *	MPCC
+ *	64ld
  * 	Copyright 2024, Mahrouss Logic, all rights reserved.
  *
  * 	========================================================
@@ -9,7 +9,7 @@
 
 // @file ld.cxx
 // @author Amlal El Mahrouss (amlel)
-// @brief MP-UX linker.
+// @brief 64x0 linker.
 
 // README: Do not look up for anything with .text/.data/.page_zero!
 // It will be loaded when program will start up!
@@ -31,7 +31,7 @@
 //! @brief standard PEF entry.
 #define kPefStart "__start"
 
-#define kToolVersion "64ld v2, (c) Mahrouss Logic"
+#define kToolVersion "64ld v2.1, (c) Mahrouss Logic 2024"
 
 #define StringCompare(DST, SRC) strcmp(DST, SRC)
 
@@ -45,10 +45,7 @@
 #define kPefLinkerNumId 0x5046FF
 #define kPefAbiId "Container:Abi:64x0"
 
-enum
-{
-    kAbiMpUx = 0x5046 /* PF */
-};
+enum { kAbiMpUx = 0x5046 /* PF */ };
 
 static std::string kOutput = "a" kPefExt;
 static Int32 kAbi = kAbiMpUx;
@@ -217,7 +214,7 @@ MPCC_MODULE(Linker64x0)
             if (ae_header.fArch != kArch)
             {
                 if (kVerbose)
-                    kStdOut << "64ld: pef: is a fat binary? : ";
+                    kStdOut << "64ld: info: is a fat binary? : ";
 
                 if (!kFatBinaryEnable)
                 {
