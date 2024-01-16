@@ -27,4 +27,4 @@ masm: mp-ux assembler
 <br>
 Author: Amlal El Mahrouss
 
-##### Copyright Mahrouss Logic, all rights reserved.
+##### Copyright 2024, Mahrouss Logic, all rights reserved.

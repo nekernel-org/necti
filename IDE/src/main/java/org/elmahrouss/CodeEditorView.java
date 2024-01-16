@@ -2,14 +2,12 @@
  *	========================================================
  *
  *	MPCC
- * 	Copyright Mahrouss Logic, all rights reserved.
+ * 	Copyright 2024, Mahrouss Logic, all rights reserved.
  *
  * 	========================================================
  */
 
  package org.elmahrouss;
-
-import java.io.Console;
 
 import javafx.collections.ObservableList;
 import javafx.scene.Node;
@@ -28,6 +26,7 @@ public class CodeEditorView extends Pane
     private ConsoleWindow consoleWindow;
     private HBox codeBox;
     private String fileName = "untitled.c";
+    private CodeEditorController codeEditorController;
 
     CodeEditorView(boolean readOnly) 
     {
@@ -90,4 +89,7 @@ public class CodeEditorView extends Pane
     
         this.codeText.setText(content); 
     }
+
+    CodeEditorController getController() { return codeEditorController; }
+    void setController(CodeEditorController ctrl) { codeEditorController = ctrl; }
 }

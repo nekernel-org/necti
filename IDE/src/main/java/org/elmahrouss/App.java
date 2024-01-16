@@ -2,7 +2,7 @@
  *	========================================================
  *
  *	MPCC
- * 	Copyright Mahrouss Logic, all rights reserved.
+ * 	Copyright 2024, Mahrouss Logic, all rights reserved.
  *
  * 	========================================================
  */
@@ -30,7 +30,7 @@ public class App extends Application
     @Override
     public void start(Stage stage) 
     {
-        stage.setTitle("MetroWorks - Welcome");
+        stage.setTitle("MetroWorks - v1.00");
         stage.setResizable(false);
 
         var projectPane = new VBox();
@@ -40,16 +40,17 @@ public class App extends Application
 
         Tab tabEditorWelcome = new Tab("Welcome!", new CodeEditorView(false));
 
-        CodeEditorView editorView = ((CodeEditorView) tabEditorWelcome.getContent());
+        CodeEditorView editorView = (CodeEditorView)tabEditorWelcome.getContent();
         
-        Button buttonNewPane = new Button("Add source...");
+        Button buttonNewPane = new Button("Add...");
 
         buttonNewPane.onMouseClickedProperty().set((EventHandler<MouseEvent>) (MouseEvent c) -> {
-            CodeEditorView view = new CodeEditorView(true);
-            Tab tabCode = new Tab("Untitled", view);
+            CodeEditorController view = new CodeEditorController(true);
+            Tab tabCode = new Tab("Untitled", view.getView());
 
-            tabCode.setText(view.getFilename());
-            stage.setTitle(view.getFilename());
+            view.getView().setController(view);
+
+            tabCode.setText(view.getView().getFilename());
 
             tabPages.getTabs().add(tabCode);
         });
