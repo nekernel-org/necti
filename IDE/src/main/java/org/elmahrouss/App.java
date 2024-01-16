@@ -29,7 +29,7 @@ public class App extends Application
 {
     @Override
     public void start(Stage stage) {
-        stage.setTitle("MetroWorks - Untitled");
+        stage.setTitle("MetroWorks - Welcome");
         stage.setResizable(false);
 
         var projectPane = new VBox();
@@ -47,7 +47,9 @@ public class App extends Application
             CodeEditorView view = new CodeEditorView(true);
             Tab tabCode = new Tab("Untitled", view);
 
-            tabCode.setText("/tmp/metroworks/src/ (" + view.getFilename() + ")");
+            tabCode.setText(view.getFilename());
+            stage.setTitle(view.getFilename());
+
             tabPages.getTabs().add(tabCode);
         });
 
