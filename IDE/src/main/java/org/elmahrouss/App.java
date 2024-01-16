@@ -28,7 +28,8 @@ import javafx.scene.control.TabPane;
 public class App extends Application 
 {
     @Override
-    public void start(Stage stage) {
+    public void start(Stage stage) 
+    {
         stage.setTitle("MetroWorks - Welcome");
         stage.setResizable(false);
 

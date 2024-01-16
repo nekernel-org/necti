@@ -20,13 +20,14 @@ import javafx.scene.paint.Color;
 /*
  * Editor view class
  */
-public class CodeEditorView extends Pane {
+public class CodeEditorView extends Pane 
+{
     private Pane linePane;
     private Label codeText;
     private boolean readOnly;
     private ConsoleWindow consoleWindow;
     private HBox codeBox;
-    private String filename = "untitled.c";
+    private String fileName = "untitled.c";
 
     CodeEditorView(boolean readOnly) 
     {
@@ -45,11 +46,11 @@ public class CodeEditorView extends Pane {
 
         linePane = new Pane();
 
-        linePane.setStyle("-fx-background-color: #" + CodeEditorTheme.lineTheme);
+        linePane.setStyle("-fx-background-color: #" + CodeEditorTheme.LINE_THEME);
         linePane.setMinSize(52, 720);
         linePane.setMaxSize(52, 1080);
 
-        this.setStyle("-fx-background-color: #" + CodeEditorTheme.backgroundTheme);
+        this.setStyle("-fx-background-color: #" + CodeEditorTheme.BACKGROUND_THEME);
 
         this.setMinSize(1280, 720);
         this.setMaxSize(1920, 1080);
@@ -70,14 +71,14 @@ public class CodeEditorView extends Pane {
 
     public void setReadOnly(Boolean readOnly) { this.readOnly = readOnly; }
 
-    public String getFilename() { return filename; }
+    public String getFilename() { return fileName; }
     
-    public void setFilename(String filename) 
+    public void setFilename(String fileName) 
     { 
         if (readOnly) 
             return;
     
-        this.filename = filename; 
+        this.fileName = fileName; 
     }
 
     public String getContents() { return codeText.getText(); }
