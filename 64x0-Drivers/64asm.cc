@@ -42,8 +42,8 @@
 #define kStdOut (std::cout << kWhite)
 
 static char kOutputArch = CompilerKit::kPefArch64000;
+static Boolean kOutputAsBinary = false;
 
-//! base relocation address for every mp-ux app.
 static UInt32 kErrorLimit = 10;
 static UInt32 kAcceptableErrors = 0;
 
@@ -111,11 +111,10 @@ MPCC_MODULE(Assembler64x0)
         {
             if (strcmp(argv[i], "-v") == 0)
             {
-                kStdOut << "64asm: 64x0 Assembler.\n64asm: v1.10\n64asm: Copyright (c) 2023 Mahrouss Logic.\n";
+                kStdOut << "64asm: 64x0 Assembler.\n64asm: v1.10\n64asm: Copyright (c) 2024 Mahrouss Logic.\n";
                 return 0;
             }
-
-            if (strcmp(argv[i], "-h") == 0)
+            else if (strcmp(argv[i], "-h") == 0)
             {
                 kStdOut << "64asm: 64x0 Assembler.\n64asm: Copyright (c) 2024 Mahrouss Logic.\n";
                 kStdOut << "-v: Print program version.\n";
@@ -123,6 +122,11 @@ MPCC_MODULE(Assembler64x0)
                 kStdOut << "-m640xx: Compile for a subset of the X64000.\n";
 
                 return 0;
+            }
+            else if (strcmp(argv[i], "-fbinary") == 0)
+            {
+                kOutputAsBinary = true;
+                continue;
             }
             else if (strcmp(argv[i], "-verbose") == 0)
             {
@@ -205,72 +209,84 @@ MPCC_MODULE(Assembler64x0)
         }
 
         if (kVerbose)
+        {
             kStdOut << "64asm: writing to file...\n";
-
-        // this is the final step, write everything to the file.
-
-        auto pos = file_ptr_out.tellp();
-
-        hdr.fCount = kRecords.size() + kUndefinedSymbols.size();
-
-        file_ptr_out << hdr;
-
-        if (kRecords.empty())
-        {
-            std::filesystem::remove(object_output);
-            return -1;
         }
 
-        kRecords[kRecords.size() - 1].fSize = kBytes.size();
-
-        std::size_t record_count = 0UL;
-
-        for (auto &rec : kRecords)
+        if (!kOutputAsBinary)
         {
-            if (kVerbose)
-                kStdOut << "64asm: Wrote record " << rec.fName << " to file...\n";
+            // this is the final step, write everything to the file.
 
-            rec.fFlags |= CompilerKit::kKindRelocationAtRuntime;
-            rec.fOffset = record_count;
+            auto pos = file_ptr_out.tellp();
+
+            hdr.fCount = kRecords.size() + kUndefinedSymbols.size();
+
+            file_ptr_out << hdr;
+
+            if (kRecords.empty())
+            {
+                std::filesystem::remove(object_output);
+                return -1;
+            }
+
+            kRecords[kRecords.size() - 1].fSize = kBytes.size();
+
+            std::size_t record_count = 0UL;
+
+            for (auto &rec : kRecords)
+            {
+                if (kVerbose)
+                    kStdOut << "64asm: Wrote record " << rec.fName << " to file...\n";
+
+                rec.fFlags |= CompilerKit::kKindRelocationAtRuntime;
+                rec.fOffset = record_count;
+                ++record_count;
+
+                file_ptr_out << rec;
+            }
+
+            // increment once again, so that we won't lie about the kUndefinedSymbols.
             ++record_count;
 
-            file_ptr_out << rec;
+            for (auto &sym : kUndefinedSymbols)
+            {
+                CompilerKit::AERecordHeader _record_hdr{0};
+
+                if (kVerbose)
+                    kStdOut << "64asm: Wrote symbol " << sym << " to file...\n";
+
+                _record_hdr.fKind = kAEInvalidOpcode;
+                _record_hdr.fSize = sym.size();
+                _record_hdr.fOffset = record_count;
+
+                ++record_count;
+
+                memset(_record_hdr.fPad, kAEInvalidOpcode, kAEPad);
+                memcpy(_record_hdr.fName, sym.c_str(), sym.size());
+
+                file_ptr_out << _record_hdr;
+
+                ++kCounter;
+            }
+
+            auto pos_end = file_ptr_out.tellp();
+
+            file_ptr_out.seekp(pos);
+
+            hdr.fStartCode = pos_end;
+            hdr.fCodeSize = kBytes.size();
+
+            file_ptr_out << hdr;
+
+            file_ptr_out.seekp(pos_end);
         }
-
-        // increment once again, so that we won't lie about the kUndefinedSymbols.
-        ++record_count;
-
-        for (auto &sym : kUndefinedSymbols)
+        else
         {
-            CompilerKit::AERecordHeader _record_hdr{0};
-
             if (kVerbose)
-                kStdOut << "64asm: Wrote symbol " << sym << " to file...\n";
-
-            _record_hdr.fKind = kAEInvalidOpcode;
-            _record_hdr.fSize = sym.size();
-            _record_hdr.fOffset = record_count;
-
-            ++record_count;
-
-            memset(_record_hdr.fPad, kAEInvalidOpcode, kAEPad);
-            memcpy(_record_hdr.fName, sym.c_str(), sym.size());
-
-            file_ptr_out << _record_hdr;
-
-            ++kCounter;
+            {
+                kStdOut << "64asm: Skip AE write...\n";
+            }
         }
-
-        auto pos_end = file_ptr_out.tellp();
-
-        file_ptr_out.seekp(pos);
-
-        hdr.fStartCode = pos_end;
-        hdr.fCodeSize = kBytes.size();
-
-        file_ptr_out << hdr;
-
-        file_ptr_out.seekp(pos_end);
 
         // byte from byte, we write this.
         for (auto &byte : kBytes)
@@ -311,6 +327,12 @@ static bool asm_read_attributes(std::string &line)
     // that we need this symbol.
     if (ParserKit::find_word(line, "import "))
     {
+        if (kOutputAsBinary)
+        {
+            detail::print_error("invalid import directive in flat binary mode.", "64asm");
+            throw std::runtime_error("invalid_import_bin");
+        }
+
         auto name = line.substr(line.find("import ") + strlen("import "));
 
         std::string result = std::to_string(name.size());
@@ -371,6 +393,12 @@ static bool asm_read_attributes(std::string &line)
     // it currently supports .text, .data., page_zero
     else if (ParserKit::find_word(line, "export "))
     {
+        if (kOutputAsBinary)
+        {
+            detail::print_error("invalid export directive in flat binary mode.", "64asm");
+            throw std::runtime_error("invalid_export_bin");
+        }
+
         auto name = line.substr(line.find("export ") + strlen("export "));
 
         std::string name_copy = name;
@@ -463,7 +491,7 @@ namespace detail::algorithm
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
-std::string CompilerKit::PlatformAssembler64x0::CheckLine(std::string& line, const std::string &file)
+std::string CompilerKit::PlatformAssembler64x0::CheckLine(std::string &line, const std::string &file)
 {
     std::string err_str;
 
@@ -613,7 +641,7 @@ bool CompilerKit::PlatformAssembler64x0::WriteNumber(const std::size_t &pos, std
         }
 
         CompilerKit::NumberCast num(strtoq(jump_label.substr(pos + 2).c_str(),
-                                       nullptr, 16));
+                                           nullptr, 16));
 
         for (char &i : num.number)
         {
@@ -641,7 +669,7 @@ bool CompilerKit::PlatformAssembler64x0::WriteNumber(const std::size_t &pos, std
         }
 
         CompilerKit::NumberCast num(strtoq(jump_label.substr(pos + 2).c_str(),
-                                       nullptr, 2));
+                                           nullptr, 2));
 
         if (kVerbose)
         {
@@ -669,7 +697,7 @@ bool CompilerKit::PlatformAssembler64x0::WriteNumber(const std::size_t &pos, std
         }
 
         CompilerKit::NumberCast num(strtoq(jump_label.substr(pos + 2).c_str(),
-                                       nullptr, 7));
+                                           nullptr, 7));
 
         if (kVerbose)
         {
@@ -701,7 +729,7 @@ bool CompilerKit::PlatformAssembler64x0::WriteNumber(const std::size_t &pos, std
     }
 
     CompilerKit::NumberCast num(strtoq(jump_label.substr(pos).c_str(),
-                                   nullptr, 10));
+                                       nullptr, 10));
 
     for (char &i : num.number)
     {
@@ -935,7 +963,7 @@ bool CompilerKit::PlatformAssembler64x0::WriteLine(std::string &line, const std:
                 name == "lda" ||
                 name == "sta")
             {
-asm_write_label:
+            asm_write_label:
                 if (cpy_jump_label.find('\n') != std::string::npos)
                     cpy_jump_label.erase(cpy_jump_label.find('\n'), 1);
 
@@ -952,7 +980,7 @@ asm_write_label:
                     }
 
                     cpy_jump_label.erase(cpy_jump_label.find("import"), strlen("import"));
-                }                 
+                }
 
                 if (name == "jb" ||
                     name == "lda" ||
@@ -969,17 +997,40 @@ asm_write_label:
                                         << " to address: "
                                         << label.second
                                         << std::endl;
-                                
                             }
 
                             CompilerKit::NumberCast num(label.second);
 
-                            for (auto& num : num.number)
+                            for (auto &num : num.number)
                             {
                                 kBytes.push_back(num);
                             }
-                            
+
                             goto asm_end_label_cpy;
+                        }
+                    }
+
+                    if (cpy_jump_label[0] == '0')
+                    {
+                        switch (cpy_jump_label[1])
+                        {
+                        case 'x':
+                        case 'o':
+                        case 'b':
+                            if (this->WriteNumber(0, cpy_jump_label))
+                                goto asm_end_label_cpy;
+
+                            break;
+                        default:
+                            break;
+                        }
+
+                        if (isdigit(cpy_jump_label[0]))
+                        {
+                            if (this->WriteNumber(0, cpy_jump_label))
+                                goto asm_end_label_cpy;
+
+                            break;
                         }
                     }
 
@@ -999,7 +1050,7 @@ asm_write_label:
 
                 bool ignore_back_slash = false;
 
-                for (auto& reloc_chr : mld_reloc_str)
+                for (auto &reloc_chr : mld_reloc_str)
                 {
                     if (reloc_chr == '\\')
                     {
@@ -1020,7 +1071,7 @@ asm_write_label:
                 goto asm_end_label_cpy;
             }
 
-asm_end_label_cpy:
+        asm_end_label_cpy:
             ++kOrigin;
 
             break;
