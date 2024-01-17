@@ -27,7 +27,7 @@
 #define kPefVersion 2
 #define kPefNameLen 64
 
-#define kPefBaseOrigin 0
+#define kPefBaseOrigin 0x1000
 
 namespace CompilerKit
 {

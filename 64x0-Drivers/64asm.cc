@@ -576,10 +576,10 @@ std::string CompilerKit::PlatformAssembler64x0::CheckLine(std::string &line, con
     }
 
     // these do take an argument.
-    std::vector<std::string> operands_inst = {"jb", "stw", "ldw", "lda", "sta"};
+    std::vector<std::string> operands_inst = { "stw", "ldw", "lda", "sta" };
 
     // these don't.
-    std::vector<std::string> filter_inst = {"jlr", "jrl", "int"};
+    std::vector<std::string> filter_inst = { "jlr", "jrl", "int" };
 
     for (auto &opcode64x0 : kOpcodes64x0)
     {
@@ -616,6 +616,8 @@ std::string CompilerKit::PlatformAssembler64x0::CheckLine(std::string &line, con
             return err_str;
         }
     }
+
+    err_str += "unrecognized instruction and operands: " + line;
 
     return err_str;
 }
@@ -845,8 +847,7 @@ bool CompilerKit::PlatformAssembler64x0::WriteLine(std::string &line, const std:
                 if (found_some < 1 &&
                     name != "ldw" &&
                     name != "lda" &&
-                    name != "stw" &&
-                    name != "jb")
+                    name != "stw")
                 {
                     detail::print_error("invalid combination of opcode and registers.\nline: " + line, file);
                     throw std::runtime_error("invalid_comb_op_reg");
@@ -876,8 +877,7 @@ bool CompilerKit::PlatformAssembler64x0::WriteLine(std::string &line, const std:
             }
 
             // try to fetch a number from the name
-            if (name == "jb" ||
-                name == "stw" ||
+            if (name == "stw" ||
                 name == "ldw" ||
                 name == "lda" ||
                 name == "sta")
@@ -944,8 +944,6 @@ bool CompilerKit::PlatformAssembler64x0::WriteLine(std::string &line, const std:
                         detail::print_error("invalid combination of opcode and operands.\nhere ->" + line, file);
                         throw std::runtime_error("invalid_comb_op_ops");
                     }
-
-                    goto asm_write_label;
                 }
                 else
                 {
@@ -956,11 +954,12 @@ bool CompilerKit::PlatformAssembler64x0::WriteLine(std::string &line, const std:
                         throw std::runtime_error("invalid_sta_usage");
                     }
                 }
+
+                goto asm_write_label;
             }
 
             // This is the case where we jump to a label, it is also used as a goto.
-            if (name == "jb" ||
-                name == "lda" ||
+            if (name == "lda" ||
                 name == "sta")
             {
             asm_write_label:
@@ -969,6 +968,8 @@ bool CompilerKit::PlatformAssembler64x0::WriteLine(std::string &line, const std:
 
                 if (cpy_jump_label.find("import") != std::string::npos)
                 {
+                    cpy_jump_label.erase(cpy_jump_label.find("import"), strlen("import"));
+
                     if (name == "sta")
                     {
                         detail::print_error("import is not allowed on a sta operation.", file);
@@ -978,12 +979,9 @@ bool CompilerKit::PlatformAssembler64x0::WriteLine(std::string &line, const std:
                     {
                         goto asm_end_label_cpy;
                     }
-
-                    cpy_jump_label.erase(cpy_jump_label.find("import"), strlen("import"));
                 }
 
-                if (name == "jb" ||
-                    name == "lda" ||
+                if (name == "lda" ||
                     name == "sta")
                 {
                     for (auto &label : kOriginLabel)
@@ -1033,9 +1031,6 @@ bool CompilerKit::PlatformAssembler64x0::WriteLine(std::string &line, const std:
                             break;
                         }
                     }
-
-                    detail::print_error(cpy_jump_label + " not found on jump label, please add one.", file);
-                    throw std::runtime_error("import_jmp_lbl");
                 }
 
                 if (cpy_jump_label.size() < 1)
