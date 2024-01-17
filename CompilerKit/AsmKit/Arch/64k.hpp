@@ -25,12 +25,15 @@
 #define kAsmJump 0x04
 #define kAsmNoArgs 0x05
 
+typedef char e64k_character_t;
+typedef uint8_t e64k_num_t;
+
 struct CpuCode64x0
 {
-    const char fName[16];
-    char fOpcode;
-    char fFunct3;
-    char fFunct7;
+    const e64k_character_t fName[16];
+    e64k_num_t fOpcode;
+    e64k_num_t fFunct3;
+    e64k_num_t fFunct7;
 };
 
 inline std::vector<CpuCode64x0> kOpcodes64x0 = {

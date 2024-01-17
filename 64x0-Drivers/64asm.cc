@@ -54,7 +54,7 @@ static std::vector<std::pair<std::string, std::uintptr_t>> kOriginLabel;
 
 static bool kVerbose = false;
 
-static std::vector<char> kBytes;
+static std::vector<e64k_num_t> kBytes;
 
 static CompilerKit::AERecordHeader kCurrentRecord{.fName = "", .fKind = CompilerKit::kPefCode, .fSize = 0, .fOffset = 0};
 
