@@ -139,7 +139,10 @@ MPCC_MODULE(Assembler64x0)
         }
 
         if (!std::filesystem::exists(argv[i]))
-            continue;
+        {
+            kStdOut << "64asm: can't open: " << argv[i] << std::endl;
+            goto asm_fail_exit;
+        }
 
         std::string object_output(argv[i]);
 

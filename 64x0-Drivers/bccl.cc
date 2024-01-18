@@ -582,7 +582,10 @@ bool CompilerBackendBccl::Compile(const std::string &text, const char *file)
 
             for (char substr_first_index : _text)
             {
-                args_buffer += substr_first_index;
+                if (substr_first_index != ',')
+                    args_buffer += substr_first_index;
+                else
+                    args_buffer += '$';
 
                 if (substr_first_index == ';')
                 {
@@ -594,18 +597,21 @@ bool CompilerBackendBccl::Compile(const std::string &text, const char *file)
                     if (!args_buffer.empty())
                         args += "\tldw r6, ";
 
-                    std::size_t index = 0UL;
+                    std::string register_type;
+                    std::size_t index = 7UL;
 
-                    while (ParserKit::find_word(args_buffer, ","))
+                    while (args_buffer.find("$") != std::string::npos)
                     {
-                        std::string register_type = kRegisterPrefix;
+                        register_type = kRegisterPrefix;
                         register_type += std::to_string(index);
 
-                        args_buffer.replace(args_buffer.find(','), 1, "\n\tldw " + register_type + ",");
+                        ++index;
+
+                        args_buffer.replace(args_buffer.find('$'), 1, "\n\tldw " + register_type + ",");
                     }
 
                     args += args_buffer;
-                    args += "\n\tjb import ";
+                    args += "\n\tlda r19, ";
                 }
             }
 
@@ -632,8 +638,8 @@ bool CompilerBackendBccl::Compile(const std::string &text, const char *file)
             if (kInBraces)
             {
                 syntax_tree.fUserValue = args;
-
                 syntax_tree.fUserValue += substr;
+                syntax_tree.fUserValue += "\n\tjrl\n";
 
                 kState.fSyntaxTree->fLeafList.push_back(syntax_tree);
 
@@ -1400,10 +1406,10 @@ public:
                         {
                             if (leaf.fUserValue.find("ldw r6") != std::string::npos)
                             {
-                                std::string::difference_type n = std::count(leaf.fUserValue.begin(),
+                                std::string::difference_type countComma = std::count(leaf.fUserValue.begin(),
                                                                             leaf.fUserValue.end(), ',');
 
-                                if (n == 1)
+                                if (countComma == 1)
                                 {
                                     leaf.fUserValue.replace(leaf.fUserValue.find("ldw"), strlen("ldw"), "mv");
                                 }
@@ -1416,7 +1422,10 @@ public:
                         }
                     }
 
-                    if (cnt > 1 && keyword != "mv" && keyword != "add" && keyword != "dec")
+                    if (cnt > 1 &&
+                        keyword != "mv" &&
+                        keyword != "add" &&
+                        keyword != "dec")
                     {
                         leaf.fUserValue.replace(leaf.fUserValue.find(keyword), keyword.size(), "mv");
                     }
