@@ -5,6 +5,7 @@ bin/bpp
 bin/cc
 bin/masm
 bin/64ld
+bin/32ld
 bin/64asm
 bin/mkcdfs
 bin/ccplus

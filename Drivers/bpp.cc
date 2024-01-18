@@ -16,8 +16,8 @@
 #define kMacroPrefix '%'
 
 // @author Amlal El Mahrouss (amlel)
-// @file cpp.cc
-// @brief MASM preprocessor.
+// @file bpp.cc
+// @brief BCCL preprocessor.
 
 typedef Int32(*cpp_parser_fn_t)(std::string& line, std::ifstream& hdr_file, std::ofstream& pp_out);
 
@@ -383,7 +383,7 @@ void cpp_parse_file(std::ifstream& hdr_file, std::ofstream& pp_out)
 
                         if (sym_vec.size() != macro.fArgs.size())
                         {
-                            throw std::runtime_error("cpp: arguments count mismatch, except " + std::to_string(sym_vec.size()) + ", got: " + std::to_string(macro.fArgs.size()));
+                            throw std::runtime_error("bpp: arguments count mismatch, except " + std::to_string(sym_vec.size()) + ", got: " + std::to_string(macro.fArgs.size()));
                             return;
                         }
 
@@ -948,7 +948,7 @@ kIncludeFile:
 
 					if (!open)
 					{
-						throw std::runtime_error("cpp: no such include file: " + path);
+						throw std::runtime_error("bpp: no such include file: " + path);
 					}
 				}
 				else
@@ -956,14 +956,14 @@ kIncludeFile:
 					std::ifstream header(kWoringDir + path);
 
 					if (!header.is_open())
-						throw std::runtime_error("cpp: no such include file: " + path);
+						throw std::runtime_error("bpp: no such include file: " + path);
 
 					cpp_parse_file(header, pp_out);
 				}
 			}
 			else
 			{
-				std::cerr << ("cpp: unknown pre-processor directive, " + hdr_line) << "\n";
+				std::cerr << ("bpp: unknown pre-processor directive, " + hdr_line) << "\n";
 				continue;
 			}
 		}
@@ -1026,7 +1026,7 @@ int main(int argc, char** argv)
 				if (strcmp(argv[index], "-h") == 0 ||
 					strcmp(argv[index], "--help") == 0)
 				{
-					printf("%s\n", "cpp v1.11, (c) Mahrouss Logic");
+					printf("%s\n", "bpp v1.11, (c) Mahrouss Logic");
 					printf("%s\n", "--working-dir: set directory to working path.");
 					printf("%s\n", "--include-dir: add directory to include path.");
 					printf("%s\n", "--define: define macro.");

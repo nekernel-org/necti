@@ -61,7 +61,7 @@ static CompilerKit::AERecordHeader kCurrentRecord{.fName = "", .fKind = Compiler
 static std::vector<CompilerKit::AERecordHeader> kRecords;
 static std::vector<std::string> kUndefinedSymbols;
 
-static const std::string kUndefinedSymbol = ":64ld:";
+static const std::string kUndefinedSymbol = ":ld:";
 static const std::string kRelocSymbol = ":mld:";
 
 // \brief forward decl.

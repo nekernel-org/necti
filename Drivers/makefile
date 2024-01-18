@@ -9,9 +9,10 @@
 
 LINK_CC=g++ -std=c++20
 LINK_INC=-I../ -I../CompilerKit
-LINK_SRC=64ld.cc
+LINK_SRC=ld.cc
 LINK_OUTPUT=bin/ld
 LINK_ALT_OUTPUT=bin/64ld
+LINK_ALT_2_OUTPUT=bin/32ld
 
 PP_SRC=bpp.cc
 PP_OUTPUT=bin/bpp
@@ -43,6 +44,7 @@ cxx: ld
 ld:
 	$(LINK_CC) $(LINK_INC) $(LINK_SRC) -o $(LINK_OUTPUT)
 	cp $(LINK_OUTPUT) $(LINK_ALT_OUTPUT)
+	cp $(LINK_OUTPUT) $(LINK_ALT_2_OUTPUT)
 
 .PHONY: help
 help:
