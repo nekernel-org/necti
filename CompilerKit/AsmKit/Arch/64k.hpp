@@ -23,7 +23,7 @@
 #define kAsmRegToReg 0x02
 #define kAsmSyscall 0x03
 #define kAsmJump 0x04
-#define kAsmNoArgs 0x05
+#define kAsmNoArgs 0x00
 
 typedef char e64k_character_t;
 typedef uint8_t e64k_num_t;

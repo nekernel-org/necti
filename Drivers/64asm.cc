@@ -40,6 +40,7 @@
 #define kYellow "\e[0;33m"
 
 #define kStdOut (std::cout << kWhite)
+#define kStdErr (std::cout << kRed)
 
 static char kOutputArch = CompilerKit::kPefArch64000;
 static Boolean kOutputAsBinary = false;
@@ -74,8 +75,8 @@ namespace detail
         if (reason[0] == '\n')
             reason.erase(0, 1);
 
-        kStdOut << kRed << "[ 64asm ] " << kWhite << ((file == "64asm") ? "internal assembler error " : ("in file, " + file)) << kBlank << std::endl;
-        kStdOut << kRed << "[ 64asm ] " << kWhite << reason << kBlank << std::endl;
+        kStdErr << kRed << "[ 64asm ] " << kWhite << ((file == "64asm") ? "internal assembler error " : ("in file, " + file)) << kBlank << std::endl;
+        kStdErr << kRed << "[ 64asm ] " << kWhite << reason << kBlank << std::endl;
 
         if (kAcceptableErrors > kErrorLimit)
             std::exit(3);
@@ -211,13 +212,14 @@ MPCC_MODULE(Assembler64x0)
             }
         }
 
-        if (kVerbose)
-        {
-            kStdOut << "64asm: writing to file...\n";
-        }
 
         if (!kOutputAsBinary)
         {
+            if (kVerbose)
+            {
+                kStdOut << "64asm: Writing object file...\n";
+            }
+
             // this is the final step, write everything to the file.
 
             auto pos = file_ptr_out.tellp();
@@ -228,6 +230,8 @@ MPCC_MODULE(Assembler64x0)
 
             if (kRecords.empty())
             {
+                kStdErr << "64asm: At least one record is needed to write an object file.\n64asm: Make one using `export .text foo_bar`.\n";
+
                 std::filesystem::remove(object_output);
                 return -1;
             }
@@ -287,7 +291,7 @@ MPCC_MODULE(Assembler64x0)
         {
             if (kVerbose)
             {
-                kStdOut << "64asm: Skip AE write...\n";
+                kStdOut << "64asm: Skip object write...\n";
             }
         }
 
