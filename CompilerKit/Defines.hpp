@@ -116,7 +116,8 @@ namespace CompilerKit
         Int32 cnt = 0;
         Int32 ret = base;
 
-        while (limit != 1) {
+        while (limit != 1) 
+        {
             ret = ret % 10;
             str[cnt] = ret;
 
