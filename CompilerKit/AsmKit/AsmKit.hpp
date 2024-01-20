@@ -67,6 +67,8 @@ namespace CompilerKit
 		explicit PlatformAssembler() = default;
 		~PlatformAssembler() = default;
 
+		CXXKIT_COPY_DEFAULT(PlatformAssembler);
+
 		virtual std::string CheckLine(std::string &line, const std::string &file) = 0;
 		virtual bool WriteLine(std::string &line, const std::string &file) = 0;
 		virtual bool WriteNumber(const std::size_t &pos, std::string &from_what) = 0;
@@ -81,6 +83,8 @@ namespace CompilerKit
 		explicit PlatformAssembler64x0() = default;
 		~PlatformAssembler64x0() = default;
 
+		CXXKIT_COPY_DEFAULT(PlatformAssembler64x0);
+
 		virtual std::string CheckLine(std::string &line, const std::string &file) override;
 		virtual bool WriteLine(std::string &line, const std::string &file) override;
 		virtual bool WriteNumber(const std::size_t& pos, std::string& from_what) override;
@@ -88,6 +92,24 @@ namespace CompilerKit
 	};
 
 #endif // __ASM_NEED_64x0__
+
+#ifdef __ASM_NEED_32x0__
+
+	class PlatformAssembler32x0 final : public PlatformAssembler
+	{
+	public:
+		explicit PlatformAssembler32x0() = default;
+		~PlatformAssembler32x0() = default;
+
+		CXXKIT_COPY_DEFAULT(PlatformAssembler32x0);
+
+		virtual std::string CheckLine(std::string &line, const std::string &file) override;
+		virtual bool WriteLine(std::string &line, const std::string &file) override;
+		virtual bool WriteNumber(const std::size_t& pos, std::string& from_what) override;
+
+	};
+
+#endif // __ASM_NEED_32x0__
 
 	union NumberCast final
     {
@@ -104,3 +126,5 @@ namespace CompilerKit
 #else
 #	define MPCC_MODULE(name) int main(int argc, char** argv)
 #endif /* ifdef __MODULE_NEED__ */
+
+

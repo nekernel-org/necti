@@ -100,17 +100,17 @@ namespace detail
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
-// @brief Main entrypoint.
+// @brief Our assembler entrypoint, the program/module starts here.
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
-MPCC_MODULE(Assembler64x0)
+MPCC_MODULE(MPUXAssembler64000)
 {
     for (size_t i = 1; i < argc; ++i)
     {
         if (argv[i][0] == '-')
         {
-            if (strcmp(argv[i], "-v") == 0)
+            if (strcmp(argv[i], "--version") == 0)
             {
                 kStdOut << "64asm: 64x0 Assembler.\n64asm: v1.10\n64asm: Copyright (c) 2024 Mahrouss Logic.\n";
                 return 0;
@@ -118,9 +118,9 @@ MPCC_MODULE(Assembler64x0)
             else if (strcmp(argv[i], "-h") == 0)
             {
                 kStdOut << "64asm: 64x0 Assembler.\n64asm: Copyright (c) 2024 Mahrouss Logic.\n";
-                kStdOut << "-v: Print program version.\n";
-                kStdOut << "-verbose: Print verbose output.\n";
-                kStdOut << "-m640xx: Compile for a subset of the X64000.\n";
+                kStdOut << "--version: Print program version.\n";
+                kStdOut << "--verbose: Print verbose output.\n";
+                kStdOut << "--64xxx: Compile for a subset of the X64000.\n";
 
                 return 0;
             }
@@ -129,7 +129,7 @@ MPCC_MODULE(Assembler64x0)
                 kOutputAsBinary = true;
                 continue;
             }
-            else if (strcmp(argv[i], "-verbose") == 0)
+            else if (strcmp(argv[i], "--verbose") == 0)
             {
                 kVerbose = true;
                 continue;
@@ -358,7 +358,6 @@ static bool asm_read_attributes(std::string &line)
         if (name.find(".text") != std::string::npos)
         {
             // data is treated as code.
-
             kCurrentRecord.fKind = CompilerKit::kPefCode;
         }
         else if (name.find(".data") != std::string::npos)
@@ -416,8 +415,6 @@ static bool asm_read_attributes(std::string &line)
                 j = '$';
         }
 
-        if (name.find(',') != std::string::npos)
-            name.erase(name.find(','));
 
         if (name.find(".text") != std::string::npos)
         {

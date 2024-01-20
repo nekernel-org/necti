@@ -980,7 +980,7 @@ kIncludeFile:
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
-int main(int argc, char** argv)
+MPCC_MODULE(MPUXPreprocessor)
 {
 	try
 	{
@@ -1016,8 +1016,7 @@ int main(int argc, char** argv)
 
 			if (argv[index][0] == '-')
 			{
-				if (strcmp(argv[index], "-v") == 0 ||
-					strcmp(argv[index], "--version") == 0)
+				if (strcmp(argv[index], "--version") == 0)
 				{
 					printf("%s\n", "bpp v1.11, (c) Mahrouss Logic");
 					return 0;
@@ -1030,6 +1029,7 @@ int main(int argc, char** argv)
 					printf("%s\n", "--working-dir: set directory to working path.");
 					printf("%s\n", "--include-dir: add directory to include path.");
 					printf("%s\n", "--define: define macro.");
+					printf("%s\n", "--version: print the version.");
 
 					return 0;
 				}

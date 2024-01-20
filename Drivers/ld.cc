@@ -16,6 +16,7 @@
 
 #include <CompilerKit/StdKit/ErrorID.hpp>
 
+//! Assembler Kit
 #include <CompilerKit/AsmKit/AsmKit.hpp>
 
 //! Portable Executable Format
@@ -31,7 +32,7 @@
 //! @brief standard PEF entry.
 #define kPefStart "__start"
 
-#define kToolVersion "ld v2.1, (c) Mahrouss Logic 2024"
+#define kToolVersion "ld v2.2, (c) Mahrouss Logic 2024"
 
 #define StringCompare(DST, SRC) strcmp(DST, SRC)
 
@@ -68,51 +69,54 @@ MPCC_MODULE(MPUXLinker)
 {
     bool is_executable = true;
 
+    /**
+     * @brief parse flags and such.
+     * 
+     */
     for (size_t i = 1; i < argc; ++i)
     {
         if (StringCompare(argv[i], "-h") == 0)
         {
             kStdOut << kToolVersion << "\n";
-            kStdOut << "-v: Print program version.\n";
-            kStdOut << "-verbose: Print program backtrace (verbose mode).\n";
-            kStdOut << "-shared: Output as a shared library.\n";
-            kStdOut << "-fat-binary: Output as FAT PEF.\n";
-            kStdOut << "-m32x0: Output as 32x0 PEF.\n";
-            kStdOut << "-m64x0: Output as 64x0 PEF.\n";
-            kStdOut << "-o: Select output filename.\n";
+            kStdOut << "--version: Print program version.\n";
+            kStdOut << "--verbose: Print program backtrace (verbose mode).\n";
+            kStdOut << "--shared: Output as a shared library.\n";
+            kStdOut << "--fat-bin: Output as FAT PEF.\n";
+            kStdOut << "--32k: Output as 32x0 PEF.\n";
+            kStdOut << "--64k: Output as 64x0 PEF.\n";
+            kStdOut << "--output-file: Select output filename.\n";
 
             // bye
             return 0;
         }
-        else if (StringCompare(argv[i], "-v") == 0 ||
-                 StringCompare(argv[i], "--version") == 0)
+        else if (StringCompare(argv[i], "--version") == 0)
         {
             kStdOut << kToolVersion << std::endl;
             // bye :D
             return 0;
         }
-        else if (StringCompare(argv[i], "-fat-binary") == 0)
+        else if (StringCompare(argv[i], "--fat-bin") == 0)
         {
             kFatBinaryEnable = true;
 
             continue;
         }
-        else if (StringCompare(argv[i], "-m64x0") == 0)
+        else if (StringCompare(argv[i], "--64k") == 0)
         {
             kArch = CompilerKit::kPefArch64000;
             continue;
         }
-        else if (StringCompare(argv[i], "-m32x0") == 0)
+        else if (StringCompare(argv[i], "--32k") == 0)
         {
             kArch = CompilerKit::kPefArch32000;
             continue;
         }
-        else if (StringCompare(argv[i], "-verbose") == 0)
+        else if (StringCompare(argv[i], "--verbose") == 0)
         {
             kVerbose = true;
             continue;
         }
-        else if (StringCompare(argv[i], "-shared") == 0)
+        else if (StringCompare(argv[i], "--shared") == 0)
         {
             if (kOutput.find(kPefExt) != std::string::npos)
                 kOutput.erase(kOutput.find(kPefExt), strlen(kPefExt));
@@ -123,7 +127,7 @@ MPCC_MODULE(MPUXLinker)
 
             continue;
         }
-        else if (StringCompare(argv[i], "-o") == 0)
+        else if (StringCompare(argv[i], "--output-file") == 0)
         {
             kOutput = argv[i + 1];
             ++i;
