@@ -10,4 +10,4 @@
 # build mpcc
 .PHONY: mpcc-build
 mpcc-build:
-	dmd -I../ $(wildcard *.d) -ofmpcc
+	ldc2 -I../ $(wildcard *.d) -ofmpcc

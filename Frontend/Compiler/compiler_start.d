@@ -10,9 +10,9 @@
 // @file main.d
 // @brief CLI of the X64000 C/C++ compiler
 
-module mpcc.main;
+module Frontend.Compiler.compiler_start;
 
-import mpcc.compiler;
+import Frontend.Compiler.compiler_command;
 import std.container.dlist;
 
 ///Authors: Amlal EL Mahrouss
@@ -47,15 +47,15 @@ void main(string[] args)
     {
         if (arg[0] == '-')
         {
-            if (arg == "--version" ||
+            if (arg == "-version" ||
                 arg == "-v")
             {
                 writeln("mpcc: version 1.01, (c) Mahrouss Logic all rights reserved.");
                 return;
             }
-            else if (arg == "--dialect")
+            else if (arg == "-dialect")
             {
-                mpcc_summon_executable("/usr/local/bin/bin/cc --asm=masm --compiler=dalvik --dialect");
+                mpcc_summon_executable("/usr/local/bin/bin/ccplus --asm=masm --compiler=vanhalen --dialect");
                 return;
             }
             else if (arg == "--help" ||

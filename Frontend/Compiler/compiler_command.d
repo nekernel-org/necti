@@ -7,13 +7,14 @@
  * 	========================================================
  */
 
-module mpcc.compiler;
+module Frontend.Compiler.compiler_command;
 
 ///Authors: amlel
 ///Bugs: None
 ///Compiler Frontend
 
 import std.stdio;
+import Frontend.Compiler.compiler_macro_helpers;
 
 public void mpcc_summon_executable(string path)
 {
@@ -66,12 +67,27 @@ public class CompileCommand
 
             import std.datetime;
 
-            mpcc_summon_executable("/usr/local/bin/bin/cpp --define __64x0__ 1 --define __LP64__ 1 --define __64000__ 1 --define __BCCL__ 1 " ~
-                                 "--define __FILE__ " ~ file ~ " --define __DATE__ " ~ Clock.currTime(UTC()).toString() 
-                                 ~ " " ~
-                                " --working-dir ./ --include-dir " ~ includePath ~ " " ~ file);
+            string input = "/usr/local/bin/bin/cpp";
+            
+            string[] arr_macros = CompilerMacroHelpers.getStandardMacros();
 
-            string changed;
+            foreach (string macro_name; arr_macros)
+            {
+                input ~= " --define ";
+                input ~= macro_name;
+                input ~= "1 ";
+                input ~= " ";
+            }
+
+            input ~= "--define __FILE__ " ~ file;
+            input ~= " ";
+            input ~= "--define __DATE__ " ~ Clock.currTime(UTC()).toString();
+            input ~= " ";
+            input ~= "--working-dir ./ --include-dir " ~ includePath ~ " " ~ file;
+
+            mpcc_summon_executable(input);
+
+            string assembly_source;
             string ext;
             bool ext_now = false;
 
@@ -84,17 +100,17 @@ public class CompileCommand
                 }
 
                 if (!ext_now)
-                    changed ~= ch;
+                    assembly_source ~= ch;
                 else
                     ext ~= ch;
             }
 
-            mpcc_summon_executable("/usr/local/bin/bin/bccl --asm=masm -fmax-exceptions 20 --compiler=dalvik " ~
+            mpcc_summon_executable("/usr/local/bin/bin/ccplus --asm=masm -fmax-exceptions 10 --compiler=vanhalen " ~
             file ~ ".pp");
 
-            changed ~= ".64x";
+            assembly_source ~= ".64x";
 
-            mpcc_summon_executable("/usr/local/bin/bin/64asm -m64000 " ~ changed);
+            mpcc_summon_executable("/usr/local/bin/bin/64asm " ~ assembly_source);
         }
 
         if (compile_only)
@@ -107,19 +123,19 @@ public class CompileCommand
             if (file.length == 0)
                     continue;
 
-            string changed;
+            string object_source;
 
             foreach (ch; file)
             {
                 if (ch == '.')
                     break;
 
-                changed ~= ch;
+                object_source ~= ch;
             }
 
-            changed ~= ".o ";
+            object_source ~= ".o";
 
-            obj ~= changed;
+            obj ~= object_source;
         }
 
         string shlib_enable = "";
@@ -131,7 +147,6 @@ public class CompileCommand
         output_object ~= " -o ";
         output_object ~= output;
 
-        mpcc_summon_executable("/usr/local/bin/bin/64ld " ~
-                                obj ~ output_object);
+        mpcc_summon_executable("/usr/local/bin/bin/ld " ~ obj ~ output_object);
     }
 }

@@ -289,7 +289,7 @@ public:
         auto fmt = CompilerKit::current_date();
 
         (*kState.fOutputAssembly) << "# Path: " << src_file << "\n";
-        (*kState.fOutputAssembly) << "# Language: MP-UX Assembly (Generated from C++)\n";
+        (*kState.fOutputAssembly) << "# Language: RISC 64x0 MP-UX Assembly (Generated from C++)\n";
         (*kState.fOutputAssembly) << "# Build Date: " << fmt << "\n\n";
 
         ParserKit::SyntaxLeafList syntax;
@@ -767,10 +767,11 @@ MPCC_MODULE(CompilerCPlusPlus64x0)
         CompilerKit::StringView srcFile = CompilerKit::StringBuilder::Construct(argv[index]);
 
         std::vector exts = kExt;
+        std::string argv_i = argv[index];
 
-        for (auto& ext : exts)
+        for (std::string ext : exts)
         {
-            if (strstr(argv[index], ext) == nullptr)
+            if (argv_i.find(ext) != std::string::npos)
             {
                 if (kState.kVerbose)
                 {
