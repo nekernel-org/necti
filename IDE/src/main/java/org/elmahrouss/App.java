@@ -38,14 +38,14 @@ public class App extends Application
 
         TabPane tabPages = new TabPane();
 
-        Tab tabEditorWelcome = new Tab("Welcome!", new CodeEditorView(false));
+        Tab tabEditorWelcome = new Tab("Welcome!", new CodeEditorView(true));
 
         CodeEditorView editorView = (CodeEditorView)tabEditorWelcome.getContent();
         
-        Button buttonNewPane = new Button("Add...");
+        Button buttonNewPane = new Button("New...");
 
         buttonNewPane.onMouseClickedProperty().set((EventHandler<MouseEvent>) (MouseEvent c) -> {
-            CodeEditorController view = new CodeEditorController(true);
+            CodeEditorController view = new CodeEditorController(false);
             Tab tabCode = new Tab("Untitled", view.getView());
 
             view.getView().setController(view);
@@ -61,7 +61,6 @@ public class App extends Application
         editorView.getChildren().addAll(buttonNewPane);
 
         editorView.setContents("Welcome to MetroWorks!\nThe embedded code editor.");
-        editorView.getChildren().addAll();
 
         tabEditorWelcome.setClosable(false);
 
@@ -69,7 +68,7 @@ public class App extends Application
 
         projectPane.getChildren().addAll(tabPages);
 
-        var scene = new Scene(projectPane, 1280, 720);
+        var scene = new Scene(projectPane, AppSettings.WIDTH, AppSettings.HEIGHT);
 
         stage.setScene(scene);
         stage.show();

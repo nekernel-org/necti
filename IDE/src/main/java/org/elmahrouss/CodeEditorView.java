@@ -46,13 +46,13 @@ public class CodeEditorView extends Pane
         linePane = new Pane();
 
         linePane.setStyle("-fx-background-color: #" + CodeEditorTheme.LINE_THEME);
-        linePane.setMinSize(52, 720);
-        linePane.setMaxSize(52, 1080);
+        linePane.setMinSize(52, AppSettings.HEIGHT);
+        linePane.setMaxSize(52, AppSettings.HEIGHT);
 
         this.setStyle("-fx-background-color: #" + CodeEditorTheme.BACKGROUND_THEME);
 
-        this.setMinSize(1280, 720);
-        this.setMaxSize(1920, 1080);
+        this.setMinSize(AppSettings.WIDTH, AppSettings.HEIGHT);
+        this.setMaxSize(AppSettings.WIDTH, AppSettings.HEIGHT);
 
         codeBox = new HBox();
 
@@ -60,8 +60,9 @@ public class CodeEditorView extends Pane
             consoleWindow = new ConsoleWindow();
 
             codeBox.getChildren().add(consoleWindow);
-            codeBox.getChildren().add(codeText);
         }
+
+        codeBox.getChildren().add(codeText);
 
         this.getChildren().addAll(linePane, codeBox);
     }
@@ -83,10 +84,7 @@ public class CodeEditorView extends Pane
     public String getContents() { return codeText.getText(); }
     
     public void setContents(String content) 
-    { 
-        if (readOnly) 
-            return;
-    
+    {
         this.codeText.setText(content); 
     }
 
