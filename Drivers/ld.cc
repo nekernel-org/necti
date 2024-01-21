@@ -78,45 +78,47 @@ MPCC_MODULE(MPUXLinker)
         if (StringCompare(argv[i], "-h") == 0)
         {
             kStdOut << kToolVersion << "\n";
-            kStdOut << "--version: Print program version.\n";
-            kStdOut << "--verbose: Print program backtrace (verbose mode).\n";
-            kStdOut << "--shared: Output as a shared library.\n";
-            kStdOut << "--fat-bin: Output as FAT PEF.\n";
-            kStdOut << "--32k: Output as 32x0 PEF.\n";
-            kStdOut << "--64k: Output as 64x0 PEF.\n";
-            kStdOut << "--output-file: Select output filename.\n";
+            kStdOut << "-version: Show program version.\n";
+            kStdOut << "-verbose: Enable program trace.\n";
+            kStdOut << "-shared: Output as a shared PEF.\n";
+            kStdOut << "-fat-bin: Output as FAT PEF.\n";
+            kStdOut << "-32x0: Output as 32x0 PEF.\n";
+            kStdOut << "-64x0: Output as 64x0 PEF.\n";
+            kStdOut << "-output-file: Select output file name.\n";
 
-            // bye
             return 0;
         }
-        else if (StringCompare(argv[i], "--version") == 0)
+        else if (StringCompare(argv[i], "-version") == 0)
         {
             kStdOut << kToolVersion << std::endl;
-            // bye :D
+
             return 0;
         }
-        else if (StringCompare(argv[i], "--fat-bin") == 0)
+        else if (StringCompare(argv[i], "-fat-bin") == 0)
         {
             kFatBinaryEnable = true;
 
             continue;
         }
-        else if (StringCompare(argv[i], "--64k") == 0)
+        else if (StringCompare(argv[i], "-64x0") == 0)
         {
             kArch = CompilerKit::kPefArch64000;
+
             continue;
         }
-        else if (StringCompare(argv[i], "--32k") == 0)
+        else if (StringCompare(argv[i], "-32x0") == 0)
         {
             kArch = CompilerKit::kPefArch32000;
+
             continue;
         }
-        else if (StringCompare(argv[i], "--verbose") == 0)
+        else if (StringCompare(argv[i], "-verbose") == 0)
         {
             kVerbose = true;
+
             continue;
         }
-        else if (StringCompare(argv[i], "--shared") == 0)
+        else if (StringCompare(argv[i], "-shared") == 0)
         {
             if (kOutput.find(kPefExt) != std::string::npos)
                 kOutput.erase(kOutput.find(kPefExt), strlen(kPefExt));
@@ -127,7 +129,7 @@ MPCC_MODULE(MPUXLinker)
 
             continue;
         }
-        else if (StringCompare(argv[i], "--output-file") == 0)
+        else if (StringCompare(argv[i], "-output-file") == 0)
         {
             kOutput = argv[i + 1];
             ++i;
@@ -156,7 +158,7 @@ MPCC_MODULE(MPUXLinker)
     }
     else
     {
-        // check for exisiting files.
+        // check for existing files, if they don't throw an error.
         for (auto &obj : kObjectList)
         {
             if (!std::filesystem::exists(obj))
