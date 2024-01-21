@@ -134,6 +134,6 @@ namespace CompilerKit
 typedef char char_type;
 
 #define kObjectFileExt     ".o"
-#define kAsmFileExt64x0    ".64x"
+#define kAsmFileExts    { ".64x", ".32x", ".masm", ".s", ".S" }
 
 #endif /* ifndef __CXXKIT_DEFINES_HPP__ */

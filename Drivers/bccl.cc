@@ -13,7 +13,7 @@
 #include <fstream>
 #include <iostream>
 #include <uuid/uuid.h>
-#include <CompilerKit/AsmKit/Arch/64k.hpp>
+#include <CompilerKit/AsmKit/Arch/64x0.hpp>
 #include <CompilerKit/ParserKit.hpp>
 
 #define kOk 0
@@ -1316,7 +1316,8 @@ public:
         }
 
         /* According to pef abi. */
-        dest += kAsmFileExt64x0;
+        std::vector<const char*> exts = kAsmFileExts;
+        dest += exts[0];
 
         kState.fOutputAssembly = std::make_unique<std::ofstream>(dest);
 

@@ -20,7 +20,7 @@
 
 #define __ASM_NEED_64x0__ 1
 
-#include <CompilerKit/AsmKit/Arch/64k.hpp>
+#include <CompilerKit/AsmKit/Arch/64x0.hpp>
 #include <CompilerKit/ParserKit.hpp>
 #include <CompilerKit/StdKit/PEF.hpp>
 #include <CompilerKit/StdKit/AE.hpp>
@@ -147,9 +147,12 @@ MPCC_MODULE(MPUXAssembler64000)
 
         std::string object_output(argv[i]);
 
-        if (object_output.find(kAsmFileExt64x0) != std::string::npos)
+        for (auto& ext : kAsmFileExts)
         {
-            object_output.erase(object_output.find(kAsmFileExt64x0), std::size(kAsmFileExt64x0));
+            if (object_output.find(ext) != std::string::npos)
+            {
+                object_output.erase(object_output.find(ext), std::strlen(ext));
+            }
         }
 
         object_output += kObjectFileExt;

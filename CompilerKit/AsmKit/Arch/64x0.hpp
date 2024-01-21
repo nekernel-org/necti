@@ -12,13 +12,13 @@
 #include <CompilerKit/Defines.hpp>
 
 // @brief 64x0 support.
-// @file Arch/64k.hpp
+// @file Arch/64x0.hpp
 
 #define kAsmOpcodeDecl(__NAME, __OPCODE, __FUNCT3, __FUNCT7) \
     { .fName = __NAME, .fOpcode = __OPCODE, .fFunct3 = __FUNCT3, .fFunct7 = __FUNCT7 },
 
 
-// placeholder for funct7/funct7-rs2
+
 #define kAsmImmediate 0x01
 #define kAsmRegToReg 0x02
 #define kAsmSyscall 0x03

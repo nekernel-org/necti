@@ -17,13 +17,13 @@ In order to help the programmer achieve its task.
 
 bpp: BCCL/MASM preprocessor
 <br>
-ccplus: Optimized C++ compiler
+ccplus: 64x0/32x0 Optimized C++ compiler
 <br>
-bccl: BCCL compiler
+bccl: 64x0/32x0 BCCL compiler
 <br>
 ld: mp-ux linker
 <br>
-masm: mp-ux assembler
+masm: 64x0 mp-ux assembler
 <br>
 Author: Amlal El Mahrouss
 

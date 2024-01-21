@@ -13,7 +13,7 @@
 #include <iostream>
 
 //! @file AsmKit.cpp
-//! @brief AssemblyKit
+//! @brief AssemblyKit source implementation.
 
 namespace CompilerKit
 {
@@ -32,7 +32,9 @@ namespace CompilerKit
 	void AssemblyFactory::Mount(AssemblyMountpoint* mountPtr) noexcept
 	{
 		if (mountPtr)
+		{
 			fMounted = mountPtr;
+		}
 	}
 	
 	AssemblyMountpoint* AssemblyFactory::Unmount() noexcept
@@ -40,7 +42,9 @@ namespace CompilerKit
 		auto mount_prev = fMounted;
 		
 		if (mount_prev)
+		{
 			fMounted = nullptr;
+		}
 		
 		return mount_prev;
 	}

@@ -97,10 +97,10 @@ namespace CompilerKit::Utils
 		std::ifstream USED_FP;
 
 	public:
-		explicit AEReadableProtocol() = default;
+		AEReadableProtocol() = default;
 		~AEReadableProtocol() = default;
 
-		CXXKIT_COPY_DEFAULT(AEReadableProtocol);
+		CXXKIT_COPY_DELETE(AEReadableProtocol);
 
 		AERecordHeaderPtr Read(char* raw, std::size_t sz)
 		{
