@@ -23,12 +23,11 @@ public class CodeEditorView extends Pane
     private Pane linePane;
     private Label codeText;
     private boolean readOnly;
-    private ConsoleWindow consoleWindow;
     private HBox codeBox;
     private String fileName = "untitled.c";
     private CodeEditorController codeEditorController;
 
-    CodeEditorView(boolean readOnly) 
+    CodeEditorView() 
     {
         super();
 
@@ -56,12 +55,6 @@ public class CodeEditorView extends Pane
 
         codeBox = new HBox();
 
-        if (!this.readOnly) {
-            consoleWindow = new ConsoleWindow();
-
-            codeBox.getChildren().add(consoleWindow);
-        }
-
         codeBox.getChildren().add(codeText);
 
         this.getChildren().addAll(linePane, codeBox);
@@ -81,10 +74,18 @@ public class CodeEditorView extends Pane
         this.fileName = fileName; 
     }
 
-    public String getContents() { return codeText.getText(); }
+    public String getContents() { 
+        if (this.codeText == null)
+            return "";
+
+        return codeText.getText(); 
+    }
     
     public void setContents(String content) 
     {
+        if (this.codeText == null)
+            return;
+
         this.codeText.setText(content); 
     }
 

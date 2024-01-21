@@ -18,9 +18,9 @@ public class CodeEditorController
 {
     private CodeEditorView vEditorView = null;
 
-    CodeEditorController(boolean readOnly)
+    CodeEditorController()
     {
-        vEditorView = new CodeEditorView(readOnly);
+        vEditorView = new CodeEditorView();
     }
 
     CodeEditorView getView() { return vEditorView; }

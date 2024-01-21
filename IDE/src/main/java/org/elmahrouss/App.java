@@ -38,14 +38,17 @@ public class App extends Application
 
         TabPane tabPages = new TabPane();
 
-        Tab tabEditorWelcome = new Tab("Welcome!", new CodeEditorView(true));
+        tabPages.setStyle("-fx-background-color: #" + CodeEditorTheme.LINE_THEME);
+
+        Tab tabEditorWelcome = new Tab("Welcome!", new CodeEditorView());
 
         CodeEditorView editorView = (CodeEditorView)tabEditorWelcome.getContent();
         
-        Button buttonNewPane = new Button("New...");
+        Button buttonNewPane = new Button("New File...");
+        buttonNewPane.setStyle("-fx-background-color: #" + CodeEditorTheme.LINE_THEME + "; -fx-text-fill: #" + CodeEditorTheme.TEXT_THEME);
 
         buttonNewPane.onMouseClickedProperty().set((EventHandler<MouseEvent>) (MouseEvent c) -> {
-            CodeEditorController view = new CodeEditorController(false);
+            CodeEditorController view = new CodeEditorController();
             Tab tabCode = new Tab("Untitled", view.getView());
 
             view.getView().setController(view);
