@@ -131,7 +131,7 @@ public class CompileCommand
         output_object ~= " -o ";
         output_object ~= output;
 
-        mpcc_summon_executable("/usr/local/bin/bin/64ld -m64000 " ~
-        obj ~ output_object);
+        mpcc_summon_executable("/usr/local/bin/bin/64ld " ~
+                                obj ~ output_object);
     }
 }

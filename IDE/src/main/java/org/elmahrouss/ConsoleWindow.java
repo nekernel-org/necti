@@ -16,8 +16,12 @@
 
 public class ConsoleWindow extends Pane 
 {
+    private Label vTitle = null;
+
     ConsoleWindow() 
     {
         super();
+        
+        vTitle = new Label("UNIX Console");
     }
 }
