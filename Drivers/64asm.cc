@@ -149,7 +149,7 @@ MPCC_MODULE(MPUXAssembler64000)
 
         std::string object_output(argv[i]);
 
-        for (auto& ext : kAsmFileExts)
+        for (auto &ext : kAsmFileExts)
         {
             if (object_output.find(ext) != std::string::npos)
             {
@@ -216,7 +216,6 @@ MPCC_MODULE(MPUXAssembler64000)
                 goto asm_fail_exit;
             }
         }
-
 
         if (!kOutputAsBinary)
         {
@@ -420,7 +419,6 @@ static bool asm_read_attributes(std::string &line)
                 j = '$';
         }
 
-
         if (name.find(".text") != std::string::npos)
         {
             // data is treated as code.
@@ -585,10 +583,10 @@ std::string CompilerKit::PlatformAssembler64x0::CheckLine(std::string &line, con
     }
 
     // these do take an argument.
-    std::vector<std::string> operands_inst = { "stw", "ldw", "lda", "sta" };
+    std::vector<std::string> operands_inst = {"stw", "ldw", "lda", "sta"};
 
     // these don't.
-    std::vector<std::string> filter_inst = { "jlr", "jrl", "int" };
+    std::vector<std::string> filter_inst = {"jlr", "jrl", "int"};
 
     for (auto &opcode64x0 : kOpcodes64x0)
     {
@@ -613,12 +611,15 @@ std::string CompilerKit::PlatformAssembler64x0::CheckLine(std::string &line, con
             if (auto it = std::find(filter_inst.begin(), filter_inst.end(), opcode64x0.fName);
                 it == filter_inst.cend())
             {
-                if (!isspace(line[line.find(opcode64x0.fName) + strlen(opcode64x0.fName)]))
+                if (ParserKit::find_word(line, opcode64x0.fName))
                 {
-                    err_str += "\nmissing space between ";
-                    err_str += opcode64x0.fName;
-                    err_str += " and operands.\nhere -> ";
-                    err_str += line;
+                    if (!isspace(line[line.find(opcode64x0.fName) + strlen(opcode64x0.fName)]))
+                    {
+                        err_str += "\nmissing space between ";
+                        err_str += opcode64x0.fName;
+                        err_str += " and operands.\nhere -> ";
+                        err_str += line;
+                    }
                 }
             }
 
