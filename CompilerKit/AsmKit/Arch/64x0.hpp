@@ -68,14 +68,11 @@ inline std::vector<CpuCode64x0> kOpcodes64x0 = {
 // r32 -> sp
 // r0 -> hw zero
 
-#define kAsmFloatRegisterPrefix "f"
-#define kAsmFloatRegisterLimit  10
-
 #define kAsmFloatZeroRegister 0
 #define kAsmZeroRegister 0
 
 #define kAsmRegisterPrefix "r"
-#define kAsmRegisterLimit  20
+#define kAsmRegisterLimit  30
 #define kAsmPcRegister     17
 #define kAsmCrRegister     18
 #define kAsmSpRegister     5
