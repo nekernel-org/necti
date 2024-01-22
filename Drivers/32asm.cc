@@ -20,7 +20,7 @@
 
 #define __ASM_NEED_32x0__ 1
 
-#include <CompilerKit/AsmKit/Arch/32k.hpp>
+#include <CompilerKit/AsmKit/Arch/32x0.hpp>
 #include <CompilerKit/ParserKit.hpp>
 #include <CompilerKit/StdKit/PEF.hpp>
 #include <CompilerKit/StdKit/AE.hpp>

@@ -19,7 +19,7 @@
 // @file bpp.cc
 // @brief BCCL preprocessor.
 
-typedef Int32(*cpp_parser_fn_t)(std::string& line, std::ifstream& hdr_file, std::ofstream& pp_out);
+typedef Int32 (*cpp_parser_fn_t)(std::string &line, std::ifstream &hdr_file, std::ofstream &pp_out);
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
@@ -41,7 +41,7 @@ namespace details
 
 	struct cpp_macro_condition final
 	{
-		int32_t 	fType;
+		int32_t fType;
 		std::string fTypeName;
 	};
 
@@ -51,7 +51,7 @@ namespace details
 		std::string fName;
 		std::string fValue;
 	};
-	
+
 	class cpp_pragma final
 	{
 	public:
@@ -62,7 +62,6 @@ namespace details
 
 		std::string fMacroName;
 		cpp_parser_fn_t fParse;
-
 	};
 }
 
@@ -70,10 +69,10 @@ static std::vector<std::string> kFiles;
 static std::vector<details::cpp_macro> kMacros;
 static std::vector<std::string> kIncludes;
 
-static std::string kWoringDir;
+static std::string kWorkingDir;
 
 static std::vector<std::string> kKeywords = {
-	"include",
+	"inc",
 	"if",
 	"pragma",
 	"def",
@@ -82,8 +81,7 @@ static std::vector<std::string> kKeywords = {
 	"ifndef",
 	"else",
 	"warning",
-	"error"
-};
+	"error"};
 
 #define kKeywordCxxCnt kKeywords.size()
 
@@ -94,10 +92,10 @@ static std::vector<std::string> kKeywords = {
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
-int32_t cpp_parse_if_condition(details::cpp_macro_condition& cond,
-							details::cpp_macro& macro, 
-							bool& inactive_code, bool& defined,
-							std::string& macro_str)
+int32_t cpp_parse_if_condition(details::cpp_macro_condition &cond,
+							   details::cpp_macro &macro,
+							   bool &inactive_code, bool &defined,
+							   std::string &macro_str)
 {
 	if (cond.fType == details::kEqual)
 	{
@@ -146,7 +144,7 @@ int32_t cpp_parse_if_condition(details::cpp_macro_condition& cond,
 
 	std::string number;
 
-	for (auto& macro_num : kMacros)
+	for (auto &macro_num : kMacros)
 	{
 		if (substr_macro.find(macro_num.fName) != std::string::npos)
 		{
@@ -181,11 +179,11 @@ int32_t cpp_parse_if_condition(details::cpp_macro_condition& cond,
 
 				number += macro_str[x];
 			}
-			
+
 			break;
 		}
 	}
-	
+
 	size_t rhs = atol(macro.fValue.c_str());
 	size_t lhs = atol(number.c_str());
 
@@ -193,7 +191,7 @@ int32_t cpp_parse_if_condition(details::cpp_macro_condition& cond,
 	{
 		number.clear();
 		++y;
-		
+
 		for (; y < macro_str.size(); y++)
 		{
 			if (isdigit(macro_str[y]))
@@ -205,7 +203,7 @@ int32_t cpp_parse_if_condition(details::cpp_macro_condition& cond,
 
 					number += macro_str[x];
 				}
-				
+
 				break;
 			}
 		}
@@ -219,7 +217,7 @@ int32_t cpp_parse_if_condition(details::cpp_macro_condition& cond,
 		{
 			defined = true;
 			inactive_code = false;
-		
+
 			return 1;
 		}
 
@@ -232,7 +230,7 @@ int32_t cpp_parse_if_condition(details::cpp_macro_condition& cond,
 		{
 			defined = true;
 			inactive_code = false;
-		
+
 			return 1;
 		}
 
@@ -245,7 +243,7 @@ int32_t cpp_parse_if_condition(details::cpp_macro_condition& cond,
 		{
 			defined = true;
 			inactive_code = false;
-		
+
 			return 1;
 		}
 
@@ -258,7 +256,7 @@ int32_t cpp_parse_if_condition(details::cpp_macro_condition& cond,
 		{
 			defined = true;
 			inactive_code = false;
-		
+
 			return 1;
 		}
 
@@ -283,7 +281,7 @@ std::vector<std::string> kAllIncludes;
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
-void cpp_parse_file(std::ifstream& hdr_file, std::ofstream& pp_out)
+void cpp_parse_file(std::ifstream &hdr_file, std::ofstream &pp_out)
 {
 	std::string hdr_line;
 	std::string line_after_include;
@@ -295,11 +293,10 @@ void cpp_parse_file(std::ifstream& hdr_file, std::ofstream& pp_out)
 	{
 		while (std::getline(hdr_file, hdr_line))
 		{
-			// make cc, ccplus life easier
-            if (hdr_line.find("//") != std::string::npos)
-            {
-                hdr_line.erase(hdr_line.find("//"));
-            }
+			if (hdr_line.find("@bdoc") != std::string::npos)
+			{
+				hdr_line.erase(hdr_line.find("@bdoc"));
+			}
 
 			if (hdr_line[0] == kMacroPrefix &&
 				hdr_line.find("endif") != std::string::npos)
@@ -312,7 +309,7 @@ void cpp_parse_file(std::ifstream& hdr_file, std::ofstream& pp_out)
 
 					continue;
 				}
-				
+
 				continue;
 			}
 
@@ -328,89 +325,85 @@ void cpp_parse_file(std::ifstream& hdr_file, std::ofstream& pp_out)
 				continue;
 			}
 
-            for (auto macro : kMacros)
-            {
-                if (ParserKit::find_word(hdr_line, macro.fName) &&
-                    hdr_line.find("#define") == std::string::npos)
-                {
-                    auto substr = hdr_line.substr(hdr_line.find(macro.fName) + macro.fName.size() + 1);
+			for (auto macro : kMacros)
+			{
+				if (ParserKit::find_word(hdr_line, macro.fName) &&
+					hdr_line.find("%def") == std::string::npos)
+				{
+					auto substr = hdr_line.substr(hdr_line.find(macro.fName) + macro.fName.size());
 
-                    std::vector<std::string> sym_vec;
-                    std::string sym_str;
+					std::vector<std::string> sym_vec;
+					std::string sym_str;
 
-                    for (auto& subc : substr)
-                    {
-                        if (subc == ',' ||
-                            subc == ')')
-                        {
-                            if (sym_str.empty())
-                                continue;
+					for (auto &subc : substr)
+					{
+						if (subc == ',' ||
+							subc == ')')
+						{
+							if (sym_str.empty())
+								continue;
 
-                            sym_vec.push_back(sym_str);
-                            sym_str.clear();
+							sym_vec.push_back(sym_str);
+							sym_str.clear();
 
-                            continue;
-                        }
+							continue;
+						}
 
-                        if (isalnum(subc))
-                            sym_str.push_back(subc);
-                    }
+						if (isalnum(subc))
+							sym_str.push_back(subc);
+					}
 
-                    if (macro.fArgs.size() > 0)
-                    {
+					if (macro.fArgs.size() > 0)
+					{
 
-                        for (auto& item : sym_vec)
-                        {
-                            std::size_t cnt = 0;
+						for (auto &item : sym_vec)
+						{
+							std::size_t cnt = 0;
 
-                            for (auto& arg : macro.fArgs)
-                            {
-                                if (item == arg)
-                                    ++cnt;
-                            }
+							for (auto &arg : macro.fArgs)
+							{
+								if (item == arg)
+									++cnt;
+							}
 
-                            if (cnt > 1)
-                            {
-                                auto it = std::find(macro.fArgs.begin(), macro.fArgs.end(), item);
+							if (cnt > 1)
+							{
+								auto it = std::find(macro.fArgs.begin(), macro.fArgs.end(), item);
 
-                                while (it !=  macro.fArgs.end())
-                                {
-                                    macro.fArgs.erase(it);
-                                    it = std::find(macro.fArgs.begin(), macro.fArgs.end(), item);
-                                }
-                            }
-                        }
+								while (it != macro.fArgs.end())
+								{
+									macro.fArgs.erase(it);
+									it = std::find(macro.fArgs.begin(), macro.fArgs.end(), item);
+								}
+							}
+						}
 
-                        if (sym_vec.size() != macro.fArgs.size())
-                        {
-                            throw std::runtime_error("bpp: arguments count mismatch, except " + std::to_string(sym_vec.size()) + ", got: " + std::to_string(macro.fArgs.size()));
-                            return;
-                        }
+						if (sym_vec.size() != macro.fArgs.size())
+						{
+							throw std::runtime_error("bpp: arguments count mismatch, except " + std::to_string(sym_vec.size()) + ", got: " + std::to_string(macro.fArgs.size()));
+							return;
+						}
 
-                        substr = macro.fValue;
+						substr = macro.fValue;
 
-                        std::size_t cnt = 0UL;
+						std::size_t cnt = 0UL;
 
-                        for (auto& val : macro.fArgs)
-                        {
-                            substr.replace(substr.find(val), val.size(), sym_vec[cnt]);
-                            ++cnt;
-                        }
+						for (auto &val : macro.fArgs)
+						{
+							substr.replace(substr.find(val), val.size(), sym_vec[cnt]);
+							++cnt;
+						}
+					}
 
-                        hdr_line = hdr_line.replace(hdr_line.find(macro.fName), macro.fName.size() + macro.fValue.size(), substr);
-                    }
-                    else
-                    {
-                        hdr_line = hdr_line.replace(hdr_line.find(macro.fName), macro.fName.size(), macro.fValue);
-                    }
-                }
-            }
+					hdr_line = hdr_line.replace(hdr_line.find(macro.fName), macro.fName.size() + macro.fValue.size(), substr);
+				}
+			}
 
 			if (hdr_line[0] == kMacroPrefix &&
-				hdr_line.find("def") != std::string::npos)
+				hdr_line.find("def ") != std::string::npos)
 			{
-				auto line_after_define = hdr_line.substr(hdr_line.find("def") + strlen("def") + 1);
-				
+				auto line_after_define = hdr_line.substr(hdr_line.find("def ") + strlen("def "));
+
 				std::string macro_value;
 				std::string macro_key;
 
@@ -419,10 +412,10 @@ void cpp_parse_file(std::ifstream& hdr_file, std::ofstream& pp_out)
 				std::vector<std::string> args;
 				bool on_args = false;
 
-				for (auto& ch : line_after_define)
+				for (auto &ch : line_after_define)
 				{
 					++pos;
-					
+
 					if (ch == '(')
 					{
 						on_args = true;
@@ -437,7 +430,7 @@ void cpp_parse_file(std::ifstream& hdr_file, std::ofstream& pp_out)
 
 					if (ch == '\\')
 						continue;
-						
+
 					if (on_args)
 						continue;
 
@@ -447,59 +440,59 @@ void cpp_parse_file(std::ifstream& hdr_file, std::ofstream& pp_out)
 						{
 							macro_value += line_after_define[i];
 						}
-						
+
 						break;
 					}
 
 					macro_key += ch;
 				}
 
-                std::vector<std::string> dupls;
-                std::string str;
+				std::vector<std::string> dupls;
+				std::string str;
 
-                line_after_define.erase(0, line_after_define.find("(") + 1);
+				line_after_define.erase(0, line_after_define.find("(") + 1);
 
-                for (auto& subc : line_after_define)
-                {
-                    if (subc == ',' ||
-                        subc == ')')
-                    {
-                        if (str.empty())
-                            continue;
+				for (auto &subc : line_after_define)
+				{
+					if (subc == ',' ||
+						subc == ')')
+					{
+						if (str.empty())
+							continue;
 
-                        dupls.push_back(str);
-                        args.push_back(str);
+						dupls.push_back(str);
+						args.push_back(str);
 
-                        str.clear();
+						str.clear();
 
-                        continue;
-                    }
+						continue;
+					}
 
-                    if (isalnum(subc))
-                        str.push_back(subc);
-                }
+					if (isalnum(subc))
+						str.push_back(subc);
+				}
 
-                for (auto& dupl : dupls)
-                {
-                    std::size_t cnt = 0;
+				for (auto &dupl : dupls)
+				{
+					std::size_t cnt = 0;
 
-                    for (auto& arg : args)
-                    {
-                        if (dupl == arg)
-                            ++cnt;
-                    }
+					for (auto &arg : args)
+					{
+						if (dupl == arg)
+							++cnt;
+					}
 
-                    if (cnt > 1)
-                    {
-                        auto it = std::find(args.begin(), args.end(), dupl);
+					if (cnt > 1)
+					{
+						auto it = std::find(args.begin(), args.end(), dupl);
 
-                        while (it != args.end())
-                        {
-                            args.erase(it);
-                            it = std::find(args.begin(), args.end(), dupl);
-                        }
-                    }
-                }
+						while (it != args.end())
+						{
+							args.erase(it);
+							it = std::find(args.begin(), args.end(), dupl);
+						}
+					}
+				}
 
 				details::cpp_macro macro;
 
@@ -519,7 +512,7 @@ void cpp_parse_file(std::ifstream& hdr_file, std::ofstream& pp_out)
 					continue;
 				}
 
-				for (auto& macro : kMacros)
+				for (auto &macro : kMacros)
 				{
 					if (hdr_line.find(macro.fName) != std::string::npos)
 					{
@@ -537,27 +530,27 @@ void cpp_parse_file(std::ifstream& hdr_file, std::ofstream& pp_out)
 									{
 										if (hdr_line[x] == ')')
 											break;
-											
+
 										if (hdr_line[x] == ' ')
 											continue;
 
 										if (hdr_line[i] == '\\')
 											continue;
-											
+
 										if (hdr_line[x] == ',')
 										{
 											arg_values.push_back(tmp_arg);
 											tmp_arg.clear();
 											continue;
 										}
-										
+
 										tmp_arg += hdr_line[x];
 									}
-									
+
 									break;
 								}
 							}
-							
+
 							std::string symbol;
 
 							for (char i : macro.fValue)
@@ -567,10 +560,10 @@ void cpp_parse_file(std::ifstream& hdr_file, std::ofstream& pp_out)
 
 								if (i == '\\')
 									continue;
-								
+
 								symbol += i;
 							}
-							
+
 							hdr_line.replace(hdr_line.find(macro.fName), macro.fName.size(), symbol);
 
 							size_t x_arg_indx = 0;
@@ -583,7 +576,6 @@ void cpp_parse_file(std::ifstream& hdr_file, std::ofstream& pp_out)
 									++x_arg_indx;
 								}
 							}
-							
 						}
 						else
 						{
@@ -593,13 +585,13 @@ void cpp_parse_file(std::ifstream& hdr_file, std::ofstream& pp_out)
 							{
 								if (macro.fValue[i] == ' ')
 									continue;
-								
+
 								if (macro.fValue[i] == '\\')
 									continue;
-									
+
 								symbol += macro.fValue[i];
 							}
-							
+
 							hdr_line.replace(hdr_line.find(macro.fName), macro.fName.size(), symbol);
 						}
 
@@ -617,14 +609,14 @@ void cpp_parse_file(std::ifstream& hdr_file, std::ofstream& pp_out)
 			{
 				auto line_after_ifndef = hdr_line.substr(hdr_line.find("ifndef") + strlen("ifndef") + 1);
 				std::string macro;
-							
-				for (auto& ch : line_after_ifndef)
+
+				for (auto &ch : line_after_ifndef)
 				{
 					if (ch == ' ')
 					{
 						break;
 					}
-						
+
 					macro += ch;
 				}
 
@@ -639,7 +631,7 @@ void cpp_parse_file(std::ifstream& hdr_file, std::ofstream& pp_out)
 				{
 					defined = false;
 					inactive_code = true;
-					
+
 					continue;
 				}
 
@@ -647,8 +639,8 @@ void cpp_parse_file(std::ifstream& hdr_file, std::ofstream& pp_out)
 
 				defined = true;
 				inactive_code = false;
-				
-				for (auto& macro_ref : kMacros)
+
+				for (auto &macro_ref : kMacros)
 				{
 					if (hdr_line.find(macro_ref.fName) != std::string::npos)
 					{
@@ -666,7 +658,7 @@ void cpp_parse_file(std::ifstream& hdr_file, std::ofstream& pp_out)
 				}
 			}
 			else if (hdr_line[0] == kMacroPrefix &&
-					hdr_line.find("else") != std::string::npos)
+					 hdr_line.find("else") != std::string::npos)
 			{
 				if (!defined &&
 					inactive_code)
@@ -685,18 +677,18 @@ void cpp_parse_file(std::ifstream& hdr_file, std::ofstream& pp_out)
 				}
 			}
 			else if (hdr_line[0] == kMacroPrefix &&
-				hdr_line.find("ifdef") != std::string::npos)
+					 hdr_line.find("ifdef") != std::string::npos)
 			{
 				auto line_after_ifdef = hdr_line.substr(hdr_line.find("ifdef") + strlen("ifdef") + 1);
 				std::string macro;
-							
-				for (auto& ch : line_after_ifdef)
+
+				for (auto &ch : line_after_ifdef)
 				{
 					if (ch == ' ')
 					{
 						break;
 					}
-						
+
 					macro += ch;
 				}
 
@@ -704,7 +696,7 @@ void cpp_parse_file(std::ifstream& hdr_file, std::ofstream& pp_out)
 				{
 					defined = false;
 					inactive_code = true;
-					
+
 					continue;
 				}
 
@@ -719,7 +711,7 @@ void cpp_parse_file(std::ifstream& hdr_file, std::ofstream& pp_out)
 				defined = false;
 				inactive_code = true;
 
-				for (auto& macro_ref : kMacros)
+				for (auto &macro_ref : kMacros)
 				{
 					if (hdr_line.find(macro_ref.fName) != std::string::npos)
 					{
@@ -731,21 +723,21 @@ void cpp_parse_file(std::ifstream& hdr_file, std::ofstream& pp_out)
 				}
 			}
 			else if (hdr_line[0] == kMacroPrefix &&
-					hdr_line.find("pragma") != std::string::npos)
+					 hdr_line.find("pragma") != std::string::npos)
 			{
 				line_after_include = hdr_line.substr(hdr_line.find("pragma once"));
 
 				// search for this file
-				auto it = std::find(kAllIncludes.cbegin(), 
+				auto it = std::find(kAllIncludes.cbegin(),
 									kAllIncludes.cend(), line_after_include);
 
 				if (it == kAllIncludes.cend())
 				{
-					goto kIncludeFile;	
-				}	
+					goto kIncludeFile;
+				}
 			}
 			else if (hdr_line[0] == kMacroPrefix &&
-				hdr_line.find("if") != std::string::npos)
+					 hdr_line.find("if") != std::string::npos)
 			{
 				inactive_code = true;
 
@@ -778,17 +770,17 @@ void cpp_parse_file(std::ifstream& hdr_file, std::ofstream& pp_out)
 
 				int32_t good_to_go = 0;
 
-				for (auto& macro_condition : cpp_macro_condition_list)
+				for (auto &macro_condition : cpp_macro_condition_list)
 				{
 					if (hdr_line.find(macro_condition.fTypeName) != std::string::npos)
 					{
-						for (auto& found_macro : kMacros)
+						for (auto &found_macro : kMacros)
 						{
 							if (hdr_line.find(found_macro.fName) != std::string::npos)
 							{
-								good_to_go = cpp_parse_if_condition(macro_condition, found_macro, 
-													inactive_code, defined,
-														hdr_line);
+								good_to_go = cpp_parse_if_condition(macro_condition, found_macro,
+																	inactive_code, defined,
+																	hdr_line);
 
 								break;
 							}
@@ -801,14 +793,14 @@ void cpp_parse_file(std::ifstream& hdr_file, std::ofstream& pp_out)
 
 				auto line_after_if = hdr_line.substr(hdr_line.find("if") + strlen("if") + 1);
 				std::string macro;
-							
-				for (auto& ch : line_after_if)
+
+				for (auto &ch : line_after_if)
 				{
 					if (ch == ' ')
 					{
 						break;
 					}
-						
+
 					macro += ch;
 				}
 
@@ -828,7 +820,7 @@ void cpp_parse_file(std::ifstream& hdr_file, std::ofstream& pp_out)
 				}
 
 				// last try, is it defined to be one?
-				for (auto& macro_ref : kMacros)
+				for (auto &macro_ref : kMacros)
 				{
 					if (macro_ref.fName.find(macro) != std::string::npos &&
 						macro_ref.fValue == "1")
@@ -841,56 +833,56 @@ void cpp_parse_file(std::ifstream& hdr_file, std::ofstream& pp_out)
 				}
 			}
 			else if (hdr_line[0] == kMacroPrefix &&
-					hdr_line.find("warning") != std::string::npos)
+					 hdr_line.find("warning") != std::string::npos)
 			{
 				auto line_after_warning = hdr_line.substr(hdr_line.find("warning") + strlen("warning") + 1);
 				std::string message;
-							
-				for (auto& ch : line_after_warning)
+
+				for (auto &ch : line_after_warning)
 				{
 					if (ch == '\r' ||
 						ch == '\n')
 					{
 						break;
 					}
-						
+
 					message += ch;
 				}
 
 				std::cout << "Warning: " << message << std::endl;
 			}
 			else if (hdr_line[0] == kMacroPrefix &&
-					hdr_line.find("error") != std::string::npos)
+					 hdr_line.find("error") != std::string::npos)
 			{
 				auto line_after_warning = hdr_line.substr(hdr_line.find("error") + strlen("error") + 1);
 				std::string message;
-							
-				for (auto& ch : line_after_warning)
+
+				for (auto &ch : line_after_warning)
 				{
 					if (ch == '\r' ||
 						ch == '\n')
 					{
 						break;
 					}
-						
+
 					message += ch;
 				}
 
 				throw std::runtime_error("Error: " + message);
 			}
 			else if (hdr_line[0] == kMacroPrefix &&
-				hdr_line.find("include") != std::string::npos)
+					 hdr_line.find("inc ") != std::string::npos)
 			{
-				line_after_include = hdr_line.substr(hdr_line.find("include"));
+				line_after_include = hdr_line.substr(hdr_line.find("inc ") + strlen("inc "));
 
-kIncludeFile:				
-				auto it = std::find(kAllIncludes.cbegin(), 
+			kIncludeFile:
+				auto it = std::find(kAllIncludes.cbegin(),
 									kAllIncludes.cend(), line_after_include);
 
 				if (it != kAllIncludes.cend())
 				{
 					continue;
-				}	
+				}
 
 				std::string path;
 
@@ -898,29 +890,42 @@ kIncludeFile:
 
 				bool enable = false;
 				bool not_local = false;
-							
-				for (auto& ch : line_after_include)
+
+				for (auto &ch : line_after_include)
 				{
 					if (ch == ' ')
 						continue;
 
 					if (ch == '<')
+					{
 						not_local = true;
+						enable = true;
 
-					if (ch == '\"' ||
-						ch == '<')
+						continue;
+					}
+
+					if (ch == '\'')
 					{
 						enable = true;
-						continue;	
+						continue;
 					}
-								
+
 					if (enable)
 					{
-						if (ch == '>' ||
-							ch == '\"')
+						if (not_local)
+						{
+							if (ch == '>')
 								break;
-									
-						path += ch;	
+						}
+						else
+						{
+							if (ch == '\'')
+							{
+								break;
+							}
+						}
+
+						path += ch;
 					}
 				}
 
@@ -928,17 +933,17 @@ kIncludeFile:
 				{
 					bool open = false;
 
-					for (auto& include : kIncludes)
+					for (auto &include : kIncludes)
 					{
-                        std::string header_path = include;
-                        header_path.push_back('/');
-                        header_path += path;
+						std::string header_path = include;
+						header_path.push_back('/');
+						header_path += path;
 
-                        std::ifstream header(header_path);
+						std::ifstream header(header_path);
 
 						if (!header.is_open())
 							continue;
-						
+
 						open = true;
 
 						cpp_parse_file(header, pp_out);
@@ -953,7 +958,7 @@ kIncludeFile:
 				}
 				else
 				{
-					std::ifstream header(kWoringDir + path);
+					std::ifstream header(kWorkingDir + path);
 
 					if (!header.is_open())
 						throw std::runtime_error("bpp: no such include file: " + path);
@@ -968,7 +973,7 @@ kIncludeFile:
 			}
 		}
 	}
-	catch (std::out_of_range& oor)
+	catch (std::out_of_range &oor)
 	{
 		return;
 	}
@@ -1036,18 +1041,18 @@ MPCC_MODULE(MPUXPreprocessor)
 
 				if (strcmp(argv[index], "--include-dir") == 0)
 				{
-					std::string inc = argv[index+1];
+					std::string inc = argv[index + 1];
 
 					skip = true;
 
 					kIncludes.push_back(inc);
-                }
+				}
 
 				if (strcmp(argv[index], "--working-dir") == 0)
 				{
-					std::string inc = argv[index+1];
+					std::string inc = argv[index + 1];
 					skip = true;
-					kWoringDir = inc;
+					kWorkingDir = inc;
 				}
 
 				if (strcmp(argv[index], "--define") == 0 &&
@@ -1056,26 +1061,26 @@ MPCC_MODULE(MPUXPreprocessor)
 				{
 					std::string macro_key = argv[index + 1];
 
-                    std::string macro_value;
-                    bool is_string = false;
+					std::string macro_value;
+					bool is_string = false;
 
-                    for (int argv_find_len = 0;
-                    argv_find_len < strlen(argv[index]);
-                    ++argv_find_len)
-                    {
-                        if (!isdigit(argv[index][argv_find_len]))
-                        {
-                            is_string = true;
-                            macro_value += "\"";
+					for (int argv_find_len = 0;
+						 argv_find_len < strlen(argv[index]);
+						 ++argv_find_len)
+					{
+						if (!isdigit(argv[index][argv_find_len]))
+						{
+							is_string = true;
+							macro_value += "\"";
 
-                            break;
-                        }
-                    }
+							break;
+						}
+					}
 
 					macro_value += argv[index + 2];
 
-                    if (is_string)
-                        macro_value += "\"";
+					if (is_string)
+						macro_value += "\"";
 
 					details::cpp_macro macro;
 					macro.fName = macro_key;
@@ -1095,20 +1100,20 @@ MPCC_MODULE(MPUXPreprocessor)
 		if (kFiles.empty())
 			return CXXKIT_EXEC_ERROR;
 
-		for (auto& file : kFiles)
+		for (auto &file : kFiles)
 		{
 			if (!std::filesystem::exists(file))
 				continue;
 
 			std::ifstream file_descriptor(file);
 			std::ofstream file_descriptor_pp(file + ".pp");
-			
+
 			cpp_parse_file(file_descriptor, file_descriptor_pp);
 		}
 
 		return 0;
 	}
-	catch(const std::runtime_error& e)
+	catch (const std::runtime_error &e)
 	{
 		std::cout << e.what() << '\n';
 	}

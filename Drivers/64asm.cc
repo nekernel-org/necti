@@ -110,7 +110,8 @@ MPCC_MODULE(MPUXAssembler64000)
     {
         if (argv[i][0] == '-')
         {
-            if (strcmp(argv[i], "--version") == 0)
+            if (strcmp(argv[i], "-version") == 0 ||
+                strcmp(argv[i], "-v") == 0)
             {
                 kStdOut << "64asm: 64x0 Assembler.\n64asm: v1.10\n64asm: Copyright (c) 2024 Mahrouss Logic.\n";
                 return 0;
@@ -118,18 +119,19 @@ MPCC_MODULE(MPUXAssembler64000)
             else if (strcmp(argv[i], "-h") == 0)
             {
                 kStdOut << "64asm: 64x0 Assembler.\n64asm: Copyright (c) 2024 Mahrouss Logic.\n";
-                kStdOut << "--version: Print program version.\n";
-                kStdOut << "--verbose: Print verbose output.\n";
-                kStdOut << "--64xxx: Compile for a subset of the X64000.\n";
+                kStdOut << "-version: Print program version.\n";
+                kStdOut << "-verbose: Print verbose output.\n";
+                kStdOut << "-binary: Output as flat binary.\n";
+                kStdOut << "-64xxx: Compile for a subset of the X64000.\n";
 
                 return 0;
             }
-            else if (strcmp(argv[i], "-fbinary") == 0)
+            else if (strcmp(argv[i], "-binary") == 0)
             {
                 kOutputAsBinary = true;
                 continue;
             }
-            else if (strcmp(argv[i], "--verbose") == 0)
+            else if (strcmp(argv[i], "-verbose") == 0)
             {
                 kVerbose = true;
                 continue;
