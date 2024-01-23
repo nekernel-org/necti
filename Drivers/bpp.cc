@@ -330,7 +330,7 @@ void cpp_parse_file(std::ifstream &hdr_file, std::ofstream &pp_out)
 				if (ParserKit::find_word(hdr_line, macro.fName) &&
 					hdr_line.find("%def") == std::string::npos)
 				{
-					auto substr = hdr_line.substr(hdr_line.find(macro.fName) + macro.fName.size());
+					auto substr = hdr_line.substr(hdr_line.find(macro.fName));
 
 					std::vector<std::string> sym_vec;
 					std::string sym_str;
@@ -395,7 +395,8 @@ void cpp_parse_file(std::ifstream &hdr_file, std::ofstream &pp_out)
 						}
 					}
 
-					hdr_line = hdr_line.replace(hdr_line.find(macro.fName), macro.fName.size() + macro.fValue.size(), substr);
+					hdr_line.replace(hdr_line.find(macro.fName), macro.fName.size(), substr);
+					hdr_line.erase(hdr_line.find(substr) + substr.size());
 				}
 			}
 

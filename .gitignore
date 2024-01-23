@@ -8,6 +8,8 @@ local.properties
 .loadpath
 .recommenders
 
+docs/
+
 # Compiled class file
 *.class
 
