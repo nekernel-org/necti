@@ -7,6 +7,17 @@
  * 	========================================================
  */
 
+/**
+ * @file String.cc
+ * @author Amlal (amlal@mahrouss-logic.com)
+ * @brief String manipulation API.
+ * @version 0.1
+ * @date 2024-01-23
+ * 
+ * @copyright Copyright (c) 2024 Mahrouss Logic
+ * 
+ */
+
 #include "String.hpp"
 #include <utility>
 
@@ -222,6 +233,7 @@ namespace CompilerKit
     StringView &StringView::operator+=(const StringView &rhs)
     {
         this->m_Data += rhs.CData();
+        
         this->m_Cur = this->m_Data.size();
         this->m_Sz = this->m_Data.size();
 

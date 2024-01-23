@@ -10,23 +10,21 @@
 
 #pragma once
 
-#include <CompilerKit/Defines.hpp>
-
 namespace CompilerKit
 {
-    // @author Mahrouss Logic
+    // @author Amlal EL Mahrouss
     // @brief Reference class, refers to a pointer of data in static memory.
     template <typename T>
     class Ref final
     {
     public:
-        Ref() = default;
+        explicit Ref() = default;
         ~Ref() = default;
 
     public:
-        Ref(T cls, const bool &strong = false) : m_Class(cls), m_Strong(strong) {}
+        explicit Ref(T cls, const bool &strong = false) : m_Class(cls), m_Strong(strong) {}
 
-        Ref &operator=(T ref)
+        Ref& operator=(T ref)
         {
             m_Class = ref;
             return *this;
@@ -71,7 +69,7 @@ namespace CompilerKit
         NonNullRef() = delete;
         NonNullRef(nullPtr) = delete;
 
-        NonNullRef(T *ref) : m_Ref(ref, true) {}
+        explicit NonNullRef(T *ref) : m_Ref(ref, true) {}
 
         Ref<T> &operator->()
         {
