@@ -57,7 +57,12 @@ static bool kVerbose = false;
 
 static std::vector<e64k_num_t> kBytes;
 
-static CompilerKit::AERecordHeader kCurrentRecord{.fName = "", .fKind = CompilerKit::kPefCode, .fSize = 0, .fOffset = 0};
+static CompilerKit::AERecordHeader kCurrentRecord {
+                                .fName = "", 
+                                .fKind = CompilerKit::kPefCode, 
+                                .fSize = 0, 
+                                .fOffset = 0 
+                                };
 
 static std::vector<CompilerKit::AERecordHeader> kRecords;
 static std::vector<std::string> kUndefinedSymbols;
@@ -100,7 +105,7 @@ namespace detail
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
-// @brief Our assembler entrypoint, the program/module starts here.
+// @brief 64x0 assembler entrypoint, the program/module starts here.
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
