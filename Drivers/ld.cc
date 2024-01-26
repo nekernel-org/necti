@@ -7,6 +7,8 @@
  * 	========================================================
  */
 
+/// bugs: 0
+
 // @file ld.cxx
 // @author Amlal El Mahrouss (amlel)
 // @brief 64x0 linker.
