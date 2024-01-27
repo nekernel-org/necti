@@ -1,20 +1,7 @@
-;; org: 0
+# Path: Source/hello_world.cxx
+# Language: RISC 64x0 MP-UX Assembly (Generated from C++)
+# Build Date: 2024-1-27
 
-export .text dec_until_zero_return
-    pla
-    jlr
-
-export .text dec_until_zero
-    pha
-    ldw r2, 10
-    ldw r1, 1
-    lda r3, dec_until_zero_return
-export .text dec_until_zero_loop
-    dec r2, r1
-    beq r2, r0, r3
-    jb dec_until_zero_loop
-
-export .text __start
-    jb dec_until_zero
-    jrl
-    jlr
+export .text _CppZ_MPUX_int@main
+mv r1, r2
+jlr

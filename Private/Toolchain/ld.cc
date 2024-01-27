@@ -34,7 +34,7 @@
 //! @brief standard PEF entry.
 #define kPefStart "__start"
 
-#define kToolVersion "ld v2.2, (c) Mahrouss Logic 2024"
+#define kToolVersion "ld v2.2.1, (c) Mahrouss Logic 2024"
 
 #define StringCompare(DST, SRC) strcmp(DST, SRC)
 

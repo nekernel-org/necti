@@ -21,7 +21,8 @@ namespace CompilerKit
 
         explicit StringView(SizeType Sz) : m_Sz(Sz)
         {
-            
+            m_Data = new char[Sz];
+            assert(m_Data);
         }
 
         ~StringView() = default;
@@ -43,18 +44,18 @@ namespace CompilerKit
 
         operator bool()
         {
-            return m_Data.empty() == false;
+            return m_Data && m_Data[0] != 0;
         }
 
         bool operator!()
         {
-            return m_Data.empty() == true;
+            return !m_Data || m_Data[0] == 0;
         }
 
       private:
-        std::basic_string<char> m_Data{""};
-        SizeType m_Sz{0};
-        SizeType m_Cur{0};
+        char* m_Data{ nullptr };
+        SizeType m_Sz{ 0 };
+        SizeType m_Cur{ 0 };
 
         friend class StringBuilder;
 

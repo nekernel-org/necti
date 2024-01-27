@@ -165,7 +165,7 @@ public:
 
     bool Compile(const std::string& text, const char* file) override;
 
-    const char* Language() override { return "64x0 C++, Generic MP/UX target."; }
+    const char* Language() override { return "64x0 C++, Generic MP/UX/h-core target."; }
 
 };
 

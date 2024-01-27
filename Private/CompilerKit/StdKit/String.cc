@@ -10,8 +10,8 @@
 /**
  * @file String.cc
  * @author Amlal (amlal@mahrouss-logic.com)
- * @brief String manipulation API.
- * @version 0.1
+ * @brief C++ String Manip API.
+ * @version 0.2
  * @date 2024-01-23
  * 
  * @copyright Copyright (c) 2024 Mahrouss Logic
@@ -25,17 +25,17 @@ namespace CompilerKit
 {
     CharType* StringView::Data()
     {
-        return m_Data.data();
+        return m_Data;
     }
 
     const CharType* StringView::CData() const
     {
-        return m_Data.c_str();
+        return m_Data;
     }
 
     SizeType StringView::Length() const
     {
-        return m_Data.size();
+        return strlen(m_Data);
     }
 
     bool StringView::operator==(const StringView &rhs) const
@@ -161,7 +161,8 @@ namespace CompilerKit
 
         for (SizeType idx = 0; idx < fmt_len; ++idx)
         {
-            if (fmt[idx] == '%') {
+            if (fmt[idx] == '%') 
+            {
                 SizeType result_cnt = idx;
 
                 for (auto y_idx = idx; y_idx < res_len; ++y_idx)
@@ -204,8 +205,10 @@ namespace CompilerKit
 
         for (SizeType idx = 0; idx < string_length(fmt); ++idx)
         {
-            if (fmt[idx] == '%') {
+            if (fmt[idx] == '%') 
+            {
                 SizeType result_cnt = idx;
+
                 for (SizeType y_idx = 0; y_idx < string_length(fmt2); ++y_idx)
                 {
                     ret[result_cnt] = fmt2[y_idx];
@@ -223,19 +226,27 @@ namespace CompilerKit
 
     StringView &StringView::operator+=(const CharType *rhs)
     {
-        this->m_Data += rhs;
-        this->m_Cur = this->m_Data.size();
-        this->m_Sz = this->m_Data.size();
+        if (strlen(rhs) > this->m_Sz)
+        {
+            throw std::runtime_error("out_of_bounds: StringView");
+        }
+
+
+        memcpy(this->m_Data + this->m_Cur, rhs, strlen(rhs));
+        this->m_Cur += strlen(rhs);
 
         return *this;
     }
 
     StringView &StringView::operator+=(const StringView &rhs)
     {
-        this->m_Data += rhs.CData();
-        
-        this->m_Cur = this->m_Data.size();
-        this->m_Sz = this->m_Data.size();
+        if (rhs.m_Cur > this->m_Sz)
+        {
+            throw std::runtime_error("out_of_bounds: StringView");
+        }
+
+        memcpy(this->m_Data + this->m_Cur, rhs.CData(), strlen(rhs.CData()));
+        this->m_Cur += strlen(rhs.CData());
 
         return *this;
     }
