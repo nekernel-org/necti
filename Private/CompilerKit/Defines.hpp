@@ -30,8 +30,8 @@
 #define Int64 int64_t
 #define UInt64 uint64_t
 
-#define Int32 int32_t
-#define UInt32 uint32_t
+#define Int32 int
+#define UInt32 unsigned
 
 #define Bool bool
 

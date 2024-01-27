@@ -1,0 +1,10 @@
+- We use the Mahrouss Logic x86 Standard:
+- Register is prefixed with 'r' and hols it's id.
+- Register Dest first, Source second, example: mov rd, rs
+- #code_<isa>_<features>, which will let select what
+  instructions to use.
+
+
+TODO:
+	Encode instructions [ X ]
+	Extend instructions support [ ]

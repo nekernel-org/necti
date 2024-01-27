@@ -134,8 +134,17 @@ namespace CompilerKit
         explicit NumberCast(UInt64 raw) : raw(raw) {}
 		~NumberCast() { raw = 0; }
 
-        char number[8];
+        CharType number[8];
         UInt64 raw;
+    };
+
+    union NumberCast32 final
+    {
+        explicit NumberCast32(UInt32 raw) : raw(raw) {}
+        ~NumberCast32() { raw = 0; }
+
+        CharType number[4];
+        UInt32 raw;
     };
 }
 

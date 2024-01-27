@@ -143,12 +143,6 @@ MPCC_MODULE(MPUXAssemblerAMD64)
     CpuCodeAMD64 lea{.fName = "lea", .fOpcode = 0x8D};
     kOpcodesAMD64.push_back(lea);
 
-    for (e64_hword_t i = 0xA0; i < 0xA3; i++)
-    {
-        CpuCodeAMD64 mov{.fName = "mov", .fOpcode = i};
-        kOpcodesAMD64.push_back(mov);
-    }
-
     CpuCodeAMD64 mov{.fName = "nop", .fOpcode = 0x90};
     kOpcodesAMD64.push_back(mov);
 
@@ -350,10 +344,15 @@ MPCC_MODULE(MPUXAssemblerAMD64)
         // byte from byte, we write this.
         for (auto &byte : kBytes)
         {
-            for (size_t i = 0; i < sizeof(byte); i++)
+            if (byte == 0)
+                continue;
+
+            if (byte == 0xFF)
             {
-                file_ptr_out << reinterpret_cast<const char *>(&byte)[i];
+                byte = 0;
             }
+
+            file_ptr_out << reinterpret_cast<const char *>(&byte)[0];
         }
 
         if (kVerbose)
@@ -656,11 +655,14 @@ bool CompilerKit::PlatformAssemblerAMD64::WriteNumber(const std::size_t &pos, st
             }
         }
 
-        CompilerKit::NumberCast num(strtoq(jump_label.substr(pos + 2).c_str(),
+        CompilerKit::NumberCast32 num(strtoq(jump_label.substr(pos + 2).c_str(),
                                            nullptr, 16));
 
         for (char &i : num.number)
         {
+            if (i == 0)
+                i = 0xFF;
+
             kBytes.push_back(i);
         }
 
@@ -684,7 +686,7 @@ bool CompilerKit::PlatformAssemblerAMD64::WriteNumber(const std::size_t &pos, st
             }
         }
 
-        CompilerKit::NumberCast num(strtoq(jump_label.substr(pos + 2).c_str(),
+        CompilerKit::NumberCast32 num(strtoq(jump_label.substr(pos + 2).c_str(),
                                            nullptr, 2));
 
         if (kVerbose)
@@ -694,6 +696,9 @@ bool CompilerKit::PlatformAssemblerAMD64::WriteNumber(const std::size_t &pos, st
 
         for (char &i : num.number)
         {
+            if (i == 0)
+                i = 0xFF;
+
             kBytes.push_back(i);
         }
 
@@ -712,7 +717,7 @@ bool CompilerKit::PlatformAssemblerAMD64::WriteNumber(const std::size_t &pos, st
             }
         }
 
-        CompilerKit::NumberCast num(strtoq(jump_label.substr(pos + 2).c_str(),
+        CompilerKit::NumberCast32 num(strtoq(jump_label.substr(pos + 2).c_str(),
                                            nullptr, 7));
 
         if (kVerbose)
@@ -722,6 +727,9 @@ bool CompilerKit::PlatformAssemblerAMD64::WriteNumber(const std::size_t &pos, st
 
         for (char &i : num.number)
         {
+            if (i == 0)
+                i = 0xFF;
+
             kBytes.push_back(i);
         }
 
@@ -744,11 +752,14 @@ bool CompilerKit::PlatformAssemblerAMD64::WriteNumber(const std::size_t &pos, st
         }
     }
 
-    CompilerKit::NumberCast num(strtoq(jump_label.substr(pos).c_str(),
+    CompilerKit::NumberCast32 num(strtoq(jump_label.substr(pos).c_str(),
                                        nullptr, 10));
 
     for (char &i : num.number)
     {
+        if (i == 0)
+            i = 0xFF;
+
         kBytes.push_back(i);
     }
 
@@ -781,62 +792,9 @@ bool CompilerKit::PlatformAssemblerAMD64::WriteLine(std::string &line, const std
 
             kBytes.emplace_back(opcodeAMD64.fOpcode);
 
-            if (name == "mov")
+            if (name.find("mov") != std::string::npos)
             {
-                std::size_t found_some = 0UL;
-
-                for (size_t line_index = 0UL; line_index < line.size(); line_index++)
-                {
-                    if (line[line_index] == kAsmRegisterPrefix[0] &&
-                        isdigit(line[line_index + 1]))
-                    {
-                        std::string register_syntax = kAsmRegisterPrefix;
-                        register_syntax += line[line_index + 1];
-
-                        if (isdigit(line[line_index + 2]))
-                            register_syntax += line[line_index + 2];
-
-                        std::string reg_str;
-                        reg_str += line[line_index + 1];
-
-                        if (isdigit(line[line_index + 2]))
-                            reg_str += line[line_index + 2];
-
-                        // it ranges from r0 to r19
-                        // something like r190 doesn't exist in the instruction set.
-                        if (kOutputArch == CompilerKit::kPefArch64000)
-                        {
-                            if (isdigit(line[line_index + 3]) &&
-                                isdigit(line[line_index + 2]))
-                            {
-                                reg_str += line[line_index + 3];
-                                detail::print_error("invalid register index, r" + reg_str + "\nnote: The 64x0 accepts registers from r0 to r20.", file);
-                                throw std::runtime_error("invalid_register_index");
-                            }
-                        }
-
-                        // finally cast to a size_t
-                        std::size_t reg_index = strtoq(
-                            reg_str.c_str(),
-                            nullptr,
-                            10);
-
-                        if (reg_index > kAsmRegisterLimit)
-                        {
-                            detail::print_error("invalid register index, r" + reg_str, file);
-                            throw std::runtime_error("invalid_register_index");
-                        }
-
-                        kBytes.emplace_back(reg_index);
-                        ++found_some;
-
-                        if (kVerbose)
-                        {
-                            kStdOut << "64asm: Register found: " << register_syntax << "\n";
-                            kStdOut << "64asm: Register amount in instruction: " << found_some << "\n";
-                        }
-                    }
-                }
+                this->WriteNumber(line.find(name) + name.size() + 2, line);
             }
         }
     }
