@@ -21,7 +21,7 @@
 // @file bpp.cc
 // @brief BCCL preprocessor.
 
-typedef Int32 (*cpp_parser_fn_t)(std::string &line, std::ifstream &hdr_file, std::ofstream &pp_out);
+typedef Int32 (*bpp_parser_fn_t)(std::string &line, std::ifstream &hdr_file, std::ofstream &pp_out);
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
@@ -41,34 +41,34 @@ namespace details
 		kNotEqual,
 	};
 
-	struct cpp_macro_condition final
+	struct bpp_macro_condition final
 	{
 		int32_t fType;
 		std::string fTypeName;
 	};
 
-	struct cpp_macro final
+	struct bpp_macro final
 	{
 		std::vector<std::string> fArgs;
 		std::string fName;
 		std::string fValue;
 	};
 
-	class cpp_pragma final
+	class bpp_pragma final
 	{
 	public:
-		explicit cpp_pragma() = default;
-		~cpp_pragma() = default;
+		explicit bpp_pragma() = default;
+		~bpp_pragma() = default;
 
-		CXXKIT_COPY_DEFAULT(cpp_pragma);
+		CXXKIT_COPY_DEFAULT(bpp_pragma);
 
 		std::string fMacroName;
-		cpp_parser_fn_t fParse;
+		bpp_parser_fn_t fParse;
 	};
 }
 
 static std::vector<std::string> kFiles;
-static std::vector<details::cpp_macro> kMacros;
+static std::vector<details::bpp_macro> kMacros;
 static std::vector<std::string> kIncludes;
 
 static std::string kWorkingDir;
@@ -89,13 +89,13 @@ static std::vector<std::string> kKeywords = {
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
-// @name cpp_parse_if_condition
+// @name bpp_parse_if_condition
 // @brief parse #if condition
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
-int32_t cpp_parse_if_condition(details::cpp_macro_condition &cond,
-							   details::cpp_macro &macro,
+int32_t bpp_parse_if_condition(details::bpp_macro_condition &cond,
+							   details::bpp_macro &macro,
 							   bool &inactive_code, bool &defined,
 							   std::string &macro_str)
 {
@@ -278,12 +278,12 @@ std::vector<std::string> kAllIncludes;
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
-// @name cpp_parse_file
+// @name bpp_parse_file
 // @brief parse file to preprocess it.
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
-void cpp_parse_file(std::ifstream &hdr_file, std::ofstream &pp_out)
+void bpp_parse_file(std::ifstream &hdr_file, std::ofstream &pp_out)
 {
 	std::string hdr_line;
 	std::string line_after_include;
@@ -497,7 +497,7 @@ void cpp_parse_file(std::ifstream &hdr_file, std::ofstream &pp_out)
 					}
 				}
 
-				details::cpp_macro macro;
+				details::bpp_macro macro;
 
 				macro.fArgs = args;
 				macro.fName = macro_key;
@@ -744,7 +744,7 @@ void cpp_parse_file(std::ifstream &hdr_file, std::ofstream &pp_out)
 			{
 				inactive_code = true;
 
-				std::vector<details::cpp_macro_condition> cpp_macro_condition_list = {
+				std::vector<details::bpp_macro_condition> bpp_macro_condition_list = {
 					{
 						.fType = details::kEqual,
 						.fTypeName = "==",
@@ -773,7 +773,7 @@ void cpp_parse_file(std::ifstream &hdr_file, std::ofstream &pp_out)
 
 				int32_t good_to_go = 0;
 
-				for (auto &macro_condition : cpp_macro_condition_list)
+				for (auto &macro_condition : bpp_macro_condition_list)
 				{
 					if (hdr_line.find(macro_condition.fTypeName) != std::string::npos)
 					{
@@ -781,7 +781,7 @@ void cpp_parse_file(std::ifstream &hdr_file, std::ofstream &pp_out)
 						{
 							if (hdr_line.find(found_macro.fName) != std::string::npos)
 							{
-								good_to_go = cpp_parse_if_condition(macro_condition, found_macro,
+								good_to_go = bpp_parse_if_condition(macro_condition, found_macro,
 																	inactive_code, defined,
 																	hdr_line);
 
@@ -949,7 +949,7 @@ void cpp_parse_file(std::ifstream &hdr_file, std::ofstream &pp_out)
 
 						open = true;
 
-						cpp_parse_file(header, pp_out);
+						bpp_parse_file(header, pp_out);
 
 						break;
 					}
@@ -966,7 +966,7 @@ void cpp_parse_file(std::ifstream &hdr_file, std::ofstream &pp_out)
 					if (!header.is_open())
 						throw std::runtime_error("bpp: no such include file: " + path);
 
-					cpp_parse_file(header, pp_out);
+					bpp_parse_file(header, pp_out);
 				}
 			}
 			else
@@ -995,13 +995,13 @@ MPCC_MODULE(MPUXPreprocessor)
 		bool skip = false;
 		bool double_skip = false;
 
-		details::cpp_macro macro_1;
+		details::bpp_macro macro_1;
 		macro_1.fName = "__true";
 		macro_1.fValue = "1";
 
 		kMacros.push_back(macro_1);
 
-		details::cpp_macro macro_0;
+		details::bpp_macro macro_0;
 		macro_0.fName = "__false";
 		macro_0.fValue = "0";
 
@@ -1085,7 +1085,7 @@ MPCC_MODULE(MPUXPreprocessor)
 					if (is_string)
 						macro_value += "\"";
 
-					details::cpp_macro macro;
+					details::bpp_macro macro;
 					macro.fName = macro_key;
 					macro.fValue = macro_value;
 
@@ -1111,7 +1111,7 @@ MPCC_MODULE(MPUXPreprocessor)
 			std::ifstream file_descriptor(file);
 			std::ofstream file_descriptor_pp(file + ".pp");
 
-			cpp_parse_file(file_descriptor, file_descriptor_pp);
+			bpp_parse_file(file_descriptor, file_descriptor_pp);
 		}
 
 		return 0;

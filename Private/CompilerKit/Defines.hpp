@@ -133,7 +133,14 @@ namespace CompilerKit
 
 typedef char char_type;
 
-#define kObjectFileExt     ".o"
+#define kObjectFileExt  ".o"
 #define kAsmFileExts    { ".64x", ".32x", ".masm", ".s", ".S" }
 
+#ifdef __MODULE_NEED__
+#	define MPCC_MODULE(name) int name(int argc, char** argv)
+#else
+#	define MPCC_MODULE(name) int main(int argc, char** argv)
+#endif /* ifdef __MODULE_NEED__ */
+
 #endif /* ifndef __CXXKIT_DEFINES_HPP__ */
+

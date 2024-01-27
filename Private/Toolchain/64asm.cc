@@ -302,7 +302,7 @@ MPCC_MODULE(MPUXAssembler64000)
         {
             if (kVerbose)
             {
-                kStdOut << "64asm: Skip object write...\n";
+                kStdOut << "64asm: Write raw binary...\n";
             }
         }
 
@@ -313,13 +313,13 @@ MPCC_MODULE(MPUXAssembler64000)
         }
 
         if (kVerbose)
-            kStdOut << "64asm: Wrote program bytes to file...\n";
+            kStdOut << "64asm: Wrote file with program in it.";
 
         file_ptr_out.flush();
         file_ptr_out.close();
 
         if (kVerbose)
-            kStdOut << "64asm: Exit succeeded with code 0.\n";
+            kStdOut << "64asm: Exit succeeded.\n";
 
         return 0;
     }
@@ -327,7 +327,7 @@ MPCC_MODULE(MPUXAssembler64000)
 asm_fail_exit:
 
     if (kVerbose)
-        kStdOut << "64asm: Exit failed with code -1.\n";
+        kStdOut << "64asm: Exit failed.\n";
 
     return -1;
 }

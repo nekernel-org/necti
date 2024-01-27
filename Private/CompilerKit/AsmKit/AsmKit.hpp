@@ -121,10 +121,3 @@ namespace CompilerKit
     };
 }
 
-#ifdef __MODULE_NEED__
-#	define MPCC_MODULE(name) int name(int argc, char** argv)
-#else
-#	define MPCC_MODULE(name) int main(int argc, char** argv)
-#endif /* ifdef __MODULE_NEED__ */
-
-

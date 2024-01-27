@@ -1,30 +1,18 @@
-# MPCC
+# MP-CC
 ## MP-UX Compiler Collection.
 
-### What is this?
+Start by cloning the repo:
 
-It is a suite of compilers, assembler, linker, preprocessor
-In order to help the programmer achieve its task.
+```
+git clone git@github.com:Mahrouss-Logic/mp-cc.git
+```
 
-### Supported languages
+Then go to `Private/Toolchain/` And execute:
 
-- Optimized C++
-- Optimized D
-- BCCL (Binary Compatible Computer Language, common target for mp based compilers.)
-- MP-UX Assembly (64x0 and 32x0 syntax)
+```
+make all
+```
 
-### Actually contains:
-
-bpp: BCCL/MASM preprocessor
-<br>
-ccplus: 64x0/32x0 Optimized C++ compiler
-<br>
-bccl: 64x0/32x0 BCCL compiler
-<br>
-ld: mp-ux linker
-<br>
-masm: 64x0 mp-ux assembler
-<br>
 Author: Amlal El Mahrouss
 
 ##### Copyright 2024, Mahrouss Logic, all rights reserved.
