@@ -31,7 +31,7 @@
 
 struct CpuCode32x0
 {
-    const char fName[16];
+    const char fName[32];
     char fOpcode;
     char fSize;
     char fFunct3;

@@ -11,6 +11,7 @@ bin/mkcdfs
 bin/ccplus
 bin/cppfront
 bin/bccl
+bin/i64asm
 
 bin/Assembly.*
 

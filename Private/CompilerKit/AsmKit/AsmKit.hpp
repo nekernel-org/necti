@@ -75,6 +75,24 @@ namespace CompilerKit
 
 	};
 
+#ifdef __ASM_NEED_AMD64__
+
+	class PlatformAssemblerAMD64 final : public PlatformAssembler
+	{
+	public:
+		explicit PlatformAssemblerAMD64() = default;
+		~PlatformAssemblerAMD64() = default;
+
+		CXXKIT_COPY_DEFAULT(PlatformAssemblerAMD64);
+
+		virtual std::string CheckLine(std::string &line, const std::string &file) override;
+		virtual bool WriteLine(std::string &line, const std::string &file) override;
+		virtual bool WriteNumber(const std::size_t& pos, std::string& from_what) override;
+
+	};
+
+#endif // __ASM_NEED_AMD64__
+
 #ifdef __ASM_NEED_64x0__
 
 	class PlatformAssembler64x0 final : public PlatformAssembler

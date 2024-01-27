@@ -31,6 +31,9 @@ CXX_OUTPUT=bin/ccplus
 ASM_SRC=64asm.cc ../CompilerKit/StdKit/*.cc ../CompilerKit/AsmKit/*.cc
 ASM_OUTPUT=bin/64asm
 
+IASM_SRC=i64asm.cc ../CompilerKit/StdKit/*.cc ../CompilerKit/AsmKit/*.cc
+IASM_OUTPUT=bin/i64asm
+
 .PHONY: all
 all: cl
 	@echo "[make] done build."
@@ -40,6 +43,7 @@ cl: ld
 	$(LINK_CC) $(COMMON_INC) $(PP_SRC) -o $(PP_OUTPUT)
 	$(LINK_CC) $(COMMON_INC) $(CC_SRC) -o $(CC_OUTPUT)
 	$(LINK_CC) $(COMMON_INC) $(CXX_SRC) -o $(CXX_OUTPUT)
+	$(LINK_CC) $(COMMON_INC) $(IASM_SRC) -o $(IASM_OUTPUT)
 	$(LINK_CC) $(COMMON_INC) $(ASM_SRC) -o $(ASM_OUTPUT)
 
 .PHONY: ld
