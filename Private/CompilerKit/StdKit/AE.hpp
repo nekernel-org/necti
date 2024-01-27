@@ -138,4 +138,4 @@ namespace CompilerKit::Utils
 		}
 
 	};
-}
+} // namespace CompilerKit::Utils

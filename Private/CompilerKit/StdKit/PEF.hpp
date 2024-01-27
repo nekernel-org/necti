@@ -85,7 +85,7 @@ namespace CompilerKit
         kPefZero = 0xE,
 	    kPefLinkerID = 0x1,
     };
-}
+} // namespace CompilerKit
 
 inline std::ofstream& operator<<(std::ofstream& fp, CompilerKit::PEFContainer& container)
 {
