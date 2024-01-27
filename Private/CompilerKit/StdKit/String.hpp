@@ -14,18 +14,33 @@
 
 namespace CompilerKit
 {
+    /**
+     * @brief StringView class, contains a C string and manages it.
+     * @note No need to manage it it's getting deleted by default.
+     */
+
     class StringView final
     {
       public:
-        StringView() = delete;
+        explicit StringView() = delete;
 
-        explicit StringView(SizeType Sz) : m_Sz(Sz)
+        explicit StringView(SizeType Sz) noexcept
+            : m_Sz(Sz)
         {
             m_Data = new char[Sz];
             assert(m_Data);
         }
 
-        ~StringView() = default;
+        ~StringView() noexcept
+        {
+            if (m_Data)
+            {
+                memset(m_Data, 0, m_Sz);
+                delete[] m_Data;
+
+                m_Data = nullptr;
+            }
+        }
 
         CXXKIT_COPY_DEFAULT(StringView);
 
@@ -61,6 +76,10 @@ namespace CompilerKit
 
     };
 
+    /**
+     * @brief StringBuilder class
+     * @note These results shall call delete[] after they're used.
+     */
     struct StringBuilder final
     {
         static StringView Construct(const CharType *data);

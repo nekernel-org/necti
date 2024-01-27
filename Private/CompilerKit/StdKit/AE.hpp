@@ -91,17 +91,28 @@ std::ifstream &operator>>(std::ifstream& fp, CompilerKit::AERecordHeader& contai
 
 namespace CompilerKit::Utils
 {
+	/**
+	 * @brief AE Reader protocol
+	 * 
+	 */
 	class AEReadableProtocol final
 	{
 	public:
-		std::ifstream USED_FP;
+		std::ifstream FP;
 
 	public:
-		AEReadableProtocol() = default;
+		explicit AEReadableProtocol() = default;
 		~AEReadableProtocol() = default;
 
 		CXXKIT_COPY_DELETE(AEReadableProtocol);
 
+		/**
+		 * @brief Read AE record
+		 * 
+		 * @param raw the containing buffer
+		 * @param sz it's size (without sizeof(AERecordHeader) added to it.)
+		 * @return AERecordHeaderPtr 
+		 */
 		AERecordHeaderPtr Read(char* raw, std::size_t sz)
 		{
 			if (!raw)
@@ -111,10 +122,18 @@ namespace CompilerKit::Utils
 		}
 
 	private:
+	/**
+	 * @brief Implementation of Read for raw classes.
+	 * 
+	 * @tparam TypeClass The class to read.
+	 * @param raw the buffer
+	 * @param sz the size
+	 * @return TypeClass* the returning class. 
+	 */
 		template <typename TypeClass>
 		TypeClass* _Read(char* raw, std::size_t sz)
 		{
-            USED_FP.read(raw, std::streamsize(sz));
+            FP.read(raw, std::streamsize(sz));
 			return reinterpret_cast<TypeClass*>(raw);
 		}
 

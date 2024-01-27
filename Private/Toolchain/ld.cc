@@ -222,8 +222,8 @@ MPCC_MODULE(MPUXLinker)
 
         CompilerKit::AEHeader hdr{};
 
-        readProto.USED_FP = std::ifstream(i, std::ifstream::binary);
-        readProto.USED_FP >> hdr;
+        readProto.FP = std::ifstream(i, std::ifstream::binary);
+        readProto.FP >> hdr;
 
         auto ae_header = hdr;
 
@@ -317,15 +317,15 @@ MPCC_MODULE(MPUXLinker)
             std::vector<char> bytes;
             bytes.resize(ae_header.fCodeSize);
 
-            readProto.USED_FP.seekg(std::streamsize(ae_header.fStartCode));
-            readProto.USED_FP.read(bytes.data(), std::streamsize(ae_header.fCodeSize));
+            readProto.FP.seekg(std::streamsize(ae_header.fStartCode));
+            readProto.FP.read(bytes.data(), std::streamsize(ae_header.fCodeSize));
 
             for (auto &byte : bytes)
             {
                 kObjectBytes.push_back(byte);
             }
 
-            readProto.USED_FP.close();
+            readProto.FP.close();
 
             continue;
         }
