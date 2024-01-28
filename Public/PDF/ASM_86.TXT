@@ -7,4 +7,5 @@
 
 TODO:
 	Encode instructions [ X ]
+	Fix MOV ModRM [ ]
 	Extend instructions support [ ]

@@ -642,109 +642,109 @@ bool CompilerKit::PlatformAssemblerAMD64::WriteNumber(const std::size_t &pos, st
 
     switch (jump_label[pos + 1])
     {
-    case 'x':
-    {
-        if (auto res = strtoq(jump_label.substr(pos + 2).c_str(),
-                              nullptr, 16);
-            !res)
+        case 'x':
         {
-            if (errno != 0)
+            if (auto res = strtoq(jump_label.substr(pos + 2).c_str(),
+                                  nullptr, 16);
+                    !res)
             {
-                detail::print_error("invalid hex number: " + jump_label, "i64asm");
-                throw std::runtime_error("invalid_hex");
+                if (errno != 0)
+                {
+                    detail::print_error("invalid hex number: " + jump_label, "i64asm");
+                    throw std::runtime_error("invalid_hex");
+                }
             }
-        }
 
-        CompilerKit::NumberCast32 num(strtoq(jump_label.substr(pos + 2).c_str(),
-                                           nullptr, 16));
+            CompilerKit::NumberCast64 num = CompilerKit::NumberCast64(strtoq(jump_label.substr(pos + 2).c_str(),
+                                                   nullptr, 16));
 
-        for (char &i : num.number)
-        {
-            if (i == 0)
-                i = 0xFF;
-
-            kBytes.push_back(i);
-        }
-
-        if (kVerbose)
-        {
-            kStdOut << "i64asm: found a base 16 number here: " << jump_label.substr(pos) << "\n";
-        }
-
-        return true;
-    }
-    case 'b':
-    {
-        if (auto res = strtoq(jump_label.substr(pos + 2).c_str(),
-                              nullptr, 2);
-            !res)
-        {
-            if (errno != 0)
+            for (char &i : num.number)
             {
-                detail::print_error("invalid binary number: " + jump_label, "i64asm");
-                throw std::runtime_error("invalid_bin");
+                if (i == 0)
+                    i = 0xFF;
+
+                kBytes.push_back(i);
             }
-        }
 
-        CompilerKit::NumberCast32 num(strtoq(jump_label.substr(pos + 2).c_str(),
-                                           nullptr, 2));
-
-        if (kVerbose)
-        {
-            kStdOut << "i64asm: found a base 2 number here: " << jump_label.substr(pos) << "\n";
-        }
-
-        for (char &i : num.number)
-        {
-            if (i == 0)
-                i = 0xFF;
-
-            kBytes.push_back(i);
-        }
-
-        return true;
-    }
-    case 'o':
-    {
-        if (auto res = strtoq(jump_label.substr(pos + 2).c_str(),
-                              nullptr, 7);
-            !res)
-        {
-            if (errno != 0)
+            if (kVerbose)
             {
-                detail::print_error("invalid octal number: " + jump_label, "i64asm");
-                throw std::runtime_error("invalid_octal");
+                kStdOut << "i64asm: found a base 16 number here: " << jump_label.substr(pos) << "\n";
             }
+
+            return true;
         }
-
-        CompilerKit::NumberCast32 num(strtoq(jump_label.substr(pos + 2).c_str(),
-                                           nullptr, 7));
-
-        if (kVerbose)
+        case 'b':
         {
-            kStdOut << "i64asm: found a base 8 number here: " << jump_label.substr(pos) << "\n";
-        }
+            if (auto res = strtoq(jump_label.substr(pos + 2).c_str(),
+                                  nullptr, 2);
+                    !res)
+            {
+                if (errno != 0)
+                {
+                    detail::print_error("invalid binary number: " + jump_label, "i64asm");
+                    throw std::runtime_error("invalid_bin");
+                }
+            }
 
-        for (char &i : num.number)
+            CompilerKit::NumberCast64 num = CompilerKit::NumberCast64(strtoq(jump_label.substr(pos + 2).c_str(),
+                                                   nullptr, 2));
+
+            if (kVerbose)
+            {
+                kStdOut << "i64asm: found a base 2 number here: " << jump_label.substr(pos) << "\n";
+            }
+
+            for (char &i : num.number)
+            {
+                if (i == 0)
+                    i = 0xFF;
+
+                kBytes.push_back(i);
+            }
+
+            return true;
+        }
+        case 'o':
         {
-            if (i == 0)
-                i = 0xFF;
+            if (auto res = strtoq(jump_label.substr(pos + 2).c_str(),
+                                  nullptr, 7);
+                    !res)
+            {
+                if (errno != 0)
+                {
+                    detail::print_error("invalid octal number: " + jump_label, "i64asm");
+                    throw std::runtime_error("invalid_octal");
+                }
+            }
 
-            kBytes.push_back(i);
+            CompilerKit::NumberCast64 num = CompilerKit::NumberCast64(strtoq(jump_label.substr(pos + 2).c_str(),
+                                                   nullptr, 7));
+
+            if (kVerbose)
+            {
+                kStdOut << "i64asm: found a base 8 number here: " << jump_label.substr(pos) << "\n";
+            }
+
+            for (char &i : num.number)
+            {
+                if (i == 0)
+                    i = 0xFF;
+
+                kBytes.push_back(i);
+            }
+
+            return true;
         }
-
-        return true;
-    }
-    default:
-    {
-        break;
-    }
+        default:
+        {
+            break;
+        }
     }
 
     /* check for errno and stuff like that */
     if (auto res = strtoq(jump_label.substr(pos).c_str(),
                           nullptr, 10);
-        !res)
+            !res)
     {
         if (errno != 0)
         {
@@ -752,8 +752,8 @@ bool CompilerKit::PlatformAssemblerAMD64::WriteNumber(const std::size_t &pos, st
         }
     }
 
-    CompilerKit::NumberCast32 num(strtoq(jump_label.substr(pos).c_str(),
-                                       nullptr, 10));
+    CompilerKit::NumberCast64 num = CompilerKit::NumberCast64(strtoq(jump_label.substr(pos).c_str(),
+                                           nullptr, 10));
 
     for (char &i : num.number)
     {
@@ -762,6 +762,390 @@ bool CompilerKit::PlatformAssemblerAMD64::WriteNumber(const std::size_t &pos, st
 
         kBytes.push_back(i);
     }
+
+    if (kVerbose)
+    {
+        kStdOut << "i64asm: found a base 10 number here: " << jump_label.substr(pos) << "\n";
+    }
+
+    return true;
+}
+
+bool CompilerKit::PlatformAssemblerAMD64::WriteNumber32(const std::size_t &pos, std::string &jump_label)
+{
+    if (!isdigit(jump_label[pos]))
+        return false;
+
+    switch (jump_label[pos + 1])
+    {
+        case 'x':
+        {
+            if (auto res = strtoq(jump_label.substr(pos + 2).c_str(),
+                                  nullptr, 16);
+                    !res)
+            {
+                if (errno != 0)
+                {
+                    detail::print_error("invalid hex number: " + jump_label, "i64asm");
+                    throw std::runtime_error("invalid_hex");
+                }
+            }
+
+            CompilerKit::NumberCast32 num = CompilerKit::NumberCast32(strtoq(jump_label.substr(pos + 2).c_str(),
+                                                   nullptr, 16));
+
+            for (char &i : num.number)
+            {
+                if (i == 0)
+                    i = 0xFF;
+
+                kBytes.push_back(i);
+            }
+
+            if (kVerbose)
+            {
+                kStdOut << "i64asm: found a base 16 number here: " << jump_label.substr(pos) << "\n";
+            }
+
+            return true;
+        }
+        case 'b':
+        {
+            if (auto res = strtoq(jump_label.substr(pos + 2).c_str(),
+                                  nullptr, 2);
+                    !res)
+            {
+                if (errno != 0)
+                {
+                    detail::print_error("invalid binary number: " + jump_label, "i64asm");
+                    throw std::runtime_error("invalid_bin");
+                }
+            }
+
+            CompilerKit::NumberCast32 num = CompilerKit::NumberCast32(strtoq(jump_label.substr(pos + 2).c_str(),
+                                                   nullptr, 2));
+
+            if (kVerbose)
+            {
+                kStdOut << "i64asm: found a base 2 number here: " << jump_label.substr(pos) << "\n";
+            }
+
+            for (char &i : num.number)
+            {
+                if (i == 0)
+                    i = 0xFF;
+
+                kBytes.push_back(i);
+            }
+
+            return true;
+        }
+        case 'o':
+        {
+            if (auto res = strtoq(jump_label.substr(pos + 2).c_str(),
+                                  nullptr, 7);
+                    !res)
+            {
+                if (errno != 0)
+                {
+                    detail::print_error("invalid octal number: " + jump_label, "i64asm");
+                    throw std::runtime_error("invalid_octal");
+                }
+            }
+
+            CompilerKit::NumberCast32 num = CompilerKit::NumberCast32(strtoq(jump_label.substr(pos + 2).c_str(),
+                                                   nullptr, 7));
+
+            if (kVerbose)
+            {
+                kStdOut << "i64asm: found a base 8 number here: " << jump_label.substr(pos) << "\n";
+            }
+
+            for (char &i : num.number)
+            {
+                if (i == 0)
+                    i = 0xFF;
+
+                kBytes.push_back(i);
+            }
+
+            return true;
+        }
+        default:
+        {
+            break;
+        }
+    }
+
+    /* check for errno and stuff like that */
+    if (auto res = strtoq(jump_label.substr(pos).c_str(),
+                          nullptr, 10);
+            !res)
+    {
+        if (errno != 0)
+        {
+            return false;
+        }
+    }
+
+    CompilerKit::NumberCast32 num = CompilerKit::NumberCast32(strtoq(jump_label.substr(pos).c_str(),
+                                           nullptr, 10));
+
+    for (char &i : num.number)
+    {
+        if (i == 0)
+            i = 0xFF;
+
+        kBytes.push_back(i);
+    }
+
+    if (kVerbose)
+    {
+        kStdOut << "i64asm: found a base 10 number here: " << jump_label.substr(pos) << "\n";
+    }
+
+    return true;
+}
+
+bool CompilerKit::PlatformAssemblerAMD64::WriteNumber16(const std::size_t &pos, std::string &jump_label)
+{
+    if (!isdigit(jump_label[pos]))
+        return false;
+
+    switch (jump_label[pos + 1])
+    {
+        case 'x':
+        {
+            if (auto res = strtoq(jump_label.substr(pos + 2).c_str(),
+                                  nullptr, 16);
+                    !res)
+            {
+                if (errno != 0)
+                {
+                    detail::print_error("invalid hex number: " + jump_label, "i64asm");
+                    throw std::runtime_error("invalid_hex");
+                }
+            }
+
+            CompilerKit::NumberCast16 num = CompilerKit::NumberCast16(strtoq(jump_label.substr(pos + 2).c_str(),
+                                                   nullptr, 16));
+
+            for (char &i : num.number)
+            {
+                if (i == 0)
+                    i = 0xFF;
+
+                kBytes.push_back(i);
+            }
+
+            if (kVerbose)
+            {
+                kStdOut << "i64asm: found a base 16 number here: " << jump_label.substr(pos) << "\n";
+            }
+
+            return true;
+        }
+        case 'b':
+        {
+            if (auto res = strtoq(jump_label.substr(pos + 2).c_str(),
+                                  nullptr, 2);
+                    !res)
+            {
+                if (errno != 0)
+                {
+                    detail::print_error("invalid binary number: " + jump_label, "i64asm");
+                    throw std::runtime_error("invalid_bin");
+                }
+            }
+
+            CompilerKit::NumberCast16 num = CompilerKit::NumberCast16(strtoq(jump_label.substr(pos + 2).c_str(),
+                                                   nullptr, 2));
+
+            if (kVerbose)
+            {
+                kStdOut << "i64asm: found a base 2 number here: " << jump_label.substr(pos) << "\n";
+            }
+
+            for (char &i : num.number)
+            {
+                if (i == 0)
+                    i = 0xFF;
+
+                kBytes.push_back(i);
+            }
+
+            return true;
+        }
+        case 'o':
+        {
+            if (auto res = strtoq(jump_label.substr(pos + 2).c_str(),
+                                  nullptr, 7);
+                    !res)
+            {
+                if (errno != 0)
+                {
+                    detail::print_error("invalid octal number: " + jump_label, "i64asm");
+                    throw std::runtime_error("invalid_octal");
+                }
+            }
+
+            CompilerKit::NumberCast16 num = CompilerKit::NumberCast16(strtoq(jump_label.substr(pos + 2).c_str(),
+                                                   nullptr, 7));
+
+            if (kVerbose)
+            {
+                kStdOut << "i64asm: found a base 8 number here: " << jump_label.substr(pos) << "\n";
+            }
+
+            for (char &i : num.number)
+            {
+                if (i == 0)
+                    i = 0xFF;
+
+                kBytes.push_back(i);
+            }
+
+            return true;
+        }
+        default:
+        {
+            break;
+        }
+    }
+
+    /* check for errno and stuff like that */
+    if (auto res = strtoq(jump_label.substr(pos).c_str(),
+                          nullptr, 10);
+            !res)
+    {
+        if (errno != 0)
+        {
+            return false;
+        }
+    }
+
+    CompilerKit::NumberCast16 num = CompilerKit::NumberCast16(strtoq(jump_label.substr(pos).c_str(),
+                                           nullptr, 10));
+
+    for (char &i : num.number)
+    {
+        if (i == 0)
+            i = 0xFF;
+
+        kBytes.push_back(i);
+    }
+
+    if (kVerbose)
+    {
+        kStdOut << "i64asm: found a base 10 number here: " << jump_label.substr(pos) << "\n";
+    }
+
+    return true;
+}
+
+bool CompilerKit::PlatformAssemblerAMD64::WriteNumber8(const std::size_t &pos, std::string &jump_label)
+{
+    if (!isdigit(jump_label[pos]))
+        return false;
+
+    switch (jump_label[pos + 1])
+    {
+        case 'x':
+        {
+            if (auto res = strtoq(jump_label.substr(pos + 2).c_str(),
+                                  nullptr, 16);
+                    !res)
+            {
+                if (errno != 0)
+                {
+                    detail::print_error("invalid hex number: " + jump_label, "i64asm");
+                    throw std::runtime_error("invalid_hex");
+                }
+            }
+
+            CompilerKit::NumberCast8 num = CompilerKit::NumberCast8(strtoq(jump_label.substr(pos + 2).c_str(),
+                                                                             nullptr, 16));
+
+            kBytes.push_back(num.number);
+
+            if (kVerbose)
+            {
+                kStdOut << "i64asm: found a base 16 number here: " << jump_label.substr(pos) << "\n";
+            }
+
+            return true;
+        }
+        case 'b':
+        {
+            if (auto res = strtoq(jump_label.substr(pos + 2).c_str(),
+                                  nullptr, 2);
+                    !res)
+            {
+                if (errno != 0)
+                {
+                    detail::print_error("invalid binary number: " + jump_label, "i64asm");
+                    throw std::runtime_error("invalid_bin");
+                }
+            }
+
+            CompilerKit::NumberCast8 num = CompilerKit::NumberCast8(strtoq(jump_label.substr(pos + 2).c_str(),
+                                                                             nullptr, 2));
+
+            if (kVerbose)
+            {
+                kStdOut << "i64asm: found a base 2 number here: " << jump_label.substr(pos) << "\n";
+            }
+
+            kBytes.push_back(num.number);
+
+            return true;
+        }
+        case 'o':
+        {
+            if (auto res = strtoq(jump_label.substr(pos + 2).c_str(),
+                                  nullptr, 7);
+                    !res)
+            {
+                if (errno != 0)
+                {
+                    detail::print_error("invalid octal number: " + jump_label, "i64asm");
+                    throw std::runtime_error("invalid_octal");
+                }
+            }
+
+            CompilerKit::NumberCast8 num = CompilerKit::NumberCast8(strtoq(jump_label.substr(pos + 2).c_str(),
+                                                                             nullptr, 7));
+
+            if (kVerbose)
+            {
+                kStdOut << "i64asm: found a base 8 number here: " << jump_label.substr(pos) << "\n";
+            }
+
+            kBytes.push_back(num.number);
+
+            return true;
+        }
+        default:
+        {
+            break;
+        }
+    }
+
+    /* check for errno and stuff like that */
+    if (auto res = strtoq(jump_label.substr(pos).c_str(),
+                          nullptr, 10);
+            !res)
+    {
+        if (errno != 0)
+        {
+            return false;
+        }
+    }
+
+    CompilerKit::NumberCast8 num = CompilerKit::NumberCast8(strtoq(jump_label.substr(pos).c_str(),
+                                                                     nullptr, 10));
+
+    kBytes.push_back(num.number);
 
     if (kVerbose)
     {
@@ -790,11 +1174,100 @@ bool CompilerKit::PlatformAssemblerAMD64::WriteLine(std::string &line, const std
         {
             std::string name(opcodeAMD64.fName);
 
-            kBytes.emplace_back(opcodeAMD64.fOpcode);
-
             if (name.find("mov") != std::string::npos)
             {
-                this->WriteNumber(line.find(name) + name.size() + 2, line);
+                struct RegMapAMD64 {
+                    std::string fName;
+                    e64_byte_t fModRM;
+                };
+
+                std::vector<RegMapAMD64> regs {
+                        { .fName = "ax", .fModRM = 0 },
+                        { .fName = "cx", .fModRM = 1 },
+                        { .fName = "dx", .fModRM = 2 },
+                        { .fName = "bx", .fModRM = 3 },
+                        { .fName = "sp", .fModRM = 4 },
+                        { .fName = "bp", .fModRM = 5 },
+                        { .fName = "si", .fModRM = 6 },
+                        { .fName = "di", .fModRM = 7 },
+                };
+
+                std::string substr = line.substr(line.find(name) + name.size());
+
+                uint64_t bits = 16;
+
+                if (substr.find(",") == std::string::npos)
+                {
+                    detail::print_error("Invalid combination of operands and registers.", "i64asm");
+                    throw std::runtime_error("comb_op_reg");
+                }
+
+                bool found = false;
+
+                for (auto& reg : regs)
+                {
+                    if (line.find(reg.fName) != std::string::npos)
+                    {
+                        if (!found)
+                        {
+                            if (line.substr(line.find(reg.fName) - 1)[0] == 'r')
+                            {
+                                bits = 64;
+
+                                kBytes.emplace_back(0x48);
+                                kBytes.emplace_back(0x89);
+                                kBytes.emplace_back(0x00);
+                            }
+                            else
+                            {
+                                detail::print_error("Invalid combination of registers, each 64-bit register must start with 'r'.", "i64asm");
+                                throw std::runtime_error("comb_op_reg");
+                            }
+
+                            found = true;
+
+                            kBytes.push_back(0xc0 + reg.fModRM);
+
+                            continue;
+                        }
+                    }
+                }
+
+                if (bits == 64)
+                    this->WriteNumber32(line.find(name) + name.size() + 2, line);
+                else if (bits == 16)
+                    this->WriteNumber16(line.find(name) + name.size() + 2, line);
+                else
+                {
+                    detail::print_error("Invalid combination of operands and registers.", "i64asm");
+                    throw std::runtime_error("comb_op_reg");
+                }
+
+                break;
+            }
+            else if (name == "int" ||
+                     name == "into" ||
+                     name == "intd")
+            {
+                kBytes.emplace_back(opcodeAMD64.fOpcode);
+                this->WriteNumber8(line.find(name) + name.size() + 1, line);
+
+                break;
+            }
+            else if (name == "jmp" ||
+                    name == "call")
+            {
+                kBytes.emplace_back(opcodeAMD64.fOpcode);
+                this->WriteNumber32(line.find(name) + name.size() + 1, line);
+
+                break;
+            }
+            else
+            {
+                kBytes.emplace_back(0);
+                kBytes.emplace_back(opcodeAMD64.fOpcode);
+
+                break;
             }
         }
     }

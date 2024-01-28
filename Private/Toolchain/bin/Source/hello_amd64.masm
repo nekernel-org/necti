@@ -3,5 +3,9 @@ bits 64
 
 export .text MySampleFoo
 cli
-mov edx, 0x1000
-ret
+mov rsp, rdx
+int 0x80
+jmp 0x100000
+sti
+retf
+

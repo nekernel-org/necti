@@ -309,10 +309,7 @@ MPCC_MODULE(MPUXAssembler64000)
         // byte from byte, we write this.
         for (auto& byte : kBytes)
         {
-            for (size_t i = 0; i < sizeof(byte); i++)
-            {
-                file_ptr_out << reinterpret_cast<const char*>(&byte)[i];
-            }
+            file_ptr_out.write(reinterpret_cast<const char*>(&byte), sizeof(byte));
         }
 
         if (kVerbose)
@@ -662,7 +659,7 @@ bool CompilerKit::PlatformAssembler64x0::WriteNumber(const std::size_t &pos, std
             }
         }
 
-        CompilerKit::NumberCast num(strtoq(jump_label.substr(pos + 2).c_str(),
+        CompilerKit::NumberCast64 num(strtoq(jump_label.substr(pos + 2).c_str(),
                                            nullptr, 16));
 
         for (char &i : num.number)
@@ -690,7 +687,7 @@ bool CompilerKit::PlatformAssembler64x0::WriteNumber(const std::size_t &pos, std
             }
         }
 
-        CompilerKit::NumberCast num(strtoq(jump_label.substr(pos + 2).c_str(),
+        CompilerKit::NumberCast64 num(strtoq(jump_label.substr(pos + 2).c_str(),
                                            nullptr, 2));
 
         if (kVerbose)
@@ -718,7 +715,7 @@ bool CompilerKit::PlatformAssembler64x0::WriteNumber(const std::size_t &pos, std
             }
         }
 
-        CompilerKit::NumberCast num(strtoq(jump_label.substr(pos + 2).c_str(),
+        CompilerKit::NumberCast64 num(strtoq(jump_label.substr(pos + 2).c_str(),
                                            nullptr, 7));
 
         if (kVerbose)
@@ -750,7 +747,7 @@ bool CompilerKit::PlatformAssembler64x0::WriteNumber(const std::size_t &pos, std
         }
     }
 
-    CompilerKit::NumberCast num(strtoq(jump_label.substr(pos).c_str(),
+    CompilerKit::NumberCast64 num(strtoq(jump_label.substr(pos).c_str(),
                                        nullptr, 10));
 
     for (char &i : num.number)
@@ -1017,7 +1014,7 @@ bool CompilerKit::PlatformAssembler64x0::WriteLine(std::string &line, const std:
                                         << std::endl;
                             }
 
-                            CompilerKit::NumberCast num(label.second);
+                            CompilerKit::NumberCast64 num(label.second);
 
                             for (auto &num : num.number)
                             {

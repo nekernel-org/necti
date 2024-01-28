@@ -61,6 +61,53 @@ namespace CompilerKit
 
     };
 
+    union NumberCastBase
+    {
+        NumberCastBase() = default;
+        ~NumberCastBase() = default;
+
+    };
+
+    union NumberCast64 final
+    {
+        NumberCast64() = default;
+        explicit NumberCast64(UInt64 raw) : raw(raw) {}
+        ~NumberCast64() { raw = 0; }
+
+        CharType number[8];
+        UInt64 raw;
+    };
+
+    union NumberCast32 final
+    {
+        NumberCast32() = default;
+        explicit NumberCast32(UInt32 raw) : raw(raw) {}
+        ~NumberCast32() { raw = 0; }
+
+        CharType number[4];
+        UInt32 raw;
+    };
+
+    union NumberCast16 final
+    {
+        NumberCast16() = default;
+        explicit NumberCast16(UInt16 raw) : raw(raw) {}
+        ~NumberCast16() { raw = 0; }
+
+        CharType number[2];
+        UInt16 raw;
+    };
+
+    union NumberCast8 final
+    {
+        NumberCast8() = default;
+        explicit NumberCast8(UInt8 raw) : raw(raw) {}
+        ~NumberCast8() { raw = 0; }
+
+        CharType number;
+        UInt8 raw;
+    };
+
 	class PlatformAssembler
 	{
 	public:
@@ -88,6 +135,10 @@ namespace CompilerKit
 		virtual std::string CheckLine(std::string &line, const std::string &file) override;
 		virtual bool WriteLine(std::string &line, const std::string &file) override;
 		virtual bool WriteNumber(const std::size_t& pos, std::string& from_what) override;
+
+		virtual bool WriteNumber16(const std::size_t& pos, std::string& from_what);
+		virtual bool WriteNumber32(const std::size_t& pos, std::string& from_what);
+		virtual bool WriteNumber8(const std::size_t& pos, std::string& from_what);
 
 	};
 
@@ -128,23 +179,5 @@ namespace CompilerKit
 	};
 
 #endif // __ASM_NEED_32x0__
-
-	union NumberCast final
-    {
-        explicit NumberCast(UInt64 raw) : raw(raw) {}
-		~NumberCast() { raw = 0; }
-
-        CharType number[8];
-        UInt64 raw;
-    };
-
-    union NumberCast32 final
-    {
-        explicit NumberCast32(UInt32 raw) : raw(raw) {}
-        ~NumberCast32() { raw = 0; }
-
-        CharType number[4];
-        UInt32 raw;
-    };
 }
 
