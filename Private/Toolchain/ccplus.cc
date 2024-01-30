@@ -584,9 +584,7 @@ MPCC_MODULE(CompilerCPlusPlus64x0) {
   kKeywords.emplace_back("float");
   kKeywords.emplace_back("double");
   kKeywords.emplace_back("unsigned");
-  kKeywords.emplace_back("__export__");
-  kKeywords.emplace_back("__import__");
-  kKeywords.emplace_back("__packed__");
+  kKeywords.emplace_back("__attribute__");
   kKeywords.emplace_back("namespace");
   kKeywords.emplace_back("while");
   kKeywords.emplace_back("sizeof");
