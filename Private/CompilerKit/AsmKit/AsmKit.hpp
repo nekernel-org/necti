@@ -13,171 +13,156 @@
 #include <CompilerKit/Defines.hpp>
 #include <CompilerKit/StdKit/String.hpp>
 
-namespace CompilerKit
-{
-	//
-	//	@brief Frontend to Assembly mountpoint.
-	//
-	class AssemblyMountpoint
-	{
-	public:
-    	explicit AssemblyMountpoint() = default;
-    	virtual ~AssemblyMountpoint() = default;
+namespace CompilerKit {
+//
+//	@brief Frontend to Assembly mountpoint.
+//
+class AssemblyMountpoint {
+ public:
+  explicit AssemblyMountpoint() = default;
+  virtual ~AssemblyMountpoint() = default;
 
-		CXXKIT_COPY_DEFAULT(AssemblyMountpoint);
+  CXXKIT_COPY_DEFAULT(AssemblyMountpoint);
 
-		//@ brief compile to object file.
-		// Example C++ -> MASM -> AE object.
-		virtual Int32 CompileToFormat(StringView& src, Int32 arch) = 0;
+  //@ brief compile to object file.
+  // Example C++ -> MASM -> AE object.
+  virtual Int32 CompileToFormat(StringView& src, Int32 arch) = 0;
+};
 
-	};
-	
-    /// @brief Simple assembly factory
-    class AssemblyFactory final
-    {
-    public:
-        explicit AssemblyFactory() = default;
-        ~AssemblyFactory() = default;
+/// @brief Simple assembly factory
+class AssemblyFactory final {
+ public:
+  explicit AssemblyFactory() = default;
+  ~AssemblyFactory() = default;
 
-		CXXKIT_COPY_DEFAULT(AssemblyFactory);
+  CXXKIT_COPY_DEFAULT(AssemblyFactory);
 
-	public:
-		enum
-		{
-			kArchAMD64,
-			kArch32x0,
-			kArch64x0,
-			kArchRISCV,
-			kArchUnknown,
-		};
+ public:
+  enum {
+    kArchAMD64,
+    kArch32x0,
+    kArch64x0,
+    kArchRISCV,
+    kArchUnknown,
+  };
 
-        Int32 Compile(StringView& sourceFile, const Int32& arch) noexcept;
+  Int32 Compile(StringView& sourceFile, const Int32& arch) noexcept;
 
-		void Mount(AssemblyMountpoint* mountPtr) noexcept;
-		AssemblyMountpoint* Unmount() noexcept;
+  void Mount(AssemblyMountpoint* mountPtr) noexcept;
+  AssemblyMountpoint* Unmount() noexcept;
 
-	private:
-		AssemblyMountpoint* fMounted{ nullptr };
+ private:
+  AssemblyMountpoint* fMounted{nullptr};
+};
 
-    };
+union NumberCastBase {
+  NumberCastBase() = default;
+  ~NumberCastBase() = default;
+};
 
-    union NumberCastBase
-    {
-        NumberCastBase() = default;
-        ~NumberCastBase() = default;
+union NumberCast64 final {
+  NumberCast64() = default;
+  explicit NumberCast64(UInt64 raw) : raw(raw) {}
+  ~NumberCast64() { raw = 0; }
 
-    };
+  CharType number[8];
+  UInt64 raw;
+};
 
-    union NumberCast64 final
-    {
-        NumberCast64() = default;
-        explicit NumberCast64(UInt64 raw) : raw(raw) {}
-        ~NumberCast64() { raw = 0; }
+union NumberCast32 final {
+  NumberCast32() = default;
+  explicit NumberCast32(UInt32 raw) : raw(raw) {}
+  ~NumberCast32() { raw = 0; }
 
-        CharType number[8];
-        UInt64 raw;
-    };
+  CharType number[4];
+  UInt32 raw;
+};
 
-    union NumberCast32 final
-    {
-        NumberCast32() = default;
-        explicit NumberCast32(UInt32 raw) : raw(raw) {}
-        ~NumberCast32() { raw = 0; }
+union NumberCast16 final {
+  NumberCast16() = default;
+  explicit NumberCast16(UInt16 raw) : raw(raw) {}
+  ~NumberCast16() { raw = 0; }
 
-        CharType number[4];
-        UInt32 raw;
-    };
+  CharType number[2];
+  UInt16 raw;
+};
 
-    union NumberCast16 final
-    {
-        NumberCast16() = default;
-        explicit NumberCast16(UInt16 raw) : raw(raw) {}
-        ~NumberCast16() { raw = 0; }
+union NumberCast8 final {
+  NumberCast8() = default;
+  explicit NumberCast8(UInt8 raw) : raw(raw) {}
+  ~NumberCast8() { raw = 0; }
 
-        CharType number[2];
-        UInt16 raw;
-    };
+  CharType number;
+  UInt8 raw;
+};
 
-    union NumberCast8 final
-    {
-        NumberCast8() = default;
-        explicit NumberCast8(UInt8 raw) : raw(raw) {}
-        ~NumberCast8() { raw = 0; }
+class PlatformAssembler {
+ public:
+  explicit PlatformAssembler() = default;
+  ~PlatformAssembler() = default;
 
-        CharType number;
-        UInt8 raw;
-    };
+  CXXKIT_COPY_DEFAULT(PlatformAssembler);
 
-	class PlatformAssembler
-	{
-	public:
-		explicit PlatformAssembler() = default;
-		~PlatformAssembler() = default;
-
-		CXXKIT_COPY_DEFAULT(PlatformAssembler);
-
-		virtual std::string CheckLine(std::string &line, const std::string &file) = 0;
-		virtual bool WriteLine(std::string &line, const std::string &file) = 0;
-		virtual bool WriteNumber(const std::size_t &pos, std::string &from_what) = 0;
-
-	};
+  virtual std::string CheckLine(std::string& line, const std::string& file) = 0;
+  virtual bool WriteLine(std::string& line, const std::string& file) = 0;
+  virtual bool WriteNumber(const std::size_t& pos, std::string& from_what) = 0;
+};
 
 #ifdef __ASM_NEED_AMD64__
 
-	class PlatformAssemblerAMD64 final : public PlatformAssembler
-	{
-	public:
-		explicit PlatformAssemblerAMD64() = default;
-		~PlatformAssemblerAMD64() = default;
+class PlatformAssemblerAMD64 final : public PlatformAssembler {
+ public:
+  explicit PlatformAssemblerAMD64() = default;
+  ~PlatformAssemblerAMD64() = default;
 
-		CXXKIT_COPY_DEFAULT(PlatformAssemblerAMD64);
+  CXXKIT_COPY_DEFAULT(PlatformAssemblerAMD64);
 
-		virtual std::string CheckLine(std::string &line, const std::string &file) override;
-		virtual bool WriteLine(std::string &line, const std::string &file) override;
-		virtual bool WriteNumber(const std::size_t& pos, std::string& from_what) override;
+  virtual std::string CheckLine(std::string& line,
+                                const std::string& file) override;
+  virtual bool WriteLine(std::string& line, const std::string& file) override;
+  virtual bool WriteNumber(const std::size_t& pos,
+                           std::string& from_what) override;
 
-		virtual bool WriteNumber16(const std::size_t& pos, std::string& from_what);
-		virtual bool WriteNumber32(const std::size_t& pos, std::string& from_what);
-		virtual bool WriteNumber8(const std::size_t& pos, std::string& from_what);
+  virtual bool WriteNumber16(const std::size_t& pos, std::string& from_what);
+  virtual bool WriteNumber32(const std::size_t& pos, std::string& from_what);
+  virtual bool WriteNumber8(const std::size_t& pos, std::string& from_what);
+};
 
-	};
-
-#endif // __ASM_NEED_AMD64__
+#endif  // __ASM_NEED_AMD64__
 
 #ifdef __ASM_NEED_64x0__
 
-	class PlatformAssembler64x0 final : public PlatformAssembler
-	{
-	public:
-		explicit PlatformAssembler64x0() = default;
-		~PlatformAssembler64x0() = default;
+class PlatformAssembler64x0 final : public PlatformAssembler {
+ public:
+  explicit PlatformAssembler64x0() = default;
+  ~PlatformAssembler64x0() = default;
 
-		CXXKIT_COPY_DEFAULT(PlatformAssembler64x0);
+  CXXKIT_COPY_DEFAULT(PlatformAssembler64x0);
 
-		virtual std::string CheckLine(std::string &line, const std::string &file) override;
-		virtual bool WriteLine(std::string &line, const std::string &file) override;
-		virtual bool WriteNumber(const std::size_t& pos, std::string& from_what) override;
+  virtual std::string CheckLine(std::string& line,
+                                const std::string& file) override;
+  virtual bool WriteLine(std::string& line, const std::string& file) override;
+  virtual bool WriteNumber(const std::size_t& pos,
+                           std::string& from_what) override;
+};
 
-	};
-
-#endif // __ASM_NEED_64x0__
+#endif  // __ASM_NEED_64x0__
 
 #ifdef __ASM_NEED_32x0__
 
-	class PlatformAssembler32x0 final : public PlatformAssembler
-	{
-	public:
-		explicit PlatformAssembler32x0() = default;
-		~PlatformAssembler32x0() = default;
+class PlatformAssembler32x0 final : public PlatformAssembler {
+ public:
+  explicit PlatformAssembler32x0() = default;
+  ~PlatformAssembler32x0() = default;
 
-		CXXKIT_COPY_DEFAULT(PlatformAssembler32x0);
+  CXXKIT_COPY_DEFAULT(PlatformAssembler32x0);
 
-		virtual std::string CheckLine(std::string &line, const std::string &file) override;
-		virtual bool WriteLine(std::string &line, const std::string &file) override;
-		virtual bool WriteNumber(const std::size_t& pos, std::string& from_what) override;
+  virtual std::string CheckLine(std::string& line,
+                                const std::string& file) override;
+  virtual bool WriteLine(std::string& line, const std::string& file) override;
+  virtual bool WriteNumber(const std::size_t& pos,
+                           std::string& from_what) override;
+};
 
-	};
-
-#endif // __ASM_NEED_32x0__
-}
-
+#endif  // __ASM_NEED_32x0__
+}  // namespace CompilerKit

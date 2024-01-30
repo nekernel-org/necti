@@ -9,8 +9,8 @@
 
 #pragma once
 
-#include <StdKit/ErrorOr.hpp>
 #include <Defines.hpp>
+#include <StdKit/ErrorOr.hpp>
 
 #define CXXKIT_EXEC_ERROR -30
 #define CXXKIT_FILE_NOT_FOUND -31

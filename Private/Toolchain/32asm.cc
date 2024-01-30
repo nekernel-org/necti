@@ -15,8 +15,8 @@
 // @author Amlal El Mahrouss
 // @brief 32x0 Assembler.
 
-// REMINDER: when dealing with an undefined symbol use (string size):LinkerFindSymbol:(string)
-// so that ld will look for it.
+// REMINDER: when dealing with an undefined symbol use (string
+// size):LinkerFindSymbol:(string) so that ld will look for it.
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
@@ -24,11 +24,11 @@
 
 #include <CompilerKit/AsmKit/Arch/32x0.hpp>
 #include <CompilerKit/ParserKit.hpp>
-#include <CompilerKit/StdKit/PEF.hpp>
 #include <CompilerKit/StdKit/AE.hpp>
+#include <CompilerKit/StdKit/PEF.hpp>
 #include <filesystem>
-#include <iostream>
 #include <fstream>
+#include <iostream>
 
 /////////////////////
 
@@ -47,9 +47,4 @@
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
-MPCC_MODULE(MPUXAssembler32000)
-{
-
-
-    return 0;
-}
+MPCC_MODULE(MPUXAssembler32000) { return 0; }

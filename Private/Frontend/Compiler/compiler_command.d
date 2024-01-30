@@ -20,7 +20,7 @@ public void mpcc_summon_executable(string path)
 {
 	import core.stdc.stdlib;
     import std.string;
-    
+
 	system(toStringz(path));
 }
 
@@ -32,7 +32,7 @@ public class Platform
         import std.string;
         import std.conv;
         import std.path;
-        
+
         string pathHome = expandTilde("~");
         pathHome ~= "/mp-ux/libc/";
 
@@ -45,7 +45,7 @@ public class Platform
         import std.string;
         import std.conv;
         import std.path;
-        
+
         string pathHome = expandTilde("~");
         pathHome ~= "/mp-ux/mp-ux/";
 
@@ -59,7 +59,7 @@ public class CompileCommand
     {
         import std.string;
         import std.algorithm;
-        
+
         foreach (file; files)
         {
             if (file.length == 0)
@@ -68,7 +68,7 @@ public class CompileCommand
             import std.datetime;
 
             string input = "/usr/local/bin/bin/cpp";
-            
+
             string[] arr_macros = CompilerMacroHelpers.getStandardMacros();
 
             foreach (string macro_name; arr_macros)

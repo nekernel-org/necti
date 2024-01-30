@@ -31,7 +31,7 @@ void mpcc_summon_manual(string path)
 	core.stdc.stdlib.system(toStringz(base ~ path ~ extension));
 }
 
-void main(string[] args) 
+void main(string[] args)
 {
 	import std.range, std.stdio;
 
