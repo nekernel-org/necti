@@ -1072,19 +1072,19 @@ bool CompilerKit::PlatformAssemblerAMD64::WriteLine(std::string &line,
   if (line.find("db") != std::string::npos) {
     this->WriteNumber(line.find("db") + strlen("db") + 1, line);
   }
-  if (line.find("org ") != std::string::npos) {
+  else if (line.find("org ") != std::string::npos) {
     size_t base[] = {10, 16, 2, 7};
 
     for (size_t i = 0; i < 4; i++) {
       if (kOrigin = strtol(
-              (line.substr(line.find("org") + strlen("org") + 1)).c_str(),
+              (line.substr(line.find("org ") + strlen("org ") + 1)).c_str(),
               nullptr, base[i]);
           kOrigin) {
         if (errno != 0) {
           continue;
         } else {
           if (kVerbose) {
-            kStdOut << "Origin: " << kOrigin << std::endl;
+            kStdOut << "i64asm: set-origin: " << kOrigin << std::endl;
           }
         }
       }
