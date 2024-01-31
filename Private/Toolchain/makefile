@@ -24,8 +24,8 @@ CC_SRC=bccl.cc ../CompilerKit/StdKit/*.cc ../CompilerKit/AsmKit/*.cc
 CC_OUTPUT=bin/bccl
 
 # C++ Compiler
-CXX_SRC=ccplus.cc ../CompilerKit/StdKit/*.cc ../CompilerKit/AsmKit/*.cc
-CXX_OUTPUT=bin/ccplus
+CXX_SRC=ccplus-x86_64.cc ../CompilerKit/StdKit/*.cc ../CompilerKit/AsmKit/*.cc
+CXX_OUTPUT=bin/x86_64-ccplus
 
 # Assembler
 ASM_SRC=64asm.cc ../CompilerKit/StdKit/*.cc ../CompilerKit/AsmKit/*.cc

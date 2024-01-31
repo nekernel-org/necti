@@ -9,6 +9,8 @@ bin/32ld
 bin/64asm
 bin/mkcdfs
 bin/ccplus
+bin/x86_64-ccplus
+bin/x86_64-pef-ccplus
 bin/cppfront
 bin/bccl
 bin/i64asm

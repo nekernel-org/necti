@@ -126,7 +126,7 @@ static int kMachine = 0;
 /////////////////////////////////////////
 
 static size_t kRegisterCnt = kAsmRegisterLimit;
-static size_t kStartUsable = 2;
+static size_t kStartUsable = 7;
 static size_t kUsableLimit = 14;
 static size_t kRegisterCounter = kStartUsable;
 static std::string kRegisterPrefix = kAsmRegisterPrefix;
@@ -238,7 +238,7 @@ class AssemblyMountpointClang final : public CompilerKit::AssemblyMountpoint {
   CXXKIT_COPY_DEFAULT(AssemblyMountpointClang);
 
   [[maybe_unused]] static Int32 Arch() noexcept {
-    return CompilerKit::AssemblyFactory::kArchRISCV;
+    return CompilerKit::AssemblyFactory::kArchAMD64;
   }
 
   Int32 CompileToFormat(CompilerKit::StringView& src, Int32 arch) override {
@@ -262,7 +262,7 @@ class AssemblyMountpointClang final : public CompilerKit::AssemblyMountpoint {
     /* According to pef abi. */
 
     std::vector<const char*> exts = kAsmFileExts;
-    dest += exts[0];
+    dest += exts[3];
 
     kState.fOutputAssembly = std::make_unique<std::ofstream>(dest);
 
@@ -270,7 +270,7 @@ class AssemblyMountpointClang final : public CompilerKit::AssemblyMountpoint {
 
     (*kState.fOutputAssembly) << "# Path: " << src_file << "\n";
     (*kState.fOutputAssembly)
-        << "# Language: RISC 64x0 MP-UX Assembly (Generated from C++)\n";
+        << "# Language: AMD64 HCore Assembly (Generated from C++)\n";
     (*kState.fOutputAssembly) << "# Build Date: " << fmt << "\n\n";
 
     ParserKit::SyntaxLeafList syntax;
@@ -307,16 +307,25 @@ class AssemblyMountpointClang final : public CompilerKit::AssemblyMountpoint {
     bool found_expr = false;
     bool found_func = false;
     bool is_access_field = false;
+
     std::string type;
+
+    std::string this_ref;
 
     for (auto& leaf : kState.fSyntaxTree->fLeafList) {
       if (leaf.fUserData == "{") {
         scope.emplace_back();
       }
 
-      if (leaf.fUserData == "{") {
-        kRegisterCounter = kStartUsable;
+      if (leaf.fUserData == "}") {
+        is_access_field = false;
+        this_ref = "";
+
         scope.pop_back();
+
+        if (scope.size() == 0) {
+          kRegisterCounter = kStartUsable;
+        }
       }
 
       if (leaf.fUserData == "int" || leaf.fUserData == "long" ||
@@ -341,7 +350,13 @@ class AssemblyMountpointClang final : public CompilerKit::AssemblyMountpoint {
 
       if (leaf.fUserData.find(" this") != std::string::npos) {
         leaf.fUserData.replace(leaf.fUserData.find(" this"), strlen(" this"),
-                               "r6");
+                               "r15");
+        is_access_field = true;
+      }
+
+      if (leaf.fUserData.find(" *this") != std::string::npos) {
+        leaf.fUserData.replace(leaf.fUserData.find(" *this"), strlen(" *this"),
+                               "r15");
         is_access_field = true;
       }
 
@@ -356,25 +371,27 @@ class AssemblyMountpointClang final : public CompilerKit::AssemblyMountpoint {
           found_expr = false;
           is_pointer = false;
         } else {
-          leaf.fUserValue = "export .text _CppZ_MPUX_";
+          if (scope.size() == 1) {
+            leaf.fUserValue = "export .text _CppZ_MVCXX_";
 
-          for (auto& line : lines) {
-            if (line.find(type) != std::string::npos &&
-                line.find("(") != std::string::npos) {
-              auto fn_name = line.substr(line.find(type), line.find("("));
+            for (auto& line : lines) {
+              if (line.find(type) != std::string::npos &&
+                  line.find("(") != std::string::npos) {
+                auto fn_name = line.substr(line.find(type), line.find("("));
 
-              while (fn_name.find(' ') != std::string::npos)
-                fn_name.replace(fn_name.find(' '), 1, "@");
+                while (fn_name.find(' ') != std::string::npos)
+                  fn_name.replace(fn_name.find(' '), 1, "@");
 
-              leaf.fUserValue += fn_name;
+                leaf.fUserValue += fn_name;
 
-              break;
+                break;
+              }
             }
+
+            leaf.fUserValue += "\n";
+
+            found_func = true;
           }
-
-          leaf.fUserValue += "\n";
-
-          found_func = true;
         }
       }
 
@@ -406,7 +423,7 @@ class AssemblyMountpointClang final : public CompilerKit::AssemblyMountpoint {
 
           front.vals.push_back(reg);
 
-          leaf.fUserValue = !is_pointer ? "ldw %s, %s1\n" : "lda %s, %s1\n";
+          leaf.fUserValue = !is_pointer ? "mov %s, %s1\n" : "lea %s, %s1\n";
 
           for (auto& ln : lines) {
             if (ln.find(leaf.fUserData) != std::string::npos &&
@@ -419,6 +436,10 @@ class AssemblyMountpointClang final : public CompilerKit::AssemblyMountpoint {
 
               while (val.find(" ") != std::string::npos)
                 val.erase(val.find(" "), 1);
+
+              if (val == this_ref) val = "r15";
+
+              if (this_ref.empty()) this_ref = val;
 
               if (isalnum(val[0]) && !isdigit(val[0]) &&
                   ln.find("r6") == std::string::npos)
@@ -434,7 +455,7 @@ class AssemblyMountpointClang final : public CompilerKit::AssemblyMountpoint {
 
           found_type = false;
         } else {
-          leaf.fUserValue = !is_pointer ? "ldw %s, %s1\n" : "lda 0(%s), %s1\n";
+          leaf.fUserValue = !is_pointer ? "mov %s, %s1\n" : "lea 0(%s), %s1\n";
 
           for (auto& ln : lines) {
             if (ln.find(leaf.fUserData) != std::string::npos &&
@@ -447,6 +468,10 @@ class AssemblyMountpointClang final : public CompilerKit::AssemblyMountpoint {
               }
 
               if (!nm.empty()) {
+                if (nm == this_ref) nm = "r15";
+
+                if (this_ref.empty()) this_ref = nm;
+
                 leaf.fUserValue.replace(leaf.fUserValue.find("%s1"),
                                         strlen("%s1"), nm);
                 break;
@@ -472,7 +497,7 @@ class AssemblyMountpointClang final : public CompilerKit::AssemblyMountpoint {
       }
 
       if (leaf.fUserData == "return") {
-        leaf.fUserValue = "mv r1, %s\njlr";
+        leaf.fUserValue = "mov rax, %s\nret";
 
         if (!lines.empty()) {
           for (auto& ln : lines) {
@@ -539,8 +564,9 @@ class AssemblyMountpointClang final : public CompilerKit::AssemblyMountpoint {
 /////////////////////////////////////////////////////////////////////////////////////////
 
 #define kPrintF printf
-#define kSplashCxx() \
-  kPrintF(kWhite "%s\n", "ccplus, v1.15, (c) Mahrouss Logic.")
+#define kSplashCxx()     \
+  kPrintF(kWhite "%s\n", \
+          "Mahrouss Visual C++ Compiler for HCore, Copyright Mahrouss Logic.")
 
 static void cxx_print_help() {
   kSplashCxx();
@@ -552,7 +578,7 @@ static void cxx_print_help() {
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
-#define kExt \
+#define kExtListCxx \
   { ".cpp", ".cxx", ".cc", ".c++" }
 
 MPCC_MODULE(CompilerCPlusPlus64x0) {
@@ -612,13 +638,16 @@ MPCC_MODULE(CompilerCPlusPlus64x0) {
 
   bool skip = false;
 
-  for (auto index = 1UL; index < argc; ++index) {
-    if (skip) {
-      skip = false;
-      continue;
-    }
+  kFactory.Mount(new AssemblyMountpointClang());
+  kCompilerBackend = new CompilerBackendClang();
 
+  for (auto index = 1UL; index < argc; ++index) {
     if (argv[index][0] == '-') {
+      if (skip) {
+        skip = false;
+        continue;
+      }
+
       if (strcmp(argv[index], "-v") == 0 ||
           strcmp(argv[index], "--version") == 0) {
         kSplashCxx();
@@ -638,24 +667,15 @@ MPCC_MODULE(CompilerCPlusPlus64x0) {
         return kOk;
       }
 
-      if (strcmp(argv[index], "--dialect") == 0) {
+      if (strcmp(argv[index], "-pdialect") == 0) {
         if (kCompilerBackend) std::cout << kCompilerBackend->Language() << "\n";
 
         return kOk;
       }
 
-      if (strcmp(argv[index], "--asm=masm") == 0) {
-        delete kFactory.Unmount();
-
-        kFactory.Mount(new AssemblyMountpointClang());
-        kMachine = CompilerKit::AssemblyFactory::kArch64x0;
-
-        continue;
-      }
-
-      if (strcmp(argv[index], "--compiler=vanhalen") == 0) {
-        if (!kCompilerBackend) kCompilerBackend = new CompilerBackendClang();
-
+      if (strcmp(argv[index], "-fx64") == 0) {
+        kMachine = CompilerKit::AssemblyFactory::kArchAMD64;
+        skip = true;
         continue;
       }
 
@@ -686,18 +706,20 @@ MPCC_MODULE(CompilerCPlusPlus64x0) {
     CompilerKit::StringView srcFile =
         CompilerKit::StringBuilder::Construct(argv[index]);
 
-    std::vector exts = kExt;
+    std::vector exts = kExtListCxx;
     std::string argv_i = argv[index];
+    bool found = false;
 
     for (std::string ext : exts) {
       if (argv_i.find(ext) != std::string::npos) {
-        if (kState.kVerbose) {
-          std::cerr << argv[index] << " is not a valid C++ source.\n";
-        }
-
-        return -1;
-      } else {
+        found = true;
         break;
+      }
+    }
+
+    if (!found) {
+      if (kState.kVerbose) {
+        std::cerr << argv[index] << " is not a valid C++ source.\n";
       }
     }
 
