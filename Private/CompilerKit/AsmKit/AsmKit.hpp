@@ -9,7 +9,7 @@
 
 #pragma once
 
-#include <CompilerKit/Compiler.hpp>
+#include <CompilerKit/CompilerKit.hpp>
 #include <CompilerKit/Defines.hpp>
 #include <CompilerKit/StdKit/String.hpp>
 
@@ -22,7 +22,7 @@ class AssemblyMountpoint {
   explicit AssemblyMountpoint() = default;
   virtual ~AssemblyMountpoint() = default;
 
-  CXXKIT_COPY_DEFAULT(AssemblyMountpoint);
+  MPCC_COPY_DEFAULT(AssemblyMountpoint);
 
   //@ brief compile to object file.
   // Example C++ -> MASM -> AE object.
@@ -35,7 +35,7 @@ class AssemblyFactory final {
   explicit AssemblyFactory() = default;
   ~AssemblyFactory() = default;
 
-  CXXKIT_COPY_DEFAULT(AssemblyFactory);
+  MPCC_COPY_DEFAULT(AssemblyFactory);
 
  public:
   enum {
@@ -101,7 +101,7 @@ class PlatformAssembler {
   explicit PlatformAssembler() = default;
   ~PlatformAssembler() = default;
 
-  CXXKIT_COPY_DEFAULT(PlatformAssembler);
+  MPCC_COPY_DEFAULT(PlatformAssembler);
 
   virtual std::string CheckLine(std::string& line, const std::string& file) = 0;
   virtual bool WriteLine(std::string& line, const std::string& file) = 0;
@@ -115,7 +115,7 @@ class PlatformAssemblerAMD64 final : public PlatformAssembler {
   explicit PlatformAssemblerAMD64() = default;
   ~PlatformAssemblerAMD64() = default;
 
-  CXXKIT_COPY_DEFAULT(PlatformAssemblerAMD64);
+  MPCC_COPY_DEFAULT(PlatformAssemblerAMD64);
 
   virtual std::string CheckLine(std::string& line,
                                 const std::string& file) override;
@@ -137,7 +137,7 @@ class PlatformAssembler64x0 final : public PlatformAssembler {
   explicit PlatformAssembler64x0() = default;
   ~PlatformAssembler64x0() = default;
 
-  CXXKIT_COPY_DEFAULT(PlatformAssembler64x0);
+  MPCC_COPY_DEFAULT(PlatformAssembler64x0);
 
   virtual std::string CheckLine(std::string& line,
                                 const std::string& file) override;
@@ -155,7 +155,7 @@ class PlatformAssembler32x0 final : public PlatformAssembler {
   explicit PlatformAssembler32x0() = default;
   ~PlatformAssembler32x0() = default;
 
-  CXXKIT_COPY_DEFAULT(PlatformAssembler32x0);
+  MPCC_COPY_DEFAULT(PlatformAssembler32x0);
 
   virtual std::string CheckLine(std::string& line,
                                 const std::string& file) override;

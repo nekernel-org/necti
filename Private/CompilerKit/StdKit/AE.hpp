@@ -96,7 +96,7 @@ class AEReadableProtocol final {
   explicit AEReadableProtocol() = default;
   ~AEReadableProtocol() = default;
 
-  CXXKIT_COPY_DELETE(AEReadableProtocol);
+  MPCC_COPY_DELETE(AEReadableProtocol);
 
   /**
    * @brief Read AE record

@@ -36,7 +36,7 @@ class StringView final {
     }
   }
 
-  CXXKIT_COPY_DEFAULT(StringView);
+  MPCC_COPY_DEFAULT(StringView);
 
   CharType *Data();
   const CharType *CData() const;

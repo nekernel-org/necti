@@ -104,7 +104,7 @@ void print_warning(std::string reason, const std::string &file) noexcept {
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
-MPCC_MODULE(MPUXAssemblerAMD64) {
+MPCC_MODULE(HCoreAssemblerAMD64) {
   //////////////// CPU OPCODES BEGIN ////////////////
 
   std::string opcodes_jump[kJumpLimit] = {

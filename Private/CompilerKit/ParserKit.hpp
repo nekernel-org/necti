@@ -19,7 +19,7 @@ class CompilerBackend {
   explicit CompilerBackend() = default;
   virtual ~CompilerBackend() = default;
 
-  CXXKIT_COPY_DEFAULT(CompilerBackend);
+  MPCC_COPY_DEFAULT(CompilerBackend);
 
   // NOTE: cast this to your user defined ast.
   typedef void* AstType;

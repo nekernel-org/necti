@@ -17,10 +17,10 @@
 #define kPefMagic "PEF"
 #define kPefMagicFat "FEP"
 
-#define kPefExt ".out"
-#define kPefDylibExt ".lib"
-#define kPefObjectExt ".o"
-#define kPefDebugExt ".dbg"
+#define kPefExt ".exe"
+#define kPefDylibExt ".dll"
+#define kPefObjectExt ".obj"
+#define kPefDebugExt ".pdb"
 
 #define kPefMagicLen 3
 

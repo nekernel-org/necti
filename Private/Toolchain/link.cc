@@ -1,7 +1,7 @@
 /*
  *	========================================================
  *
- *	ld
+ *	link
  * 	Copyright Mahrouss Logic, all rights reserved.
  *
  * 	========================================================
@@ -9,7 +9,7 @@
 
 /// bugs: 0
 
-// @file ld.cxx
+// @file link.cxx
 // @author Amlal El Mahrouss (amlel)
 // @brief 64x0 linker.
 
@@ -50,7 +50,7 @@
 
 enum { kAbiMpUx = 0x5046 /* PF */ };
 
-static std::string kOutput = "a" kPefExt;
+static std::string kOutput = "output" kPefExt;
 static Int32 kAbi = kAbiMpUx;
 static Int32 kSubArch = kPefNoSubCpu;
 static Int32 kArch = CompilerKit::kPefArch64000;
@@ -59,7 +59,7 @@ static Bool kStartFound = false;
 static Bool kDuplicateSymbols = false;
 static Bool kVerbose = false;
 
-/* ld is to be found, mld is to be found at runtime. */
+/* link is to be found, mld is to be found at runtime. */
 static const char *kLdDefineSymbol = ":ld:";
 static const char *kLdDynamicSym = ":mld:";
 
@@ -67,7 +67,7 @@ static const char *kLdDynamicSym = ":mld:";
 static std::vector<std::string> kObjectList;
 static std::vector<char> kObjectBytes;
 
-MPCC_MODULE(MPUXLinker) {
+MPCC_MODULE(HCoreLinker) {
   bool is_executable = true;
 
   /**
@@ -83,6 +83,7 @@ MPCC_MODULE(MPUXLinker) {
       kStdOut << "-fat-bin: Output as FAT PEF.\n";
       kStdOut << "-32x0: Output as 32x0 PEF.\n";
       kStdOut << "-64x0: Output as 64x0 PEF.\n";
+      kStdOut << "-amd64: Output as AMD64 PEF.\n";
       kStdOut << "-output-file: Select output file name.\n";
 
       return 0;
@@ -96,6 +97,10 @@ MPCC_MODULE(MPUXLinker) {
       continue;
     } else if (StringCompare(argv[i], "-64x0") == 0) {
       kArch = CompilerKit::kPefArch64000;
+
+      continue;
+    } else if (StringCompare(argv[i], "-amd64") == 0) {
+      kArch = CompilerKit::kPefArchAMD64;
 
       continue;
     } else if (StringCompare(argv[i], "-32x0") == 0) {
@@ -122,8 +127,8 @@ MPCC_MODULE(MPUXLinker) {
       continue;
     } else {
       if (argv[i][0] == '-') {
-        kStdOut << "ld: unknown flag: " << argv[i] << "\n";
-        return -CXXKIT_EXEC_ERROR;
+        kStdOut << "link: unknown flag: " << argv[i] << "\n";
+        return -MPCC_EXEC_ERROR;
       }
 
       kObjectList.emplace_back(argv[i]);
@@ -134,24 +139,24 @@ MPCC_MODULE(MPUXLinker) {
 
   // sanity check.
   if (kObjectList.empty()) {
-    kStdOut << "ld: no input files." << std::endl;
-    return CXXKIT_EXEC_ERROR;
+    kStdOut << "link: no input files." << std::endl;
+    return MPCC_EXEC_ERROR;
   } else {
     // check for existing files, if they don't throw an error.
     for (auto &obj : kObjectList) {
       if (!std::filesystem::exists(obj)) {
         // if filesystem doesn't find file
         //          -> throw error.
-        kStdOut << "ld: no such file: " << obj << std::endl;
-        return CXXKIT_EXEC_ERROR;
+        kStdOut << "link: no such file: " << obj << std::endl;
+        return MPCC_EXEC_ERROR;
       }
     }
   }
 
   // PEF expects a valid architecture when outputing a binary.
   if (kArch == 0) {
-    kStdOut << "ld: no target architecture set, can't continue." << std::endl;
-    return CXXKIT_EXEC_ERROR;
+    kStdOut << "link: no target architecture set, can't continue." << std::endl;
+    return MPCC_EXEC_ERROR;
   }
 
   CompilerKit::PEFContainer pef_container{};
@@ -176,10 +181,10 @@ MPCC_MODULE(MPUXLinker) {
 
   if (output_fc.bad()) {
     if (kVerbose) {
-      kStdOut << "ld: error: " << strerror(errno) << "\n";
+      kStdOut << "link: error: " << strerror(errno) << "\n";
     }
 
-    return -CXXKIT_FILE_NOT_FOUND;
+    return -MPCC_FILE_NOT_FOUND;
   }
 
   //! Read AE to convert as PEF.
@@ -200,18 +205,18 @@ MPCC_MODULE(MPUXLinker) {
     if (ae_header.fMagic[0] == kAEMag0 && ae_header.fMagic[1] == kAEMag1 &&
         ae_header.fSize == sizeof(CompilerKit::AEHeader)) {
       if (ae_header.fArch != kArch) {
-        if (kVerbose) kStdOut << "ld: info: is a fat binary? : ";
+        if (kVerbose) kStdOut << "link: info: is it a FAT binary? : ";
 
         if (!kFatBinaryEnable) {
           if (kVerbose) kStdOut << "no.\n";
 
-          kStdOut << "ld: error: object " << i
+          kStdOut << "link: error: object " << i
                   << " is a different kind of architecture and output isn't "
                      "treated as FAT binary."
                   << std::endl;
 
           std::remove(kOutput.c_str());
-          return -CXXKIT_FAT_ERROR;
+          return -MPCC_FAT_ERROR;
         } else {
           if (kVerbose) {
             kStdOut << "yes.\n";
@@ -224,7 +229,7 @@ MPCC_MODULE(MPUXLinker) {
       std::size_t cnt = ae_header.fCount;
 
       if (kVerbose)
-        kStdOut << "ld: object header found, record count: " << cnt << "\n";
+        kStdOut << "link: object header found, record count: " << cnt << "\n";
 
       pef_container.Count = cnt;
 
@@ -274,7 +279,7 @@ MPCC_MODULE(MPUXLinker) {
         command_header.Size = ae_records[ae_record_index].fSize;
 
         if (kVerbose)
-          kStdOut << "ld: object record: " << ae_records[ae_record_index].fName
+          kStdOut << "link: object record: " << ae_records[ae_record_index].fName
                   << " was marked.\n";
 
         pef_command_hdrs.emplace_back(command_header);
@@ -297,11 +302,11 @@ MPCC_MODULE(MPUXLinker) {
       continue;
     }
 
-    kStdOut << "ld: not an object: " << i << std::endl;
+    kStdOut << "link: not an object: " << i << std::endl;
     std::remove(kOutput.c_str());
 
     // don't continue, it is a fatal error.
-    return -CXXKIT_EXEC_ERROR;
+    return -MPCC_EXEC_ERROR;
   }
 
   pef_container.Cpu = archs;
@@ -309,7 +314,7 @@ MPCC_MODULE(MPUXLinker) {
   output_fc << pef_container;
 
   if (kVerbose) {
-    kStdOut << "ld: pef: wrote container header.\n";
+    kStdOut << "link: pef: wrote container header.\n";
   }
 
   output_fc.seekp(std::streamsize(pef_container.HdrSz));
@@ -326,7 +331,7 @@ MPCC_MODULE(MPUXLinker) {
         std::string(pef_command_hdr.Name).find(kLdDynamicSym) ==
             std::string::npos) {
       if (kVerbose)
-        kStdOut << "ld: found undefined symbol: " << pef_command_hdr.Name
+        kStdOut << "link: found undefined symbol: " << pef_command_hdr.Name
                 << "\n";
 
       if (auto it = std::find(not_found.begin(), not_found.end(),
@@ -376,7 +381,7 @@ MPCC_MODULE(MPUXLinker) {
           not_found.erase(it);
 
           if (kVerbose)
-            kStdOut << "ld: found symbol: " << pef_command_hdr.Name << "\n";
+            kStdOut << "link: found symbol: " << pef_command_hdr.Name << "\n";
 
           break;
         }
@@ -391,10 +396,10 @@ MPCC_MODULE(MPUXLinker) {
 
   if (!kStartFound && is_executable) {
     if (kVerbose)
-      kStdOut << "ld: undefined symbol: __start, you may have forget to link "
+      kStdOut << "link: undefined symbol: __start, you may have forget to link "
                  "against your runtime library.\n";
 
-    kStdOut << "ld: undefined entrypoint " << kPefStart << " for executable "
+    kStdOut << "link: undefined entrypoint " << kPefStart << " for executable "
             << kOutput << "\n";
   }
 
@@ -454,7 +459,7 @@ MPCC_MODULE(MPUXLinker) {
             std::string::npos &&
         std::string(pef_command_hdrs[cmd_hdr].Name).find(kLdDynamicSym) ==
             std::string::npos) {
-      // ignore :ld: headers, they do not contain code.
+      // ignore :link: headers, they do not contain code.
       continue;
     }
 
@@ -475,10 +480,10 @@ MPCC_MODULE(MPUXLinker) {
           std::string(pef_command_hdrs[cmd_hdr_sub].Name).find(kLdDynamicSym) ==
               std::string::npos) {
         if (kVerbose) {
-          kStdOut << "ld: ignore :ld: command header...\n";
+          kStdOut << "link: ignore :link: command header...\n";
         }
 
-        // ignore :ld: headers, they do not contain code.
+        // ignore :link: headers, they do not contain code.
         continue;
       }
 
@@ -491,7 +496,7 @@ MPCC_MODULE(MPUXLinker) {
         }
 
         if (kVerbose)
-          kStdOut << "ld: found duplicate symbol: " << pef_command_hdr.Name
+          kStdOut << "link: found duplicate symbol: " << pef_command_hdr.Name
                   << "\n";
 
         kDuplicateSymbols = true;
@@ -501,11 +506,11 @@ MPCC_MODULE(MPUXLinker) {
 
   if (!duplicate_symbols.empty()) {
     for (auto &symbol : duplicate_symbols) {
-      kStdOut << "ld: multiple symbols of " << symbol << ".\n";
+      kStdOut << "link: multiple symbols of " << symbol << ".\n";
     }
 
     std::remove(kOutput.c_str());
-    return -CXXKIT_EXEC_ERROR;
+    return -MPCC_EXEC_ERROR;
   }
 
   // step 2.5: write program bytes.
@@ -514,7 +519,7 @@ MPCC_MODULE(MPUXLinker) {
     output_fc << byte;
   }
 
-  if (kVerbose) kStdOut << "ld: wrote code for: " << kOutput << "\n";
+  if (kVerbose) kStdOut << "link: wrote code for: " << kOutput << "\n";
 
   // step 3: check if we have those symbols
 
@@ -530,18 +535,18 @@ MPCC_MODULE(MPUXLinker) {
 
   if (!unreferenced_symbols.empty()) {
     for (auto &unreferenced_symbol : unreferenced_symbols) {
-      kStdOut << "ld: undefined symbol " << unreferenced_symbol << "\n";
+      kStdOut << "link: undefined symbol " << unreferenced_symbol << "\n";
     }
   }
 
   if (!kStartFound || kDuplicateSymbols && std::filesystem::exists(kOutput) ||
       !unreferenced_symbols.empty()) {
     if (kVerbose)
-      kStdOut << "ld: code for: " << kOutput
+      kStdOut << "link: code for: " << kOutput
               << ", is corrupt, removing file...\n";
 
     std::remove(kOutput.c_str());
-    return -CXXKIT_EXEC_ERROR;
+    return -MPCC_EXEC_ERROR;
   }
 
   return 0;

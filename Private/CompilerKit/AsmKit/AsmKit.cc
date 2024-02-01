@@ -30,7 +30,7 @@ namespace CompilerKit {
 //! @brief Compile for specific format (ELF, PEF, ZBIN)
 Int32 AssemblyFactory::Compile(StringView& sourceFile,
                                const Int32& arch) noexcept {
-  if (sourceFile.Length() < 1 || !fMounted) return CXXKIT_UNIMPLEMENTED;
+  if (sourceFile.Length() < 1 || !fMounted) return MPCC_UNIMPLEMENTED;
 
   return fMounted->CompileToFormat(sourceFile, arch);
 }

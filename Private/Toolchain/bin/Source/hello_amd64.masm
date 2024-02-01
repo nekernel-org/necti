@@ -9,3 +9,11 @@ jmp 0x100000
 sti
 retf
 
+export .text __start
+cli
+mov rsp, rdx
+int 0x80
+jmp 0x100000
+sti
+retf
+

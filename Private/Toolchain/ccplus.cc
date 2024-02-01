@@ -152,7 +152,7 @@ class CompilerBackendClang final : public ParserKit::CompilerBackend {
   explicit CompilerBackendClang() = default;
   ~CompilerBackendClang() override = default;
 
-  CXXKIT_COPY_DEFAULT(CompilerBackendClang);
+  MPCC_COPY_DEFAULT(CompilerBackendClang);
 
   bool Compile(const std::string& text, const char* file) override;
 
@@ -235,7 +235,7 @@ class AssemblyMountpointClang final : public CompilerKit::AssemblyMountpoint {
   explicit AssemblyMountpointClang() = default;
   ~AssemblyMountpointClang() override = default;
 
-  CXXKIT_COPY_DEFAULT(AssemblyMountpointClang);
+  MPCC_COPY_DEFAULT(AssemblyMountpointClang);
 
   [[maybe_unused]] static Int32 Arch() noexcept {
     return CompilerKit::AssemblyFactory::kArchAMD64;

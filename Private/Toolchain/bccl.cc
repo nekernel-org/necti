@@ -156,7 +156,7 @@ class CompilerBackendBccl final : public ParserKit::CompilerBackend {
   explicit CompilerBackendBccl() = default;
   ~CompilerBackendBccl() override = default;
 
-  CXXKIT_COPY_DEFAULT(CompilerBackendBccl);
+  MPCC_COPY_DEFAULT(CompilerBackendBccl);
 
   std::string Check(const char *text, const char *file);
   bool Compile(const std::string &text, const char *file) override;
@@ -1060,7 +1060,7 @@ class AssemblyMountpointBccl final : public CompilerKit::AssemblyMountpoint {
   explicit AssemblyMountpointBccl() = default;
   ~AssemblyMountpointBccl() override = default;
 
-  CXXKIT_COPY_DEFAULT(AssemblyMountpointBccl);
+  MPCC_COPY_DEFAULT(AssemblyMountpointBccl);
 
   [[maybe_unused]] static Int32 Arch() noexcept {
     return CompilerKit::AssemblyFactory::kArchRISCV;
@@ -1216,7 +1216,7 @@ static void cc_print_help() {
 
 #define kExt ".bccl"
 
-MPCC_MODULE(CompilerBccl64x0) {
+MPCC_MODULE(HCoreCompilerBccl64x0) {
   kCompilerTypes.push_back({.fName = "void", .fValue = "void"});
   kCompilerTypes.push_back({.fName = "char", .fValue = "byte"});
   kCompilerTypes.push_back({.fName = "short", .fValue = "hword"});

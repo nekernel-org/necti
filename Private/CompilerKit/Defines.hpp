@@ -7,8 +7,8 @@
  * 	========================================================
  */
 
-#ifndef __CXXKIT_DEFINES_HPP__
-#define __CXXKIT_DEFINES_HPP__
+#ifndef __MPCC_DEFINES_HPP__
+#define __MPCC_DEFINES_HPP__
 
 #ifndef Yes
 #define Yes true
@@ -64,19 +64,19 @@
 #define rt_copy_memory(dst, src, len) memcpy(dst, src, len)
 #endif
 
-#define CXXKIT_COPY_DELETE(KLASS)           \
+#define MPCC_COPY_DELETE(KLASS)           \
   KLASS &operator=(const KLASS &) = delete; \
   KLASS(const KLASS &) = delete;
 
-#define CXXKIT_COPY_DEFAULT(KLASS)           \
+#define MPCC_COPY_DEFAULT(KLASS)           \
   KLASS &operator=(const KLASS &) = default; \
   KLASS(const KLASS &) = default;
 
-#define CXXKIT_MOVE_DELETE(KLASS)      \
+#define MPCC_MOVE_DELETE(KLASS)      \
   KLASS &operator=(KLASS &&) = delete; \
   KLASS(KLASS &&) = delete;
 
-#define CXXKIT_MOVE_DEFAULT(KLASS)      \
+#define MPCC_MOVE_DEFAULT(KLASS)      \
   KLASS &operator=(KLASS &&) = default; \
   KLASS(KLASS &&) = default;
 
@@ -87,7 +87,7 @@
 namespace CompilerKit {
 inline constexpr int BASE_YEAR = 1900;
 
-inline std::string current_date() {
+inline std::string current_date() noexcept {
   auto time_data = time(nullptr);
   auto time_struct = gmtime(&time_data);
 
@@ -100,7 +100,7 @@ inline std::string current_date() {
   return fmt;
 }
 
-inline bool to_str(CharType *str, Int32 limit, Int32 base) {
+inline bool to_str(CharType *str, Int32 limit, Int32 base) noexcept {
   if (limit == 0) return false;
 
   Int32 copy_limit = limit;
@@ -133,4 +133,4 @@ typedef char char_type;
 #define MPCC_MODULE(name) int main(int argc, char **argv)
 #endif /* ifdef __MODULE_NEED__ */
 
-#endif /* ifndef __CXXKIT_DEFINES_HPP__ */
+#endif /* ifndef __MPCC_DEFINES_HPP__ */
