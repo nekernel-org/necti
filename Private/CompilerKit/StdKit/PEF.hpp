@@ -36,6 +36,7 @@ enum {
   kPefArchRISCV,
   kPefArch64000, /* 64x0 RISC architecture. */
   kPefArch32000,
+  kPefArchCount = (kPefArch32000 - kPefArchIntel86S),
   kPefArchInvalid = 0xFF,
 };
 
@@ -44,6 +45,8 @@ enum {
   kPefKindSharedObject = 2, /* .lib */
   kPefKindObject = 4,       /* .obj */
   kPefKindDwarf = 5,        /* .dsym */
+  kPefKindDriver = 6,
+  kPefKindCount,
 };
 
 /* PEF container */
