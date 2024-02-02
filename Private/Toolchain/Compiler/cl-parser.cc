@@ -13,3 +13,5 @@
 ------------------------------------------- */
 
 #include "cl-parser.hxx"
+
+using namespace CompilerKit;

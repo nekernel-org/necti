@@ -18,6 +18,4 @@
 #include <CompilerKit/CompilerKit.hpp>
 #include <CompilerKit/ParserKit.hpp>
 
-namespace cl {
-using namespace CompilerKit;
-}  // namespace cl
+namespace CompilerKit {}  // namespace CompilerKit
