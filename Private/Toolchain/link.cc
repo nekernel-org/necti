@@ -279,8 +279,8 @@ MPCC_MODULE(HCoreLinker) {
         command_header.Size = ae_records[ae_record_index].fSize;
 
         if (kVerbose)
-          kStdOut << "link: object record: " << ae_records[ae_record_index].fName
-                  << " was marked.\n";
+          kStdOut << "link: object record: "
+                  << ae_records[ae_record_index].fName << " was marked.\n";
 
         pef_command_hdrs.emplace_back(command_header);
       }
