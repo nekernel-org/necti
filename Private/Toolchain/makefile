@@ -7,7 +7,7 @@
  # 	========================================================
  #
 
-COMMON_INC=-I../ -I../CompilerKit
+COMMON_INC=-I../ -I../CompilerKit -I./
 
 LINK_CC=g++ -std=c++20
 
