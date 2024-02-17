@@ -46,7 +46,7 @@
 
 #define kPefDeaultOrg (uint64_t)0x10000
 #define kPefLinkerNumId 0x5046FF
-#define kPefAbiId "Container:Abi:64x0"
+#define kPefAbiId "Container:Abi:"
 
 enum { kAbiMpUx = 0x5046 /* PF */ };
 
@@ -423,7 +423,25 @@ MPCC_MODULE(HCoreLinker) {
 
   CompilerKit::PEFCommandHeader abi_header{};
 
-  memcpy(abi_header.Name, kPefAbiId, strlen(kPefAbiId));
+  std::string abi = kPefAbiId;
+
+  switch (kArch) {
+    case CompilerKit::kPefArchAMD64: {
+      abi += "MSFT";
+      break;
+    }
+    case CompilerKit::kPefArch32000:
+    case CompilerKit::kPefArch64000: {
+      abi += "MP-UX";
+      break;
+    }
+    default: {
+      abi += "UNIX";
+      break;
+    }
+  }
+
+  memcpy(abi_header.Name, abi.c_str(), abi.size());
 
   abi_header.Size = strlen(kPefAbiId);
   abi_header.Offset = output_fc.tellp();
