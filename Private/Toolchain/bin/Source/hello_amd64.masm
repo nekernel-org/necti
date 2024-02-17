@@ -3,7 +3,7 @@ bits 64
 
 export .text MySampleFoo
 cli
-mov rsp, rdx
+mov rsp, rsp 
 int 0x80
 jmp 0x100000
 sti
