@@ -982,6 +982,18 @@ bool CompilerKit::PlatformAssemblerAMD64::WriteLine(std::string &line,
                                                     const std::string &file) {
   if (ParserKit::find_word(line, "export ")) return true;
 
+  struct RegMapAMD64 {
+    std::string fName;
+    e64_byte_t fModRM;
+  };
+
+  std::vector<RegMapAMD64> regsPt2{
+      {.fName = "ax", .fModRM = 0b000}, {.fName = "cx", .fModRM = 0b001},
+      {.fName = "dx", .fModRM = 0b010}, {.fName = "bx", .fModRM = 0b011},
+      {.fName = "sp", .fModRM = 0b100}, {.fName = "bp", .fModRM = 0b101},
+      {.fName = "si", .fModRM = 0b110}, {.fName = "di", .fModRM = 0b111},
+  };
+
   for (auto &opcodeAMD64 : kOpcodesAMD64) {
     // strict check here
     if (ParserKit::find_word(line, opcodeAMD64.fName) &&
@@ -989,21 +1001,9 @@ bool CompilerKit::PlatformAssemblerAMD64::WriteLine(std::string &line,
       std::string name(opcodeAMD64.fName);
 
       if (name.find("mov") != std::string::npos) {
-        struct RegMapAMD64 {
-          std::string fName;
-          e64_byte_t fModRM;
-        };
-
-        std::vector<RegMapAMD64> regs{
-            {.fName = "ax", .fModRM = 0}, {.fName = "cx", .fModRM = 1},
-            {.fName = "dx", .fModRM = 2}, {.fName = "bx", .fModRM = 3},
-            {.fName = "sp", .fModRM = 4}, {.fName = "bp", .fModRM = 5},
-            {.fName = "si", .fModRM = 6}, {.fName = "di", .fModRM = 7},
-        };
-
         std::string substr = line.substr(line.find(name) + name.size());
 
-        uint64_t bits = 16;
+        uint64_t bits = 64;
 
         if (substr.find(",") == std::string::npos) {
           detail::print_error("Invalid combination of operands and registers.",
@@ -1011,42 +1011,36 @@ bool CompilerKit::PlatformAssemblerAMD64::WriteLine(std::string &line,
           throw std::runtime_error("comb_op_reg");
         }
 
-        bool found = false;
+        bits = 64;
 
-        for (auto &reg : regs) {
-          if (line.find(reg.fName) != std::string::npos) {
-            if (!found) {
-              if (line.substr(line.find(reg.fName) - 1)[0] == 'r') {
-                bits = 64;
+        bool noRightRegister = false;
 
-                kBytes.emplace_back(0x48);
-                kBytes.emplace_back(0x89);
-                kBytes.emplace_back(0x00);
-              } else {
-                detail::print_error(
-                    "Invalid combination of registers, each 64-bit register "
-                    "must start with 'r'.",
-                    "i64asm");
-                throw std::runtime_error("comb_op_reg");
-              }
+        if (!noRightRegister) {
+          if (bits == 64 ||
+              bits == 32)
+          {
+            if (bits != 32)
+              kBytes.emplace_back(opcodeAMD64.fOpcode);
 
-              found = true;
+            kBytes.emplace_back(0x89);
 
-              kBytes.push_back(0xc0 + reg.fModRM);
+            // TODO
 
-              continue;
-            }
+            this->WriteNumber32(line.find(name) + name.size() + 2, line);
           }
-        }
+          else if (bits == 16) {
+            kBytes.emplace_back(0x66);
+            kBytes.emplace_back(0x89);
 
-        if (bits == 64)
-          this->WriteNumber32(line.find(name) + name.size() + 2, line);
-        else if (bits == 16)
-          this->WriteNumber16(line.find(name) + name.size() + 2, line);
-        else {
-          detail::print_error("Invalid combination of operands and registers.",
-                              "i64asm");
-          throw std::runtime_error("comb_op_reg");
+            // TODO
+
+            this->WriteNumber16(line.find(name) + name.size() + 2, line);
+          }
+          else {
+            detail::print_error("Invalid combination of operands and registers.",
+                                "i64asm");
+            throw std::runtime_error("comb_op_reg");
+          }
         }
 
         break;
@@ -1057,7 +1051,10 @@ bool CompilerKit::PlatformAssemblerAMD64::WriteLine(std::string &line,
         break;
       } else if (name == "jmp" || name == "call") {
         kBytes.emplace_back(opcodeAMD64.fOpcode);
-        this->WriteNumber32(line.find(name) + name.size() + 1, line);
+        
+        if (!this->WriteNumber32(line.find(name) + name.size() + 1, line)) {
+          // TODO
+        }
 
         break;
       } else {
@@ -1069,10 +1066,9 @@ bool CompilerKit::PlatformAssemblerAMD64::WriteLine(std::string &line,
     }
   }
 
-  if (line.find("db") != std::string::npos) {
-    this->WriteNumber(line.find("db") + strlen("db") + 1, line);
-  }
-  else if (line.find("org ") != std::string::npos) {
+  if (line.find("db ") != std::string::npos) {
+    this->WriteNumber(line.find("db ") + strlen("db ") + 1, line);
+  } else if (line.find("org ") != std::string::npos) {
     size_t base[] = {10, 16, 2, 7};
 
     for (size_t i = 0; i < 4; i++) {

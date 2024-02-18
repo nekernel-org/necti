@@ -40,25 +40,25 @@ struct CpuCodeAMD64 {
 #define kJumpLimitStandardLimit 0xEB
 
 inline std::vector<CpuCodeAMD64> kOpcodesAMD64 = {
-    kAsmOpcodeDecl("int", 0xCD) kAsmOpcodeDecl("into", 0xCE) kAsmOpcodeDecl(
-        "intd", 0xF1) kAsmOpcodeDecl("int3", 0xC3)
+kAsmOpcodeDecl("int", 0xCD) 
+kAsmOpcodeDecl("into", 0xCE) 
+kAsmOpcodeDecl("intd", 0xF1) 
+kAsmOpcodeDecl("int3", 0xC3)
 
-        kAsmOpcodeDecl("iret", 0xCF) kAsmOpcodeDecl("retf", 0xCB)
-            kAsmOpcodeDecl("retn", 0xC3) kAsmOpcodeDecl("sti", 0xfb)
-                kAsmOpcodeDecl("cli", 0xfa)
+kAsmOpcodeDecl("iret", 0xCF) 
+kAsmOpcodeDecl("retf", 0xCB)
+kAsmOpcodeDecl("retn", 0xC3) 
+kAsmOpcodeDecl("sti", 0xfb)
+kAsmOpcodeDecl("cli", 0xfa)
 
-                    kAsmOpcodeDecl("nop", 0x90)
+kAsmOpcodeDecl("nop", 0x90)
 
-                        kAsmOpcodeDecl("mov eax", 0xb8) kAsmOpcodeDecl(
-                            "mov ecx", 0xb9) kAsmOpcodeDecl("mov edx", 0xba)
-                            kAsmOpcodeDecl("mov ebx", 0xbb) kAsmOpcodeDecl(
-                                "mov esp", 0xbc) kAsmOpcodeDecl("mov ebp", 0xbd)
-                                kAsmOpcodeDecl("mov esi", 0xbe)
+kAsmOpcodeDecl("mov", 0x48)
 
-                                    kAsmOpcodeDecl("jmp", 0xE9)
-                                        kAsmOpcodeDecl("call", 0xE9)
+kAsmOpcodeDecl("jmp", 0xE9)
+kAsmOpcodeDecl("call", 0xFF)
 
-                                            kAsmOpcodeDecl("mov", 0x00)};
+kAsmOpcodeDecl("mov", 0x00)};
 
 // \brief 64x0 register prefix
 // example: r32, r0

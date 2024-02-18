@@ -11,8 +11,9 @@
 
 #include <uuid/uuid.h>
 
-#include <CompilerKit/AsmKit/Arch/64x0.hpp>
+#include <CompilerKit/AsmKit/Arch/amd64.hpp>
 #include <CompilerKit/ParserKit.hpp>
+#include <Compiler/cl-parser.hxx>
 #include <cstdio>
 #include <fstream>
 #include <iostream>
