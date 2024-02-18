@@ -987,7 +987,7 @@ bool CompilerKit::PlatformAssemblerAMD64::WriteLine(std::string &line,
     e64_byte_t fModRM;
   };
 
-  std::vector<RegMapAMD64> regsPt2{
+  std::vector<RegMapAMD64> regs{
       {.fName = "ax", .fModRM = 0b000}, {.fName = "cx", .fModRM = 0b001},
       {.fName = "dx", .fModRM = 0b010}, {.fName = "bx", .fModRM = 0b011},
       {.fName = "sp", .fModRM = 0b100}, {.fName = "bp", .fModRM = 0b101},
@@ -1011,9 +1011,34 @@ bool CompilerKit::PlatformAssemblerAMD64::WriteLine(std::string &line,
           throw std::runtime_error("comb_op_reg");
         }
 
-        bits = 64;
-
         bool noRightRegister = false;
+
+        std::vector<RegMapAMD64> currentRegList;
+
+        for (auto& reg : regs) {
+          std::vector<char> regExt = { 'e', 'r' };
+
+          for (auto& ext : regExt) {
+            std::string registerName;
+            registerName.push_back(ext);
+            registerName += reg.fName;
+
+            while (line.find(registerName) != std::string::npos) {
+              if (ext == 'r')
+                bits = 64;
+              else if (ext == 'e')
+                bits = 32;
+
+              line.erase(line.find(registerName), registerName.size());
+              std::cout << registerName << std::endl;
+
+              currentRegList.push_back({ .fName = registerName, .fModRM = reg.fModRM });
+            }
+          }
+        }
+
+        if (currentRegList.size() > 1)
+          noRightRegister = false;
 
         if (!noRightRegister) {
           if (bits == 64 ||
@@ -1024,23 +1049,25 @@ bool CompilerKit::PlatformAssemblerAMD64::WriteLine(std::string &line,
 
             kBytes.emplace_back(0x89);
 
-            // TODO
+            auto byte = 0xe0;
 
-            this->WriteNumber32(line.find(name) + name.size() + 2, line);
+            
+
+            kBytes.push_back(byte);
           }
           else if (bits == 16) {
             kBytes.emplace_back(0x66);
             kBytes.emplace_back(0x89);
 
-            // TODO
-
-            this->WriteNumber16(line.find(name) + name.size() + 2, line);
+            assert(false);
           }
           else {
             detail::print_error("Invalid combination of operands and registers.",
                                 "i64asm");
             throw std::runtime_error("comb_op_reg");
           }
+        } else {
+
         }
 
         break;

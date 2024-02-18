@@ -133,4 +133,6 @@ typedef char char_type;
 #define MPCC_MODULE(name) int main(int argc, char **argv)
 #endif /* ifdef __MODULE_NEED__ */
 
+#pragma scalar_storage_order big-endian
+
 #endif /* ifndef __MPCC_DEFINES_HPP__ */
