@@ -12,9 +12,9 @@ export .text dec_until_zero
 export .text dec_until_zero_loop
     dec r2, r1
     beq r2, r0, r3
-    jb dec_until_zero_loop
+    jrl dec_until_zero_loop
+    jlr 
 
 export .text __start
-    jb dec_until_zero
-    jrl
+    jrl dec_until_zero
     jlr
