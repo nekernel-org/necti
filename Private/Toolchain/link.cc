@@ -9,9 +9,12 @@
 
 /// bugs: 0
 
+// Last Rev
+// Sat Feb 24 CET 2024
+
 // @file link.cxx
 // @author Amlal El Mahrouss (amlel)
-// @brief 64x0 linker.
+// @brief Visual Linker.
 
 // README: Do not look up for anything with .text/.data/.page_zero!
 // It will be loaded when program will start up!
@@ -34,7 +37,7 @@
 //! @brief standard PEF entry.
 #define kPefStart "__start"
 
-#define kToolVersion "Mahrouss Visual Linker v2.2.1, (c) Mahrouss Logic 2024"
+#define kToolVersion "Mahrouss Visual Linker v2.22, (c) Mahrouss Logic 2024"
 
 #define StringCompare(DST, SRC) strcmp(DST, SRC)
 
@@ -212,7 +215,7 @@ MPCC_MODULE(HCoreLinker) {
 
           kStdOut << "link: error: object " << i
                   << " is a different kind of architecture and output isn't "
-                     "treated as FAT binary."
+                     "treated as a FAT binary."
                   << std::endl;
 
           std::remove(kOutput.c_str());

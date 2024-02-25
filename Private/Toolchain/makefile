@@ -12,27 +12,27 @@ COMMON_INC=-I../ -I../CompilerKit -I./
 LINK_CC=g++ -std=c++20
 
 LINK_SRC=link.cc
-LINK_OUTPUT=bin/link
-LINK_ALT_OUTPUT=bin/64ld
-LINK_ALT_2_OUTPUT=bin/32ld
+LINK_OUTPUT=bin/link.exe
+LINK_ALT_OUTPUT=bin/64ld.exe
+LINK_ALT_2_OUTPUT=bin/32ld.exe
 
 PP_SRC=bpp.cc
-PP_OUTPUT=bin/bpp
+PP_OUTPUT=bin/bpp.exe
 
 # BC Compiler
 CC_SRC=bccl.cc ../CompilerKit/StdKit/*.cc ../CompilerKit/AsmKit/*.cc
-CC_OUTPUT=bin/bccl
+CC_OUTPUT=bin/bccl.exe
 
 # C++ Compiler
 CXX_SRC=ccplus.cc ../CompilerKit/StdKit/*.cc ../CompilerKit/AsmKit/*.cc
-CXX_OUTPUT=bin/ccplus
+CXX_OUTPUT=bin/ccplus.exe
 
 # Assembler
 ASM_SRC=64asm.cc ../CompilerKit/StdKit/*.cc ../CompilerKit/AsmKit/*.cc
-ASM_OUTPUT=bin/64asm
+ASM_OUTPUT=bin/64asm.exe
 
 IASM_SRC=i64asm.cc ../CompilerKit/StdKit/*.cc ../CompilerKit/AsmKit/*.cc
-IASM_OUTPUT=bin/i64asm
+IASM_OUTPUT=bin/i64asm.exe
 
 .PHONY: all
 all: cl
