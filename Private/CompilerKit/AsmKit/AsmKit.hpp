@@ -96,12 +96,12 @@ union NumberCast8 final {
   UInt8 raw;
 };
 
-class PlatformAssembler {
+class Encoder {
  public:
-  explicit PlatformAssembler() = default;
-  ~PlatformAssembler() = default;
+  explicit Encoder() = default;
+  ~Encoder() = default;
 
-  MPCC_COPY_DEFAULT(PlatformAssembler);
+  MPCC_COPY_DEFAULT(Encoder);
 
   virtual std::string CheckLine(std::string& line, const std::string& file) = 0;
   virtual bool WriteLine(std::string& line, const std::string& file) = 0;
@@ -110,12 +110,12 @@ class PlatformAssembler {
 
 #ifdef __ASM_NEED_AMD64__
 
-class PlatformAssemblerAMD64 final : public PlatformAssembler {
+class EncoderAMD64 final : public Encoder {
  public:
-  explicit PlatformAssemblerAMD64() = default;
-  ~PlatformAssemblerAMD64() = default;
+  explicit EncoderAMD64() = default;
+  ~EncoderAMD64() = default;
 
-  MPCC_COPY_DEFAULT(PlatformAssemblerAMD64);
+  MPCC_COPY_DEFAULT(EncoderAMD64);
 
   virtual std::string CheckLine(std::string& line,
                                 const std::string& file) override;
@@ -132,12 +132,12 @@ class PlatformAssemblerAMD64 final : public PlatformAssembler {
 
 #ifdef __ASM_NEED_64x0__
 
-class PlatformAssembler64x0 final : public PlatformAssembler {
+class Encoder64x0 final : public Encoder {
  public:
-  explicit PlatformAssembler64x0() = default;
-  ~PlatformAssembler64x0() = default;
+  explicit Encoder64x0() = default;
+  ~Encoder64x0() = default;
 
-  MPCC_COPY_DEFAULT(PlatformAssembler64x0);
+  MPCC_COPY_DEFAULT(Encoder64x0);
 
   virtual std::string CheckLine(std::string& line,
                                 const std::string& file) override;
@@ -150,12 +150,12 @@ class PlatformAssembler64x0 final : public PlatformAssembler {
 
 #ifdef __ASM_NEED_32x0__
 
-class PlatformAssembler32x0 final : public PlatformAssembler {
+class Encoder32x0 final : public Encoder {
  public:
-  explicit PlatformAssembler32x0() = default;
-  ~PlatformAssembler32x0() = default;
+  explicit Encoder32x0() = default;
+  ~Encoder32x0() = default;
 
-  MPCC_COPY_DEFAULT(PlatformAssembler32x0);
+  MPCC_COPY_DEFAULT(Encoder32x0);
 
   virtual std::string CheckLine(std::string& line,
                                 const std::string& file) override;

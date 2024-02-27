@@ -11,7 +11,7 @@ retf
 
 export .text __start
 cli
-mov rdx, rsi
+mov rax, rdx
 int 0x80
 jmp 0x100000
 sti

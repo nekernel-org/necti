@@ -208,7 +208,7 @@ MPCC_MODULE(HCoreAssemblerAMD64) {
 
     /////////////////////////////////////////////////////////////////////////////////////////
 
-    CompilerKit::PlatformAssemblerAMD64 asm64;
+    CompilerKit::EncoderAMD64 asm64;
 
     while (std::getline(file_ptr, line)) {
       if (auto ln = asm64.CheckLine(line, argv[i]); !ln.empty()) {
@@ -484,7 +484,7 @@ bool is_valid(const std::string &str) {
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
-std::string CompilerKit::PlatformAssemblerAMD64::CheckLine(
+std::string CompilerKit::EncoderAMD64::CheckLine(
     std::string &line, const std::string &file) {
   std::string err_str;
 
@@ -552,7 +552,7 @@ std::string CompilerKit::PlatformAssemblerAMD64::CheckLine(
   return err_str;
 }
 
-bool CompilerKit::PlatformAssemblerAMD64::WriteNumber(const std::size_t &pos,
+bool CompilerKit::EncoderAMD64::WriteNumber(const std::size_t &pos,
                                                       std::string &jump_label) {
   if (!isdigit(jump_label[pos])) return false;
 
@@ -661,7 +661,7 @@ bool CompilerKit::PlatformAssemblerAMD64::WriteNumber(const std::size_t &pos,
   return true;
 }
 
-bool CompilerKit::PlatformAssemblerAMD64::WriteNumber32(
+bool CompilerKit::EncoderAMD64::WriteNumber32(
     const std::size_t &pos, std::string &jump_label) {
   if (!isdigit(jump_label[pos])) return false;
 
@@ -770,7 +770,7 @@ bool CompilerKit::PlatformAssemblerAMD64::WriteNumber32(
   return true;
 }
 
-bool CompilerKit::PlatformAssemblerAMD64::WriteNumber16(
+bool CompilerKit::EncoderAMD64::WriteNumber16(
     const std::size_t &pos, std::string &jump_label) {
   if (!isdigit(jump_label[pos])) return false;
 
@@ -879,7 +879,7 @@ bool CompilerKit::PlatformAssemblerAMD64::WriteNumber16(
   return true;
 }
 
-bool CompilerKit::PlatformAssemblerAMD64::WriteNumber8(
+bool CompilerKit::EncoderAMD64::WriteNumber8(
     const std::size_t &pos, std::string &jump_label) {
   if (!isdigit(jump_label[pos])) return false;
 
@@ -978,7 +978,7 @@ bool CompilerKit::PlatformAssemblerAMD64::WriteNumber8(
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
-bool CompilerKit::PlatformAssemblerAMD64::WriteLine(std::string &line,
+bool CompilerKit::EncoderAMD64::WriteLine(std::string &line,
                                                     const std::string &file) {
   if (ParserKit::find_word(line, "export ")) return true;
 
@@ -988,10 +988,10 @@ bool CompilerKit::PlatformAssemblerAMD64::WriteLine(std::string &line,
   };
 
   std::vector<RegMapAMD64> regs{
-      {.fName = "ax", .fModRM = 0b000}, {.fName = "cx", .fModRM = 0b001},
-      {.fName = "dx", .fModRM = 0b010}, {.fName = "bx", .fModRM = 0b011},
-      {.fName = "sp", .fModRM = 0b100}, {.fName = "bp", .fModRM = 0b101},
-      {.fName = "si", .fModRM = 0b110}, {.fName = "di", .fModRM = 0b111},
+      {.fName = "ax", .fModRM = 0x0}, {.fName = "cx", .fModRM = 0x8},
+      {.fName = "dx", .fModRM = 0x2}, {.fName = "bx", .fModRM = 0x10},
+      {.fName = "sp", .fModRM = 0x4}, {.fName = "bp", .fModRM = 0x12},
+      {.fName = "si", .fModRM = 0x6}, {.fName = "di", .fModRM = 0x14},
   };
 
   for (auto &opcodeAMD64 : kOpcodesAMD64) {
@@ -1044,16 +1044,33 @@ bool CompilerKit::PlatformAssemblerAMD64::WriteLine(std::string &line,
           if (bits == 64 ||
               bits == 32)
           {
-            if (bits != 32)
+            if (bits >= 32)
               kBytes.emplace_back(opcodeAMD64.fOpcode);
 
             kBytes.emplace_back(0x89);
 
-            auto byte = 0xe0;
+            if (currentRegList[1].fName.find("sp") != std::string::npos) {
+              auto byte = 0xe0;
+              byte += currentRegList[0].fModRM;
 
-            
+              kBytes.push_back(byte);
+            } else if (currentRegList[1].fName.find("dx") != std::string::npos) {
+              auto byte = 0xd0;
+              byte += currentRegList[0].fModRM;
+              
+              kBytes.push_back(byte);
+            } else if (currentRegList[1].fName.find("ax") != std::string::npos) {
+              auto byte = 0xc0;
+              byte += currentRegList[0].fModRM;
+              
+              kBytes.push_back(byte);
+            } else {
+              auto byte = 0xf0;
+              byte += currentRegList[0].fModRM;
+              
+              kBytes.push_back(byte);
+            }               
 
-            kBytes.push_back(byte);
           }
           else if (bits == 16) {
             kBytes.emplace_back(0x66);

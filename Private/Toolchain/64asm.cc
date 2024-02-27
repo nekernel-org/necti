@@ -172,7 +172,7 @@ MPCC_MODULE(HCoreAssembler64000) {
 
     /////////////////////////////////////////////////////////////////////////////////////////
 
-    CompilerKit::PlatformAssembler64x0 asm64;
+    CompilerKit::Encoder64x0 asm64;
 
     while (std::getline(file_ptr, line)) {
       if (auto ln = asm64.CheckLine(line, argv[i]); !ln.empty()) {
@@ -442,7 +442,7 @@ bool is_valid(const std::string &str) {
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
-std::string CompilerKit::PlatformAssembler64x0::CheckLine(
+std::string CompilerKit::Encoder64x0::CheckLine(
     std::string &line, const std::string &file) {
   std::string err_str;
 
@@ -551,7 +551,7 @@ std::string CompilerKit::PlatformAssembler64x0::CheckLine(
   return err_str;
 }
 
-bool CompilerKit::PlatformAssembler64x0::WriteNumber(const std::size_t &pos,
+bool CompilerKit::Encoder64x0::WriteNumber(const std::size_t &pos,
                                                      std::string &jump_label) {
   if (!isdigit(jump_label[pos])) return false;
 
@@ -658,7 +658,7 @@ bool CompilerKit::PlatformAssembler64x0::WriteNumber(const std::size_t &pos,
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
-bool CompilerKit::PlatformAssembler64x0::WriteLine(std::string &line,
+bool CompilerKit::Encoder64x0::WriteLine(std::string &line,
                                                    const std::string &file) {
   if (ParserKit::find_word(line, "export ")) return true;
 
