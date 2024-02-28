@@ -41,10 +41,22 @@
 #define kWhite "\e[0;97m"
 #define kYellow "\e[0;33m"
 
+#define kStdOut (std::cout << kWhite)
+#define kStdErr (std::cout << kRed)
+
 /////////////////////////////////////////////////////////////////////////////////////////
 
 // @brief 32x0 Assembler entrypoint, the program/module starts here.
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
-MPCC_MODULE(HCoreAssembler32000) { return 0; }
+MPCC_MODULE(HCoreAssembler32000) {
+  kStdOut << "MahroussLogic (R) Visual Assembler.";
+  kStdOut << "Warning: This computer program is protected by copyright "
+             "law and international treaties.\r\nUnauthorized reproduction "
+             "or distribution of this program, or any portion of it,\r\nmay "
+             "result in severe civil and criminal penalties, and will be "
+             "prosecuted to the maximum extent possible under the law.\r\n\r\n";
+
+  return 0;
+}

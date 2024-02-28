@@ -71,6 +71,14 @@ static std::vector<std::string> kObjectList;
 static std::vector<char> kObjectBytes;
 
 MPCC_MODULE(HCoreLinker) {
+  kStdOut << "MahroussLogic (R) Visual Linker.\r\n";
+  kStdOut << "Warning: This computer program is protected by copyright "
+                "law and international treaties.\r\nUnauthorized reproduction "
+                "or distribution of this program, or any portion of it,\r\nmay "
+                "result in severe civil and criminal penalties, and will be "
+                "prosecuted to the maximum extent possible under the law.\r\n\r\n";
+
+
   bool is_executable = true;
 
   /**
