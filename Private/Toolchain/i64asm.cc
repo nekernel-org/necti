@@ -105,13 +105,6 @@ void print_warning(std::string reason, const std::string &file) noexcept {
 /////////////////////////////////////////////////////////////////////////////////////////
 
 MPCC_MODULE(HCoreAssemblerAMD64) {
-  kStdOut << "MahroussLogic (R) Visual Assembler.\r\n";
-  kStdOut << "Warning: This computer program is protected by copyright "
-                "law and international treaties.\r\nUnauthorized reproduction "
-                "or distribution of this program, or any portion of it,\r\nmay "
-                "result in severe civil and criminal penalties, and will be "
-                "prosecuted to the maximum extent possible under the law.\r\n\r\n";
-
   //////////////// CPU OPCODES BEGIN ////////////////
 
   std::string opcodes_jump[kJumpLimit] = {

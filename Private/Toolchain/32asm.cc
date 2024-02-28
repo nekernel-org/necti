@@ -51,12 +51,5 @@
 /////////////////////////////////////////////////////////////////////////////////////////
 
 MPCC_MODULE(HCoreAssembler32000) {
-  kStdOut << "MahroussLogic (R) Visual Assembler.";
-  kStdOut << "Warning: This computer program is protected by copyright "
-             "law and international treaties.\r\nUnauthorized reproduction "
-             "or distribution of this program, or any portion of it,\r\nmay "
-             "result in severe civil and criminal penalties, and will be "
-             "prosecuted to the maximum extent possible under the law.\r\n\r\n";
-
   return 0;
 }
