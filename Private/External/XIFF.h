@@ -25,7 +25,17 @@ struct __attribute__((packed)) XiffHeader {
   unsigned int specific_format_type;  // format type. generic
 };
 
+/* video file */
 #define kXIFFVideo "XVFF"
+
+/* audio file */
 #define kXIFFAudio "XAFF"
+
+/* install buddy program. */
 #define kXIFFInstaller "XnFF"
+
+/* generic container */
 #define kXIFFGeneric "XIFF"
+
+/* binary with metadata. */
+#define kXIFFFlatBinary "XEFF"
