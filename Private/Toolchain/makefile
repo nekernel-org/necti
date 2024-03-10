@@ -9,7 +9,11 @@
 
 COMMON_INC=-I../ -I../CompilerKit -I./
 
+ifeq ($(shell uname), "Darwin")
 LINK_CC=g++ -std=c++20
+else
+LINK_CC=x86_64-w64-mingw32-g++ -std=c++20
+endif
 
 LINK_SRC=link.cc
 LINK_OUTPUT=bin/link.exe
@@ -19,7 +23,7 @@ LINK_ALT_2_OUTPUT=bin/32ld.exe
 PP_SRC=bpp.cc
 PP_OUTPUT=bin/bpp.exe
 
-# BC Compiler
+# BCCL Compiler
 CC_SRC=bccl.cc ../CompilerKit/StdKit/*.cc ../CompilerKit/AsmKit/*.cc
 CC_OUTPUT=bin/bccl.exe
 
@@ -35,14 +39,15 @@ IASM_SRC=i64asm.cc ../CompilerKit/StdKit/*.cc ../CompilerKit/AsmKit/*.cc
 IASM_OUTPUT=bin/i64asm.exe
 
 .PHONY: all
-all: cl
-	@echo "[make] done build."
+all:
+	@echo "Use a specific target."
 
-.PHONY: cl
-cl: link
+.PHONY: bpp
+bpp:
 	$(LINK_CC) $(COMMON_INC) $(PP_SRC) -o $(PP_OUTPUT)
-	$(LINK_CC) $(COMMON_INC) $(CC_SRC) -o $(CC_OUTPUT)
-	$(LINK_CC) $(COMMON_INC) $(CXX_SRC) -o $(CXX_OUTPUT)
+
+.PHONY: asm
+asm:
 	$(LINK_CC) $(COMMON_INC) $(IASM_SRC) -o $(IASM_OUTPUT)
 	$(LINK_CC) $(COMMON_INC) $(ASM_SRC) -o $(ASM_OUTPUT)
 

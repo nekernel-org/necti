@@ -9,8 +9,6 @@
 
 /// bugs: ?
 
-#include <uuid/uuid.h>
-
 #include <CompilerKit/AsmKit/Arch/amd64.hpp>
 #include <CompilerKit/ParserKit.hpp>
 #include <Compiler/cl-parser.hxx>
@@ -20,6 +18,8 @@
 #include <string>
 #include <utility>
 #include <vector>
+#include <memory>
+#include <filesystem>
 
 #define kOk 0
 

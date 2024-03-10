@@ -9,15 +9,16 @@
 
 /// bugs: ?
 
-#include <uuid/uuid.h>
-
-#include <CompilerKit/AsmKit/Arch/64x0.hpp>
+#include <CompilerKit/AsmKit/Arch/amd64.hpp>
 #include <CompilerKit/ParserKit.hpp>
 #include <cstdio>
 #include <fstream>
 #include <iostream>
 #include <string>
+#include <utility>
 #include <vector>
+#include <memory>
+#include <filesystem>
 
 #define kOk 0
 

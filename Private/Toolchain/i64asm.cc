@@ -26,6 +26,10 @@
 #include <filesystem>
 #include <fstream>
 #include <iostream>
+#include <vector>
+#include <memory>
+#include <stdlib.h>
+#include <filesystem>
 
 /////////////////////
 
@@ -54,7 +58,7 @@ static std::vector<std::pair<std::string, std::uintptr_t>> kOriginLabel;
 
 static bool kVerbose = false;
 
-static std::vector<e64_byte_t> kBytes;
+static std::vector<i64_byte_t> kBytes;
 
 static CompilerKit::AERecordHeader kCurrentRecord{
     .fName = "", .fKind = CompilerKit::kPefCode, .fSize = 0, .fOffset = 0};
@@ -62,8 +66,8 @@ static CompilerKit::AERecordHeader kCurrentRecord{
 static std::vector<CompilerKit::AERecordHeader> kRecords;
 static std::vector<std::string> kUndefinedSymbols;
 
-static const std::string kUndefinedSymbol = ":ld:";
-static const std::string kRelocSymbol = ":mld:";
+static const std::string kUndefinedSymbol = ":UndefinedSymbol:";
+static const std::string kRelocSymbol = ":RuntimeSymbol:";
 
 // \brief forward decl.
 static bool asm_read_attributes(std::string &line);
@@ -109,16 +113,16 @@ MPCC_MODULE(HCoreAssemblerAMD64) {
       "jna", "jnae", "jnb", "jnbe", "jnc", "jne", "jng", "jnge", "jnl", "jnle",
       "jno", "jnp",  "jns", "jnz",  "jo",  "jp",  "jpe", "jpo",  "js",  "jz"};
 
-  for (e64_hword_t i = 0; i < kJumpLimit; i++) {
+  for (i64_hword_t i = 0; i < kJumpLimit; i++) {
     CpuCodeAMD64 code{.fName = opcodes_jump[i],
-                      .fOpcode = static_cast<e64_hword_t>(kAsmJumpOpcode + i)};
+                      .fOpcode = static_cast<i64_hword_t>(kAsmJumpOpcode + i)};
     kOpcodesAMD64.push_back(code);
   }
 
   CpuCodeAMD64 code{.fName = "jcxz", .fOpcode = 0xE3};
   kOpcodesAMD64.push_back(code);
 
-  for (e64_hword_t i = kJumpLimitStandard; i < kJumpLimitStandardLimit; i++) {
+  for (i64_hword_t i = kJumpLimitStandard; i < kJumpLimitStandardLimit; i++) {
     CpuCodeAMD64 code{.fName = "jmp", .fOpcode = i};
     kOpcodesAMD64.push_back(code);
   }
@@ -554,7 +558,7 @@ bool CompilerKit::EncoderAMD64::WriteNumber(const std::size_t &pos,
 
   switch (jump_label[pos + 1]) {
     case 'x': {
-      if (auto res = strtoq(jump_label.substr(pos + 2).c_str(), nullptr, 16);
+      if (auto res = strtol(jump_label.substr(pos + 2).c_str(), nullptr, 16);
           !res) {
         if (errno != 0) {
           detail::print_error("invalid hex number: " + jump_label, "i64asm");
@@ -563,7 +567,7 @@ bool CompilerKit::EncoderAMD64::WriteNumber(const std::size_t &pos,
       }
 
       CompilerKit::NumberCast64 num = CompilerKit::NumberCast64(
-          strtoq(jump_label.substr(pos + 2).c_str(), nullptr, 16));
+          strtol(jump_label.substr(pos + 2).c_str(), nullptr, 16));
 
       for (char &i : num.number) {
         if (i == 0) i = 0xFF;
@@ -579,7 +583,7 @@ bool CompilerKit::EncoderAMD64::WriteNumber(const std::size_t &pos,
       return true;
     }
     case 'b': {
-      if (auto res = strtoq(jump_label.substr(pos + 2).c_str(), nullptr, 2);
+      if (auto res = strtol(jump_label.substr(pos + 2).c_str(), nullptr, 2);
           !res) {
         if (errno != 0) {
           detail::print_error("invalid binary number: " + jump_label, "i64asm");
@@ -588,7 +592,7 @@ bool CompilerKit::EncoderAMD64::WriteNumber(const std::size_t &pos,
       }
 
       CompilerKit::NumberCast64 num = CompilerKit::NumberCast64(
-          strtoq(jump_label.substr(pos + 2).c_str(), nullptr, 2));
+          strtol(jump_label.substr(pos + 2).c_str(), nullptr, 2));
 
       if (kVerbose) {
         kStdOut << "i64asm: found a base 2 number here: "
@@ -604,7 +608,7 @@ bool CompilerKit::EncoderAMD64::WriteNumber(const std::size_t &pos,
       return true;
     }
     case 'o': {
-      if (auto res = strtoq(jump_label.substr(pos + 2).c_str(), nullptr, 7);
+      if (auto res = strtol(jump_label.substr(pos + 2).c_str(), nullptr, 7);
           !res) {
         if (errno != 0) {
           detail::print_error("invalid octal number: " + jump_label, "i64asm");
@@ -613,7 +617,7 @@ bool CompilerKit::EncoderAMD64::WriteNumber(const std::size_t &pos,
       }
 
       CompilerKit::NumberCast64 num = CompilerKit::NumberCast64(
-          strtoq(jump_label.substr(pos + 2).c_str(), nullptr, 7));
+          strtol(jump_label.substr(pos + 2).c_str(), nullptr, 7));
 
       if (kVerbose) {
         kStdOut << "i64asm: found a base 8 number here: "
@@ -634,14 +638,14 @@ bool CompilerKit::EncoderAMD64::WriteNumber(const std::size_t &pos,
   }
 
   /* check for errno and stuff like that */
-  if (auto res = strtoq(jump_label.substr(pos).c_str(), nullptr, 10); !res) {
+  if (auto res = strtol(jump_label.substr(pos).c_str(), nullptr, 10); !res) {
     if (errno != 0) {
       return false;
     }
   }
 
   CompilerKit::NumberCast64 num = CompilerKit::NumberCast64(
-      strtoq(jump_label.substr(pos).c_str(), nullptr, 10));
+      strtol(jump_label.substr(pos).c_str(), nullptr, 10));
 
   for (char &i : num.number) {
     if (i == 0) i = 0xFF;
@@ -663,7 +667,7 @@ bool CompilerKit::EncoderAMD64::WriteNumber32(
 
   switch (jump_label[pos + 1]) {
     case 'x': {
-      if (auto res = strtoq(jump_label.substr(pos + 2).c_str(), nullptr, 16);
+      if (auto res = strtol(jump_label.substr(pos + 2).c_str(), nullptr, 16);
           !res) {
         if (errno != 0) {
           detail::print_error("invalid hex number: " + jump_label, "i64asm");
@@ -672,7 +676,7 @@ bool CompilerKit::EncoderAMD64::WriteNumber32(
       }
 
       CompilerKit::NumberCast32 num = CompilerKit::NumberCast32(
-          strtoq(jump_label.substr(pos + 2).c_str(), nullptr, 16));
+          strtol(jump_label.substr(pos + 2).c_str(), nullptr, 16));
 
       for (char &i : num.number) {
         if (i == 0) i = 0xFF;
@@ -688,7 +692,7 @@ bool CompilerKit::EncoderAMD64::WriteNumber32(
       return true;
     }
     case 'b': {
-      if (auto res = strtoq(jump_label.substr(pos + 2).c_str(), nullptr, 2);
+      if (auto res = strtol(jump_label.substr(pos + 2).c_str(), nullptr, 2);
           !res) {
         if (errno != 0) {
           detail::print_error("invalid binary number: " + jump_label, "i64asm");
@@ -697,7 +701,7 @@ bool CompilerKit::EncoderAMD64::WriteNumber32(
       }
 
       CompilerKit::NumberCast32 num = CompilerKit::NumberCast32(
-          strtoq(jump_label.substr(pos + 2).c_str(), nullptr, 2));
+          strtol(jump_label.substr(pos + 2).c_str(), nullptr, 2));
 
       if (kVerbose) {
         kStdOut << "i64asm: found a base 2 number here: "
@@ -713,7 +717,7 @@ bool CompilerKit::EncoderAMD64::WriteNumber32(
       return true;
     }
     case 'o': {
-      if (auto res = strtoq(jump_label.substr(pos + 2).c_str(), nullptr, 7);
+      if (auto res = strtol(jump_label.substr(pos + 2).c_str(), nullptr, 7);
           !res) {
         if (errno != 0) {
           detail::print_error("invalid octal number: " + jump_label, "i64asm");
@@ -722,7 +726,7 @@ bool CompilerKit::EncoderAMD64::WriteNumber32(
       }
 
       CompilerKit::NumberCast32 num = CompilerKit::NumberCast32(
-          strtoq(jump_label.substr(pos + 2).c_str(), nullptr, 7));
+          strtol(jump_label.substr(pos + 2).c_str(), nullptr, 7));
 
       if (kVerbose) {
         kStdOut << "i64asm: found a base 8 number here: "
@@ -743,14 +747,14 @@ bool CompilerKit::EncoderAMD64::WriteNumber32(
   }
 
   /* check for errno and stuff like that */
-  if (auto res = strtoq(jump_label.substr(pos).c_str(), nullptr, 10); !res) {
+  if (auto res = strtol(jump_label.substr(pos).c_str(), nullptr, 10); !res) {
     if (errno != 0) {
       return false;
     }
   }
 
   CompilerKit::NumberCast32 num = CompilerKit::NumberCast32(
-      strtoq(jump_label.substr(pos).c_str(), nullptr, 10));
+      strtol(jump_label.substr(pos).c_str(), nullptr, 10));
 
   for (char &i : num.number) {
     if (i == 0) i = 0xFF;
@@ -772,7 +776,7 @@ bool CompilerKit::EncoderAMD64::WriteNumber16(
 
   switch (jump_label[pos + 1]) {
     case 'x': {
-      if (auto res = strtoq(jump_label.substr(pos + 2).c_str(), nullptr, 16);
+      if (auto res = strtol(jump_label.substr(pos + 2).c_str(), nullptr, 16);
           !res) {
         if (errno != 0) {
           detail::print_error("invalid hex number: " + jump_label, "i64asm");
@@ -781,7 +785,7 @@ bool CompilerKit::EncoderAMD64::WriteNumber16(
       }
 
       CompilerKit::NumberCast16 num = CompilerKit::NumberCast16(
-          strtoq(jump_label.substr(pos + 2).c_str(), nullptr, 16));
+          strtol(jump_label.substr(pos + 2).c_str(), nullptr, 16));
 
       for (char &i : num.number) {
         if (i == 0) i = 0xFF;
@@ -797,7 +801,7 @@ bool CompilerKit::EncoderAMD64::WriteNumber16(
       return true;
     }
     case 'b': {
-      if (auto res = strtoq(jump_label.substr(pos + 2).c_str(), nullptr, 2);
+      if (auto res = strtol(jump_label.substr(pos + 2).c_str(), nullptr, 2);
           !res) {
         if (errno != 0) {
           detail::print_error("invalid binary number: " + jump_label, "i64asm");
@@ -806,7 +810,7 @@ bool CompilerKit::EncoderAMD64::WriteNumber16(
       }
 
       CompilerKit::NumberCast16 num = CompilerKit::NumberCast16(
-          strtoq(jump_label.substr(pos + 2).c_str(), nullptr, 2));
+          strtol(jump_label.substr(pos + 2).c_str(), nullptr, 2));
 
       if (kVerbose) {
         kStdOut << "i64asm: found a base 2 number here: "
@@ -822,7 +826,7 @@ bool CompilerKit::EncoderAMD64::WriteNumber16(
       return true;
     }
     case 'o': {
-      if (auto res = strtoq(jump_label.substr(pos + 2).c_str(), nullptr, 7);
+      if (auto res = strtol(jump_label.substr(pos + 2).c_str(), nullptr, 7);
           !res) {
         if (errno != 0) {
           detail::print_error("invalid octal number: " + jump_label, "i64asm");
@@ -831,7 +835,7 @@ bool CompilerKit::EncoderAMD64::WriteNumber16(
       }
 
       CompilerKit::NumberCast16 num = CompilerKit::NumberCast16(
-          strtoq(jump_label.substr(pos + 2).c_str(), nullptr, 7));
+          strtol(jump_label.substr(pos + 2).c_str(), nullptr, 7));
 
       if (kVerbose) {
         kStdOut << "i64asm: found a base 8 number here: "
@@ -852,14 +856,14 @@ bool CompilerKit::EncoderAMD64::WriteNumber16(
   }
 
   /* check for errno and stuff like that */
-  if (auto res = strtoq(jump_label.substr(pos).c_str(), nullptr, 10); !res) {
+  if (auto res = strtol(jump_label.substr(pos).c_str(), nullptr, 10); !res) {
     if (errno != 0) {
       return false;
     }
   }
 
   CompilerKit::NumberCast16 num = CompilerKit::NumberCast16(
-      strtoq(jump_label.substr(pos).c_str(), nullptr, 10));
+      strtol(jump_label.substr(pos).c_str(), nullptr, 10));
 
   for (char &i : num.number) {
     if (i == 0) i = 0xFF;
@@ -881,7 +885,7 @@ bool CompilerKit::EncoderAMD64::WriteNumber8(
 
   switch (jump_label[pos + 1]) {
     case 'x': {
-      if (auto res = strtoq(jump_label.substr(pos + 2).c_str(), nullptr, 16);
+      if (auto res = strtol(jump_label.substr(pos + 2).c_str(), nullptr, 16);
           !res) {
         if (errno != 0) {
           detail::print_error("invalid hex number: " + jump_label, "i64asm");
@@ -890,7 +894,7 @@ bool CompilerKit::EncoderAMD64::WriteNumber8(
       }
 
       CompilerKit::NumberCast8 num = CompilerKit::NumberCast8(
-          strtoq(jump_label.substr(pos + 2).c_str(), nullptr, 16));
+          strtol(jump_label.substr(pos + 2).c_str(), nullptr, 16));
 
       kBytes.push_back(num.number);
 
@@ -902,7 +906,7 @@ bool CompilerKit::EncoderAMD64::WriteNumber8(
       return true;
     }
     case 'b': {
-      if (auto res = strtoq(jump_label.substr(pos + 2).c_str(), nullptr, 2);
+      if (auto res = strtol(jump_label.substr(pos + 2).c_str(), nullptr, 2);
           !res) {
         if (errno != 0) {
           detail::print_error("invalid binary number: " + jump_label, "i64asm");
@@ -911,7 +915,7 @@ bool CompilerKit::EncoderAMD64::WriteNumber8(
       }
 
       CompilerKit::NumberCast8 num = CompilerKit::NumberCast8(
-          strtoq(jump_label.substr(pos + 2).c_str(), nullptr, 2));
+          strtol(jump_label.substr(pos + 2).c_str(), nullptr, 2));
 
       if (kVerbose) {
         kStdOut << "i64asm: found a base 2 number here: "
@@ -923,7 +927,7 @@ bool CompilerKit::EncoderAMD64::WriteNumber8(
       return true;
     }
     case 'o': {
-      if (auto res = strtoq(jump_label.substr(pos + 2).c_str(), nullptr, 7);
+      if (auto res = strtol(jump_label.substr(pos + 2).c_str(), nullptr, 7);
           !res) {
         if (errno != 0) {
           detail::print_error("invalid octal number: " + jump_label, "i64asm");
@@ -932,7 +936,7 @@ bool CompilerKit::EncoderAMD64::WriteNumber8(
       }
 
       CompilerKit::NumberCast8 num = CompilerKit::NumberCast8(
-          strtoq(jump_label.substr(pos + 2).c_str(), nullptr, 7));
+          strtol(jump_label.substr(pos + 2).c_str(), nullptr, 7));
 
       if (kVerbose) {
         kStdOut << "i64asm: found a base 8 number here: "
@@ -949,14 +953,14 @@ bool CompilerKit::EncoderAMD64::WriteNumber8(
   }
 
   /* check for errno and stuff like that */
-  if (auto res = strtoq(jump_label.substr(pos).c_str(), nullptr, 10); !res) {
+  if (auto res = strtol(jump_label.substr(pos).c_str(), nullptr, 10); !res) {
     if (errno != 0) {
       return false;
     }
   }
 
   CompilerKit::NumberCast8 num = CompilerKit::NumberCast8(
-      strtoq(jump_label.substr(pos).c_str(), nullptr, 10));
+      strtol(jump_label.substr(pos).c_str(), nullptr, 10));
 
   kBytes.push_back(num.number);
 
@@ -980,7 +984,7 @@ bool CompilerKit::EncoderAMD64::WriteLine(std::string &line,
 
   struct RegMapAMD64 {
     std::string fName;
-    e64_byte_t fModRM;
+    i64_byte_t fModRM;
   };
 
   std::vector<RegMapAMD64> regs{

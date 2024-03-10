@@ -1,15 +1,23 @@
 {
     "configurations": [
         {
-            "name": "Mac",
+            "name": "Macintosh",
             "includePath": [
                 "${workspaceFolder}/Private/**"
             ],
             "defines": [],
-            "macFrameworkPath": [
-                "/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/System/Library/Frameworks"
-            ],
             "compilerPath": "/usr/bin/clang",
+            "cStandard": "c17",
+            "cppStandard": "c++20",
+            "intelliSenseMode": "macos-clang-arm64"
+        },
+        {
+            "name": "Windows",
+            "includePath": [
+                "${workspaceFolder}/Private/**"
+            ],
+            "defines": [],
+            "compilerPath": "C:/cygwin64/bin/x86_64-w64-mingw32-g++.exe",
             "cStandard": "c17",
             "cppStandard": "c++20",
             "intelliSenseMode": "macos-clang-arm64"

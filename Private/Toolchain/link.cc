@@ -24,10 +24,16 @@
 //! Portable Executable Format
 #include <CompilerKit/StdKit/PEF.hpp>
 
-//! Advanced Executable Object Format
-#include <uuid/uuid.h>
+#include <vector>
+#include <filesystem>
 
+#include <random>
+#include <External/UUID.h>
+
+//! Advanced Executable Object Format
 #include <CompilerKit/StdKit/AE.hpp>
+
+//! C++ I/O headers.
 #include <fstream>
 #include <iostream>
 
@@ -60,8 +66,8 @@ static Bool kDuplicateSymbols = false;
 static Bool kVerbose = false;
 
 /* link is to be found, mld is to be found at runtime. */
-static const char *kLdDefineSymbol = ":ld:";
-static const char *kLdDynamicSym = ":mld:";
+static const char *kLdDefineSymbol = ":UndefinedSymbol:";
+static const char *kLdDynamicSym = ":RuntimeSymbol:";
 
 /* object code and list. */
 static std::vector<std::string> kObjectList;
@@ -452,11 +458,17 @@ MPCC_MODULE(HCoreLinker) {
 
   CompilerKit::PEFCommandHeader uuid_header{};
 
-  uuid_t uuid{0};
-  uuid_generate_random(uuid);
+  std::random_device rd;
+  auto seed_data = std::array<int, std::mt19937::state_size> {};
+  std::generate(std::begin(seed_data), std::end(seed_data), std::ref(rd));
+  std::seed_seq seq(std::begin(seed_data), std::end(seed_data));
+  std::mt19937 generator(seq);
+
+  auto gen = uuids::uuid_random_generator{generator};
+  uuids::uuid id = gen();
 
   memcpy(uuid_header.Name, "UUID_TYPE:4:", strlen("UUID_TYPE:4:"));
-  memcpy(uuid_header.Name + strlen("UUID_TYPE:4:"), uuid, 16);
+  memcpy(uuid_header.Name + strlen("UUID_TYPE:4:"), id.as_bytes().data(), id.as_bytes().size());
 
   uuid_header.Size = 16;
   uuid_header.Offset = output_fc.tellp();

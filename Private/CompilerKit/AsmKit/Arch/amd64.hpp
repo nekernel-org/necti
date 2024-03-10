@@ -10,24 +10,25 @@
 #pragma once
 
 #include <CompilerKit/Defines.hpp>
+#include <vector>
 
 // @brief 64x0 support.
 // @file Arch/64x0.hpp
 
 #define kAsmOpcodeDecl(__NAME, __OPCODE) {.fName = __NAME, .fOpcode = __OPCODE},
 
-typedef char e64k_character_t;
-typedef uint8_t e64_byte_t;
-typedef uint16_t e64_hword_t;
-typedef uint32_t e64k_word_t;
+typedef char i64_character_t;
+typedef uint8_t i64_byte_t;
+typedef uint16_t i64_hword_t;
+typedef uint32_t i64_word_t;
 
 struct CpuCodeAMD64 {
   std::string fName;
-  e64_byte_t fPrefixBytes[4];
-  e64_hword_t fOpcode;
-  e64_hword_t fModReg;
-  e64k_word_t fDisplacment;
-  e64k_word_t fImmediate;
+  i64_byte_t fPrefixBytes[4];
+  i64_hword_t fOpcode;
+  i64_hword_t fModReg;
+  i64_word_t fDisplacment;
+  i64_word_t fImmediate;
 };
 
 /// these two are edge cases

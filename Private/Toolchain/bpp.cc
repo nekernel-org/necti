@@ -13,6 +13,8 @@
 #include <CompilerKit/StdKit/ErrorID.hpp>
 #include <fstream>
 #include <iostream>
+#include <filesystem>
+#include <vector>
 
 #define kMacroPrefix '%'
 

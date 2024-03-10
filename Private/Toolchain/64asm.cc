@@ -26,6 +26,9 @@
 #include <filesystem>
 #include <fstream>
 #include <iostream>
+#include <vector>
+#include <memory>
+#include <filesystem>
 
 /////////////////////
 
@@ -62,8 +65,8 @@ static CompilerKit::AERecordHeader kCurrentRecord{
 static std::vector<CompilerKit::AERecordHeader> kRecords;
 static std::vector<std::string> kUndefinedSymbols;
 
-static const std::string kUndefinedSymbol = ":ld:";
-static const std::string kRelocSymbol = ":mld:";
+static const std::string kUndefinedSymbol = ":UndefinedSymbol:";
+static const std::string kRelocSymbol = ":RuntimeSymbol:";
 
 // \brief forward decl.
 static bool asm_read_attributes(std::string &line);
@@ -554,7 +557,7 @@ bool CompilerKit::Encoder64x0::WriteNumber(const std::size_t &pos,
 
   switch (jump_label[pos + 1]) {
     case 'x': {
-      if (auto res = strtoq(jump_label.substr(pos + 2).c_str(), nullptr, 16);
+      if (auto res = strtol(jump_label.substr(pos + 2).c_str(), nullptr, 16);
           !res) {
         if (errno != 0) {
           detail::print_error("invalid hex number: " + jump_label, "64asm");
@@ -563,7 +566,7 @@ bool CompilerKit::Encoder64x0::WriteNumber(const std::size_t &pos,
       }
 
       CompilerKit::NumberCast64 num(
-          strtoq(jump_label.substr(pos + 2).c_str(), nullptr, 16));
+          strtol(jump_label.substr(pos + 2).c_str(), nullptr, 16));
 
       for (char &i : num.number) {
         kBytes.push_back(i);
@@ -577,7 +580,7 @@ bool CompilerKit::Encoder64x0::WriteNumber(const std::size_t &pos,
       return true;
     }
     case 'b': {
-      if (auto res = strtoq(jump_label.substr(pos + 2).c_str(), nullptr, 2);
+      if (auto res = strtol(jump_label.substr(pos + 2).c_str(), nullptr, 2);
           !res) {
         if (errno != 0) {
           detail::print_error("invalid binary number: " + jump_label, "64asm");
@@ -586,7 +589,7 @@ bool CompilerKit::Encoder64x0::WriteNumber(const std::size_t &pos,
       }
 
       CompilerKit::NumberCast64 num(
-          strtoq(jump_label.substr(pos + 2).c_str(), nullptr, 2));
+          strtol(jump_label.substr(pos + 2).c_str(), nullptr, 2));
 
       if (kVerbose) {
         kStdOut << "64asm: found a base 2 number here: "
@@ -600,7 +603,7 @@ bool CompilerKit::Encoder64x0::WriteNumber(const std::size_t &pos,
       return true;
     }
     case 'o': {
-      if (auto res = strtoq(jump_label.substr(pos + 2).c_str(), nullptr, 7);
+      if (auto res = strtol(jump_label.substr(pos + 2).c_str(), nullptr, 7);
           !res) {
         if (errno != 0) {
           detail::print_error("invalid octal number: " + jump_label, "64asm");
@@ -609,7 +612,7 @@ bool CompilerKit::Encoder64x0::WriteNumber(const std::size_t &pos,
       }
 
       CompilerKit::NumberCast64 num(
-          strtoq(jump_label.substr(pos + 2).c_str(), nullptr, 7));
+          strtol(jump_label.substr(pos + 2).c_str(), nullptr, 7));
 
       if (kVerbose) {
         kStdOut << "64asm: found a base 8 number here: "
@@ -628,14 +631,14 @@ bool CompilerKit::Encoder64x0::WriteNumber(const std::size_t &pos,
   }
 
   /* check for errno and stuff like that */
-  if (auto res = strtoq(jump_label.substr(pos).c_str(), nullptr, 10); !res) {
+  if (auto res = strtol(jump_label.substr(pos).c_str(), nullptr, 10); !res) {
     if (errno != 0) {
       return false;
     }
   }
 
   CompilerKit::NumberCast64 num(
-      strtoq(jump_label.substr(pos).c_str(), nullptr, 10));
+      strtol(jump_label.substr(pos).c_str(), nullptr, 10));
 
   for (char &i : num.number) {
     kBytes.push_back(i);
@@ -709,7 +712,7 @@ bool CompilerKit::Encoder64x0::WriteLine(std::string &line,
               }
 
               // finally cast to a size_t
-              std::size_t reg_index = strtoq(reg_str.c_str(), nullptr, 10);
+              std::size_t reg_index = strtol(reg_str.c_str(), nullptr, 10);
 
               if (reg_index > kAsmRegisterLimit) {
                 detail::print_error("invalid register index, r" + reg_str,
