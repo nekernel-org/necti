@@ -123,7 +123,7 @@ inline bool to_str(CharType *str, Int32 limit, Int32 base) noexcept {
 
 typedef char char_type;
 
-#define kObjectFileExt ".o"
+#define kObjectFileExt ".obj"
 #define kAsmFileExts \
   { ".64x", ".32x", ".masm", ".s", ".S" }
 

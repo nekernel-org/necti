@@ -133,7 +133,7 @@ public class CompileCommand
                 object_source ~= ch;
             }
 
-            object_source ~= ".o";
+            object_source ~= ".obj";
 
             obj ~= object_source;
         }

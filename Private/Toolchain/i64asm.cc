@@ -18,6 +18,11 @@
 /////////////////////////////////////////////////////////////////////////////////////////
 
 #define __ASM_NEED_AMD64__ 1
+#define kAssemblerPragmaSym '!'
+
+extern "C" {
+#include <stdlib.h>
+}
 
 #include <CompilerKit/AsmKit/Arch/amd64.hpp>
 #include <CompilerKit/ParserKit.hpp>
@@ -26,10 +31,8 @@
 #include <filesystem>
 #include <fstream>
 #include <iostream>
-#include <vector>
 #include <memory>
-#include <stdlib.h>
-#include <filesystem>
+#include <vector>
 
 /////////////////////
 
@@ -55,6 +58,9 @@ static std::size_t kCounter = 1UL;
 
 static std::uintptr_t kOrigin = kPefBaseOrigin;
 static std::vector<std::pair<std::string, std::uintptr_t>> kOriginLabel;
+
+/// @brief keep it simple by default.
+static std::int32_t kRegisterBitWidth = 16U;
 
 static bool kVerbose = false;
 
@@ -470,7 +476,7 @@ static inline bool is_not_alnum_space(char c) {
   return !(isalpha(c) || isdigit(c) || (c == ' ') || (c == '\t') ||
            (c == ',') || (c == '(') || (c == ')') || (c == '"') ||
            (c == '\'') || (c == '[') || (c == ']') || (c == '+') ||
-           (c == '_') || (c == ':') || (c == '@') || (c == '.'));
+           (c == '_') || (c == ':') || (c == '@') || (c == '.') || (c == '!'));
 }
 
 bool is_valid(const std::string &str) {
@@ -484,8 +490,8 @@ bool is_valid(const std::string &str) {
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
-std::string CompilerKit::EncoderAMD64::CheckLine(
-    std::string &line, const std::string &file) {
+std::string CompilerKit::EncoderAMD64::CheckLine(std::string &line,
+                                                 const std::string &file) {
   std::string err_str;
 
   if (line.empty() || ParserKit::find_word(line, "import") ||
@@ -553,7 +559,7 @@ std::string CompilerKit::EncoderAMD64::CheckLine(
 }
 
 bool CompilerKit::EncoderAMD64::WriteNumber(const std::size_t &pos,
-                                                      std::string &jump_label) {
+                                            std::string &jump_label) {
   if (!isdigit(jump_label[pos])) return false;
 
   switch (jump_label[pos + 1]) {
@@ -661,22 +667,20 @@ bool CompilerKit::EncoderAMD64::WriteNumber(const std::size_t &pos,
   return true;
 }
 
-bool CompilerKit::EncoderAMD64::WriteNumber32(
-    const std::size_t &pos, std::string &jump_label) {
+bool CompilerKit::EncoderAMD64::WriteNumber32(const std::size_t &pos,
+                                              std::string &jump_label) {
   if (!isdigit(jump_label[pos])) return false;
 
   switch (jump_label[pos + 1]) {
     case 'x': {
-      if (auto res = strtol(jump_label.substr(pos + 2).c_str(), nullptr, 16);
-          !res) {
-        if (errno != 0) {
-          detail::print_error("invalid hex number: " + jump_label, "i64asm");
-          throw std::runtime_error("invalid_hex");
-        }
+      auto res = strtol(jump_label.substr(pos + 2).c_str(), nullptr, 16);
+      res += kOrigin;
+
+      if (errno != 0) {
+        return false;
       }
 
-      CompilerKit::NumberCast32 num = CompilerKit::NumberCast32(
-          strtol(jump_label.substr(pos + 2).c_str(), nullptr, 16));
+      CompilerKit::NumberCast32 num = CompilerKit::NumberCast32(res);
 
       for (char &i : num.number) {
         if (i == 0) i = 0xFF;
@@ -692,16 +696,14 @@ bool CompilerKit::EncoderAMD64::WriteNumber32(
       return true;
     }
     case 'b': {
-      if (auto res = strtol(jump_label.substr(pos + 2).c_str(), nullptr, 2);
-          !res) {
-        if (errno != 0) {
-          detail::print_error("invalid binary number: " + jump_label, "i64asm");
-          throw std::runtime_error("invalid_bin");
-        }
+      auto res = strtol(jump_label.substr(pos + 2).c_str(), nullptr, 2);
+      res += kOrigin;
+
+      if (errno != 0) {
+        return false;
       }
 
-      CompilerKit::NumberCast32 num = CompilerKit::NumberCast32(
-          strtol(jump_label.substr(pos + 2).c_str(), nullptr, 2));
+      CompilerKit::NumberCast32 num = CompilerKit::NumberCast32(res);
 
       if (kVerbose) {
         kStdOut << "i64asm: found a base 2 number here: "
@@ -717,16 +719,14 @@ bool CompilerKit::EncoderAMD64::WriteNumber32(
       return true;
     }
     case 'o': {
-      if (auto res = strtol(jump_label.substr(pos + 2).c_str(), nullptr, 7);
-          !res) {
-        if (errno != 0) {
-          detail::print_error("invalid octal number: " + jump_label, "i64asm");
-          throw std::runtime_error("invalid_octal");
-        }
+      auto res = strtol(jump_label.substr(pos + 2).c_str(), nullptr, 7);
+      res += kOrigin;
+
+      if (errno != 0) {
+        return false;
       }
 
-      CompilerKit::NumberCast32 num = CompilerKit::NumberCast32(
-          strtol(jump_label.substr(pos + 2).c_str(), nullptr, 7));
+      CompilerKit::NumberCast32 num = CompilerKit::NumberCast32(res);
 
       if (kVerbose) {
         kStdOut << "i64asm: found a base 8 number here: "
@@ -746,15 +746,14 @@ bool CompilerKit::EncoderAMD64::WriteNumber32(
     }
   }
 
-  /* check for errno and stuff like that */
-  if (auto res = strtol(jump_label.substr(pos).c_str(), nullptr, 10); !res) {
-    if (errno != 0) {
-      return false;
-    }
+  auto res = strtol(jump_label.substr(pos + 2).c_str(), nullptr, 10);
+  res += kOrigin;
+
+  if (errno != 0) {
+    return false;
   }
 
-  CompilerKit::NumberCast32 num = CompilerKit::NumberCast32(
-      strtol(jump_label.substr(pos).c_str(), nullptr, 10));
+  CompilerKit::NumberCast32 num = CompilerKit::NumberCast32(res);
 
   for (char &i : num.number) {
     if (i == 0) i = 0xFF;
@@ -770,8 +769,8 @@ bool CompilerKit::EncoderAMD64::WriteNumber32(
   return true;
 }
 
-bool CompilerKit::EncoderAMD64::WriteNumber16(
-    const std::size_t &pos, std::string &jump_label) {
+bool CompilerKit::EncoderAMD64::WriteNumber16(const std::size_t &pos,
+                                              std::string &jump_label) {
   if (!isdigit(jump_label[pos])) return false;
 
   switch (jump_label[pos + 1]) {
@@ -879,8 +878,8 @@ bool CompilerKit::EncoderAMD64::WriteNumber16(
   return true;
 }
 
-bool CompilerKit::EncoderAMD64::WriteNumber8(
-    const std::size_t &pos, std::string &jump_label) {
+bool CompilerKit::EncoderAMD64::WriteNumber8(const std::size_t &pos,
+                                             std::string &jump_label) {
   if (!isdigit(jump_label[pos])) return false;
 
   switch (jump_label[pos + 1]) {
@@ -979,7 +978,7 @@ bool CompilerKit::EncoderAMD64::WriteNumber8(
 /////////////////////////////////////////////////////////////////////////////////////////
 
 bool CompilerKit::EncoderAMD64::WriteLine(std::string &line,
-                                                    const std::string &file) {
+                                          const std::string &file) {
   if (ParserKit::find_word(line, "export ")) return true;
 
   struct RegMapAMD64 {
@@ -1003,7 +1002,7 @@ bool CompilerKit::EncoderAMD64::WriteLine(std::string &line,
       if (name.find("mov") != std::string::npos) {
         std::string substr = line.substr(line.find(name) + name.size());
 
-        uint64_t bits = 64;
+        uint64_t bits = kRegisterBitWidth;
 
         if (substr.find(",") == std::string::npos) {
           detail::print_error("Invalid combination of operands and registers.",
@@ -1015,10 +1014,10 @@ bool CompilerKit::EncoderAMD64::WriteLine(std::string &line,
 
         std::vector<RegMapAMD64> currentRegList;
 
-        for (auto& reg : regs) {
-          std::vector<char> regExt = { 'e', 'r' };
+        for (auto &reg : regs) {
+          std::vector<char> regExt = {'e', 'r'};
 
-          for (auto& ext : regExt) {
+          for (auto &ext : regExt) {
             std::string registerName;
             registerName.push_back(ext);
             registerName += reg.fName;
@@ -1029,23 +1028,24 @@ bool CompilerKit::EncoderAMD64::WriteLine(std::string &line,
               else if (ext == 'e')
                 bits = 32;
 
-              line.erase(line.find(registerName), registerName.size());
-              std::cout << registerName << std::endl;
+              if (bits != kRegisterBitWidth) {
+                detail::print_error("invalid size for register, current bit width is: " + std::to_string(kRegisterBitWidth), file);
+                throw std::runtime_error("invalid_reg_size");
+              }
 
-              currentRegList.push_back({ .fName = registerName, .fModRM = reg.fModRM });
+              line.erase(line.find(registerName), registerName.size());
+
+              currentRegList.push_back(
+                  {.fName = registerName, .fModRM = reg.fModRM});
             }
           }
         }
 
-        if (currentRegList.size() > 1)
-          noRightRegister = false;
+        if (currentRegList.size() > 1) noRightRegister = false;
 
         if (!noRightRegister) {
-          if (bits == 64 ||
-              bits == 32)
-          {
-            if (bits >= 32)
-              kBytes.emplace_back(opcodeAMD64.fOpcode);
+          if (bits == 64 || bits == 32) {
+            if (bits >= 32) kBytes.emplace_back(opcodeAMD64.fOpcode);
 
             kBytes.emplace_back(0x89);
 
@@ -1054,37 +1054,36 @@ bool CompilerKit::EncoderAMD64::WriteLine(std::string &line,
               byte += currentRegList[0].fModRM;
 
               kBytes.push_back(byte);
-            } else if (currentRegList[1].fName.find("dx") != std::string::npos) {
+            } else if (currentRegList[1].fName.find("dx") !=
+                       std::string::npos) {
               auto byte = 0xd0;
               byte += currentRegList[0].fModRM;
-              
+
               kBytes.push_back(byte);
-            } else if (currentRegList[1].fName.find("ax") != std::string::npos) {
+            } else if (currentRegList[1].fName.find("ax") !=
+                       std::string::npos) {
               auto byte = 0xc0;
               byte += currentRegList[0].fModRM;
-              
+
               kBytes.push_back(byte);
             } else {
               auto byte = 0xf0;
               byte += currentRegList[0].fModRM;
-              
-              kBytes.push_back(byte);
-            }               
 
-          }
-          else if (bits == 16) {
+              kBytes.push_back(byte);
+            }
+
+          } else if (bits == 16) {
             kBytes.emplace_back(0x66);
             kBytes.emplace_back(0x89);
 
             assert(false);
-          }
-          else {
-            detail::print_error("Invalid combination of operands and registers.",
-                                "i64asm");
+          } else {
+            detail::print_error(
+                "Invalid combination of operands and registers.", "i64asm");
             throw std::runtime_error("comb_op_reg");
           }
         } else {
-
         }
 
         break;
@@ -1095,9 +1094,9 @@ bool CompilerKit::EncoderAMD64::WriteLine(std::string &line,
         break;
       } else if (name == "jmp" || name == "call") {
         kBytes.emplace_back(opcodeAMD64.fOpcode);
-        
+
         if (!this->WriteNumber32(line.find(name) + name.size() + 1, line)) {
-          // TODO
+          throw std::runtime_error("BUG: WriteNumber32");
         }
 
         break;
@@ -1110,21 +1109,31 @@ bool CompilerKit::EncoderAMD64::WriteLine(std::string &line,
     }
   }
 
-  if (line.find("db ") != std::string::npos) {
-    this->WriteNumber(line.find("db ") + strlen("db ") + 1, line);
-  } else if (line.find("org ") != std::string::npos) {
-    size_t base[] = {10, 16, 2, 7};
+  if (line[0] == kAssemblerPragmaSym) {
+    if (line.find("bits 64") != std::string::npos) {
+      kRegisterBitWidth = 64U;
+    } else if (line.find("bits 32") != std::string::npos) {
+      kRegisterBitWidth = 32U;
+    } if (line.find("bits 16") != std::string::npos) {
+      kRegisterBitWidth = 16U;
+    }
 
-    for (size_t i = 0; i < 4; i++) {
-      if (kOrigin = strtol(
-              (line.substr(line.find("org ") + strlen("org ") + 1)).c_str(),
-              nullptr, base[i]);
-          kOrigin) {
-        if (errno != 0) {
-          continue;
-        } else {
-          if (kVerbose) {
-            kStdOut << "i64asm: set-origin: " << kOrigin << std::endl;
+    if (line.find("db ") != std::string::npos) {
+      this->WriteNumber(line.find("db ") + strlen("db ") + 1, line);
+    } else if (line.find("org ") != std::string::npos) {
+      size_t base[] = {10, 16, 2, 7};
+
+      for (size_t i = 0; i < 4; i++) {
+        if (kOrigin = strtol(
+                (line.substr(line.find("org ") + strlen("org ") + 1)).c_str(),
+                nullptr, base[i]);
+            kOrigin) {
+          if (errno != 0) {
+            continue;
+          } else {
+            if (kVerbose) {
+              kStdOut << "i64asm: set-origin: " << kOrigin << std::endl;
+            }
           }
         }
       }

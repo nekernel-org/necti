@@ -10,10 +10,13 @@
 #pragma once
 
 #include <CompilerKit/AsmKit/AsmKit.hpp>
+#include <vector>
 
 namespace ParserKit {
 using namespace CompilerKit;
 
+/// @brief Compiler backend, implements a frontend, such as C, C++...
+/// See Toolchain, for some examples.
 class CompilerBackend {
  public:
   explicit CompilerBackend() = default;
@@ -30,7 +33,7 @@ class CompilerBackend {
   virtual bool Compile(const std::string& text, const char* file) = 0;
 
   //! @brief What language are we dealing with?
-  virtual const char* Language() { return "Generic Language"; }
+  virtual const char* Language() { return "Generic"; }
 };
 
 struct SyntaxLeafList;

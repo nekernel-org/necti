@@ -23,9 +23,9 @@ LINK_ALT_2_OUTPUT=bin/32ld.exe
 PP_SRC=bpp.cc
 PP_OUTPUT=bin/bpp.exe
 
-# BCCL Compiler
-CC_SRC=bccl.cc ../CompilerKit/StdKit/*.cc ../CompilerKit/AsmKit/*.cc
-CC_OUTPUT=bin/bccl.exe
+# C Compiler
+CC_SRC=cc.cc ../CompilerKit/StdKit/*.cc ../CompilerKit/AsmKit/*.cc
+CC_OUTPUT=bin/cc.exe
 
 # C++ Compiler
 CXX_SRC=ccplus.cc ../CompilerKit/StdKit/*.cc ../CompilerKit/AsmKit/*.cc
@@ -48,6 +48,7 @@ bpp:
 
 .PHONY: asm
 asm:
+	$(LINK_CC) $(COMMON_INC) $(CC_SRC) -o $(CC_OUTPUT)
 	$(LINK_CC) $(COMMON_INC) $(IASM_SRC) -o $(IASM_OUTPUT)
 	$(LINK_CC) $(COMMON_INC) $(ASM_SRC) -o $(ASM_OUTPUT)
 
@@ -59,8 +60,9 @@ link:
 
 .PHONY: help
 help:
-	@echo "cxx - C++ Compiler Driver"
-	@echo "link - Mahrouss Visual Linker"
+	@echo "asm - Mahrouss C compiler and Assemblers."
+	@echo "bpp - Mahrouss Preprocessors."
+	@echo "link - Mahrouss Linkers."
 
 .PHONY: clean
 clean:

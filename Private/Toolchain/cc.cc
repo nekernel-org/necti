@@ -1,13 +1,14 @@
 /*
  *	========================================================
  *
- *	bccl
+ *	cc
  * 	Copyright Mahrouss Logic, all rights reserved.
  *
  * 	========================================================
  */
 
 /// bugs: ?
+/// TODO: use input buffering.
 
 #include <CompilerKit/AsmKit/Arch/amd64.hpp>
 #include <CompilerKit/ParserKit.hpp>
@@ -20,17 +21,20 @@
 #include <memory>
 #include <filesystem>
 
+#include <random>
+#include <External/UUID.h>
+
 #define kOk 0
 
 // TODO: support structs and ., ->
 
-/* BCCL driver */
-/* This is part of MP-UX BCCL SDK. */
+/* C driver */
+/* This is part of MP-UX C SDK. */
 /* (c) Mahrouss Logic */
 
 // @author Amlal El Mahrouss (amlel)
-// @file bccl.bccl
-// @brief BCCL Compiler.
+// @file cc.cc
+// @brief C Compiler.
 
 /////////////////////
 
@@ -44,7 +48,7 @@
 
 /////////////////////////////////////
 
-// INTERNAL STUFF OF THE BCCL COMPILER
+// INTERNAL STUFF OF THE C COMPILER
 
 /////////////////////////////////////
 
@@ -55,7 +59,7 @@ struct CompilerRegisterMap final {
   std::string fReg;
 };
 
-// \brief Map for BCCL structs
+// \brief Map for C structs
 // \author amlel
 struct CompilerStructMap final {
   // 'my_foo'
@@ -97,15 +101,15 @@ void print_error(std::string reason, std::string file) noexcept {
   }
 
   if (kState.fLastFile != file) {
-    std::cout << kRed << "[ bccl ] " << kWhite
-              << ((file == "bccl") ? "internal compiler error "
+    std::cout << kRed << "[ cc ] " << kWhite
+              << ((file == "cc") ? "internal compiler error "
                                    : ("in file, " + file))
               << kBlank << std::endl;
-    std::cout << kRed << "[ bccl ] " << kWhite << reason << kBlank << std::endl;
+    std::cout << kRed << "[ cc ] " << kWhite << reason << kBlank << std::endl;
 
     kState.fLastFile = file;
   } else {
-    std::cout << kRed << "[ bccl ] [ " << kState.fLastFile << " ] " << kWhite
+    std::cout << kRed << "[ cc ] [ " << kState.fLastFile << " ] " << kWhite
               << reason << kBlank << std::endl;
   }
 
@@ -151,21 +155,21 @@ static bool kOnForLoop = false;
 static bool kInBraces = false;
 static size_t kBracesCount = 0UL;
 
-/* @brief BCCL compiler backend for BCCL */
-class CompilerBackendBccl final : public ParserKit::CompilerBackend {
+/* @brief C compiler backend for C */
+class CompilerBackendCLang final : public ParserKit::CompilerBackend {
  public:
-  explicit CompilerBackendBccl() = default;
-  ~CompilerBackendBccl() override = default;
+  explicit CompilerBackendCLang() = default;
+  ~CompilerBackendCLang() override = default;
 
-  MPCC_COPY_DEFAULT(CompilerBackendBccl);
+  MPCC_COPY_DEFAULT(CompilerBackendCLang);
 
   std::string Check(const char *text, const char *file);
   bool Compile(const std::string &text, const char *file) override;
 
-  const char *Language() override { return "BCCL 64x0, Generic MP/UX target."; }
+  const char *Language() override { return "C 64x0, Generic MP/UX target."; }
 };
 
-static CompilerBackendBccl *kCompilerBackend = nullptr;
+static CompilerBackendCLang *kCompilerBackend = nullptr;
 static std::vector<detail::CompilerType> kCompilerVariables;
 static std::vector<std::string> kCompilerFunctions;
 static std::vector<detail::CompilerType> kCompilerTypes;
@@ -196,23 +200,31 @@ union double_cast final {
 /////////////////////////////////////////////////////////////////////////////////////////
 
 // @name Compile
-// @brief Generate MASM from a BCCL assignement.
+// @brief Generate MASM from a C assignement.
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
-bool CompilerBackendBccl::Compile(const std::string &text, const char *file) {
+bool CompilerBackendCLang::Compile(const std::string &text, const char *file) {
   std::string _text = text;
 
   auto syntax_tree = ParserKit::SyntaxLeafList::SyntaxLeaf();
   bool type_found = false;
   bool function_found = false;
 
+  // setup generator.
+  std::random_device rd;
+
+  auto seed_data = std::array<int, std::mt19937::state_size> {};
+  std::generate(std::begin(seed_data), std::end(seed_data), std::ref(rd));
+  std::seed_seq seq(std::begin(seed_data), std::end(seed_data));
+  std::mt19937 generator(seq);
+
   // start parsing
   for (size_t text_index = 0; text_index < _text.size(); ++text_index) {
-    uuid_t out{0};
+    auto gen = uuids::uuid_random_generator{generator};
+    uuids::uuid out = gen();
 
-    uuid_generate_random(out);
-    detail::number_cast time_off = (UInt64)out;
+    detail::number_cast time_off = (UInt64)out.as_bytes().data();
 
     if (!type_found) {
       auto substr = _text.substr(text_index);
@@ -614,7 +626,7 @@ bool CompilerBackendBccl::Compile(const std::string &text, const char *file) {
 static bool kShouldHaveBraces = false;
 static std::string kFnName;
 
-std::string CompilerBackendBccl::Check(const char *text, const char *file) {
+std::string CompilerBackendCLang::Check(const char *text, const char *file) {
   std::string err_str;
   std::string ln = text;
 
@@ -1051,24 +1063,24 @@ skip_braces_check:
 /////////////////////////////////////////////////////////////////////////////////////////
 
 /**
- * @brief BCCL To Assembly mount-point.
+ * @brief C To Assembly mount-point.
  */
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
-class AssemblyMountpointBccl final : public CompilerKit::AssemblyMountpoint {
+class AssemblyMountpointCLang final : public CompilerKit::AssemblyMountpoint {
  public:
-  explicit AssemblyMountpointBccl() = default;
-  ~AssemblyMountpointBccl() override = default;
+  explicit AssemblyMountpointCLang() = default;
+  ~AssemblyMountpointCLang() override = default;
 
-  MPCC_COPY_DEFAULT(AssemblyMountpointBccl);
+  MPCC_COPY_DEFAULT(AssemblyMountpointCLang);
 
   [[maybe_unused]] static Int32 Arch() noexcept {
     return CompilerKit::AssemblyFactory::kArchRISCV;
   }
 
   Int32 CompileToFormat(CompilerKit::StringView &src, Int32 arch) override {
-    if (arch != AssemblyMountpointBccl::Arch()) return -1;
+    if (arch != AssemblyMountpointCLang::Arch()) return -1;
 
     if (kCompilerBackend == nullptr) return -1;
 
@@ -1095,7 +1107,7 @@ class AssemblyMountpointBccl final : public CompilerKit::AssemblyMountpoint {
 
     (*kState.fOutputAssembly) << "# Path: " << src_file << "\n";
     (*kState.fOutputAssembly)
-        << "# Language: MP-UX Assembly (Generated from BCCL)\n";
+        << "# Language: MP-UX Assembly (Generated from C)\n";
     (*kState.fOutputAssembly) << "# Build Date: " << fmt << "\n\n";
 
     ParserKit::SyntaxLeafList syntax;
@@ -1202,22 +1214,22 @@ class AssemblyMountpointBccl final : public CompilerKit::AssemblyMountpoint {
 /////////////////////////////////////////////////////////////////////////////////////////
 
 #define kPrintF printf
-#define kSplashCxx() kPrintF(kWhite "%s\n", "bccl, v1.15, (c) Mahrouss Logic")
+#define kSplashCxx() kPrintF(kWhite "%s\n", "cc, v1.15, (c) Mahrouss Logic")
 
 static void cc_print_help() {
   kSplashCxx();
 
   kPrintF(kWhite "--asm={ASSEMBLER}: %s\n",
-          "Compile with a specific syntax. (64x0, 32x0)");
+          "Compile with a specific syntax. (64x0, 32x0, Mahrouss AMD64)");
   kPrintF(kWhite "--compiler={COMPILER}: %s\n",
-          "Select compiler engine (builtins are The dalvik engine).");
+          "Select compiler engine (Amsterdam (with caps) and Rabat (input buffering)).");
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
-#define kExt ".bccl"
+#define kExt ".cc"
 
-MPCC_MODULE(HCoreCompilerBccl64x0) {
+MPCC_MODULE(HCoreCompilerCLang64x0) {
   kCompilerTypes.push_back({.fName = "void", .fValue = "void"});
   kCompilerTypes.push_back({.fName = "char", .fValue = "byte"});
   kCompilerTypes.push_back({.fName = "short", .fValue = "hword"});
@@ -1261,14 +1273,14 @@ MPCC_MODULE(HCoreCompilerBccl64x0) {
       if (strcmp(argv[index], "--asm=masm") == 0) {
         delete kFactory.Unmount();
 
-        kFactory.Mount(new AssemblyMountpointBccl());
+        kFactory.Mount(new AssemblyMountpointCLang());
         kMachine = CompilerKit::AssemblyFactory::kArch64x0;
 
         continue;
       }
 
-      if (strcmp(argv[index], "--compiler=dalvik") == 0) {
-        if (!kCompilerBackend) kCompilerBackend = new CompilerBackendBccl();
+      if (strcmp(argv[index], "--compiler=Amsterdam") == 0) {
+        if (!kCompilerBackend) kCompilerBackend = new CompilerBackendCLang();
 
         continue;
       }
@@ -1290,7 +1302,7 @@ MPCC_MODULE(HCoreCompilerBccl64x0) {
       std::string err = "Unknown command: ";
       err += argv[index];
 
-      detail::print_error(err, "bccl");
+      detail::print_error(err, "cc");
 
       continue;
     }
@@ -1302,7 +1314,7 @@ MPCC_MODULE(HCoreCompilerBccl64x0) {
 
     if (strstr(argv[index], kExt) == nullptr) {
       if (kState.kVerbose) {
-        std::cerr << argv[index] << " is not a valid BCCL source.\n";
+        std::cerr << argv[index] << " is not a valid C source.\n";
       }
 
       return -1;

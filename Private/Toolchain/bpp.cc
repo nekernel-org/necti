@@ -16,11 +16,11 @@
 #include <filesystem>
 #include <vector>
 
-#define kMacroPrefix '%'
+#define kMacroPrefix '#'
 
 // @author Amlal El Mahrouss (amlel)
 // @file bpp.cc
-// @brief BCCL preprocessor.
+// @brief C preprocessor.
 
 typedef Int32 (*bpp_parser_fn_t)(std::string &line, std::ifstream &hdr_file,
                                  std::ofstream &pp_out);
@@ -71,7 +71,7 @@ static std::vector<std::string> kIncludes;
 static std::string kWorkingDir;
 
 static std::vector<std::string> kKeywords = {
-    "inc",   "if",     "pragma", "def",     "elif",
+    "include",   "if",     "pragma", "def",     "elif",
     "ifdef", "ifndef", "else",   "warning", "error"};
 
 #define kKeywordCxxCnt kKeywords.size()

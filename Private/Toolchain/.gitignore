@@ -13,15 +13,15 @@ bin/link
 bin/x86_64-ccplus
 bin/x86_64-pef-ccplus
 bin/cppfront
-bin/bccl
+bin/cc
 bin/i64asm
 
 bin/Assembly.*
 
 bin/SourceUnitTest/*.c.pp
 bin/SourceUnitTest/*.c
-bin/SourceUnitTest/*.bccl
-bin/SourceUnitTest/*.bccl.pp
+bin/SourceUnitTest/*.cc
+bin/SourceUnitTest/*.cc.pp
 bin/SourceUnitTest/*.cc.pp
 bin/SourceUnitTest/*.cc
 bin/SourceUnitTest/*.cpp.pp
