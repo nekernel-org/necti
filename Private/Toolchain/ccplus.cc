@@ -575,9 +575,9 @@ static void cxx_print_help() {
 /////////////////////////////////////////////////////////////////////////////////////////
 
 #define kExtListCxx \
-  { ".cpp", ".cxx", ".cc", ".c++" }
+  { ".cpp", ".cxx", ".cc", ".c++", ".cp" }
 
-MPCC_MODULE(CompilerCPlusPlus64x0) {
+MPCC_MODULE(CompilerCPlusPlus) {
   kKeywords.emplace_back("auto");
   kKeywords.emplace_back("else");
   kKeywords.emplace_back("break");
@@ -590,6 +590,9 @@ MPCC_MODULE(CompilerCPlusPlus64x0) {
   kKeywords.emplace_back("default");
   kKeywords.emplace_back("struct");
   kKeywords.emplace_back("_Packed");
+  kKeywords.emplace_back("_Align");
+  kKeywords.emplace_back("_StorageOrderBig");
+  kKeywords.emplace_back("_StorageOrderLittle");
   kKeywords.emplace_back("extern");
   kKeywords.emplace_back("volatile");
   kKeywords.emplace_back("static");
@@ -607,6 +610,8 @@ MPCC_MODULE(CompilerCPlusPlus64x0) {
   kKeywords.emplace_back("double");
   kKeywords.emplace_back("unsigned");
   kKeywords.emplace_back("__attribute__");
+  kKeywords.emplace_back("__pef_export");
+  kKeywords.emplace_back("__pef_import");
   kKeywords.emplace_back("namespace");
   kKeywords.emplace_back("while");
   kKeywords.emplace_back("sizeof");
@@ -707,8 +712,10 @@ MPCC_MODULE(CompilerCPlusPlus64x0) {
 
     if (!found) {
       if (kState.kVerbose) {
-        std::cerr << argv[index] << " is not a valid C++ source.\n";
+        detail::print_error(argv_i + " is not a valid C++ source.\n", "ccplus");
       }
+
+      return 1; 
     }
 
     if (kFactory.Compile(argv_i, kMachine) != kOk) return -1;
