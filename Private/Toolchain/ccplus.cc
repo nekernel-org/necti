@@ -7,19 +7,25 @@
  * 	========================================================
  */
 
-/// bugs: ?
+/// bugs: 1
+/// Windows: Output name gets corrupt.
 
+#define kPrintF printf
+#define kSplashCxx()     \
+  kPrintF(kWhite "%s\n", \
+          "Mahrouss Visual C++ Compiler for HCore, Copyright Mahrouss Logic.")
+
+#include <Compiler/cl-parser.hxx>
 #include <CompilerKit/AsmKit/Arch/amd64.hpp>
 #include <CompilerKit/ParserKit.hpp>
-#include <Compiler/cl-parser.hxx>
 #include <cstdio>
+#include <filesystem>
 #include <fstream>
 #include <iostream>
+#include <memory>
 #include <string>
 #include <utility>
 #include <vector>
-#include <memory>
-#include <filesystem>
 
 #define kOk 0
 
@@ -118,17 +124,17 @@ struct CompilerType {
 /////////////////////////////////////////////////////////////////////////////////////////
 
 // Target architecture.
-static int kMachine = 0;
+static int kMachine = CompilerKit::AssemblyFactory::kArchAMD64;
 
 /////////////////////////////////////////
 
-// REGISTERS ACCORDING TO USED ASSEMBLER
+// ARGUMENTS REGISTERS (R8, R15)
 
 /////////////////////////////////////////
 
 static size_t kRegisterCnt = kAsmRegisterLimit;
-static size_t kStartUsable = 7;
-static size_t kUsableLimit = 14;
+static size_t kStartUsable = 8;
+static size_t kUsableLimit = 15;
 static size_t kRegisterCounter = kStartUsable;
 static std::string kRegisterPrefix = kAsmRegisterPrefix;
 static std::vector<std::string> kKeywords;
@@ -157,9 +163,7 @@ class CompilerBackendClang final : public ParserKit::CompilerBackend {
 
   bool Compile(const std::string& text, const char* file) override;
 
-  const char* Language() override {
-    return "64x0 C++, Generic MP/UX/h-core target.";
-  }
+  const char* Language() override { return "Mahrouss C++, HCore target."; }
 };
 
 /// compiler variables
@@ -242,13 +246,13 @@ class AssemblyMountpointClang final : public CompilerKit::AssemblyMountpoint {
     return CompilerKit::AssemblyFactory::kArchAMD64;
   }
 
-  Int32 CompileToFormat(CompilerKit::StringView& src, Int32 arch) override {
+  Int32 CompileToFormat(std::string& src, Int32 arch) override {
     if (arch != AssemblyMountpointClang::Arch()) return -1;
 
     if (kCompilerBackend == nullptr) return -1;
 
     /* @brief copy contents wihtout extension */
-    std::string src_file = src.CData();
+    std::string src_file = src.data();
     std::ifstream src_fp = std::ifstream(src_file, std::ios::in);
     std::string dest;
 
@@ -260,7 +264,7 @@ class AssemblyMountpointClang final : public CompilerKit::AssemblyMountpoint {
       dest += ch;
     }
 
-    /* According to pef abi. */
+    /* According to PEF abi. */
 
     std::vector<const char*> exts = kAsmFileExts;
     dest += exts[3];
@@ -284,7 +288,7 @@ class AssemblyMountpointClang final : public CompilerKit::AssemblyMountpoint {
 
     while (std::getline(src_fp, source)) {
       // compile into AST.
-      kCompilerBackend->Compile(source.c_str(), src.CData());
+      kCompilerBackend->Compile(source.c_str(), src.data());
     }
 
     if (kAcceptableErrors > 0) return -1;
@@ -294,7 +298,7 @@ class AssemblyMountpointClang final : public CompilerKit::AssemblyMountpoint {
     // \brief compiler scope type.
     struct scope_type {
       std::vector<std::string> vals;
-      std::size_t reg_cnt{kRegisterCounter};
+      std::size_t reg_cnt{kStartUsable};
       std::size_t id{0};
 
       bool operator==(const scope_type& typ) const { return typ.id == id; }
@@ -372,27 +376,25 @@ class AssemblyMountpointClang final : public CompilerKit::AssemblyMountpoint {
           found_expr = false;
           is_pointer = false;
         } else {
-          if (scope.size() == 1) {
-            leaf.fUserValue = "export .text _CppZ_MVCXX_";
+          leaf.fUserValue = "export .text _CZZ_MAHR_MANGLE";
 
-            for (auto& line : lines) {
-              if (line.find(type) != std::string::npos &&
-                  line.find("(") != std::string::npos) {
-                auto fn_name = line.substr(line.find(type), line.find("("));
+          for (auto& line : lines) {
+            if (line.find(type) != std::string::npos &&
+                line.find("(") != std::string::npos) {
+              auto fn_name = line.substr(line.find(type), line.find("("));
 
-                while (fn_name.find(' ') != std::string::npos)
-                  fn_name.replace(fn_name.find(' '), 1, "@");
+              while (fn_name.find(' ') != std::string::npos)
+                fn_name.replace(fn_name.find(' '), 1, "@");
 
-                leaf.fUserValue += fn_name;
+              leaf.fUserValue += fn_name;
 
-                break;
-              }
+              break;
             }
-
-            leaf.fUserValue += "\n";
-
-            found_func = true;
           }
+
+          leaf.fUserValue += "\n";
+
+          found_func = true;
         }
       }
 
@@ -564,18 +566,7 @@ class AssemblyMountpointClang final : public CompilerKit::AssemblyMountpoint {
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
-#define kPrintF printf
-#define kSplashCxx()     \
-  kPrintF(kWhite "%s\n", \
-          "Mahrouss Visual C++ Compiler for HCore, Copyright Mahrouss Logic.")
-
-static void cxx_print_help() {
-  kSplashCxx();
-  kPrintF(kWhite "--asm={ASSEMBLER}: %s\n",
-          "Compile with a specific syntax. (64x0, 32x0)");
-  kPrintF(kWhite "--compiler={COMPILER}: %s\n",
-          "Select compiler engine (builtin -> vanhalen).");
-}
+static void cxx_print_help() { kSplashCxx(); }
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
@@ -674,12 +665,6 @@ MPCC_MODULE(CompilerCPlusPlus64x0) {
         return kOk;
       }
 
-      if (strcmp(argv[index], "-fx64") == 0) {
-        kMachine = CompilerKit::AssemblyFactory::kArchAMD64;
-        skip = true;
-        continue;
-      }
-
       if (strcmp(argv[index], "-fmax-exceptions") == 0) {
         try {
           kErrorLimit = std::strtol(argv[index + 1], nullptr, 10);
@@ -704,11 +689,9 @@ MPCC_MODULE(CompilerCPlusPlus64x0) {
 
     kFileList.emplace_back(argv[index]);
 
-    CompilerKit::StringView srcFile =
-        CompilerKit::StringBuilder::Construct(argv[index]);
+    std::string argv_i = argv[index];
 
     std::vector exts = kExtListCxx;
-    std::string argv_i = argv[index];
     bool found = false;
 
     for (std::string ext : exts) {
@@ -724,7 +707,7 @@ MPCC_MODULE(CompilerCPlusPlus64x0) {
       }
     }
 
-    if (kFactory.Compile(srcFile, kMachine) != kOk) return -1;
+    if (kFactory.Compile(argv_i, kMachine) != kOk) return -1;
   }
 
   return kOk;

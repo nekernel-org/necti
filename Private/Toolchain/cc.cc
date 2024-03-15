@@ -1079,13 +1079,13 @@ class AssemblyMountpointCLang final : public CompilerKit::AssemblyMountpoint {
     return CompilerKit::AssemblyFactory::kArchRISCV;
   }
 
-  Int32 CompileToFormat(CompilerKit::StringView &src, Int32 arch) override {
+  Int32 CompileToFormat(std::string &src, Int32 arch) override {
     if (arch != AssemblyMountpointCLang::Arch()) return -1;
 
     if (kCompilerBackend == nullptr) return -1;
 
     /* @brief copy contents wihtout extension */
-    std::string src_file = src.CData();
+    std::string src_file = src.data();
     std::ifstream src_fp = std::ifstream(src_file, std::ios::in);
     std::string dest;
 
@@ -1119,11 +1119,11 @@ class AssemblyMountpointCLang final : public CompilerKit::AssemblyMountpoint {
     std::string line_src;
 
     while (std::getline(src_fp, line_src)) {
-      if (auto err = kCompilerBackend->Check(line_src.c_str(), src.CData());
+      if (auto err = kCompilerBackend->Check(line_src.c_str(), src.data());
           err.empty()) {
-        kCompilerBackend->Compile(line_src, src.CData());
+        kCompilerBackend->Compile(line_src, src.data());
       } else {
-        detail::print_error(err, src.CData());
+        detail::print_error(err, src.data());
       }
     }
 
@@ -1309,8 +1309,7 @@ MPCC_MODULE(HCoreCompilerCLang64x0) {
 
     kFileList.emplace_back(argv[index]);
 
-    CompilerKit::StringView srcFile =
-        CompilerKit::StringBuilder::Construct(argv[index]);
+    std::string srcFile = argv[index];
 
     if (strstr(argv[index], kExt) == nullptr) {
       if (kState.kVerbose) {

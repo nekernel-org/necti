@@ -26,7 +26,7 @@ class AssemblyMountpoint {
 
   //@ brief compile to object file.
   // Example C++ -> MASM -> AE object.
-  virtual Int32 CompileToFormat(StringView& src, Int32 arch) = 0;
+  virtual Int32 CompileToFormat(std::string& src, Int32 arch) = 0;
 };
 
 /// @brief Simple assembly factory
@@ -46,7 +46,7 @@ class AssemblyFactory final {
     kArchUnknown,
   };
 
-  Int32 Compile(StringView& sourceFile, const Int32& arch) noexcept;
+  Int32 Compile(std::string& sourceFile, const Int32& arch) noexcept;
 
   void Mount(AssemblyMountpoint* mountPtr) noexcept;
   AssemblyMountpoint* Unmount() noexcept;

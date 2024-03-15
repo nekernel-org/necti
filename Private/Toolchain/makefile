@@ -17,8 +17,8 @@ endif
 
 LINK_SRC=link.cc
 LINK_OUTPUT=bin/link.exe
-LINK_ALT_OUTPUT=bin/64ld.exe
-LINK_ALT_2_OUTPUT=bin/32ld.exe
+LINK_ALT_OUTPUT=bin/64link.exe
+LINK_ALT_2_OUTPUT=bin/32link.exe
 
 PP_SRC=bpp.cc
 PP_OUTPUT=bin/bpp.exe
@@ -42,13 +42,14 @@ IASM_OUTPUT=bin/i64asm.exe
 all:
 	@echo "Use a specific target."
 
-.PHONY: bpp
-bpp:
+.PHONY: pp
+pp:
 	$(LINK_CC) $(COMMON_INC) $(PP_SRC) -o $(PP_OUTPUT)
 
-.PHONY: asm
-asm:
+.PHONY: cl
+cl:
 	$(LINK_CC) $(COMMON_INC) $(CC_SRC) -o $(CC_OUTPUT)
+	$(LINK_CC) $(COMMON_INC) $(CXX_SRC) -o $(CXX_OUTPUT)
 	$(LINK_CC) $(COMMON_INC) $(IASM_SRC) -o $(IASM_OUTPUT)
 	$(LINK_CC) $(COMMON_INC) $(ASM_SRC) -o $(ASM_OUTPUT)
 
@@ -60,8 +61,8 @@ link:
 
 .PHONY: help
 help:
-	@echo "asm - Mahrouss C compiler and Assemblers."
-	@echo "bpp - Mahrouss Preprocessors."
+	@echo "cl - Mahrouss C compiler and Assemblers."
+	@echo "pp - Mahrouss Preprocessors."
 	@echo "link - Mahrouss Linkers."
 
 .PHONY: clean
