@@ -566,7 +566,11 @@ class AssemblyMountpointClang final : public CompilerKit::AssemblyMountpoint {
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
-static void cxx_print_help() { kSplashCxx(); }
+static void cxx_print_help() { 
+  kSplashCxx(); 
+  kPrintF("%s", "No help available.\r\n");
+  kPrintF("%s", "www.el-mahrouss-logic.com");
+}
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
