@@ -7,8 +7,7 @@
  * 	========================================================
  */
 
-/// bugs: 1
-/// Windows: Output name gets corrupt.
+/// bugs: 0
 
 #define kPrintF printf
 #define kSplashCxx()     \

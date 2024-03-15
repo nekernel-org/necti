@@ -12,12 +12,12 @@
             "intelliSenseMode": "macos-clang-arm64"
         },
         {
-            "name": "Windows",
+            "name": "Windows (Cygwin)",
             "includePath": [
                 "${workspaceFolder}/Private/**"
             ],
             "defines": [],
-            "compilerPath": "C:/cygwin64/bin/x86_64-w64-mingw32-g++.exe",
+            "compilerPath": "C:/cygwin64/bin/g++.exe",
             "cStandard": "c17",
             "cppStandard": "c++20",
             "intelliSenseMode": "windows-clang-x64"
