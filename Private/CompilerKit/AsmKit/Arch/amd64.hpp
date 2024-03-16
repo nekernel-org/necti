@@ -10,7 +10,6 @@
 #pragma once
 
 #include <CompilerKit/Defines.hpp>
-#include <vector>
 
 // @brief 64x0 support.
 // @file Arch/64x0.hpp

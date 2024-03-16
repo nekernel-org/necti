@@ -83,6 +83,7 @@
 #include <ctime>
 #include <fstream>
 #include <string>
+#include <vector>
 
 namespace CompilerKit {
 inline constexpr int BASE_YEAR = 1900;

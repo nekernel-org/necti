@@ -1219,15 +1219,12 @@ class AssemblyMountpointCLang final : public CompilerKit::AssemblyMountpoint {
 static void cc_print_help() {
   kSplashCxx();
 
-  kPrintF(kWhite "--asm={ASSEMBLER}: %s\n",
-          "Compile with a specific syntax. (64x0, 32x0, Mahrouss AMD64)");
-  kPrintF(kWhite "--compiler={COMPILER}: %s\n",
-          "Select compiler engine (Amsterdam (with caps) and Rabat (input buffering)).");
+  kPrintF("%s\n", "No help available.");
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
-#define kExt ".cc"
+#define kExt ".c"
 
 MPCC_MODULE(HCoreCompilerCLang64x0) {
   kCompilerTypes.push_back({.fName = "void", .fValue = "void"});
