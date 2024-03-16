@@ -21,7 +21,7 @@
 /////////////////////////////////////////////////////////////////////////////////////////
 
 #define __ASM_NEED_AMD64__ 1
-#define kAssemblerPragmaSym '!'
+#define kAssemblerPragmaSym '@'
 
 extern "C" {
 #include <stdlib.h>

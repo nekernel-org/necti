@@ -63,9 +63,9 @@ link:
 
 .PHONY: help
 help:
-	@echo "cl - Mahrouss C compiler and Assemblers."
-	@echo "pp - Mahrouss Preprocessors."
-	@echo "link - Mahrouss Linkers."
+	@echo "cl 	- Mahrouss Compilers."
+	@echo "pp 	- Mahrouss Preprocessors."
+	@echo "link 	- Mahrouss Linkers."
 
 .PHONY: clean
 clean:

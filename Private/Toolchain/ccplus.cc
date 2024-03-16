@@ -275,7 +275,7 @@ class AssemblyMountpointClang final : public CompilerKit::AssemblyMountpoint {
     (*kState.fOutputAssembly)
         << "# Language: AMD64 HCore Assembly (Generated from C++)\n";
     (*kState.fOutputAssembly) << "# Build Date: " << fmt << "\n\n";
-    (*kState.fOutputAssembly) << "!bits 64 " << "\n\n";
+    (*kState.fOutputAssembly) << "@bits 64 " << "\n\n";
 
     ParserKit::SyntaxLeafList syntax;
 
