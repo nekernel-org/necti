@@ -166,7 +166,7 @@ class CompilerBackendCLang final : public ParserKit::CompilerBackend {
   std::string Check(const char *text, const char *file);
   bool Compile(const std::string &text, const char *file) override;
 
-  const char *Language() override { return "C 64x0, Generic MP/UX target."; }
+  const char *Language() override { return "64x0 C17, MP/UX target."; }
 };
 
 static CompilerBackendCLang *kCompilerBackend = nullptr;
@@ -1219,7 +1219,8 @@ class AssemblyMountpointCLang final : public CompilerKit::AssemblyMountpoint {
 static void cc_print_help() {
   kSplashCxx();
 
-  kPrintF("%s\n", "No help available.");
+  kPrintF("%s\n", "--asm: Select assembler, example:\n--asm=64x0");
+  kPrintF("%s\n", "--compiler: Select backend, example:\n--compiler=mahrouss");
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////
@@ -1267,7 +1268,7 @@ MPCC_MODULE(HCoreCompilerCLang64x0) {
         return kOk;
       }
 
-      if (strcmp(argv[index], "--asm=masm") == 0) {
+      if (strcmp(argv[index], "--asm=64x0") == 0) {
         delete kFactory.Unmount();
 
         kFactory.Mount(new AssemblyMountpointCLang());
@@ -1276,7 +1277,7 @@ MPCC_MODULE(HCoreCompilerCLang64x0) {
         continue;
       }
 
-      if (strcmp(argv[index], "--compiler=Amsterdam") == 0) {
+      if (strcmp(argv[index], "--compiler=mahrouss") == 0) {
         if (!kCompilerBackend) kCompilerBackend = new CompilerBackendCLang();
 
         continue;

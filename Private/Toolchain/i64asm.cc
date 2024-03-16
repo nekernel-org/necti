@@ -4,7 +4,14 @@
 
 ------------------------------------------- */
 
-/// bugs: 0
+/// bugs: 1
+/// mov rcx, rax
+/// mov rax, rcx
+/// prompts the same output.
+
+
+/// feature requests: 1
+/// add support for r8, r15 registers, also add support for ret.
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
@@ -1061,23 +1068,19 @@ bool CompilerKit::EncoderAMD64::WriteLine(std::string &line,
 
               kBytes.push_back(byte);
             } else if (currentRegList[1].fName.find("ax") !=
+                       std::string::npos ||
+                       currentRegList[1].fName.find("cx") !=
                        std::string::npos) {
               auto byte = 0xc0;
-              byte += currentRegList[0].fModRM;
-
-              kBytes.push_back(byte);
-            } else {
-              auto byte = 0xf0;
-              byte += currentRegList[0].fModRM;
+              byte += (currentRegList[1].fName.find("cx") != std::string::npos) ? currentRegList[1].fModRM : currentRegList[0].fModRM;
 
               kBytes.push_back(byte);
             }
-
           } else if (bits == 16) {
             kBytes.emplace_back(0x66);
             kBytes.emplace_back(0x89);
 
-            assert(false);
+            // TODO: 16 bit move operation.
           } else {
             detail::print_error(
                 "Invalid combination of operands and registers.", "i64asm");

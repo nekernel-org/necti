@@ -275,6 +275,7 @@ class AssemblyMountpointClang final : public CompilerKit::AssemblyMountpoint {
     (*kState.fOutputAssembly)
         << "# Language: AMD64 HCore Assembly (Generated from C++)\n";
     (*kState.fOutputAssembly) << "# Build Date: " << fmt << "\n\n";
+    (*kState.fOutputAssembly) << "!bits 64 " << "\n\n";
 
     ParserKit::SyntaxLeafList syntax;
 
@@ -403,9 +404,7 @@ class AssemblyMountpointClang final : public CompilerKit::AssemblyMountpoint {
 
         auto& front = scope.front();
 
-        std::string reg = "r";
-        reg += std::to_string(front.reg_cnt);
-        ++front.reg_cnt;
+        std::string reg = "rcx";
 
         front.vals.push_back(reg);
       }
@@ -418,10 +417,7 @@ class AssemblyMountpointClang final : public CompilerKit::AssemblyMountpoint {
         if (found_type) {
           auto& front = scope.front();
 
-          std::string reg = "r";
-          reg += std::to_string(front.reg_cnt);
-          ++front.reg_cnt;
-
+          std::string reg = "rcx";
           front.vals.push_back(reg);
 
           leaf.fUserValue = !is_pointer ? "mov %s, %s1\n" : "lea %s, %s1\n";
@@ -482,9 +478,7 @@ class AssemblyMountpointClang final : public CompilerKit::AssemblyMountpoint {
 
           auto& front = scope.front();
 
-          std::string reg = "r";
-          reg += std::to_string(front.reg_cnt);
-          ++front.reg_cnt;
+          std::string reg = "rcx";
 
           leaf.fUserValue.replace(leaf.fUserValue.find("%s"), strlen("%s"),
                                   reg);
@@ -519,7 +513,7 @@ class AssemblyMountpointClang final : public CompilerKit::AssemblyMountpoint {
                       ln[i] == '&' || ln[i] == '&' || ln[i] == '|' ||
                       ln[i] == ';') {
                     val.replace(val.find(val_reg), val_reg.size(),
-                                "r" + std::to_string(reg_cnt));
+                                "rcx");
                     val_reg.clear();
                     ++reg_cnt;
 
