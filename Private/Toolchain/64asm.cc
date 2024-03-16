@@ -28,7 +28,6 @@
 #include <iostream>
 #include <vector>
 #include <memory>
-#include <filesystem>
 
 /////////////////////
 
@@ -826,7 +825,7 @@ bool CompilerKit::Encoder64x0::WriteLine(std::string &line,
           // sta expects this: sta 0x000000, r0
           if (name == "sta") {
             detail::print_error(
-                "invalid combination of opcode and operands.\nhere ->" + line,
+                "invalid combination of opcode and operands.\nHere ->" + line,
                 file);
             throw std::runtime_error("invalid_comb_op_ops");
           }

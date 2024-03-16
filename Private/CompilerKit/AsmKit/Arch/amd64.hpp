@@ -48,6 +48,7 @@ kAsmOpcodeDecl("int3", 0xC3)
 kAsmOpcodeDecl("iret", 0xCF) 
 kAsmOpcodeDecl("retf", 0xCB)
 kAsmOpcodeDecl("retn", 0xC3) 
+kAsmOpcodeDecl("ret", 0xC3) 
 kAsmOpcodeDecl("sti", 0xfb)
 kAsmOpcodeDecl("cli", 0xfa)
 
@@ -57,8 +58,7 @@ kAsmOpcodeDecl("mov", 0x48)
 
 kAsmOpcodeDecl("jmp", 0xE9)
 kAsmOpcodeDecl("call", 0xFF)
-
-kAsmOpcodeDecl("mov", 0x00)};
+};
 
 // \brief 64x0 register prefix
 // example: r32, r0

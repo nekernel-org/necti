@@ -18,6 +18,7 @@ endif
 LINK_SRC=link.cc
 LINK_OUTPUT=bin/link.exe
 LINK_ALT_OUTPUT=bin/64link.exe
+LINK_ALT_3_OUTPUT=bin/i64link.exe
 LINK_ALT_2_OUTPUT=bin/32link.exe
 
 PP_SRC=bpp.cc
@@ -58,6 +59,7 @@ link:
 	$(LINK_CC) $(COMMON_INC) $(LINK_SRC) -o $(LINK_OUTPUT)
 	cp $(LINK_OUTPUT) $(LINK_ALT_OUTPUT)
 	cp $(LINK_OUTPUT) $(LINK_ALT_2_OUTPUT)
+	cp $(LINK_OUTPUT) $(LINK_ALT_3_OUTPUT)
 
 .PHONY: help
 help:

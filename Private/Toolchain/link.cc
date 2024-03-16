@@ -40,7 +40,7 @@
 //! @brief standard PEF entry.
 #define kPefStart "__start"
 
-#define kToolVersion "Mahrouss Visual Linker v2.22, (c) Mahrouss Logic 2024"
+#define kToolVersion "Mahrouss Visual Linker v2.23, (c) Mahrouss Logic 2024"
 
 #define StringCompare(DST, SRC) strcmp(DST, SRC)
 
@@ -90,6 +90,7 @@ MPCC_MODULE(HCoreLinker) {
       kStdOut << "-32x0: Output as 32x0 PEF.\n";
       kStdOut << "-64x0: Output as 64x0 PEF.\n";
       kStdOut << "-amd64: Output as AMD64 PEF.\n";
+      kStdOut << "-rv64: Output as RISC-V 64 PEF.\n";
       kStdOut << "-output-file: Select output file name.\n";
 
       return 0;

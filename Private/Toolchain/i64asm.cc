@@ -4,13 +4,9 @@
 
 ------------------------------------------- */
 
-/// bugs: 1
-/// mov rcx, rax
-/// mov rax, rcx
-/// prompts the same output.
+/// bugs: 0
 
-
-/// feature requests: 1
+/// feature request: 1
 /// add support for r8, r15 registers, also add support for ret.
 
 /////////////////////////////////////////////////////////////////////////////////////////
@@ -998,6 +994,10 @@ bool CompilerKit::EncoderAMD64::WriteLine(std::string &line,
       {.fName = "dx", .fModRM = 0x2}, {.fName = "bx", .fModRM = 0x10},
       {.fName = "sp", .fModRM = 0x4}, {.fName = "bp", .fModRM = 0x12},
       {.fName = "si", .fModRM = 0x6}, {.fName = "di", .fModRM = 0x14},
+      {.fName = "r8", .fModRM = 0x0}, {.fName = "r13", .fModRM = 0x8},
+      {.fName = "r9", .fModRM = 0x2}, {.fName = "r14", .fModRM = 0x10},
+      {.fName = "r10", .fModRM = 0x4}, {.fName = "r15", .fModRM = 0x12},
+      {.fName = "r11", .fModRM = 0x6},
   };
 
   for (auto &opcodeAMD64 : kOpcodesAMD64) {
@@ -1024,6 +1024,12 @@ bool CompilerKit::EncoderAMD64::WriteLine(std::string &line,
         for (auto &reg : regs) {
           std::vector<char> regExt = {'e', 'r'};
 
+          if (reg.fName[0] == 'r') {
+              currentRegList.push_back(
+                  {.fName = reg.fName, .fModRM = reg.fModRM});
+              break;
+          }
+
           for (auto &ext : regExt) {
             std::string registerName;
             registerName.push_back(ext);
@@ -1036,7 +1042,10 @@ bool CompilerKit::EncoderAMD64::WriteLine(std::string &line,
                 bits = 32;
 
               if (bits != kRegisterBitWidth) {
-                detail::print_error("invalid size for register, current bit width is: " + std::to_string(kRegisterBitWidth), file);
+                detail::print_error(
+                    "invalid size for register, current bit width is: " +
+                        std::to_string(kRegisterBitWidth),
+                    file);
                 throw std::runtime_error("invalid_reg_size");
               }
 
@@ -1052,30 +1061,30 @@ bool CompilerKit::EncoderAMD64::WriteLine(std::string &line,
 
         if (!noRightRegister) {
           if (bits == 64 || bits == 32) {
-            if (bits >= 32) kBytes.emplace_back(opcodeAMD64.fOpcode);
+            bool hasRBasedRegs = false;
+
+            if (currentRegList[0].fName[0] == 'r' ||
+                currentRegList[1].fName[0] == 'r') {
+              if (isdigit(currentRegList[0].fName[1]) &&
+                  isdigit(currentRegList[1].fName[1])) {
+                kBytes.emplace_back(0x4d);
+                hasRBasedRegs = true;
+              } else if (!isdigit(currentRegList[0].fName[1]) ||
+                  !isdigit(currentRegList[1].fName[1])) {
+                if (currentRegList[1].fName[2] == 0 ||
+                    currentRegList[0].fName[2] == 0) {      
+                  kBytes.emplace_back(0x4c);
+                  hasRBasedRegs = true;
+                }
+              }
+            }
+            
+            if (!hasRBasedRegs &&
+                bits >= 32) {
+              kBytes.emplace_back(opcodeAMD64.fOpcode);
+            }
 
             kBytes.emplace_back(0x89);
-
-            if (currentRegList[1].fName.find("sp") != std::string::npos) {
-              auto byte = 0xe0;
-              byte += currentRegList[0].fModRM;
-
-              kBytes.push_back(byte);
-            } else if (currentRegList[1].fName.find("dx") !=
-                       std::string::npos) {
-              auto byte = 0xd0;
-              byte += currentRegList[0].fModRM;
-
-              kBytes.push_back(byte);
-            } else if (currentRegList[1].fName.find("ax") !=
-                       std::string::npos ||
-                       currentRegList[1].fName.find("cx") !=
-                       std::string::npos) {
-              auto byte = 0xc0;
-              byte += (currentRegList[1].fName.find("cx") != std::string::npos) ? currentRegList[1].fModRM : currentRegList[0].fModRM;
-
-              kBytes.push_back(byte);
-            }
           } else if (bits == 16) {
             kBytes.emplace_back(0x66);
             kBytes.emplace_back(0x89);
@@ -1086,7 +1095,8 @@ bool CompilerKit::EncoderAMD64::WriteLine(std::string &line,
                 "Invalid combination of operands and registers.", "i64asm");
             throw std::runtime_error("comb_op_reg");
           }
-        } else {
+
+          
         }
 
         break;
@@ -1117,7 +1127,8 @@ bool CompilerKit::EncoderAMD64::WriteLine(std::string &line,
       kRegisterBitWidth = 64U;
     } else if (line.find("bits 32") != std::string::npos) {
       kRegisterBitWidth = 32U;
-    } if (line.find("bits 16") != std::string::npos) {
+    }
+    if (line.find("bits 16") != std::string::npos) {
       kRegisterBitWidth = 16U;
     }
 
