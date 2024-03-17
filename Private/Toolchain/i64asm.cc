@@ -7,7 +7,7 @@
 /// bugs: 0
 
 /// feature request: 1
-/// add support for r8, r15 registers, also add support for ret.
+/// Encode registers in mov, add, xor...
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
