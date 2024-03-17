@@ -7,7 +7,7 @@ export .text main
     
     retf
 
-    export .text foo
+export .text foo
     mov rdx, rcx
     mov rax, rcx
 

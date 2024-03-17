@@ -827,7 +827,7 @@ void bpp_parse_file(std::ifstream &hdr_file, std::ofstream &pp_out) {
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
-MPCC_MODULE(HCoreBCCLPreprocessor) {
+MPCC_MODULE(HCorePreprocessor) {
   try {
     bool skip = false;
     bool double_skip = false;
@@ -844,6 +844,12 @@ MPCC_MODULE(HCoreBCCLPreprocessor) {
 
     kMacros.push_back(macro_0);
 
+    details::bpp_macro macro_hcore;
+    macro_hcore.fName = "__MAHROUSS__";
+    macro_hcore.fValue = "1";
+
+    kMacros.push_back(macro_hcore);
+
     for (auto index = 1UL; index < argc; ++index) {
       if (skip) {
         skip = false;
@@ -857,23 +863,23 @@ MPCC_MODULE(HCoreBCCLPreprocessor) {
       }
 
       if (argv[index][0] == '-') {
-        if (strcmp(argv[index], "--version") == 0) {
+        if (strcmp(argv[index], "-version") == 0) {
           printf("%s\n", "bpp v1.11, (c) Mahrouss Logic");
           return 0;
         }
 
         if (strcmp(argv[index], "-h") == 0 ||
-            strcmp(argv[index], "--help") == 0) {
+            strcmp(argv[index], "-help") == 0) {
           printf("%s\n", "bpp v1.11, (c) Mahrouss Logic");
-          printf("%s\n", "--working-dir: set directory to working path.");
-          printf("%s\n", "--include-dir: add directory to include path.");
-          printf("%s\n", "--define: define macro.");
-          printf("%s\n", "--version: print the version.");
+          printf("%s\n", "-working-dir <path>: set directory to working path.");
+          printf("%s\n", "-include-dir <path>: add directory to include path.");
+          printf("%s\n", "-define <name> <value>: define macro.");
+          printf("%s\n", "-version: print the version.");
 
           return 0;
         }
 
-        if (strcmp(argv[index], "--include-dir") == 0) {
+        if (strcmp(argv[index], "-include-dir") == 0) {
           std::string inc = argv[index + 1];
 
           skip = true;
@@ -881,13 +887,13 @@ MPCC_MODULE(HCoreBCCLPreprocessor) {
           kIncludes.push_back(inc);
         }
 
-        if (strcmp(argv[index], "--working-dir") == 0) {
+        if (strcmp(argv[index], "-working-dir") == 0) {
           std::string inc = argv[index + 1];
           skip = true;
           kWorkingDir = inc;
         }
 
-        if (strcmp(argv[index], "--define") == 0 &&
+        if (strcmp(argv[index], "-define") == 0 &&
             argv[index + 1] != nullptr && argv[index + 2] != nullptr) {
           std::string macro_key = argv[index + 1];
 

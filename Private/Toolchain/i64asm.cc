@@ -516,7 +516,7 @@ std::string CompilerKit::EncoderAMD64::CheckLine(std::string &line,
   }
 
   if (!detail::algorithm::is_valid(line)) {
-    err_str = "Line contains non alphanumeric characters.\nhere -> ";
+    err_str = "Line contains non alphanumeric characters.\nHere -> ";
     err_str += line;
 
     return err_str;
