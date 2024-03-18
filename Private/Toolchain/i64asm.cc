@@ -21,16 +21,14 @@
 /////////////////////////////////////////////////////////////////////////////////////////
 
 #define __ASM_NEED_AMD64__ 1
-#define kAssemblerPragmaSym '@'
 
-extern "C" {
-#include <stdlib.h>
-}
+#define kAssemblerPragmaSym '@'
 
 #include <CompilerKit/AsmKit/Arch/amd64.hpp>
 #include <CompilerKit/ParserKit.hpp>
 #include <CompilerKit/StdKit/AE.hpp>
 #include <CompilerKit/StdKit/PEF.hpp>
+#include <cstdlib>
 #include <filesystem>
 #include <fstream>
 #include <iostream>
@@ -990,12 +988,12 @@ bool CompilerKit::EncoderAMD64::WriteLine(std::string &line,
   };
 
   std::vector<RegMapAMD64> regs{
-      {.fName = "ax", .fModRM = 0x0}, {.fName = "cx", .fModRM = 0x8},
-      {.fName = "dx", .fModRM = 0x2}, {.fName = "bx", .fModRM = 0x10},
-      {.fName = "sp", .fModRM = 0x4}, {.fName = "bp", .fModRM = 0x12},
-      {.fName = "si", .fModRM = 0x6}, {.fName = "di", .fModRM = 0x14},
-      {.fName = "r8", .fModRM = 0x0}, {.fName = "r13", .fModRM = 0x8},
-      {.fName = "r9", .fModRM = 0x2}, {.fName = "r14", .fModRM = 0x10},
+      {.fName = "ax", .fModRM = 0x0},  {.fName = "cx", .fModRM = 0x8},
+      {.fName = "dx", .fModRM = 0x2},  {.fName = "bx", .fModRM = 0x10},
+      {.fName = "sp", .fModRM = 0x4},  {.fName = "bp", .fModRM = 0x12},
+      {.fName = "si", .fModRM = 0x6},  {.fName = "di", .fModRM = 0x14},
+      {.fName = "r8", .fModRM = 0x0},  {.fName = "r13", .fModRM = 0x8},
+      {.fName = "r9", .fModRM = 0x2},  {.fName = "r14", .fModRM = 0x10},
       {.fName = "r10", .fModRM = 0x4}, {.fName = "r15", .fModRM = 0x12},
       {.fName = "r11", .fModRM = 0x6},
   };
@@ -1025,9 +1023,9 @@ bool CompilerKit::EncoderAMD64::WriteLine(std::string &line,
           std::vector<char> regExt = {'e', 'r'};
 
           if (reg.fName[0] == 'r') {
-              currentRegList.push_back(
-                  {.fName = reg.fName, .fModRM = reg.fModRM});
-              break;
+            currentRegList.push_back(
+                {.fName = reg.fName, .fModRM = reg.fModRM});
+            break;
           }
 
           for (auto &ext : regExt) {
@@ -1070,17 +1068,16 @@ bool CompilerKit::EncoderAMD64::WriteLine(std::string &line,
                 kBytes.emplace_back(0x4d);
                 hasRBasedRegs = true;
               } else if (!isdigit(currentRegList[0].fName[1]) ||
-                  !isdigit(currentRegList[1].fName[1])) {
+                         !isdigit(currentRegList[1].fName[1])) {
                 if (currentRegList[1].fName[2] == 0 ||
-                    currentRegList[0].fName[2] == 0) {      
+                    currentRegList[0].fName[2] == 0) {
                   kBytes.emplace_back(0x4c);
                   hasRBasedRegs = true;
                 }
               }
             }
-            
-            if (!hasRBasedRegs &&
-                bits >= 32) {
+
+            if (!hasRBasedRegs && bits >= 32) {
               kBytes.emplace_back(opcodeAMD64.fOpcode);
             }
 
@@ -1095,8 +1092,6 @@ bool CompilerKit::EncoderAMD64::WriteLine(std::string &line,
                 "Invalid combination of operands and registers.", "i64asm");
             throw std::runtime_error("comb_op_reg");
           }
-
-          
         }
 
         break;

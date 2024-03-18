@@ -17,7 +17,7 @@
                 "${workspaceFolder}/Private/**"
             ],
             "defines": [],
-            "compilerPath": "C:/cygwin64/bin/c++.exe",
+            "compilerPath": "C:/cygwin64/bin/g++.exe",
             "cStandard": "c17",
             "cppStandard": "c++20",
             "intelliSenseMode": "windows-clang-x64"

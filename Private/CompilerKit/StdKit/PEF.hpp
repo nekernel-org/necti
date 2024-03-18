@@ -81,6 +81,8 @@ enum {
   kPefData = 0xD,
   kPefZero = 0xE,
   kPefLinkerID = 0x1,
+  kPefCount = 4,
+  kPefInvalid = 0xFF,
 };
 }  // namespace CompilerKit
 

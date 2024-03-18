@@ -18,7 +18,7 @@
 #define No false
 #endif  // ifndef No
 
-#include <stdint.h>
+#include <cstdint>
 
 #define SizeType size_t
 

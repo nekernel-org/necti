@@ -10,6 +10,7 @@
 /// bugs: 0
 
 #define kPrintF printf
+
 #define kSplashCxx()     \
   kPrintF(kWhite "%s\n", \
           "Mahrouss Visual C++ Compiler for HCore, Copyright Mahrouss Logic.")

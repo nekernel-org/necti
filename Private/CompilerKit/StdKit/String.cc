@@ -18,8 +18,7 @@
  *
  */
 
-#include "String.hpp"
-
+#include <CompilerKit/StdKit/String.hpp>
 #include <utility>
 
 namespace CompilerKit {

@@ -56,7 +56,7 @@
 
 enum { kAbiMpUx = 0x5046 /* PF */ };
 
-static std::string kOutput = "output" kPefExt;
+static std::string kOutput;
 static Int32 kAbi = kAbiMpUx;
 static Int32 kSubArch = kPefNoSubCpu;
 static Int32 kArch = CompilerKit::kPefArch64000;
@@ -119,6 +119,10 @@ MPCC_MODULE(HCoreLinker) {
 
       continue;
     } else if (StringCompare(argv[i], "-shared") == 0) {
+      if (kOutput.empty()) {
+        continue;
+      }
+
       if (kOutput.find(kPefExt) != std::string::npos)
         kOutput.erase(kOutput.find(kPefExt), strlen(kPefExt));
 
@@ -142,6 +146,11 @@ MPCC_MODULE(HCoreLinker) {
 
       continue;
     }
+  }
+
+  if (kOutput.empty()) {
+    kStdOut << "link: no output filename set." << std::endl;
+    return MPCC_EXEC_ERROR;
   }
 
   // sanity check.
@@ -184,9 +193,9 @@ MPCC_MODULE(HCoreLinker) {
   pef_container.Start = kPefDeaultOrg;
   pef_container.HdrSz = sizeof(CompilerKit::PEFContainer);
 
-  std::ofstream output_fc(kOutput, std::ofstream::binary);
+  std::ofstream outputFc(kOutput, std::ofstream::binary);
 
-  if (output_fc.bad()) {
+  if (outputFc.bad()) {
     if (kVerbose) {
       kStdOut << "link: error: " << strerror(errno) << "\n";
     }
@@ -196,7 +205,7 @@ MPCC_MODULE(HCoreLinker) {
 
   //! Read AE to convert as PEF.
 
-  std::vector<CompilerKit::PEFCommandHeader> pef_command_hdrs;
+  std::vector<CompilerKit::PEFCommandHeader> commandHdrsList;
   CompilerKit::Utils::AEReadableProtocol readProto{};
 
   for (const auto &i : kObjectList) {
@@ -289,7 +298,7 @@ MPCC_MODULE(HCoreLinker) {
           kStdOut << "link: object record: "
                   << ae_records[ae_record_index].fName << " was marked.\n";
 
-        pef_command_hdrs.emplace_back(command_header);
+        commandHdrsList.emplace_back(command_header);
       }
 
       delete[] raw_ae_records;
@@ -318,45 +327,45 @@ MPCC_MODULE(HCoreLinker) {
 
   pef_container.Cpu = archs;
 
-  output_fc << pef_container;
+  outputFc << pef_container;
 
   if (kVerbose) {
     kStdOut << "link: pef: wrote container header.\n";
   }
 
-  output_fc.seekp(std::streamsize(pef_container.HdrSz));
+  outputFc.seekp(std::streamsize(pef_container.HdrSz));
 
   std::vector<std::string> not_found;
   std::vector<std::string> symbols;
 
   // step 2: check for errors (multiple symbols, undefined ones)
 
-  for (auto &pef_command_hdr : pef_command_hdrs) {
+  for (auto &commandHdr : commandHdrsList) {
     // check if this symbol needs to be resolved.
-    if (std::string(pef_command_hdr.Name).find(kLdDefineSymbol) !=
+    if (std::string(commandHdr.Name).find(kLdDefineSymbol) !=
             std::string::npos &&
-        std::string(pef_command_hdr.Name).find(kLdDynamicSym) ==
+        std::string(commandHdr.Name).find(kLdDynamicSym) ==
             std::string::npos) {
       if (kVerbose)
-        kStdOut << "link: found undefined symbol: " << pef_command_hdr.Name
+        kStdOut << "link: found undefined symbol: " << commandHdr.Name
                 << "\n";
 
       if (auto it = std::find(not_found.begin(), not_found.end(),
-                              std::string(pef_command_hdr.Name));
+                              std::string(commandHdr.Name));
           it == not_found.end()) {
-        not_found.emplace_back(pef_command_hdr.Name);
+        not_found.emplace_back(commandHdr.Name);
       }
     }
 
-    symbols.emplace_back(pef_command_hdr.Name);
+    symbols.emplace_back(commandHdr.Name);
   }
 
   // Now try to solve these symbols.
 
-  for (size_t not_found_idx = 0; not_found_idx < pef_command_hdrs.size();
+  for (size_t not_found_idx = 0; not_found_idx < commandHdrsList.size();
        ++not_found_idx) {
     if (auto it = std::find(not_found.begin(), not_found.end(),
-                            std::string(pef_command_hdrs[not_found_idx].Name));
+                            std::string(commandHdrsList[not_found_idx].Name));
         it != not_found.end()) {
       std::string symbol_imp = *it;
 
@@ -372,12 +381,12 @@ MPCC_MODULE(HCoreLinker) {
 
       // the reason we do is because, this may not match the symbol, and we need
       // to look for other matching symbols.
-      for (auto &pef_command_hdr : pef_command_hdrs) {
-        if (std::string(pef_command_hdr.Name).find(symbol_imp) !=
+      for (auto &commandHdr : commandHdrsList) {
+        if (std::string(commandHdr.Name).find(symbol_imp) !=
                 std::string::npos &&
-            std::string(pef_command_hdr.Name).find(kLdDefineSymbol) ==
+            std::string(commandHdr.Name).find(kLdDefineSymbol) ==
                 std::string::npos) {
-          std::string undefined_symbol = pef_command_hdr.Name;
+          std::string undefined_symbol = commandHdr.Name;
           auto result_of_sym =
               undefined_symbol.substr(undefined_symbol.find(symbol_imp));
 
@@ -388,7 +397,7 @@ MPCC_MODULE(HCoreLinker) {
           not_found.erase(it);
 
           if (kVerbose)
-            kStdOut << "link: found symbol: " << pef_command_hdr.Name << "\n";
+            kStdOut << "link: found symbol: " << commandHdr.Name << "\n";
 
           break;
         }
@@ -403,32 +412,32 @@ MPCC_MODULE(HCoreLinker) {
 
   if (!kStartFound && is_executable) {
     if (kVerbose)
-      kStdOut << "link: undefined symbol: __start, you may have forget to link "
-                 "against your runtime library.\n";
+      kStdOut << "link: undefined entrypoint: __start, you may have forget to link "
+                 "against your compiler's runtime library.\n";
 
-    kStdOut << "link: undefined entrypoint " << kPefStart << " for executable "
+    kStdOut << "link: undefined entrypoint " << kPefStart << " for executable: "
             << kOutput << "\n";
   }
 
   // step 4: write some pef commands.
 
-  CompilerKit::PEFCommandHeader date_header{};
+  CompilerKit::PEFCommandHeader dateHeader{};
 
   time_t timestamp = time(nullptr);
 
-  std::string timestamp_str = "ContainerDate:";
-  timestamp_str += std::to_string(timestamp);
+  std::string timeStampStr = "ContainerDate:";
+  timeStampStr += std::to_string(timestamp);
 
-  strcpy(date_header.Name, timestamp_str.c_str());
+  strcpy(dateHeader.Name, timeStampStr.c_str());
 
-  date_header.Flags = 0;
-  date_header.Kind = CompilerKit::kPefData;
-  date_header.Offset = output_fc.tellp();
-  date_header.Size = timestamp_str.size();
+  dateHeader.Flags = 0;
+  dateHeader.Kind = CompilerKit::kPefData;
+  dateHeader.Offset = outputFc.tellp();
+  dateHeader.Size = timeStampStr.size();
 
-  output_fc << date_header;
+  outputFc << dateHeader;
 
-  CompilerKit::PEFCommandHeader abi_header{};
+  CompilerKit::PEFCommandHeader abiHeader{};
 
   std::string abi = kPefAbiId;
 
@@ -439,96 +448,96 @@ MPCC_MODULE(HCoreLinker) {
     }
     case CompilerKit::kPefArch32000:
     case CompilerKit::kPefArch64000: {
-      abi += "MP-UX";
+      abi += "MPUX";
       break;
     }
     default: {
-      abi += "UNIX";
+      abi += " IDK";
       break;
     }
   }
 
-  memcpy(abi_header.Name, abi.c_str(), abi.size());
+  memcpy(abiHeader.Name, abi.c_str(), abi.size());
 
-  abi_header.Size = strlen(kPefAbiId);
-  abi_header.Offset = output_fc.tellp();
-  abi_header.Flags = 0;
-  abi_header.Kind = CompilerKit::kPefLinkerID;
+  abiHeader.Size = abi.size();
+  abiHeader.Offset = outputFc.tellp();
+  abiHeader.Flags = 0;
+  abiHeader.Kind = CompilerKit::kPefLinkerID;
 
-  output_fc << abi_header;
+  outputFc << abiHeader;
 
-  CompilerKit::PEFCommandHeader uuid_header{};
+  CompilerKit::PEFCommandHeader uuidHeader{};
 
   std::random_device rd;
 
-  auto seed_data = std::array<int, std::mt19937::state_size> {};
-  std::generate(std::begin(seed_data), std::end(seed_data), std::ref(rd));
-  std::seed_seq seq(std::begin(seed_data), std::end(seed_data));
+  auto seedData = std::array<int, std::mt19937::state_size> {};
+  std::generate(std::begin(seedData), std::end(seedData), std::ref(rd));
+  std::seed_seq seq(std::begin(seedData), std::end(seedData));
   std::mt19937 generator(seq);
 
   auto gen = uuids::uuid_random_generator{generator};
   uuids::uuid id = gen();
 
-  memcpy(uuid_header.Name, "UUID_TYPE:4:", strlen("UUID_TYPE:4:"));
-  memcpy(uuid_header.Name + strlen("UUID_TYPE:4:"), id.as_bytes().data(), id.as_bytes().size());
+  memcpy(uuidHeader.Name, "UUID_TYPE:4:", strlen("UUID_TYPE:4:"));
+  memcpy(uuidHeader.Name + strlen("UUID_TYPE:4:"), id.as_bytes().data(), id.as_bytes().size());
 
-  uuid_header.Size = 16;
-  uuid_header.Offset = output_fc.tellp();
-  uuid_header.Flags = 0;
-  uuid_header.Kind = 0;
+  uuidHeader.Size = 16;
+  uuidHeader.Offset = outputFc.tellp();
+  uuidHeader.Flags = 0;
+  uuidHeader.Kind = 0;
 
-  output_fc << uuid_header;
+  outputFc << uuidHeader;
 
   // prepare a symbol vector.
-  std::vector<std::string> undefined_symbols;
-  std::vector<std::string> duplicate_symbols;
-  std::vector<std::string> symbols_to_resolve;
+  std::vector<std::string> undefSymbols;
+  std::vector<std::string> duplSymbols;
+  std::vector<std::string> resolveSymbols;
 
   // Finally write down the command headers.
   // And check for any duplications
-  for (size_t cmd_hdr = 0UL; cmd_hdr < pef_command_hdrs.size(); ++cmd_hdr) {
-    if (std::string(pef_command_hdrs[cmd_hdr].Name).find(kLdDefineSymbol) !=
+  for (size_t commandHeaderIndex = 0UL; commandHeaderIndex < commandHdrsList.size(); ++commandHeaderIndex) {
+    if (std::string(commandHdrsList[commandHeaderIndex].Name).find(kLdDefineSymbol) !=
             std::string::npos &&
-        std::string(pef_command_hdrs[cmd_hdr].Name).find(kLdDynamicSym) ==
+        std::string(commandHdrsList[commandHeaderIndex].Name).find(kLdDynamicSym) ==
             std::string::npos) {
-      // ignore :link: headers, they do not contain code.
+      // ignore :UndefinedSymbol: headers, they do not contain code.
       continue;
     }
 
-    std::string sym_name = pef_command_hdrs[cmd_hdr].Name;
+    std::string symbolName = commandHdrsList[commandHeaderIndex].Name;
 
-    if (!sym_name.empty()) {
-      undefined_symbols.emplace_back(sym_name);
+    if (!symbolName.empty()) {
+      undefSymbols.emplace_back(symbolName);
     }
 
-    output_fc << pef_command_hdrs[cmd_hdr];
+    outputFc << commandHdrsList[commandHeaderIndex];
 
-    for (size_t cmd_hdr_sub = 0UL; cmd_hdr_sub < pef_command_hdrs.size();
-         ++cmd_hdr_sub) {
-      if (cmd_hdr_sub == cmd_hdr) continue;
+    for (size_t subCommandHeaderIndex = 0UL; subCommandHeaderIndex < commandHdrsList.size();
+         ++subCommandHeaderIndex) {
+      if (subCommandHeaderIndex == commandHeaderIndex) continue;
 
-      if (std::string(pef_command_hdrs[cmd_hdr_sub].Name)
+      if (std::string(commandHdrsList[subCommandHeaderIndex].Name)
                   .find(kLdDefineSymbol) != std::string::npos &&
-          std::string(pef_command_hdrs[cmd_hdr_sub].Name).find(kLdDynamicSym) ==
+          std::string(commandHdrsList[subCommandHeaderIndex].Name).find(kLdDynamicSym) ==
               std::string::npos) {
         if (kVerbose) {
-          kStdOut << "link: ignore :link: command header...\n";
+          kStdOut << "link: ignore :UndefinedSymbol: command header...\n";
         }
 
-        // ignore :link: headers, they do not contain code.
+        // ignore :UndefinedSymbol: headers, they do not contain code.
         continue;
       }
 
-      auto &pef_command_hdr = pef_command_hdrs[cmd_hdr_sub];
+      auto &commandHdr = commandHdrsList[subCommandHeaderIndex];
 
-      if (pef_command_hdr.Name == std::string(pef_command_hdrs[cmd_hdr].Name)) {
-        if (std::find(duplicate_symbols.cbegin(), duplicate_symbols.cend(),
-                      pef_command_hdr.Name) == duplicate_symbols.cend()) {
-          duplicate_symbols.emplace_back(pef_command_hdr.Name);
+      if (commandHdr.Name == std::string(commandHdrsList[commandHeaderIndex].Name)) {
+        if (std::find(duplSymbols.cbegin(), duplSymbols.cend(),
+                      commandHdr.Name) == duplSymbols.cend()) {
+          duplSymbols.emplace_back(commandHdr.Name);
         }
 
         if (kVerbose)
-          kStdOut << "link: found duplicate symbol: " << pef_command_hdr.Name
+          kStdOut << "link: found duplicate symbol: " << commandHdr.Name
                   << "\n";
 
         kDuplicateSymbols = true;
@@ -536,8 +545,8 @@ MPCC_MODULE(HCoreLinker) {
     }
   }
 
-  if (!duplicate_symbols.empty()) {
-    for (auto &symbol : duplicate_symbols) {
+  if (!duplSymbols.empty()) {
+    for (auto &symbol : duplSymbols) {
       kStdOut << "link: multiple symbols of " << symbol << ".\n";
     }
 
@@ -548,33 +557,33 @@ MPCC_MODULE(HCoreLinker) {
   // step 2.5: write program bytes.
 
   for (auto byte : kObjectBytes) {
-    output_fc << byte;
+    outputFc << byte;
   }
 
   if (kVerbose) kStdOut << "link: wrote code for: " << kOutput << "\n";
 
   // step 3: check if we have those symbols
 
-  std::vector<std::string> unreferenced_symbols;
+  std::vector<std::string> unrefSyms;
 
-  for (auto &pef_command_hdr : pef_command_hdrs) {
+  for (auto &commandHdr : commandHdrsList) {
     if (auto it = std::find(not_found.begin(), not_found.end(),
-                            std::string(pef_command_hdr.Name));
+                            std::string(commandHdr.Name));
         it != not_found.end()) {
-      unreferenced_symbols.emplace_back(pef_command_hdr.Name);
+      unrefSyms.emplace_back(commandHdr.Name);
     }
   }
 
-  if (!unreferenced_symbols.empty()) {
-    for (auto &unreferenced_symbol : unreferenced_symbols) {
+  if (!unrefSyms.empty()) {
+    for (auto &unreferenced_symbol : unrefSyms) {
       kStdOut << "link: undefined symbol " << unreferenced_symbol << "\n";
     }
   }
 
   if (!kStartFound || kDuplicateSymbols && std::filesystem::exists(kOutput) ||
-      !unreferenced_symbols.empty()) {
+      !unrefSyms.empty()) {
     if (kVerbose)
-      kStdOut << "link: code for: " << kOutput
+      kStdOut << "link: file: " << kOutput
               << ", is corrupt, removing file...\n";
 
     std::remove(kOutput.c_str());
