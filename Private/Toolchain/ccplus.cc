@@ -29,7 +29,7 @@
 #define kOk 0
 
 /* Mahrouss Logic C++ driver */
-/* This is part of MP-UX C++ SDK. */
+/* This is part of MultiProcessor C++ SDK. */
 /* (c) Mahrouss Logic */
 
 // @author Amlal El Mahrouss (amlel)
@@ -276,7 +276,8 @@ class AssemblyMountpointClang final : public CompilerKit::AssemblyMountpoint {
     (*kState.fOutputAssembly)
         << "# Language: AMD64 HCore Assembly (Generated from C++)\n";
     (*kState.fOutputAssembly) << "# Build Date: " << fmt << "\n\n";
-    (*kState.fOutputAssembly) << "@bits 64 " << "\n\n";
+    (*kState.fOutputAssembly) << "@bits 64 "
+                              << "\n\n";
 
     ParserKit::SyntaxLeafList syntax;
 
@@ -513,8 +514,7 @@ class AssemblyMountpointClang final : public CompilerKit::AssemblyMountpoint {
                       ln[i] == '-' || ln[i] == '*' || ln[i] == '|' ||
                       ln[i] == '&' || ln[i] == '&' || ln[i] == '|' ||
                       ln[i] == ';') {
-                    val.replace(val.find(val_reg), val_reg.size(),
-                                "rcx");
+                    val.replace(val.find(val_reg), val_reg.size(), "rcx");
                     val_reg.clear();
                     ++reg_cnt;
 
@@ -559,8 +559,8 @@ class AssemblyMountpointClang final : public CompilerKit::AssemblyMountpoint {
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
-static void cxx_print_help() { 
-  kSplashCxx(); 
+static void cxx_print_help() {
+  kSplashCxx();
   kPrintF("%s", "No help available.\r\n");
   kPrintF("%s", "www.el-mahrouss-logic.com");
 }
@@ -603,8 +603,8 @@ MPCC_MODULE(CompilerCPlusPlus) {
   kKeywords.emplace_back("double");
   kKeywords.emplace_back("unsigned");
   kKeywords.emplace_back("__attribute__");
-  kKeywords.emplace_back("__pef_export");
-  kKeywords.emplace_back("__pef_import");
+  kKeywords.emplace_back("_Import");
+  kKeywords.emplace_back("_Export");
   kKeywords.emplace_back("namespace");
   kKeywords.emplace_back("while");
   kKeywords.emplace_back("sizeof");
@@ -708,7 +708,7 @@ MPCC_MODULE(CompilerCPlusPlus) {
         detail::print_error(argv_i + " is not a valid C++ source.\n", "ccplus");
       }
 
-      return 1; 
+      return 1;
     }
 
     if (kFactory.Compile(argv_i, kMachine) != kOk) return -1;

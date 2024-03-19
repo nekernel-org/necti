@@ -1,7 +1,7 @@
 /*
  *	========================================================
  *
- *	MP-UX C Compiler
+ *	MultiProcessor C Compiler
  * 	Copyright Mahrouss Logic, all rights reserved.
  *
  * 	========================================================
@@ -24,8 +24,6 @@ void mpcc_summon_manual(string path)
     import std.file;
 
     string base = "man ";
-    base ~= "/usr/local/bin/man/";
-
     string extension = ".8";
 
 	core.stdc.stdlib.system(toStringz(base ~ path ~ extension));
@@ -38,7 +36,7 @@ void main(string[] args)
     bool shared_library = false;
     bool compile_only = false;
     bool kernel_driver = false;
-    string output_file = "a.out";
+    string output_file = "Executable.exe";
     size_t index = 0UL;
 
     string[255] args_list;
@@ -55,7 +53,7 @@ void main(string[] args)
             }
             else if (arg == "-dialect")
             {
-                mpcc_summon_executable("/usr/local/bin/bin/ccplus --asm=masm --compiler=vanhalen --dialect");
+                mpcc_summon_executable("ccplus --pdialect");
                 return;
             }
             else if (arg == "--help" ||
@@ -78,7 +76,7 @@ void main(string[] args)
             }
             else if (arg == "-shared")
             {
-                output_file = "a.lib";
+                output_file = "Library.lib";
                 shared_library = true;
                 continue;
             }
@@ -103,7 +101,7 @@ void main(string[] args)
         return;
     }
 
-    auto compiler = new CompileCommand();
+    auto compiler = new CompileCommandAMD64();
 
     if (kernel_driver)
         compiler.compile(Platform.getKernelPath(), args_list, shared_library, output_file, compile_only);

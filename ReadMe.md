@@ -1,13 +1,13 @@
 # MP-CC
-## MP-UX Compiler Collection.
+## MultiProcessor Compiler Collection.
 
 Start by cloning the repo:
 
 ```
-git clone git@github.com:Mahrouss-Logic/mp-cc.git
+git clone git@gitlab.com:Mahrouss-Logic/mp-cc.git
 ```
 
-Then go to `Private/Toolchain/` And execute:
+Then go to `Private/Toolchain/` and execute:
 
 ```
 make all

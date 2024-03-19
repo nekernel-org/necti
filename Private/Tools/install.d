@@ -1,7 +1,7 @@
 /*
  *	========================================================
  *
- *	MP-UX C Compiler
+ *	MultiProcessor C Compiler
  * 	Copyright Mahrouss Logic, all rights reserved.
  *
  * 	========================================================

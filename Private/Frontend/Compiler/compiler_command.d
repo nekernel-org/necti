@@ -1,7 +1,7 @@
 /*
  *	========================================================
  *
- *	MP-UX C Compiler
+ *	MultiProcessor C Compiler
  * 	Copyright Mahrouss Logic, all rights reserved.
  *
  * 	========================================================
@@ -28,32 +28,16 @@ public class Platform
 {
     public static string getIncludePath()
     {
-	    import core.stdc.stdlib;
-        import std.string;
-        import std.conv;
-        import std.path;
-
-        string pathHome = expandTilde("~");
-        pathHome ~= "/mp-ux/libc/";
-
-        return pathHome;
+        return "C:/SDK/Public/Kits/";
     }
 
     public static string getKernelPath()
     {
-	    import core.stdc.stdlib;
-        import std.string;
-        import std.conv;
-        import std.path;
-
-        string pathHome = expandTilde("~");
-        pathHome ~= "/mp-ux/mp-ux/";
-
-        return pathHome;
+        return "C:/SDK/Private/Kits/";
     }
 }
 
-public class CompileCommand
+public class CompileCommandAMD64
 {
     public void compile(string includePath, string[] files, bool is_lib, string output, bool compile_only)
     {
@@ -67,23 +51,23 @@ public class CompileCommand
 
             import std.datetime;
 
-            string input = "/usr/local/bin/bin/cpp";
+            string input = "bpp";
 
             string[] arr_macros = CompilerMacroHelpers.getStandardMacros();
 
             foreach (string macro_name; arr_macros)
             {
-                input ~= " --define ";
+                input ~= " -define ";
                 input ~= macro_name;
                 input ~= "1 ";
                 input ~= " ";
             }
 
-            input ~= "--define __FILE__ " ~ file;
+            input ~= "-define __FILE__ " ~ file;
             input ~= " ";
-            input ~= "--define __DATE__ " ~ Clock.currTime(UTC()).toString();
+            input ~= "-define __DATE__ " ~ Clock.currTime(UTC()).toString();
             input ~= " ";
-            input ~= "--working-dir ./ --include-dir " ~ includePath ~ " " ~ file;
+            input ~= "-working-dir ./ -include-dir " ~ includePath ~ " " ~ file;
 
             mpcc_summon_executable(input);
 
@@ -105,12 +89,12 @@ public class CompileCommand
                     ext ~= ch;
             }
 
-            mpcc_summon_executable("/usr/local/bin/bin/ccplus --asm=masm -fmax-exceptions 10 --compiler=vanhalen " ~
+            mpcc_summon_executable("ccplus -fmax-exceptions 10 " ~
             file ~ ".pp");
 
-            assembly_source ~= ".64x";
+            assembly_source ~= ".s";
 
-            mpcc_summon_executable("/usr/local/bin/bin/64asm " ~ assembly_source);
+            mpcc_summon_executable("i64asm " ~ assembly_source);
         }
 
         if (compile_only)
@@ -147,6 +131,6 @@ public class CompileCommand
         output_object ~= " -o ";
         output_object ~= output;
 
-        mpcc_summon_executable("/usr/local/bin/bin/ld " ~ obj ~ output_object);
+        mpcc_summon_executable("link -amd64 " ~ obj ~ output_object);
     }
 }

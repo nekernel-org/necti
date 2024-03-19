@@ -1,7 +1,7 @@
  #
  #	========================================================
  #
- #	MP-UX Tools
+ #	MultiProcessor Tools
  # 	Copyright Mahrouss Logic, all rights reserved.
  #
  # 	========================================================

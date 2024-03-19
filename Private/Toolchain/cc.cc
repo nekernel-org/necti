@@ -29,7 +29,7 @@
 // TODO: support structs and ., ->
 
 /* C driver */
-/* This is part of MP-UX C SDK. */
+/* This is part of MultiProcessor C SDK. */
 /* (c) Mahrouss Logic */
 
 // @author Amlal El Mahrouss (amlel)
@@ -1107,7 +1107,7 @@ class AssemblyMountpointCLang final : public CompilerKit::AssemblyMountpoint {
 
     (*kState.fOutputAssembly) << "# Path: " << src_file << "\n";
     (*kState.fOutputAssembly)
-        << "# Language: MP-UX Assembly (Generated from C)\n";
+        << "# Language: MultiProcessor Assembly (Generated from C)\n";
     (*kState.fOutputAssembly) << "# Build Date: " << fmt << "\n\n";
 
     ParserKit::SyntaxLeafList syntax;
