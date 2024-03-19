@@ -24,7 +24,7 @@
 
 #define __ASM_NEED_AMD64__ 1
 
-#define kAssemblerPragmaSym '@'
+#define kAssemblerPragmaSym '#'
 
 #include <CompilerKit/AsmKit/Arch/amd64.hpp>
 #include <CompilerKit/ParserKit.hpp>
@@ -67,7 +67,7 @@ static std::int32_t kRegisterBitWidth = 16U;
 
 static bool kVerbose = false;
 
-static std::vector<i64_byte_t> kBytes;
+static std::vector<i64_byte_t> kAppBytes;
 
 static CompilerKit::AERecordHeader kCurrentRecord{
     .fName = "", .fKind = CompilerKit::kPefCode, .fSize = 0, .fOffset = 0};
@@ -260,7 +260,7 @@ MPCC_MODULE(HCoreAssemblerAMD64) {
         return -1;
       }
 
-      kRecords[kRecords.size() - 1].fSize = kBytes.size();
+      kRecords[kRecords.size() - 1].fSize = kAppBytes.size();
 
       std::size_t record_count = 0UL;
 
@@ -303,7 +303,7 @@ MPCC_MODULE(HCoreAssemblerAMD64) {
       file_ptr_out.seekp(pos);
 
       hdr.fStartCode = pos_end;
-      hdr.fCodeSize = kBytes.size();
+      hdr.fCodeSize = kAppBytes.size();
 
       file_ptr_out << hdr;
 
@@ -315,7 +315,7 @@ MPCC_MODULE(HCoreAssemblerAMD64) {
     }
 
     // byte from byte, we write this.
-    for (auto &byte : kBytes) {
+    for (auto &byte : kAppBytes) {
       if (byte == 0) continue;
 
       if (byte == 0xFF) {
@@ -391,7 +391,8 @@ static bool asm_read_attributes(std::string &line) {
 
     // now we can tell the code size of the previous kCurrentRecord.
 
-    if (!kRecords.empty()) kRecords[kRecords.size() - 1].fSize = kBytes.size();
+    if (!kRecords.empty())
+      kRecords[kRecords.size() - 1].fSize = kAppBytes.size();
 
     memset(kCurrentRecord.fName, 0, kAESymbolLen);
     memcpy(kCurrentRecord.fName, result.c_str(), result.size());
@@ -454,7 +455,8 @@ static bool asm_read_attributes(std::string &line) {
 
     // now we can tell the code size of the previous kCurrentRecord.
 
-    if (!kRecords.empty()) kRecords[kRecords.size() - 1].fSize = kBytes.size();
+    if (!kRecords.empty())
+      kRecords[kRecords.size() - 1].fSize = kAppBytes.size();
 
     memset(kCurrentRecord.fName, 0, kAESymbolLen);
     memcpy(kCurrentRecord.fName, name.c_str(), name.size());
@@ -479,7 +481,7 @@ static inline bool is_not_alnum_space(char c) {
   return !(isalpha(c) || isdigit(c) || (c == ' ') || (c == '\t') ||
            (c == ',') || (c == '(') || (c == ')') || (c == '"') ||
            (c == '\'') || (c == '[') || (c == ']') || (c == '+') ||
-           (c == '_') || (c == ':') || (c == '@') || (c == '.') || (c == '!'));
+           (c == '_') || (c == ':') || (c == '@') || (c == '.') || (c == '#'));
 }
 
 bool is_valid(const std::string &str) {
@@ -500,14 +502,12 @@ std::string CompilerKit::EncoderAMD64::CheckLine(std::string &line,
   if (line.empty() || ParserKit::find_word(line, "import") ||
       ParserKit::find_word(line, "export") || ParserKit::find_word(line, "#") ||
       ParserKit::find_word(line, ";")) {
-    if (line.find('#') != std::string::npos) {
-      line.erase(line.find('#'));
-    } else if (line.find(';') != std::string::npos) {
+    if (line.find(';') != std::string::npos) {
       line.erase(line.find(';'));
     } else {
       // now check the line for validity
       if (!detail::algorithm::is_valid(line)) {
-        err_str = "Line contains non alphanumeric characters.\nhere -> ";
+        err_str = "Line contains non valid characters.\nhere -> ";
         err_str += line;
       }
     }
@@ -581,7 +581,7 @@ bool CompilerKit::EncoderAMD64::WriteNumber(const std::size_t &pos,
       for (char &i : num.number) {
         if (i == 0) i = 0xFF;
 
-        kBytes.push_back(i);
+        kAppBytes.push_back(i);
       }
 
       if (kVerbose) {
@@ -611,7 +611,7 @@ bool CompilerKit::EncoderAMD64::WriteNumber(const std::size_t &pos,
       for (char &i : num.number) {
         if (i == 0) i = 0xFF;
 
-        kBytes.push_back(i);
+        kAppBytes.push_back(i);
       }
 
       return true;
@@ -636,7 +636,7 @@ bool CompilerKit::EncoderAMD64::WriteNumber(const std::size_t &pos,
       for (char &i : num.number) {
         if (i == 0) i = 0xFF;
 
-        kBytes.push_back(i);
+        kAppBytes.push_back(i);
       }
 
       return true;
@@ -659,7 +659,7 @@ bool CompilerKit::EncoderAMD64::WriteNumber(const std::size_t &pos,
   for (char &i : num.number) {
     if (i == 0) i = 0xFF;
 
-    kBytes.push_back(i);
+    kAppBytes.push_back(i);
   }
 
   if (kVerbose) {
@@ -688,7 +688,7 @@ bool CompilerKit::EncoderAMD64::WriteNumber32(const std::size_t &pos,
       for (char &i : num.number) {
         if (i == 0) i = 0xFF;
 
-        kBytes.push_back(i);
+        kAppBytes.push_back(i);
       }
 
       if (kVerbose) {
@@ -716,7 +716,7 @@ bool CompilerKit::EncoderAMD64::WriteNumber32(const std::size_t &pos,
       for (char &i : num.number) {
         if (i == 0) i = 0xFF;
 
-        kBytes.push_back(i);
+        kAppBytes.push_back(i);
       }
 
       return true;
@@ -739,7 +739,7 @@ bool CompilerKit::EncoderAMD64::WriteNumber32(const std::size_t &pos,
       for (char &i : num.number) {
         if (i == 0) i = 0xFF;
 
-        kBytes.push_back(i);
+        kAppBytes.push_back(i);
       }
 
       return true;
@@ -761,7 +761,7 @@ bool CompilerKit::EncoderAMD64::WriteNumber32(const std::size_t &pos,
   for (char &i : num.number) {
     if (i == 0) i = 0xFF;
 
-    kBytes.push_back(i);
+    kAppBytes.push_back(i);
   }
 
   if (kVerbose) {
@@ -792,7 +792,7 @@ bool CompilerKit::EncoderAMD64::WriteNumber16(const std::size_t &pos,
       for (char &i : num.number) {
         if (i == 0) i = 0xFF;
 
-        kBytes.push_back(i);
+        kAppBytes.push_back(i);
       }
 
       if (kVerbose) {
@@ -822,7 +822,7 @@ bool CompilerKit::EncoderAMD64::WriteNumber16(const std::size_t &pos,
       for (char &i : num.number) {
         if (i == 0) i = 0xFF;
 
-        kBytes.push_back(i);
+        kAppBytes.push_back(i);
       }
 
       return true;
@@ -847,7 +847,7 @@ bool CompilerKit::EncoderAMD64::WriteNumber16(const std::size_t &pos,
       for (char &i : num.number) {
         if (i == 0) i = 0xFF;
 
-        kBytes.push_back(i);
+        kAppBytes.push_back(i);
       }
 
       return true;
@@ -870,7 +870,7 @@ bool CompilerKit::EncoderAMD64::WriteNumber16(const std::size_t &pos,
   for (char &i : num.number) {
     if (i == 0) i = 0xFF;
 
-    kBytes.push_back(i);
+    kAppBytes.push_back(i);
   }
 
   if (kVerbose) {
@@ -898,7 +898,7 @@ bool CompilerKit::EncoderAMD64::WriteNumber8(const std::size_t &pos,
       CompilerKit::NumberCast8 num = CompilerKit::NumberCast8(
           strtol(jump_label.substr(pos + 2).c_str(), nullptr, 16));
 
-      kBytes.push_back(num.number);
+      kAppBytes.push_back(num.number);
 
       if (kVerbose) {
         kStdOut << "i64asm: found a base 16 number here: "
@@ -924,7 +924,7 @@ bool CompilerKit::EncoderAMD64::WriteNumber8(const std::size_t &pos,
                 << jump_label.substr(pos) << "\n";
       }
 
-      kBytes.push_back(num.number);
+      kAppBytes.push_back(num.number);
 
       return true;
     }
@@ -945,7 +945,7 @@ bool CompilerKit::EncoderAMD64::WriteNumber8(const std::size_t &pos,
                 << jump_label.substr(pos) << "\n";
       }
 
-      kBytes.push_back(num.number);
+      kAppBytes.push_back(num.number);
 
       return true;
     }
@@ -964,7 +964,7 @@ bool CompilerKit::EncoderAMD64::WriteNumber8(const std::size_t &pos,
   CompilerKit::NumberCast8 num = CompilerKit::NumberCast8(
       strtol(jump_label.substr(pos).c_str(), nullptr, 10));
 
-  kBytes.push_back(num.number);
+  kAppBytes.push_back(num.number);
 
   if (kVerbose) {
     kStdOut << "i64asm: found a base 10 number here: " << jump_label.substr(pos)
@@ -1017,39 +1017,32 @@ bool CompilerKit::EncoderAMD64::WriteLine(std::string &line,
           throw std::runtime_error("comb_op_reg");
         }
 
-        bool noRightRegister = false;
+        bool hasRightRegister = false;
 
         std::vector<RegMapAMD64> currentRegList;
 
         for (auto &reg : regs) {
           std::vector<char> regExt = {'e', 'r'};
 
-          if (reg.fName[0] == 'r') {
-            currentRegList.push_back(
-                {.fName = reg.fName, .fModRM = reg.fModRM});
-            break;
-          }
-
           for (auto &ext : regExt) {
             std::string registerName;
-            registerName.push_back(ext);
+
+            if (bits > 16) registerName.push_back(ext);
+
             registerName += reg.fName;
 
             while (line.find(registerName) != std::string::npos) {
-              if (ext == 'r')
-                bits = 64;
-              else if (ext == 'e')
-                bits = 32;
-
-              if (bits != kRegisterBitWidth) {
-                detail::print_error(
-                    "invalid size for register, current bit width is: " +
-                        std::to_string(kRegisterBitWidth),
-                    file);
-                throw std::runtime_error("invalid_reg_size");
-              }
-
               line.erase(line.find(registerName), registerName.size());
+
+              if (bits == 16) {
+                if (registerName[0] == 'r') {
+                  detail::print_error(
+                      "invalid size for register, current bit width is: " +
+                          std::to_string(kRegisterBitWidth),
+                      file);
+                  throw std::runtime_error("invalid_reg_size");
+                }
+              }
 
               currentRegList.push_back(
                   {.fName = registerName, .fModRM = reg.fModRM});
@@ -1057,9 +1050,9 @@ bool CompilerKit::EncoderAMD64::WriteLine(std::string &line,
           }
         }
 
-        if (currentRegList.size() > 1) noRightRegister = false;
+        if (currentRegList.size() > 1) hasRightRegister = true;
 
-        if (!noRightRegister) {
+        if (hasRightRegister) {
           if (bits == 64 || bits == 32) {
             bool hasRBasedRegs = false;
 
@@ -1067,26 +1060,23 @@ bool CompilerKit::EncoderAMD64::WriteLine(std::string &line,
                 currentRegList[1].fName[0] == 'r') {
               if (isdigit(currentRegList[0].fName[1]) &&
                   isdigit(currentRegList[1].fName[1])) {
-                kBytes.emplace_back(0x4d);
+                kAppBytes.emplace_back(0x4d);
                 hasRBasedRegs = true;
-              } else if (!isdigit(currentRegList[0].fName[1]) ||
-                         !isdigit(currentRegList[1].fName[1])) {
-                if (currentRegList[1].fName[2] == 0 ||
-                    currentRegList[0].fName[2] == 0) {
-                  kBytes.emplace_back(0x4c);
-                  hasRBasedRegs = true;
-                }
+              } else if (isdigit(currentRegList[0].fName[1]) ||
+                         isdigit(currentRegList[1].fName[1])) {
+                kAppBytes.emplace_back(0x4c);
+                hasRBasedRegs = true;
               }
             }
 
             if (!hasRBasedRegs && bits >= 32) {
-              kBytes.emplace_back(opcodeAMD64.fOpcode);
+              kAppBytes.emplace_back(opcodeAMD64.fOpcode);
             }
 
-            kBytes.emplace_back(0x89);
+            kAppBytes.emplace_back(0x89);
           } else if (bits == 16) {
-            kBytes.emplace_back(0x66);
-            kBytes.emplace_back(0x89);
+            kAppBytes.emplace_back(0x66);
+            kAppBytes.emplace_back(0x89);
 
             // TODO: 16 bit move operation.
           } else {
@@ -1094,16 +1084,19 @@ bool CompilerKit::EncoderAMD64::WriteLine(std::string &line,
                 "Invalid combination of operands and registers.", "i64asm");
             throw std::runtime_error("comb_op_reg");
           }
+        } else {
+          detail::print_error("Missing right register.", "i64asm");
+          throw std::runtime_error("missing_right_reg");
         }
 
         break;
       } else if (name == "int" || name == "into" || name == "intd") {
-        kBytes.emplace_back(opcodeAMD64.fOpcode);
+        kAppBytes.emplace_back(opcodeAMD64.fOpcode);
         this->WriteNumber8(line.find(name) + name.size() + 1, line);
 
         break;
       } else if (name == "jmp" || name == "call") {
-        kBytes.emplace_back(opcodeAMD64.fOpcode);
+        kAppBytes.emplace_back(opcodeAMD64.fOpcode);
 
         if (!this->WriteNumber32(line.find(name) + name.size() + 1, line)) {
           throw std::runtime_error("BUG: WriteNumber32");
@@ -1111,8 +1104,8 @@ bool CompilerKit::EncoderAMD64::WriteLine(std::string &line,
 
         break;
       } else {
-        kBytes.emplace_back(0);
-        kBytes.emplace_back(opcodeAMD64.fOpcode);
+        kAppBytes.emplace_back(0);
+        kAppBytes.emplace_back(opcodeAMD64.fOpcode);
 
         break;
       }

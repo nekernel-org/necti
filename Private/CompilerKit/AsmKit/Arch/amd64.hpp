@@ -51,6 +51,7 @@ kAsmOpcodeDecl("retn", 0xC3)
 kAsmOpcodeDecl("ret", 0xC3) 
 kAsmOpcodeDecl("sti", 0xfb)
 kAsmOpcodeDecl("cli", 0xfa)
+kAsmOpcodeDecl("hlt", 0xf4)
 
 kAsmOpcodeDecl("nop", 0x90)
 

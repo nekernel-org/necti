@@ -1,14 +1,8 @@
-@bits 64 
-@org 0x1000
+#bits 16
+#org 0x7c00
 
-export .text main
-    mov rcx, r8
-    mov rax, rcx
-    
-    retf
-
-export .text foo
-    mov rdx, rcx
-    mov rax, rcx
-
-    retf
+export .text BIOSStartup
+    mov ax, cx
+    cli
+    hlt
+    jmp 0x7c00
