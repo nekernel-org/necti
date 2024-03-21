@@ -3,7 +3,7 @@
         {
             "type": "cppbuild",
             "label": "C/C++: clang build active file",
-            "command": "/usr/bin/clang",
+            "command": "/usr/Apps/clang",
             "args": [
                 "-fcolor-diagnostics",
                 "-fansi-escape-codes",

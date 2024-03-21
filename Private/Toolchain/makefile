@@ -16,28 +16,28 @@ LINK_CC=x86_64-w64-mingw32-g++ -std=c++20
 endif
 
 LINK_SRC=link.cc
-LINK_OUTPUT=bin/link.exe
-LINK_ALT_OUTPUT=bin/64link.exe
-LINK_ALT_3_OUTPUT=bin/i64link.exe
-LINK_ALT_2_OUTPUT=bin/32link.exe
+LINK_OUTPUT=Apps/link.exe
+LINK_ALT_OUTPUT=Apps/64link.exe
+LINK_ALT_3_OUTPUT=Apps/i64link.exe
+LINK_ALT_2_OUTPUT=Apps/32link.exe
 
 PP_SRC=bpp.cc
-PP_OUTPUT=bin/bpp.exe
+PP_OUTPUT=Apps/bpp.exe
 
 # C Compiler
 CC_SRC=cc.cc ../CompilerKit/StdKit/*.cc ../CompilerKit/AsmKit/*.cc
-CC_OUTPUT=bin/cc.exe
+CC_OUTPUT=Apps/cc.exe
 
 # C++ Compiler
 CXX_SRC=ccplus.cc ../CompilerKit/StdKit/*.cc ../CompilerKit/AsmKit/*.cc
-CXX_OUTPUT=bin/ccplus.exe
+CXX_OUTPUT=Apps/ccplus.exe
 
 # Assembler
 ASM_SRC=64asm.cc ../CompilerKit/StdKit/*.cc ../CompilerKit/AsmKit/*.cc
-ASM_OUTPUT=bin/64asm.exe
+ASM_OUTPUT=Apps/64asm.exe
 
 IASM_SRC=i64asm.cc ../CompilerKit/StdKit/*.cc ../CompilerKit/AsmKit/*.cc
-IASM_OUTPUT=bin/i64asm.exe
+IASM_OUTPUT=Apps/i64asm.exe
 
 .PHONY: all
 all:
@@ -69,9 +69,9 @@ help:
 
 .PHONY: clean
 clean:
-	rm bin/$(MKCDFS_OUTPUT)
-	rm bin/$(CC_OUTPUT)
-	rm bin/$(PP_OUTPUT)
-	rm bin/$(LINK_OUTPUT)
+	rm Apps/$(MKCDFS_OUTPUT)
+	rm Apps/$(CC_OUTPUT)
+	rm Apps/$(PP_OUTPUT)
+	rm Apps/$(LINK_OUTPUT)
 
 # Last rev 8-1-24
