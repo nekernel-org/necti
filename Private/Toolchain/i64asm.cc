@@ -1053,32 +1053,38 @@ bool CompilerKit::EncoderAMD64::WriteLine(std::string &line,
         if (currentRegList.size() > 1) hasRightRegister = true;
 
         if (hasRightRegister) {
-          if (bits == 64 || bits == 32) {
-            bool hasRBasedRegs = false;
+          bool hasRBasedRegs = false;
 
-            if (currentRegList[0].fName[0] == 'r' ||
-                currentRegList[1].fName[0] == 'r') {
-              if (isdigit(currentRegList[0].fName[1]) &&
-                  isdigit(currentRegList[1].fName[1])) {
-                kAppBytes.emplace_back(0x4d);
-                hasRBasedRegs = true;
-              } else if (isdigit(currentRegList[0].fName[1]) ||
-                         isdigit(currentRegList[1].fName[1])) {
-                kAppBytes.emplace_back(0x4c);
-                hasRBasedRegs = true;
-              }
+          /// very tricky to understand.
+          /// this checks for a r8 through r15 register.
+          if (currentRegList[0].fName[0] == 'r' ||
+              currentRegList[1].fName[0] == 'r') {
+            if (isdigit(currentRegList[0].fName[1]) &&
+                isdigit(currentRegList[1].fName[1])) {
+              kAppBytes.emplace_back(0x4d);
+              hasRBasedRegs = true;
+            } else if (isdigit(currentRegList[0].fName[1]) ||
+                       isdigit(currentRegList[1].fName[1])) {
+              kAppBytes.emplace_back(0x4c);
+              hasRBasedRegs = true;
             }
+          }
 
+          if (bits == 64 || bits == 32) {
             if (!hasRBasedRegs && bits >= 32) {
               kAppBytes.emplace_back(opcodeAMD64.fOpcode);
             }
 
             kAppBytes.emplace_back(0x89);
           } else if (bits == 16) {
+            if (hasRBasedRegs) {
+              detail::print_error(
+                  "Invalid combination of operands and registers.", "i64asm");
+              throw std::runtime_error("comb_op_reg");
+            }
+
             kAppBytes.emplace_back(0x66);
             kAppBytes.emplace_back(0x89);
-
-            // TODO: 16 bit move operation.
           } else {
             detail::print_error(
                 "Invalid combination of operands and registers.", "i64asm");

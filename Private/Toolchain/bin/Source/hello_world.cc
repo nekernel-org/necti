@@ -1,6 +1,6 @@
+/// this should throw an error.
+
 MyClass& MyClass::foo()
 {
-    MyClass& cls = *this;
-
     return cls;
 }

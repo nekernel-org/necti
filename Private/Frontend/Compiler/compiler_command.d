@@ -28,12 +28,12 @@ public class Platform
 {
     public static string getIncludePath()
     {
-        return "C:/SDK/Public/Kits/";
+        return "/C/SDK/Public/Kits/";
     }
 
     public static string getKernelPath()
     {
-        return "C:/SDK/Private/Kits/";
+        return "/C/SDK/Private/Kits/";
     }
 }
 

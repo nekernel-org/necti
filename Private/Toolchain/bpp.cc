@@ -16,7 +16,7 @@
 #include <filesystem>
 #include <vector>
 
-#define kMacroPrefix '#'
+#define kMacroPrefix '%'
 
 // @author Amlal El Mahrouss (amlel)
 // @file bpp.cc
@@ -873,7 +873,7 @@ MPCC_MODULE(HCorePreprocessor) {
           printf("%s\n", "bpp v1.11, (c) Mahrouss Logic");
           printf("%s\n", "-working-dir <path>: set directory to working path.");
           printf("%s\n", "-include-dir <path>: add directory to include path.");
-          printf("%s\n", "-define <name> <value>: define macro.");
+          printf("%s\n", "-def <name> <value>: def macro.");
           printf("%s\n", "-version: print the version.");
 
           return 0;
@@ -893,7 +893,7 @@ MPCC_MODULE(HCorePreprocessor) {
           kWorkingDir = inc;
         }
 
-        if (strcmp(argv[index], "-define") == 0 &&
+        if (strcmp(argv[index], "-def") == 0 &&
             argv[index + 1] != nullptr && argv[index + 2] != nullptr) {
           std::string macro_key = argv[index + 1];
 

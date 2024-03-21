@@ -83,7 +83,7 @@ struct CompilerState final {
   std::unique_ptr<std::ofstream> fOutputAssembly;
   std::string fLastFile;
   std::string fLastError;
-  bool kVerbose;
+  bool fVerbose;
 };
 }  // namespace detail
 
@@ -1220,7 +1220,7 @@ static void cc_print_help() {
   kSplashCxx();
 
   kPrintF("%s\n", "--asm: Select assembler, example:\n--asm=64x0");
-  kPrintF("%s\n", "--compiler: Select backend, example:\n--compiler=mahrouss");
+  kPrintF("%s\n", "--compiler: Select backend, example:\n--compiler=64x0");
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////
@@ -1250,7 +1250,7 @@ MPCC_MODULE(HCoreCompilerCLang64x0) {
       }
 
       if (strcmp(argv[index], "-verbose") == 0) {
-        kState.kVerbose = true;
+        kState.fVerbose = true;
 
         continue;
       }
@@ -1277,7 +1277,7 @@ MPCC_MODULE(HCoreCompilerCLang64x0) {
         continue;
       }
 
-      if (strcmp(argv[index], "--compiler=mahrouss") == 0) {
+      if (strcmp(argv[index], "--compiler=64x0") == 0) {
         if (!kCompilerBackend) kCompilerBackend = new CompilerBackendCLang();
 
         continue;
@@ -1310,11 +1310,11 @@ MPCC_MODULE(HCoreCompilerCLang64x0) {
     std::string srcFile = argv[index];
 
     if (strstr(argv[index], kExt) == nullptr) {
-      if (kState.kVerbose) {
-        std::cerr << argv[index] << " is not a valid C source.\n";
+      if (kState.fVerbose) {
+        detail::print_error(srcFile + " is not a valid C++ source.\n", "ccplus");
       }
 
-      return -1;
+      return 1;
     }
 
     if (kFactory.Compile(srcFile, kMachine) != kOk) return -1;

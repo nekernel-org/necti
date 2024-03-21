@@ -78,7 +78,7 @@ struct CompilerState final {
   std::unique_ptr<std::ofstream> fOutputAssembly;
   std::string fLastFile;
   std::string fLastError;
-  bool kVerbose;
+  bool fVerbose;
 };
 }  // namespace detail
 
@@ -288,270 +288,11 @@ class AssemblyMountpointClang final : public CompilerKit::AssemblyMountpoint {
     std::string source;
 
     while (std::getline(src_fp, source)) {
-      // compile into AST.
+      // Compile into an AST format.
       kCompilerBackend->Compile(source.c_str(), src.data());
     }
 
     if (kAcceptableErrors > 0) return -1;
-
-    std::vector<std::string> lines;
-
-    // \brief compiler scope type.
-    struct scope_type {
-      std::vector<std::string> vals;
-      std::size_t reg_cnt{kStartUsable};
-      std::size_t id{0};
-
-      bool operator==(const scope_type& typ) const { return typ.id == id; }
-    };
-
-    std::vector<scope_type> scope;
-    scope.emplace_back();
-
-    bool found_type = false;
-    bool is_pointer = false;
-    bool found_expr = false;
-    bool found_func = false;
-    bool is_access_field = false;
-
-    std::string type;
-
-    std::string this_ref;
-
-    for (auto& leaf : kState.fSyntaxTree->fLeafList) {
-      if (leaf.fUserData == "{") {
-        scope.emplace_back();
-      }
-
-      if (leaf.fUserData == "}") {
-        is_access_field = false;
-        this_ref = "";
-
-        scope.pop_back();
-
-        if (scope.size() == 0) {
-          kRegisterCounter = kStartUsable;
-        }
-      }
-
-      if (leaf.fUserData == "int" || leaf.fUserData == "long" ||
-          leaf.fUserData == "unsigned" || leaf.fUserData == "short" ||
-          leaf.fUserData == "char" || leaf.fUserData == "struct" ||
-          leaf.fUserData == "class") {
-        type += leaf.fUserData;
-        found_type = true;
-      }
-
-      if (leaf.fUserData == "(") {
-        if (found_type) {
-          found_expr = true;
-          found_type = false;
-          is_pointer = false;
-        }
-      }
-
-      if (leaf.fUserData == ";") {
-        is_access_field = false;
-      }
-
-      if (leaf.fUserData.find(" this") != std::string::npos) {
-        leaf.fUserData.replace(leaf.fUserData.find(" this"), strlen(" this"),
-                               "r15");
-        is_access_field = true;
-      }
-
-      if (leaf.fUserData.find(" *this") != std::string::npos) {
-        leaf.fUserData.replace(leaf.fUserData.find(" *this"), strlen(" *this"),
-                               "r15");
-        is_access_field = true;
-      }
-
-      if (leaf.fUserData.find("->") != std::string::npos) {
-        leaf.fUserData.replace(leaf.fUserData.find("->"), strlen("->"), ", ");
-
-        is_access_field = true;
-      }
-
-      if (leaf.fUserData == ")") {
-        if (found_expr) {
-          found_expr = false;
-          is_pointer = false;
-        } else {
-          leaf.fUserValue = "export .text _CZZ_MAHR_MANGLE";
-
-          for (auto& line : lines) {
-            if (line.find(type) != std::string::npos &&
-                line.find("(") != std::string::npos) {
-              auto fn_name = line.substr(line.find(type), line.find("("));
-
-              while (fn_name.find(' ') != std::string::npos)
-                fn_name.replace(fn_name.find(' '), 1, "@");
-
-              leaf.fUserValue += fn_name;
-
-              break;
-            }
-          }
-
-          leaf.fUserValue += "\n";
-
-          found_func = true;
-        }
-      }
-
-      if (leaf.fUserData == ",") {
-        if (is_pointer) {
-          is_pointer = false;
-        }
-
-        auto& front = scope.front();
-
-        std::string reg = "rcx";
-
-        front.vals.push_back(reg);
-      }
-
-      if (leaf.fUserData == "*" || leaf.fUserData == "&") {
-        if (found_type && !found_expr) is_pointer = true;
-      }
-
-      if (leaf.fUserData == "=") {
-        if (found_type) {
-          auto& front = scope.front();
-
-          std::string reg = "rcx";
-          front.vals.push_back(reg);
-
-          leaf.fUserValue = !is_pointer ? "mov %s, %s1\n" : "lea %s, %s1\n";
-
-          for (auto& ln : lines) {
-            if (ln.find(leaf.fUserData) != std::string::npos &&
-                ln.find(";") != std::string::npos) {
-              auto val =
-                  ln.substr(ln.find(leaf.fUserData) + leaf.fUserData.size());
-
-              if (val.find(";") != std::string::npos)
-                val.erase(val.find(";"), 1);
-
-              while (val.find(" ") != std::string::npos)
-                val.erase(val.find(" "), 1);
-
-              if (val == this_ref) val = "r15";
-
-              if (this_ref.empty()) this_ref = val;
-
-              if (isalnum(val[0]) && !isdigit(val[0]) &&
-                  ln.find("r6") == std::string::npos)
-                val.insert(0, "import ");
-
-              leaf.fUserValue.replace(leaf.fUserValue.find("%s1"),
-                                      strlen("%s1"), val);
-            }
-          }
-
-          leaf.fUserValue.replace(leaf.fUserValue.find("%s"), strlen("%s"),
-                                  reg);
-
-          found_type = false;
-        } else {
-          leaf.fUserValue = !is_pointer ? "mov %s, %s1\n" : "lea 0(%s), %s1\n";
-
-          for (auto& ln : lines) {
-            if (ln.find(leaf.fUserData) != std::string::npos &&
-                ln.find(";") != std::string::npos) {
-              std::string nm;
-              for (auto i = ln.find('=') + 1; i < ln.size(); ++i) {
-                if (ln[i] == ';') break;
-
-                nm.push_back(ln[i]);
-              }
-
-              if (!nm.empty()) {
-                if (nm == this_ref) nm = "r15";
-
-                if (this_ref.empty()) this_ref = nm;
-
-                leaf.fUserValue.replace(leaf.fUserValue.find("%s1"),
-                                        strlen("%s1"), nm);
-                break;
-              }
-            }
-          }
-
-          auto& front = scope.front();
-
-          std::string reg = "rcx";
-
-          leaf.fUserValue.replace(leaf.fUserValue.find("%s"), strlen("%s"),
-                                  reg);
-
-          front.vals.push_back(reg);
-
-          if (is_pointer) {
-            is_pointer = false;
-          }
-        }
-      }
-
-      if (leaf.fUserData == "return") {
-        leaf.fUserValue = "mov rax, %s\nret";
-
-        if (!lines.empty()) {
-          for (auto& ln : lines) {
-            if (ln.find(leaf.fUserData) != std::string::npos &&
-                ln.find(";") != std::string::npos) {
-              auto val =
-                  ln.substr(ln.find(leaf.fUserData) + leaf.fUserData.size());
-              val.erase(val.find(";"), 1);
-
-              std::string val_reg;
-              std::size_t reg_cnt = kRegisterCounter;
-
-              for (int i = ln.find(leaf.fUserData) + leaf.fUserData.size();
-                   i < ln.size(); ++i) {
-                try {
-                  if (ln[i] == ',' || ln[i] == '+' || ln[i] == '/' ||
-                      ln[i] == '-' || ln[i] == '*' || ln[i] == '|' ||
-                      ln[i] == '&' || ln[i] == '&' || ln[i] == '|' ||
-                      ln[i] == ';') {
-                    val.replace(val.find(val_reg), val_reg.size(), "rcx");
-                    val_reg.clear();
-                    ++reg_cnt;
-
-                    continue;
-                  }
-                } catch (...) {
-                }
-
-                if (isalnum(ln[i])) val_reg += ln[i];
-              }
-
-              while (val.find(" ") != std::string::npos)
-                val.erase(val.find(" "), 1);
-
-              leaf.fUserValue.replace(leaf.fUserValue.find("%s"), strlen("%s"),
-                                      val);
-            }
-          }
-        } else {
-          leaf.fUserValue.replace(leaf.fUserValue.find("%s"), strlen("%s"),
-                                  "0");
-        }
-
-        continue;
-      }
-
-      lines.emplace_back(leaf.fUserData);
-    }
-
-    for (auto& leaf : kState.fSyntaxTree->fLeafList) {
-      (*kState.fOutputAssembly) << leaf.fUserValue;
-    }
-
-    kState.fSyntaxTree = nullptr;
-
-    kState.fOutputAssembly->flush();
-    kState.fOutputAssembly.reset();
 
     return kOk;
   }
@@ -584,8 +325,7 @@ MPCC_MODULE(CompilerCPlusPlus) {
   kKeywords.emplace_back("struct");
   kKeywords.emplace_back("_Packed");
   kKeywords.emplace_back("_Align");
-  kKeywords.emplace_back("_StorageOrderBig");
-  kKeywords.emplace_back("_StorageOrderLittle");
+  kKeywords.emplace_back("_AlignAs");
   kKeywords.emplace_back("extern");
   kKeywords.emplace_back("volatile");
   kKeywords.emplace_back("static");
@@ -602,7 +342,7 @@ MPCC_MODULE(CompilerCPlusPlus) {
   kKeywords.emplace_back("float");
   kKeywords.emplace_back("double");
   kKeywords.emplace_back("unsigned");
-  kKeywords.emplace_back("__attribute__");
+  kKeywords.emplace_back("_Attribute");
   kKeywords.emplace_back("_Import");
   kKeywords.emplace_back("_Export");
   kKeywords.emplace_back("namespace");
@@ -649,7 +389,7 @@ MPCC_MODULE(CompilerCPlusPlus) {
       }
 
       if (strcmp(argv[index], "-verbose") == 0) {
-        kState.kVerbose = true;
+        kState.fVerbose = true;
 
         continue;
       }
@@ -704,7 +444,7 @@ MPCC_MODULE(CompilerCPlusPlus) {
     }
 
     if (!found) {
-      if (kState.kVerbose) {
+      if (kState.fVerbose) {
         detail::print_error(argv_i + " is not a valid C++ source.\n", "ccplus");
       }
 

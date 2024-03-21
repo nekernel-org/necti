@@ -15,20 +15,6 @@ module Frontend.Compiler.compiler_start;
 import Frontend.Compiler.compiler_command;
 import std.container.dlist;
 
-///Authors: Amlal EL Mahrouss
-///Examples: mpcc_summon_manual("foo");
-void mpcc_summon_manual(string path)
-{
-	import core.stdc.stdlib;
-    import std.string;
-    import std.file;
-
-    string base = "man ";
-    string extension = ".8";
-
-	core.stdc.stdlib.system(toStringz(base ~ path ~ extension));
-}
-
 void main(string[] args)
 {
 	import std.range, std.stdio;
@@ -59,9 +45,7 @@ void main(string[] args)
             else if (arg == "--help" ||
                      arg == "-h")
             {
-                writeln("mpcc: summoning manual entry for mpcc...");
-                mpcc_summon_manual("mpcc");
-
+                writeln("mpcc: no help available.");
                 return;
             }
             else if (arg == "-c")
