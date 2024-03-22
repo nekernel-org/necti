@@ -1,7 +1,0 @@
-# Path: Source/hello_world.cxx
-# Language: RISC 64x0 MultiProcessor Assembly (Generated from C++)
-# Build Date: 2024-1-27
-
-export .text _CppZ_MPUX_int@main
-mv r1, r2
-jlr

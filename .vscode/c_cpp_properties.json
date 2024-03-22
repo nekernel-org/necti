@@ -3,10 +3,10 @@
         {
             "name": "Macintosh (CLang)",
             "includePath": [
-                "${workspaceFolder}/Private/**"
+                "${workspaceFolder}/Headers/**"
             ],
             "defines": [],
-            "compilerPath": "/usr/Apps/clang",
+            "compilerPath": "/usr/bin/clang",
             "cStandard": "c17",
             "cppStandard": "c++20",
             "intelliSenseMode": "macos-clang-arm64"
@@ -14,10 +14,10 @@
         {
             "name": "Windows (Cygwin)",
             "includePath": [
-                "${workspaceFolder}/Private/**"
+                "${workspaceFolder}/Headers/**"
             ],
             "defines": [],
-            "compilerPath": "C:/cygwin64/Apps/g++.exe",
+            "compilerPath": "C:/cygwin64/bin/g++.exe",
             "cStandard": "c17",
             "cppStandard": "c++20",
             "intelliSenseMode": "windows-clang-x64"

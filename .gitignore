@@ -58,7 +58,7 @@ replay_pid*
 
 *.cdfs
 
-Drivers/Apps/Tests/*.masm
+Drivers/Output/Tests/*.masm
 
 .vs
 
