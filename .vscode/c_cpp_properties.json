@@ -3,7 +3,8 @@
         {
             "name": "Macintosh (CLang)",
             "includePath": [
-                "${workspaceFolder}/Headers/**"
+                "${workspaceFolder}/Headers/**",
+                "${workspaceFolder}/**"
             ],
             "defines": [],
             "compilerPath": "/usr/bin/clang",
@@ -14,7 +15,8 @@
         {
             "name": "Windows (Cygwin)",
             "includePath": [
-                "${workspaceFolder}/Headers/**"
+                "${workspaceFolder}/Headers/**",
+                "${workspaceFolder}/**"
             ],
             "defines": [],
             "compilerPath": "C:/cygwin64/bin/g++.exe",

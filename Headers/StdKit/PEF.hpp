@@ -20,7 +20,7 @@
 #define kPefExt ".exe"
 #define kPefDylibExt ".dll"
 #define kPefObjectExt ".obj"
-#define kPefDebugExt ".pdb"
+#define kPefDebugExt ".dbg"
 
 #define kPefMagicLen 3
 
@@ -36,15 +36,16 @@ enum {
   kPefArchRISCV,
   kPefArch64000, /* 64x0 RISC architecture. */
   kPefArch32000,
-  kPefArchCount = (kPefArch32000 - kPefArchIntel86S) + 1,
+  kPefArchPowerPC, /* 64-bit PowerPC architecture. */
+  kPefArchCount = (kPefArchPowerPC - kPefArchIntel86S) + 1,
   kPefArchInvalid = 0xFF,
 };
 
 enum {
-  kPefKindExec = 1,         /* .o/.pef/<none>  */
+  kPefKindExec = 1,         /* .exe */
   kPefKindSharedObject = 2, /* .lib */
   kPefKindObject = 4,       /* .obj */
-  kPefKindDwarf = 5,        /* .dsym */
+  kPefKindDebug = 5,        /* .dbg */
   kPefKindDriver = 6,
   kPefKindCount,
 };
