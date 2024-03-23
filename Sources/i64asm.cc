@@ -73,6 +73,7 @@ static CompilerKit::AERecordHeader kCurrentRecord{
     .fName = "", .fKind = CompilerKit::kPefCode, .fSize = 0, .fOffset = 0};
 
 static std::vector<CompilerKit::AERecordHeader> kRecords;
+static std::vector<std::string> kDefinedSymbols;
 static std::vector<std::string> kUndefinedSymbols;
 
 static const std::string kUndefinedSymbol = ":UndefinedSymbol:";
@@ -234,7 +235,11 @@ MPCC_MODULE(HCoreAssemblerAMD64) {
           detail::print_warning("exit because of: " + what, "i64asm");
         }
 
-        std::filesystem::remove(object_output);
+        try {
+          std::filesystem::remove(object_output);
+        } catch (...) {
+        }
+
         goto asm_fail_exit;
       }
     }
@@ -352,14 +357,14 @@ asm_fail_exit:
 static bool asm_read_attributes(std::string &line) {
   // import is the opposite of export, it signals to the ld
   // that we need this symbol.
-  if (ParserKit::find_word(line, "import ")) {
+  if (ParserKit::find_word(line, "import")) {
     if (kOutputAsBinary) {
-      detail::print_error("invalid import directive in flat binary mode.",
+      detail::print_error("Invalid directive in flat binary mode.",
                           "i64asm");
       throw std::runtime_error("invalid_import_bin");
     }
 
-    auto name = line.substr(line.find("import ") + strlen("import "));
+    auto name = line.substr(line.find("import") + strlen("import") + 1);
 
     std::string result = std::to_string(name.size());
     result += kUndefinedSymbol;
@@ -408,20 +413,28 @@ static bool asm_read_attributes(std::string &line) {
   // export is a special keyword used by i64asm to tell the AE output stage to
   // mark this section as a header. it currently supports .text, .data.,
   // page_zero
-  else if (ParserKit::find_word(line, "export ")) {
+  else if (ParserKit::find_word(line, "export")) {
     if (kOutputAsBinary) {
-      detail::print_error("invalid export directive in flat binary mode.",
+      detail::print_error("Invalid directive in flat binary mode.",
                           "i64asm");
       throw std::runtime_error("invalid_export_bin");
     }
 
-    auto name = line.substr(line.find("export ") + strlen("export "));
+    auto name = line.substr(line.find("export") + strlen("export") + 1);
 
     std::string name_copy = name;
 
     for (char &j : name) {
       if (j == ' ') j = '$';
     }
+
+    if (std::find(kDefinedSymbols.begin(), kDefinedSymbols.end(), name) != kDefinedSymbols.end()) {
+      detail::print_error("Symbol already defined.",
+                          "i64asm");
+      throw std::runtime_error("invalid_export_bin");
+    }
+
+    kDefinedSymbols.push_back(name);
 
     if (name.find(".text") != std::string::npos) {
       // data is treated as code.
@@ -585,7 +598,7 @@ bool CompilerKit::EncoderAMD64::WriteNumber(const std::size_t &pos,
       }
 
       if (kVerbose) {
-        kStdOut << "i64asm: found a base 16 number here: "
+        kStdOut << "i64asm: Found a base 16 number here: "
                 << jump_label.substr(pos) << "\n";
       }
 
@@ -604,7 +617,7 @@ bool CompilerKit::EncoderAMD64::WriteNumber(const std::size_t &pos,
           strtol(jump_label.substr(pos + 2).c_str(), nullptr, 2));
 
       if (kVerbose) {
-        kStdOut << "i64asm: found a base 2 number here: "
+        kStdOut << "i64asm: Found a base 2 number here: "
                 << jump_label.substr(pos) << "\n";
       }
 
@@ -629,7 +642,7 @@ bool CompilerKit::EncoderAMD64::WriteNumber(const std::size_t &pos,
           strtol(jump_label.substr(pos + 2).c_str(), nullptr, 7));
 
       if (kVerbose) {
-        kStdOut << "i64asm: found a base 8 number here: "
+        kStdOut << "i64asm: Found a base 8 number here: "
                 << jump_label.substr(pos) << "\n";
       }
 
@@ -663,7 +676,7 @@ bool CompilerKit::EncoderAMD64::WriteNumber(const std::size_t &pos,
   }
 
   if (kVerbose) {
-    kStdOut << "i64asm: found a base 10 number here: " << jump_label.substr(pos)
+    kStdOut << "i64asm: Found a base 10 number here: " << jump_label.substr(pos)
             << "\n";
   }
 
@@ -692,7 +705,7 @@ bool CompilerKit::EncoderAMD64::WriteNumber32(const std::size_t &pos,
       }
 
       if (kVerbose) {
-        kStdOut << "i64asm: found a base 16 number here: "
+        kStdOut << "i64asm: Found a base 16 number here: "
                 << jump_label.substr(pos) << "\n";
       }
 
@@ -709,7 +722,7 @@ bool CompilerKit::EncoderAMD64::WriteNumber32(const std::size_t &pos,
       CompilerKit::NumberCast32 num = CompilerKit::NumberCast32(res);
 
       if (kVerbose) {
-        kStdOut << "i64asm: found a base 2 number here: "
+        kStdOut << "i64asm: Found a base 2 number here: "
                 << jump_label.substr(pos) << "\n";
       }
 
@@ -732,7 +745,7 @@ bool CompilerKit::EncoderAMD64::WriteNumber32(const std::size_t &pos,
       CompilerKit::NumberCast32 num = CompilerKit::NumberCast32(res);
 
       if (kVerbose) {
-        kStdOut << "i64asm: found a base 8 number here: "
+        kStdOut << "i64asm: Found a base 8 number here: "
                 << jump_label.substr(pos) << "\n";
       }
 
@@ -765,7 +778,7 @@ bool CompilerKit::EncoderAMD64::WriteNumber32(const std::size_t &pos,
   }
 
   if (kVerbose) {
-    kStdOut << "i64asm: found a base 10 number here: " << jump_label.substr(pos)
+    kStdOut << "i64asm: Found a base 10 number here: " << jump_label.substr(pos)
             << "\n";
   }
 
@@ -796,7 +809,7 @@ bool CompilerKit::EncoderAMD64::WriteNumber16(const std::size_t &pos,
       }
 
       if (kVerbose) {
-        kStdOut << "i64asm: found a base 16 number here: "
+        kStdOut << "i64asm: Found a base 16 number here: "
                 << jump_label.substr(pos) << "\n";
       }
 
@@ -815,7 +828,7 @@ bool CompilerKit::EncoderAMD64::WriteNumber16(const std::size_t &pos,
           strtol(jump_label.substr(pos + 2).c_str(), nullptr, 2));
 
       if (kVerbose) {
-        kStdOut << "i64asm: found a base 2 number here: "
+        kStdOut << "i64asm: Found a base 2 number here: "
                 << jump_label.substr(pos) << "\n";
       }
 
@@ -840,7 +853,7 @@ bool CompilerKit::EncoderAMD64::WriteNumber16(const std::size_t &pos,
           strtol(jump_label.substr(pos + 2).c_str(), nullptr, 7));
 
       if (kVerbose) {
-        kStdOut << "i64asm: found a base 8 number here: "
+        kStdOut << "i64asm: Found a base 8 number here: "
                 << jump_label.substr(pos) << "\n";
       }
 
@@ -874,7 +887,7 @@ bool CompilerKit::EncoderAMD64::WriteNumber16(const std::size_t &pos,
   }
 
   if (kVerbose) {
-    kStdOut << "i64asm: found a base 10 number here: " << jump_label.substr(pos)
+    kStdOut << "i64asm: Found a base 10 number here: " << jump_label.substr(pos)
             << "\n";
   }
 
@@ -901,7 +914,7 @@ bool CompilerKit::EncoderAMD64::WriteNumber8(const std::size_t &pos,
       kAppBytes.push_back(num.number);
 
       if (kVerbose) {
-        kStdOut << "i64asm: found a base 16 number here: "
+        kStdOut << "i64asm: Found a base 16 number here: "
                 << jump_label.substr(pos) << "\n";
       }
 
@@ -920,7 +933,7 @@ bool CompilerKit::EncoderAMD64::WriteNumber8(const std::size_t &pos,
           strtol(jump_label.substr(pos + 2).c_str(), nullptr, 2));
 
       if (kVerbose) {
-        kStdOut << "i64asm: found a base 2 number here: "
+        kStdOut << "i64asm: Found a base 2 number here: "
                 << jump_label.substr(pos) << "\n";
       }
 
@@ -941,7 +954,7 @@ bool CompilerKit::EncoderAMD64::WriteNumber8(const std::size_t &pos,
           strtol(jump_label.substr(pos + 2).c_str(), nullptr, 7));
 
       if (kVerbose) {
-        kStdOut << "i64asm: found a base 8 number here: "
+        kStdOut << "i64asm: Found a base 8 number here: "
                 << jump_label.substr(pos) << "\n";
       }
 
@@ -967,7 +980,7 @@ bool CompilerKit::EncoderAMD64::WriteNumber8(const std::size_t &pos,
   kAppBytes.push_back(num.number);
 
   if (kVerbose) {
-    kStdOut << "i64asm: found a base 10 number here: " << jump_label.substr(pos)
+    kStdOut << "i64asm: Found a base 10 number here: " << jump_label.substr(pos)
             << "\n";
   }
 
@@ -1000,10 +1013,13 @@ bool CompilerKit::EncoderAMD64::WriteLine(std::string &line,
       {.fName = "r11", .fModRM = 0x6},
   };
 
+  bool foundInstruction = false;
+
   for (auto &opcodeAMD64 : kOpcodesAMD64) {
     // strict check here
     if (ParserKit::find_word(line, opcodeAMD64.fName) &&
         detail::algorithm::is_valid(line)) {
+      foundInstruction = true;
       std::string name(opcodeAMD64.fName);
 
       if (name.find("mov") != std::string::npos) {
@@ -1012,12 +1028,12 @@ bool CompilerKit::EncoderAMD64::WriteLine(std::string &line,
         uint64_t bits = kRegisterBitWidth;
 
         if (substr.find(",") == std::string::npos) {
-          detail::print_error("Invalid combination of operands and registers.",
+          detail::print_error("Syntax error.",
                               "i64asm");
-          throw std::runtime_error("comb_op_reg");
+          throw std::runtime_error("syntax_err");
         }
 
-        bool hasRightRegister = false;
+        bool onlyOneReg = false;
 
         std::vector<RegMapAMD64> currentRegList;
 
@@ -1050,9 +1066,9 @@ bool CompilerKit::EncoderAMD64::WriteLine(std::string &line,
           }
         }
 
-        if (currentRegList.size() > 1) hasRightRegister = true;
+        if (currentRegList.size() > 1) onlyOneReg = true;
 
-        if (hasRightRegister) {
+        if (onlyOneReg) {
           bool hasRBasedRegs = false;
 
           /// very tricky to understand.
@@ -1091,8 +1107,7 @@ bool CompilerKit::EncoderAMD64::WriteLine(std::string &line,
             throw std::runtime_error("comb_op_reg");
           }
         } else {
-          detail::print_error("Missing right register.", "i64asm");
-          throw std::runtime_error("missing_right_reg");
+          detail::print_warning("TODO: implement feature.", "dev");
         }
 
         break;
@@ -1110,7 +1125,6 @@ bool CompilerKit::EncoderAMD64::WriteLine(std::string &line,
 
         break;
       } else {
-        kAppBytes.emplace_back(0);
         kAppBytes.emplace_back(opcodeAMD64.fOpcode);
 
         break;
@@ -1119,35 +1133,42 @@ bool CompilerKit::EncoderAMD64::WriteLine(std::string &line,
   }
 
   if (line[0] == kAssemblerPragmaSym) {
+    if (foundInstruction) {
+      detail::print_error("Syntax error.", "i64asm");
+      throw std::runtime_error("syntax_err");
+    }
+
     if (line.find("bits 64") != std::string::npos) {
       kRegisterBitWidth = 64U;
     } else if (line.find("bits 32") != std::string::npos) {
       kRegisterBitWidth = 32U;
-    }
-    if (line.find("bits 16") != std::string::npos) {
+    } else if (line.find("bits 16") != std::string::npos) {
       kRegisterBitWidth = 16U;
-    }
-
-    if (line.find("db ") != std::string::npos) {
-      this->WriteNumber(line.find("db ") + strlen("db ") + 1, line);
-    } else if (line.find("org ") != std::string::npos) {
+    } else if (line.find("org") != std::string::npos) {
       size_t base[] = {10, 16, 2, 7};
 
       for (size_t i = 0; i < 4; i++) {
         if (kOrigin = strtol(
-                (line.substr(line.find("org ") + strlen("org ") + 1)).c_str(),
+                (line.substr(line.find("org") + strlen("org") + 1)).c_str(),
                 nullptr, base[i]);
             kOrigin) {
           if (errno != 0) {
             continue;
           } else {
             if (kVerbose) {
-              kStdOut << "i64asm: set-origin: " << kOrigin << std::endl;
+              kStdOut << "i64asm: Assembler origin set: " << kOrigin
+                      << std::endl;
             }
+
+            break;
           }
         }
       }
     }
+  }
+
+  if (line.find(".number") != std::string::npos) {
+    this->WriteNumber32(line.find(".number") + strlen(".number") + 1, line);
   }
 
   return true;
