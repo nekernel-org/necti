@@ -36,13 +36,13 @@ Int32 AssemblyFactory::Compile(std::string& sourceFile,
 }
 
 //! @brief mount assembly backend.
-void AssemblyFactory::Mount(AssemblyMountpoint* mountPtr) noexcept {
+void AssemblyFactory::Mount(AssemblyInterface* mountPtr) noexcept {
   if (mountPtr) {
     fMounted = mountPtr;
   }
 }
 
-AssemblyMountpoint* AssemblyFactory::Unmount() noexcept {
+AssemblyInterface* AssemblyFactory::Unmount() noexcept {
   auto mount_prev = fMounted;
 
   if (mount_prev) {

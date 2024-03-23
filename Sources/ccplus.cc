@@ -162,7 +162,7 @@ class CompilerBackendClang final : public ParserKit::CompilerBackend {
 
   bool Compile(const std::string& text, const char* file) override;
 
-  const char* Language() override { return "Mahrouss C++, HCore target."; }
+  const char* Language() override { return "C++20 based dialect for NewOS."; }
 };
 
 /// compiler variables
@@ -234,7 +234,7 @@ bool CompilerBackendClang::Compile(const std::string& text, const char* file) {
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
-class AssemblyMountpointClang final : public CompilerKit::AssemblyMountpoint {
+class AssemblyMountpointClang final : public CompilerKit::AssemblyInterface {
  public:
   explicit AssemblyMountpointClang() = default;
   ~AssemblyMountpointClang() override = default;
@@ -272,11 +272,11 @@ class AssemblyMountpointClang final : public CompilerKit::AssemblyMountpoint {
 
     auto fmt = CompilerKit::current_date();
 
-    (*kState.fOutputAssembly) << "# Path: " << src_file << "\n";
+    (*kState.fOutputAssembly) << "; Path: " << src_file << "\n";
     (*kState.fOutputAssembly)
-        << "# Language: MultiProcessor Assembly. (Generated from C++)\n";
-    (*kState.fOutputAssembly) << "# Build Date: " << fmt << "\n\n";
-    (*kState.fOutputAssembly) << "%bits 64 "
+        << "; Language: MultiProcessor Assembly. (Generated from C++)\n";
+    (*kState.fOutputAssembly) << "; Build Date: " << fmt << "\n\n";
+    (*kState.fOutputAssembly) << "#bits 64 "
                               << "\n\n";
 
     ParserKit::SyntaxLeafList syntax;
@@ -302,8 +302,8 @@ class AssemblyMountpointClang final : public CompilerKit::AssemblyMountpoint {
 
 static void cxx_print_help() {
   kSplashCxx();
-  kPrintF("%s", "No help available.\r\n");
-  kPrintF("%s", "www.el-mahrouss-logic.com");
+  kPrintF("%s", "No help available, see:\r\n");
+  kPrintF("%s", "www.el-mahrouss-logic.com/tools/ccplus\r\n");
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////
@@ -342,9 +342,7 @@ MPCC_MODULE(CompilerCPlusPlus) {
   kKeywords.emplace_back("float");
   kKeywords.emplace_back("double");
   kKeywords.emplace_back("unsigned");
-  kKeywords.emplace_back("_Attribute");
-  kKeywords.emplace_back("_Import");
-  kKeywords.emplace_back("_Export");
+  kKeywords.emplace_back("__attribute__");
   kKeywords.emplace_back("namespace");
   kKeywords.emplace_back("while");
   kKeywords.emplace_back("sizeof");

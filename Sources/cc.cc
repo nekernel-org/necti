@@ -22,7 +22,7 @@
 #include <filesystem>
 
 #include <random>
-#include <Headers/UUID.h>
+#include <Headers/UUID.hpp>
 
 #define kOk 0
 
@@ -1068,7 +1068,7 @@ skip_braces_check:
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
-class AssemblyMountpointCLang final : public CompilerKit::AssemblyMountpoint {
+class AssemblyMountpointCLang final : public CompilerKit::AssemblyInterface {
  public:
   explicit AssemblyMountpointCLang() = default;
   ~AssemblyMountpointCLang() override = default;

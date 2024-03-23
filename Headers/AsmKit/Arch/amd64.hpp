@@ -11,8 +11,8 @@
 
 #include <Headers/Defines.hpp>
 
-// @brief 64x0 support.
-// @file Arch/64x0.hpp
+// @brief AMD64 support.
+// @file Arch/amd64.hpp
 
 #define kAsmOpcodeDecl(__NAME, __OPCODE) {.fName = __NAME, .fOpcode = __OPCODE},
 

@@ -17,12 +17,12 @@ namespace CompilerKit {
 //
 //	@brief Frontend to Assembly mountpoint.
 //
-class AssemblyMountpoint {
+class AssemblyInterface {
  public:
-  explicit AssemblyMountpoint() = default;
-  virtual ~AssemblyMountpoint() = default;
+  explicit AssemblyInterface() = default;
+  virtual ~AssemblyInterface() = default;
 
-  MPCC_COPY_DEFAULT(AssemblyMountpoint);
+  MPCC_COPY_DEFAULT(AssemblyInterface);
 
   //@ brief compile to object file.
   // Example C++ -> MASM -> AE object.
@@ -43,16 +43,17 @@ class AssemblyFactory final {
     kArch32x0,
     kArch64x0,
     kArchRISCV,
+    kArchPowerPC,
     kArchUnknown,
   };
 
   Int32 Compile(std::string& sourceFile, const Int32& arch) noexcept;
 
-  void Mount(AssemblyMountpoint* mountPtr) noexcept;
-  AssemblyMountpoint* Unmount() noexcept;
+  void Mount(AssemblyInterface* mountPtr) noexcept;
+  AssemblyInterface* Unmount() noexcept;
 
  private:
-  AssemblyMountpoint* fMounted{nullptr};
+  AssemblyInterface* fMounted{nullptr};
 };
 
 union NumberCastBase {
@@ -96,12 +97,12 @@ union NumberCast8 final {
   UInt8 raw;
 };
 
-class Encoder {
+class EncoderInterface {
  public:
-  explicit Encoder() = default;
-  ~Encoder() = default;
+  explicit EncoderInterface() = default;
+  virtual ~EncoderInterface() = default;
 
-  MPCC_COPY_DEFAULT(Encoder);
+  MPCC_COPY_DEFAULT(EncoderInterface);
 
   virtual std::string CheckLine(std::string& line, const std::string& file) = 0;
   virtual bool WriteLine(std::string& line, const std::string& file) = 0;
@@ -110,10 +111,10 @@ class Encoder {
 
 #ifdef __ASM_NEED_AMD64__
 
-class EncoderAMD64 final : public Encoder {
+class EncoderAMD64 final : public EncoderInterface {
  public:
   explicit EncoderAMD64() = default;
-  ~EncoderAMD64() = default;
+  ~EncoderAMD64() override  = default;
 
   MPCC_COPY_DEFAULT(EncoderAMD64);
 
@@ -132,10 +133,10 @@ class EncoderAMD64 final : public Encoder {
 
 #ifdef __ASM_NEED_64x0__
 
-class Encoder64x0 final : public Encoder {
+class Encoder64x0 final : public EncoderInterface {
  public:
   explicit Encoder64x0() = default;
-  ~Encoder64x0() = default;
+  ~Encoder64x0() override = default;
 
   MPCC_COPY_DEFAULT(Encoder64x0);
 
@@ -150,10 +151,10 @@ class Encoder64x0 final : public Encoder {
 
 #ifdef __ASM_NEED_32x0__
 
-class Encoder32x0 final : public Encoder {
+class Encoder32x0 final : public EncoderInterface {
  public:
   explicit Encoder32x0() = default;
-  ~Encoder32x0() = default;
+  ~Encoder32x0() override = default;
 
   MPCC_COPY_DEFAULT(Encoder32x0);
 
