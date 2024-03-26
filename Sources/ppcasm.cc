@@ -51,5 +51,7 @@
 /////////////////////////////////////////////////////////////////////////////////////////
 
 MPCC_MODULE(HCoreAssemblerPowerPC64) {
+  kStdOut << "ppcasm: Unimplemented assembler.\r\n";
+  
   return 0;
 }

@@ -143,7 +143,7 @@ MPCC_MODULE(HCoreLinker) {
       continue;
     } else {
       if (argv[i][0] == '-') {
-        kStdOut << "link: unknown flag: " << argv[i] << "\n";
+        kStdOut << "link: Unknown flag: " << argv[i] << "\n";
         return -MPCC_EXEC_ERROR;
       }
 
@@ -154,13 +154,13 @@ MPCC_MODULE(HCoreLinker) {
   }
 
   if (kOutput.empty()) {
-    kStdOut << "link: no output filename set." << std::endl;
+    kStdOut << "link: no Output filename set." << std::endl;
     return MPCC_EXEC_ERROR;
   }
 
   // sanity check.
   if (kObjectList.empty()) {
-    kStdOut << "link: no input files." << std::endl;
+    kStdOut << "link: No input files." << std::endl;
     return MPCC_EXEC_ERROR;
   } else {
     // check for existing files, if they don't throw an error.
@@ -168,7 +168,7 @@ MPCC_MODULE(HCoreLinker) {
       if (!std::filesystem::exists(obj)) {
         // if filesystem doesn't find file
         //          -> throw error.
-        kStdOut << "link: no such file: " << obj << std::endl;
+        kStdOut << "link: No such file: " << obj << std::endl;
         return MPCC_EXEC_ERROR;
       }
     }
@@ -176,7 +176,7 @@ MPCC_MODULE(HCoreLinker) {
 
   // PEF expects a valid architecture when outputing a binary.
   if (kArch == 0) {
-    kStdOut << "link: no target architecture set, can't continue." << std::endl;
+    kStdOut << "link: No target architecture set, can't continue." << std::endl;
     return MPCC_EXEC_ERROR;
   }
 
