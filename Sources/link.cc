@@ -4,7 +4,8 @@
 
 ------------------------------------------- */
 
-/// bugs: 0
+/// BUGS: 0
+/// TODO: GUI dialog
 
 // Last Rev
 // Sat Feb 24 CET 2024
