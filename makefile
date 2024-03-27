@@ -24,19 +24,22 @@ LINK_ALT_2_OUTPUT=Output/32link.exe
 PP_SRC=Sources/bpp.cc
 PP_OUTPUT=Output/bpp.exe
 
+SRC_COMMON=Sources/String.cc Sources/AsmKit.cc
+
 # C Compiler
-CC_SRC=Sources/cc.cc Headers/StdKit/*.cc Headers/AsmKit/*.cc
+CC_SRC=Sources/cc.cc $(SRC_COMMON)
 CC_OUTPUT=Output/cc.exe
 
 # C++ Compiler
-CXX_SRC=Sources/ccplus.cc Headers/StdKit/*.cc Headers/AsmKit/*.cc
+CXX_SRC=Sources/ccplus.cc $(SRC_COMMON)
 CXX_OUTPUT=Output/ccplus.exe
 
-# Assembler
-ASM_SRC=Sources/64asm.cc Headers/StdKit/*.cc Headers/AsmKit/*.cc
+# 64x0 Assembler
+ASM_SRC=Sources/64asm.cc $(SRC_COMMON)
 ASM_OUTPUT=Output/64asm.exe
 
-IASM_SRC=Sources/i64asm.cc Headers/StdKit/*.cc Headers/AsmKit/*.cc
+# AMD64 Assembler
+IASM_SRC=Sources/i64asm.cc $(SRC_COMMON)
 IASM_OUTPUT=Output/i64asm.exe
 
 .PHONY: all

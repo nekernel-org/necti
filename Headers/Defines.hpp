@@ -126,7 +126,7 @@ typedef char char_type;
 
 #define kObjectFileExt ".obj"
 #define kAsmFileExts \
-  { ".64x", ".32x", ".masm", ".s", ".S" }
+  { ".64x", ".32x", ".masm", ".s", ".S", ".asm" }
 
 #ifdef __MODULE_NEED__
 #define MPCC_MODULE(name) int name(int argc, char **argv)

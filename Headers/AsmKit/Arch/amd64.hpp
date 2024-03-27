@@ -61,19 +61,4 @@ kAsmOpcodeDecl("jmp", 0xE9)
 kAsmOpcodeDecl("call", 0xFF)
 };
 
-// \brief 64x0 register prefix
-// example: r32, r0
-// r32 -> sp
-// r0 -> hw zero
-
-#define kAsmFloatZeroRegister -1
-#define kAsmZeroRegister -1
-
-#define kAsmRegisterPrefix "r"
-#define kAsmRegisterLimit 16
-#define kAsmPcRegister 8
-#define kAsmCrRegister -1
-#define kAsmSpRegister 9
-
-/* return address register */
-#define kAsmRetRegister 0
+#define kAsmRegisterLimit 15

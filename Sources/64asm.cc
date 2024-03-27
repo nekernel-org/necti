@@ -446,7 +446,7 @@ std::string CompilerKit::Encoder64x0::CheckLine(
   std::string err_str;
 
   if (line.empty() || ParserKit::find_word(line, "import") ||
-      ParserKit::find_word(line, "export") || ParserKit::find_word(line, "#") ||
+      ParserKit::find_word(line, "export") || line.find('#') != std::string::npos ||
       ParserKit::find_word(line, ";")) {
     if (line.find('#') != std::string::npos) {
       line.erase(line.find('#'));

@@ -135,7 +135,6 @@ static size_t kRegisterCnt = kAsmRegisterLimit;
 static size_t kStartUsable = 8;
 static size_t kUsableLimit = 15;
 static size_t kRegisterCounter = kStartUsable;
-static std::string kRegisterPrefix = kAsmRegisterPrefix;
 static std::vector<std::string> kKeywords;
 
 /////////////////////////////////////////
@@ -381,7 +380,7 @@ MPCC_MODULE(CompilerCPlusPlus) {
       }
 
       if (strcmp(argv[index], "-v") == 0 ||
-          strcmp(argv[index], "--version") == 0) {
+          strcmp(argv[index], "-version") == 0) {
         kSplashCxx();
         return kOk;
       }
@@ -393,13 +392,13 @@ MPCC_MODULE(CompilerCPlusPlus) {
       }
 
       if (strcmp(argv[index], "-h") == 0 ||
-          strcmp(argv[index], "--help") == 0) {
+          strcmp(argv[index], "-help") == 0) {
         cxx_print_help();
 
         return kOk;
       }
 
-      if (strcmp(argv[index], "-pdialect") == 0) {
+      if (strcmp(argv[index], "-dialect") == 0) {
         if (kCompilerBackend) std::cout << kCompilerBackend->Language() << "\n";
 
         return kOk;

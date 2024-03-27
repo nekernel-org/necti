@@ -7,10 +7,10 @@
  * 	========================================================
  */
 
-/// bugs: ?
-/// TODO: use input buffering.
+/// BUGS: ?
+/// TODO: 
 
-#include <Headers/AsmKit/Arch/amd64.hpp>
+#include <Headers/AsmKit/Arch/64x0.hpp>
 #include <Headers/ParserKit.hpp>
 #include <cstdio>
 #include <fstream>
@@ -26,7 +26,7 @@
 
 #define kOk 0
 
-// TODO: support structs and ., ->
+// TODO: support structures, else if, else, ., ->
 
 /* C driver */
 /* This is part of MultiProcessor C SDK. */
@@ -89,7 +89,7 @@ struct CompilerState final {
 
 static detail::CompilerState kState;
 static SizeType kErrorLimit = 100;
-
+static std::string kIfFunction = "";
 static Int32 kAcceptableErrors = 0;
 
 namespace detail {
@@ -153,6 +153,7 @@ static bool kInStruct = false;
 static bool kOnWhileLoop = false;
 static bool kOnForLoop = false;
 static bool kInBraces = false;
+static bool kIfFound = false;
 static size_t kBracesCount = 0UL;
 
 /* @brief C compiler backend for C */
@@ -166,7 +167,7 @@ class CompilerBackendCLang final : public ParserKit::CompilerBackend {
   std::string Check(const char *text, const char *file);
   bool Compile(const std::string &text, const char *file) override;
 
-  const char *Language() override { return "64x0 C17, MP/UX target."; }
+  const char *Language() override { return "Mahrouss C."; }
 };
 
 static CompilerBackendCLang *kCompilerBackend = nullptr;
@@ -205,11 +206,10 @@ union double_cast final {
 /////////////////////////////////////////////////////////////////////////////////////////
 
 bool CompilerBackendCLang::Compile(const std::string &text, const char *file) {
-  std::string _text = text;
+  std::string textBuffer = text;
 
-  auto syntax_tree = ParserKit::SyntaxLeafList::SyntaxLeaf();
-  bool type_found = false;
-  bool function_found = false;
+  bool typeFound = false;
+  bool fnFound = false;
 
   // setup generator.
   std::random_device rd;
@@ -220,14 +220,16 @@ bool CompilerBackendCLang::Compile(const std::string &text, const char *file) {
   std::mt19937 generator(seq);
 
   // start parsing
-  for (size_t text_index = 0; text_index < _text.size(); ++text_index) {
+  for (size_t text_index = 0; text_index < textBuffer.size(); ++text_index) {
+    auto syntaxLeaf = ParserKit::SyntaxLeafList::SyntaxLeaf();
+
     auto gen = uuids::uuid_random_generator{generator};
     uuids::uuid out = gen();
 
     detail::number_cast time_off = (UInt64)out.as_bytes().data();
 
-    if (!type_found) {
-      auto substr = _text.substr(text_index);
+    if (!typeFound) {
+      auto substr = textBuffer.substr(text_index);
       std::string match_type;
 
       for (size_t y = 0; y < substr.size(); ++y) {
@@ -249,13 +251,13 @@ bool CompilerBackendCLang::Compile(const std::string &text, const char *file) {
                 break;
               }
 
-              if (_text.find('(') != std::string::npos) {
-                syntax_tree.fUserValue = buf;
+              if (textBuffer.find('(') != std::string::npos) {
+                syntaxLeaf.fUserValue = buf;
 
-                kState.fSyntaxTree->fLeafList.push_back(syntax_tree);
+                kState.fSyntaxTree->fLeafList.push_back(syntaxLeaf);
               }
 
-              type_found = true;
+              typeFound = true;
               break;
             }
           }
@@ -267,7 +269,7 @@ bool CompilerBackendCLang::Compile(const std::string &text, const char *file) {
       }
     }
 
-    if (_text[text_index] == '{') {
+    if (textBuffer[text_index] == '{') {
       if (kInStruct) {
         continue;
       }
@@ -275,11 +277,11 @@ bool CompilerBackendCLang::Compile(const std::string &text, const char *file) {
       kInBraces = true;
       ++kBracesCount;
 
-      kState.fSyntaxTree->fLeafList.push_back(syntax_tree);
+      kState.fSyntaxTree->fLeafList.push_back(syntaxLeaf);
     }
 
     // return keyword handler
-    if (_text[text_index] == 'r') {
+    if (textBuffer[text_index] == 'r') {
       std::string return_keyword;
       return_keyword += "return";
 
@@ -287,14 +289,14 @@ bool CompilerBackendCLang::Compile(const std::string &text, const char *file) {
 
       std::string value;
 
-      for (size_t return_index = text_index; return_index < _text.size();
+      for (size_t return_index = text_index; return_index < textBuffer.size();
            ++return_index) {
-        if (_text[return_index] != return_keyword[index]) {
-          for (size_t value_index = return_index; value_index < _text.size();
+        if (textBuffer[return_index] != return_keyword[index]) {
+          for (size_t value_index = return_index; value_index < textBuffer.size();
                ++value_index) {
-            if (_text[value_index] == ';') break;
+            if (textBuffer[value_index] == ';') break;
 
-            value += _text[value_index];
+            value += textBuffer[value_index];
           }
 
           break;
@@ -319,43 +321,68 @@ bool CompilerBackendCLang::Compile(const std::string &text, const char *file) {
             value += tmp;
           }
 
-          syntax_tree.fUserValue = "\tldw r1, ";
+          syntaxLeaf.fUserValue = "\tldw r19, ";
 
           // make it pretty.
           if (value.find('\t') != std::string::npos)
             value.erase(value.find('\t'), 1);
 
-          syntax_tree.fUserValue += value + "\n";
+          syntaxLeaf.fUserValue += value + "\n";
         }
 
-        syntax_tree.fUserValue += "\tjlr";
+        syntaxLeaf.fUserValue += "\tjlr";
 
-        kState.fSyntaxTree->fLeafList.push_back(syntax_tree);
+        kState.fSyntaxTree->fLeafList.push_back(syntaxLeaf);
 
         break;
       }
     }
 
+    if (textBuffer[text_index] == 'i' && textBuffer[text_index+1] == 'f') {
+      auto expr = textBuffer.substr(text_index + 2);
+      textBuffer.erase(text_index, 2);
+
+      if (expr.find("{") != std::string::npos) {
+        expr.erase(expr.find("{"));
+      }
+
+      if (expr.find("(") != std::string::npos)
+        expr.erase(expr.find("("));
+      
+      if (expr.find(")") != std::string::npos)
+        expr.erase(expr.find(")"));
+        
+      kIfFunction = "__MPCC_IF_PROC_";
+      kIfFunction += std::to_string(time_off._Raw);
+
+      syntaxLeaf.fUserValue = "\tlda r12, import ";
+      syntaxLeaf.fUserValue += kIfFunction + "\n\t#r12 = Code to jump on, r11 right cond, r10 left cond.\n\tbeq r10, r11, r12\ndword export .text " + kIfFunction + "\n";
+      kState.fSyntaxTree->fLeafList.push_back(syntaxLeaf);
+
+      kIfFound = true;
+    }
+
     // Parse expressions and instructions here.
     // what does this mean?
     // we encounter an assignment, or we reached the end of an expression.
-    if (_text[text_index] == '=' || _text[text_index] == ';') {
-      if (function_found) continue;
+    if (textBuffer[text_index] == '=' || textBuffer[text_index] == ';') {
+      if (fnFound) continue;
+      if (kIfFound) continue;
 
-      if (_text[text_index] == ';' && kInStruct) continue;
+      if (textBuffer[text_index] == ';' && kInStruct) continue;
 
-      if (_text.find("typedef ") != std::string::npos) continue;
+      if (textBuffer.find("typedef ") != std::string::npos) continue;
 
-      if (_text[text_index] == '=' && kInStruct) {
-        detail::print_error("assignement of value in struct " + _text, file);
+      if (textBuffer[text_index] == '=' && kInStruct) {
+        detail::print_error("assignement of value in struct " + textBuffer, file);
         continue;
       }
 
-      if (_text[text_index] == ';' && kInStruct) {
+      if (textBuffer[text_index] == ';' && kInStruct) {
         bool space_found_ = false;
         std::string sym;
 
-        for (auto &ch : _text) {
+        for (auto &ch : textBuffer) {
           if (ch == ' ') {
             space_found_ = true;
           }
@@ -376,27 +403,28 @@ bool CompilerBackendCLang::Compile(const std::string &text, const char *file) {
         continue;
       }
 
-      if (_text[text_index] == '=' && kInStruct) {
+      if (textBuffer[text_index] == '=' && kInStruct) {
         continue;
       }
 
-      if (_text[text_index + 1] == '=' || _text[text_index - 1] == '!' ||
-          _text[text_index - 1] == '<' || _text[text_index - 1] == '>') {
+      if (textBuffer[text_index + 1] == '=' || textBuffer[text_index - 1] == '!' ||
+          textBuffer[text_index - 1] == '<' || textBuffer[text_index - 1] == '>') {
         continue;
       }
 
       std::string substr;
 
-      if (_text.find('=') != std::string::npos && kInBraces) {
-        if (_text.find("*") != std::string::npos) {
-          if (_text.find("=") > _text.find("*"))
+      if (textBuffer.find('=') != std::string::npos && kInBraces &&
+        !kIfFound) {
+        if (textBuffer.find("*") != std::string::npos) {
+          if (textBuffer.find("=") > textBuffer.find("*"))
             substr += "\tlda ";
           else
             substr += "\tldw ";
         } else {
           substr += "\tldw ";
         }
-      } else if (_text.find('=') != std::string::npos && !kInBraces) {
+      } else if (textBuffer.find('=') != std::string::npos && !kInBraces) {
         substr += "stw export .data ";
       }
 
@@ -404,31 +432,31 @@ bool CompilerBackendCLang::Compile(const std::string &text, const char *file) {
 
       std::string str_name;
 
-      for (size_t text_index_2 = 0; text_index_2 < _text.size();
+      for (size_t text_index_2 = 0; text_index_2 < textBuffer.size();
            ++text_index_2) {
-        if (_text[text_index_2] == '\"') {
+        if (textBuffer[text_index_2] == '\"') {
           ++text_index_2;
 
           // want to add this, so that the parser recognizes that this is a
           // string.
           substr += '"';
 
-          for (; text_index_2 < _text.size(); ++text_index_2) {
-            if (_text[text_index_2] == '\"') break;
+          for (; text_index_2 < textBuffer.size(); ++text_index_2) {
+            if (textBuffer[text_index_2] == '\"') break;
 
-            substr += _text[text_index_2];
+            substr += textBuffer[text_index_2];
           }
         }
 
-        if (_text[text_index_2] == '{' || _text[text_index_2] == '}') continue;
+        if (textBuffer[text_index_2] == '{' || textBuffer[text_index_2] == '}') continue;
 
-        if (_text[text_index_2] == ';') {
+        if (textBuffer[text_index_2] == ';') {
           break;
         }
 
-        if (_text[text_index_2] == ' ' || _text[text_index_2] == '\t') {
+        if (textBuffer[text_index_2] == ' ' || textBuffer[text_index_2] == '\t') {
           if (first_encountered != 2) {
-            if (_text[text_index] != '=' &&
+            if (textBuffer[text_index] != '=' &&
                 substr.find("export .data") == std::string::npos && !kInStruct)
               substr += "export .data ";
           }
@@ -438,7 +466,7 @@ bool CompilerBackendCLang::Compile(const std::string &text, const char *file) {
           continue;
         }
 
-        if (_text[text_index_2] == '=') {
+        if (textBuffer[text_index_2] == '=') {
           if (!kInBraces) {
             substr.replace(substr.find("export .data"), strlen("export .data"),
                            "export .page_zero ");
@@ -448,7 +476,7 @@ bool CompilerBackendCLang::Compile(const std::string &text, const char *file) {
           continue;
         }
 
-        substr += _text[text_index_2];
+        substr += textBuffer[text_index_2];
       }
 
       for (auto &clType : kCompilerTypes) {
@@ -490,30 +518,30 @@ bool CompilerBackendCLang::Compile(const std::string &text, const char *file) {
         kCompilerVariables.push_back({.fName = substr});
       }
 
-      syntax_tree.fUserValue += substr;
-      kState.fSyntaxTree->fLeafList.push_back(syntax_tree);
+      syntaxLeaf.fUserValue += substr;
+      kState.fSyntaxTree->fLeafList.push_back(syntaxLeaf);
 
-      if (_text[text_index] == '=') break;
+      if (textBuffer[text_index] == '=') break;
     }
 
     // function handler.
 
-    if (_text[text_index] == '(' && !function_found) {
+    if (textBuffer[text_index] == '(' && !fnFound && !kIfFound) {
       std::string substr;
       std::string args_buffer;
       std::string args;
 
       bool type_crossed = false;
 
-      for (size_t idx = _text.find('(') + 1; idx < _text.size(); ++idx) {
-        if (_text[idx] == ',') continue;
+      for (size_t idx = textBuffer.find('(') + 1; idx < textBuffer.size(); ++idx) {
+        if (textBuffer[idx] == ',') continue;
 
-        if (_text[idx] == ' ') continue;
+        if (textBuffer[idx] == ' ') continue;
 
-        if (_text[idx] == ')') break;
+        if (textBuffer[idx] == ')') break;
       }
 
-      for (char substr_first_index : _text) {
+      for (char substr_first_index : textBuffer) {
         if (substr_first_index != ',')
           args_buffer += substr_first_index;
         else
@@ -545,7 +573,7 @@ bool CompilerBackendCLang::Compile(const std::string &text, const char *file) {
         }
       }
 
-      for (char _text_i : _text) {
+      for (char _text_i : textBuffer) {
         if (_text_i == '\t' || _text_i == ' ') {
           if (!type_crossed) {
             substr.clear();
@@ -561,45 +589,45 @@ bool CompilerBackendCLang::Compile(const std::string &text, const char *file) {
       }
 
       if (kInBraces) {
-        syntax_tree.fUserValue = args;
-        syntax_tree.fUserValue += substr;
-        syntax_tree.fUserValue += "\n\tjrl\n";
+        syntaxLeaf.fUserValue = args;
+        syntaxLeaf.fUserValue += substr;
+        syntaxLeaf.fUserValue += "\n\tjrl\n";
 
-        kState.fSyntaxTree->fLeafList.push_back(syntax_tree);
+        kState.fSyntaxTree->fLeafList.push_back(syntaxLeaf);
 
-        function_found = true;
+        fnFound = true;
       } else {
-        syntax_tree.fUserValue.clear();
+        syntaxLeaf.fUserValue.clear();
 
-        syntax_tree.fUserValue += "export .text ";
+        syntaxLeaf.fUserValue += "export .text ";
 
-        syntax_tree.fUserValue += substr;
-        syntax_tree.fUserValue += "\n";
+        syntaxLeaf.fUserValue += substr;
+        syntaxLeaf.fUserValue += "\n";
 
-        kState.fSyntaxTree->fLeafList.push_back(syntax_tree);
+        kState.fSyntaxTree->fLeafList.push_back(syntaxLeaf);
 
-        function_found = true;
+        fnFound = true;
       }
 
-      kCompilerFunctions.push_back(_text);
+      kCompilerFunctions.push_back(textBuffer);
     }
 
-    if (_text[text_index] == '-' && _text[text_index + 1] == '-') {
-      _text = _text.replace(_text.find("--"), strlen("--"), "");
+    if (textBuffer[text_index] == '-' && textBuffer[text_index + 1] == '-') {
+      textBuffer = textBuffer.replace(textBuffer.find("--"), strlen("--"), "");
 
-      for (int _text_i = 0; _text_i < _text.size(); ++_text_i) {
-        if (_text[_text_i] == '\t' || _text[_text_i] == ' ')
-          _text.erase(_text_i, 1);
+      for (int _text_i = 0; _text_i < textBuffer.size(); ++_text_i) {
+        if (textBuffer[_text_i] == '\t' || textBuffer[_text_i] == ' ')
+          textBuffer.erase(_text_i, 1);
       }
 
-      syntax_tree.fUserValue += "dec ";
-      syntax_tree.fUserValue += _text;
+      syntaxLeaf.fUserValue += "dec ";
+      syntaxLeaf.fUserValue += textBuffer;
 
-      kState.fSyntaxTree->fLeafList.push_back(syntax_tree);
+      kState.fSyntaxTree->fLeafList.push_back(syntaxLeaf);
       break;
     }
 
-    if (_text[text_index] == '}') {
+    if (textBuffer[text_index] == '}') {
       kRegisterCounter = kStartUsable;
 
       --kBracesCount;
@@ -609,16 +637,20 @@ bool CompilerBackendCLang::Compile(const std::string &text, const char *file) {
         kBracesCount = 0;
       }
 
+      if (kIfFound)
+        kIfFound = false;
+
       if (kInStruct) kInStruct = false;
 
-      kState.fSyntaxTree->fLeafList.push_back(syntax_tree);
+      kState.fSyntaxTree->fLeafList.push_back(syntaxLeaf);
     }
 
-    syntax_tree.fUserValue.clear();
+    syntaxLeaf.fUserValue.clear();
   }
 
-  syntax_tree.fUserValue = "\n";
-  kState.fSyntaxTree->fLeafList.push_back(syntax_tree);
+  auto syntaxLeaf = ParserKit::SyntaxLeafList::SyntaxLeaf();
+  syntaxLeaf.fUserValue = "\n";
+  kState.fSyntaxTree->fLeafList.push_back(syntaxLeaf);
 
   return true;
 }
@@ -689,13 +721,7 @@ std::string CompilerBackendCLang::Check(const char *text, const char *file) {
 
     // add them to avoid stupid mistakes.
     forbidden_words.push_back("namespace");
-    forbidden_words.push_back("struct");
-    forbidden_words.push_back("union");
-    forbidden_words.push_back("enum");
-    forbidden_words.push_back(".");
-    forbidden_words.push_back("->");
     forbidden_words.push_back("class");
-    forbidden_words.push_back("*");
     forbidden_words.push_back("extern \"C\"");
 
     for (auto &forbidden : forbidden_words) {
@@ -1076,7 +1102,7 @@ class AssemblyMountpointCLang final : public CompilerKit::AssemblyInterface {
   MPCC_COPY_DEFAULT(AssemblyMountpointCLang);
 
   [[maybe_unused]] static Int32 Arch() noexcept {
-    return CompilerKit::AssemblyFactory::kArchRISCV;
+    return CompilerKit::AssemblyFactory::kArch64x0;
   }
 
   Int32 CompileToFormat(std::string &src, Int32 arch) override {
@@ -1099,7 +1125,7 @@ class AssemblyMountpointCLang final : public CompilerKit::AssemblyInterface {
 
     /* According to pef abi. */
     std::vector<const char *> exts = kAsmFileExts;
-    dest += exts[0];
+    dest += exts[4];
 
     kState.fOutputAssembly = std::make_unique<std::ofstream>(dest);
 
@@ -1142,6 +1168,7 @@ class AssemblyMountpointCLang final : public CompilerKit::AssemblyInterface {
       for (auto &access_ident : access_keywords) {
         if (ParserKit::find_word(leaf.fUserValue, access_ident)) {
           for (auto &struc : kState.kStructMap) {
+            /// TODO:
           }
         }
       }
@@ -1172,6 +1199,11 @@ class AssemblyMountpointCLang final : public CompilerKit::AssemblyInterface {
             }
 
             if (ParserKit::find_word(leaf.fUserValue, needle)) {
+              if (leaf.fUserValue.find("import " + needle) != std::string::npos) {
+                std::string range = "import " + needle;
+                leaf.fUserValue.replace(leaf.fUserValue.find("import " + needle), range.size(), needle);
+              }
+
               if (leaf.fUserValue.find("ldw r6") != std::string::npos) {
                 std::string::difference_type countComma = std::count(
                     leaf.fUserValue.begin(), leaf.fUserValue.end(), ',');
@@ -1230,6 +1262,7 @@ MPCC_MODULE(HCoreCompilerCLang64x0) {
   kCompilerTypes.push_back({.fName = "short", .fValue = "hword"});
   kCompilerTypes.push_back({.fName = "int", .fValue = "dword"});
   kCompilerTypes.push_back({.fName = "long", .fValue = "qword"});
+  kCompilerTypes.push_back({.fName = "*", .fValue = "offset"});
 
   bool skip = false;
 
@@ -1245,7 +1278,7 @@ MPCC_MODULE(HCoreCompilerCLang64x0) {
 
     if (argv[index][0] == '-') {
       if (strcmp(argv[index], "-v") == 0 ||
-          strcmp(argv[index], "--version") == 0) {
+          strcmp(argv[index], "-version") == 0) {
         kSplashCxx();
         return kOk;
       }
@@ -1257,13 +1290,13 @@ MPCC_MODULE(HCoreCompilerCLang64x0) {
       }
 
       if (strcmp(argv[index], "-h") == 0 ||
-          strcmp(argv[index], "--help") == 0) {
+          strcmp(argv[index], "-help") == 0) {
         cc_print_help();
 
         return kOk;
       }
 
-      if (strcmp(argv[index], "--dialect") == 0) {
+      if (strcmp(argv[index], "-dialect") == 0) {
         if (kCompilerBackend) std::cout << kCompilerBackend->Language() << "\n";
 
         return kOk;
