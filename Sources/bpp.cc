@@ -279,64 +279,10 @@ void bpp_parse_file(std::ifstream &hdr_file, std::ofstream &pp_out) {
       for (auto macro : kMacros) {
         if (ParserKit::find_word(hdr_line, macro.fName) &&
             hdr_line.find("%def") == std::string::npos) {
-          auto substr = hdr_line.substr(hdr_line.find(macro.fName));
-
-          std::vector<std::string> sym_vec;
-          std::string sym_str;
-
-          for (auto &subc : substr) {
-            if (subc == ',' || subc == ')') {
-              if (sym_str.empty()) continue;
-
-              sym_vec.push_back(sym_str);
-              sym_str.clear();
-
-              continue;
-            }
-
-            if (isalnum(subc)) sym_str.push_back(subc);
-          }
-
-          if (macro.fArgs.size() > 0) {
-            for (auto &item : sym_vec) {
-              std::size_t cnt = 0;
-
-              for (auto &arg : macro.fArgs) {
-                if (item == arg) ++cnt;
-              }
-
-              if (cnt > 1) {
-                auto it =
-                    std::find(macro.fArgs.begin(), macro.fArgs.end(), item);
-
-                while (it != macro.fArgs.end()) {
-                  macro.fArgs.erase(it);
-                  it = std::find(macro.fArgs.begin(), macro.fArgs.end(), item);
-                }
-              }
-            }
-
-            if (sym_vec.size() != macro.fArgs.size()) {
-              throw std::runtime_error(
-                  "bpp: arguments count mismatch, except " +
-                  std::to_string(sym_vec.size()) +
-                  ", got: " + std::to_string(macro.fArgs.size()));
-              return;
-            }
-
-            substr = macro.fValue;
-
-            std::size_t cnt = 0UL;
-
-            for (auto &val : macro.fArgs) {
-              substr.replace(substr.find(val), val.size(), sym_vec[cnt]);
-              ++cnt;
-            }
-          }
-
+          auto value = macro.fValue;
+          
           hdr_line.replace(hdr_line.find(macro.fName), macro.fName.size(),
-                           substr);
-          hdr_line.erase(hdr_line.find(substr) + substr.size());
+                           value);
         }
       }
 
@@ -863,13 +809,12 @@ MPCC_MODULE(HCorePreprocessor) {
       }
 
       if (argv[index][0] == '-') {
-        if (strcmp(argv[index], "-version") == 0) {
+        if (strcmp(argv[index], "-v") == 0) {
           printf("%s\n", "bpp v1.11, (c) Mahrouss Logic");
           return 0;
         }
 
-        if (strcmp(argv[index], "-h") == 0 ||
-            strcmp(argv[index], "-help") == 0) {
+        if (strcmp(argv[index], "-h") == 0) {
           printf("%s\n", "bpp v1.11, (c) Mahrouss Logic");
           printf("%s\n", "-working-dir <path>: set directory to working path.");
           printf("%s\n", "-include-dir <path>: add directory to include path.");

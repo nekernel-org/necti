@@ -3,12 +3,10 @@
 
 ; Start sequence of program.
 
-%def gdtBase 0x1000
-%def gdtLimit 0x100
 
 export .data GDT
-    .number gdtBase
-    .number gdtLimit
+    .number 0x1000
+    .number 0x100
 
 export .text __start
     mov rcx, 47 ; exit program

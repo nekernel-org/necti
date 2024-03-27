@@ -30,10 +30,6 @@ SRC_COMMON=Sources/String.cc Sources/AsmKit.cc
 CC_SRC=Sources/cc.cc $(SRC_COMMON)
 CC_OUTPUT=Output/cc.exe
 
-# C++ Compiler
-CXX_SRC=Sources/ccplus.cc $(SRC_COMMON)
-CXX_OUTPUT=Output/ccplus.exe
-
 # 64x0 Assembler
 ASM_SRC=Sources/64asm.cc $(SRC_COMMON)
 ASM_OUTPUT=Output/64asm.exe
@@ -43,8 +39,8 @@ IASM_SRC=Sources/i64asm.cc $(SRC_COMMON)
 IASM_OUTPUT=Output/i64asm.exe
 
 .PHONY: all
-all:
-	@echo "Use a specific target."
+all: pp cl link
+	@echo "DONE."
 
 .PHONY: pp
 pp:
@@ -53,7 +49,6 @@ pp:
 .PHONY: cl
 cl:
 	$(LINK_CC) $(COMMON_INC) $(CC_SRC) -o $(CC_OUTPUT)
-	$(LINK_CC) $(COMMON_INC) $(CXX_SRC) -o $(CXX_OUTPUT)
 	$(LINK_CC) $(COMMON_INC) $(IASM_SRC) -o $(IASM_OUTPUT)
 	$(LINK_CC) $(COMMON_INC) $(ASM_SRC) -o $(ASM_OUTPUT)
 
