@@ -167,7 +167,7 @@ class CompilerBackendCLang final : public ParserKit::CompilerBackend {
   std::string Check(const char *text, const char *file);
   bool Compile(const std::string &text, const char *file) override;
 
-  const char *Language() override { return "Mahrouss C."; }
+  const char *Language() override { return "ANSI C"; }
 };
 
 static CompilerBackendCLang *kCompilerBackend = nullptr;
@@ -356,7 +356,7 @@ bool CompilerBackendCLang::Compile(const std::string &text, const char *file) {
       kIfFunction += std::to_string(time_off._Raw);
 
       syntaxLeaf.fUserValue = "\tlda r12, import ";
-      syntaxLeaf.fUserValue += kIfFunction + "\n\t#r12 = Code to jump on, r11 right cond, r10 left cond.\n\tbeq r10, r11, r12\ndword export .text " + kIfFunction + "\n";
+      syntaxLeaf.fUserValue += kIfFunction + "\n\t#r12 = Code to jump on, r11 right cond, r10 left cond.\n\tbeq r10, r11, r12\ndword export .code64 " + kIfFunction + "\n";
       kState.fSyntaxTree->fLeafList.push_back(syntaxLeaf);
 
       kIfFound = true;
@@ -425,7 +425,7 @@ bool CompilerBackendCLang::Compile(const std::string &text, const char *file) {
           substr += "\tldw ";
         }
       } else if (textBuffer.find('=') != std::string::npos && !kInBraces) {
-        substr += "stw export .data ";
+        substr += "stw export .data64 ";
       }
 
       int first_encountered = 0;
@@ -457,8 +457,8 @@ bool CompilerBackendCLang::Compile(const std::string &text, const char *file) {
         if (textBuffer[text_index_2] == ' ' || textBuffer[text_index_2] == '\t') {
           if (first_encountered != 2) {
             if (textBuffer[text_index] != '=' &&
-                substr.find("export .data") == std::string::npos && !kInStruct)
-              substr += "export .data ";
+                substr.find("export .data64") == std::string::npos && !kInStruct)
+              substr += "export .data64 ";
           }
 
           ++first_encountered;
@@ -468,7 +468,7 @@ bool CompilerBackendCLang::Compile(const std::string &text, const char *file) {
 
         if (textBuffer[text_index_2] == '=') {
           if (!kInBraces) {
-            substr.replace(substr.find("export .data"), strlen("export .data"),
+            substr.replace(substr.find("export .data64"), strlen("export .data64"),
                            "export .page_zero ");
           }
 
@@ -496,8 +496,8 @@ bool CompilerBackendCLang::Compile(const std::string &text, const char *file) {
       if (substr.find("extern") != std::string::npos) {
         substr.replace(substr.find("extern"), strlen("extern"), "import ");
 
-        if (substr.find("export .data") != std::string::npos)
-          substr.erase(substr.find("export .data"), strlen("export .data"));
+        if (substr.find("export .data64") != std::string::npos)
+          substr.erase(substr.find("export .data64"), strlen("export .data64"));
       }
 
       auto var_to_find =
@@ -599,7 +599,7 @@ bool CompilerBackendCLang::Compile(const std::string &text, const char *file) {
       } else {
         syntaxLeaf.fUserValue.clear();
 
-        syntaxLeaf.fUserValue += "export .text ";
+        syntaxLeaf.fUserValue += "export .code64 ";
 
         syntaxLeaf.fUserValue += substr;
         syntaxLeaf.fUserValue += "\n";
@@ -1133,7 +1133,7 @@ class AssemblyMountpointCLang final : public CompilerKit::AssemblyInterface {
 
     (*kState.fOutputAssembly) << "# Path: " << src_file << "\n";
     (*kState.fOutputAssembly)
-        << "# Language: MultiProcessor Assembly (Generated from C)\n";
+        << "# Language: 64x0 Assembly (Generated from ANSI C)\n";
     (*kState.fOutputAssembly) << "# Build Date: " << fmt << "\n\n";
 
     ParserKit::SyntaxLeafList syntax;

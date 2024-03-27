@@ -250,7 +250,7 @@ class AssemblyMountpointClang final : public CompilerKit::AssemblyInterface {
     if (kCompilerBackend == nullptr) return -1;
 
     /* @brief copy contents wihtout extension */
-    std::string src_file = src.data();
+    std::string src_file = src.data64();
     std::ifstream src_fp = std::ifstream(src_file, std::ios::in);
     std::string dest;
 
@@ -288,7 +288,7 @@ class AssemblyMountpointClang final : public CompilerKit::AssemblyInterface {
 
     while (std::getline(src_fp, source)) {
       // Compile into an AST format.
-      kCompilerBackend->Compile(source.c_str(), src.data());
+      kCompilerBackend->Compile(source.c_str(), src.data64());
     }
 
     if (kAcceptableErrors > 0) return -1;

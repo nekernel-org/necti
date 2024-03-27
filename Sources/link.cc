@@ -14,7 +14,7 @@
 // @author Amlal El Mahrouss (amlel)
 // @brief Visual Linker.
 
-// README: Do not look up for anything with .text/.data/.page_zero!
+// README: Do not look up for anything with .code64/.data64/.page_zero!
 // It will be loaded when program will start up!
 
 #include <Headers/StdKit/ErrorID.hpp>
@@ -269,9 +269,9 @@ MPCC_MODULE(HCoreLinker) {
                kPefNameLen);
 
         // check this header if it's any valid.
-        if (std::string(command_header.Name).find(".text") ==
+        if (std::string(command_header.Name).find(".code64") ==
                 std::string::npos &&
-            std::string(command_header.Name).find(".data") ==
+            std::string(command_header.Name).find(".data64") ==
                 std::string::npos &&
             std::string(command_header.Name).find(".page_zero") ==
                 std::string::npos) {
@@ -289,7 +289,7 @@ MPCC_MODULE(HCoreLinker) {
 
         if (std::string(command_header.Name).find(kPefStart) !=
                 std::string::npos &&
-            std::string(command_header.Name).find(".text") !=
+            std::string(command_header.Name).find(".code64") !=
                 std::string::npos) {
           kStartFound = true;
           pef_container.Start = ae_records[ae_record_index].fOffset;
@@ -484,8 +484,8 @@ MPCC_MODULE(HCoreLinker) {
   auto gen = uuids::uuid_random_generator{generator};
   uuids::uuid id = gen();
 
-  memcpy(uuidHeader.Name, "UUID_TYPE:4:", strlen("UUID_TYPE:4:"));
-  memcpy(uuidHeader.Name + strlen("UUID_TYPE:4:"), id.as_bytes().data(), id.as_bytes().size());
+  memcpy(uuidHeader.Name, "UUID_KIND:4:", strlen("UUID_KIND:4:"));
+  memcpy(uuidHeader.Name + strlen("UUID_KIND:4:"), id.as_bytes().data(), id.as_bytes().size());
 
   uuidHeader.Size = 16;
   uuidHeader.Offset = outputFc.tellp();

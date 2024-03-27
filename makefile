@@ -42,31 +42,31 @@ IASM_OUTPUT=Output/i64asm.exe
 all: pp cl link
 	@echo "DONE."
 
-.PHONY: pp
-pp:
+.PHONY: Preprocessor
+Preprocessor:
 	$(LINK_CC) $(COMMON_INC) $(PP_SRC) -o $(PP_OUTPUT)
 
-.PHONY: cl
-cl:
+.PHONY: Compiler
+Compiler:
 	$(LINK_CC) $(COMMON_INC) $(CC_SRC) -o $(CC_OUTPUT)
 	$(LINK_CC) $(COMMON_INC) $(IASM_SRC) -o $(IASM_OUTPUT)
 	$(LINK_CC) $(COMMON_INC) $(ASM_SRC) -o $(ASM_OUTPUT)
 
-.PHONY: link
-link:
+.PHONY: Linker
+Linker:
 	$(LINK_CC) $(COMMON_INC) $(LINK_SRC) -o $(LINK_OUTPUT)
 	cp $(LINK_OUTPUT) $(LINK_ALT_OUTPUT)
 	cp $(LINK_OUTPUT) $(LINK_ALT_2_OUTPUT)
 	cp $(LINK_OUTPUT) $(LINK_ALT_3_OUTPUT)
 
-.PHONY: help
-help:
-	@echo "cl 	- Mahrouss Compilers."
-	@echo "pp 	- Mahrouss Preprocessors."
-	@echo "link 	- Mahrouss Linkers."
+.PHONY: Help
+Help:
+	@echo "Compiler 	- Mahrouss Compilers."
+	@echo "Preprocessor 	- Mahrouss Preprocessors."
+	@echo "Linker 		- Mahrouss Linkers."
 
-.PHONY: clean
-clean:
+.PHONY: Clean
+Clean:
 	rm Output/$(MKCDFS_OUTPUT)
 	rm Output/$(CC_OUTPUT)
 	rm Output/$(PP_OUTPUT)

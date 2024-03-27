@@ -259,7 +259,7 @@ MPCC_MODULE(HCoreAssemblerAMD64) {
 
       if (kRecords.empty()) {
         kStdErr << "i64asm: At least one record is needed to write an object "
-                   "file.\ni64asm: Make one using `export .text foo_bar`.\n";
+                   "file.\ni64asm: Make one using `export .code64 foo_bar`.\n";
 
         std::filesystem::remove(object_output);
         return -1;
@@ -376,10 +376,10 @@ static bool asm_read_attributes(std::string &line) {
 
     result += name;
 
-    if (name.find(".text") != std::string::npos) {
+    if (name.find(".code64") != std::string::npos) {
       // data is treated as code.
       kCurrentRecord.fKind = CompilerKit::kPefCode;
-    } else if (name.find(".data") != std::string::npos) {
+    } else if (name.find(".data64") != std::string::npos) {
       // no code will be executed from here.
       kCurrentRecord.fKind = CompilerKit::kPefData;
     } else if (name.find(".page_zero") != std::string::npos) {
@@ -411,7 +411,7 @@ static bool asm_read_attributes(std::string &line) {
     return true;
   }
   // export is a special keyword used by i64asm to tell the AE output stage to
-  // mark this section as a header. it currently supports .text, .data.,
+  // mark this section as a header. it currently supports .code64, .data64.,
   // page_zero
   else if (ParserKit::find_word(line, "export")) {
     if (kOutputAsBinary) {
@@ -436,15 +436,15 @@ static bool asm_read_attributes(std::string &line) {
 
     kDefinedSymbols.push_back(name);
 
-    if (name.find(".text") != std::string::npos) {
+    if (name.find(".code64") != std::string::npos) {
       // data is treated as code.
 
-      name_copy.erase(name_copy.find(".text"), strlen(".text"));
+      name_copy.erase(name_copy.find(".code64"), strlen(".code64"));
       kCurrentRecord.fKind = CompilerKit::kPefCode;
-    } else if (name.find(".data") != std::string::npos) {
+    } else if (name.find(".data64") != std::string::npos) {
       // no code will be executed from here.
 
-      name_copy.erase(name_copy.find(".data"), strlen(".data"));
+      name_copy.erase(name_copy.find(".data64"), strlen(".data64"));
       kCurrentRecord.fKind = CompilerKit::kPefData;
     } else if (name.find(".page_zero") != std::string::npos) {
       // this is a bss section.
