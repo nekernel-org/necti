@@ -431,13 +431,13 @@ MPCC_MODULE(HCoreLinker) {
 
   time_t timestamp = time(nullptr);
 
-  std::string timeStampStr = "ContainerDate:";
+  std::string timeStampStr = "Container:BuildEpoch:";
   timeStampStr += std::to_string(timestamp);
 
   strcpy(dateHeader.Name, timeStampStr.c_str());
 
   dateHeader.Flags = 0;
-  dateHeader.Kind = CompilerKit::kPefData;
+  dateHeader.Kind = CompilerKit::kPefZero;
   dateHeader.Offset = outputFc.tellp();
   dateHeader.Size = timeStampStr.size();
 
@@ -449,12 +449,16 @@ MPCC_MODULE(HCoreLinker) {
 
   switch (kArch) {
     case CompilerKit::kPefArchAMD64: {
-      abi += "HCOR";
+      abi += "MS*T";
+      break;
+    }
+    case CompilerKit::kPefArchPowerPC: {
+      abi += "MHRP";
       break;
     }
     case CompilerKit::kPefArch32000:
     case CompilerKit::kPefArch64000: {
-      abi += "MPUX";
+      abi += "MHRC";
       break;
     }
     default: {
@@ -483,14 +487,15 @@ MPCC_MODULE(HCoreLinker) {
 
   auto gen = uuids::uuid_random_generator{generator};
   uuids::uuid id = gen();
+  auto uuidStr = uuids::to_string(id);
 
-  memcpy(uuidHeader.Name, "UUID_KIND:4:", strlen("UUID_KIND:4:"));
-  memcpy(uuidHeader.Name + strlen("UUID_KIND:4:"), id.as_bytes().data(), id.as_bytes().size());
+  memcpy(uuidHeader.Name, "Container:GUID:4:", strlen("Container:GUID:4:"));
+  memcpy(uuidHeader.Name + strlen("Container:GUID:4:"), uuidStr.c_str(), uuidStr.size());
 
   uuidHeader.Size = 16;
   uuidHeader.Offset = outputFc.tellp();
   uuidHeader.Flags = 0;
-  uuidHeader.Kind = 0;
+  uuidHeader.Kind = CompilerKit::kPefZero;
 
   outputFc << uuidHeader;
 

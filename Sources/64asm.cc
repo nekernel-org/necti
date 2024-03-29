@@ -333,7 +333,7 @@ static bool asm_read_attributes(std::string &line) {
     // this is a special case for the start stub.
     // we want this so that ld can find it.
 
-    if (name == "__start") {
+    if (name.find("__start") != std::string::npos) {
       kCurrentRecord.fKind = CompilerKit::kPefCode;
     }
 
@@ -903,8 +903,15 @@ bool CompilerKit::Encoder64x0::WriteLine(std::string &line,
           throw std::runtime_error("label_empty");
         }
 
+        /// don't go any further if:
+        /// load word (ldw) or store word. (stw)
+
+        if (name == "ldw" ||
+            name == "stw")
+            break;
+
         auto mld_reloc_str = std::to_string(cpy_jump_label.size());
-        mld_reloc_str += kRelocSymbol;
+        mld_reloc_str += kUndefinedSymbol;
         mld_reloc_str += cpy_jump_label;
 
         bool ignore_back_slash = false;
