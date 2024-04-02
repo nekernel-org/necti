@@ -26,15 +26,15 @@
 
 #define kOk 0
 
-// TODO: support structures, else if, else, ., ->
+/// TODO: support structures, else if, else, ., ->
 
 /* C driver */
 /* This is part of MultiProcessor C SDK. */
 /* (c) Mahrouss Logic */
 
-// @author Amlal El Mahrouss (amlel)
-// @file cc.cc
-// @brief C Compiler.
+/// @author Amlal El Mahrouss (amlel)
+/// @file cc.cc
+/// @brief C Compiler.
 
 /////////////////////
 
