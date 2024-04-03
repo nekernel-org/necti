@@ -146,8 +146,8 @@ MPCC_MODULE(HCoreAssemblerAMD64) {
   CpuCodeAMD64 lea{.fName = "lea", .fOpcode = 0x8D};
   kOpcodesAMD64.push_back(lea);
 
-  CpuCodeAMD64 mov{.fName = "nop", .fOpcode = 0x90};
-  kOpcodesAMD64.push_back(mov);
+  CpuCodeAMD64 nop{.fName = "nop", .fOpcode = 0x90};
+  kOpcodesAMD64.push_back(nop);
 
   //////////////// CPU OPCODES END ////////////////
 
@@ -359,8 +359,7 @@ static bool asm_read_attributes(std::string &line) {
   // that we need this symbol.
   if (ParserKit::find_word(line, "import")) {
     if (kOutputAsBinary) {
-      detail::print_error("Invalid directive in flat binary mode.",
-                          "i64asm");
+      detail::print_error("Invalid directive in flat binary mode.", "i64asm");
       throw std::runtime_error("invalid_import_bin");
     }
 
@@ -415,8 +414,7 @@ static bool asm_read_attributes(std::string &line) {
   // page_zero
   else if (ParserKit::find_word(line, "export")) {
     if (kOutputAsBinary) {
-      detail::print_error("Invalid directive in flat binary mode.",
-                          "i64asm");
+      detail::print_error("Invalid directive in flat binary mode.", "i64asm");
       throw std::runtime_error("invalid_export_bin");
     }
 
@@ -428,9 +426,9 @@ static bool asm_read_attributes(std::string &line) {
       if (j == ' ') j = '$';
     }
 
-    if (std::find(kDefinedSymbols.begin(), kDefinedSymbols.end(), name) != kDefinedSymbols.end()) {
-      detail::print_error("Symbol already defined.",
-                          "i64asm");
+    if (std::find(kDefinedSymbols.begin(), kDefinedSymbols.end(), name) !=
+        kDefinedSymbols.end()) {
+      detail::print_error("Symbol already defined.", "i64asm");
       throw std::runtime_error("invalid_export_bin");
     }
 
@@ -1002,7 +1000,7 @@ bool CompilerKit::EncoderAMD64::WriteLine(std::string &line,
     i64_byte_t fModRM;
   };
 
-  std::vector<RegMapAMD64> regs{
+  std::vector<RegMapAMD64> REGISTER_LIST{
       {.fName = "ax", .fModRM = 0x0},  {.fName = "cx", .fModRM = 0x8},
       {.fName = "dx", .fModRM = 0x2},  {.fName = "bx", .fModRM = 0x10},
       {.fName = "sp", .fModRM = 0x4},  {.fName = "bp", .fModRM = 0x12},
@@ -1022,22 +1020,22 @@ bool CompilerKit::EncoderAMD64::WriteLine(std::string &line,
       foundInstruction = true;
       std::string name(opcodeAMD64.fName);
 
+      /// Move instruction handler.
       if (name.find("mov") != std::string::npos) {
         std::string substr = line.substr(line.find(name) + name.size());
 
         uint64_t bits = kRegisterBitWidth;
 
         if (substr.find(",") == std::string::npos) {
-          detail::print_error("Syntax error.",
-                              "i64asm");
+          detail::print_error("Syntax error.", "i64asm");
           throw std::runtime_error("syntax_err");
         }
 
-        bool onlyOneReg = false;
+        bool onlyOneReg = true;
 
         std::vector<RegMapAMD64> currentRegList;
 
-        for (auto &reg : regs) {
+        for (auto &reg : REGISTER_LIST) {
           std::vector<char> regExt = {'e', 'r'};
 
           for (auto &ext : regExt) {
@@ -1066,11 +1064,11 @@ bool CompilerKit::EncoderAMD64::WriteLine(std::string &line,
           }
         }
 
-        if (currentRegList.size() > 1) onlyOneReg = true;
+        if (currentRegList.size() > 1) onlyOneReg = false;
 
-        if (onlyOneReg) {
-          bool hasRBasedRegs = false;
+        bool hasRBasedRegs = false;
 
+        if (!onlyOneReg) {
           /// very tricky to understand.
           /// this checks for a r8 through r15 register.
           if (currentRegList[0].fName[0] == 'r' ||
@@ -1085,30 +1083,38 @@ bool CompilerKit::EncoderAMD64::WriteLine(std::string &line,
               hasRBasedRegs = true;
             }
           }
+        }
 
-          if (bits == 64 || bits == 32) {
-            if (!hasRBasedRegs && bits >= 32) {
-              kAppBytes.emplace_back(opcodeAMD64.fOpcode);
-            }
+        if (bits == 64 || bits == 32) {
+          if (!hasRBasedRegs && bits >= 32) {
+            kAppBytes.emplace_back(opcodeAMD64.fOpcode);
+          }
 
-            kAppBytes.emplace_back(0x89);
-          } else if (bits == 16) {
-            if (hasRBasedRegs) {
-              detail::print_error(
-                  "Invalid combination of operands and registers.", "i64asm");
-              throw std::runtime_error("comb_op_reg");
-            }
-
-            kAppBytes.emplace_back(0x66);
-            kAppBytes.emplace_back(0x89);
-          } else {
+          kAppBytes.emplace_back(0x89);
+        } else if (bits == 16) {
+          if (hasRBasedRegs) {
             detail::print_error(
                 "Invalid combination of operands and registers.", "i64asm");
             throw std::runtime_error("comb_op_reg");
           }
-        } else {
-          detail::print_warning("TODO: implement feature.", "dev");
+
+          kAppBytes.emplace_back(0x66);
+          kAppBytes.emplace_back(0x89);
         }
+
+        /// encode register using the modrm encoding.
+
+        uint8_t modrm = 0x0;
+
+        for (size_t i = 0; i < REGISTER_LIST.size(); ++i)
+        {
+          if (REGISTER_LIST[i].fModRM != currentRegList[0].fModRM)
+            modrm += 16;
+        }
+        
+        modrm += currentRegList[1].fModRM;
+
+        kAppBytes.emplace_back(modrm);
 
         break;
       } else if (name == "int" || name == "into" || name == "intd") {
