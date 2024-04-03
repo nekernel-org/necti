@@ -1,11 +1,8 @@
-/*
- *	========================================================
- *
- *	MPCC
- * 	Copyright Mahrouss Logic, all rights reserved.
- *
- * 	========================================================
- */
+/* -------------------------------------------
+
+    Copyright Mahrouss Logic
+
+------------------------------------------- */
 
 #include <Headers/AsmKit/AsmKit.hpp>
 #include <Headers/StdKit/ErrorID.hpp>

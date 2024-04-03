@@ -1,11 +1,8 @@
-/*
- *	========================================================
- *
- *	MPCC
- * 	Copyright Mahrouss Logic, all rights reserved.
- *
- * 	========================================================
- */
+/* -------------------------------------------
+
+    Copyright Mahrouss Logic
+
+------------------------------------------- */
 
 #pragma once
 
@@ -27,7 +24,7 @@
 #define kPefVersion 2
 #define kPefNameLen 64
 
-#define kPefBaseOrigin 0x1000
+#define kPefBaseOrigin 0x1000000
 
 namespace CompilerKit {
 enum {
