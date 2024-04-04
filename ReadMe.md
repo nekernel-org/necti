@@ -1,16 +1,15 @@
-# MPCC
-## MultiProcessor Compiler Collection.
+# CodeTools
 
 Start by cloning the repo:
 
 ```
-git clone git@gitlab.com:Mahrouss-Logic/mp-cc.git
+git clone git@bitbucket.org:mahrouss/codetools.git
 ```
 
 and
 
 ```
-make cl && make link && make pp
+make all
 ```
 
 Author: Amlal El Mahrouss

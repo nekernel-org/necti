@@ -48,13 +48,16 @@ pre-processor:
 
 .PHONY: compiler
 compiler:
+	windres i64asm.rsrc -O coff -o i64asm.obj
+	windres 64asm.rsrc -O coff -o 64asm.obj
 	$(LINK_CC) $(COMMON_INC) $(CC_SRC) -o $(CC_OUTPUT)
-	$(LINK_CC) $(COMMON_INC) $(IASM_SRC) -o $(IASM_OUTPUT)
-	$(LINK_CC) $(COMMON_INC) $(ASM_SRC) -o $(ASM_OUTPUT)
+	$(LINK_CC) $(COMMON_INC) i64asm.obj $(IASM_SRC) -o $(IASM_OUTPUT)
+	$(LINK_CC) $(COMMON_INC) 64asm.obj $(ASM_SRC) -o $(ASM_OUTPUT)
 
 .PHONY: linker
 linker:
-	$(LINK_CC) $(COMMON_INC) $(LINK_SRC) -o $(LINK_OUTPUT)
+	windres link.rsrc -O coff -o link.obj
+	$(LINK_CC) $(COMMON_INC) link.obj $(LINK_SRC) -o $(LINK_OUTPUT)
 	cp $(LINK_OUTPUT) $(LINK_ALT_OUTPUT)
 	cp $(LINK_OUTPUT) $(LINK_ALT_2_OUTPUT)
 	cp $(LINK_OUTPUT) $(LINK_ALT_3_OUTPUT)
