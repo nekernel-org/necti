@@ -102,7 +102,7 @@ void print_warning(std::string reason, const std::string &file) noexcept {
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
-MPCC_MODULE(HCoreAssembler64000) {
+MPCC_MODULE(NewOSAssembler64000) {
   for (size_t i = 1; i < argc; ++i) {
     if (argv[i][0] == '-') {
       if (strcmp(argv[i], "-version") == 0 || strcmp(argv[i], "-v") == 0) {

@@ -163,4 +163,22 @@ class Encoder32x0 final : public EncoderInterface {
 };
 
 #endif  // __ASM_NEED_32x0__
+
+#ifdef __ASM_NEED_PPC__
+
+class EncoderPowerPC final : public EncoderInterface {
+ public:
+  explicit EncoderPowerPC() = default;
+  ~EncoderPowerPC() override = default;
+
+  MPCC_COPY_DEFAULT(EncoderPowerPC);
+
+  virtual std::string CheckLine(std::string& line,
+                                const std::string& file) override;
+  virtual bool WriteLine(std::string& line, const std::string& file) override;
+  virtual bool WriteNumber(const std::size_t& pos,
+                           std::string& from_what) override;
+};
+
+#endif  // __ASM_NEED_32x0__
 }  // namespace CompilerKit

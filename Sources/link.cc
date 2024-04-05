@@ -74,7 +74,7 @@ static const char *kLdDynamicSym = ":RuntimeSymbol:";
 static std::vector<std::string> kObjectList;
 static std::vector<char> kObjectBytes;
 
-MPCC_MODULE(HCoreLinker) {
+MPCC_MODULE(NewOSLinker) {
   bool is_executable = true;
 
   /**

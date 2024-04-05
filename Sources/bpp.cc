@@ -773,7 +773,7 @@ void bpp_parse_file(std::ifstream &hdr_file, std::ofstream &pp_out) {
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
-MPCC_MODULE(HCorePreprocessor) {
+MPCC_MODULE(NewOSPreprocessor) {
   try {
     bool skip = false;
     bool double_skip = false;

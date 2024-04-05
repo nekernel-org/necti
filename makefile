@@ -15,6 +15,7 @@ else
 LINK_CC=x86_64-w64-mingw32-g++ -std=c++20
 endif
 
+WINRES=windres
 LINK_SRC=Sources/link.cc
 LINK_OUTPUT=Output/link.exe
 LINK_ALT_OUTPUT=Output/64link.exe
@@ -26,9 +27,13 @@ PP_OUTPUT=Output/bpp.exe
 
 SRC_COMMON=Sources/String.cc Sources/AsmKit.cc
 
+# C Compiler (PowerPC)
+64X0_CC_SRC=Sources/64x000-cc.cc $(SRC_COMMON)
+64X0_CC_OUTPUT=Output/64x000-cc.exe
+
 # C Compiler
-CC_SRC=Sources/cc.cc $(SRC_COMMON)
-CC_OUTPUT=Output/cc.exe
+PPC_CC_SRC=Sources/ppc-cc.cc $(SRC_COMMON)
+PPC_CC_OUTPUT=Output/ppc-cc.exe
 
 # 64x0 Assembler
 ASM_SRC=Sources/64asm.cc $(SRC_COMMON)
@@ -37,6 +42,10 @@ ASM_OUTPUT=Output/64asm.exe
 # AMD64 Assembler
 IASM_SRC=Sources/i64asm.cc $(SRC_COMMON)
 IASM_OUTPUT=Output/i64asm.exe
+
+# PowerPC Assembler
+PPCASM_SRC=Sources/ppcasm.cc $(SRC_COMMON)
+PPCASM_OUTPUT=Output/ppcasm.exe
 
 .PHONY: all
 all: pre-processor compiler linker
@@ -48,15 +57,20 @@ pre-processor:
 
 .PHONY: compiler
 compiler:
-	windres i64asm.rsrc -O coff -o i64asm.obj
-	windres 64asm.rsrc -O coff -o 64asm.obj
-	$(LINK_CC) $(COMMON_INC) $(CC_SRC) -o $(CC_OUTPUT)
+	$(WINRES) i64asm.rsrc -O coff -o i64asm.obj
+	$(WINRES) 64asm.rsrc -O coff -o 64asm.obj
+	$(WINRES) ppcasm.rsrc -O coff -o ppcasm.obj
+	$(WINRES) 64x000-cc.rsrc -O coff -o 64x000-cc.obj
+	$(WINRES) ppc-cc.rsrc -O coff -o ppc-cc.obj
+	$(LINK_CC) $(COMMON_INC) 64x000-cc.obj $(64X0_CC_SRC) -o $(64X0_CC_OUTPUT)
+	$(LINK_CC) $(COMMON_INC) ppc-cc.obj $(PPC_CC_SRC) -o $(PPC_CC_OUTPUT)
 	$(LINK_CC) $(COMMON_INC) i64asm.obj $(IASM_SRC) -o $(IASM_OUTPUT)
 	$(LINK_CC) $(COMMON_INC) 64asm.obj $(ASM_SRC) -o $(ASM_OUTPUT)
+	$(LINK_CC) $(COMMON_INC) ppcasm.obj $(PPCASM_SRC) -o $(PPCASM_OUTPUT)
 
 .PHONY: linker
 linker:
-	windres link.rsrc -O coff -o link.obj
+	$(WINRES) link.rsrc -O coff -o link.obj
 	$(LINK_CC) $(COMMON_INC) link.obj $(LINK_SRC) -o $(LINK_OUTPUT)
 	cp $(LINK_OUTPUT) $(LINK_ALT_OUTPUT)
 	cp $(LINK_OUTPUT) $(LINK_ALT_2_OUTPUT)
@@ -71,7 +85,8 @@ help:
 
 .PHONY: clean
 clean:
-	rm -f $(CC_OUTPUT)
+	rm -f $(64X0_CC_OUTPUT)
+	rm -f $(PPC_CC_OUTPUT)
 	rm -f $(PP_OUTPUT)
 	rm -f $(ASM_OUTPUT)
 	rm -f $(IASM_OUTPUT)

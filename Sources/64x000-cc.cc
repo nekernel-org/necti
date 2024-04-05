@@ -34,7 +34,7 @@
 
 /// @author Amlal El Mahrouss (amlel)
 /// @file cc.cc
-/// @brief C Compiler.
+/// @brief 64x0 C Compiler.
 
 /////////////////////
 
@@ -167,7 +167,7 @@ class CompilerBackendCLang final : public ParserKit::CompilerBackend {
   std::string Check(const char *text, const char *file);
   bool Compile(const std::string &text, const char *file) override;
 
-  const char *Language() override { return "ANSI C"; }
+  const char *Language() override { return "64x000 C"; }
 };
 
 static CompilerBackendCLang *kCompilerBackend = nullptr;
@@ -1256,7 +1256,7 @@ static void cc_print_help() {
 
 #define kExt ".c"
 
-MPCC_MODULE(HCoreCompilerCLang64x0) {
+MPCC_MODULE(NewOSCompilerCLang64x0) {
   kCompilerTypes.push_back({.fName = "void", .fValue = "void"});
   kCompilerTypes.push_back({.fName = "char", .fValue = "byte"});
   kCompilerTypes.push_back({.fName = "short", .fValue = "hword"});
