@@ -43,7 +43,7 @@
 #define kStdOut (std::cout << kWhite)
 #define kStdErr (std::cout << kRed)
 
-static char kOutputArch = CompilerKit::kPefArchPowerPC;
+static CharType kOutputArch = CompilerKit::kPefArchPowerPC;
 static Boolean kOutputAsBinary = false;
 
 static UInt32 kErrorLimit = 10;
@@ -56,7 +56,7 @@ static std::vector<std::pair<std::string, std::uintptr_t>> kOriginLabel;
 
 static bool kVerbose = false;
 
-static std::vector<e64k_num_t> kBytes;
+static std::vector<uint32_t> kBytes;
 
 static CompilerKit::AERecordHeader kCurrentRecord{
     .fName = "", .fKind = CompilerKit::kPefCode, .fSize = 0, .fOffset = 0};
@@ -506,15 +506,13 @@ std::string CompilerKit::EncoderPowerPC::CheckLine(
   }
 
   // these do take an argument.
-  std::vector<std::string> operands_inst = {"stw", "ldw", "lda", "sta"};
+  std::vector<std::string> operands_inst = {"stw", "ld", "lda", "sta"};
 
   // these don't.
-  std::vector<std::string> filter_inst = {"jlr", "jrl", "int"};
+  std::vector<std::string> filter_inst = {"blr", "bl", "sc"};
 
-  for (auto &opcode64x0 : kOpcodes64x0) {
-    if (line.find(opcode64x0.fName) != std::string::npos) {
-      if (opcode64x0.fFunct7 == kAsmNoArgs) return err_str;
-
+  for (auto &opcodePPC : kOpcodesPowerPC) {
+    if (line.find(opcodePPC.name) != std::string::npos) {
       for (auto &op : operands_inst) {
         // if only the instruction was found.
         if (line == op) {
@@ -527,13 +525,13 @@ std::string CompilerKit::EncoderPowerPC::CheckLine(
 
       // if it is like that -> addr1, 0x0
       if (auto it = std::find(filter_inst.begin(), filter_inst.end(),
-                              opcode64x0.fName);
+                              opcodePPC.name);
           it == filter_inst.cend()) {
-        if (ParserKit::find_word(line, opcode64x0.fName)) {
-          if (!isspace(line[line.find(opcode64x0.fName) +
-                            strlen(opcode64x0.fName)])) {
+        if (ParserKit::find_word(line, opcodePPC.name)) {
+          if (!isspace(line[line.find(opcodePPC.name) +
+                            strlen(opcodePPC.name)])) {
             err_str += "\nMissing space between ";
-            err_str += opcode64x0.fName;
+            err_str += opcodePPC.name;
             err_str += " and operands.\nhere -> ";
             err_str += line;
           }
@@ -660,22 +658,20 @@ bool CompilerKit::EncoderPowerPC::WriteLine(std::string &line,
                                                    const std::string &file) {
   if (ParserKit::find_word(line, "export ")) return true;
 
-  for (auto &opcode64x0 : kOpcodes64x0) {
+  for (auto &opcodePPC : kOpcodesPowerPC) {
     // strict check here
-    if (ParserKit::find_word(line, opcode64x0.fName) &&
+    if (ParserKit::find_word(line, opcodePPC.name) &&
         detail::algorithm::is_valid(line)) {
-      std::string name(opcode64x0.fName);
+      std::string name(opcodePPC.name);
       std::string jump_label, cpy_jump_label;
 
-      kBytes.emplace_back(opcode64x0.fOpcode);
-      kBytes.emplace_back(opcode64x0.fFunct3);
-      kBytes.emplace_back(opcode64x0.fFunct7);
+      kBytes.emplace_back(opcodePPC.opcode);
 
       // check funct7 type.
-      switch (opcode64x0.fFunct7) {
+      switch (opcodePPC.ops->type) {
         // reg to reg means register to register transfer operation.
-        case kAsmRegToReg:
-        case kAsmImmediate: {
+        case GREG:
+        case G0REG: {
           // \brief how many registers we found.
           std::size_t found_some = 0UL;
 
@@ -703,7 +699,7 @@ bool CompilerKit::EncoderPowerPC::WriteLine(std::string &line,
                   reg_str += line[line_index + 3];
                   detail::print_error(
                       "invalid register index, r" + reg_str +
-                          "\nnote: The PowerPC accepts registers from r0 to r20.",
+                          "\nnote: The PowerPC accepts registers from r0 to r30.",
                       file);
                   throw std::runtime_error("invalid_register_index");
                 }
@@ -711,6 +707,15 @@ bool CompilerKit::EncoderPowerPC::WriteLine(std::string &line,
 
               // finally cast to a size_t
               std::size_t reg_index = strtol(reg_str.c_str(), nullptr, 10);
+
+              uint8_t base = 0x08;
+
+              for (size_t i = 0; i != reg_index; i++)
+              {
+                base += 2;
+              }
+              
+              kBytes.emplace_back(base);
 
               if (reg_index > kAsmRegisterLimit) {
                 detail::print_error("invalid register index, r" + reg_str,
@@ -730,7 +735,7 @@ bool CompilerKit::EncoderPowerPC::WriteLine(std::string &line,
           }
 
           // we're not in immediate addressing, reg to reg.
-          if (opcode64x0.fFunct7 != kAsmImmediate) {
+          if (opcodePPC.ops->type != GREG) {
             // remember! register to register!
             if (found_some == 1) {
               detail::print_error(
@@ -738,11 +743,12 @@ bool CompilerKit::EncoderPowerPC::WriteLine(std::string &line,
                   "starts with 'r'.\nline: " +
                       line,
                   file);
+
               throw std::runtime_error("not_a_register");
             }
           }
 
-          if (found_some < 1 && name != "ldw" && name != "lda" &&
+          if (found_some < 1 && name != "ld" &&
               name != "stw") {
             detail::print_error(
                 "invalid combination of opcode and registers.\nline: " + line,
@@ -774,12 +780,12 @@ bool CompilerKit::EncoderPowerPC::WriteLine(std::string &line,
       }
 
       // try to fetch a number from the name
-      if (name == "stw" || name == "ldw" || name == "lda" || name == "sta") {
+      if (name.find("stw") != std::string::npos || name.find("ld") != std::string::npos) {
         auto where_string = name;
 
         // if we load something, we'd need it's symbol/literal
-        if (name == "stw" || name == "sta" || name == "ldw" || name == "lda" ||
-            name == "sta")
+        // @note: Something may jump on it, dont remove that if.
+        if (name.find("stw") != std::string::npos || name.find("ld") != std::string::npos)
           where_string = ",";
 
         jump_label = line;
@@ -841,7 +847,7 @@ bool CompilerKit::EncoderPowerPC::WriteLine(std::string &line,
       }
 
       // This is the case where we jump to a label, it is also used as a goto.
-      if (name == "lda" || name == "sta") {
+      if (name == "ld" || name == "stw") {
       asm_write_label:
         if (cpy_jump_label.find('\n') != std::string::npos)
           cpy_jump_label.erase(cpy_jump_label.find('\n'), 1);
@@ -903,10 +909,10 @@ bool CompilerKit::EncoderPowerPC::WriteLine(std::string &line,
         }
 
         /// don't go any further if:
-        /// load word (ldw) or store word. (stw)
+        /// load word (ld) or store word. (stw)
 
-        if (name == "ldw" ||
-            name == "stw")
+        if (name.find("ld") != std::string::npos ||
+            name.find("st") != std::string::npos)
             break;
 
         auto mld_reloc_str = std::to_string(cpy_jump_label.size());

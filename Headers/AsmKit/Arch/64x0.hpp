@@ -27,14 +27,14 @@
 typedef char e64k_character_t;
 typedef uint8_t e64k_num_t;
 
-struct CpuCode64x0 {
+struct CpuOpcode64x0 {
   const e64k_character_t fName[32];
   e64k_num_t fOpcode;
   e64k_num_t fFunct3;
   e64k_num_t fFunct7;
 };
 
-inline std::vector<CpuCode64x0> kOpcodes64x0 = {
+inline std::vector<CpuOpcode64x0> kOpcodes64x0 = {
   kAsmOpcodeDecl("nop", 0b0000000, 0b0000000, kAsmNoArgs)  // no-operation.
   kAsmOpcodeDecl("np", 0b0000000, 0b0000000, kAsmNoArgs)   // no-operation.
   kAsmOpcodeDecl("jlr", 0b1110011, 0b0000111,

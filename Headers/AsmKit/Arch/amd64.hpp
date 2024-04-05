@@ -18,7 +18,7 @@ typedef uint8_t i64_byte_t;
 typedef uint16_t i64_hword_t;
 typedef uint32_t i64_word_t;
 
-struct CpuCodeAMD64 {
+struct CpuOpcodeAMD64 {
   std::string fName;
   i64_byte_t fPrefixBytes[4];
   i64_hword_t fOpcode;
@@ -36,7 +36,7 @@ struct CpuCodeAMD64 {
 #define kJumpLimitStandard 0xE3
 #define kJumpLimitStandardLimit 0xEB
 
-inline std::vector<CpuCodeAMD64> kOpcodesAMD64 = {
+inline std::vector<CpuOpcodeAMD64> kOpcodesAMD64 = {
 kAsmOpcodeDecl("int", 0xCD) 
 kAsmOpcodeDecl("into", 0xCE) 
 kAsmOpcodeDecl("intd", 0xF1) 

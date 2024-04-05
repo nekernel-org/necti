@@ -1155,8 +1155,8 @@ class AssemblyMountpointCLang final : public CompilerKit::AssemblyInterface {
 
     if (kAcceptableErrors > 0) return -1;
 
-    std::vector<std::string> keywords = {"ldw", "stw", "lda", "sta",
-                                         "add", "dec", "mv"};
+    std::vector<std::string> keywords = {"ld", "stw",
+                                         "add", "sub", "or"};
 
     ///
     /// Replace, optimize, fix assembly output.

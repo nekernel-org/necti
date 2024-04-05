@@ -560,7 +560,7 @@ bool CompilerKit::Encoder64x0::WriteNumber(const std::size_t &pos,
           !res) {
         if (errno != 0) {
           detail::print_error("invalid hex number: " + jump_label, "64asm");
-          throw std::runtime_error("invalid_hex");
+          throw std::runtime_error("invalid_hex_number");
         }
       }
 

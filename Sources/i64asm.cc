@@ -124,29 +124,29 @@ MPCC_MODULE(NewOSAssemblerAMD64) {
       "jno", "jnp",  "jns", "jnz",  "jo",  "jp",  "jpe", "jpo",  "js",  "jz"};
 
   for (i64_hword_t i = 0; i < kJumpLimit; i++) {
-    CpuCodeAMD64 code{.fName = opcodes_jump[i],
+    CpuOpcodeAMD64 code{.fName = opcodes_jump[i],
                       .fOpcode = static_cast<i64_hword_t>(kAsmJumpOpcode + i)};
     kOpcodesAMD64.push_back(code);
   }
 
-  CpuCodeAMD64 code{.fName = "jcxz", .fOpcode = 0xE3};
+  CpuOpcodeAMD64 code{.fName = "jcxz", .fOpcode = 0xE3};
   kOpcodesAMD64.push_back(code);
 
   for (i64_hword_t i = kJumpLimitStandard; i < kJumpLimitStandardLimit; i++) {
-    CpuCodeAMD64 code{.fName = "jmp", .fOpcode = i};
+    CpuOpcodeAMD64 code{.fName = "jmp", .fOpcode = i};
     kOpcodesAMD64.push_back(code);
   }
 
-  CpuCodeAMD64 lahf{.fName = "lahf", .fOpcode = 0x9F};
+  CpuOpcodeAMD64 lahf{.fName = "lahf", .fOpcode = 0x9F};
   kOpcodesAMD64.push_back(lahf);
 
-  CpuCodeAMD64 lds{.fName = "lds", .fOpcode = 0xC5};
+  CpuOpcodeAMD64 lds{.fName = "lds", .fOpcode = 0xC5};
   kOpcodesAMD64.push_back(lds);
 
-  CpuCodeAMD64 lea{.fName = "lea", .fOpcode = 0x8D};
+  CpuOpcodeAMD64 lea{.fName = "lea", .fOpcode = 0x8D};
   kOpcodesAMD64.push_back(lea);
 
-  CpuCodeAMD64 nop{.fName = "nop", .fOpcode = 0x90};
+  CpuOpcodeAMD64 nop{.fName = "nop", .fOpcode = 0x90};
   kOpcodesAMD64.push_back(nop);
 
   //////////////// CPU OPCODES END ////////////////
