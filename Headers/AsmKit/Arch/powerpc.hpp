@@ -63,7 +63,7 @@ struct op {
 
 struct CpuOpcodePPC {
   uint32_t opcode;
-  char         *name;
+  const char *name; // c++ wants the string to be const, it makes sense here.
   struct op	 ops[5];
   uint32_t cpus;
 };

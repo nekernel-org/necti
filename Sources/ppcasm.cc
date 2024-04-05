@@ -665,13 +665,17 @@ bool CompilerKit::EncoderPowerPC::WriteLine(std::string &line,
       std::string name(opcodePPC.name);
       std::string jump_label, cpy_jump_label;
 
-      kBytes.emplace_back(opcodePPC.opcode);
-
       // check funct7 type.
       switch (opcodePPC.ops->type) {
+        default: {
+          kBytes.emplace_back(opcodePPC.opcode);
+          break;
+        }
         // reg to reg means register to register transfer operation.
-        case GREG:
-        case G0REG: {
+        case G0REG:
+        case FREG:
+        case VREG:
+        case GREG: {
           // \brief how many registers we found.
           std::size_t found_some = 0UL;
 
@@ -691,6 +695,8 @@ bool CompilerKit::EncoderPowerPC::WriteLine(std::string &line,
               if (isdigit(line[line_index + 2]))
                 reg_str += line[line_index + 2];
 
+              NumberCast32 num(opcodePPC.opcode);
+
               // it ranges from r0 to r19
               // something like r190 doesn't exist in the instruction set.
               if (kOutputArch == CompilerKit::kPefArchPowerPC) {
@@ -708,23 +714,24 @@ bool CompilerKit::EncoderPowerPC::WriteLine(std::string &line,
               // finally cast to a size_t
               std::size_t reg_index = strtol(reg_str.c_str(), nullptr, 10);
 
-              uint8_t base = 0x08;
-
-              for (size_t i = 0; i != reg_index; i++)
-              {
-                base += 2;
-              }
-              
-              kBytes.emplace_back(base);
-
               if (reg_index > kAsmRegisterLimit) {
                 detail::print_error("invalid register index, r" + reg_str,
                                     file);
                 throw std::runtime_error("invalid_register_index");
               }
 
-              kBytes.emplace_back(reg_index);
               ++found_some;
+
+              char numIndex = 0;
+
+              for (size_t i = 0; i != reg_index; i++)
+              {
+                numIndex += 0x20;
+              }
+
+              num.number[2] += numIndex;
+
+              kBytes.emplace_back(num.raw);
 
               if (kVerbose) {
                 kStdOut << "ppcasm: Register found: " << register_syntax << "\n";
@@ -775,8 +782,6 @@ bool CompilerKit::EncoderPowerPC::WriteLine(std::string &line,
             throw std::runtime_error("invalid_comb_op_pop");
           }
         }
-        default:
-          break;
       }
 
       // try to fetch a number from the name
