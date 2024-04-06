@@ -51,14 +51,14 @@
 #define kWhite "\e[0;97m"
 #define kStdOut (std::cout << kWhite)
 
-#define kPefDeaultOrg (uint64_t)0x10000
+#define kPefDeaultOrg kPefBaseOrigin
 #define kPefLinkerNumId 0x5046FF
 #define kPefAbiId "Container:Abi:"
 
-enum { kAbiMpUx = 0x5046 /* PF */ };
+enum { kStandardAbi = 0x5046 /* PF */ };
 
 static std::string kOutput;
-static Int32 kAbi = kAbiMpUx;
+static Int32 kAbi = kStandardAbi;
 static Int32 kSubArch = kPefNoSubCpu;
 static Int32 kArch = CompilerKit::kPefArch64000;
 static Bool kFatBinaryEnable = false;

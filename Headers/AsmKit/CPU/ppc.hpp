@@ -15,9 +15,6 @@
 #define VMX		0x8
 #define CPU970		0x10 /* added to OPTIONAL insts that the 970 has */
 
-typedef char e64k_character_t;
-typedef uint32_t e64k_num_t;
-
 enum optype {
   NONE,    /* no operand */
   JBSR,    /* jbsr pseudo op */

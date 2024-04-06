@@ -26,6 +26,8 @@
 
 #define kPefBaseOrigin 0x1000000
 
+#define kPefStart "__start"
+
 namespace CompilerKit {
 enum {
   kPefArchIntel86S = 100,

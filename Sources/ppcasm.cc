@@ -332,7 +332,7 @@ static bool asm_read_attributes(std::string &line) {
     // this is a special case for the start stub.
     // we want this so that ld can find it.
 
-    if (name.find("__start") != std::string::npos) {
+    if (name == kPefStart) {
       kCurrentRecord.fKind = CompilerKit::kPefCode;
     }
 
@@ -389,7 +389,7 @@ static bool asm_read_attributes(std::string &line) {
     // this is a special case for the start stub.
     // we want this so that ld can find it.
 
-    if (name == "__start") {
+    if (name == kPefStart) {
       kCurrentRecord.fKind = CompilerKit::kPefCode;
     }
 
