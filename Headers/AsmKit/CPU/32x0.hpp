@@ -9,7 +9,7 @@
 #include <Headers/Defines.hpp>
 
 // @brief 32x0 support.
-// @file Arch/32x0.hpp
+// @file CPU/32x0.hpp
 
 #define kAsmOpcodeDecl(__NAME, __OPCODE, __FUNCT3, __FUNCT7) \
   {.fName = __NAME,                                          \

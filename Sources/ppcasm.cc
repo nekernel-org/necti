@@ -19,7 +19,7 @@
 
 #define __ASM_NEED_PPC__ 1
 
-#include <Headers/AsmKit/Arch/powerpc.hpp>
+#include <Headers/AsmKit/CPU/ppc.hpp>
 #include <Headers/ParserKit.hpp>
 #include <Headers/StdKit/AE.hpp>
 #include <Headers/StdKit/PEF.hpp>

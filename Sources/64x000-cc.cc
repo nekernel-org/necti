@@ -10,7 +10,7 @@
 /// BUGS: ?
 /// TODO: 
 
-#include <Headers/AsmKit/Arch/64x0.hpp>
+#include <Headers/AsmKit/CPU/64x0.hpp>
 #include <Headers/ParserKit.hpp>
 #include <cstdio>
 #include <fstream>

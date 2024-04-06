@@ -15,7 +15,7 @@
   kPrintF(kWhite "%s\n", \
           "Mahrouss Visual C++ Compiler for NewOS, Copyright Mahrouss Logic.")
 
-#include <Headers/AsmKit/Arch/amd64.hpp>
+#include <Headers/AsmKit/CPU/amd64.hpp>
 #include <Headers/ParserKit.hpp>
 #include <cstdio>
 #include <filesystem>

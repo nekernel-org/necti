@@ -9,7 +9,7 @@
 #include <Headers/Defines.hpp>
 
 // @brief AMD64 support.
-// @file Arch/amd64.hpp
+// @file CPU/amd64.hpp
 
 #define kAsmOpcodeDecl(__NAME, __OPCODE) {.fName = __NAME, .fOpcode = __OPCODE},
 

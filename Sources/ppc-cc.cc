@@ -10,7 +10,7 @@
 /// BUGS: ?
 /// TODO: 
 
-#include <Headers/AsmKit/Arch/powerpc.hpp>
+#include <Headers/AsmKit/CPU/ppc.hpp>
 #include <Headers/ParserKit.hpp>
 #include <cstdio>
 #include <fstream>

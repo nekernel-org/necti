@@ -26,7 +26,7 @@
 
 #define kAssemblerPragmaSym '#'
 
-#include <Headers/AsmKit/Arch/amd64.hpp>
+#include <Headers/AsmKit/CPU/amd64.hpp>
 #include <Headers/ParserKit.hpp>
 #include <Headers/StdKit/AE.hpp>
 #include <Headers/StdKit/PEF.hpp>

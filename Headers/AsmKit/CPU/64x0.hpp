@@ -10,7 +10,7 @@
 #include <vector>
 
 // @brief 64x0 support.
-// @file Arch/64x0.hpp
+// @file CPU/64x0.hpp
 
 #define kAsmOpcodeDecl(__NAME, __OPCODE, __FUNCT3, __FUNCT7) \
   {.fName = __NAME,                                          \

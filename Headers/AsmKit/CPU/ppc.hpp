@@ -1,16 +1,8 @@
-/* -------------------------------------------
-
-    Copyright Mahrouss Logic
-
-------------------------------------------- */
-
 #pragma once
 
-#include <Headers/Defines.hpp>
-#include <vector>
+#include <cstdint>
 
-/// @brief PowerPC support.
-/// @file Arch/powerpc.hpp
+/// @note Based of: https://opensource.apple.com/source/cctools/cctools-750/as/ppc-opcode.h.auto.html
 
 /*
  * These defines are use in the cpus field of the instructions.  If the field
