@@ -1245,8 +1245,10 @@ class AssemblyMountpointCLang final : public CompilerKit::AssemblyInterface {
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
+#include <Version.hxx>
+
 #define kPrintF printf
-#define kSplashCxx() kPrintF(kWhite "%s\n", "cc, v1.15, (c) Mahrouss Logic")
+#define kSplashCxx() kPrintF(kWhite "cc, %s, (c) Mahrouss Logic\n", kDistVersion)
 
 static void cc_print_help() {
   kSplashCxx();

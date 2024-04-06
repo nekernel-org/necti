@@ -10,12 +10,12 @@ BEGIN
     BEGIN
       VALUE "CompanyName", "Mahrouss-Logic"
       VALUE "FileDescription", "NewOS 64x000 C compiler."
-      VALUE "FileVersion", DIST_VERSION
+      VALUE "FileVersion", kDistVersion
       VALUE "InternalName", "NewC"
       VALUE "LegalCopyright", "Mahrouss-Logic"
       VALUE "OriginalFilename", "64x000-cc.exe"
       VALUE "ProductName", "NewC"
-      VALUE "ProductVersion", DIST_VERSION
+      VALUE "ProductVersion", kDistVersion
     END
   END
   BLOCK "VarFileInfo"

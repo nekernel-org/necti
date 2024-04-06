@@ -1,3 +1,3 @@
 #pragma once
 
-#define DIST_VERSION "v1.00"
+#define kDistVersion "v1.01"

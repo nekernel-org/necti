@@ -30,7 +30,7 @@ class CompilerBackend {
   virtual bool Compile(const std::string& text, const char* file) = 0;
 
   //! @brief What language are we dealing with?
-  virtual const char* Language() { return "Generic"; }
+  virtual const char* Language() { return "Invalid Language"; }
 };
 
 struct SyntaxLeafList;

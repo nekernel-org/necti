@@ -41,7 +41,7 @@
 //! @brief standard PEF entry.
 #define kPefStart "__start"
 
-#define kToolVersion "Mahrouss Visual Linker v2.23, (c) Mahrouss Logic 2024"
+#define kLinkerVersion "Mahrouss Visual Linker v2.23, (c) Mahrouss Logic 2024"
 
 #define StringCompare(DST, SRC) strcmp(DST, SRC)
 
@@ -83,7 +83,7 @@ MPCC_MODULE(NewOSLinker) {
    */
   for (size_t i = 1; i < argc; ++i) {
     if (StringCompare(argv[i], "-h") == 0) {
-      kStdOut << kToolVersion << "\n";
+      kStdOut << kLinkerVersion << "\n";
       kStdOut << "-version: Show program version.\n";
       kStdOut << "-verbose: Enable program trace.\n";
       kStdOut << "-shared: Output as a shared PEF.\n";
@@ -97,7 +97,7 @@ MPCC_MODULE(NewOSLinker) {
 
       return 0;
     } else if (StringCompare(argv[i], "-v") == 0) {
-      kStdOut << kToolVersion << std::endl;
+      kStdOut << kLinkerVersion << std::endl;
 
       return 0;
     } else if (StringCompare(argv[i], "-fat-bin") == 0) {

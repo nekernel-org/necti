@@ -10,12 +10,12 @@ BEGIN
     BEGIN
       VALUE "CompanyName", "Mahrouss-Logic"
       VALUE "FileDescription", "NewOS PowerPC assembler."
-      VALUE "FileVersion", DIST_VERSION
+      VALUE "FileVersion", kDistVersion
       VALUE "InternalName", "NewAssembler"
       VALUE "LegalCopyright", "Mahrouss-Logic"
       VALUE "OriginalFilename", "ppcasm.exe"
       VALUE "ProductName", "NewAssembler"
-      VALUE "ProductVersion", DIST_VERSION
+      VALUE "ProductVersion", kDistVersion
     END
   END
   BLOCK "VarFileInfo"

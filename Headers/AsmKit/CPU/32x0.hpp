@@ -45,10 +45,8 @@ inline std::vector<CpuCode32x0> kOpcodes32x0 = {
     kAsmOpcodeDecl("move", 0b0100011, 0b101, kAsmImmediate)  // move registers
     kAsmOpcodeDecl("push", 0b0111011, 0b000, kAsmImmediate)  // push to sp
     kAsmOpcodeDecl("pop", 0b0111011, 0b001, kAsmImmediate)   // pop from sp.
-    kAsmOpcodeDecl("cls", 0b0111011, 0b010,
-                   kAsmImmediate)  // setup stack and call, store address to CR.
-    kAsmOpcodeDecl("rts", 0b0111011, 0b110,
-                   kAsmImmediate)  // pull stack and return form CR.
+    kAsmOpcodeDecl("cls", 0b0111011, 0b010, kAsmImmediate)  // setup stack and call, store address to CR.
+    kAsmOpcodeDecl("rts", 0b0111011, 0b110, kAsmImmediate)  // pull stack and return form CR.
     kAsmOpcodeDecl("int", 0b0111111, 0b000, kAsmSyscall)  // raise interrupt
 };
 
