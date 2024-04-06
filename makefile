@@ -12,7 +12,7 @@ COMMON_INC=-IHeaders -I./
 ifeq ($(shell uname), "Darwin")
 LINK_CC=g++ -std=c++20
 else
-LINK_CC=x86_64-w64-mingw32-g++ -std=c++20
+LINK_CC=x86_64-w64-mingw32-g++ -std=c++20 -Xlinker -s
 endif
 
 WINRES=windres

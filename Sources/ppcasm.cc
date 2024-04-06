@@ -26,8 +26,8 @@
 #include <filesystem>
 #include <fstream>
 #include <iostream>
-#include <vector>
 #include <memory>
+#include <vector>
 
 /////////////////////
 
@@ -56,7 +56,7 @@ static std::vector<std::pair<std::string, std::uintptr_t>> kOriginLabel;
 
 static bool kVerbose = false;
 
-static std::vector<uint32_t> kBytes;
+static std::vector<uint8_t> kBytes;
 
 static CompilerKit::AERecordHeader kCurrentRecord{
     .fName = "", .fKind = CompilerKit::kPefCode, .fSize = 0, .fOffset = 0};
@@ -76,7 +76,7 @@ void print_error(std::string reason, const std::string &file) noexcept {
 
   kStdErr << kRed << "[ ppcasm ] " << kWhite
           << ((file == "ppcasm") ? "internal assembler error "
-                                : ("in file, " + file))
+                                 : ("in file, " + file))
           << kBlank << std::endl;
   kStdErr << kRed << "[ ppcasm ] " << kWhite << reason << kBlank << std::endl;
 
@@ -92,7 +92,8 @@ void print_warning(std::string reason, const std::string &file) noexcept {
     kStdOut << kYellow << "[ file ] " << kWhite << file << kBlank << std::endl;
   }
 
-  kStdOut << kYellow << "[ ppcasm ] " << kWhite << reason << kBlank << std::endl;
+  kStdOut << kYellow << "[ ppcasm ] " << kWhite << reason << kBlank
+          << std::endl;
 }
 }  // namespace detail
 
@@ -106,11 +107,13 @@ MPCC_MODULE(NewOSAssemblerPowerPC) {
   for (size_t i = 1; i < argc; ++i) {
     if (argv[i][0] == '-') {
       if (strcmp(argv[i], "-version") == 0 || strcmp(argv[i], "-v") == 0) {
-        kStdOut << "ppcasm: PowerPC Assembler.\nppcasm: v1.10\nppcasm: Copyright (c) "
+        kStdOut << "ppcasm: PowerPC Assembler.\nppcasm: v1.10\nppcasm: "
+                   "Copyright (c) "
                    "2024 Mahrouss Logic.\n";
         return 0;
       } else if (strcmp(argv[i], "-h") == 0) {
-        kStdOut << "ppcasm: PowerPC Assembler.\nppcasm: Copyright (c) 2024 Mahrouss "
+        kStdOut << "ppcasm: PowerPC Assembler.\nppcasm: Copyright (c) 2024 "
+                   "Mahrouss "
                    "Logic.\n";
         kStdOut << "-version: Print program version.\n";
         kStdOut << "-verbose: Print verbose output.\n";
@@ -440,13 +443,13 @@ bool is_valid(const std::string &str) {
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
-std::string CompilerKit::EncoderPowerPC::CheckLine(
-    std::string &line, const std::string &file) {
+std::string CompilerKit::EncoderPowerPC::CheckLine(std::string &line,
+                                                   const std::string &file) {
   std::string err_str;
 
   if (line.empty() || ParserKit::find_word(line, "import") ||
-      ParserKit::find_word(line, "export") || line.find('#') != std::string::npos ||
-      ParserKit::find_word(line, ";")) {
+      ParserKit::find_word(line, "export") ||
+      line.find('#') != std::string::npos || ParserKit::find_word(line, ";")) {
     if (line.find('#') != std::string::npos) {
       line.erase(line.find('#'));
     } else if (line.find(';') != std::string::npos) {
@@ -524,12 +527,12 @@ std::string CompilerKit::EncoderPowerPC::CheckLine(
       }
 
       // if it is like that -> addr1, 0x0
-      if (auto it = std::find(filter_inst.begin(), filter_inst.end(),
-                              opcodePPC.name);
+      if (auto it =
+              std::find(filter_inst.begin(), filter_inst.end(), opcodePPC.name);
           it == filter_inst.cend()) {
         if (ParserKit::find_word(line, opcodePPC.name)) {
-          if (!isspace(line[line.find(opcodePPC.name) +
-                            strlen(opcodePPC.name)])) {
+          if (!isspace(
+                  line[line.find(opcodePPC.name) + strlen(opcodePPC.name)])) {
             err_str += "\nMissing space between ";
             err_str += opcodePPC.name;
             err_str += " and operands.\nhere -> ";
@@ -548,7 +551,7 @@ std::string CompilerKit::EncoderPowerPC::CheckLine(
 }
 
 bool CompilerKit::EncoderPowerPC::WriteNumber(const std::size_t &pos,
-                                                     std::string &jump_label) {
+                                              std::string &jump_label) {
   if (!isdigit(jump_label[pos])) return false;
 
   switch (jump_label[pos + 1]) {
@@ -655,7 +658,7 @@ bool CompilerKit::EncoderPowerPC::WriteNumber(const std::size_t &pos,
 /////////////////////////////////////////////////////////////////////////////////////////
 
 bool CompilerKit::EncoderPowerPC::WriteLine(std::string &line,
-                                                   const std::string &file) {
+                                            const std::string &file) {
   if (ParserKit::find_word(line, "export ")) return true;
 
   for (auto &opcodePPC : kOpcodesPowerPC) {
@@ -668,7 +671,123 @@ bool CompilerKit::EncoderPowerPC::WriteLine(std::string &line,
       // check funct7 type.
       switch (opcodePPC.ops->type) {
         default: {
-          kBytes.emplace_back(opcodePPC.opcode);
+          NumberCast32 num(opcodePPC.opcode);
+
+          for (auto ch : num.number) {
+            kBytes.emplace_back(ch);
+          }
+          break;
+        }
+        case PCREL: {
+          auto pos = line.find(opcodePPC.name) + strlen(opcodePPC.name);
+
+          switch (line[pos + 1]) {
+            case 'x': {
+              if (auto res = strtol(line.substr(pos).c_str(), nullptr, 16);
+                  !res) {
+                if (errno != 0) {
+                  detail::print_error("invalid hex number: " + line, "ppcasm");
+                  throw std::runtime_error("invalid_hex");
+                }
+              }
+
+              NumberCast32 numOffset(
+                  strtol(line.substr(pos).c_str(), nullptr, 16));
+
+              if (kVerbose) {
+                kStdOut << "ppcasm: found a base 16 number here:"
+                        << line.substr(pos) << "\n";
+              }
+
+              std::cout << numOffset.raw << std::endl;
+
+              kBytes.emplace_back(numOffset.number[0]);
+              kBytes.emplace_back(numOffset.number[1]);
+              kBytes.emplace_back(numOffset.number[2]);
+              kBytes.emplace_back(0x48);
+
+              break;
+            }
+            case 'b': {
+              if (auto res = strtol(line.substr(pos).c_str(), nullptr, 2);
+                  !res) {
+                if (errno != 0) {
+                  detail::print_error("invalid binary number:" + line,
+                                      "ppcasm");
+                  throw std::runtime_error("invalid_bin");
+                }
+              }
+
+              NumberCast32 numOffset(
+                  strtol(line.substr(pos).c_str(), nullptr, 2));
+
+              if (kVerbose) {
+                kStdOut << "ppcasm: found a base 2 number here:"
+                        << line.substr(pos) << "\n";
+              }
+
+              std::cout << numOffset.raw << std::endl;
+
+              kBytes.emplace_back(numOffset.number[0]);
+              kBytes.emplace_back(numOffset.number[1]);
+              kBytes.emplace_back(numOffset.number[2]);
+              kBytes.emplace_back(0x48);
+
+              break;
+            }
+            case 'o': {
+              if (auto res = strtol(line.substr(pos).c_str(), nullptr, 7);
+                  !res) {
+                if (errno != 0) {
+                  detail::print_error("invalid octal number: " + line,
+                                      "ppcasm");
+                  throw std::runtime_error("invalid_octal");
+                }
+              }
+
+              NumberCast32 numOffset(
+                  strtol(line.substr(pos).c_str(), nullptr, 7));
+
+              if (kVerbose) {
+                kStdOut << "ppcasm: found a base 8 number here:"
+                        << line.substr(pos) << "\n";
+              }
+
+              std::cout << numOffset.raw << std::endl;
+
+              kBytes.emplace_back(numOffset.number[0]);
+              kBytes.emplace_back(numOffset.number[1]);
+              kBytes.emplace_back(numOffset.number[2]);
+              kBytes.emplace_back(0x48);
+
+              break;
+            }
+            default: {
+              if (auto res = strtol(line.substr(pos).c_str(), nullptr, 10);
+                  !res) {
+                if (errno != 0) {
+                  detail::print_error("invalid hex number: " + line, "ppcasm");
+                  throw std::runtime_error("invalid_hex");
+                }
+              }
+
+              NumberCast32 numOffset(
+                  strtol(line.substr(pos).c_str(), nullptr, 10));
+
+              if (kVerbose) {
+                kStdOut << "ppcasm: found a base 10 number here:"
+                        << line.substr(pos) << "\n";
+              }
+
+              kBytes.emplace_back(numOffset.number[0]);
+              kBytes.emplace_back(numOffset.number[1]);
+              kBytes.emplace_back(numOffset.number[2]);
+              kBytes.emplace_back(0x48);
+
+              break;
+            }
+          }
+
           break;
         }
         // reg to reg means register to register transfer operation.
@@ -677,7 +796,9 @@ bool CompilerKit::EncoderPowerPC::WriteLine(std::string &line,
         case VREG:
         case GREG: {
           // \brief how many registers we found.
-          std::size_t found_some = 0UL;
+          std::size_t found_some_count = 0UL;
+
+          NumberCast64 num(opcodePPC.opcode);
 
           for (size_t line_index = 0UL; line_index < line.size();
                line_index++) {
@@ -695,20 +816,16 @@ bool CompilerKit::EncoderPowerPC::WriteLine(std::string &line,
               if (isdigit(line[line_index + 2]))
                 reg_str += line[line_index + 2];
 
-              NumberCast32 num(opcodePPC.opcode);
-
               // it ranges from r0 to r19
               // something like r190 doesn't exist in the instruction set.
-              if (kOutputArch == CompilerKit::kPefArchPowerPC) {
-                if (isdigit(line[line_index + 3]) &&
-                    isdigit(line[line_index + 2])) {
-                  reg_str += line[line_index + 3];
-                  detail::print_error(
-                      "invalid register index, r" + reg_str +
-                          "\nnote: The PowerPC accepts registers from r0 to r30.",
-                      file);
-                  throw std::runtime_error("invalid_register_index");
-                }
+              if (isdigit(line[line_index + 3]) &&
+                  isdigit(line[line_index + 2])) {
+                reg_str += line[line_index + 3];
+                detail::print_error(
+                    "invalid register index, r" + reg_str +
+                        "\nnote: The PowerPC accepts registers from r0 to r32.",
+                    file);
+                throw std::runtime_error("invalid_register_index");
               }
 
               // finally cast to a size_t
@@ -720,31 +837,35 @@ bool CompilerKit::EncoderPowerPC::WriteLine(std::string &line,
                 throw std::runtime_error("invalid_register_index");
               }
 
-              ++found_some;
-
               char numIndex = 0;
 
-              for (size_t i = 0; i != reg_index; i++)
-              {
+              for (size_t i = 0; i != reg_index; i++) {
                 numIndex += 0x20;
               }
 
               num.number[2] += numIndex;
 
-              kBytes.emplace_back(num.raw);
+              ++found_some_count;
 
               if (kVerbose) {
-                kStdOut << "ppcasm: Register found: " << register_syntax << "\n";
-                kStdOut << "ppcasm: Register amount in instruction: "
-                        << found_some << "\n";
+                kStdOut << "ppcasm: Found register: " << register_syntax
+                        << "\n";
+                kStdOut << "ppcasm: Amount of registers in instruction: "
+                        << found_some_count << "\n";
               }
+
+              if (opcodePPC.name[0] == 'm') break;
             }
           }
 
+          for (auto ch : num.number) {
+            kBytes.emplace_back(ch);
+          }
+          
           // we're not in immediate addressing, reg to reg.
           if (opcodePPC.ops->type != GREG) {
             // remember! register to register!
-            if (found_some == 1) {
+            if (found_some_count == 1) {
               detail::print_error(
                   "Unrecognized register found.\ntip: each ppcasm register "
                   "starts with 'r'.\nline: " +
@@ -755,42 +876,26 @@ bool CompilerKit::EncoderPowerPC::WriteLine(std::string &line,
             }
           }
 
-          if (found_some < 1 && name != "ld" &&
-              name != "stw") {
-            detail::print_error(
-                "invalid combination of opcode and registers.\nline: " + line,
-                file);
-            throw std::runtime_error("invalid_comb_op_reg");
-          } else if (found_some == 1 && name == "add") {
-            detail::print_error(
-                "invalid combination of opcode and registers.\nline: " + line,
-                file);
-            throw std::runtime_error("invalid_comb_op_reg");
-          } else if (found_some == 1 && name == "dec") {
+          if (found_some_count < 1 && name != "ld" && name != "stw") {
             detail::print_error(
                 "invalid combination of opcode and registers.\nline: " + line,
                 file);
             throw std::runtime_error("invalid_comb_op_reg");
           }
 
-          if (found_some > 0 && name == "pop") {
-            detail::print_error(
-                "invalid combination for opcode 'pop'.\ntip: it expects "
-                "nothing.\nline: " +
-                    line,
-                file);
-            throw std::runtime_error("invalid_comb_op_pop");
-          }
+          break;
         }
       }
 
       // try to fetch a number from the name
-      if (name.find("stw") != std::string::npos || name.find("ld") != std::string::npos) {
+      if (name.find("stw") != std::string::npos ||
+          name.find("ld") != std::string::npos) {
         auto where_string = name;
 
         // if we load something, we'd need it's symbol/literal
         // @note: Something may jump on it, dont remove that if.
-        if (name.find("stw") != std::string::npos || name.find("ld") != std::string::npos)
+        if (name.find("stw") != std::string::npos ||
+            name.find("ld") != std::string::npos)
           where_string = ",";
 
         jump_label = line;
@@ -918,7 +1023,7 @@ bool CompilerKit::EncoderPowerPC::WriteLine(std::string &line,
 
         if (name.find("ld") != std::string::npos ||
             name.find("st") != std::string::npos)
-            break;
+          break;
 
         auto mld_reloc_str = std::to_string(cpy_jump_label.size());
         mld_reloc_str += kUndefinedSymbol;

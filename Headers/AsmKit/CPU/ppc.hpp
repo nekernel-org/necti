@@ -1902,7 +1902,7 @@ inline CpuOpcodePPC kOpcodesPowerPC[] = {
 #define kAsmZeroRegister 0
 
 #define kAsmRegisterPrefix "r"
-#define kAsmRegisterLimit 31
+#define kAsmRegisterLimit 32
 #define kAsmPcRegister 17
 #define kAsmCrRegister 18
 #define kAsmSpRegister 5
