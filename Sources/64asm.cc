@@ -935,7 +935,7 @@ bool CompilerKit::Encoder64x0::WriteLine(std::string &line,
       }
 
     asm_end_label_cpy:
-      ++kOrigin;
+      kOrigin += 0x04;
 
       break;
     }

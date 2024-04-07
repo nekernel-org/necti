@@ -880,7 +880,7 @@ bool CompilerKit::EncoderPowerPC::WriteLine(std::string &line,
         }
       }
 
-      ++kOrigin;
+      kOrigin += 0x04;
 
       break;
     }
