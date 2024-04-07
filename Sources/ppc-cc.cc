@@ -1210,7 +1210,7 @@ class AssemblyMountpointCLang final : public CompilerKit::AssemblyInterface {
 
                 if (countComma == 1) {
                   leaf.fUserValue.replace(leaf.fUserValue.find("ldw"),
-                                          strlen("ldw"), "mv");
+                                          strlen("ldw"), "mr");
                 }
               }
 
@@ -1221,10 +1221,10 @@ class AssemblyMountpointCLang final : public CompilerKit::AssemblyInterface {
             }
           }
 
-          if (cnt > 1 && keyword != "mv" && keyword != "add" &&
+          if (cnt > 1 && keyword != "mr" && keyword != "add" &&
               keyword != "dec") {
             leaf.fUserValue.replace(leaf.fUserValue.find(keyword),
-                                    keyword.size(), "mv");
+                                    keyword.size(), "mr");
           }
         }
       }

@@ -2,8 +2,16 @@
 # Language: Mahrouss PowerPC Assembly support for GNU.
 # Build Date: 2024-6-4
 
-%def mv or
+%def mr or
 
-%def lda ld
+%def lda li
 %def sta stw
-%def ldw ld
+%def ldw li
+
+%def r0 0
+%def r1 1
+%def r2 2
+
+%def r3 3
+%def r4 4
+%def r5 5

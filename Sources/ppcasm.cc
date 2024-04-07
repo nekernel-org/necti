@@ -13,7 +13,7 @@
 // @brief PowerPC Assembler.
 
 // REMINDER: when dealing with an undefined symbol use (string
-// size):LinkerFindSymbol:(string) so that ld will look for it.
+// size):LinkerFindSymbol:(string) so that li will look for it.
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
@@ -300,7 +300,7 @@ asm_fail_exit:
 /////////////////////////////////////////////////////////////////////////////////////////
 
 static bool asm_read_attributes(std::string &line) {
-  // import is the opposite of export, it signals to the ld
+  // import is the opposite of export, it signals to the li
   // that we need this symbol.
   if (ParserKit::find_word(line, "import ")) {
     if (kOutputAsBinary) {
@@ -333,7 +333,7 @@ static bool asm_read_attributes(std::string &line) {
     }
 
     // this is a special case for the start stub.
-    // we want this so that ld can find it.
+    // we want this so that li can find it.
 
     if (name == kPefStart) {
       kCurrentRecord.fKind = CompilerKit::kPefCode;
@@ -390,7 +390,7 @@ static bool asm_read_attributes(std::string &line) {
     }
 
     // this is a special case for the start stub.
-    // we want this so that ld can find it.
+    // we want this so that li can find it.
 
     if (name == kPefStart) {
       kCurrentRecord.fKind = CompilerKit::kPefCode;
@@ -509,7 +509,7 @@ std::string CompilerKit::EncoderPowerPC::CheckLine(std::string &line,
   }
 
   // these do take an argument.
-  std::vector<std::string> operands_inst = {"stw", "ld", "lda", "sta"};
+  std::vector<std::string> operands_inst = {"stw", "li"};
 
   // these don't.
   std::vector<std::string> filter_inst = {"blr", "bl", "sc"};
@@ -678,6 +678,7 @@ bool CompilerKit::EncoderPowerPC::WriteLine(std::string &line,
           }
           break;
         }
+        case BADDR:
         case PCREL: {
           auto pos = line.find(opcodePPC.name) + strlen(opcodePPC.name);
 
@@ -790,13 +791,15 @@ bool CompilerKit::EncoderPowerPC::WriteLine(std::string &line,
 
           break;
         }
-        // reg to reg means register to register transfer operation.
         case G0REG:
         case FREG:
         case VREG:
         case GREG: {
           // \brief how many registers we found.
           std::size_t found_some_count = 0UL;
+          std::size_t register_count = 0UL;
+          std::string opcodeName = opcodePPC.name;
+
 
           NumberCast64 num(opcodePPC.opcode);
 
@@ -837,31 +840,94 @@ bool CompilerKit::EncoderPowerPC::WriteLine(std::string &line,
                 throw std::runtime_error("invalid_register_index");
               }
 
-              char numIndex = 0;
+              if (opcodeName == "mr") {
+                switch (register_count) {
+                  case 0: {
+                    kBytes.push_back(0x78);
 
-              for (size_t i = 0; i != reg_index; i++) {
-                numIndex += 0x20;
+                    char numIndex = 0x3;
+
+                    for (size_t i = 0; i != reg_index; i++) {
+                      numIndex += 0x8;
+                    }
+
+                    kBytes.push_back(numIndex);
+
+                    break;
+                  }
+                  case 1: {
+                    char numIndex = 0x1;
+
+                    for (size_t i = 0; i != reg_index; i++) {
+                      numIndex += 0x20;
+                    }
+
+                    for (size_t i = 0; i != reg_index; i++) {
+                      kBytes[kBytes.size() - 1] += 0x8;
+                    }
+
+                    kBytes[kBytes.size() - 1] -= 0x8;
+
+                    kBytes.push_back(numIndex);
+
+                    if (reg_index >= 10 && reg_index < 20)
+                      kBytes.push_back(0x7d);
+                    else if (reg_index >= 20 && reg_index < 30)
+                      kBytes.push_back(0x7e);
+                    else if (reg_index >= 30)
+                      kBytes.push_back(0x7e);
+                    else
+                      kBytes.push_back(0x7c);
+
+                    break;
+                  }
+                  default:
+                    break;
+                }
+
+                ++register_count;
               }
 
-              num.number[2] += numIndex;
+              if (opcodeName.find("mf") != std::string::npos ||
+                  opcodeName.find("mt") != std::string::npos) {
+                char numIndex = 0;
 
-              ++found_some_count;
+                for (size_t i = 0; i != reg_index; i++) {
+                  numIndex += 0x20;
+                }
 
-              if (kVerbose) {
-                kStdOut << "ppcasm: Found register: " << register_syntax
-                        << "\n";
-                kStdOut << "ppcasm: Amount of registers in instruction: "
-                        << found_some_count << "\n";
+                num.number[2] += numIndex;
+
+                ++found_some_count;
+
+                if (kVerbose) {
+                  kStdOut << "ppcasm: Found register: " << register_syntax
+                          << "\n";
+                  kStdOut << "ppcasm: Amount of registers in instruction: "
+                          << found_some_count << "\n";
+                }
+
+                for (auto ch : num.number) {
+                  kBytes.emplace_back(ch);
+                }
+
+                break;
               }
-
-              if (opcodePPC.name[0] == 'm') break;
             }
           }
 
-          for (auto ch : num.number) {
-            kBytes.emplace_back(ch);
+          if (opcodeName == "mr") {
+            if (register_count == 1) {
+              detail::print_error(
+                  "Unrecognized register found.\ntip: each ppcasm register "
+                  "starts with 'r'.\nline: " +
+                      line,
+                  file);
+
+              throw std::runtime_error("not_a_register");
+            }
           }
-          
+
           // we're not in immediate addressing, reg to reg.
           if (opcodePPC.ops->type != GREG) {
             // remember! register to register!
@@ -876,7 +942,7 @@ bool CompilerKit::EncoderPowerPC::WriteLine(std::string &line,
             }
           }
 
-          if (found_some_count < 1 && name != "ld" && name != "stw") {
+          if (found_some_count < 1 && name[0] != 'l' && name[0] == 's') {
             detail::print_error(
                 "invalid combination of opcode and registers.\nline: " + line,
                 file);
@@ -889,13 +955,13 @@ bool CompilerKit::EncoderPowerPC::WriteLine(std::string &line,
 
       // try to fetch a number from the name
       if (name.find("stw") != std::string::npos ||
-          name.find("ld") != std::string::npos) {
+          name.find("li") != std::string::npos) {
         auto where_string = name;
 
         // if we load something, we'd need it's symbol/literal
         // @note: Something may jump on it, dont remove that if.
         if (name.find("stw") != std::string::npos ||
-            name.find("ld") != std::string::npos)
+            name.find("li") != std::string::npos)
           where_string = ",";
 
         jump_label = line;
@@ -937,17 +1003,17 @@ bool CompilerKit::EncoderPowerPC::WriteLine(std::string &line,
         }
 
         if (!this->WriteNumber(0, jump_label)) {
-          // sta expects this: sta 0x000000, r0
-          if (name == "sta") {
+          // stw expects this: stw 0x000000, r0
+          if (name == "stw") {
             detail::print_error(
                 "invalid combination of opcode and operands.\nHere ->" + line,
                 file);
             throw std::runtime_error("invalid_comb_op_ops");
           }
         } else {
-          if (name == "sta" &&
+          if (name == "stw" &&
               cpy_jump_label.find("import ") != std::string::npos) {
-            detail::print_error("invalid usage import on 'sta', here: " + line,
+            detail::print_error("invalid usage import on 'stw', here: " + line,
                                 file);
             throw std::runtime_error("invalid_sta_usage");
           }
@@ -957,7 +1023,7 @@ bool CompilerKit::EncoderPowerPC::WriteLine(std::string &line,
       }
 
       // This is the case where we jump to a label, it is also used as a goto.
-      if (name == "ld" || name == "stw") {
+      if (name == "li" || name == "stw") {
       asm_write_label:
         if (cpy_jump_label.find('\n') != std::string::npos)
           cpy_jump_label.erase(cpy_jump_label.find('\n'), 1);
@@ -965,8 +1031,8 @@ bool CompilerKit::EncoderPowerPC::WriteLine(std::string &line,
         if (cpy_jump_label.find("import") != std::string::npos) {
           cpy_jump_label.erase(cpy_jump_label.find("import"), strlen("import"));
 
-          if (name == "sta") {
-            detail::print_error("import is not allowed on a sta operation.",
+          if (name == "stw") {
+            detail::print_error("import is not allowed on a stw operation.",
                                 file);
             throw std::runtime_error("import_sta_op");
           } else {
@@ -974,7 +1040,7 @@ bool CompilerKit::EncoderPowerPC::WriteLine(std::string &line,
           }
         }
 
-        if (name == "lda" || name == "sta") {
+        if (name == "li" || name == "stw") {
           for (auto &label : kOriginLabel) {
             if (cpy_jump_label == label.first) {
               if (kVerbose) {
@@ -1019,9 +1085,9 @@ bool CompilerKit::EncoderPowerPC::WriteLine(std::string &line,
         }
 
         /// don't go any further if:
-        /// load word (ld) or store word. (stw)
+        /// load word (li) or store word. (stw)
 
-        if (name.find("ld") != std::string::npos ||
+        if (name.find("li") != std::string::npos ||
             name.find("st") != std::string::npos)
           break;
 

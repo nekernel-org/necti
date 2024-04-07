@@ -50,8 +50,9 @@ inline std::vector<CpuOpcodeAMD64> kOpcodesAMD64 = {
   kAsmOpcodeDecl("hlt", 0xf4)
   kAsmOpcodeDecl("nop", 0x90)
   kAsmOpcodeDecl("mov", 0x48)
-  kAsmOpcodeDecl("jmp", 0xE9)
   kAsmOpcodeDecl("call", 0xFF)
+  kAsmOpcodeDecl("mv", 0x48)
+  kAsmOpcodeDecl("br", 0xE9)
 };
 
 #define kAsmRegisterLimit 15

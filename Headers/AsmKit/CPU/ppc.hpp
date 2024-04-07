@@ -1039,6 +1039,9 @@ inline CpuOpcodePPC kOpcodesPowerPC[] = {
     {0x7c000378, "or", {{16, 5, GREG}, {21, 5, GREG}, {11, 5, GREG}}},
     {0x7c000379, "or.", {{16, 5, GREG}, {21, 5, GREG}, {11, 5, GREG}}},
 
+    /// @brief Move register
+    {0x7c000378, "mr", {{16, 5, GREG}, {21, 5, GREG}, {11, 5, GREG}}},
+
     {0x7c000338, "orc", {{16, 5, GREG}, {21, 5, GREG}, {11, 5, GREG}}},
     {0x7c000339, "orc.", {{16, 5, GREG}, {21, 5, GREG}, {11, 5, GREG}}},
 
@@ -1902,7 +1905,7 @@ inline CpuOpcodePPC kOpcodesPowerPC[] = {
 #define kAsmZeroRegister 0
 
 #define kAsmRegisterPrefix "r"
-#define kAsmRegisterLimit 32
+#define kAsmRegisterLimit 31
 #define kAsmPcRegister 17
 #define kAsmCrRegister 18
 #define kAsmSpRegister 5
