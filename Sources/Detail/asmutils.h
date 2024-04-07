@@ -25,7 +25,7 @@ static NumberCast32 GetNumber32(std::string line, std::string name) {
       NumberCast32 numOffset(strtol(line.substr(pos).c_str(), nullptr, 16));
 
       if (kVerbose) {
-        kStdOut << "ppcasm: found a base 16 number here:" << line.substr(pos)
+        kStdOut << "ppcasm: found a base 16 number here: " << line.substr(pos)
                 << "\n";
       }
 

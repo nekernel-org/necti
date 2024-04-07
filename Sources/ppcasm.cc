@@ -683,108 +683,12 @@ bool CompilerKit::EncoderPowerPC::WriteLine(std::string &line,
         }
         case BADDR:
         case PCREL: {
-          auto pos = line.find(opcodePPC.name) + strlen(opcodePPC.name);
-
-          switch (line[pos + 1]) {
-            case 'x': {
-              if (auto res = strtol(line.substr(pos).c_str(), nullptr, 16);
-                  !res) {
-                if (errno != 0) {
-                  detail::print_error("invalid hex number: " + line, "ppcasm");
-                  throw std::runtime_error("invalid_hex");
-                }
-              }
-
-              NumberCast32 numOffset(
-                  strtol(line.substr(pos).c_str(), nullptr, 16));
-
-              if (kVerbose) {
-                kStdOut << "ppcasm: found a base 16 number here:"
-                        << line.substr(pos) << "\n";
-              }
-
-              kBytes.emplace_back(numOffset.number[0]);
-              kBytes.emplace_back(numOffset.number[1]);
-              kBytes.emplace_back(numOffset.number[2]);
-              kBytes.emplace_back(0x48);
-
-              break;
-            }
-            case 'b': {
-              if (auto res = strtol(line.substr(pos).c_str(), nullptr, 2);
-                  !res) {
-                if (errno != 0) {
-                  detail::print_error("invalid binary number:" + line,
-                                      "ppcasm");
-                  throw std::runtime_error("invalid_bin");
-                }
-              }
-
-              NumberCast32 numOffset(
-                  strtol(line.substr(pos).c_str(), nullptr, 2));
-
-              if (kVerbose) {
-                kStdOut << "ppcasm: found a base 2 number here:"
-                        << line.substr(pos) << "\n";
-              }
-
-              kBytes.emplace_back(numOffset.number[0]);
-              kBytes.emplace_back(numOffset.number[1]);
-              kBytes.emplace_back(numOffset.number[2]);
-              kBytes.emplace_back(0x48);
-
-              break;
-            }
-            case 'o': {
-              if (auto res = strtol(line.substr(pos).c_str(), nullptr, 7);
-                  !res) {
-                if (errno != 0) {
-                  detail::print_error("invalid octal number: " + line,
-                                      "ppcasm");
-                  throw std::runtime_error("invalid_octal");
-                }
-              }
-
-              NumberCast32 numOffset(
-                  strtol(line.substr(pos).c_str(), nullptr, 7));
-
-              if (kVerbose) {
-                kStdOut << "ppcasm: found a base 8 number here:"
-                        << line.substr(pos) << "\n";
-              }
-
-              kBytes.emplace_back(numOffset.number[0]);
-              kBytes.emplace_back(numOffset.number[1]);
-              kBytes.emplace_back(numOffset.number[2]);
-              kBytes.emplace_back(0x48);
-
-              break;
-            }
-            default: {
-              if (auto res = strtol(line.substr(pos).c_str(), nullptr, 10);
-                  !res) {
-                if (errno != 0) {
-                  detail::print_error("invalid hex number: " + line, "ppcasm");
-                  throw std::runtime_error("invalid_hex");
-                }
-              }
-
-              NumberCast32 numOffset(
-                  strtol(line.substr(pos).c_str(), nullptr, 10));
-
-              if (kVerbose) {
-                kStdOut << "ppcasm: found a base 10 number here:"
-                        << line.substr(pos) << "\n";
-              }
-
-              kBytes.emplace_back(numOffset.number[0]);
-              kBytes.emplace_back(numOffset.number[1]);
-              kBytes.emplace_back(numOffset.number[2]);
-              kBytes.emplace_back(0x48);
-
-              break;
-            }
-          }
+          auto num = GetNumber32(line, name);
+          
+          kBytes.emplace_back(num.number[0]);
+          kBytes.emplace_back(num.number[1]);
+          kBytes.emplace_back(num.number[2]);
+          kBytes.emplace_back(0x48);
 
           break;
         }
@@ -844,13 +748,12 @@ bool CompilerKit::EncoderPowerPC::WriteLine(std::string &line,
                   numIndex += 0x20;
                 }
 
-                kBytes.push_back(0x38);
-                kBytes.push_back(numIndex);
-
                 auto num = GetNumber32(line, reg_str);
 
                 kBytes.push_back(num.number[0]);
                 kBytes.push_back(num.number[1]);
+                kBytes.push_back(numIndex);
+                kBytes.push_back(0x38);
 
                 // check if bigger than two.
                 for (size_t i = 2; i < 4; i++) {
