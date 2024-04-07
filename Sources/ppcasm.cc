@@ -97,9 +97,12 @@ void print_warning(std::string reason, const std::string &file) noexcept {
 }
 }  // namespace detail
 
+/// Do not move it on top! it uses the assembler detail namespace!
+#include <asmutils.h>
+
 /////////////////////////////////////////////////////////////////////////////////////////
 
-// @brief PowerPC assembler entrypoint, the program/module starts here.
+/// @brief PowerPC assembler entrypoint, the program/module starts here.
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
@@ -653,7 +656,7 @@ bool CompilerKit::EncoderPowerPC::WriteNumber(const std::size_t &pos,
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
-// @brief Read and write an instruction to the output array.
+/// @brief Read and write an instruction to the output array.
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
@@ -700,8 +703,6 @@ bool CompilerKit::EncoderPowerPC::WriteLine(std::string &line,
                         << line.substr(pos) << "\n";
               }
 
-              std::cout << numOffset.raw << std::endl;
-
               kBytes.emplace_back(numOffset.number[0]);
               kBytes.emplace_back(numOffset.number[1]);
               kBytes.emplace_back(numOffset.number[2]);
@@ -727,8 +728,6 @@ bool CompilerKit::EncoderPowerPC::WriteLine(std::string &line,
                         << line.substr(pos) << "\n";
               }
 
-              std::cout << numOffset.raw << std::endl;
-
               kBytes.emplace_back(numOffset.number[0]);
               kBytes.emplace_back(numOffset.number[1]);
               kBytes.emplace_back(numOffset.number[2]);
@@ -753,8 +752,6 @@ bool CompilerKit::EncoderPowerPC::WriteLine(std::string &line,
                 kStdOut << "ppcasm: found a base 8 number here:"
                         << line.substr(pos) << "\n";
               }
-
-              std::cout << numOffset.raw << std::endl;
 
               kBytes.emplace_back(numOffset.number[0]);
               kBytes.emplace_back(numOffset.number[1]);
@@ -791,6 +788,7 @@ bool CompilerKit::EncoderPowerPC::WriteLine(std::string &line,
 
           break;
         }
+        /// General purpose, float, vector operations. Everything that involve registers.
         case G0REG:
         case FREG:
         case VREG:
@@ -799,7 +797,6 @@ bool CompilerKit::EncoderPowerPC::WriteLine(std::string &line,
           std::size_t found_some_count = 0UL;
           std::size_t register_count = 0UL;
           std::string opcodeName = opcodePPC.name;
-
 
           NumberCast64 num(opcodePPC.opcode);
 
@@ -838,6 +835,33 @@ bool CompilerKit::EncoderPowerPC::WriteLine(std::string &line,
                 detail::print_error("invalid register index, r" + reg_str,
                                     file);
                 throw std::runtime_error("invalid_register_index");
+              }
+
+              if (opcodeName == "li") {
+                char numIndex = 0;
+
+                for (size_t i = 0; i != reg_index; i++) {
+                  numIndex += 0x20;
+                }
+
+                kBytes.push_back(0x38);
+                kBytes.push_back(numIndex);
+
+                auto num = GetNumber32(line, reg_str);
+
+                kBytes.push_back(num.number[0]);
+                kBytes.push_back(num.number[1]);
+
+                // check if bigger than two.
+                for (size_t i = 2; i < 4; i++) {
+                  if (num.number[i] > 0) {
+                    detail::print_warning("number overflow on li operation.",
+                                          file);
+                    break;
+                  }
+                }
+
+                break;
               }
 
               if (opcodeName == "mr") {
@@ -953,169 +977,6 @@ bool CompilerKit::EncoderPowerPC::WriteLine(std::string &line,
         }
       }
 
-      // try to fetch a number from the name
-      if (name.find("stw") != std::string::npos ||
-          name.find("li") != std::string::npos) {
-        auto where_string = name;
-
-        // if we load something, we'd need it's symbol/literal
-        // @note: Something may jump on it, dont remove that if.
-        if (name.find("stw") != std::string::npos ||
-            name.find("li") != std::string::npos)
-          where_string = ",";
-
-        jump_label = line;
-
-        auto found_sym = false;
-
-        while (jump_label.find(where_string) != std::string::npos) {
-          jump_label = jump_label.substr(jump_label.find(where_string) +
-                                         where_string.size());
-
-          while (jump_label.find(" ") != std::string::npos) {
-            jump_label.erase(jump_label.find(" "), 1);
-          }
-
-          if (jump_label[0] != kAsmRegisterPrefix[0] &&
-              !isdigit(jump_label[1])) {
-            if (found_sym) {
-              detail::print_error(
-                  "invalid combination of opcode and operands.\nhere -> " +
-                      jump_label,
-                  file);
-              throw std::runtime_error("invalid_comb_op_ops");
-            } else {
-              // death trap installed.
-              found_sym = true;
-            }
-          }
-        }
-
-        cpy_jump_label = jump_label;
-
-        // replace any spaces with $
-        if (jump_label[0] == ' ') {
-          while (jump_label.find(' ') != std::string::npos) {
-            if (isalnum(jump_label[0]) || isdigit(jump_label[0])) break;
-
-            jump_label.erase(jump_label.find(' '), 1);
-          }
-        }
-
-        if (!this->WriteNumber(0, jump_label)) {
-          // stw expects this: stw 0x000000, r0
-          if (name == "stw") {
-            detail::print_error(
-                "invalid combination of opcode and operands.\nHere ->" + line,
-                file);
-            throw std::runtime_error("invalid_comb_op_ops");
-          }
-        } else {
-          if (name == "stw" &&
-              cpy_jump_label.find("import ") != std::string::npos) {
-            detail::print_error("invalid usage import on 'stw', here: " + line,
-                                file);
-            throw std::runtime_error("invalid_sta_usage");
-          }
-        }
-
-        goto asm_write_label;
-      }
-
-      // This is the case where we jump to a label, it is also used as a goto.
-      if (name == "li" || name == "stw") {
-      asm_write_label:
-        if (cpy_jump_label.find('\n') != std::string::npos)
-          cpy_jump_label.erase(cpy_jump_label.find('\n'), 1);
-
-        if (cpy_jump_label.find("import") != std::string::npos) {
-          cpy_jump_label.erase(cpy_jump_label.find("import"), strlen("import"));
-
-          if (name == "stw") {
-            detail::print_error("import is not allowed on a stw operation.",
-                                file);
-            throw std::runtime_error("import_sta_op");
-          } else {
-            goto asm_end_label_cpy;
-          }
-        }
-
-        if (name == "li" || name == "stw") {
-          for (auto &label : kOriginLabel) {
-            if (cpy_jump_label == label.first) {
-              if (kVerbose) {
-                kStdOut << "ppcasm: Replace label " << cpy_jump_label
-                        << " to address: " << label.second << std::endl;
-              }
-
-              CompilerKit::NumberCast64 num(label.second);
-
-              for (auto &num : num.number) {
-                kBytes.push_back(num);
-              }
-
-              goto asm_end_label_cpy;
-            }
-          }
-
-          if (cpy_jump_label[0] == '0') {
-            switch (cpy_jump_label[1]) {
-              case 'x':
-              case 'o':
-              case 'b':
-                if (this->WriteNumber(0, cpy_jump_label))
-                  goto asm_end_label_cpy;
-
-                break;
-              default:
-                break;
-            }
-
-            if (isdigit(cpy_jump_label[0])) {
-              if (this->WriteNumber(0, cpy_jump_label)) goto asm_end_label_cpy;
-
-              break;
-            }
-          }
-        }
-
-        if (cpy_jump_label.size() < 1) {
-          detail::print_error("label is empty, can't jump on it.", file);
-          throw std::runtime_error("label_empty");
-        }
-
-        /// don't go any further if:
-        /// load word (li) or store word. (stw)
-
-        if (name.find("li") != std::string::npos ||
-            name.find("st") != std::string::npos)
-          break;
-
-        auto mld_reloc_str = std::to_string(cpy_jump_label.size());
-        mld_reloc_str += kUndefinedSymbol;
-        mld_reloc_str += cpy_jump_label;
-
-        bool ignore_back_slash = false;
-
-        for (auto &reloc_chr : mld_reloc_str) {
-          if (reloc_chr == '\\') {
-            ignore_back_slash = true;
-            continue;
-          }
-
-          if (ignore_back_slash) {
-            ignore_back_slash = false;
-            continue;
-          }
-
-          kBytes.push_back(reloc_chr);
-        }
-
-        kBytes.push_back('\0');
-        goto asm_end_label_cpy;
-      }
-
-    asm_end_label_cpy:
       ++kOrigin;
 
       break;

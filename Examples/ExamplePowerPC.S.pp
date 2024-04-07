@@ -1,8 +1,5 @@
-# Path: SDK/PowerPC.inc
+# Path: Examples/ExamplePowerPC.S.pp
 # Language: PowerPC Assembly
 # Build Date: 2024-6-4
 
-
-mr r1, r31
-mr r1, r20
-sc
+li r2, 0x1055

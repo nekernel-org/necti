@@ -7,7 +7,7 @@
  # 	========================================================
  #
 
-COMMON_INC=-IHeaders -I./
+COMMON_INC=-I./Headers -I./ -I./Sources/Detail
 
 ifeq ($(shell uname), "Darwin")
 LINK_CC=g++ -std=c++20
