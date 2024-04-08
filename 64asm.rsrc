@@ -9,7 +9,7 @@ BEGIN
     BLOCK "080904E4"
     BEGIN
       VALUE "CompanyName", "Mahrouss-Logic"
-      VALUE "FileDescription", "NewOS 64x000 assembler."
+      VALUE "FileDescription", "NewOS 64x0 assembler."
       VALUE "FileVersion", kDistVersion
       VALUE "InternalName", "NewAssembler"
       VALUE "LegalCopyright", "Mahrouss-Logic"

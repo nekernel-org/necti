@@ -34,6 +34,9 @@
 //! Advanced Executable Object Format
 #include <Headers/StdKit/AE.hpp>
 
+//! Dist version
+#include <Version.hxx>
+
 //! C++ I/O headers.
 #include <fstream>
 #include <iostream>
@@ -41,7 +44,7 @@
 //! @brief standard PEF entry.
 #define kPefStart "__start"
 
-#define kLinkerVersion "Mahrouss Visual Linker v2.23, (c) Mahrouss Logic 2024"
+#define kLinkerVersion "Mahrouss Linker %s, (c) Mahrouss Logic 2024"
 
 #define StringCompare(DST, SRC) strcmp(DST, SRC)
 
@@ -74,6 +77,9 @@ static const char *kLdDynamicSym = ":RuntimeSymbol:";
 static std::vector<std::string> kObjectList;
 static std::vector<char> kObjectBytes;
 
+#define kPrintF printf
+#define kSplashLink() kPrintF(kWhite kLinkerVersion, kDistVersion)
+
 MPCC_MODULE(NewOSLinker) {
   bool is_executable = true;
 
@@ -97,8 +103,7 @@ MPCC_MODULE(NewOSLinker) {
 
       return 0;
     } else if (StringCompare(argv[i], "-v") == 0) {
-      kStdOut << kLinkerVersion << std::endl;
-
+      kSplashLink();
       return 0;
     } else if (StringCompare(argv[i], "-fat-bin") == 0) {
       kFatBinaryEnable = true;

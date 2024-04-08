@@ -28,8 +28,8 @@ PP_OUTPUT=Output/bpp.exe
 SRC_COMMON=Sources/String.cc Sources/AsmKit.cc
 
 # C Compiler (PowerPC)
-64X0_CC_SRC=Sources/64x000-cc.cc $(SRC_COMMON)
-64X0_CC_OUTPUT=Output/64x000-cc.exe
+64X0_CC_SRC=Sources/64x0-cc.cc $(SRC_COMMON)
+64X0_CC_OUTPUT=Output/64x0-cc.exe
 
 # C Compiler
 PPC_CC_SRC=Sources/ppc-cc.cc $(SRC_COMMON)
@@ -60,9 +60,9 @@ compiler:
 	$(WINRES) i64asm.rsrc -O coff -o i64asm.obj
 	$(WINRES) 64asm.rsrc -O coff -o 64asm.obj
 	$(WINRES) ppcasm.rsrc -O coff -o ppcasm.obj
-	$(WINRES) 64x000-cc.rsrc -O coff -o 64x000-cc.obj
+	$(WINRES) 64x0-cc.rsrc -O coff -o 64x0-cc.obj
 	$(WINRES) ppc-cc.rsrc -O coff -o ppc-cc.obj
-	$(LINK_CC) $(COMMON_INC) 64x000-cc.obj $(64X0_CC_SRC) -o $(64X0_CC_OUTPUT)
+	$(LINK_CC) $(COMMON_INC) 64x0-cc.obj $(64X0_CC_SRC) -o $(64X0_CC_OUTPUT)
 	$(LINK_CC) $(COMMON_INC) ppc-cc.obj $(PPC_CC_SRC) -o $(PPC_CC_OUTPUT)
 	$(LINK_CC) $(COMMON_INC) i64asm.obj $(IASM_SRC) -o $(IASM_OUTPUT)
 	$(LINK_CC) $(COMMON_INC) 64asm.obj $(ASM_SRC) -o $(ASM_OUTPUT)

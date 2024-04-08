@@ -167,7 +167,7 @@ class CompilerBackendCLang final : public ParserKit::CompilerBackend {
   std::string Check(const char *text, const char *file);
   bool Compile(const std::string &text, const char *file) override;
 
-  const char *Language() override { return "64x000 C"; }
+  const char *Language() override { return "64x0 C"; }
 };
 
 static CompilerBackendCLang *kCompilerBackend = nullptr;
