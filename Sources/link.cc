@@ -44,7 +44,7 @@
 //! @brief standard PEF entry.
 #define kPefStart "__start"
 
-#define kLinkerVersion "Mahrouss Linker %s, (c) Mahrouss Logic 2024"
+#define kLinkerVersion "Mahrouss Linker %s, (c) Mahrouss Logic 2024\n"
 
 #define StringCompare(DST, SRC) strcmp(DST, SRC)
 
@@ -89,7 +89,7 @@ MPCC_MODULE(NewOSLinker) {
    */
   for (size_t i = 1; i < argc; ++i) {
     if (StringCompare(argv[i], "-h") == 0) {
-      kStdOut << kLinkerVersion << "\n";
+      kSplashLink();
       kStdOut << "-version: Show program version.\n";
       kStdOut << "-verbose: Enable program trace.\n";
       kStdOut << "-shared: Output as a shared PEF.\n";
