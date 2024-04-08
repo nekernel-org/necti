@@ -7,7 +7,7 @@
  * 	========================================================
  */
 
-/// BUGS: ?
+/// BUGS: 0
 /// TODO: 
 
 #include <Headers/AsmKit/CPU/ppc.hpp>

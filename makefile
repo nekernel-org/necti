@@ -53,7 +53,8 @@ all: pre-processor compiler linker
 
 .PHONY: pre-processor
 pre-processor:
-	$(LINK_CC) $(COMMON_INC) $(PP_SRC) -o $(PP_OUTPUT)
+	$(WINRES) bpp.rsrc -O coff -o bpp.obj
+	$(LINK_CC) $(COMMON_INC) $(PP_SRC) bpp.obj -o $(PP_OUTPUT)
 
 .PHONY: compiler
 compiler:
