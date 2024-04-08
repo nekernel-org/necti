@@ -41,9 +41,6 @@
 #include <fstream>
 #include <iostream>
 
-//! @brief standard PEF entry.
-#define kPefStart "__start"
-
 #define kLinkerVersion "Mahrouss Linker %s, (c) Mahrouss Logic 2024\n"
 
 #define StringCompare(DST, SRC) strcmp(DST, SRC)
