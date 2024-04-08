@@ -684,7 +684,7 @@ bool CompilerKit::EncoderPowerPC::WriteLine(std::string &line,
         case BADDR:
         case PCREL: {
           auto num = GetNumber32(line, name);
-          
+
           kBytes.emplace_back(num.number[0]);
           kBytes.emplace_back(num.number[1]);
           kBytes.emplace_back(num.number[2]);
@@ -692,7 +692,8 @@ bool CompilerKit::EncoderPowerPC::WriteLine(std::string &line,
 
           break;
         }
-        /// General purpose, float, vector operations. Everything that involve registers.
+        /// General purpose, float, vector operations. Everything that involve
+        /// registers.
         case G0REG:
         case FREG:
         case VREG:
@@ -802,7 +803,7 @@ bool CompilerKit::EncoderPowerPC::WriteLine(std::string &line,
                     else if (reg_index >= 20 && reg_index < 30)
                       kBytes.push_back(0x7e);
                     else if (reg_index >= 30)
-                      kBytes.push_back(0x7e);
+                      kBytes.push_back(0x7f);
                     else
                       kBytes.push_back(0x7c);
 
@@ -813,6 +814,21 @@ bool CompilerKit::EncoderPowerPC::WriteLine(std::string &line,
                 }
 
                 ++register_count;
+              }
+
+              /// FIXME: Prompt correct opcode in little endian.
+              if (opcodeName == "addi") {
+
+                if (found_some_count == 2 || found_some_count == 0)
+                  kBytes.emplace_back(reg_index);
+                else if (found_some_count == 1) kBytes.emplace_back(0x00);
+
+                ++found_some_count;
+                
+                if (found_some_count > 3) {
+                  detail::print_error("Too much registers. -> " + line, file);
+                  throw std::runtime_error("too_much_regs");
+                }
               }
 
               if (opcodeName.find("mf") != std::string::npos ||
@@ -827,12 +843,26 @@ bool CompilerKit::EncoderPowerPC::WriteLine(std::string &line,
 
                 ++found_some_count;
 
+                if (found_some_count > 1) {
+                  detail::print_error("Too much registers. -> " + line, file);
+                  throw std::runtime_error("too_much_regs");
+                }
+
                 if (kVerbose) {
                   kStdOut << "ppcasm: Found register: " << register_syntax
                           << "\n";
                   kStdOut << "ppcasm: Amount of registers in instruction: "
                           << found_some_count << "\n";
                 }
+
+                if (reg_index >= 10 && reg_index < 20)
+                  num.number[3] = 0x7d;
+                else if (reg_index >= 20 && reg_index < 30)
+                  num.number[3] = 0x7e;
+                else if (reg_index >= 30)
+                  num.number[3] = 0x7f;
+                else
+                  num.number[3] = 0x7c;
 
                 for (auto ch : num.number) {
                   kBytes.emplace_back(ch);
@@ -843,13 +873,13 @@ bool CompilerKit::EncoderPowerPC::WriteLine(std::string &line,
             }
           }
 
+          if (opcodeName == "addi") {
+            kBytes.emplace_back(0x38);
+          }
+
           if (opcodeName == "mr") {
             if (register_count == 1) {
-              detail::print_error(
-                  "Unrecognized register found.\ntip: each ppcasm register "
-                  "starts with 'r'.\nline: " +
-                      line,
-                  file);
+              detail::print_error("Too few registers. -> " + line, file);
 
               throw std::runtime_error("not_a_register");
             }

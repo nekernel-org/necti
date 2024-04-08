@@ -735,7 +735,7 @@ bool CompilerKit::Encoder64x0::WriteLine(std::string &line,
             // remember! register to register!
             if (found_some == 1) {
               detail::print_error(
-                  "Unrecognized register found.\ntip: each 64asm register "
+                  "Too few registers.\ntip: each 64asm register "
                   "starts with 'r'.\nline: " +
                       line,
                   file);
