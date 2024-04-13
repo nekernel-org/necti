@@ -28,6 +28,7 @@
 #include <iostream>
 #include <memory>
 #include <vector>
+#include <algorithm>
 
 /////////////////////
 
@@ -436,7 +437,7 @@ static inline bool is_not_alnum_space(char c) {
 }
 
 bool is_valid(const std::string &str) {
-  return find_if(str.begin(), str.end(), is_not_alnum_space) == str.end();
+  return std::find_if(str.begin(), str.end(), is_not_alnum_space) == str.end();
 }
 }  // namespace detail::algorithm
 
