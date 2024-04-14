@@ -382,7 +382,7 @@ static bool asm_read_attributes(std::string &line) {
     } else if (name.find(".data64") != std::string::npos) {
       // no code will be executed from here.
       kCurrentRecord.fKind = CompilerKit::kPefData;
-    } else if (name.find(".page_zero") != std::string::npos) {
+    } else if (name.find(".zero64") != std::string::npos) {
       // this is a bss section.
       kCurrentRecord.fKind = CompilerKit::kPefZero;
     }
@@ -411,8 +411,7 @@ static bool asm_read_attributes(std::string &line) {
     return true;
   }
   // export is a special keyword used by i64asm to tell the AE output stage to
-  // mark this section as a header. it currently supports .code64, .data64.,
-  // page_zero
+  // mark this section as a header. it currently supports .code64, .data64 and .zero64.
   else if (ParserKit::find_word(line, "export")) {
     if (kOutputAsBinary) {
       detail::print_error("Invalid directive in flat binary mode.", "i64asm");
@@ -445,10 +444,10 @@ static bool asm_read_attributes(std::string &line) {
 
       name_copy.erase(name_copy.find(".data64"), strlen(".data64"));
       kCurrentRecord.fKind = CompilerKit::kPefData;
-    } else if (name.find(".page_zero") != std::string::npos) {
+    } else if (name.find(".zero64") != std::string::npos) {
       // this is a bss section.
 
-      name_copy.erase(name_copy.find(".page_zero"), strlen(".page_zero"));
+      name_copy.erase(name_copy.find(".zero64"), strlen(".zero64"));
       kCurrentRecord.fKind = CompilerKit::kPefZero;
     }
 

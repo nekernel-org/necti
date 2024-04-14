@@ -301,14 +301,14 @@ asm_fail_exit:
 static bool asm_read_attributes(std::string &line) {
   // import is the opposite of export, it signals to the ld
   // that we need this symbol.
-  if (ParserKit::find_word(line, "import ")) {
+  if (ParserKit::find_word(line, "import")) {
     if (kOutputAsBinary) {
       detail::print_error("Invalid import directive in flat binary mode.",
                           "64asm");
       throw std::runtime_error("invalid_import_bin");
     }
 
-    auto name = line.substr(line.find("import ") + strlen("import "));
+    auto name = line.substr(line.find("import") + strlen("import"));
 
     std::string result = std::to_string(name.size());
     result += kUndefinedSymbol;
@@ -326,7 +326,7 @@ static bool asm_read_attributes(std::string &line) {
     } else if (name.find(".data64") != std::string::npos) {
       // no code will be executed from here.
       kCurrentRecord.fKind = CompilerKit::kPefData;
-    } else if (name.find(".page_zero") != std::string::npos) {
+    } else if (name.find(".zero64") != std::string::npos) {
       // this is a bss section.
       kCurrentRecord.fKind = CompilerKit::kPefZero;
     }
@@ -356,14 +356,14 @@ static bool asm_read_attributes(std::string &line) {
   // export is a special keyword used by 64asm to tell the AE output stage to
   // mark this section as a header. it currently supports .code64, .data64.,
   // page_zero
-  else if (ParserKit::find_word(line, "export ")) {
+  else if (ParserKit::find_word(line, "export")) {
     if (kOutputAsBinary) {
       detail::print_error("Invalid export directive in flat binary mode.",
                           "64asm");
       throw std::runtime_error("invalid_export_bin");
     }
 
-    auto name = line.substr(line.find("export ") + strlen("export "));
+    auto name = line.substr(line.find("export") + strlen("export"));
 
     std::string name_copy = name;
 
@@ -381,10 +381,10 @@ static bool asm_read_attributes(std::string &line) {
 
       name_copy.erase(name_copy.find(".data64"), strlen(".data64"));
       kCurrentRecord.fKind = CompilerKit::kPefData;
-    } else if (name.find(".page_zero") != std::string::npos) {
+    } else if (name.find(".zero64") != std::string::npos) {
       // this is a bss section.
 
-      name_copy.erase(name_copy.find(".page_zero"), strlen(".page_zero"));
+      name_copy.erase(name_copy.find(".zero64"), strlen(".zero64"));
       kCurrentRecord.fKind = CompilerKit::kPefZero;
     }
 
