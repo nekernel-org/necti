@@ -16,25 +16,24 @@
 
 #include <Headers/Defines.hpp>
 
-#define kXCOFF64Magic    0x01F7 
+#define kXCOFF64Magic 0x01F7
 
-#define kXCOFFRelFlg     0x0001
+#define kXCOFFRelFlg 0x0001
 #define kXCOFFExecutable 0x0002
-#define kXCOFFLnno       0x0004
-#define kXCOFFLSyms      0x0008
+#define kXCOFFLnno 0x0004
+#define kXCOFFLSyms 0x0008
 
-namespace COmpilerKit {
-/// @brief XCoff file header, meant for PowerPC programs.
-typedef struct XCoffFileHeader
-{
-    UInt16 fMagic;
-    UInt16 fTarget;
-    UInt16 fNumSecs;
-    UInt32 fTimeDat;
-    UIntPtr fSymPtr;
-    UInt32 fNumSyms;
-    UInt16 fOptHdr; // ?: Number of bytes in optional header
+namespace CompilerKit {
+/// @brief XCoff identification header.
+typedef struct XCoffFileHeader {
+  UInt16 fMagic;
+  UInt16 fTarget;
+  UInt16 fNumSecs;
+  UInt32 fTimeDat;
+  UIntPtr fSymPtr;
+  UInt32 fNumSyms;
+  UInt16 fOptHdr;  // ?: Number of bytes in optional header
 } XCoffFileHeader;
-} // namespace CompilerKit
+}  // namespace CompilerKit
 
-#endif // ifndef __XCOFF__
+#endif  // ifndef __XCOFF__

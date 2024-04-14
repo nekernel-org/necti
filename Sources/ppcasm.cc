@@ -23,12 +23,12 @@
 #include <Headers/ParserKit.hpp>
 #include <Headers/StdKit/AE.hpp>
 #include <Headers/StdKit/PEF.hpp>
+#include <algorithm>
 #include <filesystem>
 #include <fstream>
 #include <iostream>
 #include <memory>
 #include <vector>
-#include <algorithm>
 
 /////////////////////
 
@@ -664,11 +664,11 @@ bool CompilerKit::EncoderPowerPC::WriteNumber(const std::size_t &pos,
 bool CompilerKit::EncoderPowerPC::WriteLine(std::string &line,
                                             const std::string &file) {
   if (ParserKit::find_word(line, "export")) return true;
+  if (!detail::algorithm::is_valid(line)) return true;
 
   for (auto &opcodePPC : kOpcodesPowerPC) {
     // strict check here
-    if (ParserKit::find_word(line, opcodePPC.name) &&
-        detail::algorithm::is_valid(line)) {
+    if (ParserKit::find_word(line, opcodePPC.name)) {
       std::string name(opcodePPC.name);
       std::string jump_label, cpy_jump_label;
 
@@ -819,13 +819,13 @@ bool CompilerKit::EncoderPowerPC::WriteLine(std::string &line,
 
               /// FIXME: Prompt correct opcode in little endian.
               if (opcodeName == "addi") {
-
                 if (found_some_count == 2 || found_some_count == 0)
                   kBytes.emplace_back(reg_index);
-                else if (found_some_count == 1) kBytes.emplace_back(0x00);
+                else if (found_some_count == 1)
+                  kBytes.emplace_back(0x00);
 
                 ++found_some_count;
-                
+
                 if (found_some_count > 3) {
                   detail::print_error("Too much registers. -> " + line, file);
                   throw std::runtime_error("too_much_regs");
@@ -912,13 +912,8 @@ bool CompilerKit::EncoderPowerPC::WriteLine(std::string &line,
       }
 
       kOrigin += 0x04;
-    } else {
-      /// check if we got a valid sequence of characters.
-      if (!isalnum(line[0])) {
-	detail::print_error("syntax error", file);
-	throw std::runtime_error("syntax_error");
-      } 
-   }
+      break;
+    }
   }
 
   return true;

@@ -11,11 +11,11 @@
 
 #include <Headers/ParserKit.hpp>
 #include <Headers/StdKit/ErrorID.hpp>
+#include <algorithm>
+#include <filesystem>
 #include <fstream>
 #include <iostream>
-#include <filesystem>
 #include <vector>
-#include <algorithm>
 
 #define kMacroPrefix '%'
 
@@ -72,8 +72,8 @@ static std::vector<std::string> kIncludes;
 static std::string kWorkingDir;
 
 static std::vector<std::string> kKeywords = {
-    "include",   "if",     "pragma", "def",     "elif",
-    "ifdef", "ifndef", "else",   "warning", "error"};
+    "include", "if",     "pragma", "def",     "elif",
+    "ifdef",   "ifndef", "else",   "warning", "error"};
 
 #define kKeywordCxxCnt kKeywords.size()
 
@@ -281,7 +281,7 @@ void bpp_parse_file(std::ifstream &hdr_file, std::ofstream &pp_out) {
         if (ParserKit::find_word(hdr_line, macro.fName) &&
             hdr_line.find("%def") == std::string::npos) {
           auto value = macro.fValue;
-          
+
           hdr_line.replace(hdr_line.find(macro.fName), macro.fName.size(),
                            value);
         }
@@ -839,8 +839,8 @@ MPCC_MODULE(NewOSPreprocessor) {
           kWorkingDir = inc;
         }
 
-        if (strcmp(argv[index], "-def") == 0 &&
-            argv[index + 1] != nullptr && argv[index + 2] != nullptr) {
+        if (strcmp(argv[index], "-def") == 0 && argv[index + 1] != nullptr &&
+            argv[index + 2] != nullptr) {
           std::string macro_key = argv[index + 1];
 
           std::string macro_value;

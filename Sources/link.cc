@@ -24,12 +24,10 @@
 
 //! Portable Executable Format
 #include <Headers/StdKit/PEF.hpp>
-
-#include <vector>
-#include <filesystem>
-
-#include <random>
 #include <Headers/UUID.hpp>
+#include <filesystem>
+#include <random>
+#include <vector>
 
 //! Advanced Executable Object Format
 #include <Headers/StdKit/AE.hpp>
@@ -118,7 +116,7 @@ MPCC_MODULE(NewOSLinker) {
       kArch = CompilerKit::kPefArch32000;
 
       continue;
-    }  else if (StringCompare(argv[i], "-ppc64") == 0) {
+    } else if (StringCompare(argv[i], "-ppc64") == 0) {
       kArch = CompilerKit::kPefArchPowerPC;
 
       continue;
@@ -352,11 +350,9 @@ MPCC_MODULE(NewOSLinker) {
     // check if this symbol needs to be resolved.
     if (std::string(commandHdr.Name).find(kLdDefineSymbol) !=
             std::string::npos &&
-        std::string(commandHdr.Name).find(kLdDynamicSym) ==
-            std::string::npos) {
+        std::string(commandHdr.Name).find(kLdDynamicSym) == std::string::npos) {
       if (kVerbose)
-        kStdOut << "link: found undefined symbol: " << commandHdr.Name
-                << "\n";
+        kStdOut << "link: found undefined symbol: " << commandHdr.Name << "\n";
 
       if (auto it = std::find(not_found.begin(), not_found.end(),
                               std::string(commandHdr.Name));
@@ -420,11 +416,12 @@ MPCC_MODULE(NewOSLinker) {
 
   if (!kStartFound && is_executable) {
     if (kVerbose)
-      kStdOut << "link: undefined entrypoint: __start, you may have forget to link "
-                 "against your compiler's runtime library.\n";
+      kStdOut
+          << "link: undefined entrypoint: __start, you may have forget to link "
+             "against your compiler's runtime library.\n";
 
-    kStdOut << "link: undefined entrypoint " << kPefStart << " for executable: "
-            << kOutput << "\n";
+    kStdOut << "link: undefined entrypoint " << kPefStart
+            << " for executable: " << kOutput << "\n";
   }
 
   // step 4: write some pef commands.
@@ -482,7 +479,7 @@ MPCC_MODULE(NewOSLinker) {
 
   std::random_device rd;
 
-  auto seedData = std::array<int, std::mt19937::state_size> {};
+  auto seedData = std::array<int, std::mt19937::state_size>{};
   std::generate(std::begin(seedData), std::end(seedData), std::ref(rd));
   std::seed_seq seq(std::begin(seedData), std::end(seedData));
   std::mt19937 generator(seq);
@@ -492,7 +489,8 @@ MPCC_MODULE(NewOSLinker) {
   auto uuidStr = uuids::to_string(id);
 
   memcpy(uuidHeader.Name, "Container:GUID:4:", strlen("Container:GUID:4:"));
-  memcpy(uuidHeader.Name + strlen("Container:GUID:4:"), uuidStr.c_str(), uuidStr.size());
+  memcpy(uuidHeader.Name + strlen("Container:GUID:4:"), uuidStr.c_str(),
+         uuidStr.size());
 
   uuidHeader.Size = 16;
   uuidHeader.Offset = outputFc.tellp();
@@ -508,11 +506,12 @@ MPCC_MODULE(NewOSLinker) {
 
   // Finally write down the command headers.
   // And check for any duplications
-  for (size_t commandHeaderIndex = 0UL; commandHeaderIndex < commandHdrsList.size(); ++commandHeaderIndex) {
-    if (std::string(commandHdrsList[commandHeaderIndex].Name).find(kLdDefineSymbol) !=
-            std::string::npos &&
-        std::string(commandHdrsList[commandHeaderIndex].Name).find(kLdDynamicSym) ==
-            std::string::npos) {
+  for (size_t commandHeaderIndex = 0UL;
+       commandHeaderIndex < commandHdrsList.size(); ++commandHeaderIndex) {
+    if (std::string(commandHdrsList[commandHeaderIndex].Name)
+                .find(kLdDefineSymbol) != std::string::npos &&
+        std::string(commandHdrsList[commandHeaderIndex].Name)
+                .find(kLdDynamicSym) == std::string::npos) {
       // ignore :UndefinedSymbol: headers, they do not contain code.
       continue;
     }
@@ -525,14 +524,15 @@ MPCC_MODULE(NewOSLinker) {
 
     outputFc << commandHdrsList[commandHeaderIndex];
 
-    for (size_t subCommandHeaderIndex = 0UL; subCommandHeaderIndex < commandHdrsList.size();
+    for (size_t subCommandHeaderIndex = 0UL;
+         subCommandHeaderIndex < commandHdrsList.size();
          ++subCommandHeaderIndex) {
       if (subCommandHeaderIndex == commandHeaderIndex) continue;
 
       if (std::string(commandHdrsList[subCommandHeaderIndex].Name)
                   .find(kLdDefineSymbol) != std::string::npos &&
-          std::string(commandHdrsList[subCommandHeaderIndex].Name).find(kLdDynamicSym) ==
-              std::string::npos) {
+          std::string(commandHdrsList[subCommandHeaderIndex].Name)
+                  .find(kLdDynamicSym) == std::string::npos) {
         if (kVerbose) {
           kStdOut << "link: ignore :UndefinedSymbol: command header...\n";
         }
@@ -543,7 +543,8 @@ MPCC_MODULE(NewOSLinker) {
 
       auto &commandHdr = commandHdrsList[subCommandHeaderIndex];
 
-      if (commandHdr.Name == std::string(commandHdrsList[commandHeaderIndex].Name)) {
+      if (commandHdr.Name ==
+          std::string(commandHdrsList[commandHeaderIndex].Name)) {
         if (std::find(duplSymbols.cbegin(), duplSymbols.cend(),
                       commandHdr.Name) == duplSymbols.cend()) {
           duplSymbols.emplace_back(commandHdr.Name);

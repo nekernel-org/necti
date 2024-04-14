@@ -391,8 +391,7 @@ MPCC_MODULE(CompilerCPlusPlus) {
         continue;
       }
 
-      if (strcmp(argv[index], "-h") == 0 ||
-          strcmp(argv[index], "-help") == 0) {
+      if (strcmp(argv[index], "-h") == 0 || strcmp(argv[index], "-help") == 0) {
         cxx_print_help();
 
         return kOk;

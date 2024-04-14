@@ -111,7 +111,7 @@ class EncoderInterface {
 class EncoderAMD64 final : public EncoderInterface {
  public:
   explicit EncoderAMD64() = default;
-  ~EncoderAMD64() override  = default;
+  ~EncoderAMD64() override = default;
 
   MPCC_COPY_DEFAULT(EncoderAMD64);
 

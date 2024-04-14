@@ -26,9 +26,8 @@
 #include <filesystem>
 #include <fstream>
 #include <iostream>
-#include <vector>
 #include <memory>
-
+#include <vector>
 
 /////////////////////
 
@@ -50,6 +49,4 @@
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
-MPCC_MODULE(NewOSAssembler32000) {
-  return 0;
-}
+MPCC_MODULE(NewOSAssembler32000) { return 0; }

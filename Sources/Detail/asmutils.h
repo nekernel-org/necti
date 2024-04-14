@@ -3,9 +3,9 @@
 using namespace CompilerKit;
 
 /// @brief Get Number from line.
-/// @param line 
-/// @param name 
-/// @return 
+/// @param line
+/// @param name
+/// @return
 static NumberCast32 GetNumber32(std::string line, std::string name) {
   auto pos = line.find(name) + name.size();
 

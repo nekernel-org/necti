@@ -2,18 +2,19 @@
 
 #include <cstdint>
 
-/// @note Based of: https://opensource.apple.com/source/cctools/cctools-750/as/ppc-opcode.h.auto.html
+/// @note Based of:
+/// https://opensource.apple.com/source/cctools/cctools-750/as/ppc-opcode.h.auto.html
 
 /*
  * These defines are use in the cpus field of the instructions.  If the field
  * is zero it can execute on all cpus.  The defines are or'ed together.  This
  * information is used to set the cpusubtype in the resulting object file.
  */
-#define CPU601		0x1
-#define IMPL64		0x2
-#define OPTIONAL	0x4
-#define VMX		0x8
-#define CPU970		0x10 /* added to OPTIONAL insts that the 970 has */
+#define CPU601 0x1
+#define IMPL64 0x2
+#define OPTIONAL 0x4
+#define VMX 0x8
+#define CPU970 0x10 /* added to OPTIONAL insts that the 970 has */
 
 enum optype {
   NONE,    /* no operand */
@@ -47,13 +48,13 @@ enum optype {
 struct op {
   uint32_t offset : 5;
   uint32_t width : 5;
-  enum optype   type : 6;
+  enum optype type : 6;
 };
 
 struct CpuOpcodePPC {
   uint32_t opcode;
-  const char *name; // c++ wants the string to be const, it makes sense here.
-  struct op	 ops[5];
+  const char *name;  // c++ wants the string to be const, it makes sense here.
+  struct op ops[5];
   uint32_t cpus;
 };
 

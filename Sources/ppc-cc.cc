@@ -8,21 +8,20 @@
  */
 
 /// BUGS: 0
-/// TODO: 
+/// TODO:
 
 #include <Headers/AsmKit/CPU/ppc.hpp>
 #include <Headers/ParserKit.hpp>
+#include <Headers/UUID.hpp>
 #include <cstdio>
+#include <filesystem>
 #include <fstream>
 #include <iostream>
+#include <memory>
+#include <random>
 #include <string>
 #include <utility>
 #include <vector>
-#include <memory>
-#include <filesystem>
-
-#include <random>
-#include <Headers/UUID.hpp>
 
 #define kOk 0
 
@@ -103,7 +102,7 @@ void print_error(std::string reason, std::string file) noexcept {
   if (kState.fLastFile != file) {
     std::cout << kRed << "[ cc ] " << kWhite
               << ((file == "cc") ? "internal compiler error "
-                                   : ("in file, " + file))
+                                 : ("in file, " + file))
               << kBlank << std::endl;
     std::cout << kRed << "[ cc ] " << kWhite << reason << kBlank << std::endl;
 
@@ -214,7 +213,7 @@ bool CompilerBackendCLang::Compile(const std::string &text, const char *file) {
   // setup generator.
   std::random_device rd;
 
-  auto seed_data = std::array<int, std::mt19937::state_size> {};
+  auto seed_data = std::array<int, std::mt19937::state_size>{};
   std::generate(std::begin(seed_data), std::end(seed_data), std::ref(rd));
   std::seed_seq seq(std::begin(seed_data), std::end(seed_data));
   std::mt19937 generator(seq);
@@ -292,8 +291,8 @@ bool CompilerBackendCLang::Compile(const std::string &text, const char *file) {
       for (size_t return_index = text_index; return_index < textBuffer.size();
            ++return_index) {
         if (textBuffer[return_index] != return_keyword[index]) {
-          for (size_t value_index = return_index; value_index < textBuffer.size();
-               ++value_index) {
+          for (size_t value_index = return_index;
+               value_index < textBuffer.size(); ++value_index) {
             if (textBuffer[value_index] == ';') break;
 
             value += textBuffer[value_index];
@@ -338,7 +337,7 @@ bool CompilerBackendCLang::Compile(const std::string &text, const char *file) {
       }
     }
 
-    if (textBuffer[text_index] == 'i' && textBuffer[text_index+1] == 'f') {
+    if (textBuffer[text_index] == 'i' && textBuffer[text_index + 1] == 'f') {
       auto expr = textBuffer.substr(text_index + 2);
       textBuffer.erase(text_index, 2);
 
@@ -346,17 +345,19 @@ bool CompilerBackendCLang::Compile(const std::string &text, const char *file) {
         expr.erase(expr.find("{"));
       }
 
-      if (expr.find("(") != std::string::npos)
-        expr.erase(expr.find("("));
-      
-      if (expr.find(")") != std::string::npos)
-        expr.erase(expr.find(")"));
-        
+      if (expr.find("(") != std::string::npos) expr.erase(expr.find("("));
+
+      if (expr.find(")") != std::string::npos) expr.erase(expr.find(")"));
+
       kIfFunction = "__MPCC_IF_PROC_";
       kIfFunction += std::to_string(time_off._Raw);
 
       syntaxLeaf.fUserValue = "\tlda r12, import ";
-      syntaxLeaf.fUserValue += kIfFunction + "\n\t#r12 = Code to jump on, r11 right cond, r10 left cond.\n\tbeq r10, r11, r12\ndword export .code64 " + kIfFunction + "\n";
+      syntaxLeaf.fUserValue +=
+          kIfFunction +
+          "\n\t#r12 = Code to jump on, r11 right cond, r10 left cond.\n\tbeq "
+          "r10, r11, r12\ndword export .code64 " +
+          kIfFunction + "\n";
       kState.fSyntaxTree->fLeafList.push_back(syntaxLeaf);
 
       kIfFound = true;
@@ -374,7 +375,8 @@ bool CompilerBackendCLang::Compile(const std::string &text, const char *file) {
       if (textBuffer.find("typedef ") != std::string::npos) continue;
 
       if (textBuffer[text_index] == '=' && kInStruct) {
-        detail::print_error("assignement of value in struct " + textBuffer, file);
+        detail::print_error("assignement of value in struct " + textBuffer,
+                            file);
         continue;
       }
 
@@ -407,15 +409,16 @@ bool CompilerBackendCLang::Compile(const std::string &text, const char *file) {
         continue;
       }
 
-      if (textBuffer[text_index + 1] == '=' || textBuffer[text_index - 1] == '!' ||
-          textBuffer[text_index - 1] == '<' || textBuffer[text_index - 1] == '>') {
+      if (textBuffer[text_index + 1] == '=' ||
+          textBuffer[text_index - 1] == '!' ||
+          textBuffer[text_index - 1] == '<' ||
+          textBuffer[text_index - 1] == '>') {
         continue;
       }
 
       std::string substr;
 
-      if (textBuffer.find('=') != std::string::npos && kInBraces &&
-        !kIfFound) {
+      if (textBuffer.find('=') != std::string::npos && kInBraces && !kIfFound) {
         if (textBuffer.find("*") != std::string::npos) {
           if (textBuffer.find("=") > textBuffer.find("*"))
             substr += "\tlda ";
@@ -448,16 +451,19 @@ bool CompilerBackendCLang::Compile(const std::string &text, const char *file) {
           }
         }
 
-        if (textBuffer[text_index_2] == '{' || textBuffer[text_index_2] == '}') continue;
+        if (textBuffer[text_index_2] == '{' || textBuffer[text_index_2] == '}')
+          continue;
 
         if (textBuffer[text_index_2] == ';') {
           break;
         }
 
-        if (textBuffer[text_index_2] == ' ' || textBuffer[text_index_2] == '\t') {
+        if (textBuffer[text_index_2] == ' ' ||
+            textBuffer[text_index_2] == '\t') {
           if (first_encountered != 2) {
             if (textBuffer[text_index] != '=' &&
-                substr.find("export .data64") == std::string::npos && !kInStruct)
+                substr.find("export .data64") == std::string::npos &&
+                !kInStruct)
               substr += "export .data64 ";
           }
 
@@ -468,8 +474,8 @@ bool CompilerBackendCLang::Compile(const std::string &text, const char *file) {
 
         if (textBuffer[text_index_2] == '=') {
           if (!kInBraces) {
-            substr.replace(substr.find("export .data64"), strlen("export .data64"),
-                           "export .page_zero ");
+            substr.replace(substr.find("export .data64"),
+                           strlen("export .data64"), "export .page_zero ");
           }
 
           substr += ",";
@@ -533,7 +539,8 @@ bool CompilerBackendCLang::Compile(const std::string &text, const char *file) {
 
       bool type_crossed = false;
 
-      for (size_t idx = textBuffer.find('(') + 1; idx < textBuffer.size(); ++idx) {
+      for (size_t idx = textBuffer.find('(') + 1; idx < textBuffer.size();
+           ++idx) {
         if (textBuffer[idx] == ',') continue;
 
         if (textBuffer[idx] == ' ') continue;
@@ -637,8 +644,7 @@ bool CompilerBackendCLang::Compile(const std::string &text, const char *file) {
         kBracesCount = 0;
       }
 
-      if (kIfFound)
-        kIfFound = false;
+      if (kIfFound) kIfFound = false;
 
       if (kInStruct) kInStruct = false;
 
@@ -1155,8 +1161,7 @@ class AssemblyMountpointCLang final : public CompilerKit::AssemblyInterface {
 
     if (kAcceptableErrors > 0) return -1;
 
-    std::vector<std::string> keywords = {"ld", "stw",
-                                         "add", "sub", "or"};
+    std::vector<std::string> keywords = {"ld", "stw", "add", "sub", "or"};
 
     ///
     /// Replace, optimize, fix assembly output.
@@ -1199,9 +1204,12 @@ class AssemblyMountpointCLang final : public CompilerKit::AssemblyInterface {
             }
 
             if (ParserKit::find_word(leaf.fUserValue, needle)) {
-              if (leaf.fUserValue.find("import " + needle) != std::string::npos) {
+              if (leaf.fUserValue.find("import " + needle) !=
+                  std::string::npos) {
                 std::string range = "import " + needle;
-                leaf.fUserValue.replace(leaf.fUserValue.find("import " + needle), range.size(), needle);
+                leaf.fUserValue.replace(
+                    leaf.fUserValue.find("import " + needle), range.size(),
+                    needle);
               }
 
               if (leaf.fUserValue.find("ldw r6") != std::string::npos) {
@@ -1248,11 +1256,10 @@ class AssemblyMountpointCLang final : public CompilerKit::AssemblyInterface {
 #include <Version.hxx>
 
 #define kPrintF printf
-#define kSplashCxx() kPrintF(kWhite "cc, %s, (c) Mahrouss Logic\n", kDistVersion)
+#define kSplashCxx() \
+  kPrintF(kWhite "cc, %s, (c) Mahrouss Logic\n", kDistVersion)
 
-static void cc_print_help() {
-  kSplashCxx();
-}
+static void cc_print_help() { kSplashCxx(); }
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
@@ -1291,8 +1298,7 @@ MPCC_MODULE(NewOSCompilerCLangPowerPC) {
         continue;
       }
 
-      if (strcmp(argv[index], "-h") == 0 ||
-          strcmp(argv[index], "-help") == 0) {
+      if (strcmp(argv[index], "-h") == 0 || strcmp(argv[index], "-help") == 0) {
         cc_print_help();
 
         return kOk;

@@ -40,13 +40,15 @@ struct CpuCode32x0 {
 #define kAsmByteStr ".byte"   /* 8-bit */
 
 inline std::vector<CpuCode32x0> kOpcodes32x0 = {
-    kAsmOpcodeDecl("nop", 0b0100011, 0b000, kAsmNoArgs)      // nothing to do.
+    kAsmOpcodeDecl("nop", 0b0100011, 0b000, kAsmNoArgs)     // nothing to do.
     kAsmOpcodeDecl("br", 0b1110011, 0b001, kAsmJump)        // jump to branch
-    kAsmOpcodeDecl("mr", 0b0100011, 0b101, kAsmImmediate)  // move registers
+    kAsmOpcodeDecl("mr", 0b0100011, 0b101, kAsmImmediate)   // move registers
     kAsmOpcodeDecl("psh", 0b0111011, 0b000, kAsmImmediate)  // push to sp
-    kAsmOpcodeDecl("pop", 0b0111011, 0b001, kAsmImmediate)   // pop from sp.
-    kAsmOpcodeDecl("cls", 0b0111011, 0b010, kAsmImmediate)  // setup stack and call, store address to CR.
-    kAsmOpcodeDecl("rts", 0b0111011, 0b110, kAsmImmediate)  // pull stack and return form CR.
+    kAsmOpcodeDecl("pop", 0b0111011, 0b001, kAsmImmediate)  // pop from sp.
+    kAsmOpcodeDecl("cls", 0b0111011, 0b010,
+                   kAsmImmediate)  // setup stack and call, store address to CR.
+    kAsmOpcodeDecl("rts", 0b0111011, 0b110,
+                   kAsmImmediate)  // pull stack and return form CR.
     kAsmOpcodeDecl("int", 0b0111111, 0b000, kAsmSyscall)  // raise interrupt
 };
 

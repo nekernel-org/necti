@@ -23,12 +23,12 @@
 #include <Headers/ParserKit.hpp>
 #include <Headers/StdKit/AE.hpp>
 #include <Headers/StdKit/PEF.hpp>
+#include <algorithm>
 #include <filesystem>
 #include <fstream>
 #include <iostream>
-#include <vector>
 #include <memory>
-#include <algorithm>
+#include <vector>
 
 /////////////////////
 
@@ -442,13 +442,13 @@ bool is_valid(const std::string &str) {
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
-std::string CompilerKit::Encoder64x0::CheckLine(
-    std::string &line, const std::string &file) {
+std::string CompilerKit::Encoder64x0::CheckLine(std::string &line,
+                                                const std::string &file) {
   std::string err_str;
 
   if (line.empty() || ParserKit::find_word(line, "import") ||
-      ParserKit::find_word(line, "export") || line.find('#') != std::string::npos ||
-      ParserKit::find_word(line, ";")) {
+      ParserKit::find_word(line, "export") ||
+      line.find('#') != std::string::npos || ParserKit::find_word(line, ";")) {
     if (line.find('#') != std::string::npos) {
       line.erase(line.find('#'));
     } else if (line.find(';') != std::string::npos) {
@@ -552,7 +552,7 @@ std::string CompilerKit::Encoder64x0::CheckLine(
 }
 
 bool CompilerKit::Encoder64x0::WriteNumber(const std::size_t &pos,
-                                                     std::string &jump_label) {
+                                           std::string &jump_label) {
   if (!isdigit(jump_label[pos])) return false;
 
   switch (jump_label[pos + 1]) {
@@ -659,7 +659,7 @@ bool CompilerKit::Encoder64x0::WriteNumber(const std::size_t &pos,
 /////////////////////////////////////////////////////////////////////////////////////////
 
 bool CompilerKit::Encoder64x0::WriteLine(std::string &line,
-                                                   const std::string &file) {
+                                         const std::string &file) {
   if (ParserKit::find_word(line, "export ")) return true;
 
   for (auto &opcode64x0 : kOpcodes64x0) {
@@ -907,9 +907,7 @@ bool CompilerKit::Encoder64x0::WriteLine(std::string &line,
         /// don't go any further if:
         /// load word (ldw) or store word. (stw)
 
-        if (name == "ldw" ||
-            name == "stw")
-            break;
+        if (name == "ldw" || name == "stw") break;
 
         auto mld_reloc_str = std::to_string(cpy_jump_label.size());
         mld_reloc_str += kUndefinedSymbol;

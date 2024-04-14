@@ -30,13 +30,13 @@
 #include <Headers/ParserKit.hpp>
 #include <Headers/StdKit/AE.hpp>
 #include <Headers/StdKit/PEF.hpp>
+#include <algorithm>
 #include <cstdlib>
 #include <filesystem>
 #include <fstream>
 #include <iostream>
 #include <memory>
 #include <vector>
-#include <algorithm>
 
 /////////////////////
 
@@ -125,8 +125,9 @@ MPCC_MODULE(NewOSAssemblerAMD64) {
       "jno", "jnp",  "jns", "jnz",  "jo",  "jp",  "jpe", "jpo",  "js",  "jz"};
 
   for (i64_hword_t i = 0; i < kJumpLimit; i++) {
-    CpuOpcodeAMD64 code{.fName = opcodes_jump[i],
-                      .fOpcode = static_cast<i64_hword_t>(kAsmJumpOpcode + i)};
+    CpuOpcodeAMD64 code{
+        .fName = opcodes_jump[i],
+        .fOpcode = static_cast<i64_hword_t>(kAsmJumpOpcode + i)};
     kOpcodesAMD64.push_back(code);
   }
 
@@ -389,7 +390,7 @@ static bool asm_read_attributes(std::string &line) {
 
     // this is a special case for the start stub.
     // we want this so that ld can find it.
-    
+
     if (name == kPefStart) {
       kCurrentRecord.fKind = CompilerKit::kPefCode;
     }
@@ -411,7 +412,8 @@ static bool asm_read_attributes(std::string &line) {
     return true;
   }
   // export is a special keyword used by i64asm to tell the AE output stage to
-  // mark this section as a header. it currently supports .code64, .data64 and .zero64.
+  // mark this section as a header. it currently supports .code64, .data64 and
+  // .zero64.
   else if (ParserKit::find_word(line, "export")) {
     if (kOutputAsBinary) {
       detail::print_error("Invalid directive in flat binary mode.", "i64asm");
@@ -1106,12 +1108,10 @@ bool CompilerKit::EncoderAMD64::WriteLine(std::string &line,
 
         uint8_t modrm = 0x0;
 
-        for (size_t i = 0; i < REGISTER_LIST.size(); ++i)
-        {
-          if (REGISTER_LIST[i].fModRM != currentRegList[0].fModRM)
-            modrm += 16;
+        for (size_t i = 0; i < REGISTER_LIST.size(); ++i) {
+          if (REGISTER_LIST[i].fModRM != currentRegList[0].fModRM) modrm += 16;
         }
-        
+
         modrm += currentRegList[1].fModRM;
 
         kAppBytes.emplace_back(modrm);
@@ -1162,8 +1162,7 @@ bool CompilerKit::EncoderAMD64::WriteLine(std::string &line,
             continue;
           } else {
             if (kVerbose) {
-              kStdOut << "i64asm: Assembler origin set: " << kOrigin
-                      << std::endl;
+              kStdOut << "i64asm: origin set: " << kOrigin << std::endl;
             }
 
             break;
@@ -1172,9 +1171,17 @@ bool CompilerKit::EncoderAMD64::WriteLine(std::string &line,
       }
     }
   }
-
-  if (line.find(".number") != std::string::npos) {
-    this->WriteNumber32(line.find(".number") + strlen(".number") + 1, line);
+  /// write a dword
+  else if (line.find(".dword") != std::string::npos) {
+    this->WriteNumber32(line.find(".dword") + strlen(".dword") + 1, line);
+  }
+  /// write a long
+  else if (line.find(".long") != std::string::npos) {
+    this->WriteNumber(line.find(".long") + strlen(".long") + 1, line);
+  }
+  /// write a 16-bit number
+  else if (line.find(".word") != std::string::npos) {
+    this->WriteNumber16(line.find(".word") + strlen(".word") + 1, line);
   }
 
   return true;
