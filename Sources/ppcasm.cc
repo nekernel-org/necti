@@ -313,7 +313,7 @@ static bool asm_read_attributes(std::string &line) {
       throw std::runtime_error("invalid_import_bin");
     }
 
-    auto name = line.substr(line.find("import") + strlen("import" + 1));
+    auto name = line.substr(line.find("import") + strlen("import") + 1);
 
     std::string result = std::to_string(name.size());
     result += kUndefinedSymbol;
