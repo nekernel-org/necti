@@ -5,6 +5,7 @@
 	- Add support 'mov' which encodes a,b,c,d,e and 8,15 registers.
 
 - C compilers
-	- Add structs/enums, and a preprocssing program.
+    - Fix code generation (ppc done)
+	- Add structs/enums, and a preprocessing program (ppc todo)
 
 - Extended Syntax Checker (esc.exe -c-asm foo.s)

@@ -15,6 +15,7 @@
 #define OPTIONAL 0x4
 #define VMX 0x8
 #define CPU970 0x10 /* added to OPTIONAL insts that the 970 has */
+#define CPUMAHROUSS 0x12 /* optional mahrouss insts. */
 
 enum optype {
   NONE,    /* no operand */

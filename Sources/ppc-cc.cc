@@ -320,16 +320,35 @@ bool CompilerBackendCLang::Compile(const std::string &text, const char *file) {
             value += tmp;
           }
 
-          syntaxLeaf.fUserValue = "\tldw r19, ";
+          syntaxLeaf.fUserValue = "\tmr r31, ";
 
           // make it pretty.
-          if (value.find('\t') != std::string::npos)
+          while (value.find('\t') != std::string::npos)
             value.erase(value.find('\t'), 1);
 
-          syntaxLeaf.fUserValue += value + "\n";
+          while (value.find(' ') != std::string::npos)
+            value.erase(value.find(' '), 1);
+
+          while (value.find("import") != std::string::npos)
+            value.erase(value.find("import"), strlen("import"));
+
+          bool found = false;
+
+          for (auto& reg : kState.kStackFrame)
+          {
+              if (value.find(reg.fName) != std::string::npos)
+              {
+                  found = true;
+                  syntaxLeaf.fUserValue += reg.fReg;
+                  break;
+              }
+          }
+
+          if (!found)
+                      syntaxLeaf.fUserValue += "r0";
         }
 
-        syntaxLeaf.fUserValue += "\tjlr";
+        syntaxLeaf.fUserValue += "\n\tblr";
 
         kState.fSyntaxTree->fLeafList.push_back(syntaxLeaf);
 
@@ -352,12 +371,13 @@ bool CompilerBackendCLang::Compile(const std::string &text, const char *file) {
       kIfFunction = "__MPCC_IF_PROC_";
       kIfFunction += std::to_string(time_off._Raw);
 
-      syntaxLeaf.fUserValue = "\tlda r12, import ";
-      syntaxLeaf.fUserValue +=
-          kIfFunction +
-          "\n\t#r12 = Code to jump on, r11 right cond, r10 left cond.\n\tbeq "
-          "r10, r11, r12\ndword export .code64 " +
-          kIfFunction + "\n";
+      syntaxLeaf.fUserValue =
+          "\tcmpw "
+          "r10, r11";
+
+      syntaxLeaf.fUserValue += "\n\tbeq import" + kIfFunction + " \ndword export .code64 " +
+      kIfFunction + "\n";
+
       kState.fSyntaxTree->fLeafList.push_back(syntaxLeaf);
 
       kIfFound = true;
@@ -421,11 +441,11 @@ bool CompilerBackendCLang::Compile(const std::string &text, const char *file) {
       if (textBuffer.find('=') != std::string::npos && kInBraces && !kIfFound) {
         if (textBuffer.find("*") != std::string::npos) {
           if (textBuffer.find("=") > textBuffer.find("*"))
-            substr += "\tlda ";
+            substr += "\tli ";
           else
-            substr += "\tldw ";
+            substr += "\tli ";
         } else {
-          substr += "\tldw ";
+          substr += "\tli ";
         }
       } else if (textBuffer.find('=') != std::string::npos && !kInBraces) {
         substr += "stw export .data64 ";
@@ -512,22 +532,33 @@ bool CompilerBackendCLang::Compile(const std::string &text, const char *file) {
                          return type.fName.find(substr) != std::string::npos;
                        });
 
-      if (kRegisterCounter == 5 || kRegisterCounter == 6) ++kRegisterCounter;
+    kCompilerVariables.push_back({.fName = substr});
+
+    if (textBuffer[text_index] == ';') break;
 
       std::string reg = kAsmRegisterPrefix;
+
+      ++kRegisterCounter;
       reg += std::to_string(kRegisterCounter);
 
-      if (var_to_find == kCompilerVariables.cend()) {
-        ++kRegisterCounter;
+      auto newSubstr = substr.substr(substr.find(" "));
 
-        kState.kStackFrame.push_back({.fName = substr, .fReg = reg});
-        kCompilerVariables.push_back({.fName = substr});
+      std::string symbol;
+
+      for (size_t start = 0; start < newSubstr.size(); ++start) {
+        if (newSubstr[start] == ',')
+            break;
+
+        if (newSubstr[start] == ' ')
+            continue;
+
+        symbol += (newSubstr[start]);
       }
 
-      syntaxLeaf.fUserValue += substr;
-      kState.fSyntaxTree->fLeafList.push_back(syntaxLeaf);
+      kState.kStackFrame.push_back({.fName = symbol, .fReg = reg});
 
-      if (textBuffer[text_index] == '=') break;
+      syntaxLeaf.fUserValue += "\n\tli " + reg + substr.substr(substr.find(','));
+      kState.fSyntaxTree->fLeafList.push_back(syntaxLeaf);
     }
 
     // function handler.
@@ -576,7 +607,7 @@ bool CompilerBackendCLang::Compile(const std::string &text, const char *file) {
           }
 
           args += args_buffer;
-          args += "\n\tlda r19, ";
+          args += "\n\tli r19, ";
         }
       }
 
@@ -598,7 +629,8 @@ bool CompilerBackendCLang::Compile(const std::string &text, const char *file) {
       if (kInBraces) {
         syntaxLeaf.fUserValue = args;
         syntaxLeaf.fUserValue += substr;
-        syntaxLeaf.fUserValue += "\n\tjrl\n";
+
+        syntaxLeaf.fUserValue += "\n\tblr\n";
 
         kState.fSyntaxTree->fLeafList.push_back(syntaxLeaf);
 
@@ -1139,7 +1171,7 @@ class AssemblyMountpointCLang final : public CompilerKit::AssemblyInterface {
 
     (*kState.fOutputAssembly) << "# Path: " << src_file << "\n";
     (*kState.fOutputAssembly)
-        << "# Language: PowerPC Assembly (Generated from ANSI C)\n";
+        << "# Language: PowerPC Assembly (Generated from C)\n";
     (*kState.fOutputAssembly) << "# Build Date: " << fmt << "\n\n";
 
     ParserKit::SyntaxLeafList syntax;
@@ -1204,12 +1236,12 @@ class AssemblyMountpointCLang final : public CompilerKit::AssemblyInterface {
             }
 
             if (ParserKit::find_word(leaf.fUserValue, needle)) {
-              if (leaf.fUserValue.find("import " + needle) !=
+              if (leaf.fUserValue.find("import ") !=
                   std::string::npos) {
-                std::string range = "import " + needle;
+                std::string range = "import ";
                 leaf.fUserValue.replace(
-                    leaf.fUserValue.find("import " + needle), range.size(),
-                    needle);
+                    leaf.fUserValue.find(range), range.size(),
+                    "");
               }
 
               if (leaf.fUserValue.find("ldw r6") != std::string::npos) {

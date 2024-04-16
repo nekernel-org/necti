@@ -11,23 +11,23 @@
 // @file PEF.hpp
 // @brief Preferred Executable Format
 
-#define kPefMagic "PEF"
-#define kPefMagicFat "FEP"
+#define kPefMagic "Joy!"
+#define kPefMagicFat "yoJ!"
 
-#define kPefExt ".exe"
+#define kPefExt ".exec"
 #define kPefDylibExt ".lib"
 #define kPefLibExt ".slib"
 #define kPefObjectExt ".obj"
 #define kPefDebugExt ".dbg"
 
-#define kPefMagicLen 3
+#define kPefMagicLen 5
 
 #define kPefVersion 2
 #define kPefNameLen 64
 
 #define kPefBaseOrigin 0x1000000
 
-#define kPefStart "__start"
+#define kPefStart "__ImageStart"
 
 namespace CompilerKit {
 enum {

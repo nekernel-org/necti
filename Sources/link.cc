@@ -193,6 +193,7 @@ MPCC_MODULE(NewOSLinker) {
   pef_container.Magic[0] = kPefMagic[kFatBinaryEnable ? 2 : 0];
   pef_container.Magic[1] = kPefMagic[1];
   pef_container.Magic[2] = kPefMagic[kFatBinaryEnable ? 0 : 2];
+  pef_container.Magic[3] = kPefMagic[3];
   pef_container.Version = kPefVersion;
 
   // specify the start address, can be 0x10000

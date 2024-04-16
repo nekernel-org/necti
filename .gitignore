@@ -8,6 +8,9 @@ local.properties
 .loadpath
 .recommenders
 
+# NewOS/MP-UX executable
+*.exec
+
 docs/
 
 # Compiled class file

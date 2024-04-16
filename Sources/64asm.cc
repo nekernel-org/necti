@@ -310,6 +310,14 @@ static bool asm_read_attributes(std::string &line) {
 
     auto name = line.substr(line.find("import") + strlen("import"));
 
+    /// sanity check to avoid stupid linker errors.
+    if (name.size() == 0)
+    {
+        detail::print_error("Invalid import",
+                              "ppcasm");
+          throw std::runtime_error("invalid_import");
+    }
+
     std::string result = std::to_string(name.size());
     result += kUndefinedSymbol;
 

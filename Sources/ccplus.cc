@@ -151,22 +151,23 @@ static bool kOnForLoop = false;
 static bool kInBraces = false;
 static size_t kBracesCount = 0UL;
 
-/* @brief C compiler backend for Mahrouss Logic C */
-class CompilerBackendClang final : public ParserKit::CompilerBackend {
+/* @brief C++ compiler backend for Mahrouss Logic C++ */
+class CompilerBackendCPlusPlus final : public ParserKit::CompilerBackend {
  public:
-  explicit CompilerBackendClang() = default;
-  ~CompilerBackendClang() override = default;
+  explicit CompilerBackendCPlusPlus() = default;
+  ~CompilerBackendCPlusPlus() override = default;
 
-  MPCC_COPY_DEFAULT(CompilerBackendClang);
+  MPCC_COPY_DEFAULT(CompilerBackendCPlusPlus);
 
   bool Compile(const std::string& text, const char* file) override;
 
-  const char* Language() override { return "C++20 based dialect for NewOS."; }
+  const char* Language() override;
+
 };
 
 /// compiler variables
 
-static CompilerBackendClang* kCompilerBackend = nullptr;
+static CompilerBackendCPlusPlus* kCompilerBackend = nullptr;
 static std::vector<detail::CompilerType> kCompilerVariables;
 static std::vector<std::string> kCompilerFunctions;
 
@@ -181,6 +182,8 @@ union number_cast final {
 };
 }  // namespace detail
 
+const char* CompilerBackendCPlusPlus::Language() override { return "C++"; }
+
 /////////////////////////////////////////////////////////////////////////////////////////
 
 // @name Compile
@@ -188,7 +191,7 @@ union number_cast final {
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
-bool CompilerBackendClang::Compile(const std::string& text, const char* file) {
+bool CompilerBackendCPlusPlus::Compile(const std::string& text, const char* file) {
   if (text.empty()) return false;
 
   // if (expr)
@@ -370,7 +373,7 @@ MPCC_MODULE(CompilerCPlusPlus) {
   bool skip = false;
 
   kFactory.Mount(new AssemblyMountpointClang());
-  kCompilerBackend = new CompilerBackendClang();
+  kCompilerBackend = new CompilerBackendCPlusPlus();
 
   for (auto index = 1UL; index < argc; ++index) {
     if (argv[index][0] == '-') {
