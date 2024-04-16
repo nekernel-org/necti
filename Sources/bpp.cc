@@ -253,6 +253,7 @@ void bpp_parse_file(std::ifstream &hdr_file, std::ofstream &pp_out) {
 
   try {
     while (std::getline(hdr_file, hdr_line)) {
+      /// BPP Documentation.
       if (hdr_line.find("@bdoc") != std::string::npos) {
         hdr_line.erase(hdr_line.find("@bdoc"));
       }

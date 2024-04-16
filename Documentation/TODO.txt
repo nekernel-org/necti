@@ -1,0 +1,10 @@
+- PowerPC assembler
+	- Add offsets support to instructions which loads data from memory, PowerPC is a load/store architecture like 64k, SPARC and so...
+
+- AMD64 assembler
+	- Add support 'mov' which encodes a,b,c,d,e and 8,15 registers.
+
+- C compilers
+	- Add structs/enums, and a preprocssing program.
+
+- Extended Syntax Checker (esc.exe -c-asm foo.s)

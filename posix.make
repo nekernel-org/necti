@@ -8,7 +8,7 @@
  #
 
 COMMON_INC=-I./Headers -I./ -I./Sources/Detail
-LINK_CC=g++ -std=c++20 -Xlinker -s
+LINK_CC=g++ -std=c++20
 LINK_SRC=Sources/link.cc
 LINK_OUTPUT=Output/link.exe
 LINK_ALT_OUTPUT=Output/64link.exe
@@ -24,19 +24,19 @@ SRC_COMMON=Sources/String.cc Sources/AsmKit.cc
 64X0_CC_SRC=Sources/64x0-cc.cc $(SRC_COMMON)
 64X0_CC_OUTPUT=Output/64x0-cc.exe
 
-# C Compiler
+# C Compiler (Our own RISC)
 PPC_CC_SRC=Sources/ppc-cc.cc $(SRC_COMMON)
 PPC_CC_OUTPUT=Output/ppc-cc.exe
 
-# 64x0 Assembler
+# 64x0 Assembler (Our Own RISC)
 ASM_SRC=Sources/64asm.cc $(SRC_COMMON)
 ASM_OUTPUT=Output/64asm.exe
 
-# AMD64 Assembler
+# AMD64 Assembler (Intel CISC)
 IASM_SRC=Sources/i64asm.cc $(SRC_COMMON)
 IASM_OUTPUT=Output/i64asm.exe
 
-# PowerPC Assembler
+# Power4 Assembler (IBM RISC)
 PPCASM_SRC=Sources/ppcasm.cc $(SRC_COMMON)
 PPCASM_OUTPUT=Output/ppcasm.exe
 

@@ -8,7 +8,7 @@
  */
 
 /// BUGS: 0
-/// TODO:
+/// TODO: Structs and enums.
 
 #include <Headers/AsmKit/CPU/ppc.hpp>
 #include <Headers/ParserKit.hpp>
