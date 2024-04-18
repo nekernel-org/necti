@@ -65,10 +65,10 @@ linker:
 
 .PHONY: help
 help:
-	@echo "Compiler 	- Mahrouss C Compiler."
-	@echo "Preprocessor 	- Mahrouss Assembler Preprocessor."
-	@echo "linker 		- Mahrouss Linker."
-	@echo "clean 		- Clean garbage."
+	@echo "Compiler 	- Mahrouss Compilers."
+	@echo "Preprocessor 	- Mahrouss Preprocessors."
+	@echo "linker 		- Mahrouss Linkers."
+	@echo "clean 		- Clean objects and executables."
 
 .PHONY: clean
 clean:

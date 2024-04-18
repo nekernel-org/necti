@@ -5,14 +5,12 @@
 ------------------------------------------- */
 
 /// BUGS: 0
-/// TODO: GUI dialog
 
-// Last Rev
-// Sat Feb 24 CET 2024
+/// Last Rev: Sat Feb 24 CET 2024
 
-// @file link.cxx
-// @author Amlal El Mahrouss (amlel)
-// @brief Visual Linker.
+/// @file link.cc
+/// @author Amlal El Mahrouss (amlel)
+/// @brief Linker.
 
 // README: Do not look up for anything with .code64/.data64/.page_zero!
 // It will be loaded when program will start up!

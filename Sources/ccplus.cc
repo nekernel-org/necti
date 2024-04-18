@@ -13,7 +13,7 @@
 
 #define kSplashCxx()     \
   kPrintF(kWhite "%s\n", \
-          "Mahrouss Visual C++ Compiler for NewOS, Copyright Mahrouss Logic.")
+          "Mahrouss C++ Compiler, Copyright Mahrouss Logic.")
 
 #include <Headers/AsmKit/CPU/amd64.hpp>
 #include <Headers/ParserKit.hpp>

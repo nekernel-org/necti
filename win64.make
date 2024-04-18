@@ -76,7 +76,7 @@ help:
 	@echo "Compiler 	- Mahrouss Compilers."
 	@echo "Preprocessor 	- Mahrouss Preprocessors."
 	@echo "linker 		- Mahrouss Linkers."
-	@echo "clean 		- Clean garbage."
+	@echo "clean 		- Clean objects and executables."
 
 .PHONY: clean
 clean:
