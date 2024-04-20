@@ -37,7 +37,7 @@
 
 /////////////////////
 
-// ANSI ESCAPE CODES
+/// ANSI ESCAPE CODES
 
 /////////////////////
 
@@ -47,7 +47,7 @@
 
 /////////////////////////////////////
 
-// INTERNAL STUFF OF THE C COMPILER
+/// INTERNAL STRUCT OF THE C COMPILER
 
 /////////////////////////////////////
 
@@ -61,16 +61,16 @@ struct CompilerRegisterMap final {
 // \brief Map for C structs
 // \author amlel
 struct CompilerStructMap final {
-  // 'my_foo'
+  /// 'struct::my_foo'
   std::string fName;
 
-  // if instance: stores a valid register.
+  /// if instance: stores a valid register.
   std::string fReg;
 
-  // offset count
+  /// offset count
   std::size_t fOffsetsCnt;
 
-  // offset array.
+  /// offset array.
   std::vector<std::pair<Int32, std::string>> fOffsets;
 };
 
@@ -95,9 +95,8 @@ namespace detail {
 void print_error(std::string reason, std::string file) noexcept {
   if (reason[0] == '\n') reason.erase(0, 1);
 
-  if (file.find(".pp") != std::string::npos) {
+  if (file.find(".pp") != std::string::npos)
     file.erase(file.find(".pp"), 3);
-  }
 
   if (kState.fLastFile != file) {
     std::cout << kRed << "[ cc ] " << kWhite
@@ -395,7 +394,7 @@ bool CompilerBackendCLang::Compile(const std::string &text, const char *file) {
       if (textBuffer.find("typedef ") != std::string::npos) continue;
 
       if (textBuffer[text_index] == '=' && kInStruct) {
-        detail::print_error("assignement of value in struct " + textBuffer,
+        detail::print_error("assignement of value inside a struct " + textBuffer,
                             file);
         continue;
       }

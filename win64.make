@@ -8,8 +8,8 @@
  #
 
 COMMON_INC=-I./Headers -I./ -I./Sources/Detail
-LINK_CC=x86_64-w64-mingw32-g++.exe -std=c++20 -Xlinker -s
-WINRES=x86_64-w64-mingw32-windres.exe
+LINK_CC=x86_64-w64-mingw32-g++ -std=c++20 -Xlinker -s
+WINRES=x86_64-w64-mingw32-windres
 LINK_SRC=Sources/link.cc
 LINK_OUTPUT=Output/link.exe
 LINK_ALT_OUTPUT=Output/64link.exe
