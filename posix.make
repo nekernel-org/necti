@@ -10,35 +10,35 @@
 COMMON_INC=-I./Headers -I./ -I./Sources/Detail
 LINK_CC=g++ -std=c++20
 LINK_SRC=Sources/link.cc
-LINK_OUTPUT=Output/link.exe
-LINK_ALT_OUTPUT=Output/64link.exe
-LINK_ALT_3_OUTPUT=Output/i64link.exe
-LINK_ALT_2_OUTPUT=Output/32link.exe
+LINK_OUTPUT=Output/link.exec
+LINK_ALT_OUTPUT=Output/64link.exec
+LINK_ALT_3_OUTPUT=Output/i64link.exec
+LINK_ALT_2_OUTPUT=Output/32link.exec
 
 PP_SRC=Sources/bpp.cc
-PP_OUTPUT=Output/bpp.exe
+PP_OUTPUT=Output/bpp.exec
 
 SRC_COMMON=Sources/String.cc Sources/AsmKit.cc
 
-# C Compiler (PowerPC)
+# C Compiler (POWER)
 64X0_CC_SRC=Sources/64x0-cc.cc $(SRC_COMMON)
-64X0_CC_OUTPUT=Output/64x0-cc.exe
+64X0_CC_OUTPUT=Output/64x0-cc.exec
 
 # C Compiler (Our own RISC)
 PPC_CC_SRC=Sources/ppc-cc.cc $(SRC_COMMON)
-PPC_CC_OUTPUT=Output/ppc-cc.exe
+PPC_CC_OUTPUT=Output/ppc-cc.exec
 
 # 64x0 Assembler (Our Own RISC)
 ASM_SRC=Sources/64asm.cc $(SRC_COMMON)
-ASM_OUTPUT=Output/64asm.exe
+ASM_OUTPUT=Output/64asm.exec
 
 # AMD64 Assembler (Intel CISC)
 IASM_SRC=Sources/i64asm.cc $(SRC_COMMON)
-IASM_OUTPUT=Output/i64asm.exe
+IASM_OUTPUT=Output/i64asm.exec
 
 # Power4 Assembler (IBM RISC)
 PPCASM_SRC=Sources/ppcasm.cc $(SRC_COMMON)
-PPCASM_OUTPUT=Output/ppcasm.exe
+PPCASM_OUTPUT=Output/ppcasm.exec
 
 .PHONY: all
 all: pre-processor compiler linker

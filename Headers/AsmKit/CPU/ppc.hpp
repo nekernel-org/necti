@@ -1541,10 +1541,10 @@ inline CpuOpcodePPC kOpcodesPowerPC[] = {
      {{16, 5, GREG}, {21, 5, GREG}, {11, 5, GREG}},
      CPU601},
 
-    /* Added from the PowerPC 601 book */
+    /* Added from the POWER 601 book */
     {0x7c000426, "clcs", {{21, 5, GREG}, {16, 5, GREG}}, CPU601},
 
-    /* Added from the PowerPC 603 book.
+    /* Added from the POWER 603 book.
      * These are really 603 specific instructions but we mark them as OPTIONAL
      * so that the -force_cpusubtype_ALL flag as to be used.  This makes it so
      * only 601 instructions will cause the cputype to be set to other an ALL.

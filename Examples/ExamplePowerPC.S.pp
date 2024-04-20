@@ -1,5 +1,5 @@
 # Path: Examples/ExamplePowerPC.S.pp
-# Language: PowerPC Assembly
+# Language: POWER Assembly
 # Build Date: 2024-6-4
 
 bl 0x1000

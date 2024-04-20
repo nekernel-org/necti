@@ -8,8 +8,8 @@
  #
 
 COMMON_INC=-I./Headers -I./ -I./Sources/Detail
-LINK_CC=x86_64-w64-mingw32-g++.exe -std=c++20 -Xlinker -s
-WINRES=x86_64-w64-mingw32-windres.exe
+LINK_CC=x86_64-w64-mingw32-g++ -std=c++20 -Xlinker -s
+WINRES=x86_64-w64-mingw32-windres
 LINK_SRC=Sources/link.cc
 LINK_OUTPUT=Output/link.exe
 LINK_ALT_OUTPUT=Output/64link.exe
@@ -21,7 +21,7 @@ PP_OUTPUT=Output/bpp.exe
 
 SRC_COMMON=Sources/String.cc Sources/AsmKit.cc
 
-# C Compiler (PowerPC)
+# C Compiler (POWER)
 64X0_CC_SRC=Sources/64x0-cc.cc $(SRC_COMMON)
 64X0_CC_OUTPUT=Output/64x0-cc.exe
 
@@ -37,7 +37,7 @@ ASM_OUTPUT=Output/64asm.exe
 IASM_SRC=Sources/i64asm.cc $(SRC_COMMON)
 IASM_OUTPUT=Output/i64asm.exe
 
-# PowerPC Assembler
+# POWER Assembler
 PPCASM_SRC=Sources/ppcasm.cc $(SRC_COMMON)
 PPCASM_OUTPUT=Output/ppcasm.exe
 
