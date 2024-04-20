@@ -10,7 +10,7 @@
 
 // @file ppcasm.cxx
 // @author Amlal El Mahrouss
-// @brief PowerPC Assembler.
+// @brief POWER Assembler.
 
 // REMINDER: when dealing with an undefined symbol use (string
 // size):LinkerFindSymbol:(string) so that li will look for it.
@@ -103,7 +103,7 @@ void print_warning(std::string reason, const std::string &file) noexcept {
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
-/// @brief PowerPC assembler entrypoint, the program/module starts here.
+/// @brief POWER assembler entrypoint, the program/module starts here.
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
@@ -111,12 +111,12 @@ MPCC_MODULE(NewOSAssemblerPowerPC) {
   for (size_t i = 1; i < argc; ++i) {
     if (argv[i][0] == '-') {
       if (strcmp(argv[i], "-version") == 0 || strcmp(argv[i], "-v") == 0) {
-        kStdOut << "ppcasm: PowerPC Assembler.\nppcasm: v1.10\nppcasm: "
+        kStdOut << "ppcasm: POWER Assembler.\nppcasm: v1.10\nppcasm: "
                    "Copyright (c) "
                    "2024 Mahrouss Logic.\n";
         return 0;
       } else if (strcmp(argv[i], "-h") == 0) {
-        kStdOut << "ppcasm: PowerPC Assembler.\nppcasm: Copyright (c) 2024 "
+        kStdOut << "ppcasm: POWER Assembler.\nppcasm: Copyright (c) 2024 "
                    "Mahrouss "
                    "Logic.\n";
         kStdOut << "-version: Print program version.\n";
@@ -736,7 +736,7 @@ bool CompilerKit::EncoderPowerPC::WriteLine(std::string &line,
                 reg_str += line[line_index + 3];
                 detail::print_error(
                     "invalid register index, r" + reg_str +
-                        "\nnote: The PowerPC accepts registers from r0 to r32.",
+                        "\nnote: The POWER accepts registers from r0 to r32.",
                     file);
                 throw std::runtime_error("invalid_register_index");
               }

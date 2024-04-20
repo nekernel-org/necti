@@ -21,7 +21,7 @@ PP_OUTPUT=Output/bpp.exe
 
 SRC_COMMON=Sources/String.cc Sources/AsmKit.cc
 
-# C Compiler (PowerPC)
+# C Compiler (POWER)
 64X0_CC_SRC=Sources/64x0-cc.cc $(SRC_COMMON)
 64X0_CC_OUTPUT=Output/64x0-cc.exe
 
@@ -37,7 +37,7 @@ ASM_OUTPUT=Output/64asm.exe
 IASM_SRC=Sources/i64asm.cc $(SRC_COMMON)
 IASM_OUTPUT=Output/i64asm.exe
 
-# PowerPC Assembler
+# POWER Assembler
 PPCASM_SRC=Sources/ppcasm.cc $(SRC_COMMON)
 PPCASM_OUTPUT=Output/ppcasm.exe
 

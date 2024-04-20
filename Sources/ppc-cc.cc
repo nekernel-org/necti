@@ -33,7 +33,7 @@
 
 /// @author Amlal El Mahrouss (amlel)
 /// @file cc.cc
-/// @brief PowerPC C Compiler.
+/// @brief POWER C Compiler.
 
 /////////////////////
 
@@ -165,7 +165,7 @@ class CompilerBackendCLang final : public ParserKit::CompilerBackend {
   std::string Check(const char *text, const char *file);
   bool Compile(const std::string &text, const char *file) override;
 
-  const char *Language() override { return "PowerPC C"; }
+  const char *Language() override { return "POWER C"; }
 };
 
 static CompilerBackendCLang *kCompilerBackend = nullptr;
@@ -1170,7 +1170,7 @@ class AssemblyMountpointCLang final : public CompilerKit::AssemblyInterface {
 
     (*kState.fOutputAssembly) << "# Path: " << src_file << "\n";
     (*kState.fOutputAssembly)
-        << "# Language: PowerPC Assembly (Generated from C)\n";
+        << "# Language: POWER Assembly (Generated from C)\n";
     (*kState.fOutputAssembly) << "# Build Date: " << fmt << "\n\n";
 
     ParserKit::SyntaxLeafList syntax;

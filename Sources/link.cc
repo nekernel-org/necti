@@ -91,7 +91,7 @@ MPCC_MODULE(NewOSLinker) {
       kStdOut << "-64x0: Output as 64x0 PEF.\n";
       kStdOut << "-amd64: Output as AMD64 PEF.\n";
       kStdOut << "-rv64: Output as RISC-V 64 PEF.\n";
-      kStdOut << "-ppc64: Output as PowerPC 64 PEF.\n";
+      kStdOut << "-ppc64: Output as POWER 64 PEF.\n";
       kStdOut << "-output-file: Select output file name.\n";
 
       return 0;

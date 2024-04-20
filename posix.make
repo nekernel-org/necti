@@ -20,7 +20,7 @@ PP_OUTPUT=Output/bpp.exec
 
 SRC_COMMON=Sources/String.cc Sources/AsmKit.cc
 
-# C Compiler (PowerPC)
+# C Compiler (POWER)
 64X0_CC_SRC=Sources/64x0-cc.cc $(SRC_COMMON)
 64X0_CC_OUTPUT=Output/64x0-cc.exec
 
