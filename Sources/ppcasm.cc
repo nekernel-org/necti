@@ -710,6 +710,7 @@ bool CompilerKit::EncoderPowerPC::WriteLine(std::string &line,
           std::size_t found_some_count = 0UL;
           std::size_t register_count = 0UL;
           std::string opcodeName = opcodePPC.name;
+          std::size_t register_sum = 0;
 
           NumberCast64 num(opcodePPC.opcode);
 
@@ -774,6 +775,18 @@ bool CompilerKit::EncoderPowerPC::WriteLine(std::string &line,
                 }
 
                 break;
+              }
+
+              if ((opcodeName[0] == 's' && opcodeName[1] == 't')) {
+                  if (register_sum == 0) {
+                      for (size_t indexReg = 0UL; indexReg < reg_index; ++indexReg) {
+                          register_sum += 0x20;
+
+                      }
+                  }
+                  else {
+                      register_sum += reg_index;
+                  }
               }
 
               if (opcodeName == "mr") {
@@ -884,6 +897,22 @@ bool CompilerKit::EncoderPowerPC::WriteLine(std::string &line,
           if (opcodeName == "addi") {
             kBytes.emplace_back(0x38);
           }
+          if ((opcodeName[0] == 's' &&
+                  opcodeName[1] == 't')
+            ) {
+                size_t offset = 0UL;
+
+                if (line.find('+') != std::string::npos) {
+                    auto number = GetNumber32(line.substr(line.find("+")), "+");
+                    offset = number.raw;
+                }
+
+                kBytes.push_back(offset);
+                kBytes.push_back(0x00);
+                kBytes.push_back(register_sum);
+
+                kBytes.emplace_back(0x90);
+          }
 
           if (opcodeName == "mr") {
             if (register_count == 1) {
@@ -907,7 +936,7 @@ bool CompilerKit::EncoderPowerPC::WriteLine(std::string &line,
             }
           }
 
-          if (found_some_count < 1 && name[0] != 'l' && name[0] == 's') {
+          if (found_some_count < 1 && name[0] != 'l' && name[0] != 's') {
             detail::print_error(
                 "invalid combination of opcode and registers.\nline: " + line,
                 file);
