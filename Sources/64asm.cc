@@ -311,11 +311,9 @@ static bool asm_read_attributes(std::string &line) {
     auto name = line.substr(line.find("import") + strlen("import"));
 
     /// sanity check to avoid stupid linker errors.
-    if (name.size() == 0)
-    {
-        detail::print_error("Invalid import",
-                              "ppcasm");
-          throw std::runtime_error("invalid_import");
+    if (name.size() == 0) {
+      detail::print_error("Invalid import", "ppcasm");
+      throw std::runtime_error("invalid_import");
     }
 
     std::string result = std::to_string(name.size());
@@ -554,7 +552,7 @@ std::string CompilerKit::Encoder64x0::CheckLine(std::string &line,
     }
   }
 
-  err_str += "Unrecognized instruction and operands: " + line;
+  err_str += "Unrecognized instruction: " + line;
 
   return err_str;
 }

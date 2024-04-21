@@ -1,3 +1,5 @@
+; you you can never say!
+
 b 0x1000
 mflr r21
 mtlr r21

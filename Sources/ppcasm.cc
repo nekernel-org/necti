@@ -23,6 +23,7 @@
 #include <Headers/ParserKit.hpp>
 #include <Headers/StdKit/AE.hpp>
 #include <Headers/StdKit/PEF.hpp>
+#include <Headers/Version.hxx>
 #include <algorithm>
 #include <filesystem>
 #include <fstream>
@@ -111,7 +112,7 @@ MPCC_MODULE(NewOSAssemblerPowerPC) {
   for (size_t i = 1; i < argc; ++i) {
     if (argv[i][0] == '-') {
       if (strcmp(argv[i], "-version") == 0 || strcmp(argv[i], "-v") == 0) {
-        kStdOut << "ppcasm: POWER Assembler.\nppcasm: v1.10\nppcasm: "
+        kStdOut << "ppcasm: POWER Assembler.\nppcasm: " << kDistVersion << "\nppcasm: "
                    "Copyright (c) "
                    "2024 Mahrouss Logic.\n";
         return 0;
@@ -315,11 +316,9 @@ static bool asm_read_attributes(std::string &line) {
 
     auto name = line.substr(line.find("import") + strlen("import") + 1);
 
-    if (name.size() == 0)
-    {
-        detail::print_error("Invalid import",
-                              "ppcasm");
-          throw std::runtime_error("invalid_import");
+    if (name.size() == 0) {
+      detail::print_error("Invalid import", "ppcasm");
+      throw std::runtime_error("invalid_import");
     }
 
     std::string result = std::to_string(name.size());
@@ -526,7 +525,7 @@ std::string CompilerKit::EncoderPowerPC::CheckLine(std::string &line,
   std::vector<std::string> filter_inst = {"blr", "bl", "sc"};
 
   for (auto &opcodePPC : kOpcodesPowerPC) {
-    if (line.find(opcodePPC.name) != std::string::npos) {
+    if (ParserKit::find_word(line, opcodePPC.name)) {
       for (auto &op : operands_inst) {
         // if only the instruction was found.
         if (line == op) {
@@ -556,7 +555,7 @@ std::string CompilerKit::EncoderPowerPC::CheckLine(std::string &line,
     }
   }
 
-  err_str += "Unrecognized instruction and operands: " + line;
+  err_str += "Unrecognized instruction: " + line;
 
   return err_str;
 }
@@ -778,15 +777,14 @@ bool CompilerKit::EncoderPowerPC::WriteLine(std::string &line,
               }
 
               if ((opcodeName[0] == 's' && opcodeName[1] == 't')) {
-                  if (register_sum == 0) {
-                      for (size_t indexReg = 0UL; indexReg < reg_index; ++indexReg) {
-                          register_sum += 0x20;
-
-                      }
+                if (register_sum == 0) {
+                  for (size_t indexReg = 0UL; indexReg < reg_index;
+                       ++indexReg) {
+                    register_sum += 0x20;
                   }
-                  else {
-                      register_sum += reg_index;
-                  }
+                } else {
+                  register_sum += reg_index;
+                }
               }
 
               if (opcodeName == "mr") {
@@ -897,21 +895,19 @@ bool CompilerKit::EncoderPowerPC::WriteLine(std::string &line,
           if (opcodeName == "addi") {
             kBytes.emplace_back(0x38);
           }
-          if ((opcodeName[0] == 's' &&
-                  opcodeName[1] == 't')
-            ) {
-                size_t offset = 0UL;
+          if ((opcodeName[0] == 's' && opcodeName[1] == 't')) {
+            size_t offset = 0UL;
 
-                if (line.find('+') != std::string::npos) {
-                    auto number = GetNumber32(line.substr(line.find("+")), "+");
-                    offset = number.raw;
-                }
+            if (line.find('+') != std::string::npos) {
+              auto number = GetNumber32(line.substr(line.find("+")), "+");
+              offset = number.raw;
+            }
 
-                kBytes.push_back(offset);
-                kBytes.push_back(0x00);
-                kBytes.push_back(register_sum);
+            kBytes.push_back(offset);
+            kBytes.push_back(0x00);
+            kBytes.push_back(register_sum);
 
-                kBytes.emplace_back(0x90);
+            kBytes.emplace_back(0x90);
           }
 
           if (opcodeName == "mr") {
