@@ -144,7 +144,7 @@ MPCC_MODULE(NewOSAssembler64000) {
       }
     }
 
-    object_output += kObjectFileExt;
+    object_output += kOutputAsBinary ? kBinaryFileExt : kObjectFileExt;
 
     std::ifstream file_ptr(argv[i]);
     std::ofstream file_ptr_out(object_output, std::ofstream::binary);

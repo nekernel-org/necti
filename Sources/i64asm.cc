@@ -24,6 +24,7 @@
 
 #define __ASM_NEED_AMD64__ 1
 
+#define kAssemblerPragmaSymStr "#"
 #define kAssemblerPragmaSym '#'
 
 #include <Headers/AsmKit/CPU/amd64.hpp>
@@ -192,7 +193,7 @@ MPCC_MODULE(NewOSAssemblerAMD64) {
       }
     }
 
-    object_output += kObjectFileExt;
+    object_output += kOutputAsBinary ? kBinaryFileExt : kObjectFileExt;
 
     std::ifstream file_ptr(argv[i]);
     std::ofstream file_ptr_out(object_output, std::ofstream::binary);
@@ -520,8 +521,9 @@ std::string CompilerKit::EncoderAMD64::CheckLine(std::string &line,
   std::string err_str;
 
   if (line.empty() || ParserKit::find_word(line, "import") ||
-      ParserKit::find_word(line, "export") || ParserKit::find_word(line, "#") ||
-      ParserKit::find_word(line, ";")) {
+      ParserKit::find_word(line, "export") || ParserKit::find_word(line, kAssemblerPragmaSymStr) ||
+      ParserKit::find_word(line, ";") ||
+      line[0] == kAssemblerPragmaSym) {
     if (line.find(';') != std::string::npos) {
       line.erase(line.find(';'));
     } else {
@@ -577,6 +579,13 @@ std::string CompilerKit::EncoderAMD64::CheckLine(std::string &line,
       }
     }
   }
+  for (auto &opcodeAMD64 : kOpcodesAMD64) {
+    if (ParserKit::find_word(line, opcodeAMD64.fName)) {
+        return err_str;
+    }
+  }
+
+  err_str += "\nUnrecognized instruction -> " + line;
 
   return err_str;
 }

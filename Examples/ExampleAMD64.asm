@@ -1,4 +1,9 @@
 #org 0x7c00
 
-int 13
+nop
+nop
+nop
+nop
+nop
+
 ret
