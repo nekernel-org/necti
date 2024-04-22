@@ -95,8 +95,7 @@ namespace detail {
 void print_error(std::string reason, std::string file) noexcept {
   if (reason[0] == '\n') reason.erase(0, 1);
 
-  if (file.find(".pp") != std::string::npos)
-    file.erase(file.find(".pp"), 3);
+  if (file.find(".pp") != std::string::npos) file.erase(file.find(".pp"), 3);
 
   if (kState.fLastFile != file) {
     std::cout << kRed << "[ cc ] " << kWhite
@@ -333,18 +332,15 @@ bool CompilerBackendCLang::Compile(const std::string &text, const char *file) {
 
           bool found = false;
 
-          for (auto& reg : kState.kStackFrame)
-          {
-              if (value.find(reg.fName) != std::string::npos)
-              {
-                  found = true;
-                  syntaxLeaf.fUserValue += reg.fReg;
-                  break;
-              }
+          for (auto &reg : kState.kStackFrame) {
+            if (value.find(reg.fName) != std::string::npos) {
+              found = true;
+              syntaxLeaf.fUserValue += reg.fReg;
+              break;
+            }
           }
 
-          if (!found)
-                      syntaxLeaf.fUserValue += "r0";
+          if (!found) syntaxLeaf.fUserValue += "r0";
         }
 
         syntaxLeaf.fUserValue += "\n\tblr";
@@ -374,8 +370,8 @@ bool CompilerBackendCLang::Compile(const std::string &text, const char *file) {
           "\tcmpw "
           "r10, r11";
 
-      syntaxLeaf.fUserValue += "\n\tbeq import" + kIfFunction + " \ndword export .code64 " +
-      kIfFunction + "\n";
+      syntaxLeaf.fUserValue += "\n\tbeq import" + kIfFunction +
+                               " \ndword export .code64 " + kIfFunction + "\n";
 
       kState.fSyntaxTree->fLeafList.push_back(syntaxLeaf);
 
@@ -394,8 +390,8 @@ bool CompilerBackendCLang::Compile(const std::string &text, const char *file) {
       if (textBuffer.find("typedef ") != std::string::npos) continue;
 
       if (textBuffer[text_index] == '=' && kInStruct) {
-        detail::print_error("assignement of value inside a struct " + textBuffer,
-                            file);
+        detail::print_error(
+            "assignement of value inside a struct " + textBuffer, file);
         continue;
       }
 
@@ -531,9 +527,9 @@ bool CompilerBackendCLang::Compile(const std::string &text, const char *file) {
                          return type.fName.find(substr) != std::string::npos;
                        });
 
-    kCompilerVariables.push_back({.fName = substr});
+      kCompilerVariables.push_back({.fName = substr});
 
-    if (textBuffer[text_index] == ';') break;
+      if (textBuffer[text_index] == ';') break;
 
       std::string reg = kAsmRegisterPrefix;
 
@@ -545,18 +541,17 @@ bool CompilerBackendCLang::Compile(const std::string &text, const char *file) {
       std::string symbol;
 
       for (size_t start = 0; start < newSubstr.size(); ++start) {
-        if (newSubstr[start] == ',')
-            break;
+        if (newSubstr[start] == ',') break;
 
-        if (newSubstr[start] == ' ')
-            continue;
+        if (newSubstr[start] == ' ') continue;
 
         symbol += (newSubstr[start]);
       }
 
       kState.kStackFrame.push_back({.fName = symbol, .fReg = reg});
 
-      syntaxLeaf.fUserValue += "\n\tli " + reg + substr.substr(substr.find(','));
+      syntaxLeaf.fUserValue +=
+          "\n\tli " + reg + substr.substr(substr.find(','));
       kState.fSyntaxTree->fLeafList.push_back(syntaxLeaf);
     }
 
@@ -1235,12 +1230,10 @@ class AssemblyMountpointCLang final : public CompilerKit::AssemblyInterface {
             }
 
             if (ParserKit::find_word(leaf.fUserValue, needle)) {
-              if (leaf.fUserValue.find("import ") !=
-                  std::string::npos) {
+              if (leaf.fUserValue.find("import ") != std::string::npos) {
                 std::string range = "import ";
-                leaf.fUserValue.replace(
-                    leaf.fUserValue.find(range), range.size(),
-                    "");
+                leaf.fUserValue.replace(leaf.fUserValue.find(range),
+                                        range.size(), "");
               }
 
               if (leaf.fUserValue.find("ldw r6") != std::string::npos) {

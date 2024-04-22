@@ -10,6 +10,7 @@ local.properties
 
 # NewOS/MP-UX executable
 *.exec
+*.bin
 
 docs/
 
