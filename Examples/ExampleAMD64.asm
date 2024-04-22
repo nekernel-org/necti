@@ -1,9 +1,4 @@
-#org 0x7c00
+#bits 64
 
-nop
-nop
-nop
-nop
-nop
-
+mov rax, rdx
 ret

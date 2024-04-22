@@ -368,11 +368,9 @@ static bool asm_read_attributes(std::string &line) {
 
     auto name = line.substr(line.find("import") + strlen("import") + 1);
 
-    if (name.size() == 0)
-    {
-        detail::print_error("Invalid import",
-                              "ppcasm");
-          throw std::runtime_error("invalid_import");
+    if (name.size() == 0) {
+      detail::print_error("Invalid import", "ppcasm");
+      throw std::runtime_error("invalid_import");
     }
 
     std::string result = std::to_string(name.size());
@@ -521,9 +519,9 @@ std::string CompilerKit::EncoderAMD64::CheckLine(std::string &line,
   std::string err_str;
 
   if (line.empty() || ParserKit::find_word(line, "import") ||
-      ParserKit::find_word(line, "export") || ParserKit::find_word(line, kAssemblerPragmaSymStr) ||
-      ParserKit::find_word(line, ";") ||
-      line[0] == kAssemblerPragmaSym) {
+      ParserKit::find_word(line, "export") ||
+      ParserKit::find_word(line, kAssemblerPragmaSymStr) ||
+      ParserKit::find_word(line, ";") || line[0] == kAssemblerPragmaSym) {
     if (line.find(';') != std::string::npos) {
       line.erase(line.find(';'));
     } else {
@@ -581,7 +579,7 @@ std::string CompilerKit::EncoderAMD64::CheckLine(std::string &line,
   }
   for (auto &opcodeAMD64 : kOpcodesAMD64) {
     if (ParserKit::find_word(line, opcodeAMD64.fName)) {
-        return err_str;
+      return err_str;
     }
   }
 
@@ -1019,14 +1017,14 @@ bool CompilerKit::EncoderAMD64::WriteLine(std::string &line,
   };
 
   std::vector<RegMapAMD64> REGISTER_LIST{
-      {.fName = "ax", .fModRM = 0x0},  {.fName = "cx", .fModRM = 0x8},
-      {.fName = "dx", .fModRM = 0x2},  {.fName = "bx", .fModRM = 0x10},
-      {.fName = "sp", .fModRM = 0x4},  {.fName = "bp", .fModRM = 0x12},
-      {.fName = "si", .fModRM = 0x6},  {.fName = "di", .fModRM = 0x14},
-      {.fName = "r8", .fModRM = 0x0},  {.fName = "r13", .fModRM = 0x8},
-      {.fName = "r9", .fModRM = 0x2},  {.fName = "r14", .fModRM = 0x10},
-      {.fName = "r10", .fModRM = 0x4}, {.fName = "r15", .fModRM = 0x12},
-      {.fName = "r11", .fModRM = 0x6},
+      {.fName = "ax", .fModRM = 0x0}, {.fName = "cx", .fModRM = 1},
+      {.fName = "dx", .fModRM = 0x2}, {.fName = "bx", .fModRM = 3},
+      {.fName = "sp", .fModRM = 0x4}, {.fName = "bp", .fModRM = 5},
+      {.fName = "si", .fModRM = 0x6}, {.fName = "di", .fModRM = 7},
+      {.fName = "r8", .fModRM = 8},   {.fName = "r13", .fModRM = 9},
+      {.fName = "r9", .fModRM = 10},  {.fName = "r14", .fModRM = 11},
+      {.fName = "r10", .fModRM = 12}, {.fName = "r15", .fModRM = 13},
+      {.fName = "r11", .fModRM = 14},
   };
 
   bool foundInstruction = false;
@@ -1120,15 +1118,54 @@ bool CompilerKit::EncoderAMD64::WriteLine(std::string &line,
           kAppBytes.emplace_back(0x89);
         }
 
-        /// encode register using the modrm encoding.
-
-        uint8_t modrm = 0x0;
-
-        for (size_t i = 0; i < REGISTER_LIST.size(); ++i) {
-          if (REGISTER_LIST[i].fModRM != currentRegList[0].fModRM) modrm += 16;
+        if (currentRegList[1].fName[0] == 'r' &&
+            currentRegList[0].fName[0] == 'e') {
+          detail::print_error("Invalid combination of operands and registers.",
+                              "i64asm");
+          throw std::runtime_error("comb_op_reg");
         }
 
-        modrm += currentRegList[1].fModRM;
+        if (currentRegList[0].fName[0] == 'r' &&
+            currentRegList[1].fName[0] == 'e') {
+          detail::print_error("Invalid combination of operands and registers.",
+                              "i64asm");
+          throw std::runtime_error("comb_op_reg");
+        }
+
+        if (bits == 16) {
+            if (currentRegList[0].fName[0] == 'r' ||
+                currentRegList[0].fName[0] == 'e') {
+              detail::print_error("Invalid combination of operands and registers.",
+                                  "i64asm");
+              throw std::runtime_error("comb_op_reg");
+            }
+
+            if (currentRegList[1].fName[0] == 'r' ||
+                currentRegList[1].fName[0] == 'e') {
+              detail::print_error("Invalid combination of operands and registers.",
+                                  "i64asm");
+              throw std::runtime_error("comb_op_reg");
+            }
+        } else {
+            if (currentRegList[0].fName[0] != 'r' ||
+                currentRegList[0].fName[0] == 'e') {
+              detail::print_error("Invalid combination of operands and registers.",
+                                  "i64asm");
+              throw std::runtime_error("comb_op_reg");
+            }
+
+            if (currentRegList[1].fName[0] != 'r' ||
+                currentRegList[1].fName[0] == 'e') {
+              detail::print_error("Invalid combination of operands and registers.",
+                                  "i64asm");
+              throw std::runtime_error("comb_op_reg");
+            }
+        }
+
+        /// encode register using the modrm encoding.
+
+        auto modrm = (0x3 << 6 | currentRegList[1].fModRM << 3 |
+                      currentRegList[0].fModRM);
 
         kAppBytes.emplace_back(modrm);
 
