@@ -23,9 +23,9 @@
 #define kPefMagicLen 5
 
 #define kPefVersion 2
-#define kPefNameLen 64
+#define kPefNameLen 255
 
-#define kPefBaseOrigin 0x1000000
+#define kPefBaseOrigin (0x1000000)
 
 #define kPefStart "__ImageStart"
 
@@ -39,6 +39,13 @@ enum {
   kPefArchPowerPC, /* 64-bit POWER architecture. */
   kPefArchCount = (kPefArchPowerPC - kPefArchIntel86S) + 1,
   kPefArchInvalid = 0xFF,
+};
+
+enum {
+  kPefSubArchAMD,
+  kPefSubArchIntel,
+  kPefSubArchARM,
+  kPefSubArchIBM,
 };
 
 enum {
@@ -62,7 +69,7 @@ typedef struct PEFContainer final {
   UIntPtr Start;  /* Origin of code */
   SizeType HdrSz; /* Size of header */
   SizeType Count; /* container header count */
-} __attribute__((packed)) PEFContainer;
+} PACKED PEFContainer;
 
 /* First PEFCommandHeader starts after PEFContainer */
 /* Last container is __exec_end */
@@ -71,11 +78,13 @@ typedef struct PEFContainer final {
 
 typedef struct PEFCommandHeader final {
   CharType Name[kPefNameLen]; /* container name */
+  UInt32 Cpu;             /* container cpu */
+  UInt32 SubCpu;          /* container sub-cpu */
   UInt32 Flags;               /* container flags */
   UInt16 Kind;                /* container kind */
   UIntPtr Offset;             /* file offset */
   SizeType Size;              /* file size */
-} __attribute__((packed)) PEFCommandHeader;
+} PACKED PEFCommandHeader;
 
 enum {
   kPefCode = 0xC,
