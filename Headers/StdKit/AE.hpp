@@ -31,12 +31,13 @@ namespace CompilerKit {
 typedef struct AEHeader final {
   CharType fMagic[kAEMagLen];
   CharType fArch;
+  CharType fSubArch;
   SizeType fCount;
   CharType fSize;
   SizeType fStartCode;
   SizeType fCodeSize;
   CharType fPad[kAEPad];
-} __attribute__((packed)) AEHeader, *AEHeaderPtr;
+} PACKED AEHeader, *AEHeaderPtr;
 
 // @brief Advanced Executable Record.
 // Could be data, code or bss.
@@ -49,7 +50,7 @@ typedef struct AERecordHeader final {
   SizeType fFlags;
   UIntPtr fOffset;
   CharType fPad[kAEPad];
-} __attribute__((packed)) AERecordHeader, *AERecordHeaderPtr;
+} PACKED AERecordHeader, *AERecordHeaderPtr;
 
 enum {
   kKindRelocationByOffset = 0x23f,

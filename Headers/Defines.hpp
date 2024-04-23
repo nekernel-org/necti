@@ -119,6 +119,8 @@ inline bool to_str(CharType *str, Int32 limit, Int32 base) noexcept {
 }
 }  // namespace CompilerKit
 
+#define PACKED __attribute__((packed))
+
 typedef char char_type;
 
 #define kObjectFileExt ".obj"

@@ -298,6 +298,8 @@ MPCC_MODULE(NewOSLinker) {
         command_header.Offset = ae_records[ae_record_index].fOffset;
         command_header.Kind = ae_records[ae_record_index].fKind;
         command_header.Size = ae_records[ae_record_index].fSize;
+        command_header.Cpu = ae_header.fArch;
+        command_header.SubCpu = ae_header.fSubArch;
 
         if (kVerbose)
           kStdOut << "link: object record: "
