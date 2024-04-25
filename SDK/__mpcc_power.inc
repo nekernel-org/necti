@@ -1,7 +1,7 @@
-# Path: SDK/POWER.inc
+# Path: SDK/__mpcc_power.inc
 # Language: Mahrouss POWER Assembly support for GNU.
 # Build Date: 2024-6-4
-#
+
 %def lda li
 %def sta stw
 %def ldw li

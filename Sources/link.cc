@@ -47,9 +47,9 @@
 #define kWhite "\e[0;97m"
 #define kStdOut (std::cout << kWhite)
 
-#define kPefDeaultOrg kPefBaseOrigin
-#define kPefLinkerNumId 0x5046FF
-#define kPefAbiId "Container:Abi:"
+#define kLinkerDefaultOrigin kPefBaseOrigin
+#define kLinkerId 0x5046FF
+#define kLinkerAbiContainer "Container:Abi:"
 
 enum { kStandardAbi = 0x5046 /* PF */ };
 
@@ -186,7 +186,7 @@ MPCC_MODULE(NewOSLinker) {
   pef_container.Count = 0UL;
   pef_container.Kind = CompilerKit::kPefKindExec;
   pef_container.SubCpu = kSubArch;
-  pef_container.Linker = kPefLinkerNumId;  // Mahrouss Logic Linker
+  pef_container.Linker = kLinkerId;  // Mahrouss Logic Linker
   pef_container.Abi = kAbi;                // Multi-Processor UX ABI
   pef_container.Magic[0] = kPefMagic[kFatBinaryEnable ? 2 : 0];
   pef_container.Magic[1] = kPefMagic[1];
@@ -195,7 +195,7 @@ MPCC_MODULE(NewOSLinker) {
   pef_container.Version = kPefVersion;
 
   // specify the start address, can be 0x10000
-  pef_container.Start = kPefDeaultOrg;
+  pef_container.Start = kLinkerDefaultOrigin;
   pef_container.HdrSz = sizeof(CompilerKit::PEFContainer);
 
   std::ofstream outputFc(kOutput, std::ofstream::binary);
@@ -291,7 +291,6 @@ MPCC_MODULE(NewOSLinker) {
             std::string(command_header.Name).find(".code64") !=
                 std::string::npos) {
           kStartFound = true;
-          pef_container.Start = offsetOfData;
         }
 
       ld_mark_header:
@@ -448,7 +447,7 @@ MPCC_MODULE(NewOSLinker) {
 
   CompilerKit::PEFCommandHeader abiHeader{};
 
-  std::string abi = kPefAbiId;
+  std::string abi = kLinkerAbiContainer;
 
   switch (kArch) {
     case CompilerKit::kPefArchAMD64: {
@@ -535,6 +534,9 @@ MPCC_MODULE(NewOSLinker) {
 
     std::string name = commandHdrsList[commandHeaderIndex].Name;
 
+    /// so this is valid when we get to the entrypoint.
+    /// it is always a code64 container. And should equal to kPefStart as well.
+    /// this chunk of code updates the pef_container.Start with the updated offset.
     if (name.find(kPefStart) != std::string::npos &&
         name.find(".code64") != std::string::npos) {
         pef_container.Start = commandHdrsList[commandHeaderIndex].Offset;
@@ -548,7 +550,7 @@ MPCC_MODULE(NewOSLinker) {
 
     if (kVerbose) {
         kStdOut << "link: command header name: " <<
-                    commandHdrsList[commandHeaderIndex].Name << "\n";
+                    name << "\n";
         kStdOut << "link: real address of command header content: " <<
                 commandHdrsList[commandHeaderIndex].Offset << "\n";
     }
