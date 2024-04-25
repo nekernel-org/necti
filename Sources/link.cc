@@ -259,10 +259,10 @@ MPCC_MODULE(NewOSLinker) {
       memset(raw_ae_records, 0, cnt * sizeof(CompilerKit::AERecordHeader));
 
       auto *ae_records = readProto.Read(raw_ae_records, cnt);
-
       for (size_t ae_record_index = 0; ae_record_index < cnt;
            ++ae_record_index) {
         CompilerKit::PEFCommandHeader command_header{0};
+        size_t offsetOfData = ae_records[ae_record_index].fOffset + ae_header.fSize;
 
         memcpy(command_header.Name, ae_records[ae_record_index].fName,
                kPefNameLen);
@@ -291,11 +291,11 @@ MPCC_MODULE(NewOSLinker) {
             std::string(command_header.Name).find(".code64") !=
                 std::string::npos) {
           kStartFound = true;
-          pef_container.Start = ae_records[ae_record_index].fOffset;
+          pef_container.Start = offsetOfData;
         }
 
       ld_mark_header:
-        command_header.Offset = ae_records[ae_record_index].fOffset + ae_header.fSize;
+        command_header.Offset = offsetOfData;
         command_header.Kind = ae_records[ae_record_index].fKind;
         command_header.Size = ae_records[ae_record_index].fSize;
         command_header.Cpu = ae_header.fArch;
@@ -532,6 +532,19 @@ MPCC_MODULE(NewOSLinker) {
 
     commandHdrsList[commandHeaderIndex].Offset += previousOffset;
     previousOffset += commandHdrsList[commandHeaderIndex].Size;
+
+    std::string name = commandHdrsList[commandHeaderIndex].Name;
+
+    if (name.find(kPefStart) != std::string::npos &&
+        name.find(".code64") != std::string::npos) {
+        pef_container.Start = commandHdrsList[commandHeaderIndex].Offset;
+        auto tellCurPos = outputFc.tellp();
+
+        outputFc.seekp(0);
+        outputFc << pef_container;
+
+        outputFc.seekp(tellCurPos);
+    }
 
     if (kVerbose) {
         kStdOut << "link: command header name: " <<
