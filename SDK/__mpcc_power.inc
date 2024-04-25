@@ -2,6 +2,8 @@
 # Language: Mahrouss POWER Assembly support for GNU.
 # Build Date: 2024-6-4
 
+%ifdef __CODETOOLS__
+
 %def lda li
 %def sta stw
 %def ldw li
@@ -27,3 +29,7 @@
 %def r18 18
 %def r19 19
 %def r20 20
+
+%endif
+
+%def nop mr 0, 0
