@@ -12,7 +12,7 @@
 /// @author Amlal El Mahrouss (amlel)
 /// @brief Linker.
 
-// README: Do not look up for anything with .code64/.data64/.page_zero!
+// README: Do not look up for anything with .code64/.data64/.zero64!
 // It will be loaded when program will start up!
 
 #include <Headers/StdKit/ErrorID.hpp>
@@ -20,7 +20,7 @@
 //! Assembler Kit
 #include <Headers/AsmKit/AsmKit.hpp>
 
-//! Portable Executable Format
+//! Preferred Executable Format
 #include <Headers/StdKit/PEF.hpp>
 #include <Headers/UUID.hpp>
 #include <filesystem>
@@ -71,7 +71,7 @@ static std::vector<std::string> kObjectList;
 static std::vector<char> kObjectBytes;
 
 #define kPrintF printf
-#define kSplashLink() kPrintF(kWhite kLinkerVersion, kDistVersion)
+#define kLinkerSplash() kPrintF(kWhite kLinkerVersion, kDistVersion)
 
 MPCC_MODULE(NewOSLinker) {
   bool is_executable = true;
@@ -82,7 +82,7 @@ MPCC_MODULE(NewOSLinker) {
    */
   for (size_t i = 1; i < argc; ++i) {
     if (StringCompare(argv[i], "-h") == 0) {
-      kSplashLink();
+      kLinkerSplash();
       kStdOut << "-version: Show program version.\n";
       kStdOut << "-verbose: Enable program trace.\n";
       kStdOut << "-shared: Output as a shared PEF.\n";
@@ -96,7 +96,7 @@ MPCC_MODULE(NewOSLinker) {
 
       return 0;
     } else if (StringCompare(argv[i], "-v") == 0) {
-      kSplashLink();
+      kLinkerSplash();
       return 0;
     } else if (StringCompare(argv[i], "-fat-bin") == 0) {
       kFatBinaryEnable = true;
@@ -114,7 +114,7 @@ MPCC_MODULE(NewOSLinker) {
       kArch = CompilerKit::kPefArch32000;
 
       continue;
-    } else if (StringCompare(argv[i], "-ppc64") == 0) {
+    } else if (StringCompare(argv[i], "-power64") == 0) {
       kArch = CompilerKit::kPefArchPowerPC;
 
       continue;
@@ -255,7 +255,7 @@ MPCC_MODULE(NewOSLinker) {
       pef_container.Count = cnt;
 
       char_type *raw_ae_records =
-          new char[cnt * sizeof(CompilerKit::AERecordHeader)];
+          new char_type[cnt * sizeof(CompilerKit::AERecordHeader)];
       memset(raw_ae_records, 0, cnt * sizeof(CompilerKit::AERecordHeader));
 
       auto *ae_records = readProto.Read(raw_ae_records, cnt);
@@ -272,7 +272,7 @@ MPCC_MODULE(NewOSLinker) {
                 std::string::npos &&
             std::string(command_header.Name).find(".data64") ==
                 std::string::npos &&
-            std::string(command_header.Name).find(".page_zero") ==
+            std::string(command_header.Name).find(".zero64") ==
                 std::string::npos) {
           if (std::string(command_header.Name).find(kPefStart) ==
                   std::string::npos &&
@@ -295,15 +295,18 @@ MPCC_MODULE(NewOSLinker) {
         }
 
       ld_mark_header:
-        command_header.Offset = ae_records[ae_record_index].fOffset;
+        command_header.Offset = ae_records[ae_record_index].fOffset + ae_header.fSize;
         command_header.Kind = ae_records[ae_record_index].fKind;
         command_header.Size = ae_records[ae_record_index].fSize;
         command_header.Cpu = ae_header.fArch;
         command_header.SubCpu = ae_header.fSubArch;
 
-        if (kVerbose)
-          kStdOut << "link: object record: "
-                  << ae_records[ae_record_index].fName << " was marked.\n";
+        if (kVerbose) {
+            kStdOut << "link: object record: "
+                      << ae_records[ae_record_index].fName << " was marked.\n";
+
+            kStdOut << "link: object record offset: " << command_header.Offset << "\n";
+        }
 
         commandHdrsList.emplace_back(command_header);
       }
@@ -337,7 +340,7 @@ MPCC_MODULE(NewOSLinker) {
   outputFc << pef_container;
 
   if (kVerbose) {
-    kStdOut << "link: pef: wrote container header.\n";
+    kStdOut << "link: wrote container header.\n";
   }
 
   outputFc.seekp(std::streamsize(pef_container.HdrSz));
@@ -441,7 +444,7 @@ MPCC_MODULE(NewOSLinker) {
   dateHeader.Offset = outputFc.tellp();
   dateHeader.Size = timeStampStr.size();
 
-  outputFc << dateHeader;
+  commandHdrsList.push_back(dateHeader);
 
   CompilerKit::PEFCommandHeader abiHeader{};
 
@@ -449,16 +452,16 @@ MPCC_MODULE(NewOSLinker) {
 
   switch (kArch) {
     case CompilerKit::kPefArchAMD64: {
-      abi += "MS*T";
+      abi += "MSFT";
       break;
     }
     case CompilerKit::kPefArchPowerPC: {
-      abi += "MHRP";
+      abi += "SYSV";
       break;
     }
     case CompilerKit::kPefArch32000:
     case CompilerKit::kPefArch64000: {
-      abi += "MHRC";
+      abi += "MHRA";
       break;
     }
     default: {
@@ -474,7 +477,7 @@ MPCC_MODULE(NewOSLinker) {
   abiHeader.Flags = 0;
   abiHeader.Kind = CompilerKit::kPefLinkerID;
 
-  outputFc << abiHeader;
+  commandHdrsList.push_back(abiHeader);
 
   CompilerKit::PEFCommandHeader uuidHeader{};
 
@@ -498,12 +501,16 @@ MPCC_MODULE(NewOSLinker) {
   uuidHeader.Flags = 0;
   uuidHeader.Kind = CompilerKit::kPefZero;
 
-  outputFc << uuidHeader;
+  commandHdrsList.push_back(uuidHeader);
 
   // prepare a symbol vector.
   std::vector<std::string> undefSymbols;
   std::vector<std::string> duplSymbols;
   std::vector<std::string> resolveSymbols;
+
+  constexpr Int32 cPaddingOffset = 16;
+
+  size_t previousOffset = (commandHdrsList.size() * sizeof(CompilerKit::PEFCommandHeader)) + cPaddingOffset;
 
   // Finally write down the command headers.
   // And check for any duplications
@@ -521,6 +528,16 @@ MPCC_MODULE(NewOSLinker) {
 
     if (!symbolName.empty()) {
       undefSymbols.emplace_back(symbolName);
+    }
+
+    commandHdrsList[commandHeaderIndex].Offset += previousOffset;
+    previousOffset += commandHdrsList[commandHeaderIndex].Size;
+
+    if (kVerbose) {
+        kStdOut << "link: command header name: " <<
+                    commandHdrsList[commandHeaderIndex].Name << "\n";
+        kStdOut << "link: real address of command header content: " <<
+                commandHdrsList[commandHeaderIndex].Offset << "\n";
     }
 
     outputFc << commandHdrsList[commandHeaderIndex];
@@ -575,7 +592,7 @@ MPCC_MODULE(NewOSLinker) {
     outputFc << byte;
   }
 
-  if (kVerbose) kStdOut << "link: wrote code for: " << kOutput << "\n";
+  if (kVerbose) kStdOut << "link: wrote contents of: " << kOutput << "\n";
 
   // step 3: check if we have those symbols
 
