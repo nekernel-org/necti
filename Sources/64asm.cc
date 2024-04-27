@@ -361,7 +361,7 @@ static bool asm_read_attributes(std::string &line) {
   }
   // export is a special keyword used by 64asm to tell the AE output stage to
   // mark this section as a header. it currently supports .code64, .data64.,
-  // page_zero
+  // .zero64
   else if (ParserKit::find_word(line, "export")) {
     if (kOutputAsBinary) {
       detail::print_error("Invalid export directive in flat binary mode.",

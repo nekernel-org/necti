@@ -27,11 +27,11 @@
 #include <random>
 #include <vector>
 
+//! Dist version
+#include <Headers/Version.hxx>
+
 //! Advanced Executable Object Format
 #include <Headers/StdKit/AE.hpp>
-
-//! Dist version
-#include <Version.hxx>
 
 //! C++ I/O headers.
 #include <fstream>

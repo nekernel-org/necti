@@ -490,7 +490,7 @@ bool CompilerBackendCLang::Compile(const std::string &text, const char *file) {
         if (textBuffer[text_index_2] == '=') {
           if (!kInBraces) {
             substr.replace(substr.find("export .data64"),
-                           strlen("export .data64"), "export .page_zero ");
+                           strlen("export .data64"), "export .zero64 ");
           }
 
           substr += ",";
