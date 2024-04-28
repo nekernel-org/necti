@@ -50,6 +50,8 @@ static Boolean kOutputAsBinary = false;
 static UInt32 kErrorLimit = 10;
 static UInt32 kAcceptableErrors = 0;
 
+constexpr auto c64x0IPAlignment = 0x4U;
+
 static std::size_t kCounter = 1UL;
 
 static std::uintptr_t kOrigin = kPefBaseOrigin;
@@ -940,7 +942,7 @@ bool CompilerKit::Encoder64x0::WriteLine(std::string &line,
       }
 
     asm_end_label_cpy:
-      kOrigin += 0x04;
+      kOrigin += c64x0IPAlignment;
 
       break;
     }

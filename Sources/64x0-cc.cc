@@ -28,11 +28,11 @@
 /// TODO: support structures, else if, else, ., ->
 
 /* C driver */
-/* This is part of MultiProcessor C SDK. */
+/* This is part of CodeTools C SDK. */
 /* (c) Mahrouss Logic */
 
 /// @author Amlal El Mahrouss (amlel)
-/// @file cc.cc
+/// @file 64x0-cc.cc
 /// @brief 64x0 C Compiler.
 
 /////////////////////

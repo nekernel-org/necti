@@ -28,7 +28,7 @@
 /// TODO: support structures, else if, else, ., ->
 
 /* C driver */
-/* This is part of MultiProcessor C SDK. */
+/* This is part of CodeTools C SDK. */
 /* (c) Mahrouss Logic */
 
 /// @author Amlal El Mahrouss (amlel)
@@ -370,7 +370,7 @@ bool CompilerBackendCLang::Compile(const std::string &text, const char *file) {
           "\tcmpw "
           "r10, r11";
 
-      syntaxLeaf.fUserValue += "\n\tbeq import" + kIfFunction +
+      syntaxLeaf.fUserValue += "\n\tbeq import " + kIfFunction +
                                " \ndword export .code64 " + kIfFunction + "\n";
 
       kState.fSyntaxTree->fLeafList.push_back(syntaxLeaf);
@@ -601,7 +601,7 @@ bool CompilerBackendCLang::Compile(const std::string &text, const char *file) {
           }
 
           args += args_buffer;
-          args += "\n\tli r19, ";
+          args += "\n\tli r31, ";
         }
       }
 

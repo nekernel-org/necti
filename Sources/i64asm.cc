@@ -59,6 +59,8 @@ static Boolean kOutputAsBinary = false;
 static UInt32 kErrorLimit = 10;
 static UInt32 kAcceptableErrors = 0;
 
+constexpr auto cAMD64IPAlignment = 0x4U;
+
 static std::size_t kCounter = 1UL;
 
 static std::uintptr_t kOrigin = kPefBaseOrigin;
@@ -1236,6 +1238,8 @@ bool CompilerKit::EncoderAMD64::WriteLine(std::string &line,
   else if (line.find(".word") != std::string::npos) {
     this->WriteNumber16(line.find(".word") + strlen(".word") + 1, line);
   }
+
+  kOrigin += cAMD64IPAlignment;
 
   return true;
 }
