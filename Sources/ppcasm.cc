@@ -909,15 +909,15 @@ bool CompilerKit::EncoderPowerPC::WriteLine(std::string &line,
           }
 
           if (opcodeName.find("cmp") != std::string::npos) {
-              char rightReg = 0;
+              char rightReg = 0x0;
 
-              for (size_t i = 0; i != found_registers_index[0]; i++) {
+              for (size_t i = 0; i != found_registers_index[1]; i++) {
                 rightReg += 0x08;
               }
 
               kBytes.emplace_back(0x00);
               kBytes.emplace_back(rightReg);
-              kBytes.emplace_back(found_registers_index[1]);
+              kBytes.emplace_back(found_registers_index[0]);
               kBytes.emplace_back(0x7c);
           }
 
