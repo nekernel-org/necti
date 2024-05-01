@@ -7,9 +7,6 @@
  * 	========================================================
  */
 
-/// BUGS: 0
-/// TODO: Structs and enums.
-
 #include <Headers/AsmKit/CPU/ppc.hpp>
 #include <Headers/ParserKit.hpp>
 #include <Headers/UUID.hpp>
@@ -24,12 +21,6 @@
 #include <vector>
 
 #define kOk 0
-
-/// TODO: support structures, else if, else, ., ->
-
-/* C driver */
-/* This is part of CodeTools C SDK. */
-/* (c) Mahrouss Logic */
 
 /// @author Amlal El Mahrouss (amlel)
 /// @file cc.cc

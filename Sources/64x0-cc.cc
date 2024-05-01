@@ -25,8 +25,6 @@
 
 #define kOk 0
 
-/// TODO: support structures, else if, else, ., ->
-
 /* C driver */
 /* This is part of CodeTools C SDK. */
 /* (c) Mahrouss Logic */
@@ -34,6 +32,8 @@
 /// @author Amlal El Mahrouss (amlel)
 /// @file 64x0-cc.cc
 /// @brief 64x0 C Compiler.
+
+/// TODO: support structures, else if, else, . and  ->
 
 /////////////////////
 

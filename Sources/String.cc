@@ -10,7 +10,7 @@
 /**
  * @file String.cc
  * @author Amlal (amlal@mahrouss-logic.com)
- * @brief C++ String Manip API.
+ * @brief C++ string manipulation API.
  * @version 0.2
  * @date 2024-01-23
  *

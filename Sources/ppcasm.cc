@@ -4,16 +4,14 @@
 
 ------------------------------------------- */
 
-/// BUGS: 0
-
 /////////////////////////////////////////////////////////////////////////////////////////
 
-// @file ppcasm.cxx
-// @author Amlal El Mahrouss
-// @brief POWER Assembler.
+/// @file ppcasm.cxx
+/// @author Amlal El Mahrouss
+/// @brief POWER Assembler.
 
-// REMINDER: when dealing with an undefined symbol use (string
-// size):LinkerFindSymbol:(string) so that li will look for it.
+/// REMINDER: when dealing with an undefined symbol use (string
+/// size):LinkerFindSymbol:(string) so that li will look for it.
 
 /////////////////////////////////////////////////////////////////////////////////////////
 

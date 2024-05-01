@@ -4,13 +4,11 @@
 
 ------------------------------------------- */
 
-/// BUGS: 0
-
-/// Last Rev: Sat Feb 24 CET 2024
-
 /// @file link.cc
 /// @author Amlal El Mahrouss (amlel)
-/// @brief Linker.
+/// @brief Mahrouss Linker.
+
+/// Last Rev: Sat Feb 24 CET 2024
 
 // README: Do not look up for anything with .code64/.data64/.zero64!
 // It will be loaded when program will start up!
