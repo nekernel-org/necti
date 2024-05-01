@@ -418,14 +418,14 @@ MPCC_MODULE(NewOSLinker) {
   if (!kStartFound && is_executable) {
     if (kVerbose)
       kStdOut
-          << "link: undefined entrypoint: __start, you may have forget to link "
+          << "link: undefined entrypoint: " << kPefStart << ", you may have forget to link "
              "against your compiler's runtime library.\n";
 
     kStdOut << "link: undefined entrypoint " << kPefStart
             << " for executable: " << kOutput << "\n";
   }
 
-  // step 4: write some pef commands.
+  // step 4: write all PEF commands.
 
   CompilerKit::PEFCommandHeader dateHeader{};
 

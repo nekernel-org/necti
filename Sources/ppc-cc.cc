@@ -1146,7 +1146,7 @@ class AssemblyMountpointCLang final : public CompilerKit::AssemblyInterface {
       dest += ch;
     }
 
-    /* According to pef abi. */
+    /* According to PEF ABI. */
     std::vector<const char *> exts = kAsmFileExts;
     dest += exts[4];
 
