@@ -35,12 +35,32 @@ class CompilerBackend {
 
 struct SyntaxLeafList;
 struct SyntaxLeafList;
+struct CompilerKeyword;
 
+/// we want to do that because to separate keywords.
+enum {
+  eKeywordKindAccess,
+  eKeywordKindObject,
+  eKeywordKindDataType,
+  eKeywordKindCompilerAttribute,
+  eKeywordKindKeyword,
+};
+
+/// \brief Compiler keyword information struct.
+struct CompilerKeyword {
+  std::string keyword_name;
+  int32_t keyword_kind = eKeywordKindKeyword;
+};
 struct SyntaxLeafList final {
   struct SyntaxLeaf final {
     Int32 fUserType;
+#ifdef __PK_USE_STRUCT_INSTEAD__
+    CompilerKeyword fUserData;
+    CompilerKeyword fUserValue;
+#else
     std::string fUserData;
     std::string fUserValue;
+#endif
     struct SyntaxLeaf* fNext;
   };
 

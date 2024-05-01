@@ -1157,7 +1157,7 @@ class AssemblyMountpointCLang final : public CompilerKit::AssemblyInterface {
     (*kState.fOutputAssembly) << "# Path: " << src_file << "\n";
     (*kState.fOutputAssembly)
         << "# Language: POWER Assembly (Generated from C)\n";
-    (*kState.fOutputAssembly) << "# Build Date: " << fmt << "\n\n";
+    (*kState.fOutputAssembly) << "# Date: " << fmt << "\n\n";
 
     ParserKit::SyntaxLeafList syntax;
 
