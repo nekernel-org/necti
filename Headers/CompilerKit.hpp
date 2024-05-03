@@ -25,4 +25,11 @@
   KLASS &operator=(KLASS &&) = default; \
   KLASS(KLASS &&) = default;
 
+
+
+/// @note xxxx is the error placeholder, in hexadecimal.
+#define MPCC_ERROR_PREFIX_CXX "CXXxxxx"
+#define MPCC_ERROR_PREFIX_CL "CLxxxx"
+#define MPCC_ERROR_PREFIX_ASM "ASMxxxx"
+
 #endif /* ifndef _CK_CL_HPP */
