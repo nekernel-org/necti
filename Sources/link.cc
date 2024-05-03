@@ -10,8 +10,8 @@
 
 /// Last Rev: Sat Feb 24 CET 2024
 
-// README: Do not look up for anything with .code64/.data64/.zero64!
-// It will be loaded when program will start up!
+/// note: Do not look up for anything with .code64/.data64/.zero64!
+/// It will be loaded when program will start up!
 
 #include <Headers/StdKit/ErrorID.hpp>
 
