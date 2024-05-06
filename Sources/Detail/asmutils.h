@@ -1,4 +1,13 @@
+/* -------------------------------------------
+
+    Copyright Mahrouss Logic
+
+------------------------------------------- */
+
 #pragma once
+
+#include <Headers/AsmKit/AsmKit.hpp>
+#include <Headers/ParserKit.hpp>
 
 using namespace CompilerKit;
 
@@ -6,81 +15,97 @@ using namespace CompilerKit;
 /// @param lineBuffer the lineBuffer to fetch from.
 /// @param numberKey where to seek that number.
 /// @return
-static NumberCast32 GetNumber32(std::string lineBuffer, std::string numberKey) {
-  auto pos = lineBuffer.find(numberKey) + numberKey.size();
+static NumberCast32 GetNumber32(std::string lineBuffer, std::string numberKey)
+{
+	auto pos = lineBuffer.find(numberKey) + numberKey.size();
 
-  if (lineBuffer.find(",") != std::string::npos) lineBuffer.erase(lineBuffer.find(","), 1);
+	if (lineBuffer.find(",") != std::string::npos)
+		lineBuffer.erase(lineBuffer.find(","), 1);
 
-  while (lineBuffer[pos] == ' ') ++pos;
+	while (lineBuffer[pos] == ' ')
+		++pos;
 
-  switch (lineBuffer[pos + 1]) {
-    case 'x': {
-      if (auto res = strtol(lineBuffer.substr(pos).c_str(), nullptr, 16); !res) {
-        if (errno != 0) {
-          detail::print_error("invalid hex number: " + lineBuffer, "ppcasm");
-          throw std::runtime_error("invalid_hex");
-        }
-      }
+	switch (lineBuffer[pos + 1])
+	{
+	case 'x': {
+		if (auto res = strtol(lineBuffer.substr(pos).c_str(), nullptr, 16); !res)
+		{
+			if (errno != 0)
+			{
+				detail::print_error("invalid hex number: " + lineBuffer, "ppcasm");
+				throw std::runtime_error("invalid_hex");
+			}
+		}
 
-      NumberCast32 numOffset(strtol(lineBuffer.substr(pos).c_str(), nullptr, 16));
+		NumberCast32 numOffset(strtol(lineBuffer.substr(pos).c_str(), nullptr, 16));
 
-      if (kVerbose) {
-        kStdOut << "ppcasm: found a base 16 number here: " << lineBuffer.substr(pos)
-                << "\n";
-      }
+		if (kVerbose)
+		{
+			kStdOut << "ppcasm: found a base 16 number here: " << lineBuffer.substr(pos)
+					<< "\n";
+		}
 
-      return numOffset;
-    }
-    case 'b': {
-      if (auto res = strtol(lineBuffer.substr(pos).c_str(), nullptr, 2); !res) {
-        if (errno != 0) {
-          detail::print_error("invalid binary number:" + lineBuffer, "ppcasm");
-          throw std::runtime_error("invalid_bin");
-        }
-      }
+		return numOffset;
+	}
+	case 'b': {
+		if (auto res = strtol(lineBuffer.substr(pos).c_str(), nullptr, 2); !res)
+		{
+			if (errno != 0)
+			{
+				detail::print_error("invalid binary number:" + lineBuffer, "ppcasm");
+				throw std::runtime_error("invalid_bin");
+			}
+		}
 
-      NumberCast32 numOffset(strtol(lineBuffer.substr(pos).c_str(), nullptr, 2));
+		NumberCast32 numOffset(strtol(lineBuffer.substr(pos).c_str(), nullptr, 2));
 
-      if (kVerbose) {
-        kStdOut << "ppcasm: found a base 2 number here:" << lineBuffer.substr(pos)
-                << "\n";
-      }
+		if (kVerbose)
+		{
+			kStdOut << "ppcasm: found a base 2 number here:" << lineBuffer.substr(pos)
+					<< "\n";
+		}
 
-      return numOffset;
-    }
-    case 'o': {
-      if (auto res = strtol(lineBuffer.substr(pos).c_str(), nullptr, 7); !res) {
-        if (errno != 0) {
-          detail::print_error("invalid octal number: " + lineBuffer, "ppcasm");
-          throw std::runtime_error("invalid_octal");
-        }
-      }
+		return numOffset;
+	}
+	case 'o': {
+		if (auto res = strtol(lineBuffer.substr(pos).c_str(), nullptr, 7); !res)
+		{
+			if (errno != 0)
+			{
+				detail::print_error("invalid octal number: " + lineBuffer, "ppcasm");
+				throw std::runtime_error("invalid_octal");
+			}
+		}
 
-      NumberCast32 numOffset(strtol(lineBuffer.substr(pos).c_str(), nullptr, 7));
+		NumberCast32 numOffset(strtol(lineBuffer.substr(pos).c_str(), nullptr, 7));
 
-      if (kVerbose) {
-        kStdOut << "ppcasm: found a base 8 number here:" << lineBuffer.substr(pos)
-                << "\n";
-      }
+		if (kVerbose)
+		{
+			kStdOut << "ppcasm: found a base 8 number here:" << lineBuffer.substr(pos)
+					<< "\n";
+		}
 
-      return numOffset;
-    }
-    default: {
-      if (auto res = strtol(lineBuffer.substr(pos).c_str(), nullptr, 10); !res) {
-        if (errno != 0) {
-          detail::print_error("invalid hex number: " + lineBuffer, "ppcasm");
-          throw std::runtime_error("invalid_hex");
-        }
-      }
+		return numOffset;
+	}
+	default: {
+		if (auto res = strtol(lineBuffer.substr(pos).c_str(), nullptr, 10); !res)
+		{
+			if (errno != 0)
+			{
+				detail::print_error("invalid hex number: " + lineBuffer, "ppcasm");
+				throw std::runtime_error("invalid_hex");
+			}
+		}
 
-      NumberCast32 numOffset(strtol(lineBuffer.substr(pos).c_str(), nullptr, 10));
+		NumberCast32 numOffset(strtol(lineBuffer.substr(pos).c_str(), nullptr, 10));
 
-      if (kVerbose) {
-        kStdOut << "ppcasm: found a base 10 number here:" << lineBuffer.substr(pos)
-                << "\n";
-      }
+		if (kVerbose)
+		{
+			kStdOut << "ppcasm: found a base 10 number here:" << lineBuffer.substr(pos)
+					<< "\n";
+		}
 
-      return numOffset;
-    }
-  }
+		return numOffset;
+	}
+	}
 }

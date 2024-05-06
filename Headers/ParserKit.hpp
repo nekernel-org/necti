@@ -9,91 +9,135 @@
 #include <Headers/AsmKit/AsmKit.hpp>
 #include <vector>
 
-namespace ParserKit {
-using namespace CompilerKit;
+namespace ParserKit
+{
+	using namespace CompilerKit;
 
-/// @brief Compiler backend, implements a frontend, such as C, C++...
-/// See Toolchain, for some examples.
-class CompilerBackend {
- public:
-  explicit CompilerBackend() = default;
-  virtual ~CompilerBackend() = default;
+	/// @brief Compiler backend, implements a frontend, such as C, C++...
+	/// See Toolchain, for some examples.
+	class CompilerBackend
+	{
+	public:
+		explicit CompilerBackend() = default;
+		virtual ~CompilerBackend() = default;
 
-  MPCC_COPY_DEFAULT(CompilerBackend);
+		MPCC_COPY_DEFAULT(CompilerBackend);
 
-  // NOTE: cast this to your user defined ast.
-  typedef void* AstType;
+		// NOTE: cast this to your user defined ast.
+		typedef void* AstType;
 
-  //! @brief Compile a syntax tree ouf of the text.
-  //! Also takes the source file name for metadata.
+		//! @brief Compile a syntax tree ouf of the text.
+		//! Also takes the source file name for metadata.
 
-  virtual bool Compile(const std::string& text, const char* file) = 0;
+		virtual bool Compile(const std::string& text, const char* file) = 0;
 
-  //! @brief What language are we dealing with?
-  virtual const char* Language() { return "Invalid Language"; }
-};
+		//! @brief What language are we dealing with?
+		virtual const char* Language()
+		{
+			return "Invalid Language";
+		}
+	};
 
-struct SyntaxLeafList;
-struct SyntaxLeafList;
+	struct SyntaxLeafList;
+	struct SyntaxLeafList;
+	struct CompilerKeyword;
 
-struct SyntaxLeafList final {
-  struct SyntaxLeaf final {
-    Int32 fUserType;
-    std::string fUserData;
-    std::string fUserValue;
-    struct SyntaxLeaf* fNext;
-  };
+	/// we want to do that because to separate keywords.
+	enum
+	{
+		eKeywordKindAccess,
+		eKeywordKindObject,
+		eKeywordKindDataType,
+		eKeywordKindCompilerAttribute,
+		eKeywordKindKeyword,
+	};
 
-  std::vector<SyntaxLeaf> fLeafList;
-  SizeType fNumLeafs;
+	/// \brief Compiler keyword information struct.
+	struct CompilerKeyword
+	{
+		std::string keyword_name;
+		int32_t		keyword_kind = eKeywordKindKeyword;
+	};
+	struct SyntaxLeafList final
+	{
+		struct SyntaxLeaf final
+		{
+			Int32 fUserType;
+#ifdef __PK_USE_STRUCT_INSTEAD__
+			CompilerKeyword fUserData;
+			CompilerKeyword fUserValue;
+#else
+			std::string fUserData;
+			std::string fUserValue;
+#endif
+			struct SyntaxLeaf* fNext;
+		};
 
-  size_t SizeOf() { return fNumLeafs; }
-  std::vector<SyntaxLeaf>& Get() { return fLeafList; }
-  SyntaxLeaf& At(size_t index) { return fLeafList[index]; }
-};
+		std::vector<SyntaxLeaf> fLeafList;
+		SizeType				fNumLeafs;
 
-/// find the perfect matching word in a haystack.
-/// \param haystack base string
-/// \param needle the string we search for.
-/// \return if we found it or not.
-inline bool find_word(const std::string& haystack,
-                      const std::string& needle) noexcept {
-  auto index = haystack.find(needle);
+		size_t SizeOf()
+		{
+			return fNumLeafs;
+		}
+		std::vector<SyntaxLeaf>& Get()
+		{
+			return fLeafList;
+		}
+		SyntaxLeaf& At(size_t index)
+		{
+			return fLeafList[index];
+		}
+	};
 
-  // check for needle validity.
-  if (index == std::string::npos) return false;
+	/// find the perfect matching word in a haystack.
+	/// \param haystack base string
+	/// \param needle the string we search for.
+	/// \return if we found it or not.
+	inline bool find_word(const std::string& haystack,
+						  const std::string& needle) noexcept
+	{
+		auto index = haystack.find(needle);
 
-  // declare lambda
-  auto not_part_of_word = [&](int index) {
-    if (std::isspace(haystack[index]) || std::ispunct(haystack[index]))
-      return true;
+		// check for needle validity.
+		if (index == std::string::npos)
+			return false;
 
-    if (index < 0 || index >= haystack.size()) return true;
+		// declare lambda
+		auto not_part_of_word = [&](int index) {
+			if (std::isspace(haystack[index]) || std::ispunct(haystack[index]))
+				return true;
 
-    return false;
-  };
+			if (index < 0 || index >= haystack.size())
+				return true;
 
-  return not_part_of_word(index - 1) && not_part_of_word(index + needle.size());
-}
+			return false;
+		};
 
-/// find a word within strict conditions and returns a range of it.
-/// \param haystack
-/// \param needle
-/// \return position of needle.
-inline std::size_t find_word_range(const std::string& haystack,
-                                   const std::string& needle) noexcept {
-  auto index = haystack.find(needle);
+		return not_part_of_word(index - 1) && not_part_of_word(index + needle.size());
+	}
 
-  // check for needle validity.
-  if (index == std::string::npos) return false;
+	/// find a word within strict conditions and returns a range of it.
+	/// \param haystack
+	/// \param needle
+	/// \return position of needle.
+	inline std::size_t find_word_range(const std::string& haystack,
+									   const std::string& needle) noexcept
+	{
+		auto index = haystack.find(needle);
 
-  if (!isalnum((haystack[index + needle.size() + 1])) &&
-      !isdigit(haystack[index + needle.size() + 1]) &&
-      !isalnum((haystack[index - needle.size() - 1])) &&
-      !isdigit(haystack[index - needle.size() - 1])) {
-    return index;
-  }
+		// check for needle validity.
+		if (index == std::string::npos)
+			return false;
 
-  return false;
-}
-}  // namespace ParserKit
+		if (!isalnum((haystack[index + needle.size() + 1])) &&
+			!isdigit(haystack[index + needle.size() + 1]) &&
+			!isalnum((haystack[index - needle.size() - 1])) &&
+			!isdigit(haystack[index - needle.size() - 1]))
+		{
+			return index;
+		}
+
+		return false;
+	}
+} // namespace ParserKit

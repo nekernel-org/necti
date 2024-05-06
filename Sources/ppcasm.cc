@@ -4,16 +4,14 @@
 
 ------------------------------------------- */
 
-/// BUGS: 0
-
 /////////////////////////////////////////////////////////////////////////////////////////
 
-// @file ppcasm.cxx
-// @author Amlal El Mahrouss
-// @brief POWER Assembler.
+/// @file ppcasm.cxx
+/// @author Amlal El Mahrouss
+/// @brief POWER Assembler.
 
-// REMINDER: when dealing with an undefined symbol use (string
-// size):LinkerFindSymbol:(string) so that li will look for it.
+/// REMINDER: when dealing with an undefined symbol use (string
+/// size):LinkerFindSymbol:(string) so that li will look for it.
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
@@ -47,6 +45,8 @@
 
 static CharType kOutputArch = CompilerKit::kPefArchPowerPC;
 static Boolean kOutputAsBinary = false;
+
+constexpr auto cPowerIPAlignment = 0x4U;
 
 static UInt32 kErrorLimit = 10;
 static UInt32 kAcceptableErrors = 0;
@@ -677,6 +677,7 @@ bool CompilerKit::EncoderPowerPC::WriteLine(std::string &line,
     if (ParserKit::find_word(line, opcodePPC.name)) {
       std::string name(opcodePPC.name);
       std::string jump_label, cpy_jump_label;
+      std::vector<size_t> found_registers_index;
 
       // check funct7 type.
       switch (opcodePPC.ops->type) {
@@ -833,15 +834,24 @@ bool CompilerKit::EncoderPowerPC::WriteLine(std::string &line,
                 }
 
                 ++register_count;
+                ++found_some_count;
               }
 
-              /// FIXME: Prompt correct opcode in little endian.
               if (opcodeName == "addi") {
                 if (found_some_count == 2 || found_some_count == 0)
                   kBytes.emplace_back(reg_index);
                 else if (found_some_count == 1)
                   kBytes.emplace_back(0x00);
 
+                ++found_some_count;
+
+                if (found_some_count > 3) {
+                  detail::print_error("Too much registers. -> " + line, file);
+                  throw std::runtime_error("too_much_regs");
+                }
+              }
+
+              if (opcodeName.find("cmp") != std::string::npos) {
                 ++found_some_count;
 
                 if (found_some_count > 3) {
@@ -886,15 +896,29 @@ bool CompilerKit::EncoderPowerPC::WriteLine(std::string &line,
                 for (auto ch : num.number) {
                   kBytes.emplace_back(ch);
                 }
-
-                break;
               }
+
+              found_registers_index.push_back(reg_index);
             }
           }
 
           if (opcodeName == "addi") {
             kBytes.emplace_back(0x38);
           }
+
+          if (opcodeName.find("cmp") != std::string::npos) {
+              char rightReg = 0x0;
+
+              for (size_t i = 0; i != found_registers_index[1]; i++) {
+                rightReg += 0x08;
+              }
+
+              kBytes.emplace_back(0x00);
+              kBytes.emplace_back(rightReg);
+              kBytes.emplace_back(found_registers_index[0]);
+              kBytes.emplace_back(0x7c);
+          }
+
           if ((opcodeName[0] == 's' && opcodeName[1] == 't')) {
             size_t offset = 0UL;
 
@@ -913,8 +937,7 @@ bool CompilerKit::EncoderPowerPC::WriteLine(std::string &line,
           if (opcodeName == "mr") {
             if (register_count == 1) {
               detail::print_error("Too few registers. -> " + line, file);
-
-              throw std::runtime_error("not_a_register");
+              throw std::runtime_error("too_few_registers");
             }
           }
 
@@ -943,7 +966,7 @@ bool CompilerKit::EncoderPowerPC::WriteLine(std::string &line,
         }
       }
 
-      kOrigin += 0x04;
+      kOrigin += cPowerIPAlignment;
       break;
     }
   }

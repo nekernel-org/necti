@@ -20,6 +20,10 @@ PP_OUTPUT=Output/bpp.exec
 
 SRC_COMMON=Sources/String.cc Sources/AsmKit.cc
 
+# C++ Compiler (AMD64)
+AMD64_CXX_SRC=Sources/amd64-cplusplus.cc $(SRC_COMMON)
+AMD64_CXX_OUTPUT=Output/amd64-cplusplus.exec
+
 # C Compiler (POWER)
 64X0_CC_SRC=Sources/64x0-cc.cc $(SRC_COMMON)
 64X0_CC_OUTPUT=Output/64x0-cc.exec
@@ -51,6 +55,7 @@ pre-processor:
 .PHONY: compiler
 compiler:
 	$(LINK_CC) $(COMMON_INC) $(64X0_CC_SRC) -o $(64X0_CC_OUTPUT)
+	$(LINK_CC) $(COMMON_INC) $(AMD64_CXX_SRC) -o $(AMD64_CXX_OUTPUT)
 	$(LINK_CC) $(COMMON_INC) $(PPC_CC_SRC) -o $(PPC_CC_OUTPUT)
 	$(LINK_CC) $(COMMON_INC) $(IASM_SRC) -o $(IASM_OUTPUT)
 	$(LINK_CC) $(COMMON_INC) $(ASM_SRC) -o $(ASM_OUTPUT)
@@ -78,5 +83,7 @@ clean:
 	rm -f $(ASM_OUTPUT)
 	rm -f $(IASM_OUTPUT)
 	rm -f $(LINK_OUTPUT)
-
+	rm -rf *.obj
+	rm -rf *.exec
+	
 # Last rev 8-1-24

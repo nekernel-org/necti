@@ -25,15 +25,15 @@
 
 #define kOk 0
 
-/// TODO: support structures, else if, else, ., ->
-
 /* C driver */
-/* This is part of MultiProcessor C SDK. */
+/* This is part of CodeTools C SDK. */
 /* (c) Mahrouss Logic */
 
 /// @author Amlal El Mahrouss (amlel)
-/// @file cc.cc
+/// @file 64x0-cc.cc
 /// @brief 64x0 C Compiler.
+
+/// TODO: support structures, else if, else, . and  ->
 
 /////////////////////
 
@@ -1129,7 +1129,7 @@ class AssemblyMountpointCLang final : public CompilerKit::AssemblyInterface {
       dest += ch;
     }
 
-    /* According to pef abi. */
+    /* According to PEF ABI. */
     std::vector<const char *> exts = kAsmFileExts;
     dest += exts[4];
 
@@ -1140,7 +1140,7 @@ class AssemblyMountpointCLang final : public CompilerKit::AssemblyInterface {
     (*kState.fOutputAssembly) << "# Path: " << src_file << "\n";
     (*kState.fOutputAssembly)
         << "# Language: 64x0 Assembly (Generated from ANSI C)\n";
-    (*kState.fOutputAssembly) << "# Build Date: " << fmt << "\n\n";
+    (*kState.fOutputAssembly) << "# Date: " << fmt << "\n\n";
 
     ParserKit::SyntaxLeafList syntax;
 

@@ -7,9 +7,6 @@
  * 	========================================================
  */
 
-/// BUGS: 0
-/// TODO: Structs and enums.
-
 #include <Headers/AsmKit/CPU/ppc.hpp>
 #include <Headers/ParserKit.hpp>
 #include <Headers/UUID.hpp>
@@ -24,12 +21,6 @@
 #include <vector>
 
 #define kOk 0
-
-/// TODO: support structures, else if, else, ., ->
-
-/* C driver */
-/* This is part of MultiProcessor C SDK. */
-/* (c) Mahrouss Logic */
 
 /// @author Amlal El Mahrouss (amlel)
 /// @file cc.cc
@@ -370,7 +361,7 @@ bool CompilerBackendCLang::Compile(const std::string &text, const char *file) {
           "\tcmpw "
           "r10, r11";
 
-      syntaxLeaf.fUserValue += "\n\tbeq import" + kIfFunction +
+      syntaxLeaf.fUserValue += "\n\tbeq import " + kIfFunction +
                                " \ndword export .code64 " + kIfFunction + "\n";
 
       kState.fSyntaxTree->fLeafList.push_back(syntaxLeaf);
@@ -601,7 +592,7 @@ bool CompilerBackendCLang::Compile(const std::string &text, const char *file) {
           }
 
           args += args_buffer;
-          args += "\n\tli r19, ";
+          args += "\n\tli r31, ";
         }
       }
 
@@ -1155,7 +1146,7 @@ class AssemblyMountpointCLang final : public CompilerKit::AssemblyInterface {
       dest += ch;
     }
 
-    /* According to pef abi. */
+    /* According to PEF ABI. */
     std::vector<const char *> exts = kAsmFileExts;
     dest += exts[4];
 
@@ -1166,7 +1157,7 @@ class AssemblyMountpointCLang final : public CompilerKit::AssemblyInterface {
     (*kState.fOutputAssembly) << "# Path: " << src_file << "\n";
     (*kState.fOutputAssembly)
         << "# Language: POWER Assembly (Generated from C)\n";
-    (*kState.fOutputAssembly) << "# Build Date: " << fmt << "\n\n";
+    (*kState.fOutputAssembly) << "# Date: " << fmt << "\n\n";
 
     ParserKit::SyntaxLeafList syntax;
 

@@ -4,16 +4,14 @@
 
 ------------------------------------------- */
 
-/// BUGS: 0
+/// @file link.cc
+/// @author Amlal El Mahrouss (amlel)
+/// @brief Mahrouss Linker.
 
 /// Last Rev: Sat Feb 24 CET 2024
 
-/// @file link.cc
-/// @author Amlal El Mahrouss (amlel)
-/// @brief Linker.
-
-// README: Do not look up for anything with .code64/.data64/.zero64!
-// It will be loaded when program will start up!
+/// note: Do not look up for anything with .code64/.data64/.zero64!
+/// It will be loaded when program will start up!
 
 #include <Headers/StdKit/ErrorID.hpp>
 
@@ -420,14 +418,14 @@ MPCC_MODULE(NewOSLinker) {
   if (!kStartFound && is_executable) {
     if (kVerbose)
       kStdOut
-          << "link: undefined entrypoint: __start, you may have forget to link "
+          << "link: undefined entrypoint: " << kPefStart << ", you may have forget to link "
              "against your compiler's runtime library.\n";
 
     kStdOut << "link: undefined entrypoint " << kPefStart
             << " for executable: " << kOutput << "\n";
   }
 
-  // step 4: write some pef commands.
+  // step 4: write all PEF commands.
 
   CompilerKit::PEFCommandHeader dateHeader{};
 

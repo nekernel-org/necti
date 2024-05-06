@@ -9,11 +9,12 @@
 
 /// bugs: 0
 
+#define __PK_USE_STRUCT_INSTEAD__ 1
+
 #define kPrintF printf
 
-#define kSplashCxx()     \
-  kPrintF(kWhite "%s\n", \
-          "Mahrouss C++ Compiler, Copyright Mahrouss Logic.")
+#define kSplashCxx() \
+  kPrintF(kWhite "%s\n", "Mahrouss C++ Compiler, Copyright Mahrouss Logic.")
 
 #include <Headers/AsmKit/CPU/amd64.hpp>
 #include <Headers/ParserKit.hpp>
@@ -29,7 +30,7 @@
 #define kOk 0
 
 /* Mahrouss Logic C++ driver */
-/* This is part of MultiProcessor C++ SDK. */
+/* This is part of CodeTools C++ compiler. */
 /* (c) Mahrouss Logic */
 
 // @author Amlal El Mahrouss (amlel)
@@ -135,7 +136,7 @@ static size_t kRegisterCnt = kAsmRegisterLimit;
 static size_t kStartUsable = 8;
 static size_t kUsableLimit = 15;
 static size_t kRegisterCounter = kStartUsable;
-static std::vector<std::string> kKeywords;
+static std::vector<ParserKit::CompilerKeyword> kKeywords;
 
 /////////////////////////////////////////
 
@@ -162,7 +163,6 @@ class CompilerBackendCPlusPlus final : public ParserKit::CompilerBackend {
   bool Compile(const std::string& text, const char* file) override;
 
   const char* Language() override;
-
 };
 
 /// compiler variables
@@ -182,7 +182,7 @@ union number_cast final {
 };
 }  // namespace detail
 
-const char* CompilerBackendCPlusPlus::Language() override { return "C++"; }
+const char* CompilerBackendCPlusPlus::Language() { return "C++"; }
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
@@ -191,7 +191,8 @@ const char* CompilerBackendCPlusPlus::Language() override { return "C++"; }
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
-bool CompilerBackendCPlusPlus::Compile(const std::string& text, const char* file) {
+bool CompilerBackendCPlusPlus::Compile(const std::string& text,
+                                       const char* file) {
   if (text.empty()) return false;
 
   // if (expr)
@@ -200,27 +201,20 @@ bool CompilerBackendCPlusPlus::Compile(const std::string& text, const char* file
 
   std::size_t index = 0UL;
 
-  auto syntax_tree = ParserKit::SyntaxLeafList::SyntaxLeaf();
-
-  syntax_tree.fUserData = text;
-  kState.fSyntaxTree->fLeafList.emplace_back(syntax_tree);
-
-  std::string text_cpy = text;
-
-  std::vector<std::pair<std::string, std::size_t>> keywords_list;
+  std::vector<std::pair<ParserKit::CompilerKeyword, std::size_t>> keywords_list;
 
   for (auto& keyword : kKeywords) {
-    while (text_cpy.find(keyword) != std::string::npos) {
+    while (text.find(keyword.keyword_name) != std::string::npos) {
       keywords_list.emplace_back(std::make_pair(keyword, index));
       ++index;
-
-      text_cpy.erase(text_cpy.find(keyword), keyword.size());
     }
   }
 
   // TODO: sort keywords
 
   for (auto& keyword : keywords_list) {
+    auto syntax_tree = ParserKit::SyntaxLeafList::SyntaxLeaf();
+
     syntax_tree.fUserData = keyword.first;
     kState.fSyntaxTree->fLeafList.emplace_back(syntax_tree);
   }
@@ -265,7 +259,7 @@ class AssemblyMountpointClang final : public CompilerKit::AssemblyInterface {
       dest += ch;
     }
 
-    /* According to PEF abi. */
+    /* According to PEF ABI. */
 
     std::vector<const char*> exts = kAsmFileExts;
     dest += exts[3];
@@ -276,9 +270,9 @@ class AssemblyMountpointClang final : public CompilerKit::AssemblyInterface {
 
     (*kState.fOutputAssembly) << "; Path: " << src_file << "\n";
     (*kState.fOutputAssembly)
-        << "; Language: MultiProcessor Assembly. (Generated from C++)\n";
-    (*kState.fOutputAssembly) << "; Build Date: " << fmt << "\n\n";
-    (*kState.fOutputAssembly) << "#bits 64 "
+        << "; Language: CodeTools assembly. (Generated from C++)\n";
+    (*kState.fOutputAssembly) << "; Date: " << fmt << "\n\n";
+    (*kState.fOutputAssembly) << "#bits 64\n\n#org 0x1000000"
                               << "\n\n";
 
     ParserKit::SyntaxLeafList syntax;
@@ -305,7 +299,7 @@ class AssemblyMountpointClang final : public CompilerKit::AssemblyInterface {
 static void cxx_print_help() {
   kSplashCxx();
   kPrintF("%s", "No help available, see:\r\n");
-  kPrintF("%s", "www.el-mahrouss-logic.com/tools/ccplus\r\n");
+  kPrintF("%s", "www.el-mahrouss-logic.com/developer/newos/cplusplus\r\n");
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////
@@ -314,62 +308,6 @@ static void cxx_print_help() {
   { ".cpp", ".cxx", ".cc", ".c++", ".cp" }
 
 MPCC_MODULE(CompilerCPlusPlus) {
-  kKeywords.emplace_back("auto");
-  kKeywords.emplace_back("else");
-  kKeywords.emplace_back("break");
-  kKeywords.emplace_back("switch");
-  kKeywords.emplace_back("enum");
-  kKeywords.emplace_back("register");
-  kKeywords.emplace_back("do");
-  kKeywords.emplace_back("return");
-  kKeywords.emplace_back("if");
-  kKeywords.emplace_back("default");
-  kKeywords.emplace_back("struct");
-  kKeywords.emplace_back("_Packed");
-  kKeywords.emplace_back("_Align");
-  kKeywords.emplace_back("_AlignAs");
-  kKeywords.emplace_back("extern");
-  kKeywords.emplace_back("volatile");
-  kKeywords.emplace_back("static");
-  kKeywords.emplace_back("for");
-  kKeywords.emplace_back("class");
-  kKeywords.emplace_back("{");
-  kKeywords.emplace_back("}");
-  kKeywords.emplace_back("(");
-  kKeywords.emplace_back(")");
-  kKeywords.emplace_back("char");
-  kKeywords.emplace_back("int");
-  kKeywords.emplace_back("short");
-  kKeywords.emplace_back("long");
-  kKeywords.emplace_back("float");
-  kKeywords.emplace_back("double");
-  kKeywords.emplace_back("unsigned");
-  kKeywords.emplace_back("__attribute__");
-  kKeywords.emplace_back("namespace");
-  kKeywords.emplace_back("while");
-  kKeywords.emplace_back("sizeof");
-  kKeywords.emplace_back("private");
-  kKeywords.emplace_back("->");
-  kKeywords.emplace_back(".");
-  kKeywords.emplace_back("::");
-  kKeywords.emplace_back("*");
-  kKeywords.emplace_back("+");
-  kKeywords.emplace_back("-");
-  kKeywords.emplace_back("/");
-  kKeywords.emplace_back("=");
-  kKeywords.emplace_back("==");
-  kKeywords.emplace_back("!=");
-  kKeywords.emplace_back(">=");
-  kKeywords.emplace_back("<=");
-  kKeywords.emplace_back(">");
-  kKeywords.emplace_back("<");
-  kKeywords.emplace_back(":");
-  kKeywords.emplace_back(",");
-  kKeywords.emplace_back(";");
-  kKeywords.emplace_back("&");
-  kKeywords.emplace_back("public");
-  kKeywords.emplace_back("protected");
-
   bool skip = false;
 
   kFactory.Mount(new AssemblyMountpointClang());
@@ -406,7 +344,7 @@ MPCC_MODULE(CompilerCPlusPlus) {
         return kOk;
       }
 
-      if (strcmp(argv[index], "-fmax-exceptions") == 0) {
+      if (strcmp(argv[index], "-max-errors") == 0) {
         try {
           kErrorLimit = std::strtol(argv[index + 1], nullptr, 10);
         }

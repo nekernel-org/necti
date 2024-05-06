@@ -6,19 +6,19 @@
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
+/// @file i64asm.cxx
+/// @author Amlal El Mahrouss
+/// @brief AMD64 Assembler.
+
+/// REMINDER: when dealing with an undefined symbol use (string
+/// size):LinkerFindSymbol:(string) so that ld will look for it.
+
+/////////////////////////////////////////////////////////////////////////////////////////
+
 /// bugs: 0
 
 /// feature request: 1
 /// Encode registers in mov, add, xor...
-
-/////////////////////////////////////////////////////////////////////////////////////////
-
-// @file i64asm.cxx
-// @author Amlal El Mahrouss
-// @brief AMD64 Assembler.
-
-// REMINDER: when dealing with an undefined symbol use (string
-// size):LinkerFindSymbol:(string) so that ld will look for it.
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
@@ -58,6 +58,8 @@ static Boolean kOutputAsBinary = false;
 
 static UInt32 kErrorLimit = 10;
 static UInt32 kAcceptableErrors = 0;
+
+constexpr auto cAMD64IPAlignment = 0x4U;
 
 static std::size_t kCounter = 1UL;
 
@@ -1236,6 +1238,8 @@ bool CompilerKit::EncoderAMD64::WriteLine(std::string &line,
   else if (line.find(".word") != std::string::npos) {
     this->WriteNumber16(line.find(".word") + strlen(".word") + 1, line);
   }
+
+  kOrigin += cAMD64IPAlignment;
 
   return true;
 }
