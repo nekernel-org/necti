@@ -200,14 +200,21 @@ bool CompilerBackendCPlusPlus::Compile(const std::string& text,
   // expr;
 
   std::size_t index = 0UL;
-
   std::vector<std::pair<ParserKit::CompilerKeyword, std::size_t>> keywords_list;
 
+  bool found = false;
+
   for (auto& keyword : kKeywords) {
-    while (text.find(keyword.keyword_name) != std::string::npos) {
+    if (text.find(keyword.keyword_name) != std::string::npos) {
       keywords_list.emplace_back(std::make_pair(keyword, index));
       ++index;
+
+      found = true;
     }
+  }
+
+  if (!found) {
+    detail::print_error("syntax error: " + text, file);
   }
 
   // TODO: sort keywords
@@ -284,8 +291,12 @@ class AssemblyMountpointClang final : public CompilerKit::AssemblyInterface {
     std::string source;
 
     while (std::getline(src_fp, source)) {
-      // Compile into an AST format.
+      // Compile into an object file.
       kCompilerBackend->Compile(source.c_str(), src.data());
+    }
+
+    for (auto& ast : kState.fSyntaxTree->fLeafList) {
+      (*kState.fOutputAssembly) << ast.fUserValue;
     }
 
     if (kAcceptableErrors > 0) return -1;
@@ -309,6 +320,26 @@ static void cxx_print_help() {
 
 MPCC_MODULE(CompilerCPlusPlus) {
   bool skip = false;
+
+  kKeywords.push_back({ .keyword_name = "class", .keyword_kind = ParserKit::eKeywordKindClass });
+  kKeywords.push_back({ .keyword_name = "struct", .keyword_kind = ParserKit::eKeywordKindClass });
+  kKeywords.push_back({ .keyword_name = "namespace", .keyword_kind = ParserKit::eKeywordKindNamespace });
+  kKeywords.push_back({ .keyword_name = "typedef" , .keyword_kind = ParserKit::eKeywordKindTypedef});
+  kKeywords.push_back({ .keyword_name = "using", .keyword_kind = ParserKit::eKeywordKindTypedef});
+  kKeywords.push_back({ .keyword_name = "}", .keyword_kind = ParserKit::eKeywordKindBodyStart });
+  kKeywords.push_back({ .keyword_name = "{", .keyword_kind = ParserKit::eKeywordKindBodyEnd });
+  kKeywords.push_back({ .keyword_name = "auto", .keyword_kind = ParserKit::eKeywordKindVariable });
+  kKeywords.push_back({ .keyword_name = "=", .keyword_kind = ParserKit::eKeywordKindVariableAssign });
+  kKeywords.push_back({ .keyword_name = "const", .keyword_kind = ParserKit::eKeywordKindConstant });
+  kKeywords.push_back({ .keyword_name = "->", .keyword_kind = ParserKit::eKeywordKindPtrAccess });
+  kKeywords.push_back({ .keyword_name = ".", .keyword_kind = ParserKit::eKeywordKindAccess });
+  kKeywords.push_back({ .keyword_name = ",", .keyword_kind = ParserKit::eKeywordKindArgSeparator });
+  kKeywords.push_back({ .keyword_name = ";", .keyword_kind = ParserKit::eKeywordKindEndInstr });
+  kKeywords.push_back({ .keyword_name = ":", .keyword_kind = ParserKit::eKeywordKindSpecifier });
+  kKeywords.push_back({ .keyword_name = "public:", .keyword_kind = ParserKit::eKeywordKindSpecifier });
+  kKeywords.push_back({ .keyword_name = "private:", .keyword_kind = ParserKit::eKeywordKindSpecifier });
+  kKeywords.push_back({ .keyword_name = "protected:", .keyword_kind = ParserKit::eKeywordKindSpecifier });
+  kKeywords.push_back({ .keyword_name = "final", .keyword_kind = ParserKit::eKeywordKindSpecifier });
 
   kFactory.Mount(new AssemblyMountpointClang());
   kCompilerBackend = new CompilerBackendCPlusPlus();

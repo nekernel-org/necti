@@ -22,8 +22,8 @@ PP_OUTPUT=Output/bpp.exe
 SRC_COMMON=Sources/String.cc Sources/AsmKit.cc
 
 # C++ Compiler (AMD64)
-AMD64_CXX_SRC=Sources/amd64-cplusplus.cc $(SRC_COMMON)
-AMD64_CXX_OUTPUT=Output/amd64-cplusplus.exe
+AMD64_CXX_SRC=Sources/cplusplus.cc $(SRC_COMMON)
+AMD64_CXX_OUTPUT=Output/cplusplus.exe
 
 # C Compiler (POWER)
 64X0_CC_SRC=Sources/64x0-cc.cc $(SRC_COMMON)

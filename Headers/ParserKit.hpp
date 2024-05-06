@@ -45,18 +45,33 @@ namespace ParserKit
 	/// we want to do that because to separate keywords.
 	enum
 	{
+		eKeywordKindNamespace,
+		eKeywordKindFunction,
+		eKeywordKindVariable,
+		eKeywordKindExpressionBegin,
+		eKeywordKindExpressionEnd,
+		eKeywordKindArgSeparator,
+		eKeywordKindBodyStart,
+		eKeywordKindBodyEnd,
+		eKeywordKindClass,
+		eKeywordKindPtrAccess,
 		eKeywordKindAccess,
-		eKeywordKindObject,
-		eKeywordKindDataType,
-		eKeywordKindCompilerAttribute,
-		eKeywordKindKeyword,
+		eKeywordKindIf,
+		eKeywordKindElse,
+		eKeywordKindElseIf,
+		eKeywordKindVariableAssign,
+		eKeywordKindConstant,
+		eKeywordKindTypedef,
+		eKeywordKindEndInstr,
+		eKeywordKindSpecifier,
+		eKeywordKindInvalid,
 	};
 
 	/// \brief Compiler keyword information struct.
 	struct CompilerKeyword
 	{
 		std::string keyword_name;
-		int32_t		keyword_kind = eKeywordKindKeyword;
+		int32_t		keyword_kind = eKeywordKindInvalid;
 	};
 	struct SyntaxLeafList final
 	{
@@ -65,11 +80,11 @@ namespace ParserKit
 			Int32 fUserType;
 #ifdef __PK_USE_STRUCT_INSTEAD__
 			CompilerKeyword fUserData;
-			CompilerKeyword fUserValue;
 #else
 			std::string fUserData;
-			std::string fUserValue;
 #endif
+
+			std::string fUserValue;
 			struct SyntaxLeaf* fNext;
 		};
 
