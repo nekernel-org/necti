@@ -30,7 +30,7 @@
 #define kOk 0
 
 /* Mahrouss Logic C++ driver */
-/* This is part of MultiProcessor C++ SDK. */
+/* This is part of CodeTools C++ compiler. */
 /* (c) Mahrouss Logic */
 
 // @author Amlal El Mahrouss (amlel)
@@ -344,7 +344,7 @@ MPCC_MODULE(CompilerCPlusPlus) {
         return kOk;
       }
 
-      if (strcmp(argv[index], "-fmax-exceptions") == 0) {
+      if (strcmp(argv[index], "-max-errors") == 0) {
         try {
           kErrorLimit = std::strtol(argv[index + 1], nullptr, 10);
         }
