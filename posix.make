@@ -83,5 +83,7 @@ clean:
 	rm -f $(ASM_OUTPUT)
 	rm -f $(IASM_OUTPUT)
 	rm -f $(LINK_OUTPUT)
-
+	rm -rf *.obj
+	rm -rf *.exec
+	
 # Last rev 8-1-24
