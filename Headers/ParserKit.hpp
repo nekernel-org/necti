@@ -84,7 +84,7 @@ namespace ParserKit
 			std::string fUserData;
 #endif
 
-			std::string fUserValue;
+			std::string		   fUserValue;
 			struct SyntaxLeaf* fNext;
 		};
 

@@ -62,8 +62,7 @@ typedef char*  caddr_t;
 typedef long long		   off_t;
 typedef unsigned long long uoff_t;
 
-typedef union float_cast
-{
+typedef union float_cast {
 	struct
 	{
 		unsigned int mantissa : 23;
@@ -74,8 +73,7 @@ typedef union float_cast
 	float f;
 } __attribute__((packed)) float_cast_t;
 
-typedef union double_cast
-{
+typedef union double_cast {
 	struct
 	{
 		unsigned long long int mantissa : 52;
