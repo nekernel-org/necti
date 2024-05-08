@@ -1,6 +1,6 @@
 /* -------------------------------------------
 
-    Copyright Mahrouss Logic
+    Copyright SoftwareLabs
 
 ------------------------------------------- */
 
@@ -110,7 +110,7 @@ MPCC_MODULE(NewOSAssembler64000) {
     if (argv[i][0] == '-') {
       if (strcmp(argv[i], "-version") == 0 || strcmp(argv[i], "-v") == 0) {
         kStdOut << "64asm: 64x0 Assembler.\n64asm: v1.10\n64asm: Copyright (c) "
-                   "2024 Mahrouss Logic.\n";
+                   "2024 SoftwareLabs.\n";
         return 0;
       } else if (strcmp(argv[i], "-h") == 0) {
         kStdOut << "64asm: 64x0 Assembler.\n64asm: Copyright (c) 2024 Mahrouss "

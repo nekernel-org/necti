@@ -10,11 +10,11 @@ BEGIN
   BEGIN
     BLOCK "080904E4"
     BEGIN
-      VALUE "CompanyName", "Mahrouss-Logic"
+      VALUE "CompanyName", "SoftwareLabs"
       VALUE "FileDescription", "NewOS POWER assembler."
       VALUE "FileVersion", kDistVersion
       VALUE "InternalName", "NewAssembler"
-      VALUE "LegalCopyright", "Mahrouss-Logic"
+      VALUE "LegalCopyright", "SoftwareLabs"
       VALUE "OriginalFilename", "ppcasm.exe"
       VALUE "ProductName", "NewAssembler"
       VALUE "ProductVersion", kDistVersion

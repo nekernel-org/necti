@@ -10,11 +10,11 @@ BEGIN
   BEGIN
     BLOCK "080904E4"
     BEGIN
-      VALUE "CompanyName", "Mahrouss-Logic"
+      VALUE "CompanyName", "SoftwareLabs"
       VALUE "FileDescription", "NewOS 64x0 C compiler."
       VALUE "FileVersion", kDistVersion
       VALUE "InternalName", "NewC"
-      VALUE "LegalCopyright", "Mahrouss-Logic"
+      VALUE "LegalCopyright", "SoftwareLabs"
       VALUE "OriginalFilename", "64x0-cc.exe"
       VALUE "ProductName", "NewC"
       VALUE "ProductVersion", kDistVersion

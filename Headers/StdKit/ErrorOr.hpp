@@ -2,7 +2,7 @@
  *	========================================================
  *
  *	CompilerKit
- * 	Copyright Mahrouss Logic, all rights reserved.
+ * 	Copyright SoftwareLabs, all rights reserved.
  *
  * 	========================================================
  */

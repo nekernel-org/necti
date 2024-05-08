@@ -2,7 +2,7 @@
  *	========================================================
  *
  *	cc
- * 	Copyright Mahrouss Logic, all rights reserved.
+ * 	Copyright SoftwareLabs, all rights reserved.
  *
  * 	========================================================
  */
@@ -1272,7 +1272,7 @@ class AssemblyMountpointCLang final : public CompilerKit::AssemblyInterface {
 
 #define kPrintF printf
 #define kSplashCxx() \
-  kPrintF(kWhite "cc, %s, (c) Mahrouss Logic\n", kDistVersion)
+  kPrintF(kWhite "cc, %s, (c) SoftwareLabs\n", kDistVersion)
 
 static void cc_print_help() { kSplashCxx(); }
 

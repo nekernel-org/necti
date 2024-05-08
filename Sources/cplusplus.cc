@@ -2,7 +2,7 @@
  *	========================================================
  *
  *	ccplus
- * 	Copyright Mahrouss Logic, all rights reserved.
+ * 	Copyright SoftwareLabs, all rights reserved.
  *
  * 	========================================================
  */
@@ -14,7 +14,7 @@
 #define kPrintF printf
 
 #define kSplashCxx() \
-  kPrintF(kWhite "%s\n", "Mahrouss C++ Compiler, Copyright Mahrouss Logic.")
+  kPrintF(kWhite "%s\n", "LightSpeed C++ Compiler, Copyright SoftwareLabs.")
 
 #include <Headers/AsmKit/CPU/amd64.hpp>
 #include <Headers/ParserKit.hpp>
@@ -29,9 +29,9 @@
 
 #define kOk 0
 
-/* Mahrouss Logic C++ driver */
+/* SoftwareLabs C++ driver */
 /* This is part of CodeTools C++ compiler. */
-/* (c) Mahrouss Logic */
+/* (c) SoftwareLabs */
 
 // @author Amlal El Mahrouss (amlel)
 // @file cc.cc
@@ -152,7 +152,7 @@ static bool kOnForLoop = false;
 static bool kInBraces = false;
 static size_t kBracesCount = 0UL;
 
-/* @brief C++ compiler backend for Mahrouss Logic C++ */
+/* @brief C++ compiler backend for SoftwareLabs C++ */
 class CompilerBackendCPlusPlus final : public ParserKit::CompilerBackend {
  public:
   explicit CompilerBackendCPlusPlus() = default;
