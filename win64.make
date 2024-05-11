@@ -78,8 +78,8 @@ linker:
 
 .PHONY: help
 help:
-	@echo "Compiler 	- Mahrouss Compilers."
-	@echo "Preprocessor 	- Mahrouss Preprocessors."
+	@echo "Compiler 	- MPCC Compiler Suite."
+	@echo "Preprocessor 	- MPCC Preprocessor Suite."
 	@echo "linker 		- SoftwareLabs Linkers."
 	@echo "clean 		- Clean objects and executables."
 

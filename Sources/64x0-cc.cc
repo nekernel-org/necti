@@ -26,7 +26,7 @@
 #define kOk 0
 
 /* C driver */
-/* This is part of CodeTools C SDK. */
+/* This is part of MPCC C SDK. */
 /* (c) SoftwareLabs */
 
 /// @author Amlal El Mahrouss (amlel)

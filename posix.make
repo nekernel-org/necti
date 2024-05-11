@@ -14,6 +14,7 @@ LINK_OUTPUT=Output/link.exec
 LINK_ALT_OUTPUT=Output/64link.exec
 LINK_ALT_3_OUTPUT=Output/i64link.exec
 LINK_ALT_2_OUTPUT=Output/32link.exec
+LINK_ALT_4_OUTPUT=Output/ppclink.exec
 
 PP_SRC=Sources/bpp.cc
 PP_OUTPUT=Output/bpp.exec
@@ -67,11 +68,12 @@ linker:
 	cp $(LINK_OUTPUT) $(LINK_ALT_OUTPUT)
 	cp $(LINK_OUTPUT) $(LINK_ALT_2_OUTPUT)
 	cp $(LINK_OUTPUT) $(LINK_ALT_3_OUTPUT)
+	cp $(LINK_OUTPUT) $(LINK_ALT_4_OUTPUT)
 
 .PHONY: help
 help:
-	@echo "Compiler 	- Mahrouss Compilers."
-	@echo "Preprocessor 	- Mahrouss Preprocessors."
+	@echo "Compiler 	- MPCC Compiler Suite."
+	@echo "Preprocessor 	- MPCC Preprocessor Suite."
 	@echo "linker 		- SoftwareLabs Linkers."
 	@echo "clean 		- Clean objects and executables."
 
@@ -84,6 +86,7 @@ clean:
 	rm -f $(IASM_OUTPUT)
 	rm -f $(LINK_OUTPUT)
 	rm -rf *.obj
+	rm -rf Output/*.exec
 	rm -rf *.exec
 	
 # Last rev 8-1-24

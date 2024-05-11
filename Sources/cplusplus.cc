@@ -30,7 +30,7 @@
 #define kOk 0
 
 /* SoftwareLabs C++ driver */
-/* This is part of CodeTools C++ compiler. */
+/* This is part of MPCC C++ compiler. */
 /* (c) SoftwareLabs */
 
 // @author Amlal El Mahrouss (amlel)
@@ -94,9 +94,9 @@ static Int32 kAcceptableErrors = 0;
 
 namespace detail
 {
-  /// @brief prints an error into stdout.
-  /// @param reason the reason of the error.
-  /// @param file where does it originate from?
+	/// @brief prints an error into stdout.
+	/// @param reason the reason of the error.
+	/// @param file where does it originate from?
 	void print_error(std::string reason, std::string file) noexcept
 	{
 		if (reason[0] == '\n')
@@ -205,7 +205,7 @@ namespace detail
 
 const char* CompilerBackendCPlusPlus::Language()
 {
-	return "C++";
+	return "ISO C++";
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////
@@ -243,19 +243,58 @@ bool CompilerBackendCPlusPlus::Compile(const std::string& text,
 
 	if (!found)
 	{
-		detail::print_error("syntax error: " + text, file);
+		for (size_t i = 0; i < text.size(); i++)
+		{
+			if (isalnum(text[i]))
+			{
+				detail::print_error("syntax error: " + text, file);
+				return false;
+			}
+		}
 	}
 
-	// TODO: sort keywords
+	static bool shouldEmitWarning = false;
 
 	for (auto& keyword : keywords_list)
 	{
+		if (shouldEmitWarning)
+		{
+			if (keyword.first.keyword_kind == ParserKit::KeywordKind::eKeywordKindBodyEnd)
+				shouldEmitWarning = false;
+
+			if (shouldEmitWarning)
+			{
+				detail::print_error("code after return: " + text, file);
+			}
+		}
+
 		auto syntax_tree = ParserKit::SyntaxLeafList::SyntaxLeaf();
+
+		switch (keyword.first.keyword_kind)
+		{
+		case ParserKit::KeywordKind::eKeywordKindAccess:
+		case ParserKit::KeywordKind::eKeywordKindPtrAccess:
+			kState.fSyntaxTree->fLeafList[kState.fSyntaxTree->fLeafList.size() - 1].fUserValue = "lea %LEFT+%OFFSET"; // MPCC assembly stipulates this.
+			break;
+		case ParserKit::KeywordKind::eKeywordKindEndInstr:
+			syntax_tree.fUserValue = "\r\n";
+			break;
+		case ParserKit::KeywordKind::eKeywordKindVariableAssign:
+			syntax_tree.fUserValue = "mov %LEFT, %RIGHT";
+			break;
+		case ParserKit::KeywordKind::eKeywordKindReturn:
+			syntax_tree.fUserValue = "mov rax, %A0\r\nret";
+			shouldEmitWarning	   = true;
+			break;
+		default:
+			break;
+		}
 
 		syntax_tree.fUserData = keyword.first;
 		kState.fSyntaxTree->fLeafList.emplace_back(syntax_tree);
 	}
 
+_MpccOkay:
 	return true;
 }
 
@@ -303,8 +342,6 @@ public:
 			dest += ch;
 		}
 
-		/* According to PEF ABI. */
-
 		std::vector<const char*> exts = kAsmFileExts;
 		dest += exts[3];
 
@@ -314,7 +351,7 @@ public:
 
 		(*kState.fOutputAssembly) << "; Path: " << src_file << "\n";
 		(*kState.fOutputAssembly)
-			<< "; Language: CodeTools assembly. (Generated from C++)\n";
+			<< "; Language: MPCC assembly. (Generated from C++)\n";
 		(*kState.fOutputAssembly) << "; Date: " << fmt << "\n\n";
 		(*kState.fOutputAssembly) << "#bits 64\n\n#org 0x1000000"
 								  << "\n\n";
@@ -330,7 +367,7 @@ public:
 		while (std::getline(src_fp, source))
 		{
 			// Compile into an object file.
-			kCompilerBackend->Compile(source.c_str(), src.data());
+			kCompilerBackend->Compile(source.c_str(), src.c_str());
 		}
 
 		for (auto& ast : kState.fSyntaxTree->fLeafList)
@@ -351,7 +388,7 @@ static void cxx_print_help()
 {
 	kSplashCxx();
 	kPrintF("%s", "No help available, see:\r\n");
-	kPrintF("%s", "www.el-mahrouss-logic.com/developer/newos/cplusplus\r\n");
+	kPrintF("%s", "www.el-mahrouss-logic.com/softwarelabs/developer/newos/cplusplus\r\n");
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////
@@ -370,9 +407,18 @@ MPCC_MODULE(CompilerCPlusPlus)
 	kKeywords.push_back({.keyword_name = "namespace", .keyword_kind = ParserKit::eKeywordKindNamespace});
 	kKeywords.push_back({.keyword_name = "typedef", .keyword_kind = ParserKit::eKeywordKindTypedef});
 	kKeywords.push_back({.keyword_name = "using", .keyword_kind = ParserKit::eKeywordKindTypedef});
-	kKeywords.push_back({.keyword_name = "}", .keyword_kind = ParserKit::eKeywordKindBodyStart});
-	kKeywords.push_back({.keyword_name = "{", .keyword_kind = ParserKit::eKeywordKindBodyEnd});
+	kKeywords.push_back({.keyword_name = "{", .keyword_kind = ParserKit::eKeywordKindBodyStart});
+	kKeywords.push_back({.keyword_name = "}", .keyword_kind = ParserKit::eKeywordKindBodyEnd});
 	kKeywords.push_back({.keyword_name = "auto", .keyword_kind = ParserKit::eKeywordKindVariable});
+	kKeywords.push_back({.keyword_name = "int", .keyword_kind = ParserKit::eKeywordKindType});
+	kKeywords.push_back({.keyword_name = "unsigned", .keyword_kind = ParserKit::eKeywordKindType});
+	kKeywords.push_back({.keyword_name = "short", .keyword_kind = ParserKit::eKeywordKindType});
+	kKeywords.push_back({.keyword_name = "(", .keyword_kind = ParserKit::eKeywordKindFunctionStart});
+	kKeywords.push_back({.keyword_name = ")", .keyword_kind = ParserKit::eKeywordKindFunctionEnd});
+	kKeywords.push_back({.keyword_name = "char", .keyword_kind = ParserKit::eKeywordKindType});
+	kKeywords.push_back({.keyword_name = "long", .keyword_kind = ParserKit::eKeywordKindType});
+	kKeywords.push_back({.keyword_name = "float", .keyword_kind = ParserKit::eKeywordKindType});
+	kKeywords.push_back({.keyword_name = "double", .keyword_kind = ParserKit::eKeywordKindType});
 	kKeywords.push_back({.keyword_name = "=", .keyword_kind = ParserKit::eKeywordKindVariableAssign});
 	kKeywords.push_back({.keyword_name = "const", .keyword_kind = ParserKit::eKeywordKindConstant});
 	kKeywords.push_back({.keyword_name = "->", .keyword_kind = ParserKit::eKeywordKindPtrAccess});
@@ -384,6 +430,7 @@ MPCC_MODULE(CompilerCPlusPlus)
 	kKeywords.push_back({.keyword_name = "private:", .keyword_kind = ParserKit::eKeywordKindSpecifier});
 	kKeywords.push_back({.keyword_name = "protected:", .keyword_kind = ParserKit::eKeywordKindSpecifier});
 	kKeywords.push_back({.keyword_name = "final", .keyword_kind = ParserKit::eKeywordKindSpecifier});
+	kKeywords.push_back({.keyword_name = "return", .keyword_kind = ParserKit::eKeywordKindReturn});
 
 	kFactory.Mount(new AssemblyMountpointClang());
 	kCompilerBackend = new CompilerBackendCPlusPlus();
