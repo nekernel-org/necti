@@ -8,7 +8,7 @@
 #include <Headers/StdKit/ErrorID.hpp>
 
 /**
- * @file AsmKit.cc
+ * @file AssemblyFactory.cxx
  * @author Amlal El Mahrouss (amlal@mahrouss.com)
  * @brief Assembler Kit
  * @version 0.1

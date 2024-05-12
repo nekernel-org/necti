@@ -1,11 +1,14 @@
-int main(int argc, char const *argv[])
+int main(int argc, char const* argv[])
 {
-    struct ExampleCPlusPlus
-    {
-        int example_data;
-    }* example;
+	int foo = 20;
+	foo -= 1;
 
-    example->example_data = 0;
+	{
+		bool bar = false;
+		bar = true;
 
-    return 0;
+		bool bar2 = bar;
+	}
+
+	return foo;
 }

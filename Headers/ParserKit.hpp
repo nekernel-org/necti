@@ -62,19 +62,24 @@ namespace ParserKit
 		eKeywordKindElse,
 		eKeywordKindElseIf,
 		eKeywordKindVariableAssign,
+		eKeywordKindVariableDec,
+		eKeywordKindVariableInc,
 		eKeywordKindConstant,
 		eKeywordKindTypedef,
 		eKeywordKindEndInstr,
 		eKeywordKindSpecifier,
 		eKeywordKindInvalid,
 		eKeywordKindReturn,
+		eKeywordKindCommentInline,
+		eKeywordKindCommentMultiLineStart,
+		eKeywordKindCommentMultiLineEnd,
 	};
 
 	/// \brief Compiler keyword information struct.
 	struct CompilerKeyword
 	{
 		std::string keyword_name;
-		KeywordKind		keyword_kind = eKeywordKindInvalid;
+		KeywordKind keyword_kind = eKeywordKindInvalid;
 	};
 	struct SyntaxLeafList final
 	{

@@ -19,7 +19,7 @@ LINK_ALT_4_OUTPUT=Output/ppclink.exec
 PP_SRC=Sources/bpp.cc
 PP_OUTPUT=Output/bpp.exec
 
-SRC_COMMON=Sources/String.cc Sources/AsmKit.cc
+SRC_COMMON=Sources/String.cc Sources/AssemblyFactory.cxx
 
 # C++ Compiler (AMD64)
 AMD64_CXX_SRC=Sources/cplusplus.cc $(SRC_COMMON)

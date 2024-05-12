@@ -763,7 +763,7 @@ bool CompilerKit::Encoder64x0::WriteLine(std::string &line,
                 "invalid combination of opcode and registers.\nline: " + line,
                 file);
             throw std::runtime_error("invalid_comb_op_reg");
-          } else if (found_some == 1 && name == "dec") {
+          } else if (found_some == 1 && name == "sub") {
             detail::print_error(
                 "invalid combination of opcode and registers.\nline: " + line,
                 file);

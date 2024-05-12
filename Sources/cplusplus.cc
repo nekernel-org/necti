@@ -33,9 +33,11 @@
 /* This is part of MPCC C++ compiler. */
 /* (c) SoftwareLabs */
 
-// @author Amlal El Mahrouss (amlel)
-// @file cc.cc
-// @brief Optimized C++ Compiler.
+/// @author Amlal El Mahrouss (amlel)
+/// @file cc.cc
+/// @brief Optimized C++ Compiler.
+/// @todo Throw error for scoped inside scoped variables when they get referenced outside.
+/// @todo Add class/struct/enum support.
 
 /////////////////////
 
@@ -110,8 +112,8 @@ namespace detail
 		if (kState.fLastFile != file)
 		{
 			std::cout << kRed << "[ ccplus ] " << kWhite
-					  << ((file == "ccplus") ? "internal compiler error "
-											 : ("in file, " + file))
+					  << ((file == "cplusplus") ? "internal compiler error "
+												: ("in file, " + file))
 					  << kBlank << std::endl;
 			std::cout << kRed << "[ ccplus ] " << kWhite << reason << kBlank
 					  << std::endl;
@@ -208,10 +210,25 @@ const char* CompilerBackendCPlusPlus::Language()
 	return "ISO C++";
 }
 
+static std::vector<std::string> kRegisterMap;
+
+static size_t kLevelFunction = 0UL;
+
+static std::vector<std::string> cRegisters = {
+	"r8",
+	"r9",
+	"r10",
+	"r11",
+	"r12",
+	"r13",
+	"r14",
+	"r15",
+};
+
 /////////////////////////////////////////////////////////////////////////////////////////
 
-// @name Compile
-// @brief Generate MASM from a C++ source.
+/// @name Compile
+/// @brief Generate MASM from a C++ source.
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
@@ -228,12 +245,39 @@ bool CompilerBackendCPlusPlus::Compile(const std::string& text,
 	std::size_t														index = 0UL;
 	std::vector<std::pair<ParserKit::CompilerKeyword, std::size_t>> keywords_list;
 
-	bool found = false;
+	bool		found		 = false;
+	static bool commentBlock = false;
 
 	for (auto& keyword : kKeywords)
 	{
 		if (text.find(keyword.keyword_name) != std::string::npos)
 		{
+			switch (keyword.keyword_kind)
+			{
+			case ParserKit::eKeywordKindCommentMultiLineStart: {
+				commentBlock = true;
+				return true;
+			}
+			case ParserKit::eKeywordKindCommentMultiLineEnd: {
+				commentBlock = false;
+				break;
+			}
+			case ParserKit::eKeywordKindCommentInline: {
+				break;
+			}
+			default:
+				break;
+			}
+
+			if (text[text.find(keyword.keyword_name) - 1] == '+' &&
+				keyword.keyword_kind == ParserKit::KeywordKind::eKeywordKindVariableAssign)
+				continue;
+
+			if (
+				text[text.find(keyword.keyword_name) - 1] == '-' &&
+				keyword.keyword_kind == ParserKit::KeywordKind::eKeywordKindVariableAssign)
+				continue;
+
 			keywords_list.emplace_back(std::make_pair(keyword, index));
 			++index;
 
@@ -241,7 +285,7 @@ bool CompilerBackendCPlusPlus::Compile(const std::string& text,
 		}
 	}
 
-	if (!found)
+	if (!found && !commentBlock)
 	{
 		for (size_t i = 0; i < text.size(); i++)
 		{
@@ -253,39 +297,280 @@ bool CompilerBackendCPlusPlus::Compile(const std::string& text,
 		}
 	}
 
-	static bool shouldEmitWarning = false;
-
 	for (auto& keyword : keywords_list)
 	{
-		if (shouldEmitWarning)
-		{
-			if (keyword.first.keyword_kind == ParserKit::KeywordKind::eKeywordKindBodyEnd)
-				shouldEmitWarning = false;
-
-			if (shouldEmitWarning)
-			{
-				detail::print_error("code after return: " + text, file);
-			}
-		}
-
 		auto syntax_tree = ParserKit::SyntaxLeafList::SyntaxLeaf();
 
 		switch (keyword.first.keyword_kind)
 		{
-		case ParserKit::KeywordKind::eKeywordKindAccess:
-		case ParserKit::KeywordKind::eKeywordKindPtrAccess:
-			kState.fSyntaxTree->fLeafList[kState.fSyntaxTree->fLeafList.size() - 1].fUserValue = "lea %LEFT+%OFFSET"; // MPCC assembly stipulates this.
-			break;
 		case ParserKit::KeywordKind::eKeywordKindEndInstr:
 			syntax_tree.fUserValue = "\r\n";
 			break;
-		case ParserKit::KeywordKind::eKeywordKindVariableAssign:
-			syntax_tree.fUserValue = "mov %LEFT, %RIGHT";
+		case ParserKit::KeywordKind::eKeywordKindFunctionStart: {
+			++kLevelFunction;
 			break;
-		case ParserKit::KeywordKind::eKeywordKindReturn:
-			syntax_tree.fUserValue = "mov rax, %A0\r\nret";
-			shouldEmitWarning	   = true;
+		}
+		case ParserKit::KeywordKind::eKeywordKindFunctionEnd: {
+			--kLevelFunction;
+
+			if (kRegisterMap.size() > cRegisters.size())
+			{
+				--kLevelFunction;
+			}
+
+			if (kLevelFunction < 1)
+				kRegisterMap.clear();
 			break;
+		}
+		case ParserKit::KeywordKind::eKeywordKindVariableInc:
+		case ParserKit::KeywordKind::eKeywordKindVariableDec:
+		case ParserKit::KeywordKind::eKeywordKindVariableAssign: {
+			auto valueOfVar = text.substr(text.find("=") + 1);
+
+			if (keyword.first.keyword_kind == ParserKit::KeywordKind::eKeywordKindVariableInc)
+			{
+				valueOfVar = text.substr(text.find("+=") + 2);
+			}
+			else if (keyword.first.keyword_kind == ParserKit::KeywordKind::eKeywordKindVariableDec)
+			{
+				valueOfVar = text.substr(text.find("-=") + 2);
+			}
+
+			while (valueOfVar.find(";") != std::string::npos)
+			{
+				valueOfVar.erase(valueOfVar.find(";"));
+			}
+
+			if (text.find("float ") != std::string::npos ||
+				text.find("double ") != std::string::npos)
+			{
+				detail::print_error("Vector extensions not supported yet.", "cplusplus");
+			}
+
+			std::string varName = text;
+
+			if (keyword.first.keyword_kind == ParserKit::KeywordKind::eKeywordKindVariableInc)
+			{
+				varName.erase(varName.find("+="));
+			}
+			else if (keyword.first.keyword_kind == ParserKit::KeywordKind::eKeywordKindVariableDec)
+			{
+				varName.erase(varName.find("-="));
+			}
+			else
+			{
+				varName.erase(varName.find("="));
+			}
+
+			bool typeFound = false;
+
+			for (auto& keyword : kKeywords)
+			{
+				if (keyword.keyword_kind == ParserKit::eKeywordKindType)
+				{
+					if (varName.find(keyword.keyword_name) != std::string::npos)
+					{
+						typeFound = true;
+						varName.erase(varName.find(keyword.keyword_name), keyword.keyword_name.size());
+					}
+
+					/// in case we goot boolX or intX
+					if (text.find(keyword.keyword_name) != std::string::npos)
+					{
+						if (varName[text.find(keyword.keyword_name)] == ' ')
+							continue;
+
+						typeFound = false;
+					}
+				}
+			}
+
+			std::string instr = "mov ";
+
+			if (typeFound)
+			{
+				if (keyword.first.keyword_kind == ParserKit::KeywordKind::eKeywordKindVariableInc)
+				{
+					detail::print_error("Can't increment variable when it's being created.", file);
+				}
+				else if (keyword.first.keyword_kind == ParserKit::KeywordKind::eKeywordKindVariableDec)
+				{
+					detail::print_error("Can't decrement variable when it's being created.", file);
+				}
+
+				if (kRegisterMap.size() > cRegisters.size())
+				{
+					++kLevelFunction;
+				}
+
+				while (varName.find(" ") != std::string::npos)
+				{
+					varName.erase(varName.find(" "), 1);
+				}
+
+				while (varName.find("\t") != std::string::npos)
+				{
+					varName.erase(varName.find("\t"), 1);
+				}
+
+				for (size_t i = 0; !isalnum(valueOfVar[i]); i++)
+				{
+					if (i > valueOfVar.size())
+						break;
+
+					valueOfVar.erase(i, 1);
+				}
+
+				if (valueOfVar == "true")
+				{
+					valueOfVar = "1";
+				}
+				else if (valueOfVar == "false")
+				{
+					valueOfVar = "0";
+				}
+
+				std::size_t indexRight = 0UL;
+
+				for (auto pairRight : kRegisterMap)
+				{
+					++indexRight;
+
+					if (pairRight != valueOfVar)
+					{
+						syntax_tree.fUserValue = instr + cRegisters[kRegisterMap.size()] + ", " + valueOfVar;
+						continue;
+					}
+
+					syntax_tree.fUserValue = instr + cRegisters[kRegisterMap.size()] + ", " + cRegisters[indexRight - 1];
+					break;
+				}
+
+				if (((int)indexRight - 1) < 0)
+				{
+					syntax_tree.fUserValue = instr + cRegisters[kRegisterMap.size()] + ", " + valueOfVar;
+				}
+
+				kRegisterMap.push_back(varName);
+			}
+			else
+			{
+				if (keyword.first.keyword_kind == ParserKit::KeywordKind::eKeywordKindVariableInc)
+				{
+					instr = "add ";
+				}
+				else if (keyword.first.keyword_kind == ParserKit::KeywordKind::eKeywordKindVariableDec)
+				{
+					instr = "sub ";
+				}
+
+				std::string varErrCpy = varName;
+
+				while (varName.find(" ") != std::string::npos)
+				{
+					varName.erase(varName.find(" "), 1);
+				}
+
+				while (varName.find("\t") != std::string::npos)
+				{
+					varName.erase(varName.find("\t"), 1);
+				}
+
+				std::size_t indxReg = 0UL;
+
+				for (size_t i = 0; !isalnum(valueOfVar[i]); i++)
+				{
+					if (i > valueOfVar.size())
+						break;
+
+					valueOfVar.erase(i, 1);
+				}
+
+				/// interpet boolean values.
+
+				if (valueOfVar == "true")
+				{
+					valueOfVar = "1";
+				}
+				else if (valueOfVar == "false")
+				{
+					valueOfVar = "0";
+				}
+
+				for (auto pair : kRegisterMap)
+				{
+					++indxReg;
+
+					if (pair != varName)
+						continue;
+
+					std::size_t indexRight = 0ul;
+
+					for (auto pairRight : kRegisterMap)
+					{
+						++indexRight;
+
+						if (pairRight != valueOfVar)
+						{
+							syntax_tree.fUserValue = instr + cRegisters[kRegisterMap.size() - 1] + ", " + valueOfVar;
+							continue;
+						}
+
+						syntax_tree.fUserValue = instr + cRegisters[indxReg - 1] + ", " + cRegisters[indexRight - 1];
+						break;
+					}
+
+					break;
+				}
+
+				if (syntax_tree.fUserValue.empty())
+				{
+					detail::print_error("Variable not declared: " + varErrCpy, file);
+				}
+			}
+
+			break;
+		}
+		case ParserKit::KeywordKind::eKeywordKindReturn: {
+			auto		pos		= text.find("return") + strlen("return") + 1;
+			std::string subText = text.substr(pos);
+			subText				= subText.erase(subText.find(";"));
+			size_t indxReg		= 0UL;
+
+			if (subText[0] != '\"' &&
+				subText[0] != '\'')
+			{
+				if (!isdigit(subText[0]))
+				{
+					for (auto pair : kRegisterMap)
+					{
+						++indxReg;
+
+						if (pair != subText)
+							continue;
+
+						syntax_tree.fUserValue = "mov rax, " + cRegisters[indxReg - 1] + "\r\nret";
+						break;
+					}
+
+					if (syntax_tree.fUserValue.empty())
+					{
+						detail::print_error("Variable not declared: " + subText, file);
+					}
+				}
+				else
+				{
+					syntax_tree.fUserValue = "mov rax, " + subText + "\r\nret";
+				}
+			}
+			else
+			{
+				syntax_tree.fUserValue = "mov rcx, " + subText + "\r\n";
+				syntax_tree.fUserValue = "mov rax, rcx\r\nret";
+			}
+
+			break;
+		}
 		default:
 			break;
 		}
@@ -411,6 +696,7 @@ MPCC_MODULE(CompilerCPlusPlus)
 	kKeywords.push_back({.keyword_name = "}", .keyword_kind = ParserKit::eKeywordKindBodyEnd});
 	kKeywords.push_back({.keyword_name = "auto", .keyword_kind = ParserKit::eKeywordKindVariable});
 	kKeywords.push_back({.keyword_name = "int", .keyword_kind = ParserKit::eKeywordKindType});
+	kKeywords.push_back({.keyword_name = "bool", .keyword_kind = ParserKit::eKeywordKindType});
 	kKeywords.push_back({.keyword_name = "unsigned", .keyword_kind = ParserKit::eKeywordKindType});
 	kKeywords.push_back({.keyword_name = "short", .keyword_kind = ParserKit::eKeywordKindType});
 	kKeywords.push_back({.keyword_name = "(", .keyword_kind = ParserKit::eKeywordKindFunctionStart});
@@ -420,6 +706,8 @@ MPCC_MODULE(CompilerCPlusPlus)
 	kKeywords.push_back({.keyword_name = "float", .keyword_kind = ParserKit::eKeywordKindType});
 	kKeywords.push_back({.keyword_name = "double", .keyword_kind = ParserKit::eKeywordKindType});
 	kKeywords.push_back({.keyword_name = "=", .keyword_kind = ParserKit::eKeywordKindVariableAssign});
+	kKeywords.push_back({.keyword_name = "+=", .keyword_kind = ParserKit::eKeywordKindVariableInc});
+	kKeywords.push_back({.keyword_name = "-=", .keyword_kind = ParserKit::eKeywordKindVariableDec});
 	kKeywords.push_back({.keyword_name = "const", .keyword_kind = ParserKit::eKeywordKindConstant});
 	kKeywords.push_back({.keyword_name = "->", .keyword_kind = ParserKit::eKeywordKindPtrAccess});
 	kKeywords.push_back({.keyword_name = ".", .keyword_kind = ParserKit::eKeywordKindAccess});
@@ -431,6 +719,9 @@ MPCC_MODULE(CompilerCPlusPlus)
 	kKeywords.push_back({.keyword_name = "protected:", .keyword_kind = ParserKit::eKeywordKindSpecifier});
 	kKeywords.push_back({.keyword_name = "final", .keyword_kind = ParserKit::eKeywordKindSpecifier});
 	kKeywords.push_back({.keyword_name = "return", .keyword_kind = ParserKit::eKeywordKindReturn});
+	kKeywords.push_back({.keyword_name = "/*", .keyword_kind = ParserKit::eKeywordKindCommentMultiLineStart});
+	kKeywords.push_back({.keyword_name = "*/", .keyword_kind = ParserKit::eKeywordKindCommentMultiLineStart});
+	kKeywords.push_back({.keyword_name = "//", .keyword_kind = ParserKit::eKeywordKindCommentInline});
 
 	kFactory.Mount(new AssemblyMountpointClang());
 	kCompilerBackend = new CompilerBackendCPlusPlus();

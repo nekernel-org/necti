@@ -736,7 +736,7 @@ bool CompilerBackendCLang::Compile(const std::string& text, const char* file)
 					textBuffer.erase(_text_i, 1);
 			}
 
-			syntaxLeaf.fUserValue += "dec ";
+			syntaxLeaf.fUserValue += "sub ";
 			syntaxLeaf.fUserValue += textBuffer;
 
 			kState.fSyntaxTree->fLeafList.push_back(syntaxLeaf);
@@ -1399,7 +1399,7 @@ public:
 			return -1;
 
 		std::vector<std::string> keywords = {"ldw", "stw", "lda", "sta",
-											 "add", "dec", "mv"};
+											 "add", "sub", "mv"};
 
 		///
 		/// Replace, optimize, fix assembly output.
@@ -1484,7 +1484,7 @@ public:
 					}
 
 					if (cnt > 1 && keyword != "mv" && keyword != "add" &&
-						keyword != "dec")
+						keyword != "sub")
 					{
 						leaf.fUserValue.replace(leaf.fUserValue.find(keyword),
 												keyword.size(), "mv");
