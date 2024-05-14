@@ -5,7 +5,7 @@ int main(int argc, char const* argv[])
 
 	{
 		bool bar = false;
-		bar = true;
+		bar		 = true;
 
 		bool bar2 = bar;
 	}
