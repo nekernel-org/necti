@@ -73,6 +73,11 @@ namespace ParserKit
 		eKeywordKindCommentInline,
 		eKeywordKindCommentMultiLineStart,
 		eKeywordKindCommentMultiLineEnd,
+		eKeywordKindEq,
+		eKeywordKindNotEq,
+		eKeywordKindGreaterEq,
+		eKeywordKindLessEq,
+		eKeywordKindPtr,
 	};
 
 	/// \brief Compiler keyword information struct.

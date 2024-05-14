@@ -273,8 +273,11 @@ bool CompilerBackendCPlusPlus::Compile(const std::string& text,
 				keyword.keyword_kind == ParserKit::KeywordKind::eKeywordKindVariableAssign)
 				continue;
 
-			if (
-				text[text.find(keyword.keyword_name) - 1] == '-' &&
+			if (text[text.find(keyword.keyword_name) - 1] == '-' &&
+				keyword.keyword_kind == ParserKit::KeywordKind::eKeywordKindVariableAssign)
+				continue;
+
+			if (text[text.find(keyword.keyword_name) + 1] == '=' &&
 				keyword.keyword_kind == ParserKit::KeywordKind::eKeywordKindVariableAssign)
 				continue;
 
@@ -303,10 +306,18 @@ bool CompilerBackendCPlusPlus::Compile(const std::string& text,
 
 		switch (keyword.first.keyword_kind)
 		{
-		case ParserKit::KeywordKind::eKeywordKindEndInstr:
-			syntax_tree.fUserValue = "\r\n";
-			break;
 		case ParserKit::KeywordKind::eKeywordKindFunctionStart: {
+			std::string fnName = text;
+			fnName.erase(fnName.find(keyword.first.keyword_name));
+
+			for (auto& ch : fnName)
+			{
+				if (ch == ' ')
+					ch = '_';
+			}
+
+			syntax_tree.fUserValue = "export .code64 __MPCC_" + fnName + "\n"; 
+
 			++kLevelFunction;
 			break;
 		}
@@ -322,10 +333,11 @@ bool CompilerBackendCPlusPlus::Compile(const std::string& text,
 				kRegisterMap.clear();
 			break;
 		}
+		case ParserKit::KeywordKind::eKeywordKindEndInstr:
 		case ParserKit::KeywordKind::eKeywordKindVariableInc:
 		case ParserKit::KeywordKind::eKeywordKindVariableDec:
 		case ParserKit::KeywordKind::eKeywordKindVariableAssign: {
-			auto valueOfVar = text.substr(text.find("=") + 1);
+			std::string valueOfVar = "";
 
 			if (keyword.first.keyword_kind == ParserKit::KeywordKind::eKeywordKindVariableInc)
 			{
@@ -335,16 +347,19 @@ bool CompilerBackendCPlusPlus::Compile(const std::string& text,
 			{
 				valueOfVar = text.substr(text.find("-=") + 2);
 			}
-
-			while (valueOfVar.find(";") != std::string::npos)
+			else if (keyword.first.keyword_kind == ParserKit::KeywordKind::eKeywordKindVariableAssign)
 			{
-				valueOfVar.erase(valueOfVar.find(";"));
+				valueOfVar = text.substr(text.find("=") + 1);
+			}
+			else if (keyword.first.keyword_kind == ParserKit::KeywordKind::eKeywordKindEndInstr)
+			{
+				valueOfVar = "0\n";
 			}
 
-			if (text.find("float ") != std::string::npos ||
-				text.find("double ") != std::string::npos)
+			while (valueOfVar.find(";") != std::string::npos &&
+				   keyword.first.keyword_kind != ParserKit::KeywordKind::eKeywordKindEndInstr)
 			{
-				detail::print_error("Vector extensions not supported yet.", "cplusplus");
+				valueOfVar.erase(valueOfVar.find(";"));
 			}
 
 			std::string varName = text;
@@ -357,9 +372,13 @@ bool CompilerBackendCPlusPlus::Compile(const std::string& text,
 			{
 				varName.erase(varName.find("-="));
 			}
-			else
+			else if (keyword.first.keyword_kind == ParserKit::KeywordKind::eKeywordKindVariableAssign)
 			{
 				varName.erase(varName.find("="));
+			}
+			else if (keyword.first.keyword_kind == ParserKit::KeywordKind::eKeywordKindEndInstr)
+			{
+				varName.erase(varName.find(";"));
 			}
 
 			bool typeFound = false;
@@ -421,11 +440,14 @@ bool CompilerBackendCPlusPlus::Compile(const std::string& text,
 					valueOfVar.erase(i, 1);
 				}
 
-				if (valueOfVar == "true")
+				constexpr auto cTrueVal	 = "true";
+				constexpr auto cFalseVal = "false";
+
+				if (valueOfVar == cTrueVal)
 				{
 					valueOfVar = "1";
 				}
-				else if (valueOfVar == "false")
+				else if (valueOfVar == cFalseVal)
 				{
 					valueOfVar = "0";
 				}
@@ -438,23 +460,29 @@ bool CompilerBackendCPlusPlus::Compile(const std::string& text,
 
 					if (pairRight != valueOfVar)
 					{
-						syntax_tree.fUserValue = instr + cRegisters[kRegisterMap.size()] + ", " + valueOfVar;
+						syntax_tree.fUserValue = instr + cRegisters[kRegisterMap.size()] + ", " + valueOfVar + "\n";
 						continue;
 					}
 
-					syntax_tree.fUserValue = instr + cRegisters[kRegisterMap.size()] + ", " + cRegisters[indexRight - 1];
+					syntax_tree.fUserValue = instr + cRegisters[kRegisterMap.size()] + ", " + cRegisters[indexRight - 1] + "\n";
 					break;
 				}
 
 				if (((int)indexRight - 1) < 0)
 				{
-					syntax_tree.fUserValue = instr + cRegisters[kRegisterMap.size()] + ", " + valueOfVar;
+					syntax_tree.fUserValue = instr + cRegisters[kRegisterMap.size()] + ", " + valueOfVar + "\n";
 				}
 
 				kRegisterMap.push_back(varName);
 			}
 			else
 			{
+				if (keyword.first.keyword_kind == ParserKit::KeywordKind::eKeywordKindEndInstr)
+				{
+					syntax_tree.fUserValue = "\n";
+					continue;
+				}
+
 				if (keyword.first.keyword_kind == ParserKit::KeywordKind::eKeywordKindVariableInc)
 				{
 					instr = "add ";
@@ -486,13 +514,16 @@ bool CompilerBackendCPlusPlus::Compile(const std::string& text,
 					valueOfVar.erase(i, 1);
 				}
 
-				/// interpet boolean values.
+				constexpr auto cTrueVal	 = "true";
+				constexpr auto cFalseVal = "false";
 
-				if (valueOfVar == "true")
+				/// interpet boolean values, since we're on C++
+
+				if (valueOfVar == cTrueVal)
 				{
 					valueOfVar = "1";
 				}
-				else if (valueOfVar == "false")
+				else if (valueOfVar == cFalseVal)
 				{
 					valueOfVar = "0";
 				}
@@ -512,11 +543,11 @@ bool CompilerBackendCPlusPlus::Compile(const std::string& text,
 
 						if (pairRight != valueOfVar)
 						{
-							syntax_tree.fUserValue = instr + cRegisters[kRegisterMap.size() - 1] + ", " + valueOfVar;
+							syntax_tree.fUserValue = instr + cRegisters[kRegisterMap.size()] + ", " + valueOfVar + "\n";
 							continue;
 						}
 
-						syntax_tree.fUserValue = instr + cRegisters[indxReg - 1] + ", " + cRegisters[indexRight - 1];
+						syntax_tree.fUserValue = instr + cRegisters[indxReg - 1] + ", " + cRegisters[indexRight - 1] + "\n";
 						break;
 					}
 
@@ -549,7 +580,7 @@ bool CompilerBackendCPlusPlus::Compile(const std::string& text,
 						if (pair != subText)
 							continue;
 
-						syntax_tree.fUserValue = "mov rax, " + cRegisters[indxReg - 1] + "\r\nret";
+						syntax_tree.fUserValue = "mov rax, " + cRegisters[indxReg - 1] + "\r\nret\n";
 						break;
 					}
 
@@ -560,13 +591,13 @@ bool CompilerBackendCPlusPlus::Compile(const std::string& text,
 				}
 				else
 				{
-					syntax_tree.fUserValue = "mov rax, " + subText + "\r\nret";
+					syntax_tree.fUserValue = "mov rax, " + subText + "\r\nret\n";
 				}
 			}
 			else
 			{
-				syntax_tree.fUserValue = "mov rcx, " + subText + "\r\n";
-				syntax_tree.fUserValue = "mov rax, rcx\r\nret";
+				syntax_tree.fUserValue = "mov rcx, " + subText + "\n";
+				syntax_tree.fUserValue = "mov rax, rcx\r\nret\n";
 			}
 
 			break;
@@ -672,8 +703,8 @@ public:
 static void cxx_print_help()
 {
 	kSplashCxx();
-	kPrintF("%s", "No help available, see:\r\n");
-	kPrintF("%s", "www.el-mahrouss-logic.com/softwarelabs/developer/newos/cplusplus\r\n");
+	kPrintF("%s", "No help available, see:\n");
+	kPrintF("%s", "www.el-mahrouss-logic.com/softwarelabs/developer/newos/cplusplus\n");
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////
@@ -699,16 +730,30 @@ MPCC_MODULE(CompilerCPlusPlus)
 	kKeywords.push_back({.keyword_name = "bool", .keyword_kind = ParserKit::eKeywordKindType});
 	kKeywords.push_back({.keyword_name = "unsigned", .keyword_kind = ParserKit::eKeywordKindType});
 	kKeywords.push_back({.keyword_name = "short", .keyword_kind = ParserKit::eKeywordKindType});
-	kKeywords.push_back({.keyword_name = "(", .keyword_kind = ParserKit::eKeywordKindFunctionStart});
-	kKeywords.push_back({.keyword_name = ")", .keyword_kind = ParserKit::eKeywordKindFunctionEnd});
 	kKeywords.push_back({.keyword_name = "char", .keyword_kind = ParserKit::eKeywordKindType});
 	kKeywords.push_back({.keyword_name = "long", .keyword_kind = ParserKit::eKeywordKindType});
 	kKeywords.push_back({.keyword_name = "float", .keyword_kind = ParserKit::eKeywordKindType});
 	kKeywords.push_back({.keyword_name = "double", .keyword_kind = ParserKit::eKeywordKindType});
+	kKeywords.push_back({.keyword_name = "void", .keyword_kind = ParserKit::eKeywordKindType});
+
+	kKeywords.push_back({.keyword_name = "auto*", .keyword_kind = ParserKit::eKeywordKindVariable});
+	kKeywords.push_back({.keyword_name = "int*", .keyword_kind = ParserKit::eKeywordKindType});
+	kKeywords.push_back({.keyword_name = "bool*", .keyword_kind = ParserKit::eKeywordKindType});
+	kKeywords.push_back({.keyword_name = "unsigned*", .keyword_kind = ParserKit::eKeywordKindType});
+	kKeywords.push_back({.keyword_name = "short*", .keyword_kind = ParserKit::eKeywordKindType});
+	kKeywords.push_back({.keyword_name = "char*", .keyword_kind = ParserKit::eKeywordKindType});
+	kKeywords.push_back({.keyword_name = "long*", .keyword_kind = ParserKit::eKeywordKindType});
+	kKeywords.push_back({.keyword_name = "float*", .keyword_kind = ParserKit::eKeywordKindType});
+	kKeywords.push_back({.keyword_name = "double*", .keyword_kind = ParserKit::eKeywordKindType});
+	kKeywords.push_back({.keyword_name = "void*", .keyword_kind = ParserKit::eKeywordKindType});
+
+	kKeywords.push_back({.keyword_name = "(", .keyword_kind = ParserKit::eKeywordKindFunctionStart});
+	kKeywords.push_back({.keyword_name = ")", .keyword_kind = ParserKit::eKeywordKindFunctionEnd});
 	kKeywords.push_back({.keyword_name = "=", .keyword_kind = ParserKit::eKeywordKindVariableAssign});
 	kKeywords.push_back({.keyword_name = "+=", .keyword_kind = ParserKit::eKeywordKindVariableInc});
 	kKeywords.push_back({.keyword_name = "-=", .keyword_kind = ParserKit::eKeywordKindVariableDec});
 	kKeywords.push_back({.keyword_name = "const", .keyword_kind = ParserKit::eKeywordKindConstant});
+	kKeywords.push_back({.keyword_name = "*", .keyword_kind = ParserKit::eKeywordKindPtr});
 	kKeywords.push_back({.keyword_name = "->", .keyword_kind = ParserKit::eKeywordKindPtrAccess});
 	kKeywords.push_back({.keyword_name = ".", .keyword_kind = ParserKit::eKeywordKindAccess});
 	kKeywords.push_back({.keyword_name = ",", .keyword_kind = ParserKit::eKeywordKindArgSeparator});
@@ -722,6 +767,10 @@ MPCC_MODULE(CompilerCPlusPlus)
 	kKeywords.push_back({.keyword_name = "/*", .keyword_kind = ParserKit::eKeywordKindCommentMultiLineStart});
 	kKeywords.push_back({.keyword_name = "*/", .keyword_kind = ParserKit::eKeywordKindCommentMultiLineStart});
 	kKeywords.push_back({.keyword_name = "//", .keyword_kind = ParserKit::eKeywordKindCommentInline});
+	kKeywords.push_back({.keyword_name = "==", .keyword_kind = ParserKit::eKeywordKindEq});
+	kKeywords.push_back({.keyword_name = "!=", .keyword_kind = ParserKit::eKeywordKindNotEq});
+	kKeywords.push_back({.keyword_name = ">=", .keyword_kind = ParserKit::eKeywordKindGreaterEq});
+	kKeywords.push_back({.keyword_name = "<=", .keyword_kind = ParserKit::eKeywordKindLessEq});
 
 	kFactory.Mount(new AssemblyMountpointClang());
 	kCompilerBackend = new CompilerBackendCPlusPlus();

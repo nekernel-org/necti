@@ -1,28 +1,14 @@
-# Path: Examples/ExampleCDialect.c
-# Language: POWER Assembly (Generated from C)
-# Build Date: 2024-4-28
+; Path: Examples/ExampleCDialect.cc
+; Language: MPCC assembly. (Generated from C++)
+; Date: 2024-5-14
 
+#bits 64
 
+#org 0x1000000
 
+export .code64 __MPCC_int___ImageStart
+mov r8, 0
 
-
-
-
-dword export .code64 __ImageStart
-
-
-	li r3,0x1000
-
-	cmpw r10, r11
-	beq import __MPCC_IF_PROC_6099380296 
-dword export .code64 __MPCC_IF_PROC_6099380296
-
-
-
-	mr r31, r3
-	blr
-
-
-	mr r31, r0
-	blr
-
+mov r9, 36
+mov rax, r8
+ret
