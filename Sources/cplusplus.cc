@@ -1,7 +1,7 @@
 /*
  *	========================================================
  *
- *	ccplus
+ *	cplusplus
  * 	Copyright SoftwareLabs, all rights reserved.
  *
  * 	========================================================
@@ -111,18 +111,18 @@ namespace detail
 
 		if (kState.fLastFile != file)
 		{
-			std::cout << kRed << "[ ccplus ] " << kWhite
+			std::cout << kRed << "[ cplusplus ] " << kWhite
 					  << ((file == "cplusplus") ? "internal compiler error "
 												: ("in file, " + file))
 					  << kBlank << std::endl;
-			std::cout << kRed << "[ ccplus ] " << kWhite << reason << kBlank
+			std::cout << kRed << "[ cplusplus ] " << kWhite << reason << kBlank
 					  << std::endl;
 
 			kState.fLastFile = file;
 		}
 		else
 		{
-			std::cout << kRed << "[ ccplus ] [ " << kState.fLastFile << " ] " << kWhite
+			std::cout << kRed << "[ cplusplus ] [ " << kState.fLastFile << " ] " << kWhite
 					  << reason << kBlank << std::endl;
 		}
 
@@ -834,7 +834,7 @@ MPCC_MODULE(CompilerCPlusPlus)
 			std::string err = "Unknown option: ";
 			err += argv[index];
 
-			detail::print_error(err, "ccplus");
+			detail::print_error(err, "cplusplus");
 
 			continue;
 		}
@@ -859,7 +859,7 @@ MPCC_MODULE(CompilerCPlusPlus)
 		{
 			if (kState.fVerbose)
 			{
-				detail::print_error(argv_i + " is not a valid C++ source.\n", "ccplus");
+				detail::print_error(argv_i + " is not a valid C++ source.\n", "cplusplus");
 			}
 
 			return 1;
