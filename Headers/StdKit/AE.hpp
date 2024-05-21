@@ -95,9 +95,9 @@ std::ifstream& operator>>(std::ifstream&			   fp,
 namespace CompilerKit::Utils
 {
 	/**
- * @brief AE Reader protocol
- *
- */
+	 * @brief AE Reader protocol
+	 *
+	 */
 	class AEReadableProtocol final
 	{
 	public:
@@ -110,12 +110,12 @@ namespace CompilerKit::Utils
 		MPCC_COPY_DELETE(AEReadableProtocol);
 
 		/**
-   * @brief Read AE record
-   *
-   * @param raw the containing buffer
-   * @param sz it's size (without sizeof(AERecordHeader) added to it.)
-   * @return AERecordHeaderPtr
-   */
+		 * @brief Read AE record
+		 *
+		 * @param raw the containing buffer
+		 * @param sz it's size (without sizeof(AERecordHeader) added to it.)
+		 * @return AERecordHeaderPtr
+		 */
 		AERecordHeaderPtr Read(char* raw, std::size_t sz)
 		{
 			if (!raw)
@@ -126,13 +126,13 @@ namespace CompilerKit::Utils
 
 	private:
 		/**
-   * @brief Implementation of Read for raw classes.
-   *
-   * @tparam TypeClass The class to read.
-   * @param raw the buffer
-   * @param sz the size
-   * @return TypeClass* the returning class.
-   */
+		 * @brief Implementation of Read for raw classes.
+		 *
+		 * @tparam TypeClass The class to read.
+		 * @param raw the buffer
+		 * @param sz the size
+		 * @return TypeClass* the returning class.
+		 */
 		template <typename TypeClass>
 		TypeClass* _Read(char* raw, std::size_t sz)
 		{

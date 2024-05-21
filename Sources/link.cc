@@ -84,13 +84,13 @@ MPCC_MODULE(NewOSLinker) {
       kStdOut << "-version: Show program version.\n";
       kStdOut << "-verbose: Enable program trace.\n";
       kStdOut << "-shared: Output as a shared PEF.\n";
-      kStdOut << "-fat-bin: Output as FAT PEF.\n";
-      kStdOut << "-32x0: Output as 32x0 PEF.\n";
-      kStdOut << "-64x0: Output as 64x0 PEF.\n";
-      kStdOut << "-amd64: Output as AMD64 PEF.\n";
-      kStdOut << "-rv64: Output as RISC-V 64 PEF.\n";
-      kStdOut << "-ppc64: Output as POWER 64 PEF.\n";
-      kStdOut << "-output-file: Select output file name.\n";
+      kStdOut << "-fat-bin: Output as a FAT PEF.\n";
+      kStdOut << "-32x0: Output as a 32x0 PEF.\n";
+      kStdOut << "-64x0: Output as a 64x0 PEF.\n";
+      kStdOut << "-amd64: Output as a AMD64 PEF.\n";
+      kStdOut << "-rv64: Output as a RISC-V PEF.\n";
+      kStdOut << "-ppc64: Output as a POWER PEF.\n";
+      kStdOut << "-output-file: Select the output file name.\n";
 
       return 0;
     } else if (StringCompare(argv[i], "-v") == 0) {
@@ -141,7 +141,7 @@ MPCC_MODULE(NewOSLinker) {
     } else {
       if (argv[i][0] == '-') {
         kStdOut << "link: unknown flag: " << argv[i] << "\n";
-        return -MPCC_EXEC_ERROR;
+        return MPCC_EXEC_ERROR;
       }
 
       kObjectList.emplace_back(argv[i]);
@@ -203,7 +203,7 @@ MPCC_MODULE(NewOSLinker) {
       kStdOut << "link: error: " << strerror(errno) << "\n";
     }
 
-    return -MPCC_FILE_NOT_FOUND;
+    return MPCC_FILE_NOT_FOUND;
   }
 
   //! Read AE to convert as PEF.
@@ -235,7 +235,7 @@ MPCC_MODULE(NewOSLinker) {
                   << std::endl;
 
           std::remove(kOutput.c_str());
-          return -MPCC_FAT_ERROR;
+          return MPCC_FAT_ERROR;
         } else {
           if (kVerbose) {
             kStdOut << "Yes.\n";
@@ -329,7 +329,7 @@ MPCC_MODULE(NewOSLinker) {
     std::remove(kOutput.c_str());
 
     // don't continue, it is a fatal error.
-    return -MPCC_EXEC_ERROR;
+    return MPCC_EXEC_ERROR;
   }
 
   pef_container.Cpu = archs;
@@ -596,7 +596,7 @@ MPCC_MODULE(NewOSLinker) {
     }
 
     std::remove(kOutput.c_str());
-    return -MPCC_EXEC_ERROR;
+    return MPCC_EXEC_ERROR;
   }
 
   // step 2.5: write program bytes.
@@ -632,7 +632,7 @@ MPCC_MODULE(NewOSLinker) {
               << ", is corrupt, removing file...\n";
 
     std::remove(kOutput.c_str());
-    return -MPCC_EXEC_ERROR;
+    return MPCC_EXEC_ERROR;
   }
 
   return 0;

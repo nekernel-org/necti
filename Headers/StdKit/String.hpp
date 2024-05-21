@@ -15,9 +15,9 @@
 namespace CompilerKit
 {
 	/**
- * @brief StringView class, contains a C string and manages it.
- * @note No need to manage it it's getting deleted by default.
- */
+	 * @brief StringView class, contains a C string and manages it.
+	 * @note No need to manage it it's getting deleted by default.
+	 */
 
 	class StringView final
 	{
@@ -76,9 +76,9 @@ namespace CompilerKit
 	};
 
 	/**
- * @brief StringBuilder class
- * @note These results shall call delete[] after they're used.
- */
+	 * @brief StringBuilder class
+	 * @note These results shall call delete[] after they're used.
+	 */
 	struct StringBuilder final
 	{
 		static StringView  Construct(const CharType* data);

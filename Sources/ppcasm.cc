@@ -17,6 +17,7 @@
 
 #define __ASM_NEED_PPC__ 1
 
+#include <Headers/StdKit/ErrorID.hpp>
 #include <Headers/AsmKit/CPU/ppc.hpp>
 #include <Headers/ParserKit.hpp>
 #include <Headers/StdKit/AE.hpp>
@@ -100,7 +101,7 @@ void print_warning(std::string reason, const std::string &file) noexcept {
 }  // namespace detail
 
 /// Do not move it on top! it uses the assembler detail namespace!
-#include <asmutils.h>
+#include <asmutils.hxx>
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
@@ -224,36 +225,36 @@ MPCC_MODULE(NewOSAssemblerPowerPC) {
 
       std::size_t record_count = 0UL;
 
-      for (auto &rec : kRecords) {
-        if (kVerbose)
-          kStdOut << "ppcasm: Wrote record " << rec.fName << " to file...\n";
-
-        rec.fFlags |= CompilerKit::kKindRelocationAtRuntime;
-        rec.fOffset = record_count;
+      for (auto &record_hdr : kRecords) {
+        record_hdr.fFlags |= CompilerKit::kKindRelocationAtRuntime;
+        record_hdr.fOffset = record_count;
         ++record_count;
 
-        file_ptr_out << rec;
+        file_ptr_out << record_hdr;
+
+        if (kVerbose)
+          kStdOut << "ppcasm: Wrote record " << record_hdr.fName << "...\n";
       }
 
       // increment once again, so that we won't lie about the kUndefinedSymbols.
       ++record_count;
 
       for (auto &sym : kUndefinedSymbols) {
-        CompilerKit::AERecordHeader _record_hdr{0};
+        CompilerKit::AERecordHeader undefined_sym{0};
 
         if (kVerbose)
           kStdOut << "ppcasm: Wrote symbol " << sym << " to file...\n";
 
-        _record_hdr.fKind = kAEInvalidOpcode;
-        _record_hdr.fSize = sym.size();
-        _record_hdr.fOffset = record_count;
+        undefined_sym.fKind = kAEInvalidOpcode;
+        undefined_sym.fSize = sym.size();
+        undefined_sym.fOffset = record_count;
 
         ++record_count;
 
-        memset(_record_hdr.fPad, kAEInvalidOpcode, kAEPad);
-        memcpy(_record_hdr.fName, sym.c_str(), sym.size());
+        memset(undefined_sym.fPad, kAEInvalidOpcode, kAEPad);
+        memcpy(undefined_sym.fName, sym.c_str(), sym.size());
 
-        file_ptr_out << _record_hdr;
+        file_ptr_out << undefined_sym;
 
         ++kCounter;
       }
@@ -293,7 +294,7 @@ asm_fail_exit:
 
   if (kVerbose) kStdOut << "ppcasm: Exit failed.\n";
 
-  return -1;
+  return MPCC_EXEC_ERROR;
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////

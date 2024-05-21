@@ -1,6 +1,6 @@
 /* -------------------------------------------
 
-    Copyright SoftwareLabs
+	Copyright SoftwareLabs
 
 ------------------------------------------- */
 
@@ -32,7 +32,7 @@ static NumberCast32 GetNumber32(std::string lineBuffer, std::string numberKey)
 		{
 			if (errno != 0)
 			{
-				detail::print_error("invalid hex number: " + lineBuffer, "ppcasm");
+				detail::print_error("invalid hex number: " + lineBuffer, "asm");
 				throw std::runtime_error("invalid_hex");
 			}
 		}
@@ -41,7 +41,7 @@ static NumberCast32 GetNumber32(std::string lineBuffer, std::string numberKey)
 
 		if (kVerbose)
 		{
-			kStdOut << "ppcasm: found a base 16 number here: " << lineBuffer.substr(pos)
+			kStdOut << "asm: found a base 16 number here: " << lineBuffer.substr(pos)
 					<< "\n";
 		}
 
@@ -52,7 +52,7 @@ static NumberCast32 GetNumber32(std::string lineBuffer, std::string numberKey)
 		{
 			if (errno != 0)
 			{
-				detail::print_error("invalid binary number:" + lineBuffer, "ppcasm");
+				detail::print_error("invalid binary number:" + lineBuffer, "asm");
 				throw std::runtime_error("invalid_bin");
 			}
 		}
@@ -61,7 +61,7 @@ static NumberCast32 GetNumber32(std::string lineBuffer, std::string numberKey)
 
 		if (kVerbose)
 		{
-			kStdOut << "ppcasm: found a base 2 number here:" << lineBuffer.substr(pos)
+			kStdOut << "asm: found a base 2 number here:" << lineBuffer.substr(pos)
 					<< "\n";
 		}
 
@@ -72,7 +72,7 @@ static NumberCast32 GetNumber32(std::string lineBuffer, std::string numberKey)
 		{
 			if (errno != 0)
 			{
-				detail::print_error("invalid octal number: " + lineBuffer, "ppcasm");
+				detail::print_error("invalid octal number: " + lineBuffer, "asm");
 				throw std::runtime_error("invalid_octal");
 			}
 		}
@@ -81,7 +81,7 @@ static NumberCast32 GetNumber32(std::string lineBuffer, std::string numberKey)
 
 		if (kVerbose)
 		{
-			kStdOut << "ppcasm: found a base 8 number here:" << lineBuffer.substr(pos)
+			kStdOut << "asm: found a base 8 number here:" << lineBuffer.substr(pos)
 					<< "\n";
 		}
 
@@ -92,7 +92,7 @@ static NumberCast32 GetNumber32(std::string lineBuffer, std::string numberKey)
 		{
 			if (errno != 0)
 			{
-				detail::print_error("invalid hex number: " + lineBuffer, "ppcasm");
+				detail::print_error("invalid hex number: " + lineBuffer, "asm");
 				throw std::runtime_error("invalid_hex");
 			}
 		}
@@ -101,7 +101,7 @@ static NumberCast32 GetNumber32(std::string lineBuffer, std::string numberKey)
 
 		if (kVerbose)
 		{
-			kStdOut << "ppcasm: found a base 10 number here:" << lineBuffer.substr(pos)
+			kStdOut << "asm: found a base 10 number here:" << lineBuffer.substr(pos)
 					<< "\n";
 		}
 

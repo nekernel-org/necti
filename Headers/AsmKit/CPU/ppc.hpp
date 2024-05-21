@@ -242,7 +242,7 @@ inline CpuOpcodePPC kOpcodesPowerPC[] = {
 	{0x4c800421, "bfctrl", {{16, 5, BCND}, {11, 2, NUM}}},
 
 	/* branch mnemonics incorporating conditions (assember extended mnemonics)
-     */
+	 */
 	{0x41800000, "blt", {{16, 5, CRF}, {2, 14, PCREL}}},
 	{0x41800000, "blt", {{2, 14, PCREL}}},
 	{0x41800001, "bltl", {{16, 5, CRF}, {2, 14, PCREL}}},
@@ -1548,10 +1548,10 @@ inline CpuOpcodePPC kOpcodesPowerPC[] = {
 	{0x7c000426, "clcs", {{21, 5, GREG}, {16, 5, GREG}}, CPU601},
 
 	/* Added from the POWER 603 book.
-     * These are really 603 specific instructions but we mark them as OPTIONAL
-     * so that the -force_cpusubtype_ALL flag as to be used.  This makes it so
-     * only 601 instructions will cause the cputype to be set to other an ALL.
-     */
+	 * These are really 603 specific instructions but we mark them as OPTIONAL
+	 * so that the -force_cpusubtype_ALL flag as to be used.  This makes it so
+	 * only 601 instructions will cause the cputype to be set to other an ALL.
+	 */
 	{0x7c0007a4, "tlbld", {{11, 5, GREG}}, OPTIONAL},
 	{0x7c0007e4, "tlbli", {{11, 5, GREG}}, OPTIONAL},
 

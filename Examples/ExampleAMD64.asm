@@ -2,5 +2,5 @@
 
 export .code64 __ImageStart
 
-mov rax, rdx
+mov rax, 17
 ret
