@@ -16,8 +16,8 @@
 #define kSplashCxx() \
 	kPrintF(kWhite "%s\n", "LightSpeed C++ Compiler, Copyright SoftwareLabs.")
 
-#include <Headers/AsmKit/CPU/amd64.hpp>
-#include <Headers/ParserKit.hpp>
+#include <Common/AsmKit/CPU/amd64.hpp>
+#include <Common/ParserKit.hpp>
 #include <cstdio>
 #include <filesystem>
 #include <fstream>

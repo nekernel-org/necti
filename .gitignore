@@ -12,8 +12,6 @@ local.properties
 *.exec
 *.bin
 
-docs/
-
 # Compiled class file
 *.class
 
@@ -66,6 +64,8 @@ Drivers/Output/Tests/*.masm
 
 .vs
 
+docs/html
+docs/latex
 docs/doxygen
 
 *.pc

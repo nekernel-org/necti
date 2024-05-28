@@ -7,9 +7,9 @@
  * 	========================================================
  */
 
-#include <Headers/AsmKit/CPU/ppc.hpp>
-#include <Headers/ParserKit.hpp>
-#include <Headers/UUID.hpp>
+#include <Common/AsmKit/CPU/ppc.hpp>
+#include <Common/ParserKit.hpp>
+#include <Common/UUID.hpp>
 #include <cstdio>
 #include <filesystem>
 #include <fstream>

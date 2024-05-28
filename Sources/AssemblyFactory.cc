@@ -4,8 +4,8 @@
 
 ------------------------------------------- */
 
-#include <Headers/AsmKit/AsmKit.hpp>
-#include <Headers/StdKit/ErrorID.hpp>
+#include <Common/AsmKit/AsmKit.hpp>
+#include <Common/StdKit/ErrorID.hpp>
 
 /**
  * @file AssemblyFactory.cxx

@@ -1,4 +1,4 @@
-#include "Headers/Version.hxx"
+#include "Common/Version.hxx"
 
 1 ICON "Icons/app-logo.ico"
 
@@ -11,12 +11,12 @@ BEGIN
     BLOCK "080904E4"
     BEGIN
       VALUE "CompanyName", "SoftwareLabs"
-      VALUE "FileDescription", "NewOS POWER assembler."
+      VALUE "FileDescription", "SoftwareLabs assembler for POWER."
       VALUE "FileVersion", kDistVersion
-      VALUE "InternalName", "NewAssembler"
+      VALUE "InternalName", "Assembler"
       VALUE "LegalCopyright", "SoftwareLabs"
       VALUE "OriginalFilename", "ppcasm.exe"
-      VALUE "ProductName", "NewAssembler"
+      VALUE "ProductName", "Assembler"
       VALUE "ProductVersion", kDistVersion
     END
   END

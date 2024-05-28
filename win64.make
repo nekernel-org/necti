@@ -7,7 +7,7 @@
  # 	========================================================
  #
 
-COMMON_INC=-I./Headers -I./ -I./Sources/Detail
+COMMON_INC=-I./Common -I./ -I./Sources/Detail
 LINK_CC=x86_64-w64-mingw32-g++.exe -std=c++20 -Xlinker -s
 WINRES=x86_64-w64-mingw32-windres
 LINK_SRC=Sources/link.cc
@@ -30,8 +30,8 @@ AMD64_CXX_OUTPUT=Output/cplusplus.exe
 64X0_CC_OUTPUT=Output/64x0-cc.exe
 
 # C Compiler
-PPC_CC_SRC=Sources/ppc-cc.cc $(SRC_COMMON)
-PPC_CC_OUTPUT=Output/ppc-cc.exe
+PPC_CC_SRC=Sources/power-cc.cc $(SRC_COMMON)
+PPC_CC_OUTPUT=Output/power-cc.exe
 
 # 64x0 Assembler
 ASM_SRC=Sources/64asm.cc $(SRC_COMMON)
@@ -60,10 +60,10 @@ compiler:
 	$(WINRES) 64asm.rsrc -O coff -o 64asm.obj
 	$(WINRES) ppcasm.rsrc -O coff -o ppcasm.obj
 	$(WINRES) 64x0-cc.rsrc -O coff -o 64x0-cc.obj
-	$(WINRES) ppc-cc.rsrc -O coff -o ppc-cc.obj
+	$(WINRES) power-cc.rsrc -O coff -o power-cc.obj
 	$(LINK_CC) $(COMMON_INC) 64x0-cc.obj $(64X0_CC_SRC) -o $(64X0_CC_OUTPUT)
 	$(LINK_CC) $(COMMON_INC) $(AMD64_CXX_SRC) -o $(AMD64_CXX_OUTPUT)
-	$(LINK_CC) $(COMMON_INC) ppc-cc.obj $(PPC_CC_SRC) -o $(PPC_CC_OUTPUT)
+	$(LINK_CC) $(COMMON_INC) power-cc.obj $(PPC_CC_SRC) -o $(PPC_CC_OUTPUT)
 	$(LINK_CC) $(COMMON_INC) i64asm.obj $(IASM_SRC) -o $(IASM_OUTPUT)
 	$(LINK_CC) $(COMMON_INC) 64asm.obj $(ASM_SRC) -o $(ASM_OUTPUT)
 	$(LINK_CC) $(COMMON_INC) ppcasm.obj $(PPCASM_SRC) -o $(PPCASM_OUTPUT)

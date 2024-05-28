@@ -1,4 +1,4 @@
-#include "Headers/Version.hxx"
+#include "Common/Version.hxx"
 
 1 ICON "Icons/app-logo.ico"
 
@@ -11,12 +11,12 @@ BEGIN
     BLOCK "080904E4"
     BEGIN
       VALUE "CompanyName", "SoftwareLabs"
-      VALUE "FileDescription", "NewOS 64x0 C compiler."
+      VALUE "FileDescription", "SoftwareLabs C Compiler for 64x000."
       VALUE "FileVersion", kDistVersion
-      VALUE "InternalName", "NewC"
+      VALUE "InternalName", "Compiler"
       VALUE "LegalCopyright", "SoftwareLabs"
       VALUE "OriginalFilename", "64x0-cc.exe"
-      VALUE "ProductName", "NewC"
+      VALUE "ProductName", "Compiler"
       VALUE "ProductVersion", kDistVersion
     END
   END

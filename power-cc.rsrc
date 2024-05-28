@@ -1,4 +1,4 @@
-#include "Headers/Version.hxx"
+#include "Common/Version.hxx"
 
 1 ICON "Icons/app-logo.ico"
 
@@ -11,12 +11,12 @@ BEGIN
     BLOCK "080904E4"
     BEGIN
       VALUE "CompanyName", "SoftwareLabs"
-      VALUE "FileDescription", "NewOS POWER C compiler."
+      VALUE "FileDescription", "SoftwareLabs C Compiler for POWER."
       VALUE "FileVersion", kDistVersion
-      VALUE "InternalName", "NewC"
+      VALUE "InternalName", "Compiler"
       VALUE "LegalCopyright", "SoftwareLabs"
-      VALUE "OriginalFilename", "ppc-cc.exe"
-      VALUE "ProductName", "NewC"
+      VALUE "OriginalFilename", "power-cc.exe"
+      VALUE "ProductName", "Compiler"
       VALUE "ProductVersion", kDistVersion
     END
   END

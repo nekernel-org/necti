@@ -1,4 +1,4 @@
-#include "Headers/Version.hxx"
+#include "Common/Version.hxx"
 
 1 ICON "Icons/app-logo.ico"
 
@@ -13,10 +13,10 @@ BEGIN
       VALUE "CompanyName", "SoftwareLabs"
       VALUE "FileDescription", "NewOS linker."
       VALUE "FileVersion", kDistVersion
-      VALUE "InternalName", "NewLinker"
+      VALUE "InternalName", "Linker"
       VALUE "LegalCopyright", "SoftwareLabs"
       VALUE "OriginalFilename", "link.exe"
-      VALUE "ProductName", "NewLinker"
+      VALUE "ProductName", "Linker"
       VALUE "ProductVersion", kDistVersion
     END
   END

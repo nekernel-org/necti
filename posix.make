@@ -7,7 +7,7 @@
  # 	========================================================
  #
 
-COMMON_INC=-I./Headers -I./ -I./Sources/Detail
+COMMON_INC=-I./Common -I./ -I./Sources/Detail
 LINK_CC=g++ -std=c++20
 LINK_SRC=Sources/link.cc
 LINK_OUTPUT=Output/link.exec
@@ -30,8 +30,8 @@ AMD64_CXX_OUTPUT=Output/cplusplus.exec
 64X0_CC_OUTPUT=Output/64x0-cc.exec
 
 # C Compiler (Our own RISC)
-PPC_CC_SRC=Sources/ppc-cc.cc $(SRC_COMMON)
-PPC_CC_OUTPUT=Output/ppc-cc.exec
+PPC_CC_SRC=Sources/power-cc.cc $(SRC_COMMON)
+PPC_CC_OUTPUT=Output/power-cc.exec
 
 # 64x0 Assembler (Our Own RISC)
 ASM_SRC=Sources/64asm.cc $(SRC_COMMON)

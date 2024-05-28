@@ -14,7 +14,7 @@
 #ifndef __XCOFF__
 #define __XCOFF__
 
-#include <Headers/Defines.hpp>
+#include <Common/Defines.hpp>
 
 #define kXCOFF64Magic 0x01F7
 
