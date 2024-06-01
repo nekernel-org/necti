@@ -1,6 +1,6 @@
 /* -------------------------------------------
 
-    Copyright Amlal El Mahrouss
+    Copyright SoftwareLabs
 
 ------------------------------------------- */
 
@@ -9,7 +9,7 @@
 /////////////////////////////////////////////////////////////////////////////////////////
 
 // @file 32asm.cxx
-// @author Amlal El Mahrouss
+// @author SoftwareLabs
 // @brief 32x0 Assembler.
 
 // REMINDER: when dealing with an undefined symbol use (string

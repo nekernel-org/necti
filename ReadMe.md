@@ -9,9 +9,8 @@ git clone git@bitbucket.org:mahrouss/codetools.git
 and
 
 ```
-make all
+make -f <platform>.make all
 ```
 
-Author: Amlal El Mahrouss
 
-##### Copyright Amlal El Mahrouss, all rights reserved.
+##### Copyright SoftwareLabs, all rights reserved.

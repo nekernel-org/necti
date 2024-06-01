@@ -2,13 +2,13 @@
  #	========================================================
  #
  #	MPCC
- # 	Copyright Amlal El Mahrouss, all rights reserved.
+ # 	Copyright SoftwareLabs, all rights reserved.
  #
  # 	========================================================
  #
 
 COMMON_INC=-I./Common -I./ -I./Sources/Detail
-LINK_CC=g++ -std=c++20
+LINK_CC=clang++ -std=c++20
 LINK_SRC=Sources/link.cc
 LINK_OUTPUT=Output/link.exec
 LINK_ALT_OUTPUT=Output/64link.exec
@@ -74,7 +74,7 @@ linker:
 help:
 	@echo "Compiler 	- MPCC Compiler Suite."
 	@echo "Preprocessor 	- MPCC Preprocessor Suite."
-	@echo "linker 		- Amlal El Mahrouss Linkers."
+	@echo "linker 		- SoftwareLabs Linkers."
 	@echo "clean 		- Clean objects and executables."
 
 .PHONY: clean

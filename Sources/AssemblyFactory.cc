@@ -1,6 +1,6 @@
 /* -------------------------------------------
 
-    Copyright Amlal El Mahrouss
+    Copyright SoftwareLabs
 
 ------------------------------------------- */
 
@@ -9,12 +9,12 @@
 
 /**
  * @file AssemblyFactory.cxx
- * @author Amlal El Mahrouss (amlal@mahrouss.com)
+ * @author SoftwareLabs (amlal@mahrouss.com)
  * @brief Assembler Kit
  * @version 0.1
  * @date 2024-01-27
  *
- * @copyright Copyright (c) 2024, Amlal El Mahrouss
+ * @copyright Copyright (c) 2024, SoftwareLabs
  *
  */
 

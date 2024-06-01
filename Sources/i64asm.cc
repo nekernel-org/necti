@@ -1,13 +1,13 @@
 /* -------------------------------------------
 
-	Copyright Amlal El Mahrouss
+	Copyright SoftwareLabs
 
 ------------------------------------------- */
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
 /// @file i64asm.cxx
-/// @author Amlal El Mahrouss
+/// @author SoftwareLabs
 /// @brief AMD64 Assembler.
 
 /// REMINDER: when dealing with an undefined symbol use (string
@@ -175,13 +175,13 @@ MPCC_MODULE(NewOSAssemblerAMD64)
 			if (strcmp(argv[i], "-version") == 0 || strcmp(argv[i], "-v") == 0)
 			{
 				kStdOut << "i64asm: AMD64 Assembler.\ni64asm: v1.10\ni64asm: Copyright "
-						   "(c) 2024 Amlal El Mahrouss.\n";
+						   "(c) 2024 SoftwareLabs.\n";
 				return 0;
 			}
 			else if (strcmp(argv[i], "-h") == 0)
 			{
 				kStdOut << "i64asm: AMD64 Assembler.\ni64asm: Copyright (c) 2024 "
-						   "Amlal El Mahrouss.\n";
+						   "SoftwareLabs.\n";
 				kStdOut << "-version: Print program version.\n";
 				kStdOut << "-verbose: Print verbose output.\n";
 				kStdOut << "-binary: Output as flat binary.\n";

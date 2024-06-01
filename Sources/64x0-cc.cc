@@ -2,7 +2,7 @@
  *	========================================================
  *
  *	cc
- * 	Copyright Amlal El Mahrouss, all rights reserved.
+ * 	Copyright SoftwareLabs, all rights reserved.
  *
  * 	========================================================
  */
@@ -27,9 +27,9 @@
 
 /* C driver */
 /* This is part of MPCC C SDK. */
-/* (c) Amlal El Mahrouss */
+/* (c) SoftwareLabs */
 
-/// @author Amlal El Mahrouss (amlel)
+/// @author SoftwareLabs (amlel)
 /// @file 64x0-cc.cc
 /// @brief 64x0 C Compiler.
 
@@ -1513,7 +1513,7 @@ public:
 
 #define kPrintF printf
 #define kSplashCxx() \
-	kPrintF(kWhite "cc, %s, (c) Amlal El Mahrouss\n", kDistVersion)
+	kPrintF(kWhite "cc, %s, (c) SoftwareLabs\n", kDistVersion)
 
 static void cc_print_help()
 {

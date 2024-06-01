@@ -2,14 +2,13 @@
  #	========================================================
  #
  #	MPCC
- # 	Copyright Amlal El Mahrouss, all rights reserved.
+ # 	Copyright SoftwareLabs, all rights reserved.
  #
  # 	========================================================
  #
 
 COMMON_INC=-I./Common -I./ -I./Sources/Detail
-LINK_CC=x86_64-w64-mingw32-g++.exe -std=c++20 -Xlinker -s
-WINRES=x86_64-w64-mingw32-windres
+LINK_CC=clang++ -std=c++20 -Xlinker -s
 LINK_SRC=Sources/link.cc
 LINK_OUTPUT=Output/link.exe
 LINK_ALT_OUTPUT=Output/64link.exe
@@ -51,16 +50,10 @@ all: pre-processor compiler linker
 
 .PHONY: pre-processor
 pre-processor:
-	$(WINRES) bpp.rsrc -O coff -o bpp.obj
 	$(LINK_CC) $(COMMON_INC) $(PP_SRC) bpp.obj -o $(PP_OUTPUT)
 
 .PHONY: compiler
 compiler:
-	$(WINRES) i64asm.rsrc -O coff -o i64asm.obj
-	$(WINRES) 64asm.rsrc -O coff -o 64asm.obj
-	$(WINRES) ppcasm.rsrc -O coff -o ppcasm.obj
-	$(WINRES) 64x0-cc.rsrc -O coff -o 64x0-cc.obj
-	$(WINRES) power-cc.rsrc -O coff -o power-cc.obj
 	$(LINK_CC) $(COMMON_INC) 64x0-cc.obj $(64X0_CC_SRC) -o $(64X0_CC_OUTPUT)
 	$(LINK_CC) $(COMMON_INC) $(AMD64_CXX_SRC) -o $(AMD64_CXX_OUTPUT)
 	$(LINK_CC) $(COMMON_INC) power-cc.obj $(PPC_CC_SRC) -o $(PPC_CC_OUTPUT)
@@ -70,7 +63,6 @@ compiler:
 
 .PHONY: linker
 linker:
-	$(WINRES) link.rsrc -O coff -o link.obj
 	$(LINK_CC) $(COMMON_INC) link.obj $(LINK_SRC) -o $(LINK_OUTPUT)
 	cp $(LINK_OUTPUT) $(LINK_ALT_OUTPUT)
 	cp $(LINK_OUTPUT) $(LINK_ALT_2_OUTPUT)
@@ -80,7 +72,7 @@ linker:
 help:
 	@echo "Compiler 	- MPCC Compiler Suite."
 	@echo "Preprocessor 	- MPCC Preprocessor Suite."
-	@echo "linker 		- Amlal El Mahrouss Linkers."
+	@echo "linker 		- SoftwareLabs Linkers."
 	@echo "clean 		- Clean objects and executables."
 
 .PHONY: clean

@@ -2,7 +2,7 @@
  *	========================================================
  *
  *	CompilerKit
- * 	Copyright Amlal El Mahrouss, all rights reserved.
+ * 	Copyright SoftwareLabs, all rights reserved.
  *
  * 	========================================================
  */
@@ -14,7 +14,7 @@
  * @version 0.2
  * @date 2024-01-23
  *
- * @copyright Copyright (c) 2024 Amlal El Mahrouss
+ * @copyright Copyright (c) 2024 SoftwareLabs
  *
  */
 

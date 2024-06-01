@@ -1,12 +1,12 @@
 /* -------------------------------------------
 
-    Copyright Amlal El Mahrouss
+    Copyright SoftwareLabs
 
 ------------------------------------------- */
 
 /// @file link.cc
-/// @author Amlal El Mahrouss (amlel)
-/// @brief Amlal El Mahrouss Linker.
+/// @author SoftwareLabs (amlel)
+/// @brief SoftwareLabs Linker.
 
 /// Last Rev: Sat Feb 24 CET 2024
 
@@ -35,7 +35,7 @@
 #include <fstream>
 #include <iostream>
 
-#define kLinkerVersion "Amlal El Mahrouss Linker %s, (c) Amlal El Mahrouss 2024\n"
+#define kLinkerVersion "SoftwareLabs Linker %s, (c) SoftwareLabs 2024\n"
 
 #define StringCompare(DST, SRC) strcmp(DST, SRC)
 
@@ -184,7 +184,7 @@ MPCC_MODULE(NewOSLinker) {
   pef_container.Count = 0UL;
   pef_container.Kind = CompilerKit::kPefKindExec;
   pef_container.SubCpu = kSubArch;
-  pef_container.Linker = kLinkerId;  // Amlal El Mahrouss Linker
+  pef_container.Linker = kLinkerId;  // SoftwareLabs Linker
   pef_container.Abi = kAbi;                // Multi-Processor UX ABI
   pef_container.Magic[0] = kPefMagic[kFatBinaryEnable ? 2 : 0];
   pef_container.Magic[1] = kPefMagic[1];
