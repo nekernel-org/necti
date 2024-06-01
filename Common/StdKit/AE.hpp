@@ -2,7 +2,7 @@
  * ========================================================
  *
  *      MPCC
- *      Copyright SoftwareLabs, all rights reserved.
+ *      Copyright Amlal El Mahrouss, all rights reserved.
  *
  * ========================================================
  */

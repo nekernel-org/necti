@@ -2,7 +2,7 @@
  #	========================================================
  #
  #	MPCC
- # 	Copyright SoftwareLabs, all rights reserved.
+ # 	Copyright Amlal El Mahrouss, all rights reserved.
  #
  # 	========================================================
  #
@@ -80,7 +80,7 @@ linker:
 help:
 	@echo "Compiler 	- MPCC Compiler Suite."
 	@echo "Preprocessor 	- MPCC Preprocessor Suite."
-	@echo "linker 		- SoftwareLabs Linkers."
+	@echo "linker 		- Amlal El Mahrouss Linkers."
 	@echo "clean 		- Clean objects and executables."
 
 .PHONY: clean

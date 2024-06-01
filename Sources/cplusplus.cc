@@ -2,7 +2,7 @@
  *	========================================================
  *
  *	cplusplus
- * 	Copyright SoftwareLabs, all rights reserved.
+ * 	Copyright Amlal El Mahrouss, all rights reserved.
  *
  * 	========================================================
  */
@@ -14,7 +14,7 @@
 #define kPrintF printf
 
 #define kSplashCxx() \
-	kPrintF(kWhite "%s\n", "LightSpeed C++ Compiler, Copyright SoftwareLabs.")
+	kPrintF(kWhite "%s\n", "LightSpeed C++ Compiler, Copyright Amlal El Mahrouss.")
 
 #include <Common/AsmKit/CPU/amd64.hpp>
 #include <Common/ParserKit.hpp>
@@ -29,9 +29,9 @@
 
 #define kOk 0
 
-/* SoftwareLabs C++ driver */
+/* Amlal El Mahrouss C++ driver */
 /* This is part of MPCC C++ compiler. */
-/* (c) SoftwareLabs */
+/* (c) Amlal El Mahrouss */
 
 /// @author Amlal El Mahrouss (amlel)
 /// @file cc.cc
@@ -170,7 +170,7 @@ static bool							kOnForLoop	 = false;
 static bool							kInBraces	 = false;
 static size_t						kBracesCount = 0UL;
 
-/* @brief C++ compiler backend for SoftwareLabs C++ */
+/* @brief C++ compiler backend for Amlal El Mahrouss C++ */
 class CompilerBackendCPlusPlus final : public ParserKit::CompilerBackend
 {
 public:

@@ -10,11 +10,11 @@ BEGIN
   BEGIN
     BLOCK "080904E4"
     BEGIN
-      VALUE "CompanyName", "SoftwareLabs"
-      VALUE "FileDescription", "SoftwareLabs C Compiler for 64x000."
+      VALUE "CompanyName", "Amlal El Mahrouss"
+      VALUE "FileDescription", "Amlal El Mahrouss C Compiler for 64x000."
       VALUE "FileVersion", kDistVersion
       VALUE "InternalName", "Compiler"
-      VALUE "LegalCopyright", "SoftwareLabs"
+      VALUE "LegalCopyright", "Amlal El Mahrouss"
       VALUE "OriginalFilename", "64x0-cc.exe"
       VALUE "ProductName", "Compiler"
       VALUE "ProductVersion", kDistVersion

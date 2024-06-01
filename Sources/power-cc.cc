@@ -2,7 +2,7 @@
  *	========================================================
  *
  *	cc
- * 	Copyright SoftwareLabs, all rights reserved.
+ * 	Copyright Amlal El Mahrouss, all rights reserved.
  *
  * 	========================================================
  */
@@ -1531,7 +1531,7 @@ public:
 
 #define kPrintF printf
 #define kSplashCxx() \
-	kPrintF(kWhite "cc, %s, (c) SoftwareLabs\n", kDistVersion)
+	kPrintF(kWhite "cc, %s, (c) Amlal El Mahrouss\n", kDistVersion)
 
 static void cc_print_help()
 {

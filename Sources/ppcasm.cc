@@ -1,6 +1,6 @@
 /* -------------------------------------------
 
-    Copyright SoftwareLabs
+    Copyright Amlal El Mahrouss
 
 ------------------------------------------- */
 
@@ -115,11 +115,11 @@ MPCC_MODULE(NewOSAssemblerPowerPC) {
       if (strcmp(argv[i], "-version") == 0 || strcmp(argv[i], "-v") == 0) {
         kStdOut << "ppcasm: POWER Assembler.\nppcasm: " << kDistVersion << "\nppcasm: "
                    "Copyright (c) "
-                   "2024 SoftwareLabs.\n";
+                   "2024 Amlal El Mahrouss.\n";
         return 0;
       } else if (strcmp(argv[i], "-h") == 0) {
         kStdOut << "ppcasm: POWER Assembler.\nppcasm: Copyright (c) 2024 "
-                   "SoftwareLabs.\n";
+                   "Amlal El Mahrouss.\n";
         kStdOut << "-version: Print program version.\n";
         kStdOut << "-verbose: Print verbose output.\n";
         kStdOut << "-binary: Output as flat binary.\n";

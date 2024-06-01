@@ -1,6 +1,6 @@
 /* -------------------------------------------
 
-	Copyright SoftwareLabs
+	Copyright Amlal El Mahrouss
 
 	File: XCOFF.hpp
 	Purpose: XCOFF for NewOS.

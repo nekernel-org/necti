@@ -10,11 +10,11 @@ BEGIN
   BEGIN
     BLOCK "080904E4"
     BEGIN
-      VALUE "CompanyName", "SoftwareLabs"
+      VALUE "CompanyName", "Amlal El Mahrouss"
       VALUE "FileDescription", "NewOS linker."
       VALUE "FileVersion", kDistVersion
       VALUE "InternalName", "Linker"
-      VALUE "LegalCopyright", "SoftwareLabs"
+      VALUE "LegalCopyright", "Amlal El Mahrouss"
       VALUE "OriginalFilename", "link.exe"
       VALUE "ProductName", "Linker"
       VALUE "ProductVersion", kDistVersion

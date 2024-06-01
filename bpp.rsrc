@@ -10,11 +10,11 @@ BEGIN
   BEGIN
     BLOCK "080904E4"
     BEGIN
-      VALUE "CompanyName", "SoftwareLabs"
-      VALUE "FileDescription", "SoftwareLabs Preprocessor."
+      VALUE "CompanyName", "Amlal El Mahrouss"
+      VALUE "FileDescription", "Amlal El Mahrouss Preprocessor."
       VALUE "FileVersion", kDistVersion
       VALUE "InternalName", "NewPreprocessor"
-      VALUE "LegalCopyright", "SoftwareLabs"
+      VALUE "LegalCopyright", "Amlal El Mahrouss"
       VALUE "OriginalFilename", "bpp.exe"
       VALUE "ProductName", "NewPreprocessor"
       VALUE "ProductVersion", kDistVersion

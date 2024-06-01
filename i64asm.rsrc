@@ -10,11 +10,11 @@ BEGIN
   BEGIN
     BLOCK "080904E4"
     BEGIN
-      VALUE "CompanyName", "SoftwareLabs"
-      VALUE "FileDescription", "SoftwareLabs assembler for AMD64."
+      VALUE "CompanyName", "Amlal El Mahrouss"
+      VALUE "FileDescription", "Amlal El Mahrouss assembler for AMD64."
       VALUE "FileVersion", kDistVersion
       VALUE "InternalName", "Assembler"
-      VALUE "LegalCopyright", "SoftwareLabs"
+      VALUE "LegalCopyright", "Amlal El Mahrouss"
       VALUE "OriginalFilename", "i64asm.exe"
       VALUE "ProductName", "Assembler"
       VALUE "ProductVersion", kDistVersion

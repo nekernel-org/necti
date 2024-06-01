@@ -2,7 +2,7 @@
  *	========================================================
  *
  *	bpp
- * 	Copyright SoftwareLabs, all rights reserved.
+ * 	Copyright Amlal El Mahrouss, all rights reserved.
  *
  * 	========================================================
  */
@@ -812,12 +812,12 @@ MPCC_MODULE(NewOSPreprocessor) {
 
       if (argv[index][0] == '-') {
         if (strcmp(argv[index], "-v") == 0) {
-          printf("%s\n", "bpp v1.11, (c) SoftwareLabs");
+          printf("%s\n", "bpp v1.11, (c) Amlal El Mahrouss");
           return 0;
         }
 
         if (strcmp(argv[index], "-h") == 0) {
-          printf("%s\n", "bpp v1.11, (c) SoftwareLabs");
+          printf("%s\n", "bpp v1.11, (c) Amlal El Mahrouss");
           printf("%s\n", "-working-dir <path>: set directory to working path.");
           printf("%s\n", "-include-dir <path>: add directory to include path.");
           printf("%s\n", "-def <name> <value>: def macro.");

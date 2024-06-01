@@ -14,4 +14,4 @@ make all
 
 Author: Amlal El Mahrouss
 
-##### Copyright SoftwareLabs, all rights reserved.
+##### Copyright Amlal El Mahrouss, all rights reserved.
