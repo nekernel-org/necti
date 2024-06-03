@@ -14,7 +14,7 @@
 #define kPrintF printf
 
 #define kSplashCxx() \
-	kPrintF(kWhite "%s\n", "LightSpeed C++ Compiler, Copyright SoftwareLabs.")
+	kPrintF(kWhite "%s\n", "SoftwareLabs C++ Compiler, Copyright SoftwareLabs.")
 
 #include <Common/AsmKit/CPU/amd64.hpp>
 #include <Common/ParserKit.hpp>
@@ -667,10 +667,10 @@ public:
 
 		(*kState.fOutputAssembly) << "; Path: " << src_file << "\n";
 		(*kState.fOutputAssembly)
-			<< "; Language: MPCC assembly. (Generated from C++)\n";
-		(*kState.fOutputAssembly) << "; Date: " << fmt << "\n\n";
-		(*kState.fOutputAssembly) << "#bits 64\n\n#org 0x1000000"
-								  << "\n\n";
+			<< "; Language: AMD64 assembly. (Generated from C++)\n";
+		(*kState.fOutputAssembly) << "; Date: " << fmt << "\n";
+		(*kState.fOutputAssembly) << "#bits 64\n#org 0x1000000"
+								  << "\n";
 
 		ParserKit::SyntaxLeafList syntax;
 
@@ -704,7 +704,7 @@ static void cxx_print_help()
 {
 	kSplashCxx();
 	kPrintF("%s", "No help available, see:\n");
-	kPrintF("%s", "www.el-mahrouss-logic.com/softwarelabs/developer/newos/cplusplus\n");
+	kPrintF("%s", "www.softwarelabs.com/developer/cplusplus\n");
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////
