@@ -47,7 +47,7 @@ namespace CompilerKit
 	{
 		kPefSubArchAMD,
 		kPefSubArchIntel,
-		kPefSubArchARM,
+		kPefSubArchGeneric,
 		kPefSubArchIBM,
 	};
 
