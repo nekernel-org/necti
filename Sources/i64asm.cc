@@ -27,10 +27,10 @@
 #define kAssemblerPragmaSymStr "#"
 #define kAssemblerPragmaSym	   '#'
 
-#include <Common/AsmKit/CPU/amd64.hpp>
-#include <Common/ParserKit.hpp>
-#include <Common/StdKit/AE.hpp>
-#include <Common/StdKit/PEF.hpp>
+#include <Comm/AsmKit/CPU/amd64.hpp>
+#include <Comm/ParserKit.hpp>
+#include <Comm/StdKit/AE.hpp>
+#include <Comm/StdKit/PEF.hpp>
 #include <algorithm>
 #include <cstdlib>
 #include <filesystem>

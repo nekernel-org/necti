@@ -6,7 +6,7 @@
 
 #pragma once
 
-#include <Common/Defines.hpp>
+#include <Comm/Defines.hpp>
 
 // @brief 32x0 support.
 // @file CPU/32x0.hpp

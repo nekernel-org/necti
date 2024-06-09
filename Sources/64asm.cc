@@ -19,10 +19,10 @@
 
 #define __ASM_NEED_64x0__ 1
 
-#include <Common/AsmKit/CPU/64x0.hpp>
-#include <Common/ParserKit.hpp>
-#include <Common/StdKit/AE.hpp>
-#include <Common/StdKit/PEF.hpp>
+#include <Comm/AsmKit/CPU/64x0.hpp>
+#include <Comm/ParserKit.hpp>
+#include <Comm/StdKit/AE.hpp>
+#include <Comm/StdKit/PEF.hpp>
 #include <algorithm>
 #include <filesystem>
 #include <fstream>

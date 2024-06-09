@@ -9,7 +9,7 @@
 
 #pragma once
 
-#include <Common/Defines.hpp>
+#include <Comm/Defines.hpp>
 
 #define kAEMag0 'A'
 #define kAEMag1 'E'

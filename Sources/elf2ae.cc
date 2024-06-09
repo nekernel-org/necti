@@ -4,9 +4,9 @@
 
 ------------------------------------------- */
 
-#include <Common/ParserKit.hpp>
-#include <Common/StdKit/AE.hpp>
-#include <Common/StdKit/PEF.hpp>
+#include <Comm/ParserKit.hpp>
+#include <Comm/StdKit/AE.hpp>
+#include <Comm/StdKit/PEF.hpp>
 #include <filesystem>
 #include <fstream>
 #include <iostream>

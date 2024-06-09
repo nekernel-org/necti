@@ -16,8 +16,8 @@
 #define kSplashCxx() \
 	kPrintF(kWhite "%s\n", "SoftwareLabs C++ Compiler, Copyright SoftwareLabs.")
 
-#include <Common/AsmKit/CPU/amd64.hpp>
-#include <Common/ParserKit.hpp>
+#include <Comm/AsmKit/CPU/amd64.hpp>
+#include <Comm/ParserKit.hpp>
 #include <cstdio>
 #include <filesystem>
 #include <fstream>

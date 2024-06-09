@@ -17,12 +17,12 @@
 
 #define __ASM_NEED_PPC__ 1
 
-#include <Common/StdKit/ErrorID.hpp>
-#include <Common/AsmKit/CPU/ppc.hpp>
-#include <Common/ParserKit.hpp>
-#include <Common/StdKit/AE.hpp>
-#include <Common/StdKit/PEF.hpp>
-#include <Common/Version.hxx>
+#include <Comm/StdKit/ErrorID.hpp>
+#include <Comm/AsmKit/CPU/ppc.hpp>
+#include <Comm/ParserKit.hpp>
+#include <Comm/StdKit/AE.hpp>
+#include <Comm/StdKit/PEF.hpp>
+#include <Comm/Version.hxx>
 #include <algorithm>
 #include <filesystem>
 #include <fstream>

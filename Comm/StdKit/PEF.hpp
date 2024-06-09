@@ -6,7 +6,7 @@
 
 #pragma once
 
-#include <Common/Defines.hpp>
+#include <Comm/Defines.hpp>
 
 // @file PEF.hpp
 // @brief Preferred Executable Format

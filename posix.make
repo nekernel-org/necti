@@ -7,7 +7,7 @@
  # 	========================================================
  #
 
-COMMON_INC=-I./Common -I./ -I./Sources/Detail
+COMMON_INC=-I./Comm -I./ -I./Sources/Detail
 LINK_CC=clang++ -std=c++20
 LINK_SRC=Sources/link.cc
 LINK_OUTPUT=Output/link.exec

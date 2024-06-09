@@ -9,8 +9,8 @@
 
 #pragma once
 
-#include <Common/Defines.hpp>
-#include <Common/StdKit/Ref.hpp>
+#include <Comm/Defines.hpp>
+#include <Comm/StdKit/Ref.hpp>
 
 namespace CompilerKit
 {

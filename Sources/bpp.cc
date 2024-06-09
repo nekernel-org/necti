@@ -9,8 +9,8 @@
 
 /// BUGS: 0
 
-#include <Common/ParserKit.hpp>
-#include <Common/StdKit/ErrorID.hpp>
+#include <Comm/ParserKit.hpp>
+#include <Comm/StdKit/ErrorID.hpp>
 #include <algorithm>
 #include <filesystem>
 #include <fstream>

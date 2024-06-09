@@ -10,9 +10,9 @@
 /// BUGS: ?
 /// TODO:
 
-#include <Common/AsmKit/CPU/64x0.hpp>
-#include <Common/ParserKit.hpp>
-#include <Common/UUID.hpp>
+#include <Comm/AsmKit/CPU/64x0.hpp>
+#include <Comm/ParserKit.hpp>
+#include <Comm/UUID.hpp>
 #include <cstdio>
 #include <filesystem>
 #include <fstream>

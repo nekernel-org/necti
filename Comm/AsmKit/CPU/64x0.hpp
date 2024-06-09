@@ -6,7 +6,7 @@
 
 #pragma once
 
-#include <Common/Defines.hpp>
+#include <Comm/Defines.hpp>
 #include <vector>
 
 // @brief 64x0 support.

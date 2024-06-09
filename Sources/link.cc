@@ -13,23 +13,23 @@
 /// note: Do not look up for anything with .code64/.data64/.zero64!
 /// It will be loaded when program will start up!
 
-#include <Common/StdKit/ErrorID.hpp>
+#include <Comm/StdKit/ErrorID.hpp>
 
 //! Assembler Kit
-#include <Common/AsmKit/AsmKit.hpp>
+#include <Comm/AsmKit/AsmKit.hpp>
 
 //! Preferred Executable Format
-#include <Common/StdKit/PEF.hpp>
-#include <Common/UUID.hpp>
+#include <Comm/StdKit/PEF.hpp>
+#include <Comm/UUID.hpp>
 #include <filesystem>
 #include <random>
 #include <vector>
 
 //! Dist version
-#include <Common/Version.hxx>
+#include <Comm/Version.hxx>
 
 //! Advanced Executable Object Format
-#include <Common/StdKit/AE.hpp>
+#include <Comm/StdKit/AE.hpp>
 
 //! C++ I/O headers.
 #include <fstream>
