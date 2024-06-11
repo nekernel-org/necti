@@ -2,7 +2,7 @@
  *	========================================================
  *
  *	cplusplus
- * 	Copyright SoftwareLabs, all rights reserved.
+ * 	Copyright Zeta Electronics Corporation, all rights reserved.
  *
  * 	========================================================
  */
@@ -14,7 +14,7 @@
 #define kPrintF printf
 
 #define kSplashCxx() \
-	kPrintF(kWhite "%s\n", "SoftwareLabs C++ Compiler, Copyright SoftwareLabs.")
+	kPrintF(kWhite "%s\n", "Zeta Electronics Corporation C++ Compiler, Copyright Zeta Electronics Corporation.")
 
 #include <Comm/AsmKit/CPU/amd64.hpp>
 #include <Comm/ParserKit.hpp>
@@ -29,11 +29,11 @@
 
 #define kOk 0
 
-/* SoftwareLabs C++ driver */
+/* Zeta Electronics Corporation C++ driver */
 /* This is part of MPCC C++ compiler. */
-/* (c) SoftwareLabs */
+/* (c) Zeta Electronics Corporation */
 
-/// @author SoftwareLabs (amlel)
+/// @author Zeta Electronics Corporation (amlel)
 /// @file cc.cc
 /// @brief Optimized C++ Compiler.
 /// @todo Throw error for scoped inside scoped variables when they get referenced outside.
@@ -170,7 +170,7 @@ static bool							kOnForLoop	 = false;
 static bool							kInBraces	 = false;
 static size_t						kBracesCount = 0UL;
 
-/* @brief C++ compiler backend for SoftwareLabs C++ */
+/* @brief C++ compiler backend for Zeta Electronics Corporation C++ */
 class CompilerBackendCPlusPlus final : public ParserKit::CompilerBackend
 {
 public:
@@ -316,7 +316,7 @@ bool CompilerBackendCPlusPlus::Compile(const std::string& text,
 					ch = '_';
 			}
 
-			syntax_tree.fUserValue = "export .code64 __MPCC_" + fnName + "\n"; 
+			syntax_tree.fUserValue = "export .code64 __MPCC_" + fnName + "\n";
 
 			++kLevelFunction;
 			break;
@@ -704,7 +704,7 @@ static void cxx_print_help()
 {
 	kSplashCxx();
 	kPrintF("%s", "No help available, see:\n");
-	kPrintF("%s", "www.softwarelabs.com/developer/cplusplus\n");
+	kPrintF("%s", "www.Zeta Electronics Corporation.com/developer/cplusplus\n");
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////

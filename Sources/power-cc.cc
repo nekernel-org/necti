@@ -2,7 +2,7 @@
  *	========================================================
  *
  *	cc
- * 	Copyright SoftwareLabs, all rights reserved.
+ * 	Copyright Zeta Electronics Corporation, all rights reserved.
  *
  * 	========================================================
  */
@@ -22,7 +22,7 @@
 
 #define kOk 0
 
-/// @author SoftwareLabs (amlel)
+/// @author Zeta Electronics Corporation (amlel)
 /// @file cc.cc
 /// @brief POWER C Compiler.
 
@@ -1531,7 +1531,7 @@ public:
 
 #define kPrintF printf
 #define kSplashCxx() \
-	kPrintF(kWhite "cc, %s, (c) SoftwareLabs\n", kDistVersion)
+	kPrintF(kWhite "cc, %s, (c) Zeta Electronics Corporation\n", kDistVersion)
 
 static void cc_print_help()
 {

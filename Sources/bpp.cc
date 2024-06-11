@@ -2,7 +2,7 @@
  *	========================================================
  *
  *	bpp
- * 	Copyright SoftwareLabs, all rights reserved.
+ * 	Copyright Zeta Electronics Corporation, all rights reserved.
  *
  * 	========================================================
  */
@@ -19,7 +19,7 @@
 
 #define kMacroPrefix '%'
 
-// @author SoftwareLabs (amlel)
+// @author Zeta Electronics Corporation (amlel)
 // @file bpp.cc
 // @brief C preprocessor.
 
@@ -812,12 +812,12 @@ MPCC_MODULE(NewOSPreprocessor) {
 
       if (argv[index][0] == '-') {
         if (strcmp(argv[index], "-v") == 0) {
-          printf("%s\n", "bpp v1.11, (c) SoftwareLabs");
+          printf("%s\n", "bpp v1.11, (c) Zeta Electronics Corporation");
           return 0;
         }
 
         if (strcmp(argv[index], "-h") == 0) {
-          printf("%s\n", "bpp v1.11, (c) SoftwareLabs");
+          printf("%s\n", "bpp v1.11, (c) Zeta Electronics Corporation");
           printf("%s\n", "-working-dir <path>: set directory to working path.");
           printf("%s\n", "-include-dir <path>: add directory to include path.");
           printf("%s\n", "-def <name> <value>: def macro.");

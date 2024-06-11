@@ -1,12 +1,12 @@
 /* -------------------------------------------
 
-    Copyright SoftwareLabs
+    Copyright Zeta Electronics Corporation
 
 ------------------------------------------- */
 
 /// @file link.cc
-/// @author SoftwareLabs (amlel)
-/// @brief SoftwareLabs Linker.
+/// @author Zeta Electronics Corporation (amlel)
+/// @brief Zeta Electronics Corporation Linker.
 
 /// Last Rev: Sat Feb 24 CET 2024
 
@@ -35,7 +35,7 @@
 #include <fstream>
 #include <iostream>
 
-#define kLinkerVersion "SoftwareLabs Linker %s, (c) SoftwareLabs 2024\n"
+#define kLinkerVersion "Zeta Electronics Corporation Linker %s, (c) Zeta Electronics Corporation 2024\n"
 
 #define StringCompare(DST, SRC) strcmp(DST, SRC)
 
@@ -184,7 +184,7 @@ MPCC_MODULE(NewOSLinker) {
   pef_container.Count = 0UL;
   pef_container.Kind = CompilerKit::kPefKindExec;
   pef_container.SubCpu = kSubArch;
-  pef_container.Linker = kLinkerId;  // SoftwareLabs Linker
+  pef_container.Linker = kLinkerId;  // Zeta Electronics Corporation Linker
   pef_container.Abi = kAbi;                // Multi-Processor UX ABI
   pef_container.Magic[0] = kPefMagic[kFatBinaryEnable ? 2 : 0];
   pef_container.Magic[1] = kPefMagic[1];

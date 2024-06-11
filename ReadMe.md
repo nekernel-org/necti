@@ -13,4 +13,4 @@ make -f <platform>.make all
 ```
 
 
-##### Copyright SoftwareLabs, all rights reserved.
+##### Copyright Zeta Electronics Corporation, all rights reserved.

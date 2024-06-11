@@ -2,7 +2,7 @@
  #	========================================================
  #
  #	MPCC
- # 	Copyright SoftwareLabs, all rights reserved.
+ # 	Copyright Zeta Electronics Corporation, all rights reserved.
  #
  # 	========================================================
  #
@@ -72,7 +72,7 @@ linker:
 help:
 	@echo "Compiler 	- MPCC Compiler Suite."
 	@echo "Preprocessor 	- MPCC Preprocessor Suite."
-	@echo "linker 		- SoftwareLabs Linkers."
+	@echo "linker 		- Zeta Electronics Corporation Linkers."
 	@echo "clean 		- Clean objects and executables."
 
 .PHONY: clean

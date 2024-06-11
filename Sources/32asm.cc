@@ -1,6 +1,6 @@
 /* -------------------------------------------
 
-    Copyright SoftwareLabs
+    Copyright Zeta Electronics Corporation
 
 ------------------------------------------- */
 
@@ -9,7 +9,7 @@
 /////////////////////////////////////////////////////////////////////////////////////////
 
 // @file 32asm.cxx
-// @author SoftwareLabs
+// @author Zeta Electronics Corporation
 // @brief 32x0 Assembler.
 
 // REMINDER: when dealing with an undefined symbol use (string

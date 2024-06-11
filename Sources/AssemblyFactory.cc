@@ -1,6 +1,6 @@
 /* -------------------------------------------
 
-    Copyright SoftwareLabs
+    Copyright Zeta Electronics Corporation
 
 ------------------------------------------- */
 
@@ -9,12 +9,12 @@
 
 /**
  * @file AssemblyFactory.cxx
- * @author SoftwareLabs (amlal@mahrouss.com)
+ * @author Zeta Electronics Corporation (amlal@mahrouss.com)
  * @brief Assembler Kit
  * @version 0.1
  * @date 2024-01-27
  *
- * @copyright Copyright (c) 2024, SoftwareLabs
+ * @copyright Copyright (c) 2024, Zeta Electronics Corporation
  *
  */
 
