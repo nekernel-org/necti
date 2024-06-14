@@ -7,7 +7,7 @@
 /////////////////////////////////////////////////////////////////////////////////////////
 
 /// @file i64asm.cxx
-/// @author Zeta Electronics Corporation
+/// @author Amlal EL Mahrouss
 /// @brief AMD64 Assembler.
 
 /// REMINDER: when dealing with an undefined symbol use (string

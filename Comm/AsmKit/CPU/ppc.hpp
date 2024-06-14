@@ -1,3 +1,13 @@
+/* -------------------------------------------
+
+	Some modifications are copyrighted under:  
+	Zeta Electronics Corporation
+
+	Original author:
+	Apple Inc
+
+------------------------------------------- */
+
 #pragma once
 
 #include <cstdint>

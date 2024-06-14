@@ -30,8 +30,9 @@ typedef char*  caddr_t;
 #ifdef __GNUC__
 #include <CRT/__mpcc_alloca.hxx>
 #define __mpcc_alloca(sz) __mpcc_alloca_gcc(sz)
+#define __packed__ __attribute__((packed))
 #elif defined(__MPCC__)
-
+#define __packed__ __mpcc_packed__
 #define __alloca(sz) __mpcc_alloca(sz)
 #endif
 
@@ -41,22 +42,15 @@ typedef char*  caddr_t;
 #define __init_decl() \
 	extern "C"        \
 	{
+
+
 #define __fini_decl() \
-	}                 \
-	;
+	};				  \
+
+
 #else
 #define __init_decl()
 #define __fini_decl()
-#endif
-
-#if __has_builtin(__builtin_alloca)
-#define alloca(sz) __builtin_alloca(sz)
-#ifdef __alloca
-#undef __alloca
-#endif
-#define __alloca alloca
-#else
-#warning alloca not detected (MPCC)
 #endif
 
 typedef long long		   off_t;
@@ -71,7 +65,7 @@ typedef union float_cast {
 	};
 
 	float f;
-} __attribute__((packed)) float_cast_t;
+} __packed__ float_cast_t;
 
 typedef union double_cast {
 	struct
@@ -82,7 +76,7 @@ typedef union double_cast {
 	};
 
 	double f;
-} __attribute__((packed)) double_cast_t;
+} __packed__ double_cast_t;
 
 #endif // ifndef __GNUC__
 

@@ -5,7 +5,7 @@
 ------------------------------------------- */
 
 /// @file link.cc
-/// @author Zeta Electronics Corporation (amlel)
+/// @author Amlal EL Mahrouss (amlel)
 /// @brief Zeta Electronics Corporation Linker.
 
 /// Last Rev: Sat Feb 24 CET 2024

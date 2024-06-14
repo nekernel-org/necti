@@ -7,7 +7,7 @@
 /////////////////////////////////////////////////////////////////////////////////////////
 
 /// @file ppcasm.cxx
-/// @author Zeta Electronics Corporation
+/// @author Amlal EL Mahrouss
 /// @brief POWER Assembler.
 
 /// REMINDER: when dealing with an undefined symbol use (string
