@@ -14,7 +14,7 @@
 #define kPrintF printf
 
 #define kSplashCxx() \
-	kPrintF(kWhite "%s\n", "Zeta Optimized C++ Compiler, Copyright Zeta Electronics Corporation.")
+	kPrintF(kWhite "%s\n", "Zeta Optimized C++ Compiler, Copyright Zeta Electronics Corporation 2024, all rights reserved.")
 
 #include <Comm/AsmKit/CPU/amd64.hpp>
 #include <Comm/ParserKit.hpp>
@@ -733,7 +733,7 @@ static void cxx_print_help()
 {
 	kSplashCxx();
 	kPrintF("%s", "No help available, see:\n");
-	kPrintF("%s", "www.Zeta Electronics Corporation.com/developer/cplusplus\n");
+	kPrintF("%s", "www.zeta.com/developer/cplusplus\n");
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////

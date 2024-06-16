@@ -39,6 +39,7 @@ namespace CompilerKit
 		kPefArch64000, /* 64x0 RISC architecture. */
 		kPefArch32000,
 		kPefArchPowerPC, /* 64-bit POWER architecture. */
+		kPefArchARM64,
 		kPefArchCount	= (kPefArchPowerPC - kPefArchIntel86S) + 1,
 		kPefArchInvalid = 0xFF,
 	};

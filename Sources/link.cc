@@ -35,7 +35,7 @@
 #include <fstream>
 #include <iostream>
 
-#define kLinkerVersion "Zeta Electronics Corporation Linker %s, (c) Zeta Electronics Corporation 2024\n"
+#define kLinkerVersion "Zeta Linker %s, (c) Zeta Electronics Corporation 2024, all rights reserved.\n"
 
 #define StringCompare(DST, SRC) strcmp(DST, SRC)
 
@@ -89,7 +89,8 @@ MPCC_MODULE(NewOSLinker) {
       kStdOut << "-64x0: Output as a 64x0 PEF.\n";
       kStdOut << "-amd64: Output as a AMD64 PEF.\n";
       kStdOut << "-rv64: Output as a RISC-V PEF.\n";
-      kStdOut << "-ppc64: Output as a POWER PEF.\n";
+      kStdOut << "-power64: Output as a POWER PEF.\n";
+      kStdOut << "-arm64: Output as a ARM64 PEF.\n";
       kStdOut << "-output-file: Select the output file name.\n";
 
       return 0;
@@ -116,6 +117,10 @@ MPCC_MODULE(NewOSLinker) {
       kArch = CompilerKit::kPefArchPowerPC;
 
       continue;
+    } else if (StringCompare(argv[i], "-arm64") == 0) {
+		kArch = CompilerKit::kPefArchARM64;
+
+		continue;
     } else if (StringCompare(argv[i], "-verbose") == 0) {
       kVerbose = true;
 
@@ -160,9 +165,11 @@ MPCC_MODULE(NewOSLinker) {
     kStdOut << "link: no input files." << std::endl;
     return MPCC_EXEC_ERROR;
   } else {
+	namespace fs = std::filesystem;
+
     // check for existing files, if they don't throw an error.
     for (auto &obj : kObjectList) {
-      if (!std::filesystem::exists(obj)) {
+      if (!fs::exists(obj)) {
         // if filesystem doesn't find file
         //          -> throw error.
         kStdOut << "link: no such file: " << obj << std::endl;
