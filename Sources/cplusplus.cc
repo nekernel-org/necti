@@ -14,7 +14,7 @@
 #define kPrintF printf
 
 #define kSplashCxx() \
-	kPrintF(kWhite "%s\n", "Zeta Electronics Corporation C++ Compiler, Copyright Zeta Electronics Corporation.")
+	kPrintF(kWhite "%s\n", "Zeta Optimized C++ Compiler, Copyright Zeta Electronics Corporation.")
 
 #include <Comm/AsmKit/CPU/amd64.hpp>
 #include <Comm/ParserKit.hpp>
@@ -26,6 +26,7 @@
 #include <string>
 #include <utility>
 #include <vector>
+#include <UUID.hpp>
 
 #define kOk 0
 
@@ -207,7 +208,7 @@ namespace detail
 
 const char* CompilerBackendCPlusPlus::Language()
 {
-	return "ISO C++";
+	return "Zeta C++";
 }
 
 static std::vector<std::string> kRegisterMap;
@@ -223,6 +224,13 @@ static std::vector<std::string> cRegisters = {
 	"r13",
 	"r14",
 	"r15",
+};
+
+static std::vector<std::string> cRegistersCall = {
+	"rcx",
+	"rdx",
+	"r8",
+	"r9",
 };
 
 /////////////////////////////////////////////////////////////////////////////////////////
@@ -658,8 +666,29 @@ public:
 			dest += ch;
 		}
 
+		if (dest.empty())
+		{
+			dest = "CXX-MPCC-";
+			
+			std::random_device rd;
+			auto seed_data = std::array<int, std::mt19937::state_size> {};
+				
+			std::generate(std::begin(seed_data), std::end(seed_data), std::ref(rd));
+				
+			std::seed_seq seq(std::begin(seed_data), std::end(seed_data));
+			std::mt19937 generator(seq);
+
+			auto gen = uuids::uuid_random_generator(generator);
+
+			auto id = gen();
+			dest += uuids::to_string(id);
+		}
+
 		std::vector<const char*> exts = kAsmFileExts;
+
 		dest += exts[3];
+
+		std::cout << dest;
 
 		kState.fOutputAssembly = std::make_unique<std::ofstream>(dest);
 
@@ -736,16 +765,16 @@ MPCC_MODULE(CompilerCPlusPlus)
 	kKeywords.push_back({.keyword_name = "double", .keyword_kind = ParserKit::eKeywordKindType});
 	kKeywords.push_back({.keyword_name = "void", .keyword_kind = ParserKit::eKeywordKindType});
 
-	kKeywords.push_back({.keyword_name = "auto*", .keyword_kind = ParserKit::eKeywordKindVariable});
-	kKeywords.push_back({.keyword_name = "int*", .keyword_kind = ParserKit::eKeywordKindType});
-	kKeywords.push_back({.keyword_name = "bool*", .keyword_kind = ParserKit::eKeywordKindType});
-	kKeywords.push_back({.keyword_name = "unsigned*", .keyword_kind = ParserKit::eKeywordKindType});
-	kKeywords.push_back({.keyword_name = "short*", .keyword_kind = ParserKit::eKeywordKindType});
-	kKeywords.push_back({.keyword_name = "char*", .keyword_kind = ParserKit::eKeywordKindType});
-	kKeywords.push_back({.keyword_name = "long*", .keyword_kind = ParserKit::eKeywordKindType});
-	kKeywords.push_back({.keyword_name = "float*", .keyword_kind = ParserKit::eKeywordKindType});
-	kKeywords.push_back({.keyword_name = "double*", .keyword_kind = ParserKit::eKeywordKindType});
-	kKeywords.push_back({.keyword_name = "void*", .keyword_kind = ParserKit::eKeywordKindType});
+	kKeywords.push_back({.keyword_name = "auto*", .keyword_kind = ParserKit::eKeywordKindVariablePtr});
+	kKeywords.push_back({.keyword_name = "int*", .keyword_kind = ParserKit::eKeywordKindTypePtr});
+	kKeywords.push_back({.keyword_name = "bool*", .keyword_kind = ParserKit::eKeywordKindTypePtr});
+	kKeywords.push_back({.keyword_name = "unsigned*", .keyword_kind = ParserKit::eKeywordKindTypePtr});
+	kKeywords.push_back({.keyword_name = "short*", .keyword_kind = ParserKit::eKeywordKindTypePtr});
+	kKeywords.push_back({.keyword_name = "char*", .keyword_kind = ParserKit::eKeywordKindTypePtr});
+	kKeywords.push_back({.keyword_name = "long*", .keyword_kind = ParserKit::eKeywordKindTypePtr});
+	kKeywords.push_back({.keyword_name = "float*", .keyword_kind = ParserKit::eKeywordKindTypePtr});
+	kKeywords.push_back({.keyword_name = "double*", .keyword_kind = ParserKit::eKeywordKindTypePtr});
+	kKeywords.push_back({.keyword_name = "void*", .keyword_kind = ParserKit::eKeywordKindTypePtr});
 
 	kKeywords.push_back({.keyword_name = "(", .keyword_kind = ParserKit::eKeywordKindFunctionStart});
 	kKeywords.push_back({.keyword_name = ")", .keyword_kind = ParserKit::eKeywordKindFunctionEnd});

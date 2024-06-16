@@ -892,7 +892,7 @@ MPCC_MODULE(NewOSPreprocessor) {
     std::cout << e.what() << '\n';
   }
 
-  return 0;
+  return 1;
 }
 
 // Last rev 8-1-24

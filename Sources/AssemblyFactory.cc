@@ -9,7 +9,7 @@
 
 /**
  * @file AssemblyFactory.cxx
- * @author Zeta Electronics Corporation (amlal@mahrouss.com)
+ * @author amlal (amlal@softwarelabs.com)
  * @brief Assembler Kit
  * @version 0.1
  * @date 2024-01-27
@@ -25,7 +25,7 @@
 
 namespace CompilerKit
 {
-	//! @brief Compile for specific format (ELF, PEF, ZBIN)
+	///! @brief Compile for specific format (ELF, PEF, ZBIN)
 	Int32 AssemblyFactory::Compile(std::string& sourceFile,
 								   const Int32& arch) noexcept
 	{
@@ -35,7 +35,7 @@ namespace CompilerKit
 		return fMounted->CompileToFormat(sourceFile, arch);
 	}
 
-	//! @brief mount assembly backend.
+	///! @brief mount assembly backend.
 	void AssemblyFactory::Mount(AssemblyInterface* mountPtr) noexcept
 	{
 		if (mountPtr)
@@ -44,6 +44,7 @@ namespace CompilerKit
 		}
 	}
 
+	///! @brief Unmount assembler.
 	AssemblyInterface* AssemblyFactory::Unmount() noexcept
 	{
 		auto mount_prev = fMounted;
