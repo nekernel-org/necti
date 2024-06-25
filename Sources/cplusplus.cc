@@ -14,7 +14,7 @@
 #define kPrintF printf
 
 #define kSplashCxx() \
-	kPrintF(kWhite "%s\n", "Zeta Optimized C++ Compiler, Copyright Zeta Electronics Corporation 2024, all rights reserved.")
+	kPrintF(kWhite "%s\n", "ZECC C++, (c) RCM 2024, all rights reserved.")
 
 #include <Comm/AsmKit/CPU/amd64.hpp>
 #include <Comm/ParserKit.hpp>
@@ -31,7 +31,7 @@
 #define kOk 0
 
 /* Zeta Electronics Corporation C++ driver */
-/* This is part of MPCC C++ compiler. */
+/* This is part of ZECC C++ compiler. */
 /* (c) Zeta Electronics Corporation */
 
 /// @author Zeta Electronics Corporation (amlel)
