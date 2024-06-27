@@ -16,6 +16,8 @@
 #define kSplashCxx() \
 kPrintF(kWhite "%s\n", "ZECC C++, (c) 2024 Zeta Electronics, all rights reserved.")
 
+// import, @free_at_exit { ... }, fn foo() -> auto { ... }
+
 #include <Comm/AsmKit/CPU/amd64.hpp>
 #include <Comm/ParserKit.hpp>
 #include <cstdio>
@@ -216,8 +218,8 @@ static std::vector<std::string> kRegisterMap;
 static size_t kLevelFunction = 0UL;
 
 static std::vector<std::string> cRegisters = {
-	"r8",
-	"r9",
+	"rbx",
+	"rsi",
 	"r10",
 	"r11",
 	"r12",
@@ -226,11 +228,17 @@ static std::vector<std::string> cRegisters = {
 	"r15",
 };
 
+/// @brief The PEF calling convention (caller must save rax, rbp)
+/// @note callee must return via **rax**.
 static std::vector<std::string> cRegistersCall = {
 	"rcx",
 	"rdx",
 	"r8",
 	"r9",
+	"xmm8",
+	"xmm9",
+	"xmm10",
+	"xmm11",
 };
 
 /////////////////////////////////////////////////////////////////////////////////////////
