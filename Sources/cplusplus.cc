@@ -14,7 +14,7 @@
 #define kPrintF printf
 
 #define kSplashCxx() \
-	kPrintF(kWhite "%s\n", "ZECC C++, (c) RCM 2024, all rights reserved.")
+kPrintF(kWhite "%s\n", "ZECC C++, (c) 2024 Zeta Electronics, all rights reserved.")
 
 #include <Comm/AsmKit/CPU/amd64.hpp>
 #include <Comm/ParserKit.hpp>
