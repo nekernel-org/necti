@@ -19,15 +19,14 @@
 
 #include <Comm/StdKit/ErrorID.hpp>
 #include <Comm/AsmKit/CPU/ppc.hpp>
+#include <Comm/StdKit/PEF.hpp>
 #include <Comm/ParserKit.hpp>
 #include <Comm/StdKit/AE.hpp>
-#include <Comm/StdKit/PEF.hpp>
 #include <Comm/Version.hxx>
-#include <algorithm>
 #include <filesystem>
-#include <fstream>
+#include <algorithm>
 #include <iostream>
-#include <memory>
+#include <fstream>
 #include <vector>
 
 /////////////////////
@@ -113,12 +112,12 @@ MPCC_MODULE(NewOSAssemblerPowerPC) {
   for (size_t i = 1; i < argc; ++i) {
     if (argv[i][0] == '-') {
       if (strcmp(argv[i], "-version") == 0 || strcmp(argv[i], "-v") == 0) {
-        kStdOut << "ppcasm: POWER Assembler.\nppcasm: " << kDistVersion << "\nppcasm: "
+		kStdOut << "ppcasm: POWER64/XEN Assembler.\nppcasm: " << kDistVersion << "\nppcasm: "
                    "Copyright (c) "
                    "2024 Zeta Electronics Corporation.\n";
         return 0;
       } else if (strcmp(argv[i], "-h") == 0) {
-        kStdOut << "ppcasm: POWER Assembler.\nppcasm: Copyright (c) 2024 "
+		kStdOut << "ppcasm: POWER64/XEN Assembler.\nppcasm: Copyright (c) 2024 "
                    "Zeta Electronics Corporation.\n";
         kStdOut << "-version: Print program version.\n";
         kStdOut << "-verbose: Print verbose output.\n";
