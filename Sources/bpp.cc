@@ -19,9 +19,9 @@
 
 #define kMacroPrefix '%'
 
-// @author Zeta Electronics Corporation (amlel)
-// @file bpp.cc
-// @brief C preprocessor.
+/// @author Amlal El Mahrouss (amlel)
+/// @file bpp.cc
+/// @brief Preprocessor.
 
 typedef Int32 (*bpp_parser_fn_t)(std::string &line, std::ifstream &hdr_file,
                                  std::ofstream &pp_out);

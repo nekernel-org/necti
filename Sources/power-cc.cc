@@ -10,7 +10,6 @@
 #include <Comm/AsmKit/CPU/ppc.hpp>
 #include <Comm/ParserKit.hpp>
 #include <Comm/UUID.hpp>
-#include <cstdio>
 #include <filesystem>
 #include <fstream>
 #include <iostream>
@@ -19,10 +18,11 @@
 #include <string>
 #include <utility>
 #include <vector>
+#include <cstdio>
 
 #define kOk 0
 
-/// @author Zeta Electronics Corporation (amlel)
+/// @author Amlal El Mahrouss (amlel)
 /// @file cc.cc
 /// @brief POWER C Compiler.
 

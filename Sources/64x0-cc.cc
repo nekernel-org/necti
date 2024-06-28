@@ -13,8 +13,8 @@
 #include <Comm/AsmKit/CPU/64x0.hpp>
 #include <Comm/ParserKit.hpp>
 #include <Comm/UUID.hpp>
-#include <cstdio>
 #include <filesystem>
+#include <cstdio>
 #include <fstream>
 #include <iostream>
 #include <memory>
@@ -29,7 +29,7 @@
 /* This is part of MPCC C SDK. */
 /* (c) Zeta Electronics Corporation */
 
-/// @author Zeta Electronics Corporation (amlel)
+/// @author Amlal El Mahrouss (amlel)
 /// @file 64x0-cc.cc
 /// @brief 64x0 C Compiler.
 

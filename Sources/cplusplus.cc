@@ -36,7 +36,7 @@ kPrintF(kWhite "%s\n", "ZECC C++, (c) 2024 Zeta Electronics, all rights reserved
 /* This is part of ZECC C++ compiler. */
 /* (c) Zeta Electronics Corporation */
 
-/// @author Zeta Electronics Corporation (amlel)
+/// @author Amlal El Mahrouss (amlel)
 /// @file cc.cc
 /// @brief Optimized C++ Compiler.
 /// @todo Throw error for scoped inside scoped variables when they get referenced outside.
