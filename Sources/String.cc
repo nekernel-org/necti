@@ -19,7 +19,6 @@
  */
 
 #include <Comm/StdKit/String.hpp>
-#include <utility>
 
 namespace CompilerKit {
 CharType *StringView::Data() { return m_Data; }
@@ -80,9 +79,12 @@ StringView StringBuilder::Construct(const CharType *data) {
 const char *StringBuilder::FromInt(const char *fmt, int i) {
   if (!fmt) return ("-1");
 
-  char *ret = new char[8 + string_length(fmt)];
+  auto ret_len = 8 + string_length(fmt);
+  char *ret = new char[ret_len];
 
   if (!ret) return ("-1");
+
+  memset(ret, 0, ret_len);
 
   CharType result[8];
   if (!to_str(result, sizeof(int), i)) {
@@ -150,18 +152,18 @@ bool StringBuilder::Equals(const char *lhs, const char *rhs) {
   return true;
 }
 
-const char *StringBuilder::Format(const char *fmt, const char *fmt2) {
-  if (!fmt || !fmt2) return ("?");
+const char *StringBuilder::Format(const char *fmt, const char *fmtRight) {
+  if (!fmt || !fmtRight) return ("?");
 
-  char *ret = new char[string_length(fmt2) + string_length(fmt2)];
+  char *ret = new char[string_length(fmtRight) + string_length(fmtRight)];
   if (!ret) return ("?");
 
   for (SizeType idx = 0; idx < string_length(fmt); ++idx) {
     if (fmt[idx] == '%') {
       SizeType result_cnt = idx;
 
-      for (SizeType y_idx = 0; y_idx < string_length(fmt2); ++y_idx) {
-        ret[result_cnt] = fmt2[y_idx];
+	  for (SizeType y_idx = 0; y_idx < string_length(fmtRight); ++y_idx) {
+		ret[result_cnt] = fmtRight[y_idx];
         ++result_cnt;
       }
 

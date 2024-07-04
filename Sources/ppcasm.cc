@@ -43,10 +43,10 @@
 #define kStdOut (std::cout << kWhite)
 #define kStdErr (std::cout << kRed)
 
+constexpr auto cPowerIPAlignment = 0x4U;
+
 static CharType kOutputArch = CompilerKit::kPefArchPowerPC;
 static Boolean kOutputAsBinary = false;
-
-constexpr auto cPowerIPAlignment = 0x4U;
 
 static UInt32 kErrorLimit = 10;
 static UInt32 kAcceptableErrors = 0;

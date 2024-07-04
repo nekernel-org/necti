@@ -8,6 +8,8 @@ local.properties
 .loadpath
 .recommenders
 
+*.creator.user
+
 # NewOS/MP-UX executable
 *.exec
 *.bin

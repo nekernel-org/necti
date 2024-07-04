@@ -23,8 +23,6 @@
 #include <utility>
 #include <vector>
 
-#define kOk 0
-
 /* C driver */
 /* This is part of MPCC C SDK. */
 /* (c) Zeta Electronics Corporation */
@@ -40,6 +38,8 @@
 // ANSI ESCAPE CODES
 
 /////////////////////
+
+#define kOk (0)
 
 #define kBlank "\e[0;30m"
 #define kRed   "\e[0;31m"
