@@ -14,7 +14,7 @@
 #define kPrintF printf
 
 #define kSplashCxx() \
-kPrintF(kWhite "%s\n", "ZECC C++, (c) 2024 Zeta Electronics, all rights reserved.")
+kPrintF(kWhite "%s\n", "Zeta C++ Compiler Driver, (c) 2024 Zeta Electronics, all rights reserved.")
 
 // import, @free_at_exit { ... }, fn foo() -> auto { ... }
 
@@ -193,29 +193,7 @@ static CompilerBackendCPlusPlus*		 kCompilerBackend = nullptr;
 static std::vector<detail::CompilerType> kCompilerVariables;
 static std::vector<std::string>			 kCompilerFunctions;
 
-/// detail namespaces
-
-namespace detail
-{
-	union number_cast final {
-		number_cast(UInt64 raw)
-			: raw(raw)
-		{
-		}
-
-		char   number[8];
-		UInt64 raw;
-	};
-} // namespace detail
-
-const char* CompilerBackendCPlusPlus::Language()
-{
-	return "Zeta C++";
-}
-
 static std::vector<std::string> kRegisterMap;
-
-static size_t kLevelFunction = 0UL;
 
 static std::vector<std::string> cRegisters = {
 	"rbx",
@@ -226,6 +204,10 @@ static std::vector<std::string> cRegisters = {
 	"r13",
 	"r14",
 	"r15",
+	"xmm12",
+	"xmm13",
+	"xmm14",
+	"xmm15",
 };
 
 /// @brief The PEF calling convention (caller must save rax, rbp)
@@ -241,10 +223,19 @@ static std::vector<std::string> cRegistersCall = {
 	"xmm11",
 };
 
+static size_t kLevelFunction = 0UL;
+
+/// detail namespaces
+
+const char* CompilerBackendCPlusPlus::Language()
+{
+	return "Zeta C++";
+}
+
 /////////////////////////////////////////////////////////////////////////////////////////
 
 /// @name Compile
-/// @brief Generate MASM from a C++ source.
+/// @brief Generate MASM assembly from a C++ source.
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
@@ -677,12 +668,12 @@ public:
 		if (dest.empty())
 		{
 			dest = "CXX-MPCC-";
-			
+
 			std::random_device rd;
 			auto seed_data = std::array<int, std::mt19937::state_size> {};
-				
+
 			std::generate(std::begin(seed_data), std::end(seed_data), std::ref(rd));
-				
+
 			std::seed_seq seq(std::begin(seed_data), std::end(seed_data));
 			std::mt19937 generator(seq);
 

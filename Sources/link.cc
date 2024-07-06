@@ -35,7 +35,7 @@
 #include <fstream>
 #include <iostream>
 
-#define kLinkerVersion "Zeta Linker %s, (c) Zeta Electronics Corporation 2024, all rights reserved.\n"
+#define kLinkerVersion "Zeta Linker Driver %s, (c) Zeta Electronics Corporation 2024, all rights reserved.\n"
 
 #define StringCompare(DST, SRC) strcmp(DST, SRC)
 
