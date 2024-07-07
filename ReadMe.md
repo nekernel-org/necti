@@ -1,4 +1,4 @@
-# MPCC
+# NDK
 
 Start by cloning the repo:
 
