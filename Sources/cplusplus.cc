@@ -16,7 +16,7 @@
 #define kSplashCxx() \
 kPrintF(kWhite "%s\n", "Zeta C++ Compiler Driver, (c) 2024 Zeta Electronics, all rights reserved.")
 
-// import, @free_at_exit { ... }, fn foo() -> auto { ... }
+// import, @MLAutoRelease { ... }, fn foo() -> auto { ... }
 
 #include <Comm/AsmKit/CPU/amd64.hpp>
 #include <Comm/ParserKit.hpp>
@@ -54,7 +54,7 @@ kPrintF(kWhite "%s\n", "Zeta C++ Compiler Driver, (c) 2024 Zeta Electronics, all
 
 /////////////////////////////////////
 
-// INTERNAL STUFF OF THE C COMPILER
+// INTERNALS OF THE C COMPILER
 
 /////////////////////////////////////
 

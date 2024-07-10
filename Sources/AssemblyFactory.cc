@@ -8,8 +8,8 @@
 #include <Comm/StdKit/ErrorID.hpp>
 
 /**
- * @file AssemblyFactory.cxx
- * @author amlal (amlal@softwarelabs.com)
+ * @file AssemblyFactory.cc
+ * @author amlal (amlal@zeta.com)
  * @brief Assembler Kit
  * @version 0.1
  * @date 2024-01-27
