@@ -58,6 +58,7 @@ kPrintF(kWhite "%s\n", "Zeta C++ Compiler Driver, (c) 2024 Zeta Electronics, all
 
 /////////////////////////////////////
 
+/// @internal
 namespace detail
 {
 	struct CompilerRegisterMap final
@@ -173,7 +174,7 @@ static bool							kOnForLoop	 = false;
 static bool							kInBraces	 = false;
 static size_t						kBracesCount = 0UL;
 
-/* @brief C++ compiler backend for Zeta Electronics Corporation C++ */
+/* @brief C++ compiler backend for the Zeta C++ driver */
 class CompilerBackendCPlusPlus final : public ParserKit::CompilerBackend
 {
 public:
@@ -187,7 +188,7 @@ public:
 	const char* Language() override;
 };
 
-/// compiler variables
+/// @internal compiler variables
 
 static CompilerBackendCPlusPlus*		 kCompilerBackend = nullptr;
 static std::vector<detail::CompilerType> kCompilerVariables;
