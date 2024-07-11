@@ -775,7 +775,7 @@ void bpp_parse_file(std::ifstream &hdr_file, std::ofstream &pp_out) {
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
-MPCC_MODULE(NewOSPreprocessor) {
+NDK_MODULE(NewOSPreprocessor) {
   try {
     bool skip = false;
     bool double_skip = false;
@@ -810,23 +810,24 @@ MPCC_MODULE(NewOSPreprocessor) {
         continue;
       }
 
-      if (argv[index][0] == '-') {
-        if (strcmp(argv[index], "-v") == 0) {
+      if (argv[index][0] == '/') {
+        if (strcmp(argv[index], "/version") == 0) {
           printf("%s\n", "bpp v1.11, (c) Zeta Electronics Corporation");
           return 0;
         }
 
-        if (strcmp(argv[index], "-h") == 0) {
-          printf("%s\n", "bpp v1.11, (c) Zeta Electronics Corporation");
-          printf("%s\n", "-working-dir <path>: set directory to working path.");
-          printf("%s\n", "-include-dir <path>: add directory to include path.");
-          printf("%s\n", "-def <name> <value>: def macro.");
-          printf("%s\n", "-version: print the version.");
+        if (strcmp(argv[index], "/help") == 0) {
+          printf("%s\n", "Zeta Preprocessor Driver v1.11, (c) Zeta Electronics Corporation");
+          printf("%s\n", "/working-dir <path>: set directory to working path.");
+          printf("%s\n", "/include-dir <path>: add directory to include path.");
+          printf("%s\n", "/def <name> <value>: def macro.");
+          printf("%s\n", "/version: print the version.");
+          printf("%s\n", "/help: show help.");
 
           return 0;
         }
 
-        if (strcmp(argv[index], "-include-dir") == 0) {
+        if (strcmp(argv[index], "/include-dir") == 0) {
           std::string inc = argv[index + 1];
 
           skip = true;
@@ -834,13 +835,13 @@ MPCC_MODULE(NewOSPreprocessor) {
           kIncludes.push_back(inc);
         }
 
-        if (strcmp(argv[index], "-working-dir") == 0) {
+        if (strcmp(argv[index], "/working-dir") == 0) {
           std::string inc = argv[index + 1];
           skip = true;
           kWorkingDir = inc;
         }
 
-        if (strcmp(argv[index], "-def") == 0 && argv[index + 1] != nullptr &&
+        if (strcmp(argv[index], "/def") == 0 && argv[index + 1] != nullptr &&
             argv[index + 2] != nullptr) {
           std::string macro_key = argv[index + 1];
 

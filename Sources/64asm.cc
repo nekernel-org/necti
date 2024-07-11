@@ -10,7 +10,7 @@
 
 // @file 64asm.cxx
 // @author Amlal EL Mahrouss
-// @brief 64x0 Assembler.
+// @brief 64x000 Assembler.
 
 // REMINDER: when dealing with an undefined symbol use (string
 // size):LinkerFindSymbol:(string) so that ld will look for it.
@@ -105,7 +105,7 @@ void print_warning(std::string reason, const std::string &file) noexcept {
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
-MPCC_MODULE(NewOSAssembler64000) {
+NDK_MODULE(NewOSAssembler64000) {
   for (size_t i = 1; i < argc; ++i) {
     if (argv[i][0] == '-') {
       if (strcmp(argv[i], "-version") == 0 || strcmp(argv[i], "-v") == 0) {

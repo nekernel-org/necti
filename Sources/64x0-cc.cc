@@ -24,7 +24,7 @@
 #include <vector>
 
 /* C driver */
-/* This is part of MPCC C SDK. */
+/* This is part of the NDK. */
 /* (c) Zeta Electronics Corporation */
 
 /// @author Amlal El Mahrouss (amlel)
@@ -1325,13 +1325,13 @@ skip_braces_check:
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
-class AssemblyMountpointCLang final : public CompilerKit::AssemblyInterface
+class AssemblyCCInterface final : public CompilerKit::AssemblyInterface
 {
 public:
-	explicit AssemblyMountpointCLang()	= default;
-	~AssemblyMountpointCLang() override = default;
+	explicit AssemblyCCInterface()	= default;
+	~AssemblyCCInterface() override = default;
 
-	MPCC_COPY_DEFAULT(AssemblyMountpointCLang);
+	MPCC_COPY_DEFAULT(AssemblyCCInterface);
 
 	[[maybe_unused]] static Int32 Arch() noexcept
 	{
@@ -1340,7 +1340,7 @@ public:
 
 	Int32 CompileToFormat(std::string& src, Int32 arch) override
 	{
-		if (arch != AssemblyMountpointCLang::Arch())
+		if (arch != AssemblyCCInterface::Arch())
 			return -1;
 
 		if (kCompilerBackend == nullptr)
@@ -1513,7 +1513,7 @@ public:
 
 #define kPrintF printf
 #define kSplashCxx() \
-	kPrintF(kWhite "cc, %s, (c) Zeta Electronics Corporation\n", kDistVersion)
+	kPrintF(kWhite "Zeta C Driver, %s, (c) Zeta Electronics Corporation\n", kDistVersion)
 
 static void cc_print_help()
 {
@@ -1524,7 +1524,7 @@ static void cc_print_help()
 
 #define kExt ".c"
 
-MPCC_MODULE(NewOSCompilerCLang64x0)
+NDK_MODULE(NewOSCompilerCLang64x0)
 {
 	kCompilerTypes.push_back({.fName = "void", .fValue = "void"});
 	kCompilerTypes.push_back({.fName = "char", .fValue = "byte"});
@@ -1535,7 +1535,7 @@ MPCC_MODULE(NewOSCompilerCLang64x0)
 
 	bool skip = false;
 
-	kFactory.Mount(new AssemblyMountpointCLang());
+	kFactory.Mount(new AssemblyCCInterface());
 	kMachine		 = CompilerKit::AssemblyFactory::kArch64x0;
 	kCompilerBackend = new CompilerBackendCLang();
 
@@ -1547,30 +1547,30 @@ MPCC_MODULE(NewOSCompilerCLang64x0)
 			continue;
 		}
 
-		if (argv[index][0] == '-')
+		if (argv[index][0] == '/')
 		{
-			if (strcmp(argv[index], "-v") == 0 ||
-				strcmp(argv[index], "-version") == 0)
+			if (strcmp(argv[index], "/v") == 0 ||
+				strcmp(argv[index], "/version") == 0)
 			{
 				kSplashCxx();
 				return kOk;
 			}
 
-			if (strcmp(argv[index], "-verbose") == 0)
+			if (strcmp(argv[index], "/verbose") == 0)
 			{
 				kState.fVerbose = true;
 
 				continue;
 			}
 
-			if (strcmp(argv[index], "-h") == 0 || strcmp(argv[index], "-help") == 0)
+			if (strcmp(argv[index], "/h") == 0 || strcmp(argv[index], "/help") == 0)
 			{
 				cc_print_help();
 
 				return kOk;
 			}
 
-			if (strcmp(argv[index], "-dialect") == 0)
+			if (strcmp(argv[index], "/dialect") == 0)
 			{
 				if (kCompilerBackend)
 					std::cout << kCompilerBackend->Language() << "\n";
@@ -1578,7 +1578,7 @@ MPCC_MODULE(NewOSCompilerCLang64x0)
 				return kOk;
 			}
 
-			if (strcmp(argv[index], "-fmax-exceptions") == 0)
+			if (strcmp(argv[index], "/fmax-exceptions") == 0)
 			{
 				try
 				{

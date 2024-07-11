@@ -630,22 +630,23 @@ _MpccOkay:
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
-class AssemblyMountpointClang final : public CompilerKit::AssemblyInterface
+class AssemblyCPlusPlusInterface final : public CompilerKit::AssemblyInterface
 {
 public:
-	explicit AssemblyMountpointClang()	= default;
-	~AssemblyMountpointClang() override = default;
+	explicit AssemblyCPlusPlusInterface()	= default;
+	~AssemblyCPlusPlusInterface() override = default;
 
-	MPCC_COPY_DEFAULT(AssemblyMountpointClang);
+	MPCC_COPY_DEFAULT(AssemblyCPlusPlusInterface);
 
-	[[maybe_unused]] static Int32 Arch() noexcept
+	[[maybe_unused]]
+	static Int32 Arch() noexcept
 	{
 		return CompilerKit::AssemblyFactory::kArchAMD64;
 	}
 
 	Int32 CompileToFormat(std::string& src, Int32 arch) override
 	{
-		if (arch != AssemblyMountpointClang::Arch())
+		if (arch != AssemblyCPlusPlusInterface::Arch())
 			return -1;
 
 		if (kCompilerBackend == nullptr)
@@ -743,7 +744,7 @@ static void cxx_print_help()
 		".cpp", ".cxx", ".cc", ".c++", ".cp" \
 	}
 
-MPCC_MODULE(CompilerCPlusPlus)
+NDK_MODULE(CompilerCPlusPlus)
 {
 	bool skip = false;
 
@@ -801,12 +802,12 @@ MPCC_MODULE(CompilerCPlusPlus)
 	kKeywords.push_back({.keyword_name = ">=", .keyword_kind = ParserKit::eKeywordKindGreaterEq});
 	kKeywords.push_back({.keyword_name = "<=", .keyword_kind = ParserKit::eKeywordKindLessEq});
 
-	kFactory.Mount(new AssemblyMountpointClang());
+	kFactory.Mount(new AssemblyCPlusPlusInterface());
 	kCompilerBackend = new CompilerBackendCPlusPlus();
 
 	for (auto index = 1UL; index < argc; ++index)
 	{
-		if (argv[index][0] == '-')
+		if (argv[index][0] == '/')
 		{
 			if (skip)
 			{
@@ -814,28 +815,28 @@ MPCC_MODULE(CompilerCPlusPlus)
 				continue;
 			}
 
-			if (strcmp(argv[index], "-v") == 0 ||
-				strcmp(argv[index], "-version") == 0)
+			if (strcmp(argv[index], "/v") == 0 ||
+				strcmp(argv[index], "/version") == 0)
 			{
 				kSplashCxx();
 				return kOk;
 			}
 
-			if (strcmp(argv[index], "-verbose") == 0)
+			if (strcmp(argv[index], "/verbose") == 0)
 			{
 				kState.fVerbose = true;
 
 				continue;
 			}
 
-			if (strcmp(argv[index], "-h") == 0 || strcmp(argv[index], "-help") == 0)
+			if (strcmp(argv[index], "/h") == 0 || strcmp(argv[index], "/help") == 0)
 			{
 				cxx_print_help();
 
 				return kOk;
 			}
 
-			if (strcmp(argv[index], "-dialect") == 0)
+			if (strcmp(argv[index], "/dialect") == 0)
 			{
 				if (kCompilerBackend)
 					std::cout << kCompilerBackend->Language() << "\n";
@@ -843,7 +844,7 @@ MPCC_MODULE(CompilerCPlusPlus)
 				return kOk;
 			}
 
-			if (strcmp(argv[index], "-max-errors") == 0)
+			if (strcmp(argv[index], "/max-errors") == 0)
 			{
 				try
 				{

@@ -136,12 +136,12 @@ typedef char char_type;
 		".64x", ".32x", ".masm", ".s", ".S", ".asm" \
 	}
 
-#ifdef __MODULE_NEED__
-#define MPCC_MODULE(name) int name(int argc, char** argv)
+#ifdef __NDK_MODULE__
+#define NDK_MODULE(name) int name(int argc, char** argv)
 #else
-#define MPCC_MODULE(name) int main(int argc, char** argv)
-#endif /* ifdef __MODULE_NEED__ */
+#define NDK_MODULE(name) int main(int argc, char** argv)
+#endif /* ifdef __NDK_MODULE__ */
 
-#pragma scalar_storage_order big - endian
+#pragma scalar_storage_order big-endian
 
 #endif /* ifndef __MPCC_DEFINES_HPP__ */

@@ -128,7 +128,7 @@ namespace detail
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
-MPCC_MODULE(NewOSAssemblerAMD64)
+NDK_MODULE(NewOSAssemblerAMD64)
 {
 	//////////////// CPU OPCODES BEGIN ////////////////
 
@@ -170,30 +170,30 @@ MPCC_MODULE(NewOSAssemblerAMD64)
 
 	for (size_t i = 1; i < argc; ++i)
 	{
-		if (argv[i][0] == '-')
+		if (argv[i][0] == '/')
 		{
-			if (strcmp(argv[i], "-version") == 0 || strcmp(argv[i], "-v") == 0)
+			if (strcmp(argv[i], "/version") == 0 || strcmp(argv[i], "/v") == 0)
 			{
-				kStdOut << "i64asm: AMD64 Assembler.\ni64asm: v1.10\ni64asm: Copyright "
+				kStdOut << "i64asm: AMD64 Assembler Driver.\ni64asm: v1.10\ni64asm: Copyright "
 						   "(c) 2024 Zeta Electronics Corporation.\n";
 				return 0;
 			}
-			else if (strcmp(argv[i], "-h") == 0)
+			else if (strcmp(argv[i], "/h") == 0)
 			{
-				kStdOut << "i64asm: AMD64 Assembler.\ni64asm: Copyright (c) 2024 "
+				kStdOut << "i64asm: AMD64 Assembler Driver.\ni64asm: Copyright (c) 2024 "
 						   "Zeta Electronics Corporation.\n";
-				kStdOut << "-version: Print program version.\n";
-				kStdOut << "-verbose: Print verbose output.\n";
-				kStdOut << "-binary: Output as flat binary.\n";
+				kStdOut << "/version: Print program version.\n";
+				kStdOut << "/verbose: Print verbose output.\n";
+				kStdOut << "/binary: Output as flat binary.\n";
 
 				return 0;
 			}
-			else if (strcmp(argv[i], "-binary") == 0)
+			else if (strcmp(argv[i], "/binary") == 0)
 			{
 				kOutputAsBinary = true;
 				continue;
 			}
-			else if (strcmp(argv[i], "-verbose") == 0)
+			else if (strcmp(argv[i], "/verbose") == 0)
 			{
 				kVerbose = true;
 				continue;

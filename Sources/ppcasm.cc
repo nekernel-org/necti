@@ -108,26 +108,26 @@ void print_warning(std::string reason, const std::string &file) noexcept {
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
-MPCC_MODULE(NewOSAssemblerPowerPC) {
+NDK_MODULE(NewOSAssemblerPowerPC) {
   for (size_t i = 1; i < argc; ++i) {
-    if (argv[i][0] == '-') {
-      if (strcmp(argv[i], "-version") == 0 || strcmp(argv[i], "-v") == 0) {
-		kStdOut << "ppcasm: POWER64/XEN Assembler.\nppcasm: " << kDistVersion << "\nppcasm: "
+    if (argv[i][0] == '/') {
+      if (strcmp(argv[i], "/version") == 0 || strcmp(argv[i], "/v") == 0) {
+		kStdOut << "ppcasm: POWER64 Assembler Driver.\nppcasm: " << kDistVersion << "\nppcasm: "
                    "Copyright (c) "
                    "2024 Zeta Electronics Corporation.\n";
         return 0;
-      } else if (strcmp(argv[i], "-h") == 0) {
-		kStdOut << "ppcasm: POWER64/XEN Assembler.\nppcasm: Copyright (c) 2024 "
+      } else if (strcmp(argv[i], "/h") == 0) {
+		kStdOut << "ppcasm: POWER64 Assembler Driver.\nppcasm: Copyright (c) 2024 "
                    "Zeta Electronics Corporation.\n";
-        kStdOut << "-version: Print program version.\n";
-        kStdOut << "-verbose: Print verbose output.\n";
-        kStdOut << "-binary: Output as flat binary.\n";
+        kStdOut << "/version,/v: print program version.\n";
+        kStdOut << "/verbose: print verbose output.\n";
+        kStdOut << "/binary: output as flat binary.\n";
 
         return 0;
-      } else if (strcmp(argv[i], "-binary") == 0) {
+      } else if (strcmp(argv[i], "/binary") == 0) {
         kOutputAsBinary = true;
         continue;
-      } else if (strcmp(argv[i], "-verbose") == 0) {
+      } else if (strcmp(argv[i], "/verbose") == 0) {
         kVerbose = true;
         continue;
       }

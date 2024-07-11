@@ -1542,7 +1542,7 @@ static void cc_print_help()
 
 #define kExt ".c"
 
-MPCC_MODULE(NewOSCompilerCLangPowerPC)
+NDK_MODULE(NewOSCompilerCLangPowerPC)
 {
 	kCompilerTypes.push_back({.fName = "void", .fValue = "void"});
 	kCompilerTypes.push_back({.fName = "char", .fValue = "byte"});
