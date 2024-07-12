@@ -2,7 +2,7 @@
  *	========================================================
  *
  *	cc
- * 	Copyright Zeta Electronics Corporation, all rights reserved.
+ * 	Copyright ZKA Technologies, all rights reserved.
  *
  * 	========================================================
  */
@@ -1531,7 +1531,7 @@ public:
 
 #define kPrintF printf
 #define kSplashCxx() \
-	kPrintF(kWhite "cc, %s, (c) Zeta Electronics Corporation\n", kDistVersion)
+	kPrintF(kWhite "cc, %s, (c) ZKA Technologies\n", kDistVersion)
 
 static void cc_print_help()
 {

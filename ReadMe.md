@@ -1,16 +1,19 @@
 # NDK
 
+## Install
+
 Start by cloning the repo:
 
 ```
 git clone git@bitbucket.org:mahrouss/codetools.git
 ```
 
-and
+And then:
 
 ```
 make -f <platform>.make all
 ```
 
+You can now use the programs.
 
-##### Copyright Zeta Electronics Corporation, all rights reserved.
+##### Copyright ZKA Technologies, all rights reserved.

@@ -2,7 +2,7 @@
  *	========================================================
  *
  *	cplusplus
- * 	Copyright Zeta Electronics Corporation, all rights reserved.
+ * 	Copyright ZKA Technologies, all rights reserved.
  *
  * 	========================================================
  */
@@ -32,9 +32,9 @@ kPrintF(kWhite "%s\n", "Zeta C++ Compiler Driver, (c) 2024 Zeta Electronics, all
 
 #define kOk 0
 
-/* Zeta Electronics Corporation C++ driver */
+/* ZKA Technologies C++ driver */
 /* This is part of ZECC C++ compiler. */
-/* (c) Zeta Electronics Corporation */
+/* (c) ZKA Technologies */
 
 /// @author Amlal El Mahrouss (amlel)
 /// @file cc.cc

@@ -1,12 +1,12 @@
 /* -------------------------------------------
 
-    Copyright Zeta Electronics Corporation
+    Copyright ZKA Technologies
 
 ------------------------------------------- */
 
 /// @file link.cc
 /// @author Amlal EL Mahrouss (amlel)
-/// @brief Zeta Electronics Corporation Linker.
+/// @brief ZKA Technologies Linker.
 
 /// Last Rev: Sat Feb 24 CET 2024
 
@@ -35,7 +35,7 @@
 #include <fstream>
 #include <iostream>
 
-#define kLinkerVersion "Zeta Linker Driver %s, (c) Zeta Electronics Corporation 2024, all rights reserved.\n"
+#define kLinkerVersion "Zeta Linker Driver %s, (c) ZKA Technologies 2024, all rights reserved.\n"
 
 #define StringCompare(DST, SRC) strcmp(DST, SRC)
 
@@ -229,7 +229,7 @@ NDK_MODULE(NewOSLinker)
 	pef_container.Count	   = 0UL;
 	pef_container.Kind	   = CompilerKit::kPefKindExec;
 	pef_container.SubCpu   = kSubArch;
-	pef_container.Linker   = kLinkerId; // Zeta Electronics Corporation Linker
+	pef_container.Linker   = kLinkerId; // ZKA Technologies Linker
 	pef_container.Abi	   = kAbi;		// Multi-Processor UX ABI
 	pef_container.Magic[0] = kPefMagic[kFatBinaryEnable ? 2 : 0];
 	pef_container.Magic[1] = kPefMagic[1];

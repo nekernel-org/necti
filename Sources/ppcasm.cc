@@ -1,6 +1,6 @@
 /* -------------------------------------------
 
-    Copyright Zeta Electronics Corporation
+    Copyright ZKA Technologies
 
 ------------------------------------------- */
 
@@ -114,11 +114,11 @@ NDK_MODULE(NewOSAssemblerPowerPC) {
       if (strcmp(argv[i], "/version") == 0 || strcmp(argv[i], "/v") == 0) {
 		kStdOut << "ppcasm: POWER64 Assembler Driver.\nppcasm: " << kDistVersion << "\nppcasm: "
                    "Copyright (c) "
-                   "2024 Zeta Electronics Corporation.\n";
+                   "ZKA Technologies.\n";
         return 0;
       } else if (strcmp(argv[i], "/h") == 0) {
 		kStdOut << "ppcasm: POWER64 Assembler Driver.\nppcasm: Copyright (c) 2024 "
-                   "Zeta Electronics Corporation.\n";
+                   "ZKA Technologies.\n";
         kStdOut << "/version,/v: print program version.\n";
         kStdOut << "/verbose: print verbose output.\n";
         kStdOut << "/binary: output as flat binary.\n";

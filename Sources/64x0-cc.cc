@@ -2,7 +2,7 @@
  *	========================================================
  *
  *	cc
- * 	Copyright Zeta Electronics Corporation, all rights reserved.
+ * 	Copyright ZKA Technologies, all rights reserved.
  *
  * 	========================================================
  */
@@ -25,7 +25,7 @@
 
 /* C driver */
 /* This is part of the NDK. */
-/* (c) Zeta Electronics Corporation */
+/* (c) ZKA Technologies */
 
 /// @author Amlal El Mahrouss (amlel)
 /// @file 64x0-cc.cc
@@ -1513,7 +1513,7 @@ public:
 
 #define kPrintF printf
 #define kSplashCxx() \
-	kPrintF(kWhite "Zeta C Driver, %s, (c) Zeta Electronics Corporation\n", kDistVersion)
+	kPrintF(kWhite "Zeta C Driver, %s, (c) ZKA Technologies\n", kDistVersion)
 
 static void cc_print_help()
 {

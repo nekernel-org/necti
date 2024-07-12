@@ -3,7 +3,7 @@
  *	========================================================
  *
  *	CompilerKit
- * 	Copyright Zeta Electronics Corporation, all rights reserved.
+ * 	Copyright ZKA Technologies, all rights reserved.
  *
  * 	========================================================
  */
@@ -12,7 +12,7 @@
 
 namespace CompilerKit
 {
-	// @author Zeta Electronics Corporation
+	// @author ZKA Technologies
 	// @brief Reference class, refers to a pointer of data in static memory.
 	template <typename T>
 	class Ref final

@@ -1,7 +1,7 @@
 /* -------------------------------------------
 
-	Some modifications are copyrighted under:  
-	Zeta Electronics Corporation
+	Some modifications are copyrighted under:
+	ZKA Technologies
 
 	Original author:
 	Apple Inc

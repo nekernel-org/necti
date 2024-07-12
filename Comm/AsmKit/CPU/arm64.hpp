@@ -1,6 +1,6 @@
 /* -------------------------------------------
 
-Copyright Zeta Electronics Corporation
+Copyright ZKA Technologies
 
 ------------------------------------------- */
 
@@ -24,4 +24,3 @@ struct CpuOpcodeArm64 final
 	uint32_t fImmediateValue; // immediate 32-bit value
 	bool fImmediateValueHooked;
 };
-

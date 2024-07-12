@@ -2,7 +2,7 @@
  *	========================================================
  *
  *	bpp
- * 	Copyright Zeta Electronics Corporation, all rights reserved.
+ * 	Copyright ZKA Technologies, all rights reserved.
  *
  * 	========================================================
  */
@@ -812,12 +812,12 @@ NDK_MODULE(NewOSPreprocessor) {
 
       if (argv[index][0] == '/') {
         if (strcmp(argv[index], "/version") == 0) {
-          printf("%s\n", "bpp v1.11, (c) Zeta Electronics Corporation");
+          printf("%s\n", "bpp v1.11, (c) ZKA Technologies");
           return 0;
         }
 
         if (strcmp(argv[index], "/help") == 0) {
-          printf("%s\n", "Zeta Preprocessor Driver v1.11, (c) Zeta Electronics Corporation");
+          printf("%s\n", "Zeta Preprocessor Driver v1.11, (c) ZKA Technologies");
           printf("%s\n", "/working-dir <path>: set directory to working path.");
           printf("%s\n", "/include-dir <path>: add directory to include path.");
           printf("%s\n", "/def <name> <value>: def macro.");

@@ -1,6 +1,6 @@
 /* -------------------------------------------
 
-	Copyright Zeta Electronics Corporation
+	Copyright ZKA Technologies
 
 ------------------------------------------- */
 
@@ -175,13 +175,13 @@ NDK_MODULE(NewOSAssemblerAMD64)
 			if (strcmp(argv[i], "/version") == 0 || strcmp(argv[i], "/v") == 0)
 			{
 				kStdOut << "i64asm: AMD64 Assembler Driver.\ni64asm: v1.10\ni64asm: Copyright "
-						   "(c) 2024 Zeta Electronics Corporation.\n";
+						   "(c) ZKA Technologies.\n";
 				return 0;
 			}
 			else if (strcmp(argv[i], "/h") == 0)
 			{
 				kStdOut << "i64asm: AMD64 Assembler Driver.\ni64asm: Copyright (c) 2024 "
-						   "Zeta Electronics Corporation.\n";
+						   "ZKA Technologies.\n";
 				kStdOut << "/version: Print program version.\n";
 				kStdOut << "/verbose: Print verbose output.\n";
 				kStdOut << "/binary: Output as flat binary.\n";

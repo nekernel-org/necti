@@ -2,7 +2,7 @@
  *	========================================================
  *
  *	CompilerKit
- * 	Copyright Zeta Electronics Corporation, all rights reserved.
+ * 	Copyright ZKA Technologies, all rights reserved.
  *
  * 	========================================================
  */
@@ -14,7 +14,7 @@
  * @version 0.2
  * @date 2024-01-23
  *
- * @copyright Copyright (c) 2024 Zeta Electronics Corporation
+ * @copyright Copyright (c) ZKA Technologies
  *
  */
 

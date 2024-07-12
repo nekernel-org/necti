@@ -2,7 +2,7 @@
  #	========================================================
  #
  #	MPCC
- # 	Copyright Zeta Electronics Corporation, all rights reserved.
+ # 	Copyright ZKA Technologies, all rights reserved.
  #
  # 	========================================================
  #
@@ -70,9 +70,9 @@ linker:
 
 .PHONY: help
 help:
-	@echo "Compiler 	- MPCC Compiler Suite."
-	@echo "Preprocessor 	- MPCC Preprocessor Suite."
-	@echo "linker 		- Zeta Electronics Corporation Linkers."
+	@echo "compiler 	- ZKA Compiler Suite."
+	@echo "pre-processor 	- ZKA Preprocessor Suite."
+	@echo "linker 		- ZKA Linkers."
 	@echo "clean 		- Clean objects and executables."
 
 .PHONY: clean
