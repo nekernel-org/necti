@@ -4,7 +4,7 @@
 
 ------------------------------------------- */
 
-/// @file link.cc
+/// @file link.cxx
 /// @author Amlal EL Mahrouss (amlel)
 /// @brief ZKA Technologies Linker.
 
@@ -13,23 +13,23 @@
 /// @note Do not look up for anything with .code64/.data64/.zero64!
 /// It will be loaded when program will start up!
 
-#include <Comm/StdKit/ErrorID.hpp>
+#include <Headers/StdKit/ErrorID.hpp>
 
 //! Assembler Kit
-#include <Comm/AsmKit/AsmKit.hpp>
+#include <Headers/AsmKit/AsmKit.hpp>
 
 //! Preferred Executable Format
-#include <Comm/StdKit/PEF.hpp>
-#include <Comm/UUID.hpp>
+#include <Headers/StdKit/PEF.hpp>
+#include <Headers/UUID.hpp>
 #include <filesystem>
 #include <random>
 #include <vector>
 
 //! Dist version
-#include <Comm/Version.hxx>
+#include <Headers/Version.hxx>
 
 //! Advanced Executable Object Format
-#include <Comm/StdKit/AE.hpp>
+#include <Headers/StdKit/AE.hpp>
 
 //! C++ I/O headers.
 #include <fstream>
@@ -51,13 +51,16 @@
 
 enum
 {
-	kStandardAbi = 0x5046 /* PF */
+    eABIStart = 0x1010, /* Invalid ABI start of ABI list. */
+	eABINewOSKrnl = 0x5046, /* PF (NewOSKrnl) */
+	eABIMTL = 0x4650, /* FP (MTL firmware) */
+	eABIInvalid = 1,
 };
 
 static std::string kOutput;
-static Int32	   kAbi				 = kStandardAbi;
+static Int32	   kAbi				 = eABINewOSKrnl;
 static Int32	   kSubArch			 = kPefNoSubCpu;
-static Int32	   kArch			 = CompilerKit::kPefArch64000;
+static Int32	   kArch			 = CompilerKit::kPefArchInvalid;
 static Bool		   kFatBinaryEnable	 = false;
 static Bool		   kStartFound		 = false;
 static Bool		   kDuplicateSymbols = false;

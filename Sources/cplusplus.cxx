@@ -18,8 +18,8 @@ kPrintF(kWhite "%s\n", "Zeta C++ Compiler Driver, (c) 2024 Zeta Electronics, all
 
 // import, @MLAutoRelease { ... }, fn foo() -> auto { ... }
 
-#include <Comm/AsmKit/CPU/amd64.hpp>
-#include <Comm/ParserKit.hpp>
+#include <Headers/AsmKit/CPU/amd64.hpp>
+#include <Headers/ParserKit.hpp>
 #include <cstdio>
 #include <filesystem>
 #include <fstream>
@@ -37,7 +37,7 @@ kPrintF(kWhite "%s\n", "Zeta C++ Compiler Driver, (c) 2024 Zeta Electronics, all
 /* (c) ZKA Technologies */
 
 /// @author Amlal El Mahrouss (amlel)
-/// @file cc.cc
+/// @file cc.cxx
 /// @brief Optimized C++ Compiler.
 /// @todo Throw error for scoped inside scoped variables when they get referenced outside.
 /// @todo Add class/struct/enum support.

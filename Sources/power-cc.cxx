@@ -7,9 +7,9 @@
  * 	========================================================
  */
 
-#include <Comm/AsmKit/CPU/ppc.hpp>
-#include <Comm/ParserKit.hpp>
-#include <Comm/UUID.hpp>
+#include <Headers/AsmKit/CPU/ppc.hpp>
+#include <Headers/ParserKit.hpp>
+#include <Headers/UUID.hpp>
 #include <filesystem>
 #include <fstream>
 #include <iostream>
@@ -23,7 +23,7 @@
 #define kOk 0
 
 /// @author Amlal El Mahrouss (amlel)
-/// @file cc.cc
+/// @file cc.cxx
 /// @brief POWER C Compiler.
 
 /////////////////////

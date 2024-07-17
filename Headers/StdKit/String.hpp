@@ -9,8 +9,8 @@
 
 #pragma once
 
-#include <Comm/Defines.hpp>
-#include <Comm/StdKit/ErrorOr.hpp>
+#include <Headers/Defines.hpp>
+#include <Headers/StdKit/ErrorOr.hpp>
 
 namespace CompilerKit
 {

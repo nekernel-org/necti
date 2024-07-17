@@ -6,8 +6,8 @@
 
 #pragma once
 
-#include <Comm/AsmKit/AsmKit.hpp>
-#include <Comm/ParserKit.hpp>
+#include <Headers/AsmKit/AsmKit.hpp>
+#include <Headers/ParserKit.hpp>
 
 using namespace CompilerKit;
 

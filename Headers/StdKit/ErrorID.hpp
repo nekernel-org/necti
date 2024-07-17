@@ -9,8 +9,8 @@
 
 #pragma once
 
-#include <Comm/Defines.hpp>
-#include <Comm/StdKit/ErrorOr.hpp>
+#include <Headers/Defines.hpp>
+#include <Headers/StdKit/ErrorOr.hpp>
 
 #define MPCC_EXEC_ERROR		-30
 #define MPCC_FILE_NOT_FOUND -31

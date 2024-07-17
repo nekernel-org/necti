@@ -9,8 +9,8 @@
 
 /// BUGS: 0
 
-#include <Comm/ParserKit.hpp>
-#include <Comm/StdKit/ErrorID.hpp>
+#include <Headers/ParserKit.hpp>
+#include <Headers/StdKit/ErrorID.hpp>
 #include <algorithm>
 #include <filesystem>
 #include <fstream>
@@ -20,7 +20,7 @@
 #define kMacroPrefix '%'
 
 /// @author Amlal El Mahrouss (amlel)
-/// @file bpp.cc
+/// @file bpp.cxx
 /// @brief Preprocessor.
 
 typedef Int32 (*bpp_parser_fn_t)(std::string &line, std::ifstream &hdr_file,

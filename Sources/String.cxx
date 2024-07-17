@@ -8,7 +8,7 @@
  */
 
 /**
- * @file String.cc
+ * @file String.cxx
  * @author Amlal (amlal@mahrouss-logic.com)
  * @brief C++ string manipulation API.
  * @version 0.2
@@ -18,7 +18,7 @@
  *
  */
 
-#include <Comm/StdKit/String.hpp>
+#include <Headers/StdKit/String.hpp>
 
 namespace CompilerKit {
 CharType *StringView::Data() { return m_Data; }

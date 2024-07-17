@@ -1,4 +1,4 @@
-; Path: Examples/ExampleCDialect.cc
+; Path: Examples/ExampleCDialect.cxx
 ; Language: MPCC assembly. (Generated from C++)
 ; Date: 2024-5-14
 

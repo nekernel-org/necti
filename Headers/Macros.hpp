@@ -4,7 +4,7 @@
 
 ------------------------------------------- */
 
-//! provide support for CompilerKit.hpp header.
+/// @brief provide support for Macros.hpp header.
 
 #ifndef _CK_CL_HPP
 #define _CK_CL_HPP

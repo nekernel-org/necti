@@ -10,9 +10,9 @@
 /// BUGS: ?
 /// TODO:
 
-#include <Comm/AsmKit/CPU/64x0.hpp>
-#include <Comm/ParserKit.hpp>
-#include <Comm/UUID.hpp>
+#include <Headers/AsmKit/CPU/64x0.hpp>
+#include <Headers/ParserKit.hpp>
+#include <Headers/UUID.hpp>
 #include <filesystem>
 #include <cstdio>
 #include <fstream>
@@ -28,7 +28,7 @@
 /* (c) ZKA Technologies */
 
 /// @author Amlal El Mahrouss (amlel)
-/// @file 64x0-cc.cc
+/// @file 64x0-cc.cxx
 /// @brief 64x0 C Compiler.
 
 /// TODO: support structures, else if, else, . and  ->

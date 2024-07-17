@@ -6,7 +6,7 @@
 
 #pragma once
 
-#include <Comm/Defines.hpp>
+#include <Headers/Defines.hpp>
 
 // @brief AMD64 support.
 // @file CPU/amd64.hpp

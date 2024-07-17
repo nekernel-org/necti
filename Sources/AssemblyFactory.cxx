@@ -4,11 +4,11 @@
 
 ------------------------------------------- */
 
-#include <Comm/AsmKit/AsmKit.hpp>
-#include <Comm/StdKit/ErrorID.hpp>
+#include <Headers/AsmKit/AsmKit.hpp>
+#include <Headers/StdKit/ErrorID.hpp>
 
 /**
- * @file AssemblyFactory.cc
+ * @file AssemblyFactory.cxx
  * @author amlal (amlal@zeta.com)
  * @brief Assembler Kit
  * @version 0.1

@@ -6,7 +6,7 @@
 
 #pragma once
 
-#include <Comm/Defines.hpp>
+#include <Headers/Defines.hpp>
 
 // @file PEF.hpp
 // @brief Preferred Executable Format
@@ -33,6 +33,7 @@ namespace CompilerKit
 {
 	enum
 	{
+	    kPefArchStart = 99,
 		kPefArchIntel86S = 100,
 		kPefArchAMD64,
 		kPefArchRISCV,

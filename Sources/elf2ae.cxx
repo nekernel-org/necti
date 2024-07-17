@@ -4,9 +4,9 @@
 
 ------------------------------------------- */
 
-#include <Comm/ParserKit.hpp>
-#include <Comm/StdKit/AE.hpp>
-#include <Comm/StdKit/PEF.hpp>
+#include <Headers/ParserKit.hpp>
+#include <Headers/StdKit/AE.hpp>
+#include <Headers/StdKit/PEF.hpp>
 #include <filesystem>
 #include <fstream>
 #include <iostream>
@@ -15,9 +15,8 @@
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
-/// @file coff2ae.cc
-/// @brief COFF To AE, the program/module starts here.
+/// @brief COFF 2 AE entrypoint, the program/module starts here.
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
-NDK_MODULE(NewOSCOFFToAE) { return 0; }
+NDK_MODULE(NewOSELFToAE) { return 0; }

@@ -6,9 +6,9 @@
 
 #pragma once
 
-#include <Comm/CompilerKit.hpp>
-#include <Comm/Defines.hpp>
-#include <Comm/StdKit/String.hpp>
+#include <Headers/Macros.hpp>
+#include <Headers/Defines.hpp>
+#include <Headers/StdKit/String.hpp>
 
 namespace CompilerKit
 {

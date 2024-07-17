@@ -19,10 +19,10 @@
 
 #define __ASM_NEED_32x0__ 1
 
-#include <Comm/AsmKit/CPU/32x0.hpp>
-#include <Comm/ParserKit.hpp>
-#include <Comm/StdKit/AE.hpp>
-#include <Comm/StdKit/PEF.hpp>
+#include <Headers/AsmKit/CPU/32x0.hpp>
+#include <Headers/ParserKit.hpp>
+#include <Headers/StdKit/AE.hpp>
+#include <Headers/StdKit/PEF.hpp>
 #include <filesystem>
 #include <fstream>
 #include <iostream>
