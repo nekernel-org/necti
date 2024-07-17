@@ -669,7 +669,7 @@ public:
 
 		if (dest.empty())
 		{
-			dest = "CXX-MPCC-";
+			dest = "CXX-NDK-";
 
 			std::random_device rd;
 			auto seed_data = std::array<int, std::mt19937::state_size> {};

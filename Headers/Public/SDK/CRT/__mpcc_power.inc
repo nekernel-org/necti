@@ -1,5 +1,5 @@
 # Path: SDK/__mpcc_power.inc
-# Language: MPCC POWER Assembly support for GNU.
+# Language: NDK POWER Assembly support for GNU.
 # Build Date: 2024-6-4
 
 %ifdef __CODETOOLS__

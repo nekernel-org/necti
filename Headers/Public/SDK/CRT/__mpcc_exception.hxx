@@ -16,12 +16,12 @@ namespace std
 {
 	inline void __throw_general(void)
 	{
-		throw std::runtime_error("MPCC C++ Runtime error.");
+		throw std::runtime_error("NDK C++ Runtime error.");
 	}
 
 	inline void __throw_domain_error(const char* error)
 	{
-		std::cout << "MPCC C++: Domain error: " << error << "\r";
+		std::cout << "NDK C++: Domain error: " << error << "\r";
 		__throw_general();
 	}
 } // namespace std

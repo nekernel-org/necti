@@ -1,5 +1,5 @@
 ; Path: Examples/ExampleCDialect.cxx
-; Language: MPCC assembly. (Generated from C++)
+; Language: NDK assembly. (Generated from C++)
 ; Date: 2024-5-14
 
 #bits 64
