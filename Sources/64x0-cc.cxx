@@ -1513,7 +1513,7 @@ public:
 
 #define kPrintF printf
 #define kSplashCxx() \
-	kPrintF(kWhite "Zeta C Driver, %s, (c) ZKA Technologies\n", kDistVersion)
+	kPrintF(kWhite "ZKA C Driver, %s, (c) ZKA Technologies\n", kDistVersion)
 
 static void cc_print_help()
 {

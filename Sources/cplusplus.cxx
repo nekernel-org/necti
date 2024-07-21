@@ -9,7 +9,6 @@
 
 /// bugs: 0
 
-#include "StdKit/Ref.hpp"
 #define __PK_USE_STRUCT_INSTEAD__ 1
 
 #define kPrintF printf
@@ -17,7 +16,7 @@
 #define kOk (0)
 
 #define kSplashCxx() \
-kPrintF(kWhite "%s\n", "Zeta C++ Compiler Driver, (c) 2024 Zeta Electronics, all rights reserved.")
+	kPrintF(kWhite "%s\n", "ZKA C++ Compiler Driver, (c) 2024 ZKA Electronics, all rights reserved.")
 
 // import, @MLAutoRelease { ... }, fn foo() -> auto { ... }
 
@@ -175,7 +174,7 @@ static bool							kOnForLoop	 = false;
 static bool							kInBraces	 = false;
 static size_t						kBracesCount = 0UL;
 
-/* @brief C++ compiler backend for the Zeta C++ driver */
+/* @brief C++ compiler backend for the ZKA C++ driver */
 class CompilerBackendCPlusPlus final : public ParserKit::CompilerBackend
 {
 public:
@@ -231,7 +230,7 @@ static size_t kLevelFunction = 0UL;
 
 const char* CompilerBackendCPlusPlus::Language()
 {
-	return "Zeta C++";
+	return "ZKA C++";
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////
@@ -316,6 +315,11 @@ bool CompilerBackendCPlusPlus::Compile(const std::string& text,
 		switch (keyword.first.keyword_kind)
 		{
 		case ParserKit::KeywordKind::eKeywordKindFunctionStart: {
+			if (text.ends_with(";"))
+			{
+				break;
+			}
+
 			std::string fnName = text;
 			fnName.erase(fnName.find(keyword.first.keyword_name));
 
@@ -331,6 +335,9 @@ bool CompilerBackendCPlusPlus::Compile(const std::string& text,
 			break;
 		}
 		case ParserKit::KeywordKind::eKeywordKindFunctionEnd: {
+			if (text.ends_with(";"))
+				break;
+
 			--kLevelFunction;
 
 			if (kRegisterMap.size() > cRegisters.size())
@@ -341,6 +348,80 @@ bool CompilerBackendCPlusPlus::Compile(const std::string& text,
 			if (kLevelFunction < 1)
 				kRegisterMap.clear();
 			break;
+		}
+		case ParserKit::KeywordKind::eKeywordKindIf:
+		case ParserKit::KeywordKind::eKeywordKindElseIf: {
+			std::string valueOfVar = text.substr(text.find(keyword.first.keyword_name) + keyword.first.keyword_name.size());
+
+			if (valueOfVar.find("(") == std::string::npos)
+			{
+				detail::print_error("Missing '('", file);
+			}
+			else if (valueOfVar.find(")") == std::string::npos)
+			{
+				detail::print_error("Missing ')'", file);
+			}
+
+			valueOfVar = valueOfVar.erase(valueOfVar.find("("), 1);
+			valueOfVar = valueOfVar.erase(valueOfVar.find(")"), 1);
+
+			size_t		index	   = 0UL;
+			std::string result	   = "";
+			bool		fill_value = false;
+
+			for (auto& chr : valueOfVar)
+			{
+				if (chr == '!')
+				{
+					result += "cmpnz ";
+					fill_value = true;
+				}
+
+				if (chr == '>')
+				{
+
+					if (valueOfVar[index + 1] == '=')
+						result += "cmpge ";
+					else
+						result += "cmpg ";
+
+					fill_value = true;
+				}
+				else if (chr == '<')
+				{
+					if (valueOfVar[index + 1] == '=')
+						result += "cmple ";
+					else
+						result += "cmpl ";
+
+					fill_value = true;
+				}
+				else if (chr == '=')
+				{
+					if (valueOfVar[index + 1] == '=')
+						result += "cmpge ";
+					else
+						result += "mov ";
+
+					fill_value = true;
+				}
+
+				if (fill_value)
+				{
+					for (auto i = index; i < valueOfVar.size(); ++i)
+					{
+						result += valueOfVar[i];
+
+						if (valueOfVar[i] == ' ')
+						{
+							result += "\n";
+							break;
+						}
+					}
+				}
+
+				++index;
+			}
 		}
 		case ParserKit::KeywordKind::eKeywordKindEndInstr:
 		case ParserKit::KeywordKind::eKeywordKindVariableInc:
@@ -634,7 +715,7 @@ _MpccOkay:
 class AssemblyCPlusPlusInterface final : public CompilerKit::AssemblyInterface
 {
 public:
-	explicit AssemblyCPlusPlusInterface()	= default;
+	explicit AssemblyCPlusPlusInterface()  = default;
 	~AssemblyCPlusPlusInterface() override = default;
 
 	MPCC_COPY_DEFAULT(AssemblyCPlusPlusInterface);
@@ -656,41 +737,29 @@ public:
 		/* @brief copy contents wihtout extension */
 		std::string	  src_file = src.data();
 		std::ifstream src_fp   = std::ifstream(src_file, std::ios::in);
-		std::string	  dest;
 
-		for (auto& ch : src_file)
-		{
-			if (ch == '.')
-			{
-				break;
-			}
+		const char* cExts[] = kAsmFileExts;
 
-			dest += ch;
-		}
+		std::string	  dest = src_file;
+		dest += cExts[4];
 
 		if (dest.empty())
 		{
 			dest = "CXX-NDK-";
 
 			std::random_device rd;
-			auto seed_data = std::array<int, std::mt19937::state_size> {};
+			auto			   seed_data = std::array<int, std::mt19937::state_size>{};
 
 			std::generate(std::begin(seed_data), std::end(seed_data), std::ref(rd));
 
 			std::seed_seq seq(std::begin(seed_data), std::end(seed_data));
-			std::mt19937 generator(seq);
+			std::mt19937  generator(seq);
 
 			auto gen = uuids::uuid_random_generator(generator);
 
 			auto id = gen();
 			dest += uuids::to_string(id);
 		}
-
-		std::vector<const char*> exts = kAsmFileExts;
-
-		dest += exts[3];
-
-		std::cout << dest;
 
 		kState.fOutputAssembly = std::make_unique<std::ofstream>(dest);
 
@@ -748,6 +817,10 @@ static void cxx_print_help()
 NDK_MODULE(CompilerCPlusPlus)
 {
 	bool skip = false;
+
+	kKeywords.push_back({.keyword_name = "if", .keyword_kind = ParserKit::eKeywordKindIf});
+	kKeywords.push_back({.keyword_name = "else", .keyword_kind = ParserKit::eKeywordKindElse});
+	kKeywords.push_back({.keyword_name = "else if", .keyword_kind = ParserKit::eKeywordKindElseIf});
 
 	kKeywords.push_back({.keyword_name = "class", .keyword_kind = ParserKit::eKeywordKindClass});
 	kKeywords.push_back({.keyword_name = "struct", .keyword_kind = ParserKit::eKeywordKindClass});

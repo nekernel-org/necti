@@ -817,7 +817,7 @@ NDK_MODULE(NewOSPreprocessor) {
         }
 
         if (strcmp(argv[index], "/help") == 0) {
-          printf("%s\n", "Zeta Preprocessor Driver v1.11, (c) ZKA Technologies");
+          printf("%s\n", "ZKA Preprocessor Driver v1.11, (c) ZKA Technologies");
           printf("%s\n", "/working-dir <path>: set directory to working path.");
           printf("%s\n", "/include-dir <path>: add directory to include path.");
           printf("%s\n", "/def <name> <value>: def macro.");
