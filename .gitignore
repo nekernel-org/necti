@@ -10,6 +10,8 @@ local.properties
 
 *.creator.user
 
+Examples/
+
 # NewOS/MP-UX executable
 *.exec
 *.bin

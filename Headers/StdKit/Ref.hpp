@@ -12,18 +12,25 @@
 
 namespace CompilerKit
 {
-	// @author ZKA Technologies
-	// @brief Reference class, refers to a pointer of data in static memory.
+	// @author Amlal
+	// @brief Reference holder class, refers to a pointer of data in static memory.
 	template <typename T>
 	class Ref final
 	{
 	public:
 		explicit Ref() = default;
-		~Ref()		   = default;
+
+		~Ref()
+		{
+		    if (m_Strong)
+    		{
+        		(*m_Class).~T();
+    		}
+		}
 
 	public:
 		explicit Ref(T cls, const bool& strong = false)
-			: m_Class(cls), m_Strong(strong)
+			: m_Class(&cls), m_Strong(strong)
 		{
 		}
 
@@ -41,12 +48,12 @@ namespace CompilerKit
 
 		T& Leak()
 		{
-			return m_Class;
+			return *m_Class;
 		}
 
 		T operator*()
 		{
-			return m_Class;
+			return *m_Class;
 		}
 
 		bool IsStrong() const
@@ -56,11 +63,11 @@ namespace CompilerKit
 
 		operator bool()
 		{
-			return m_Class;
+			return *m_Class;
 		}
 
 	private:
-		T	 m_Class;
+		T*	 m_Class;
 		bool m_Strong{false};
 	};
 
@@ -68,8 +75,7 @@ namespace CompilerKit
 	class NonNullRef final
 	{
 	public:
-		NonNullRef()		= delete;
-		NonNullRef(nullPtr) = delete;
+		explicit NonNullRef()		= delete;
 
 		explicit NonNullRef(T* ref)
 			: m_Ref(ref, true)

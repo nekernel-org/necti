@@ -9,9 +9,12 @@
 
 /// bugs: 0
 
+#include "StdKit/Ref.hpp"
 #define __PK_USE_STRUCT_INSTEAD__ 1
 
 #define kPrintF printf
+
+#define kOk (0)
 
 #define kSplashCxx() \
 kPrintF(kWhite "%s\n", "Zeta C++ Compiler Driver, (c) 2024 Zeta Electronics, all rights reserved.")
@@ -20,8 +23,8 @@ kPrintF(kWhite "%s\n", "Zeta C++ Compiler Driver, (c) 2024 Zeta Electronics, all
 
 #include <Headers/AsmKit/CPU/amd64.hpp>
 #include <Headers/ParserKit.hpp>
-#include <cstdio>
 #include <filesystem>
+#include <cstdio>
 #include <fstream>
 #include <iostream>
 #include <memory>
@@ -30,10 +33,8 @@ kPrintF(kWhite "%s\n", "Zeta C++ Compiler Driver, (c) 2024 Zeta Electronics, all
 #include <vector>
 #include <UUID.hpp>
 
-#define kOk 0
-
 /* ZKA Technologies C++ driver */
-/* This is part of ZECC C++ compiler. */
+/* This is part of NDK. */
 /* (c) ZKA Technologies */
 
 /// @author Amlal El Mahrouss (amlel)
