@@ -22,7 +22,8 @@
 
 #include <Headers/AsmKit/CPU/amd64.hpp>
 #include <Headers/ParserKit.hpp>
-#include <filesystem>
+#include <UUID.hpp>
+
 #include <cstdio>
 #include <fstream>
 #include <iostream>
@@ -30,9 +31,8 @@
 #include <string>
 #include <utility>
 #include <vector>
-#include <UUID.hpp>
 
-/* ZKA Technologies C++ driver */
+/* ZKA C++ driver */
 /* This is part of NDK. */
 /* (c) ZKA Technologies */
 
@@ -349,80 +349,6 @@ bool CompilerBackendCPlusPlus::Compile(const std::string& text,
 				kRegisterMap.clear();
 			break;
 		}
-		case ParserKit::KeywordKind::eKeywordKindIf:
-		case ParserKit::KeywordKind::eKeywordKindElseIf: {
-			std::string valueOfVar = text.substr(text.find(keyword.first.keyword_name) + keyword.first.keyword_name.size());
-
-			if (valueOfVar.find("(") == std::string::npos)
-			{
-				detail::print_error("Missing '('", file);
-			}
-			else if (valueOfVar.find(")") == std::string::npos)
-			{
-				detail::print_error("Missing ')'", file);
-			}
-
-			valueOfVar = valueOfVar.erase(valueOfVar.find("("), 1);
-			valueOfVar = valueOfVar.erase(valueOfVar.find(")"), 1);
-
-			size_t		index	   = 0UL;
-			std::string result	   = "";
-			bool		fill_value = false;
-
-			for (auto& chr : valueOfVar)
-			{
-				if (chr == '!')
-				{
-					result += "cmpnz ";
-					fill_value = true;
-				}
-
-				if (chr == '>')
-				{
-
-					if (valueOfVar[index + 1] == '=')
-						result += "cmpge ";
-					else
-						result += "cmpg ";
-
-					fill_value = true;
-				}
-				else if (chr == '<')
-				{
-					if (valueOfVar[index + 1] == '=')
-						result += "cmple ";
-					else
-						result += "cmpl ";
-
-					fill_value = true;
-				}
-				else if (chr == '=')
-				{
-					if (valueOfVar[index + 1] == '=')
-						result += "cmpge ";
-					else
-						result += "mov ";
-
-					fill_value = true;
-				}
-
-				if (fill_value)
-				{
-					for (auto i = index; i < valueOfVar.size(); ++i)
-					{
-						result += valueOfVar[i];
-
-						if (valueOfVar[i] == ' ')
-						{
-							result += "\n";
-							break;
-						}
-					}
-				}
-
-				++index;
-			}
-		}
 		case ParserKit::KeywordKind::eKeywordKindEndInstr:
 		case ParserKit::KeywordKind::eKeywordKindVariableInc:
 		case ParserKit::KeywordKind::eKeywordKindVariableDec:
@@ -443,7 +369,7 @@ bool CompilerBackendCPlusPlus::Compile(const std::string& text,
 			}
 			else if (keyword.first.keyword_kind == ParserKit::KeywordKind::eKeywordKindEndInstr)
 			{
-				valueOfVar = "0\n";
+			    break;
 			}
 
 			while (valueOfVar.find(";") != std::string::npos &&
@@ -471,25 +397,21 @@ bool CompilerBackendCPlusPlus::Compile(const std::string& text,
 				varName.erase(varName.find(";"));
 			}
 
-			bool typeFound = false;
+			static bool typeFound = false;
 
 			for (auto& keyword : kKeywords)
 			{
 				if (keyword.keyword_kind == ParserKit::eKeywordKindType)
 				{
-					if (varName.find(keyword.keyword_name) != std::string::npos)
-					{
-						typeFound = true;
-						varName.erase(varName.find(keyword.keyword_name), keyword.keyword_name.size());
-					}
-
-					/// in case we goot boolX or intX
 					if (text.find(keyword.keyword_name) != std::string::npos)
 					{
-						if (varName[text.find(keyword.keyword_name)] == ' ')
+						if (text[text.find(keyword.keyword_name)] == ' ')
+						{
+							typeFound = false;
 							continue;
+						}
 
-						typeFound = false;
+						typeFound = true;
 					}
 				}
 			}
@@ -550,11 +472,11 @@ bool CompilerBackendCPlusPlus::Compile(const std::string& text,
 
 					if (pairRight != valueOfVar)
 					{
-						syntax_tree.fUserValue = instr + cRegisters[kRegisterMap.size()] + ", " + valueOfVar + "\n";
-						continue;
+						syntax_tree.fUserValue = instr + cRegisters[kRegisterMap.size() - 1] + ", " + valueOfVar + "\n";
+						goto done;
 					}
 
-					syntax_tree.fUserValue = instr + cRegisters[kRegisterMap.size()] + ", " + cRegisters[indexRight - 1] + "\n";
+					syntax_tree.fUserValue = instr + cRegisters[kRegisterMap.size() - 1] + ", " + valueOfVar + "\n";
 					break;
 				}
 
@@ -563,10 +485,18 @@ bool CompilerBackendCPlusPlus::Compile(const std::string& text,
 					syntax_tree.fUserValue = instr + cRegisters[kRegisterMap.size()] + ", " + valueOfVar + "\n";
 				}
 
+			done:
 				kRegisterMap.push_back(varName);
 			}
 			else
 			{
+				if (kKeywords[keyword.second - 1].keyword_kind == ParserKit::eKeywordKindType ||
+					kKeywords[keyword.second - 1].keyword_kind == ParserKit::eKeywordKindTypePtr)
+				{
+					syntax_tree.fUserValue = "\n";
+					continue;
+				}
+
 				if (keyword.first.keyword_kind == ParserKit::KeywordKind::eKeywordKindEndInstr)
 				{
 					syntax_tree.fUserValue = "\n";
@@ -604,6 +534,16 @@ bool CompilerBackendCPlusPlus::Compile(const std::string& text,
 					valueOfVar.erase(i, 1);
 				}
 
+				while (valueOfVar.find(" ") != std::string::npos)
+				{
+					valueOfVar.erase(valueOfVar.find(" "), 1);
+				}
+
+				while (valueOfVar.find("\t") != std::string::npos)
+				{
+					valueOfVar.erase(valueOfVar.find("\t"), 1);
+				}
+
 				constexpr auto cTrueVal	 = "true";
 				constexpr auto cFalseVal = "false";
 
@@ -631,13 +571,13 @@ bool CompilerBackendCPlusPlus::Compile(const std::string& text,
 					{
 						++indexRight;
 
-						if (pairRight != valueOfVar)
+						if (pairRight != varName)
 						{
 							syntax_tree.fUserValue = instr + cRegisters[kRegisterMap.size()] + ", " + valueOfVar + "\n";
 							continue;
 						}
 
-						syntax_tree.fUserValue = instr + cRegisters[indxReg - 1] + ", " + cRegisters[indexRight - 1] + "\n";
+						syntax_tree.fUserValue = instr + cRegisters[indexRight - 1] + ", " + valueOfVar + "\n";
 						break;
 					}
 
@@ -670,7 +610,7 @@ bool CompilerBackendCPlusPlus::Compile(const std::string& text,
 						if (pair != subText)
 							continue;
 
-						syntax_tree.fUserValue = "mov rax, " + cRegisters[indxReg - 1] + "\r\nret\n";
+						syntax_tree.fUserValue = "mov rax, " + cRegisters[indxReg] + "\r\nret\n";
 						break;
 					}
 
@@ -740,7 +680,7 @@ public:
 
 		const char* cExts[] = kAsmFileExts;
 
-		std::string	  dest = src_file;
+		std::string dest = src_file;
 		dest += cExts[4];
 
 		if (dest.empty())
@@ -977,3 +917,4 @@ NDK_MODULE(CompilerCPlusPlus)
 }
 
 // Last rev 8-1-24
+//
