@@ -24,6 +24,7 @@
 #include <Headers/ParserKit.hpp>
 #include <UUID.hpp>
 
+#include <cctype>
 #include <cstdio>
 #include <fstream>
 #include <iostream>
@@ -314,14 +315,119 @@ bool CompilerBackendCPlusPlus::Compile(const std::string& text,
 
 		switch (keyword.first.keyword_kind)
 		{
+		case ParserKit::KeywordKind::eKeywordKindIf: {
+			auto expr = text.substr(text.find(keyword.first.keyword_name) + keyword.first.keyword_name.size() + 1, text.find(")") - 1);
+
+			if (expr.find(">=") != std::string::npos)
+			{
+				auto left  = text.substr(text.find(keyword.first.keyword_name) + keyword.first.keyword_name.size() + 2, expr.find("<=") + strlen("<="));
+				auto right = text.substr(expr.find(">=") + strlen(">="), text.find(")") - 1);
+
+				size_t i = right.size() - 1;
+
+				try
+				{
+					while (!std::isalnum(right[i]))
+					{
+						right.erase(i, 1);
+						--i;
+					}
+
+					right.erase(0, i);
+				}
+				catch (...)
+				{
+					right.erase(0, i);
+				}
+
+				i = left.size() - 1;
+				try
+				{
+
+					while (!std::isalnum(left[i]))
+					{
+						left.erase(i, 1);
+						--i;
+					}
+
+					left.erase(0, i);
+				}
+				catch (...)
+				{
+					left.erase(0, i);
+				}
+
+				if (!isdigit(left[0]) ||
+					!isdigit(right[0]))
+				{
+					auto indexRight = 0UL;
+
+					auto& valueOfVar = !isdigit(left[0]) ? left : right;
+
+					for (auto pairRight : kRegisterMap)
+					{
+						++indexRight;
+
+						if (pairRight != valueOfVar)
+						{
+
+							auto& valueOfVarOpposite = isdigit(left[0]) ? left : right;
+
+							syntax_tree.fUserValue += "mov " + cRegisters[indexRight + 1] + ", " + valueOfVarOpposite + "\n";
+
+							syntax_tree.fUserValue += "mov " + cRegisters[kRegisterMap.size() - 1] + ", " + valueOfVar + "\n";
+							syntax_tree.fUserValue += "cmp " + cRegisters[kRegisterMap.size() - 1] + "," + cRegisters[indexRight + 1] + "\n";
+
+							goto done_iterarting_on_if;
+						}
+
+						auto& valueOfVarOpposite = isdigit(left[0]) ? left : right;
+
+						syntax_tree.fUserValue += "mov " + cRegisters[indexRight + 1] + ", " + valueOfVarOpposite + "\n";
+						syntax_tree.fUserValue += "mov " + cRegisters[kRegisterMap.size() - 1] + ", " + valueOfVar + "\n";
+						syntax_tree.fUserValue += "cmp " + cRegisters[kRegisterMap.size() - 1] + ", " + cRegisters[indexRight + 1] + "\n";
+
+						break;
+					}
+				}
+
+			done_iterarting_on_if:
+
+				std::string fnName = text;
+				fnName.erase(fnName.find(keyword.first.keyword_name));
+
+				for (auto& ch : fnName)
+				{
+					if (ch == ' ')
+						ch = '_';
+				}
+
+				syntax_tree.fUserValue += "jge offset [rsp + 4]\n";
+			}
+
+			break;
+		}
 		case ParserKit::KeywordKind::eKeywordKindFunctionStart: {
 			if (text.ends_with(";"))
 			{
 				break;
 			}
 
+			for (auto& ch : text)
+			{
+				if (isdigit(ch))
+				{
+					goto dont_accept;
+				}
+			}
+
+			goto accept;
+
+		dont_accept:
+			return true;
+
+		accept:
 			std::string fnName = text;
-			fnName.erase(fnName.find(keyword.first.keyword_name));
 
 			for (auto& ch : fnName)
 			{
@@ -332,7 +438,6 @@ bool CompilerBackendCPlusPlus::Compile(const std::string& text,
 			syntax_tree.fUserValue = "export .code64 __MPCC_" + fnName + "\n";
 
 			++kLevelFunction;
-			break;
 		}
 		case ParserKit::KeywordKind::eKeywordKindFunctionEnd: {
 			if (text.ends_with(";"))
@@ -369,7 +474,7 @@ bool CompilerBackendCPlusPlus::Compile(const std::string& text,
 			}
 			else if (keyword.first.keyword_kind == ParserKit::KeywordKind::eKeywordKindEndInstr)
 			{
-			    break;
+				break;
 			}
 
 			while (valueOfVar.find(";") != std::string::npos &&
