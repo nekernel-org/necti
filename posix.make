@@ -7,7 +7,7 @@
  # 	========================================================
  #
 
-COMMON_INC=-I./Headers -I./ -I./Sources/Detail
+COMMON_INC=-I./NDKKit -I./ -I./Sources/Detail
 LINK_CC=clang++ -std=c++20
 LINK_SRC=Sources/link.cxx
 LINK_OUTPUT=Output/link
@@ -42,8 +42,8 @@ IASM_SRC=Sources/i64asm.cxx $(SRC_COMMON)
 IASM_OUTPUT=Output/i64asm
 
 # Power4 Assembler (IBM RISC)
-PPCASM_SRC=Sources/ppcasm.cxx $(SRC_COMMON)
-PPCASM_OUTPUT=Output/ppcasm
+PPCASM_SRC=Sources/power-as.cxx $(SRC_COMMON)
+PPCASM_OUTPUT=Output/power-as
 
 .PHONY: all
 all: pre-processor compiler linker

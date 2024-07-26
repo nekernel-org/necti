@@ -6,12 +6,12 @@
 
 #pragma once
 
-#include <Headers/AsmKit/AsmKit.hpp>
+#include <NDKKit/AsmKit/AsmKit.hpp>
 #include <vector>
 
-namespace ParserKit
+namespace CompilerKit
 {
-	using namespace CompilerKit;
+	inline auto cInvalidLang = "?";
 
 	/// @brief Compiler backend, implements a frontend, such as C, C++...
 	/// See Toolchain, for some examples.
@@ -34,7 +34,12 @@ namespace ParserKit
 		//! @brief What language are we dealing with?
 		virtual const char* Language()
 		{
-			return "Invalid Language";
+			return cInvalidLang;
+		}
+
+		virtual bool IsValid()
+		{
+			return strcmp(this->Language(), cInvalidLang);
 		}
 	};
 
@@ -170,4 +175,4 @@ namespace ParserKit
 
 		return false;
 	}
-} // namespace ParserKit
+} // namespace CompilerKit

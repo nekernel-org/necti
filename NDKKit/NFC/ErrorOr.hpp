@@ -9,8 +9,8 @@
 
 #pragma once
 
-#include <Headers/Defines.hpp>
-#include <Headers/StdKit/Ref.hpp>
+#include <NDKKit/Defines.hpp>
+#include <NDKKit/NFC/Ref.hpp>
 
 namespace CompilerKit
 {

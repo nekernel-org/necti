@@ -6,9 +6,9 @@
 
 #pragma once
 
-#include <Headers/Macros.hpp>
-#include <Headers/Defines.hpp>
-#include <Headers/StdKit/String.hpp>
+#include <NDKKit/Macros.hpp>
+#include <NDKKit/Defines.hpp>
+#include <NDKKit/NFC/String.hpp>
 
 namespace CompilerKit
 {

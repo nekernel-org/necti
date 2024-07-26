@@ -6,8 +6,8 @@
 
 #pragma once
 
-#include <Headers/AsmKit/AsmKit.hpp>
-#include <Headers/ParserKit.hpp>
+#include <NDKKit/AsmKit/AsmKit.hpp>
+#include <NDKKit/Parser.hpp>
 
 #define kZero64Section ".zero64"
 #define kCode64Section ".code64"

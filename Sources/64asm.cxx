@@ -19,10 +19,10 @@
 
 #define __ASM_NEED_64x0__ 1
 
-#include <Headers/AsmKit/CPU/64x0.hpp>
-#include <Headers/ParserKit.hpp>
-#include <Headers/StdKit/AE.hpp>
-#include <Headers/StdKit/PEF.hpp>
+#include <NDKKit/AsmKit/CPU/64x0.hpp>
+#include <NDKKit/Parser.hpp>
+#include <NDKKit/NFC/AE.hpp>
+#include <NDKKit/NFC/PEF.hpp>
 #include <algorithm>
 #include <filesystem>
 #include <fstream>
@@ -107,24 +107,24 @@ void print_warning(std::string reason, const std::string &file) noexcept {
 
 NDK_MODULE(NewOSAssembler64000) {
   for (size_t i = 1; i < argc; ++i) {
-    if (argv[i][0] == '-') {
-      if (strcmp(argv[i], "-version") == 0 || strcmp(argv[i], "-v") == 0) {
+    if (argv[i][0] == '/') {
+      if (strcmp(argv[i], "/version") == 0 || strcmp(argv[i], "/v") == 0) {
         kStdOut << "64asm: 64x0 Assembler.\n64asm: v1.10\n64asm: Copyright (c) "
                    "ZKA Technologies.\n";
         return 0;
-      } else if (strcmp(argv[i], "-h") == 0) {
+      } else if (strcmp(argv[i], "/h") == 0) {
         kStdOut << "64asm: 64x0 Assembler.\n64asm: Copyright (c) 2024 Mahrouss "
                    "Logic.\n";
-        kStdOut << "-version: Print program version.\n";
-        kStdOut << "-verbose: Print verbose output.\n";
-        kStdOut << "-binary: Output as flat binary.\n";
-        kStdOut << "-64xxx: Compile for a subset of the X64000.\n";
+        kStdOut << "/version: Print program version.\n";
+        kStdOut << "/verbose: Print verbose output.\n";
+        kStdOut << "/binary: Output as flat binary.\n";
+        kStdOut << "/64xxx: Compile for a subset of the X64000.\n";
 
         return 0;
-      } else if (strcmp(argv[i], "-binary") == 0) {
+      } else if (strcmp(argv[i], "/binary") == 0) {
         kOutputAsBinary = true;
         continue;
-      } else if (strcmp(argv[i], "-verbose") == 0) {
+      } else if (strcmp(argv[i], "/verbose") == 0) {
         kVerbose = true;
         continue;
       }
@@ -303,7 +303,7 @@ asm_fail_exit:
 static bool asm_read_attributes(std::string &line) {
   // import is the opposite of export, it signals to the ld
   // that we need this symbol.
-  if (ParserKit::find_word(line, "import")) {
+  if (CompilerKit::find_word(line, "import")) {
     if (kOutputAsBinary) {
       detail::print_error("Invalid import directive in flat binary mode.",
                           "64asm");
@@ -314,7 +314,7 @@ static bool asm_read_attributes(std::string &line) {
 
     /// sanity check to avoid stupid linker errors.
     if (name.size() == 0) {
-      detail::print_error("Invalid import", "ppcasm");
+      detail::print_error("Invalid import", "power-as");
       throw std::runtime_error("invalid_import");
     }
 
@@ -364,7 +364,7 @@ static bool asm_read_attributes(std::string &line) {
   // export is a special keyword used by 64asm to tell the AE output stage to
   // mark this section as a header. it currently supports .code64, .data64.,
   // .zero64
-  else if (ParserKit::find_word(line, "export")) {
+  else if (CompilerKit::find_word(line, "export")) {
     if (kOutputAsBinary) {
       detail::print_error("Invalid export directive in flat binary mode.",
                           "64asm");
@@ -454,9 +454,9 @@ std::string CompilerKit::Encoder64x0::CheckLine(std::string &line,
                                                 const std::string &file) {
   std::string err_str;
 
-  if (line.empty() || ParserKit::find_word(line, "import") ||
-      ParserKit::find_word(line, "export") ||
-      line.find('#') != std::string::npos || ParserKit::find_word(line, ";")) {
+  if (line.empty() || CompilerKit::find_word(line, "import") ||
+      CompilerKit::find_word(line, "export") ||
+      line.find('#') != std::string::npos || CompilerKit::find_word(line, ";")) {
     if (line.find('#') != std::string::npos) {
       line.erase(line.find('#'));
     } else if (line.find(';') != std::string::npos) {
@@ -539,7 +539,7 @@ std::string CompilerKit::Encoder64x0::CheckLine(std::string &line,
       if (auto it = std::find(filter_inst.begin(), filter_inst.end(),
                               opcode64x0.fName);
           it == filter_inst.cend()) {
-        if (ParserKit::find_word(line, opcode64x0.fName)) {
+        if (CompilerKit::find_word(line, opcode64x0.fName)) {
           if (!isspace(line[line.find(opcode64x0.fName) +
                             strlen(opcode64x0.fName)])) {
             err_str += "\nMissing space between ";
@@ -668,11 +668,11 @@ bool CompilerKit::Encoder64x0::WriteNumber(const std::size_t &pos,
 
 bool CompilerKit::Encoder64x0::WriteLine(std::string &line,
                                          const std::string &file) {
-  if (ParserKit::find_word(line, "export ")) return true;
+  if (CompilerKit::find_word(line, "export ")) return true;
 
   for (auto &opcode64x0 : kOpcodes64x0) {
     // strict check here
-    if (ParserKit::find_word(line, opcode64x0.fName) &&
+    if (CompilerKit::find_word(line, opcode64x0.fName) &&
         detail::algorithm::is_valid(line)) {
       std::string name(opcode64x0.fName);
       std::string jump_label, cpy_jump_label;

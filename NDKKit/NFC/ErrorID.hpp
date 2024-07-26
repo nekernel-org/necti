@@ -9,8 +9,8 @@
 
 #pragma once
 
-#include <Headers/Defines.hpp>
-#include <Headers/StdKit/ErrorOr.hpp>
+#include <NDKKit/Defines.hpp>
+#include <NDKKit/NFC/ErrorOr.hpp>
 
 #define MPCC_EXEC_ERROR		-30
 #define MPCC_FILE_NOT_FOUND -31

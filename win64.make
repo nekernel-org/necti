@@ -7,7 +7,7 @@
  # 	========================================================
  #
 
-COMMON_INC=-I./Headers -I./ -I./Sources/Detail
+COMMON_INC=-I./NDKKit -I./ -I./Sources/Detail
 LINK_CC=clang++ -std=c++20 -Xlinker -s
 LINK_SRC=Sources/link.cxx
 LINK_OUTPUT=Output/link.exe
@@ -41,8 +41,8 @@ IASM_SRC=Sources/i64asm.cxx $(SRC_COMMON)
 IASM_OUTPUT=Output/i64asm.exe
 
 # POWER Assembler
-PPCASM_SRC=Sources/ppcasm.cxx $(SRC_COMMON)
-PPCASM_OUTPUT=Output/ppcasm.exe
+PPCASM_SRC=Sources/power-as.cxx $(SRC_COMMON)
+PPCASM_OUTPUT=Output/power-as.exe
 
 .PHONY: all
 all: pre-processor compiler linker

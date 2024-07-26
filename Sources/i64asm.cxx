@@ -27,10 +27,10 @@
 #define kAssemblerPragmaSymStr "#"
 #define kAssemblerPragmaSym	   '#'
 
-#include <Headers/AsmKit/CPU/amd64.hpp>
-#include <Headers/ParserKit.hpp>
-#include <Headers/StdKit/AE.hpp>
-#include <Headers/StdKit/PEF.hpp>
+#include <NDKKit/AsmKit/CPU/amd64.hpp>
+#include <NDKKit/Parser.hpp>
+#include <NDKKit/NFC/AE.hpp>
+#include <NDKKit/NFC/PEF.hpp>
 #include <algorithm>
 #include <cstdlib>
 #include <filesystem>
@@ -412,7 +412,7 @@ static bool asm_read_attributes(std::string& line)
 {
 	// import is the opposite of export, it signals to the ld
 	// that we need this symbol.
-	if (ParserKit::find_word(line, "import"))
+	if (CompilerKit::find_word(line, "import"))
 	{
 		if (kOutputAsBinary)
 		{
@@ -424,7 +424,7 @@ static bool asm_read_attributes(std::string& line)
 
 		if (name.size() == 0)
 		{
-			detail::print_error("Invalid import", "ppcasm");
+			detail::print_error("Invalid import", "power-as");
 			throw std::runtime_error("invalid_import");
 		}
 
@@ -483,7 +483,7 @@ static bool asm_read_attributes(std::string& line)
 	// export is a special keyword used by i64asm to tell the AE output stage to
 	// mark this section as a header. it currently supports .code64, .data64 and
 	// .zero64.
-	else if (ParserKit::find_word(line, "export"))
+	else if (CompilerKit::find_word(line, "export"))
 	{
 		if (kOutputAsBinary)
 		{
@@ -596,10 +596,10 @@ std::string CompilerKit::EncoderAMD64::CheckLine(std::string&		line,
 {
 	std::string err_str;
 
-	if (line.empty() || ParserKit::find_word(line, "import") ||
-		ParserKit::find_word(line, "export") ||
-		ParserKit::find_word(line, kAssemblerPragmaSymStr) ||
-		ParserKit::find_word(line, ";") || line[0] == kAssemblerPragmaSym)
+	if (line.empty() || CompilerKit::find_word(line, "import") ||
+		CompilerKit::find_word(line, "export") ||
+		CompilerKit::find_word(line, kAssemblerPragmaSymStr) ||
+		CompilerKit::find_word(line, ";") || line[0] == kAssemblerPragmaSym)
 	{
 		if (line.find(';') != std::string::npos)
 		{
@@ -671,7 +671,7 @@ std::string CompilerKit::EncoderAMD64::CheckLine(std::string&		line,
 	}
 	for (auto& opcodeAMD64 : kOpcodesAMD64)
 	{
-		if (ParserKit::find_word(line, opcodeAMD64.fName))
+		if (CompilerKit::find_word(line, opcodeAMD64.fName))
 		{
 			return err_str;
 		}
@@ -1184,7 +1184,7 @@ bool CompilerKit::EncoderAMD64::WriteNumber8(const std::size_t& pos,
 bool CompilerKit::EncoderAMD64::WriteLine(std::string&		 line,
 										  const std::string& file)
 {
-	if (ParserKit::find_word(line, "export "))
+	if (CompilerKit::find_word(line, "export "))
 		return true;
 
 	struct RegMapAMD64
@@ -1216,7 +1216,7 @@ bool CompilerKit::EncoderAMD64::WriteLine(std::string&		 line,
 	for (auto& opcodeAMD64 : kOpcodesAMD64)
 	{
 		// strict check here
-		if (ParserKit::find_word(line, opcodeAMD64.fName) &&
+		if (CompilerKit::find_word(line, opcodeAMD64.fName) &&
 			detail::algorithm::is_valid(line))
 		{
 			foundInstruction = true;

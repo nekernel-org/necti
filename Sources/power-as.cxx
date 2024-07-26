@@ -6,7 +6,7 @@
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
-/// @file ppcasm.cxx
+/// @file power-as.cxx
 /// @author Amlal EL Mahrouss
 /// @brief POWER Assembler.
 
@@ -17,12 +17,12 @@
 
 #define __ASM_NEED_PPC__ 1
 
-#include <Headers/StdKit/ErrorID.hpp>
-#include <Headers/AsmKit/CPU/ppc.hpp>
-#include <Headers/StdKit/PEF.hpp>
-#include <Headers/ParserKit.hpp>
-#include <Headers/StdKit/AE.hpp>
-#include <Headers/Version.hxx>
+#include <NDKKit/NFC/ErrorID.hpp>
+#include <NDKKit/AsmKit/CPU/ppc.hpp>
+#include <NDKKit/NFC/PEF.hpp>
+#include <NDKKit/Parser.hpp>
+#include <NDKKit/NFC/AE.hpp>
+#include <NDKKit/Version.hpp>
 #include <filesystem>
 #include <algorithm>
 #include <iostream>
@@ -76,11 +76,11 @@ namespace detail {
 void print_error(std::string reason, const std::string &file) noexcept {
   if (reason[0] == '\n') reason.erase(0, 1);
 
-  kStdErr << kRed << "[ ppcasm ] " << kWhite
-          << ((file == "ppcasm") ? "internal assembler error "
+  kStdErr << kRed << "[ power-as ] " << kWhite
+          << ((file == "power-as") ? "internal assembler error "
                                  : ("in file, " + file))
           << kBlank << std::endl;
-  kStdErr << kRed << "[ ppcasm ] " << kWhite << reason << kBlank << std::endl;
+  kStdErr << kRed << "[ power-as ] " << kWhite << reason << kBlank << std::endl;
 
   if (kAcceptableErrors > kErrorLimit) std::exit(3);
 
@@ -94,7 +94,7 @@ void print_warning(std::string reason, const std::string &file) noexcept {
     kStdOut << kYellow << "[ file ] " << kWhite << file << kBlank << std::endl;
   }
 
-  kStdOut << kYellow << "[ ppcasm ] " << kWhite << reason << kBlank
+  kStdOut << kYellow << "[ power-as ] " << kWhite << reason << kBlank
           << std::endl;
 }
 }  // namespace detail
@@ -112,12 +112,12 @@ NDK_MODULE(NewOSAssemblerPowerPC) {
   for (size_t i = 1; i < argc; ++i) {
     if (argv[i][0] == '/') {
       if (strcmp(argv[i], "/version") == 0 || strcmp(argv[i], "/v") == 0) {
-		kStdOut << "ppcasm: POWER64 Assembler Driver.\nppcasm: " << kDistVersion << "\nppcasm: "
+		kStdOut << "power-as: POWER64 Assembler Driver.\npower-as: " << kDistVersion << "\npower-as: "
                    "Copyright (c) "
                    "ZKA Technologies.\n";
         return 0;
       } else if (strcmp(argv[i], "/h") == 0) {
-		kStdOut << "ppcasm: POWER64 Assembler Driver.\nppcasm: Copyright (c) 2024 "
+		kStdOut << "power-as: POWER64 Assembler Driver.\npower-as: Copyright (c) 2024 "
                    "ZKA Technologies.\n";
         kStdOut << "/version,/v: print program version.\n";
         kStdOut << "/verbose: print verbose output.\n";
@@ -132,12 +132,12 @@ NDK_MODULE(NewOSAssemblerPowerPC) {
         continue;
       }
 
-      kStdOut << "ppcasm: ignore " << argv[i] << "\n";
+      kStdOut << "power-as: ignore " << argv[i] << "\n";
       continue;
     }
 
     if (!std::filesystem::exists(argv[i])) {
-      kStdOut << "ppcasm: can't open: " << argv[i] << std::endl;
+      kStdOut << "power-as: can't open: " << argv[i] << std::endl;
       goto asm_fail_exit;
     }
 
@@ -156,7 +156,7 @@ NDK_MODULE(NewOSAssemblerPowerPC) {
 
     if (file_ptr_out.bad()) {
       if (kVerbose) {
-        kStdOut << "ppcasm: error: " << strerror(errno) << "\n";
+        kStdOut << "power-as: error: " << strerror(errno) << "\n";
       }
     }
 
@@ -191,7 +191,7 @@ NDK_MODULE(NewOSAssemblerPowerPC) {
       } catch (const std::exception &e) {
         if (kVerbose) {
           std::string what = e.what();
-          detail::print_warning("exit because of: " + what, "ppcasm");
+          detail::print_warning("exit because of: " + what, "power-as");
         }
 
         std::filesystem::remove(object_output);
@@ -201,7 +201,7 @@ NDK_MODULE(NewOSAssemblerPowerPC) {
 
     if (!kOutputAsBinary) {
       if (kVerbose) {
-        kStdOut << "ppcasm: Writing object file...\n";
+        kStdOut << "power-as: Writing object file...\n";
       }
 
       // this is the final step, write everything to the file.
@@ -213,8 +213,8 @@ NDK_MODULE(NewOSAssemblerPowerPC) {
       file_ptr_out << hdr;
 
       if (kRecords.empty()) {
-        kStdErr << "ppcasm: At least one record is needed to write an object "
-                   "file.\nppcasm: Make one using `export .code64 foo_bar`.\n";
+        kStdErr << "power-as: At least one record is needed to write an object "
+                   "file.\npower-as: Make one using `export .code64 foo_bar`.\n";
 
         std::filesystem::remove(object_output);
         return -1;
@@ -232,7 +232,7 @@ NDK_MODULE(NewOSAssemblerPowerPC) {
         file_ptr_out << record_hdr;
 
         if (kVerbose)
-          kStdOut << "ppcasm: Wrote record " << record_hdr.fName << "...\n";
+          kStdOut << "power-as: Wrote record " << record_hdr.fName << "...\n";
       }
 
       // increment once again, so that we won't lie about the kUndefinedSymbols.
@@ -242,7 +242,7 @@ NDK_MODULE(NewOSAssemblerPowerPC) {
         CompilerKit::AERecordHeader undefined_sym{0};
 
         if (kVerbose)
-          kStdOut << "ppcasm: Wrote symbol " << sym << " to file...\n";
+          kStdOut << "power-as: Wrote symbol " << sym << " to file...\n";
 
         undefined_sym.fKind = kAEInvalidOpcode;
         undefined_sym.fSize = sym.size();
@@ -270,7 +270,7 @@ NDK_MODULE(NewOSAssemblerPowerPC) {
       file_ptr_out.seekp(pos_end);
     } else {
       if (kVerbose) {
-        kStdOut << "ppcasm: Write raw binary...\n";
+        kStdOut << "power-as: Write raw binary...\n";
       }
     }
 
@@ -279,19 +279,19 @@ NDK_MODULE(NewOSAssemblerPowerPC) {
       file_ptr_out.write(reinterpret_cast<const char *>(&byte), sizeof(byte));
     }
 
-    if (kVerbose) kStdOut << "ppcasm: Wrote file with program in it.\n";
+    if (kVerbose) kStdOut << "power-as: Wrote file with program in it.\n";
 
     file_ptr_out.flush();
     file_ptr_out.close();
 
-    if (kVerbose) kStdOut << "ppcasm: Exit succeeded.\n";
+    if (kVerbose) kStdOut << "power-as: Exit succeeded.\n";
 
     return 0;
   }
 
 asm_fail_exit:
 
-  if (kVerbose) kStdOut << "ppcasm: Exit failed.\n";
+  if (kVerbose) kStdOut << "power-as: Exit failed.\n";
 
   return MPCC_EXEC_ERROR;
 }
@@ -306,17 +306,17 @@ asm_fail_exit:
 static bool asm_read_attributes(std::string &line) {
   // import is the opposite of export, it signals to the li
   // that we need this symbol.
-  if (ParserKit::find_word(line, "import")) {
+  if (CompilerKit::find_word(line, "import")) {
     if (kOutputAsBinary) {
       detail::print_error("Invalid import directive in flat binary mode.",
-                          "ppcasm");
+                          "power-as");
       throw std::runtime_error("invalid_import_bin");
     }
 
     auto name = line.substr(line.find("import") + strlen("import") + 1);
 
     if (name.size() == 0) {
-      detail::print_error("Invalid import", "ppcasm");
+      detail::print_error("Invalid import", "power-as");
       throw std::runtime_error("invalid_import");
     }
 
@@ -363,13 +363,13 @@ static bool asm_read_attributes(std::string &line) {
 
     return true;
   }
-  // export is a special keyword used by ppcasm to tell the AE output stage to
+  // export is a special keyword used by power-as to tell the AE output stage to
   // mark this section as a header. it currently supports .code64, .data64.,
   // .zero64
-  else if (ParserKit::find_word(line, "export")) {
+  else if (CompilerKit::find_word(line, "export")) {
     if (kOutputAsBinary) {
       detail::print_error("Invalid export directive in flat binary mode.",
-                          "ppcasm");
+                          "power-as");
       throw std::runtime_error("invalid_export_bin");
     }
 
@@ -456,9 +456,9 @@ std::string CompilerKit::EncoderPowerPC::CheckLine(std::string &line,
                                                    const std::string &file) {
   std::string err_str;
 
-  if (line.empty() || ParserKit::find_word(line, "import") ||
-      ParserKit::find_word(line, "export") ||
-      line.find('#') != std::string::npos || ParserKit::find_word(line, ";")) {
+  if (line.empty() || CompilerKit::find_word(line, "import") ||
+      CompilerKit::find_word(line, "export") ||
+      line.find('#') != std::string::npos || CompilerKit::find_word(line, ";")) {
     if (line.find('#') != std::string::npos) {
       line.erase(line.find('#'));
     } else if (line.find(';') != std::string::npos) {
@@ -524,7 +524,7 @@ std::string CompilerKit::EncoderPowerPC::CheckLine(std::string &line,
   std::vector<std::string> filter_inst = {"blr", "bl", "sc"};
 
   for (auto &opcodePPC : kOpcodesPowerPC) {
-    if (ParserKit::find_word(line, opcodePPC.name)) {
+    if (CompilerKit::find_word(line, opcodePPC.name)) {
       for (auto &op : operands_inst) {
         // if only the instruction was found.
         if (line == op) {
@@ -539,7 +539,7 @@ std::string CompilerKit::EncoderPowerPC::CheckLine(std::string &line,
       if (auto it =
               std::find(filter_inst.begin(), filter_inst.end(), opcodePPC.name);
           it == filter_inst.cend()) {
-        if (ParserKit::find_word(line, opcodePPC.name)) {
+        if (CompilerKit::find_word(line, opcodePPC.name)) {
           if (!isspace(
                   line[line.find(opcodePPC.name) + strlen(opcodePPC.name)])) {
             err_str += "\nMissing space between ";
@@ -568,7 +568,7 @@ bool CompilerKit::EncoderPowerPC::WriteNumber(const std::size_t &pos,
       if (auto res = strtol(jump_label.substr(pos + 2).c_str(), nullptr, 16);
           !res) {
         if (errno != 0) {
-          detail::print_error("invalid hex number: " + jump_label, "ppcasm");
+          detail::print_error("invalid hex number: " + jump_label, "power-as");
           throw std::runtime_error("invalid_hex");
         }
       }
@@ -581,7 +581,7 @@ bool CompilerKit::EncoderPowerPC::WriteNumber(const std::size_t &pos,
       }
 
       if (kVerbose) {
-        kStdOut << "ppcasm: found a base 16 number here: "
+        kStdOut << "power-as: found a base 16 number here: "
                 << jump_label.substr(pos) << "\n";
       }
 
@@ -591,7 +591,7 @@ bool CompilerKit::EncoderPowerPC::WriteNumber(const std::size_t &pos,
       if (auto res = strtol(jump_label.substr(pos + 2).c_str(), nullptr, 2);
           !res) {
         if (errno != 0) {
-          detail::print_error("invalid binary number: " + jump_label, "ppcasm");
+          detail::print_error("invalid binary number: " + jump_label, "power-as");
           throw std::runtime_error("invalid_bin");
         }
       }
@@ -600,7 +600,7 @@ bool CompilerKit::EncoderPowerPC::WriteNumber(const std::size_t &pos,
           strtol(jump_label.substr(pos + 2).c_str(), nullptr, 2));
 
       if (kVerbose) {
-        kStdOut << "ppcasm: found a base 2 number here: "
+        kStdOut << "power-as: found a base 2 number here: "
                 << jump_label.substr(pos) << "\n";
       }
 
@@ -614,7 +614,7 @@ bool CompilerKit::EncoderPowerPC::WriteNumber(const std::size_t &pos,
       if (auto res = strtol(jump_label.substr(pos + 2).c_str(), nullptr, 7);
           !res) {
         if (errno != 0) {
-          detail::print_error("invalid octal number: " + jump_label, "ppcasm");
+          detail::print_error("invalid octal number: " + jump_label, "power-as");
           throw std::runtime_error("invalid_octal");
         }
       }
@@ -623,7 +623,7 @@ bool CompilerKit::EncoderPowerPC::WriteNumber(const std::size_t &pos,
           strtol(jump_label.substr(pos + 2).c_str(), nullptr, 7));
 
       if (kVerbose) {
-        kStdOut << "ppcasm: found a base 8 number here: "
+        kStdOut << "power-as: found a base 8 number here: "
                 << jump_label.substr(pos) << "\n";
       }
 
@@ -653,7 +653,7 @@ bool CompilerKit::EncoderPowerPC::WriteNumber(const std::size_t &pos,
   }
 
   if (kVerbose) {
-    kStdOut << "ppcasm: found a base 10 number here: " << jump_label.substr(pos)
+    kStdOut << "power-as: found a base 10 number here: " << jump_label.substr(pos)
             << "\n";
   }
 
@@ -668,12 +668,12 @@ bool CompilerKit::EncoderPowerPC::WriteNumber(const std::size_t &pos,
 
 bool CompilerKit::EncoderPowerPC::WriteLine(std::string &line,
                                             const std::string &file) {
-  if (ParserKit::find_word(line, "export")) return true;
+  if (CompilerKit::find_word(line, "export")) return true;
   if (!detail::algorithm::is_valid(line)) return true;
 
   for (auto &opcodePPC : kOpcodesPowerPC) {
     // strict check here
-    if (ParserKit::find_word(line, opcodePPC.name)) {
+    if (CompilerKit::find_word(line, opcodePPC.name)) {
       std::string name(opcodePPC.name);
       std::string jump_label, cpy_jump_label;
       std::vector<size_t> found_registers_index;
@@ -877,9 +877,9 @@ bool CompilerKit::EncoderPowerPC::WriteLine(std::string &line,
                 }
 
                 if (kVerbose) {
-                  kStdOut << "ppcasm: Found register: " << register_syntax
+                  kStdOut << "power-as: Found register: " << register_syntax
                           << "\n";
-                  kStdOut << "ppcasm: Amount of registers in instruction: "
+                  kStdOut << "power-as: Amount of registers in instruction: "
                           << found_some_count << "\n";
                 }
 
@@ -945,7 +945,7 @@ bool CompilerKit::EncoderPowerPC::WriteLine(std::string &line,
             // remember! register to register!
             if (found_some_count == 1) {
               detail::print_error(
-                  "Unrecognized register found.\ntip: each ppcasm register "
+                  "Unrecognized register found.\ntip: each power-as register "
                   "starts with 'r'.\nline: " +
                       line,
                   file);

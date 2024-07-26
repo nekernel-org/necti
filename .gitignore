@@ -77,7 +77,7 @@ Output/i64link
 Output/link
 Output/power-cc
 Output/ppc-cc
-Output/ppcasm
+Output/power-as
 Output/ppclink
 
 .vs

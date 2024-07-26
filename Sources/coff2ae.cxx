@@ -4,9 +4,9 @@
 
 ------------------------------------------- */
 
-#include <Headers/ParserKit.hpp>
-#include <Headers/StdKit/AE.hpp>
-#include <Headers/StdKit/PEF.hpp>
+#include <NDKKit/Parser.hpp>
+#include <NDKKit/NFC/AE.hpp>
+#include <NDKKit/NFC/PEF.hpp>
 #include <filesystem>
 #include <fstream>
 #include <iostream>

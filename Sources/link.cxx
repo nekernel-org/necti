@@ -13,23 +13,23 @@
 /// @note Do not look up for anything with .code64/.data64/.zero64!
 /// It will be loaded when program will start up!
 
-#include <Headers/StdKit/ErrorID.hpp>
+#include <NDKKit/NFC/ErrorID.hpp>
 
 //! Assembler Kit
-#include <Headers/AsmKit/AsmKit.hpp>
+#include <NDKKit/AsmKit/AsmKit.hpp>
 
 //! Preferred Executable Format
-#include <Headers/StdKit/PEF.hpp>
-#include <Headers/UUID.hpp>
+#include <NDKKit/NFC/PEF.hpp>
+#include <NDKKit/UUID.hpp>
 #include <filesystem>
 #include <random>
 #include <vector>
 
 //! Dist version
-#include <Headers/Version.hxx>
+#include <NDKKit/Version.hpp>
 
 //! Advanced Executable Object Format
-#include <Headers/StdKit/AE.hpp>
+#include <NDKKit/NFC/AE.hpp>
 
 //! C++ I/O headers.
 #include <fstream>

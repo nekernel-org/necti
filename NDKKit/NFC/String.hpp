@@ -9,8 +9,8 @@
 
 #pragma once
 
-#include <Headers/Defines.hpp>
-#include <Headers/StdKit/ErrorOr.hpp>
+#include <NDKKit/Defines.hpp>
+#include <NDKKit/NFC/ErrorOr.hpp>
 
 namespace CompilerKit
 {

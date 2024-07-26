@@ -19,10 +19,10 @@
 
 #define __ASM_NEED_32x0__ 1
 
-#include <Headers/AsmKit/CPU/32x0.hpp>
-#include <Headers/ParserKit.hpp>
-#include <Headers/StdKit/AE.hpp>
-#include <Headers/StdKit/PEF.hpp>
+#include <NDKKit/AsmKit/CPU/32x0.hpp>
+#include <NDKKit/Parser.hpp>
+#include <NDKKit/NFC/AE.hpp>
+#include <NDKKit/NFC/PEF.hpp>
 #include <filesystem>
 #include <fstream>
 #include <iostream>

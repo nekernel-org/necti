@@ -6,7 +6,7 @@ Copyright ZKA Technologies
 
 #pragma once
 
-#include <Headers/Defines.hpp>
+#include <NDKKit/Defines.hpp>
 
 /// @brief ARM64 encoding support.
 /// @file CPU/arm64.hpp

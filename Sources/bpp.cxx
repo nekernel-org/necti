@@ -9,8 +9,8 @@
 
 /// BUGS: 0
 
-#include <Headers/ParserKit.hpp>
-#include <Headers/StdKit/ErrorID.hpp>
+#include <NDKKit/Parser.hpp>
+#include <NDKKit/NFC/ErrorID.hpp>
 #include <algorithm>
 #include <filesystem>
 #include <fstream>
@@ -279,7 +279,7 @@ void bpp_parse_file(std::ifstream &hdr_file, std::ofstream &pp_out) {
       }
 
       for (auto macro : kMacros) {
-        if (ParserKit::find_word(hdr_line, macro.fName) &&
+        if (CompilerKit::find_word(hdr_line, macro.fName) &&
             hdr_line.find("%def") == std::string::npos) {
           auto value = macro.fValue;
 

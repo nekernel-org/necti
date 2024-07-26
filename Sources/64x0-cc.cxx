@@ -10,9 +10,9 @@
 /// BUGS: ?
 /// TODO:
 
-#include <Headers/AsmKit/CPU/64x0.hpp>
-#include <Headers/ParserKit.hpp>
-#include <Headers/UUID.hpp>
+#include <NDKKit/AsmKit/CPU/64x0.hpp>
+#include <NDKKit/Parser.hpp>
+#include <NDKKit/UUID.hpp>
 #include <filesystem>
 #include <cstdio>
 #include <fstream>
@@ -79,10 +79,10 @@ namespace detail
 
 	struct CompilerState final
 	{
-		std::vector<ParserKit::SyntaxLeafList> fSyntaxTreeList;
+		std::vector<CompilerKit::SyntaxLeafList> fSyntaxTreeList;
 		std::vector<CompilerRegisterMap>	   kStackFrame;
 		std::vector<CompilerStructMap>		   kStructMap;
-		ParserKit::SyntaxLeafList*			   fSyntaxTree{nullptr};
+		CompilerKit::SyntaxLeafList*			   fSyntaxTree{nullptr};
 		std::unique_ptr<std::ofstream>		   fOutputAssembly;
 		std::string							   fLastFile;
 		std::string							   fLastError;
@@ -172,7 +172,7 @@ static bool							kIfFound	 = false;
 static size_t						kBracesCount = 0UL;
 
 /* @brief C compiler backend for C */
-class CompilerBackendCLang final : public ParserKit::CompilerBackend
+class CompilerBackendCLang final : public CompilerKit::CompilerBackend
 {
 public:
 	explicit CompilerBackendCLang()	 = default;
@@ -249,7 +249,7 @@ bool CompilerBackendCLang::Compile(const std::string& text, const char* file)
 	// start parsing
 	for (size_t text_index = 0; text_index < textBuffer.size(); ++text_index)
 	{
-		auto syntaxLeaf = ParserKit::SyntaxLeafList::SyntaxLeaf();
+		auto syntaxLeaf = CompilerKit::SyntaxLeafList::SyntaxLeaf();
 
 		auto		gen = uuids::uuid_random_generator{generator};
 		uuids::uuid out = gen();
@@ -767,7 +767,7 @@ bool CompilerBackendCLang::Compile(const std::string& text, const char* file)
 		syntaxLeaf.fUserValue.clear();
 	}
 
-	auto syntaxLeaf		  = ParserKit::SyntaxLeafList::SyntaxLeaf();
+	auto syntaxLeaf		  = CompilerKit::SyntaxLeafList::SyntaxLeaf();
 	syntaxLeaf.fUserValue = "\n";
 	kState.fSyntaxTree->fLeafList.push_back(syntaxLeaf);
 
@@ -1035,7 +1035,7 @@ cc_next:
 
 	// extern does not declare anything, it imports a variable.
 	// so that's why it's not declare upper.
-	if (ParserKit::find_word(ln, "extern"))
+	if (CompilerKit::find_word(ln, "extern"))
 	{
 		auto substr = ln.substr(ln.find("extern") + strlen("extern"));
 		kCompilerVariables.push_back({.fValue = substr});
@@ -1106,7 +1106,7 @@ skip_braces_check:
 
 	for (auto& key : kCompilerTypes)
 	{
-		if (ParserKit::find_word(ln, key.fName))
+		if (CompilerKit::find_word(ln, key.fName))
 		{
 			if (isdigit(ln[ln.find(key.fName) + key.fName.size() + 1]))
 			{
@@ -1207,9 +1207,9 @@ skip_braces_check:
 
 	if (ln.find('(') != std::string::npos)
 	{
-		if (ln.find(';') == std::string::npos && !ParserKit::find_word(ln, "|") &&
-			!ParserKit::find_word(ln, "||") && !ParserKit::find_word(ln, "&") &&
-			!ParserKit::find_word(ln, "&&") && !ParserKit::find_word(ln, "~"))
+		if (ln.find(';') == std::string::npos && !CompilerKit::find_word(ln, "|") &&
+			!CompilerKit::find_word(ln, "||") && !CompilerKit::find_word(ln, "&") &&
+			!CompilerKit::find_word(ln, "&&") && !CompilerKit::find_word(ln, "~"))
 		{
 			bool			  found_func = false;
 			size_t			  i			 = ln.find('(');
@@ -1374,7 +1374,7 @@ public:
 			<< "# Language: 64x0 Assembly (Generated from ANSI C)\n";
 		(*kState.fOutputAssembly) << "# Date: " << fmt << "\n\n";
 
-		ParserKit::SyntaxLeafList syntax;
+		CompilerKit::SyntaxLeafList syntax;
 
 		kState.fSyntaxTreeList.push_back(syntax);
 		kState.fSyntaxTree =
@@ -1411,7 +1411,7 @@ public:
 
 			for (auto& access_ident : access_keywords)
 			{
-				if (ParserKit::find_word(leaf.fUserValue, access_ident))
+				if (CompilerKit::find_word(leaf.fUserValue, access_ident))
 				{
 					for (auto& struc : kState.kStructMap)
 					{
@@ -1422,7 +1422,7 @@ public:
 
 			for (auto& keyword : keywords)
 			{
-				if (ParserKit::find_word(leaf.fUserValue, keyword))
+				if (CompilerKit::find_word(leaf.fUserValue, keyword))
 				{
 					std::size_t cnt = 0UL;
 
@@ -1453,7 +1453,7 @@ public:
 							}
 						}
 
-						if (ParserKit::find_word(leaf.fUserValue, needle))
+						if (CompilerKit::find_word(leaf.fUserValue, needle))
 						{
 							if (leaf.fUserValue.find("import " + needle) !=
 								std::string::npos)
@@ -1509,7 +1509,7 @@ public:
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
-#include <Version.hxx>
+#include <Version.hpp>
 
 #define kPrintF printf
 #define kSplashCxx() \
