@@ -1,4 +1,4 @@
-# NDKKit (C++ SDK for ZKA)
+# NDK C++ SDK for ZKA.
 
 ## Installing
 
