@@ -1,49 +1,48 @@
  #
  #	========================================================
  #
- #	MPCC
- # 	Copyright Mahrouss Logic, all rights reserved.
+ #	NDK
+ # 	Copyright ZKA Technologies, all rights reserved.
  #
  # 	========================================================
  #
 
-COMMON_INC=-I./Headers -I./ -I./Sources/Detail
-LINK_CC=x86_64-w64-mingw32-g++.exe -std=c++20 -Xlinker -s
-WINRES=x86_64-w64-mingw32-windres
-LINK_SRC=Sources/link.cc
+COMMON_INC=-I./NDKKit -I./ -I./NDKKit/Sources/Detail
+LINK_CC=clang++ -std=c++20 -Xlinker -s
+LINK_SRC=NDKKit/Sources/link.cxx
 LINK_OUTPUT=Output/link.exe
 LINK_ALT_OUTPUT=Output/64link.exe
 LINK_ALT_3_OUTPUT=Output/i64link.exe
 LINK_ALT_2_OUTPUT=Output/32link.exe
 
-PP_SRC=Sources/bpp.cc
+PP_SRC=NDKKit/Sources/bpp.cxx
 PP_OUTPUT=Output/bpp.exe
 
-SRC_COMMON=Sources/String.cc Sources/AsmKit.cc
+SRC_COMMON=NDKKit/Sources/String.cxx NDKKit/Sources/AssemblyFactory.cxx
 
 # C++ Compiler (AMD64)
-AMD64_CXX_SRC=Sources/amd64-cplusplus.cc $(SRC_COMMON)
-AMD64_CXX_OUTPUT=Output/amd64-cplusplus.exe
+AMD64_CXX_SRC=NDKKit/Sources/cplusplus.cxx $(SRC_COMMON)
+AMD64_CXX_OUTPUT=Output/cplusplus.exe
 
 # C Compiler (POWER)
-64X0_CC_SRC=Sources/64x0-cc.cc $(SRC_COMMON)
+64X0_CC_SRC=NDKKit/Sources/64x0-cc.cxx $(SRC_COMMON)
 64X0_CC_OUTPUT=Output/64x0-cc.exe
 
 # C Compiler
-PPC_CC_SRC=Sources/ppc-cc.cc $(SRC_COMMON)
-PPC_CC_OUTPUT=Output/ppc-cc.exe
+PPC_CC_SRC=NDKKit/Sources/power-cc.cxx $(SRC_COMMON)
+PPC_CC_OUTPUT=Output/power-cc.exe
 
 # 64x0 Assembler
-ASM_SRC=Sources/64asm.cc $(SRC_COMMON)
+ASM_SRC=NDKKit/Sources/64asm.cxx $(SRC_COMMON)
 ASM_OUTPUT=Output/64asm.exe
 
 # AMD64 Assembler
-IASM_SRC=Sources/i64asm.cc $(SRC_COMMON)
+IASM_SRC=NDKKit/Sources/i64asm.cxx $(SRC_COMMON)
 IASM_OUTPUT=Output/i64asm.exe
 
 # POWER Assembler
-PPCASM_SRC=Sources/ppcasm.cc $(SRC_COMMON)
-PPCASM_OUTPUT=Output/ppcasm.exe
+PPCASM_SRC=NDKKit/Sources/power-as.cxx $(SRC_COMMON)
+PPCASM_OUTPUT=Output/power-as.exe
 
 .PHONY: all
 all: pre-processor compiler linker
@@ -51,36 +50,29 @@ all: pre-processor compiler linker
 
 .PHONY: pre-processor
 pre-processor:
-	$(WINRES) bpp.rsrc -O coff -o bpp.obj
-	$(LINK_CC) $(COMMON_INC) $(PP_SRC) bpp.obj -o $(PP_OUTPUT)
+	$(LINK_CC) $(COMMON_INC) $(PP_SRC) -o $(PP_OUTPUT)
 
 .PHONY: compiler
 compiler:
-	$(WINRES) i64asm.rsrc -O coff -o i64asm.obj
-	$(WINRES) 64asm.rsrc -O coff -o 64asm.obj
-	$(WINRES) ppcasm.rsrc -O coff -o ppcasm.obj
-	$(WINRES) 64x0-cc.rsrc -O coff -o 64x0-cc.obj
-	$(WINRES) ppc-cc.rsrc -O coff -o ppc-cc.obj
-	$(LINK_CC) $(COMMON_INC) 64x0-cc.obj $(64X0_CC_SRC) -o $(64X0_CC_OUTPUT)
+	$(LINK_CC) $(COMMON_INC) $(64X0_CC_SRC) -o $(64X0_CC_OUTPUT)
 	$(LINK_CC) $(COMMON_INC) $(AMD64_CXX_SRC) -o $(AMD64_CXX_OUTPUT)
-	$(LINK_CC) $(COMMON_INC) ppc-cc.obj $(PPC_CC_SRC) -o $(PPC_CC_OUTPUT)
-	$(LINK_CC) $(COMMON_INC) i64asm.obj $(IASM_SRC) -o $(IASM_OUTPUT)
-	$(LINK_CC) $(COMMON_INC) 64asm.obj $(ASM_SRC) -o $(ASM_OUTPUT)
-	$(LINK_CC) $(COMMON_INC) ppcasm.obj $(PPCASM_SRC) -o $(PPCASM_OUTPUT)
+	$(LINK_CC) $(COMMON_INC) $(PPC_CC_SRC) -o $(PPC_CC_OUTPUT)
+	$(LINK_CC) $(COMMON_INC) $(IASM_SRC) -o $(IASM_OUTPUT)
+	$(LINK_CC) $(COMMON_INC) $(ASM_SRC) -o $(ASM_OUTPUT)
+	$(LINK_CC) $(COMMON_INC) $(PPCASM_SRC) -o $(PPCASM_OUTPUT)
 
 .PHONY: linker
 linker:
-	$(WINRES) link.rsrc -O coff -o link.obj
-	$(LINK_CC) $(COMMON_INC) link.obj $(LINK_SRC) -o $(LINK_OUTPUT)
+	$(LINK_CC) $(COMMON_INC) $(LINK_SRC) -o $(LINK_OUTPUT)
 	cp $(LINK_OUTPUT) $(LINK_ALT_OUTPUT)
 	cp $(LINK_OUTPUT) $(LINK_ALT_2_OUTPUT)
 	cp $(LINK_OUTPUT) $(LINK_ALT_3_OUTPUT)
 
 .PHONY: help
 help:
-	@echo "Compiler 	- Mahrouss Compilers."
-	@echo "Preprocessor 	- Mahrouss Preprocessors."
-	@echo "linker 		- Mahrouss Linkers."
+	@echo "compiler 	- ZKA Compiler Suite."
+	@echo "pre-processor 	- ZKA Preprocessor Suite."
+	@echo "linker 		- ZKA Linkers."
 	@echo "clean 		- Clean objects and executables."
 
 .PHONY: clean

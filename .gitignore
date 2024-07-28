@@ -8,11 +8,13 @@ local.properties
 .loadpath
 .recommenders
 
+*.creator.user
+
+Examples/
+
 # NewOS/MP-UX executable
 *.exec
 *.bin
-
-docs/
 
 # Compiled class file
 *.class
@@ -64,8 +66,24 @@ replay_pid*
 
 Drivers/Output/Tests/*.masm
 
+Output/32link
+Output/64asm
+Output/64link
+Output/64x0-cc
+Output/bpp
+Output/cplusplus
+Output/i64asm
+Output/i64link
+Output/link
+Output/power-cc
+Output/ppc-cc
+Output/power-as
+Output/ppclink
+
 .vs
 
+docs/html
+docs/latex
 docs/doxygen
 
 *.pc
@@ -129,7 +147,7 @@ Cloud9.creator.user
 .cproject
 .settings/org.eclipse.cdt.codan.core.prefs
 .settings/org.eclipse.core.resources.prefs
-.settings/org.eclipse.core.runtime.prefs    
+.settings/org.eclipse.core.runtime.prefs
 
 # HDD
 *.hdd

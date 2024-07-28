@@ -1,31 +1,31 @@
 {
-    "configurations": [
-        {
-            "name": "Macintosh (CLang)",
-            "includePath": [
-                "${workspaceFolder}/Headers/**",
-                "${workspaceFolder}/Sources/Detail/**",
-                "${workspaceFolder}/**"
-            ],
-            "defines": [],
-            "compilerPath": "/usr/bin/clang",
-            "cStandard": "c17",
-            "cppStandard": "c++20",
-            "intelliSenseMode": "macos-clang-arm64"
-        },
-        {
-            "name": "Windows (Cygwin)",
-            "includePath": [
-                "${workspaceFolder}/Headers/**",
-                "${workspaceFolder}/Sources/Detail/**",
-                "${workspaceFolder}/**"
-            ],
-            "defines": [],
-            "compilerPath": "C:/cygwin64/bin/g++.exe",
-            "cStandard": "c17",
-            "cppStandard": "c++20",
-            "intelliSenseMode": "windows-gcc-x64"
-        }
-    ],
-    "version": 4
+  "configurations": [
+    {
+      "name": "Macintosh (CLang)",
+      "includePath": [
+        "${workspaceFolder}/NDKKit/**",
+        "${workspaceFolder}/Sources/Detail/**",
+        "${workspaceFolder}/**"
+      ],
+      "defines": [],
+      "compilerPath": "/usr/bin/clang",
+      "cStandard": "c17",
+      "cppStandard": "c++20",
+      "intelliSenseMode": "macos-clang-arm64"
+    },
+    {
+      "name": "Windows (Cygwin)",
+      "includePath": [
+        "${workspaceFolder}/NDKKit/**",
+        "${workspaceFolder}/Sources/Detail/**",
+        "${workspaceFolder}/**"
+      ],
+      "defines": [],
+      "compilerPath": "C:/cygwin64/bin/g++.exe",
+      "cStandard": "c17",
+      "cppStandard": "c++20",
+      "intelliSenseMode": "windows-gcc-x64"
+    }
+  ],
+  "version": 4
 }

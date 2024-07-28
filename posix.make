@@ -1,48 +1,49 @@
  #
  #	========================================================
  #
- #	MPCC
- # 	Copyright Mahrouss Logic, all rights reserved.
+ #	NDK
+ # 	Copyright ZKA Technologies, all rights reserved.
  #
  # 	========================================================
  #
 
-COMMON_INC=-I./Headers -I./ -I./Sources/Detail
-LINK_CC=g++ -std=c++20
-LINK_SRC=Sources/link.cc
-LINK_OUTPUT=Output/link.exec
-LINK_ALT_OUTPUT=Output/64link.exec
-LINK_ALT_3_OUTPUT=Output/i64link.exec
-LINK_ALT_2_OUTPUT=Output/32link.exec
+COMMON_INC=-I./NDKKit -I./ -I./NDKKit/Sources/Detail
+LINK_CC=clang++ -std=c++20
+LINK_SRC=NDKKit/Sources/link.cxx
+LINK_OUTPUT=Output/link
+LINK_ALT_OUTPUT=Output/64link
+LINK_ALT_3_OUTPUT=Output/i64link
+LINK_ALT_2_OUTPUT=Output/32link
+LINK_ALT_4_OUTPUT=Output/ppclink
 
-PP_SRC=Sources/bpp.cc
-PP_OUTPUT=Output/bpp.exec
+PP_SRC=NDKKit/Sources/bpp.cxx
+PP_OUTPUT=Output/bpp
 
-SRC_COMMON=Sources/String.cc Sources/AsmKit.cc
+SRC_COMMON=NDKKit/Sources/String.cxx NDKKit/Sources/AssemblyFactory.cxx
 
 # C++ Compiler (AMD64)
-AMD64_CXX_SRC=Sources/amd64-cplusplus.cc $(SRC_COMMON)
-AMD64_CXX_OUTPUT=Output/amd64-cplusplus.exec
+AMD64_CXX_SRC=NDKKit/Sources/cplusplus.cxx $(SRC_COMMON)
+AMD64_CXX_OUTPUT=Output/cplusplus
 
 # C Compiler (POWER)
-64X0_CC_SRC=Sources/64x0-cc.cc $(SRC_COMMON)
-64X0_CC_OUTPUT=Output/64x0-cc.exec
+64X0_CC_SRC=NDKKit/Sources/64x0-cc.cxx $(SRC_COMMON)
+64X0_CC_OUTPUT=Output/64x0-cc
 
 # C Compiler (Our own RISC)
-PPC_CC_SRC=Sources/ppc-cc.cc $(SRC_COMMON)
-PPC_CC_OUTPUT=Output/ppc-cc.exec
+PPC_CC_SRC=NDKKit/Sources/power-cc.cxx $(SRC_COMMON)
+PPC_CC_OUTPUT=Output/power-cc
 
 # 64x0 Assembler (Our Own RISC)
-ASM_SRC=Sources/64asm.cc $(SRC_COMMON)
-ASM_OUTPUT=Output/64asm.exec
+ASM_SRC=NDKKit/Sources/64asm.cxx $(SRC_COMMON)
+ASM_OUTPUT=Output/64asm
 
 # AMD64 Assembler (Intel CISC)
-IASM_SRC=Sources/i64asm.cc $(SRC_COMMON)
-IASM_OUTPUT=Output/i64asm.exec
+IASM_SRC=NDKKit/Sources/i64asm.cxx $(SRC_COMMON)
+IASM_OUTPUT=Output/i64asm
 
 # Power4 Assembler (IBM RISC)
-PPCASM_SRC=Sources/ppcasm.cc $(SRC_COMMON)
-PPCASM_OUTPUT=Output/ppcasm.exec
+PPCASM_SRC=NDKKit/Sources/power-as.cxx $(SRC_COMMON)
+PPCASM_OUTPUT=Output/power-as
 
 .PHONY: all
 all: pre-processor compiler linker
@@ -67,12 +68,13 @@ linker:
 	cp $(LINK_OUTPUT) $(LINK_ALT_OUTPUT)
 	cp $(LINK_OUTPUT) $(LINK_ALT_2_OUTPUT)
 	cp $(LINK_OUTPUT) $(LINK_ALT_3_OUTPUT)
+	cp $(LINK_OUTPUT) $(LINK_ALT_4_OUTPUT)
 
 .PHONY: help
 help:
-	@echo "Compiler 	- Mahrouss Compilers."
-	@echo "Preprocessor 	- Mahrouss Preprocessors."
-	@echo "linker 		- Mahrouss Linkers."
+	@echo "compiler 	- ZKA Technologies Compiler Suite."
+	@echo "pre-processor 	- ZKA Technologies Preprocessor Suite."
+	@echo "linker 		- ZKA Technologies Linkers."
 	@echo "clean 		- Clean objects and executables."
 
 .PHONY: clean
@@ -84,6 +86,5 @@ clean:
 	rm -f $(IASM_OUTPUT)
 	rm -f $(LINK_OUTPUT)
 	rm -rf *.obj
-	rm -rf *.exec
-	
+
 # Last rev 8-1-24

@@ -1,0 +1,5 @@
+-std=c++20
+-I../
+-I../Headers
+-I./
+-I./Detail/

@@ -1,17 +1,21 @@
-# CodeTools
+# NDKKit, C++ SDK for ZKA.
 
-Start by cloning the repo:
+## Installing:
+
+Start by cloning the repo.
 
 ```
 git clone git@bitbucket.org:mahrouss/codetools.git
 ```
 
-and
+## Running makefiles:
+
+And then run the makefile according to your platform.
 
 ```
-make all
+make -f <platform>.make all
 ```
 
-Author: Amlal El Mahrouss
+You can now use the programs.
 
-##### Copyright Mahrouss Logic, all rights reserved.
+###### Copyright ZKA Technologies, all rights reserved.
