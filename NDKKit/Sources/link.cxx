@@ -52,13 +52,13 @@
 enum
 {
 	eABIStart	  = 0x1010, /* Invalid ABI start of ABI list. */
-	eABINewOSKrnl = 0x5046, /* PF (NewOSKrnl) */
+	eABINewOS 	  = 0x5046, /* PF (NewOSKrnl) */
 	eABIMTL		  = 0x4650, /* FP (MTL firmware) */
 	eABIInvalid	  = 1,
 };
 
 static std::string kOutput			 = "";
-static Int32	   kAbi				 = eABINewOSKrnl;
+static Int32	   kAbi				 = eABINewOS;
 static Int32	   kSubArch			 = kPefNoSubCpu;
 static Int32	   kArch			 = CompilerKit::kPefArchInvalid;
 static Bool		   kFatBinaryEnable	 = false;
