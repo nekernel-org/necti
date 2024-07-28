@@ -7,8 +7,8 @@
  * 	========================================================
  */
 
-/// BUGS: ?
-/// TODO:
+/// BUGS: 0
+/// TODO: none
 
 #include <NDKKit/AsmKit/CPU/64x0.hpp>
 #include <NDKKit/Parser.hpp>

@@ -1,16 +1,16 @@
-# NDK C++ SDK for ZKA.
+# NDKKit, C++ SDK for ZKA.
 
-## Installing
+## Installing:
 
-Start by cloning the repo:
+Start by cloning the repo.
 
 ```
 git clone git@bitbucket.org:mahrouss/codetools.git
 ```
 
-## Running makefiles
+## Running makefiles:
 
-And then:
+And then run the makefile according to your platform.
 
 ```
 make -f <platform>.make all

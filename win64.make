@@ -7,41 +7,41 @@
  # 	========================================================
  #
 
-COMMON_INC=-I./NDKKit -I./ -I./Sources/Detail
+COMMON_INC=-I./NDKKit -I./ -I./NDKKit/Sources/Detail
 LINK_CC=clang++ -std=c++20 -Xlinker -s
-LINK_SRC=Sources/link.cxx
+LINK_SRC=NDKKit/Sources/link.cxx
 LINK_OUTPUT=Output/link.exe
 LINK_ALT_OUTPUT=Output/64link.exe
 LINK_ALT_3_OUTPUT=Output/i64link.exe
 LINK_ALT_2_OUTPUT=Output/32link.exe
 
-PP_SRC=Sources/bpp.cxx
+PP_SRC=NDKKit/Sources/bpp.cxx
 PP_OUTPUT=Output/bpp.exe
 
-SRC_COMMON=Sources/String.cxx Sources/AssemblyFactory.cxx
+SRC_COMMON=NDKKit/Sources/String.cxx NDKKit/Sources/AssemblyFactory.cxx
 
 # C++ Compiler (AMD64)
-AMD64_CXX_SRC=Sources/cplusplus.cxx $(SRC_COMMON)
+AMD64_CXX_SRC=NDKKit/Sources/cplusplus.cxx $(SRC_COMMON)
 AMD64_CXX_OUTPUT=Output/cplusplus.exe
 
 # C Compiler (POWER)
-64X0_CC_SRC=Sources/64x0-cc.cxx $(SRC_COMMON)
+64X0_CC_SRC=NDKKit/Sources/64x0-cc.cxx $(SRC_COMMON)
 64X0_CC_OUTPUT=Output/64x0-cc.exe
 
 # C Compiler
-PPC_CC_SRC=Sources/power-cc.cxx $(SRC_COMMON)
+PPC_CC_SRC=NDKKit/Sources/power-cc.cxx $(SRC_COMMON)
 PPC_CC_OUTPUT=Output/power-cc.exe
 
 # 64x0 Assembler
-ASM_SRC=Sources/64asm.cxx $(SRC_COMMON)
+ASM_SRC=NDKKit/Sources/64asm.cxx $(SRC_COMMON)
 ASM_OUTPUT=Output/64asm.exe
 
 # AMD64 Assembler
-IASM_SRC=Sources/i64asm.cxx $(SRC_COMMON)
+IASM_SRC=NDKKit/Sources/i64asm.cxx $(SRC_COMMON)
 IASM_OUTPUT=Output/i64asm.exe
 
 # POWER Assembler
-PPCASM_SRC=Sources/power-as.cxx $(SRC_COMMON)
+PPCASM_SRC=NDKKit/Sources/power-as.cxx $(SRC_COMMON)
 PPCASM_OUTPUT=Output/power-as.exe
 
 .PHONY: all
