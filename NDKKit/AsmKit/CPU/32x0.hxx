@@ -6,7 +6,7 @@
 
 #pragma once
 
-#include <NDKKit/Defines.hpp>
+#include <NDKKit/Defines.hxx>
 
 // @brief 32x0 support.
 // @file CPU/32x0.hpp

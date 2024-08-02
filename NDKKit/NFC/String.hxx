@@ -9,8 +9,8 @@
 
 #pragma once
 
-#include <NDKKit/Defines.hpp>
-#include <NDKKit/NFC/ErrorOr.hpp>
+#include <NDKKit/Defines.hxx>
+#include <NDKKit/NFC/ErrorOr.hxx>
 
 namespace CompilerKit
 {

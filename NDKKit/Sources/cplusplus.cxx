@@ -20,9 +20,9 @@
 
 // import, @MLAutoRelease { ... }, fn foo() -> auto { ... }
 
-#include <NDKKit/AsmKit/CPU/amd64.hpp>
-#include <NDKKit/Parser.hpp>
-#include <UUID.hpp>
+#include <NDKKit/AsmKit/CPU/amd64.hxx>
+#include <NDKKit/Parser.hxx>
+#include <UUID.hxx>
 
 #include <cctype>
 #include <cstdio>

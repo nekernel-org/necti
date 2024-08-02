@@ -27,10 +27,10 @@
 #define kAssemblerPragmaSymStr "#"
 #define kAssemblerPragmaSym	   '#'
 
-#include <NDKKit/AsmKit/CPU/amd64.hpp>
-#include <NDKKit/Parser.hpp>
-#include <NDKKit/NFC/AE.hpp>
-#include <NDKKit/NFC/PEF.hpp>
+#include <NDKKit/AsmKit/CPU/amd64.hxx>
+#include <NDKKit/Parser.hxx>
+#include <NDKKit/NFC/AE.hxx>
+#include <NDKKit/NFC/PEF.hxx>
 #include <algorithm>
 #include <cstdlib>
 #include <filesystem>
