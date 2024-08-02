@@ -7,9 +7,9 @@
  * 	========================================================
  */
 
-#include <NDKKit/AsmKit/CPU/ppc.hpp>
-#include <NDKKit/Parser.hpp>
-#include <NDKKit/UUID.hpp>
+#include <NDKKit/AsmKit/CPU/ppc.hxx>
+#include <NDKKit/Parser.hxx>
+#include <NDKKit/UUID.hxx>
 #include <filesystem>
 #include <fstream>
 #include <iostream>
@@ -1527,7 +1527,7 @@ public:
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
-#include <Version.hpp>
+#include <Version.hxx>
 
 #define kPrintF printf
 #define kSplashCxx() \

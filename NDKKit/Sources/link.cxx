@@ -13,23 +13,23 @@
 /// @note Do not look up for anything with .code64/.data64/.zero64!
 /// It will be loaded when program will start up!
 
-#include <NDKKit/NFC/ErrorID.hpp>
+#include <NDKKit/NFC/ErrorID.hxx>
 
 //! Assembler Kit
-#include <NDKKit/AsmKit/AsmKit.hpp>
+#include <NDKKit/AsmKit/AsmKit.hxx>
 
 //! Preferred Executable Format
-#include <NDKKit/NFC/PEF.hpp>
-#include <NDKKit/UUID.hpp>
+#include <NDKKit/NFC/PEF.hxx>
+#include <NDKKit/UUID.hxx>
 #include <filesystem>
 #include <random>
 #include <vector>
 
 //! Dist version
-#include <NDKKit/Version.hpp>
+#include <NDKKit/Version.hxx>
 
 //! Advanced Executable Object Format
-#include <NDKKit/NFC/AE.hpp>
+#include <NDKKit/NFC/AE.hxx>
 
 //! C++ I/O headers.
 #include <fstream>
@@ -515,7 +515,7 @@ NDK_MODULE(NewOSLinker)
 	std::string timeStampStr = "Container:BuildEpoch:";
 	timeStampStr += std::to_string(timestamp);
 
-	strcpy(dateHeader.Name, timeStampStr.c_str());
+	strncpy(dateHeader.Name, timeStampStr.c_str(), timeStampStr.size());
 
 	dateHeader.Flags  = 0;
 	dateHeader.Kind	  = CompilerKit::kPefZero;

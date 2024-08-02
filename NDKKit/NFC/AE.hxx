@@ -9,7 +9,7 @@
 
 #pragma once
 
-#include <NDKKit/Defines.hpp>
+#include <NDKKit/Defines.hxx>
 
 #define kAEMag0 'A'
 #define kAEMag1 'E'

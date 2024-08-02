@@ -6,7 +6,7 @@
 
 #pragma once
 
-#include <NDKKit/AsmKit/AsmKit.hpp>
+#include <NDKKit/AsmKit/AsmKit.hxx>
 #include <vector>
 
 namespace CompilerKit

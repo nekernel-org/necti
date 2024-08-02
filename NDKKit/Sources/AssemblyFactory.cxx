@@ -4,8 +4,8 @@
 
 ------------------------------------------- */
 
-#include <NDKKit/AsmKit/AsmKit.hpp>
-#include <NDKKit/NFC/ErrorID.hpp>
+#include <NDKKit/AsmKit/AsmKit.hxx>
+#include <NDKKit/NFC/ErrorID.hxx>
 
 /**
  * @file AssemblyFactory.cxx

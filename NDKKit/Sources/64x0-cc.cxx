@@ -10,9 +10,9 @@
 /// BUGS: 0
 /// TODO: none
 
-#include <NDKKit/AsmKit/CPU/64x0.hpp>
-#include <NDKKit/Parser.hpp>
-#include <NDKKit/UUID.hpp>
+#include <NDKKit/AsmKit/CPU/64x0.hxx>
+#include <NDKKit/Parser.hxx>
+#include <NDKKit/UUID.hxx>
 #include <filesystem>
 #include <cstdio>
 #include <fstream>
@@ -1509,7 +1509,7 @@ public:
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
-#include <Version.hpp>
+#include <Version.hxx>
 
 #define kPrintF printf
 #define kSplashCxx() \

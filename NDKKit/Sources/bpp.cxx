@@ -9,8 +9,8 @@
 
 /// BUGS: 0
 
-#include <NDKKit/Parser.hpp>
-#include <NDKKit/NFC/ErrorID.hpp>
+#include <NDKKit/Parser.hxx>
+#include <NDKKit/NFC/ErrorID.hxx>
 #include <algorithm>
 #include <filesystem>
 #include <fstream>

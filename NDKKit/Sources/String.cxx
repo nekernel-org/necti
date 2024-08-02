@@ -18,7 +18,7 @@
  *
  */
 
-#include <NDKKit/NFC/String.hpp>
+#include <NDKKit/NFC/String.hxx>
 
 namespace CompilerKit {
 CharType *StringView::Data() { return m_Data; }

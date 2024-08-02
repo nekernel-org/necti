@@ -6,7 +6,7 @@
 
 #pragma once
 
-#include <NDKKit/Defines.hpp>
+#include <NDKKit/Defines.hxx>
 #include <vector>
 
 // @brief 64x0 support.
