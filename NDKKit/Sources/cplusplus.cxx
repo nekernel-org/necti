@@ -16,7 +16,7 @@
 #define kOk (0)
 
 #define kSplashCxx() \
-	kPrintF(kWhite "%s\n", "ZKA C++ Compiler Driver, (c) 2024 ZKA Electronics, all rights reserved.")
+	kPrintF(kWhite "%s\n", "ZKA C++ Compiler Driver, (c) 2024 ZKA Technologies, all rights reserved.")
 
 // import, @MLAutoRelease { ... }, fn foo() -> auto { ... }
 
