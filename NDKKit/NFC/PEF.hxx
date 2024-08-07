@@ -14,18 +14,19 @@
 #define kPefMagic	 "Joy!"
 #define kPefMagicFat "yoJ!"
 
-#define kPefExt		  ".exec"
-#define kPefDylibExt  ".lib"
-#define kPefLibExt	  ".slib"
+/* not mandatory, only for non fork based filesystems */
+#define kPefExt		  ".exe"
+#define kPefDylibExt  ".dll"
+#define kPefLibExt	  ".lib"
 #define kPefObjectExt ".obj"
 #define kPefDebugExt  ".dbg"
 
 #define kPefMagicLen 5
 
-#define kPefVersion 2
+#define kPefVersion 3
 #define kPefNameLen 255
 
-#define kPefBaseOrigin (0x1000000)
+#define kPefBaseOrigin (0x40000000)
 
 #define kPefStart "__ImageStart"
 
