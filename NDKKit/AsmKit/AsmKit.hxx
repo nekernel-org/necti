@@ -10,7 +10,7 @@
 #include <NDKKit/Defines.hxx>
 #include <NDKKit/NFC/String.hxx>
 
-namespace CompilerKit
+namespace NDK
 {
 	//
 	//	@brief Frontend to Assembly mountpoint.
@@ -214,4 +214,4 @@ namespace CompilerKit
 	};
 
 #endif // __ASM_NEED_32x0__
-} // namespace CompilerKit
+} // namespace NDK

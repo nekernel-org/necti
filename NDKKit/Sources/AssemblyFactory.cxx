@@ -23,7 +23,7 @@
 //! @file AsmKit.cpp
 //! @brief AssemblyKit source implementation.
 
-namespace CompilerKit
+namespace NDK
 {
 	///! @brief Compile for specific format (ELF, PEF, ZBIN)
 	Int32 AssemblyFactory::Compile(std::string& sourceFile,
@@ -56,4 +56,4 @@ namespace CompilerKit
 
 		return mount_prev;
 	}
-} // namespace CompilerKit
+} // namespace NDK

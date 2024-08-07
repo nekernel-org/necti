@@ -1,7 +1,7 @@
 /*
  *	========================================================
  *
- *	CompilerKit
+ *	NDK
  * 	Copyright ZKA Technologies, all rights reserved.
  *
  * 	========================================================
@@ -12,7 +12,7 @@
 #include <NDKKit/Defines.hxx>
 #include <NDKKit/NFC/ErrorOr.hxx>
 
-namespace CompilerKit
+namespace NDK
 {
 	/**
 	 * @brief StringView class, contains a C string and manages it.
@@ -87,4 +87,4 @@ namespace CompilerKit
 		static const char* Format(const char* fmt, const char* from);
 		static bool		   Equals(const char* lhs, const char* rhs);
 	};
-} // namespace CompilerKit
+} // namespace NDK

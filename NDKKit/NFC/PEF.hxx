@@ -30,7 +30,7 @@
 
 #define kPefStart "__ImageStart"
 
-namespace CompilerKit
+namespace NDK
 {
 	enum
 	{
@@ -104,32 +104,32 @@ namespace CompilerKit
 		kPefCount	 = 4,
 		kPefInvalid	 = 0xFF,
 	};
-} // namespace CompilerKit
+} // namespace NDK
 
 inline std::ofstream& operator<<(std::ofstream&				fp,
-								 CompilerKit::PEFContainer& container)
+								 NDK::PEFContainer& container)
 {
-	fp.write((char*)&container, sizeof(CompilerKit::PEFContainer));
+	fp.write((char*)&container, sizeof(NDK::PEFContainer));
 	return fp;
 }
 
 inline std::ofstream& operator<<(std::ofstream&					fp,
-								 CompilerKit::PEFCommandHeader& container)
+								 NDK::PEFCommandHeader& container)
 {
-	fp.write((char*)&container, sizeof(CompilerKit::PEFCommandHeader));
+	fp.write((char*)&container, sizeof(NDK::PEFCommandHeader));
 	return fp;
 }
 
-std::ifstream& operator>>(std::ifstream&			 fp,
-						  CompilerKit::PEFContainer& container)
+inline std::ifstream& operator>>(std::ifstream&			 fp,
+						  NDK::PEFContainer& container)
 {
-	fp.read((char*)&container, sizeof(CompilerKit::PEFContainer));
+	fp.read((char*)&container, sizeof(NDK::PEFContainer));
 	return fp;
 }
 
-std::ifstream& operator>>(std::ifstream&				 fp,
-						  CompilerKit::PEFCommandHeader& container)
+inline std::ifstream& operator>>(std::ifstream&				 fp,
+						  NDK::PEFCommandHeader& container)
 {
-	fp.read((char*)&container, sizeof(CompilerKit::PEFCommandHeader));
+	fp.read((char*)&container, sizeof(NDK::PEFCommandHeader));
 	return fp;
 }

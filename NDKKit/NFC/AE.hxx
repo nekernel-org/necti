@@ -24,7 +24,7 @@
 // You can also relocate at runtime but that's up to the operating system
 // loader.
 
-namespace CompilerKit
+namespace NDK
 {
 	// @brief Advanced Executable Header
 	// One thing to keep in mind.
@@ -60,39 +60,39 @@ namespace CompilerKit
 		kKindRelocationByOffset	 = 0x23f,
 		kKindRelocationAtRuntime = 0x34f,
 	};
-} // namespace CompilerKit
+} // namespace NDK
 
 // provide operator<< for AE
 
-std::ofstream& operator<<(std::ofstream& fp, CompilerKit::AEHeader& container)
+inline std::ofstream& operator<<(std::ofstream& fp, NDK::AEHeader& container)
 {
-	fp.write((char*)&container, sizeof(CompilerKit::AEHeader));
+	fp.write((char*)&container, sizeof(NDK::AEHeader));
 
 	return fp;
 }
 
-std::ofstream& operator<<(std::ofstream&			   fp,
-						  CompilerKit::AERecordHeader& container)
+inline std::ofstream& operator<<(std::ofstream&			   fp,
+						  NDK::AERecordHeader& container)
 {
-	fp.write((char*)&container, sizeof(CompilerKit::AERecordHeader));
+	fp.write((char*)&container, sizeof(NDK::AERecordHeader));
 
 	return fp;
 }
 
-std::ifstream& operator>>(std::ifstream& fp, CompilerKit::AEHeader& container)
+inline std::ifstream& operator>>(std::ifstream& fp, NDK::AEHeader& container)
 {
-	fp.read((char*)&container, sizeof(CompilerKit::AEHeader));
+	fp.read((char*)&container, sizeof(NDK::AEHeader));
 	return fp;
 }
 
-std::ifstream& operator>>(std::ifstream&			   fp,
-						  CompilerKit::AERecordHeader& container)
+inline std::ifstream& operator>>(std::ifstream&			   fp,
+						  NDK::AERecordHeader& container)
 {
-	fp.read((char*)&container, sizeof(CompilerKit::AERecordHeader));
+	fp.read((char*)&container, sizeof(NDK::AERecordHeader));
 	return fp;
 }
 
-namespace CompilerKit::Utils
+namespace NDK::Utils
 {
 	/**
 	 * @brief AE Reader protocol
@@ -140,4 +140,4 @@ namespace CompilerKit::Utils
 			return reinterpret_cast<TypeClass*>(raw);
 		}
 	};
-} // namespace CompilerKit::Utils
+} // namespace NDK::Utils

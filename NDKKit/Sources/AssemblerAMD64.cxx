@@ -53,7 +53,7 @@
 #define kStdOut (std::cout << kWhite)
 #define kStdErr (std::cout << kRed)
 
-static char	   kOutputArch	   = CompilerKit::kPefArchAMD64;
+static char	   kOutputArch	   = NDK::kPefArchAMD64;
 static Boolean kOutputAsBinary = false;
 
 static UInt32 kErrorLimit		= 10;
@@ -73,52 +73,18 @@ static bool kVerbose = false;
 
 static std::vector<i64_byte_t> kAppBytes;
 
-static CompilerKit::AERecordHeader kCurrentRecord{
-	.fName = "", .fKind = CompilerKit::kPefCode, .fSize = 0, .fOffset = 0};
+static NDK::AERecordHeader kCurrentRecord{
+	.fName = "", .fKind = NDK::kPefCode, .fSize = 0, .fOffset = 0};
 
-static std::vector<CompilerKit::AERecordHeader> kRecords;
-static std::vector<std::string>					kDefinedSymbols;
-static std::vector<std::string>					kUndefinedSymbols;
+static std::vector<NDK::AERecordHeader> kRecords;
+static std::vector<std::string>			kDefinedSymbols;
+static std::vector<std::string>			kUndefinedSymbols;
 
 static const std::string kUndefinedSymbol = ":UndefinedSymbol:";
 static const std::string kRelocSymbol	  = ":RuntimeSymbol:";
 
 // \brief forward decl.
 static bool asm_read_attributes(std::string& line);
-
-namespace detail
-{
-	void print_error(std::string reason, const std::string& file) noexcept
-	{
-		if (reason[0] == '\n')
-			reason.erase(0, 1);
-
-		kStdErr << kRed << "[ i64asm ] " << kWhite
-				<< ((file == "i64asm") ? "internal assembler error "
-									   : ("in file, " + file))
-				<< kBlank << std::endl;
-		kStdErr << kRed << "[ i64asm ] " << kWhite << reason << kBlank << std::endl;
-
-		if (kAcceptableErrors > kErrorLimit)
-			std::exit(3);
-
-		++kAcceptableErrors;
-	}
-
-	void print_warning(std::string reason, const std::string& file) noexcept
-	{
-		if (reason[0] == '\n')
-			reason.erase(0, 1);
-
-		if (!file.empty())
-		{
-			kStdOut << kYellow << "[ file ] " << kWhite << file << kBlank << std::endl;
-		}
-
-		kStdOut << kYellow << "[ i64asm ] " << kWhite << reason << kBlank
-				<< std::endl;
-	}
-} // namespace detail
 
 #include <asmutils.hxx>
 
@@ -234,13 +200,13 @@ NDK_MODULE(NewOSAssemblerAMD64)
 
 		std::string line;
 
-		CompilerKit::AEHeader hdr{0};
+		NDK::AEHeader hdr{0};
 
 		memset(hdr.fPad, kAEInvalidOpcode, kAEPad);
 
 		hdr.fMagic[0] = kAEMag0;
 		hdr.fMagic[1] = kAEMag1;
-		hdr.fSize	  = sizeof(CompilerKit::AEHeader);
+		hdr.fSize	  = sizeof(NDK::AEHeader);
 		hdr.fArch	  = kOutputArch;
 
 		/////////////////////////////////////////////////////////////////////////////////////////
@@ -249,13 +215,13 @@ NDK_MODULE(NewOSAssemblerAMD64)
 
 		/////////////////////////////////////////////////////////////////////////////////////////
 
-		CompilerKit::EncoderAMD64 asm64;
+		NDK::EncoderAMD64 asm64;
 
 		while (std::getline(file_ptr, line))
 		{
 			if (auto ln = asm64.CheckLine(line, argv[i]); !ln.empty())
 			{
-				detail::print_error(ln, argv[i]);
+				detail::print_error_asm(ln, argv[i]);
 				continue;
 			}
 
@@ -269,7 +235,7 @@ NDK_MODULE(NewOSAssemblerAMD64)
 				if (kVerbose)
 				{
 					std::string what = e.what();
-					detail::print_warning("exit because of: " + what, "i64asm");
+					detail::print_warning_asm("exit because of: " + what, "i64asm");
 				}
 
 				try
@@ -317,7 +283,7 @@ NDK_MODULE(NewOSAssemblerAMD64)
 				if (kVerbose)
 					kStdOut << "i64asm: Wrote record " << rec.fName << " to file...\n";
 
-				rec.fFlags |= CompilerKit::kKindRelocationAtRuntime;
+				rec.fFlags |= NDK::kKindRelocationAtRuntime;
 				rec.fOffset = record_count;
 				++record_count;
 
@@ -329,7 +295,7 @@ NDK_MODULE(NewOSAssemblerAMD64)
 
 			for (auto& sym : kUndefinedSymbols)
 			{
-				CompilerKit::AERecordHeader _record_hdr{0};
+				NDK::AERecordHeader _record_hdr{0};
 
 				if (kVerbose)
 					kStdOut << "i64asm: Wrote symbol " << sym << " to file...\n";
@@ -412,11 +378,11 @@ static bool asm_read_attributes(std::string& line)
 {
 	// import is the opposite of export, it signals to the ld
 	// that we need this symbol.
-	if (CompilerKit::find_word(line, "import"))
+	if (NDK::find_word(line, "import"))
 	{
 		if (kOutputAsBinary)
 		{
-			detail::print_error("Invalid directive in flat binary mode.", "i64asm");
+			detail::print_error_asm("Invalid directive in flat binary mode.", "i64asm");
 			throw std::runtime_error("invalid_import_bin");
 		}
 
@@ -424,7 +390,7 @@ static bool asm_read_attributes(std::string& line)
 
 		if (name.size() == 0)
 		{
-			detail::print_error("Invalid import", "power-as");
+			detail::print_error_asm("Invalid import", "power-as");
 			throw std::runtime_error("invalid_import");
 		}
 
@@ -443,17 +409,17 @@ static bool asm_read_attributes(std::string& line)
 		if (name.find(".code64") != std::string::npos)
 		{
 			// data is treated as code.
-			kCurrentRecord.fKind = CompilerKit::kPefCode;
+			kCurrentRecord.fKind = NDK::kPefCode;
 		}
 		else if (name.find(".data64") != std::string::npos)
 		{
 			// no code will be executed from here.
-			kCurrentRecord.fKind = CompilerKit::kPefData;
+			kCurrentRecord.fKind = NDK::kPefData;
 		}
 		else if (name.find(".zero64") != std::string::npos)
 		{
 			// this is a bss section.
-			kCurrentRecord.fKind = CompilerKit::kPefZero;
+			kCurrentRecord.fKind = NDK::kPefZero;
 		}
 
 		// this is a special case for the start stub.
@@ -461,7 +427,7 @@ static bool asm_read_attributes(std::string& line)
 
 		if (name == kPefStart)
 		{
-			kCurrentRecord.fKind = CompilerKit::kPefCode;
+			kCurrentRecord.fKind = NDK::kPefCode;
 		}
 
 		// now we can tell the code size of the previous kCurrentRecord.
@@ -483,11 +449,11 @@ static bool asm_read_attributes(std::string& line)
 	// export is a special keyword used by i64asm to tell the AE output stage to
 	// mark this section as a header. it currently supports .code64, .data64 and
 	// .zero64.
-	else if (CompilerKit::find_word(line, "export"))
+	else if (NDK::find_word(line, "export"))
 	{
 		if (kOutputAsBinary)
 		{
-			detail::print_error("Invalid directive in flat binary mode.", "i64asm");
+			detail::print_error_asm("Invalid directive in flat binary mode.", "i64asm");
 			throw std::runtime_error("invalid_export_bin");
 		}
 
@@ -504,7 +470,7 @@ static bool asm_read_attributes(std::string& line)
 		if (std::find(kDefinedSymbols.begin(), kDefinedSymbols.end(), name) !=
 			kDefinedSymbols.end())
 		{
-			detail::print_error("Symbol already defined.", "i64asm");
+			detail::print_error_asm("Symbol already defined.", "i64asm");
 			throw std::runtime_error("invalid_export_bin");
 		}
 
@@ -515,21 +481,21 @@ static bool asm_read_attributes(std::string& line)
 			// data is treated as code.
 
 			name_copy.erase(name_copy.find(".code64"), strlen(".code64"));
-			kCurrentRecord.fKind = CompilerKit::kPefCode;
+			kCurrentRecord.fKind = NDK::kPefCode;
 		}
 		else if (name.find(".data64") != std::string::npos)
 		{
 			// no code will be executed from here.
 
 			name_copy.erase(name_copy.find(".data64"), strlen(".data64"));
-			kCurrentRecord.fKind = CompilerKit::kPefData;
+			kCurrentRecord.fKind = NDK::kPefData;
 		}
 		else if (name.find(".zero64") != std::string::npos)
 		{
 			// this is a bss section.
 
 			name_copy.erase(name_copy.find(".zero64"), strlen(".zero64"));
-			kCurrentRecord.fKind = CompilerKit::kPefZero;
+			kCurrentRecord.fKind = NDK::kPefZero;
 		}
 
 		// this is a special case for the start stub.
@@ -537,7 +503,7 @@ static bool asm_read_attributes(std::string& line)
 
 		if (name == kPefStart)
 		{
-			kCurrentRecord.fKind = CompilerKit::kPefCode;
+			kCurrentRecord.fKind = NDK::kPefCode;
 		}
 
 		while (name_copy.find(" ") != std::string::npos)
@@ -579,7 +545,7 @@ namespace detail::algorithm
 				 (c == '_') || (c == ':') || (c == '@') || (c == '.') || (c == '#'));
 	}
 
-	bool is_valid(const std::string& str)
+	bool is_valid_amd64(const std::string& str)
 	{
 		return std::find_if(str.begin(), str.end(), is_not_alnum_space) == str.end();
 	}
@@ -591,15 +557,15 @@ namespace detail::algorithm
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
-std::string CompilerKit::EncoderAMD64::CheckLine(std::string&		line,
-												 const std::string& file)
+std::string NDK::EncoderAMD64::CheckLine(std::string&		line,
+										 const std::string& file)
 {
 	std::string err_str;
 
-	if (line.empty() || CompilerKit::find_word(line, "import") ||
-		CompilerKit::find_word(line, "export") ||
-		CompilerKit::find_word(line, kAssemblerPragmaSymStr) ||
-		CompilerKit::find_word(line, ";") || line[0] == kAssemblerPragmaSym)
+	if (line.empty() || NDK::find_word(line, "import") ||
+		NDK::find_word(line, "export") ||
+		NDK::find_word(line, kAssemblerPragmaSymStr) ||
+		NDK::find_word(line, ";") || line[0] == kAssemblerPragmaSym)
 	{
 		if (line.find(';') != std::string::npos)
 		{
@@ -608,7 +574,7 @@ std::string CompilerKit::EncoderAMD64::CheckLine(std::string&		line,
 		else
 		{
 			// now check the line for validity
-			if (!detail::algorithm::is_valid(line))
+			if (!detail::algorithm::is_valid_amd64(line))
 			{
 				err_str = "Line contains non valid characters.\nhere -> ";
 				err_str += line;
@@ -618,7 +584,7 @@ std::string CompilerKit::EncoderAMD64::CheckLine(std::string&		line,
 		return err_str;
 	}
 
-	if (!detail::algorithm::is_valid(line))
+	if (!detail::algorithm::is_valid_amd64(line))
 	{
 		err_str = "Line contains non alphanumeric characters.\nHere -> ";
 		err_str += line;
@@ -671,7 +637,7 @@ std::string CompilerKit::EncoderAMD64::CheckLine(std::string&		line,
 	}
 	for (auto& opcodeAMD64 : kOpcodesAMD64)
 	{
-		if (CompilerKit::find_word(line, opcodeAMD64.fName))
+		if (NDK::find_word(line, opcodeAMD64.fName))
 		{
 			return err_str;
 		}
@@ -682,8 +648,8 @@ std::string CompilerKit::EncoderAMD64::CheckLine(std::string&		line,
 	return err_str;
 }
 
-bool CompilerKit::EncoderAMD64::WriteNumber(const std::size_t& pos,
-											std::string&	   jump_label)
+bool NDK::EncoderAMD64::WriteNumber(const std::size_t& pos,
+									std::string&	   jump_label)
 {
 	if (!isdigit(jump_label[pos]))
 		return false;
@@ -696,12 +662,12 @@ bool CompilerKit::EncoderAMD64::WriteNumber(const std::size_t& pos,
 		{
 			if (errno != 0)
 			{
-				detail::print_error("invalid hex number: " + jump_label, "i64asm");
+				detail::print_error_asm("invalid hex number: " + jump_label, "i64asm");
 				throw std::runtime_error("invalid_hex");
 			}
 		}
 
-		CompilerKit::NumberCast64 num = CompilerKit::NumberCast64(
+		NDK::NumberCast64 num = NDK::NumberCast64(
 			strtol(jump_label.substr(pos + 2).c_str(), nullptr, 16));
 
 		for (char& i : num.number)
@@ -726,12 +692,12 @@ bool CompilerKit::EncoderAMD64::WriteNumber(const std::size_t& pos,
 		{
 			if (errno != 0)
 			{
-				detail::print_error("invalid binary number: " + jump_label, "i64asm");
+				detail::print_error_asm("invalid binary number: " + jump_label, "i64asm");
 				throw std::runtime_error("invalid_bin");
 			}
 		}
 
-		CompilerKit::NumberCast64 num = CompilerKit::NumberCast64(
+		NDK::NumberCast64 num = NDK::NumberCast64(
 			strtol(jump_label.substr(pos + 2).c_str(), nullptr, 2));
 
 		if (kVerbose)
@@ -756,12 +722,12 @@ bool CompilerKit::EncoderAMD64::WriteNumber(const std::size_t& pos,
 		{
 			if (errno != 0)
 			{
-				detail::print_error("invalid octal number: " + jump_label, "i64asm");
+				detail::print_error_asm("invalid octal number: " + jump_label, "i64asm");
 				throw std::runtime_error("invalid_octal");
 			}
 		}
 
-		CompilerKit::NumberCast64 num = CompilerKit::NumberCast64(
+		NDK::NumberCast64 num = NDK::NumberCast64(
 			strtol(jump_label.substr(pos + 2).c_str(), nullptr, 7));
 
 		if (kVerbose)
@@ -794,7 +760,7 @@ bool CompilerKit::EncoderAMD64::WriteNumber(const std::size_t& pos,
 		}
 	}
 
-	CompilerKit::NumberCast64 num = CompilerKit::NumberCast64(
+	NDK::NumberCast64 num = NDK::NumberCast64(
 		strtol(jump_label.substr(pos).c_str(), nullptr, 10));
 
 	for (char& i : num.number)
@@ -814,8 +780,8 @@ bool CompilerKit::EncoderAMD64::WriteNumber(const std::size_t& pos,
 	return true;
 }
 
-bool CompilerKit::EncoderAMD64::WriteNumber32(const std::size_t& pos,
-											  std::string&		 jump_label)
+bool NDK::EncoderAMD64::WriteNumber32(const std::size_t& pos,
+									  std::string&		 jump_label)
 {
 	if (!isdigit(jump_label[pos]))
 		return false;
@@ -831,7 +797,7 @@ bool CompilerKit::EncoderAMD64::WriteNumber32(const std::size_t& pos,
 			return false;
 		}
 
-		CompilerKit::NumberCast32 num = CompilerKit::NumberCast32(res);
+		NDK::NumberCast32 num = NDK::NumberCast32(res);
 
 		for (char& i : num.number)
 		{
@@ -858,7 +824,7 @@ bool CompilerKit::EncoderAMD64::WriteNumber32(const std::size_t& pos,
 			return false;
 		}
 
-		CompilerKit::NumberCast32 num = CompilerKit::NumberCast32(res);
+		NDK::NumberCast32 num = NDK::NumberCast32(res);
 
 		if (kVerbose)
 		{
@@ -885,7 +851,7 @@ bool CompilerKit::EncoderAMD64::WriteNumber32(const std::size_t& pos,
 			return false;
 		}
 
-		CompilerKit::NumberCast32 num = CompilerKit::NumberCast32(res);
+		NDK::NumberCast32 num = NDK::NumberCast32(res);
 
 		if (kVerbose)
 		{
@@ -916,7 +882,7 @@ bool CompilerKit::EncoderAMD64::WriteNumber32(const std::size_t& pos,
 		return false;
 	}
 
-	CompilerKit::NumberCast32 num = CompilerKit::NumberCast32(res);
+	NDK::NumberCast32 num = NDK::NumberCast32(res);
 
 	for (char& i : num.number)
 	{
@@ -935,8 +901,8 @@ bool CompilerKit::EncoderAMD64::WriteNumber32(const std::size_t& pos,
 	return true;
 }
 
-bool CompilerKit::EncoderAMD64::WriteNumber16(const std::size_t& pos,
-											  std::string&		 jump_label)
+bool NDK::EncoderAMD64::WriteNumber16(const std::size_t& pos,
+									  std::string&		 jump_label)
 {
 	if (!isdigit(jump_label[pos]))
 		return false;
@@ -949,12 +915,12 @@ bool CompilerKit::EncoderAMD64::WriteNumber16(const std::size_t& pos,
 		{
 			if (errno != 0)
 			{
-				detail::print_error("invalid hex number: " + jump_label, "i64asm");
+				detail::print_error_asm("invalid hex number: " + jump_label, "i64asm");
 				throw std::runtime_error("invalid_hex");
 			}
 		}
 
-		CompilerKit::NumberCast16 num = CompilerKit::NumberCast16(
+		NDK::NumberCast16 num = NDK::NumberCast16(
 			strtol(jump_label.substr(pos + 2).c_str(), nullptr, 16));
 
 		for (char& i : num.number)
@@ -979,12 +945,12 @@ bool CompilerKit::EncoderAMD64::WriteNumber16(const std::size_t& pos,
 		{
 			if (errno != 0)
 			{
-				detail::print_error("invalid binary number: " + jump_label, "i64asm");
+				detail::print_error_asm("invalid binary number: " + jump_label, "i64asm");
 				throw std::runtime_error("invalid_bin");
 			}
 		}
 
-		CompilerKit::NumberCast16 num = CompilerKit::NumberCast16(
+		NDK::NumberCast16 num = NDK::NumberCast16(
 			strtol(jump_label.substr(pos + 2).c_str(), nullptr, 2));
 
 		if (kVerbose)
@@ -1009,12 +975,12 @@ bool CompilerKit::EncoderAMD64::WriteNumber16(const std::size_t& pos,
 		{
 			if (errno != 0)
 			{
-				detail::print_error("invalid octal number: " + jump_label, "i64asm");
+				detail::print_error_asm("invalid octal number: " + jump_label, "i64asm");
 				throw std::runtime_error("invalid_octal");
 			}
 		}
 
-		CompilerKit::NumberCast16 num = CompilerKit::NumberCast16(
+		NDK::NumberCast16 num = NDK::NumberCast16(
 			strtol(jump_label.substr(pos + 2).c_str(), nullptr, 7));
 
 		if (kVerbose)
@@ -1047,7 +1013,7 @@ bool CompilerKit::EncoderAMD64::WriteNumber16(const std::size_t& pos,
 		}
 	}
 
-	CompilerKit::NumberCast16 num = CompilerKit::NumberCast16(
+	NDK::NumberCast16 num = NDK::NumberCast16(
 		strtol(jump_label.substr(pos).c_str(), nullptr, 10));
 
 	for (char& i : num.number)
@@ -1067,8 +1033,8 @@ bool CompilerKit::EncoderAMD64::WriteNumber16(const std::size_t& pos,
 	return true;
 }
 
-bool CompilerKit::EncoderAMD64::WriteNumber8(const std::size_t& pos,
-											 std::string&		jump_label)
+bool NDK::EncoderAMD64::WriteNumber8(const std::size_t& pos,
+									 std::string&		jump_label)
 {
 	if (!isdigit(jump_label[pos]))
 		return false;
@@ -1081,12 +1047,12 @@ bool CompilerKit::EncoderAMD64::WriteNumber8(const std::size_t& pos,
 		{
 			if (errno != 0)
 			{
-				detail::print_error("invalid hex number: " + jump_label, "i64asm");
+				detail::print_error_asm("invalid hex number: " + jump_label, "i64asm");
 				throw std::runtime_error("invalid_hex");
 			}
 		}
 
-		CompilerKit::NumberCast8 num = CompilerKit::NumberCast8(
+		NDK::NumberCast8 num = NDK::NumberCast8(
 			strtol(jump_label.substr(pos + 2).c_str(), nullptr, 16));
 
 		kAppBytes.push_back(num.number);
@@ -1105,12 +1071,12 @@ bool CompilerKit::EncoderAMD64::WriteNumber8(const std::size_t& pos,
 		{
 			if (errno != 0)
 			{
-				detail::print_error("invalid binary number: " + jump_label, "i64asm");
+				detail::print_error_asm("invalid binary number: " + jump_label, "i64asm");
 				throw std::runtime_error("invalid_bin");
 			}
 		}
 
-		CompilerKit::NumberCast8 num = CompilerKit::NumberCast8(
+		NDK::NumberCast8 num = NDK::NumberCast8(
 			strtol(jump_label.substr(pos + 2).c_str(), nullptr, 2));
 
 		if (kVerbose)
@@ -1129,12 +1095,12 @@ bool CompilerKit::EncoderAMD64::WriteNumber8(const std::size_t& pos,
 		{
 			if (errno != 0)
 			{
-				detail::print_error("invalid octal number: " + jump_label, "i64asm");
+				detail::print_error_asm("invalid octal number: " + jump_label, "i64asm");
 				throw std::runtime_error("invalid_octal");
 			}
 		}
 
-		CompilerKit::NumberCast8 num = CompilerKit::NumberCast8(
+		NDK::NumberCast8 num = NDK::NumberCast8(
 			strtol(jump_label.substr(pos + 2).c_str(), nullptr, 7));
 
 		if (kVerbose)
@@ -1161,7 +1127,7 @@ bool CompilerKit::EncoderAMD64::WriteNumber8(const std::size_t& pos,
 		}
 	}
 
-	CompilerKit::NumberCast8 num = CompilerKit::NumberCast8(
+	NDK::NumberCast8 num = NDK::NumberCast8(
 		strtol(jump_label.substr(pos).c_str(), nullptr, 10));
 
 	kAppBytes.push_back(num.number);
@@ -1181,10 +1147,10 @@ bool CompilerKit::EncoderAMD64::WriteNumber8(const std::size_t& pos,
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
-bool CompilerKit::EncoderAMD64::WriteLine(std::string&		 line,
-										  const std::string& file)
+bool NDK::EncoderAMD64::WriteLine(std::string&		 line,
+								  const std::string& file)
 {
-	if (CompilerKit::find_word(line, "export "))
+	if (NDK::find_word(line, "export "))
 		return true;
 
 	struct RegMapAMD64
@@ -1216,8 +1182,8 @@ bool CompilerKit::EncoderAMD64::WriteLine(std::string&		 line,
 	for (auto& opcodeAMD64 : kOpcodesAMD64)
 	{
 		// strict check here
-		if (CompilerKit::find_word(line, opcodeAMD64.fName) &&
-			detail::algorithm::is_valid(line))
+		if (NDK::find_word(line, opcodeAMD64.fName) &&
+			detail::algorithm::is_valid_amd64(line))
 		{
 			foundInstruction = true;
 			std::string name(opcodeAMD64.fName);
@@ -1231,7 +1197,7 @@ bool CompilerKit::EncoderAMD64::WriteLine(std::string&		 line,
 
 				if (substr.find(",") == std::string::npos)
 				{
-					detail::print_error("Syntax error.", "i64asm");
+					detail::print_error_asm("Syntax error.", "i64asm");
 					throw std::runtime_error("syntax_err");
 				}
 
@@ -1260,7 +1226,7 @@ bool CompilerKit::EncoderAMD64::WriteLine(std::string&		 line,
 							{
 								if (registerName[0] == 'r')
 								{
-									detail::print_error(
+									detail::print_error_asm(
 										"invalid size for register, current bit width is: " +
 											std::to_string(kRegisterBitWidth),
 										file);
@@ -1314,7 +1280,7 @@ bool CompilerKit::EncoderAMD64::WriteLine(std::string&		 line,
 				{
 					if (hasRBasedRegs)
 					{
-						detail::print_error(
+						detail::print_error_asm(
 							"Invalid combination of operands and registers.", "i64asm");
 						throw std::runtime_error("comb_op_reg");
 					}
@@ -1326,7 +1292,7 @@ bool CompilerKit::EncoderAMD64::WriteLine(std::string&		 line,
 				if (currentRegList[1].fName[0] == 'r' &&
 					currentRegList[0].fName[0] == 'e')
 				{
-					detail::print_error("Invalid combination of operands and registers.",
+					detail::print_error_asm("Invalid combination of operands and registers.",
 										"i64asm");
 					throw std::runtime_error("comb_op_reg");
 				}
@@ -1334,7 +1300,7 @@ bool CompilerKit::EncoderAMD64::WriteLine(std::string&		 line,
 				if (currentRegList[0].fName[0] == 'r' &&
 					currentRegList[1].fName[0] == 'e')
 				{
-					detail::print_error("Invalid combination of operands and registers.",
+					detail::print_error_asm("Invalid combination of operands and registers.",
 										"i64asm");
 					throw std::runtime_error("comb_op_reg");
 				}
@@ -1344,7 +1310,7 @@ bool CompilerKit::EncoderAMD64::WriteLine(std::string&		 line,
 					if (currentRegList[0].fName[0] == 'r' ||
 						currentRegList[0].fName[0] == 'e')
 					{
-						detail::print_error("Invalid combination of operands and registers.",
+						detail::print_error_asm("Invalid combination of operands and registers.",
 											"i64asm");
 						throw std::runtime_error("comb_op_reg");
 					}
@@ -1352,7 +1318,7 @@ bool CompilerKit::EncoderAMD64::WriteLine(std::string&		 line,
 					if (currentRegList[1].fName[0] == 'r' ||
 						currentRegList[1].fName[0] == 'e')
 					{
-						detail::print_error("Invalid combination of operands and registers.",
+						detail::print_error_asm("Invalid combination of operands and registers.",
 											"i64asm");
 						throw std::runtime_error("comb_op_reg");
 					}
@@ -1362,7 +1328,7 @@ bool CompilerKit::EncoderAMD64::WriteLine(std::string&		 line,
 					if (currentRegList[0].fName[0] != 'r' ||
 						currentRegList[0].fName[0] == 'e')
 					{
-						detail::print_error("Invalid combination of operands and registers.",
+						detail::print_error_asm("Invalid combination of operands and registers.",
 											"i64asm");
 						throw std::runtime_error("comb_op_reg");
 					}
@@ -1370,7 +1336,7 @@ bool CompilerKit::EncoderAMD64::WriteLine(std::string&		 line,
 					if (currentRegList[1].fName[0] != 'r' ||
 						currentRegList[1].fName[0] == 'e')
 					{
-						detail::print_error("Invalid combination of operands and registers.",
+						detail::print_error_asm("Invalid combination of operands and registers.",
 											"i64asm");
 						throw std::runtime_error("comb_op_reg");
 					}
@@ -1416,7 +1382,7 @@ bool CompilerKit::EncoderAMD64::WriteLine(std::string&		 line,
 	{
 		if (foundInstruction)
 		{
-			detail::print_error("Syntax error: " + line, "i64asm");
+			detail::print_error_asm("Syntax error: " + line, "i64asm");
 			throw std::runtime_error("syntax_err");
 		}
 

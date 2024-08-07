@@ -2,7 +2,7 @@
 /*
  *	========================================================
  *
- *	CompilerKit
+ *	NDK
  * 	Copyright ZKA Technologies, all rights reserved.
  *
  * 	========================================================
@@ -10,7 +10,7 @@
 
 #pragma once
 
-namespace CompilerKit
+namespace NDK
 {
 	// @author Amlal
 	// @brief Reference holder class, refers to a pointer of data in static memory.
@@ -94,4 +94,4 @@ namespace CompilerKit
 	private:
 		Ref<T> m_Ref{nullptr};
 	};
-} // namespace CompilerKit
+} // namespace NDK

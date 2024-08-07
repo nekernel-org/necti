@@ -1,7 +1,7 @@
 /*
  *	========================================================
  *
- *	CompilerKit
+ *	NDK
  * 	Copyright ZKA Technologies, all rights reserved.
  *
  * 	========================================================
@@ -20,7 +20,7 @@
 
 #include <NDKKit/NFC/String.hxx>
 
-namespace CompilerKit {
+namespace NDK {
 CharType *StringView::Data() { return m_Data; }
 
 const CharType *StringView::CData() const { return m_Data; }
@@ -197,4 +197,4 @@ StringView &StringView::operator+=(const StringView &rhs) {
 
   return *this;
 }
-}  // namespace CompilerKit
+}  // namespace NDK

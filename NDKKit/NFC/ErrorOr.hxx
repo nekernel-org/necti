@@ -1,7 +1,7 @@
 /*
  *	========================================================
  *
- *	CompilerKit
+ *	NDK
  * 	Copyright ZKA Technologies, all rights reserved.
  *
  * 	========================================================
@@ -12,7 +12,7 @@
 #include <NDKKit/Defines.hxx>
 #include <NDKKit/NFC/Ref.hxx>
 
-namespace CompilerKit
+namespace NDK
 {
 	using ErrorT = UInt32;
 
@@ -58,4 +58,4 @@ namespace CompilerKit
 
 	using ErrorOrAny = ErrorOr<voidPtr>;
 
-} // namespace CompilerKit
+} // namespace NDK

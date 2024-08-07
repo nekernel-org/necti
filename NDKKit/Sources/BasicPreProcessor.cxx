@@ -279,7 +279,7 @@ void bpp_parse_file(std::ifstream &hdr_file, std::ofstream &pp_out) {
       }
 
       for (auto macro : kMacros) {
-        if (CompilerKit::find_word(hdr_line, macro.fName) &&
+        if (NDK::find_word(hdr_line, macro.fName) &&
             hdr_line.find("%def") == std::string::npos) {
           auto value = macro.fValue;
 

@@ -44,7 +44,7 @@
 #define kStdOut (std::cout << kWhite)
 #define kStdErr (std::cout << kRed)
 
-static char kOutputArch = CompilerKit::kPefArch64000;
+static char kOutputArch = NDK::kPefArch64000;
 static Boolean kOutputAsBinary = false;
 
 static UInt32 kErrorLimit = 10;
@@ -61,10 +61,10 @@ static bool kVerbose = false;
 
 static std::vector<e64k_num_t> kBytes;
 
-static CompilerKit::AERecordHeader kCurrentRecord{
-    .fName = "", .fKind = CompilerKit::kPefCode, .fSize = 0, .fOffset = 0};
+static NDK::AERecordHeader kCurrentRecord{
+    .fName = "", .fKind = NDK::kPefCode, .fSize = 0, .fOffset = 0};
 
-static std::vector<CompilerKit::AERecordHeader> kRecords;
+static std::vector<NDK::AERecordHeader> kRecords;
 static std::vector<std::string> kUndefinedSymbols;
 
 static const std::string kUndefinedSymbol = ":UndefinedSymbol:";
@@ -74,21 +74,21 @@ static const std::string kRelocSymbol = ":RuntimeSymbol:";
 static bool asm_read_attributes(std::string &line);
 
 namespace detail {
-void print_error(std::string reason, const std::string &file) noexcept {
+void print_error_asm(std::string reason, std::string file) noexcept {
   if (reason[0] == '\n') reason.erase(0, 1);
 
-  kStdErr << kRed << "[ 64asm ] " << kWhite
-          << ((file == "64asm") ? "internal assembler error "
+  kStdErr << kRed << "[ ndk ] " << kWhite
+          << ((file == "ndk") ? "internal error "
                                 : ("in file, " + file))
           << kBlank << std::endl;
-  kStdErr << kRed << "[ 64asm ] " << kWhite << reason << kBlank << std::endl;
+  kStdErr << kRed << "[ ndk ] " << kWhite << reason << kBlank << std::endl;
 
   if (kAcceptableErrors > kErrorLimit) std::exit(3);
 
   ++kAcceptableErrors;
 }
 
-void print_warning(std::string reason, const std::string &file) noexcept {
+void print_warning_asm(std::string reason, std::string file) noexcept {
   if (reason[0] == '\n') reason.erase(0, 1);
 
   if (!file.empty()) {
@@ -159,13 +159,13 @@ NDK_MODULE(NewOSAssembler64000) {
 
     std::string line;
 
-    CompilerKit::AEHeader hdr{0};
+    NDK::AEHeader hdr{0};
 
     memset(hdr.fPad, kAEInvalidOpcode, kAEPad);
 
     hdr.fMagic[0] = kAEMag0;
     hdr.fMagic[1] = kAEMag1;
-    hdr.fSize = sizeof(CompilerKit::AEHeader);
+    hdr.fSize = sizeof(NDK::AEHeader);
     hdr.fArch = kOutputArch;
 
     /////////////////////////////////////////////////////////////////////////////////////////
@@ -174,11 +174,11 @@ NDK_MODULE(NewOSAssembler64000) {
 
     /////////////////////////////////////////////////////////////////////////////////////////
 
-    CompilerKit::Encoder64x0 asm64;
+    NDK::Encoder64x0 asm64;
 
     while (std::getline(file_ptr, line)) {
       if (auto ln = asm64.CheckLine(line, argv[i]); !ln.empty()) {
-        detail::print_error(ln, argv[i]);
+        detail::print_error_asm(ln, argv[i]);
         continue;
       }
 
@@ -188,7 +188,7 @@ NDK_MODULE(NewOSAssembler64000) {
       } catch (const std::exception &e) {
         if (kVerbose) {
           std::string what = e.what();
-          detail::print_warning("exit because of: " + what, "64asm");
+          detail::print_warning_asm("exit because of: " + what, "64asm");
         }
 
         std::filesystem::remove(object_output);
@@ -225,7 +225,7 @@ NDK_MODULE(NewOSAssembler64000) {
         if (kVerbose)
           kStdOut << "64asm: Wrote record " << rec.fName << " to file...\n";
 
-        rec.fFlags |= CompilerKit::kKindRelocationAtRuntime;
+        rec.fFlags |= NDK::kKindRelocationAtRuntime;
         rec.fOffset = record_count;
         ++record_count;
 
@@ -236,7 +236,7 @@ NDK_MODULE(NewOSAssembler64000) {
       ++record_count;
 
       for (auto &sym : kUndefinedSymbols) {
-        CompilerKit::AERecordHeader _record_hdr{0};
+        NDK::AERecordHeader _record_hdr{0};
 
         if (kVerbose)
           kStdOut << "64asm: Wrote symbol " << sym << " to file...\n";
@@ -303,9 +303,9 @@ asm_fail_exit:
 static bool asm_read_attributes(std::string &line) {
   // import is the opposite of export, it signals to the ld
   // that we need this symbol.
-  if (CompilerKit::find_word(line, "import")) {
+  if (NDK::find_word(line, "import")) {
     if (kOutputAsBinary) {
-      detail::print_error("Invalid import directive in flat binary mode.",
+      detail::print_error_asm("Invalid import directive in flat binary mode.",
                           "64asm");
       throw std::runtime_error("invalid_import_bin");
     }
@@ -314,7 +314,7 @@ static bool asm_read_attributes(std::string &line) {
 
     /// sanity check to avoid stupid linker errors.
     if (name.size() == 0) {
-      detail::print_error("Invalid import", "power-as");
+      detail::print_error_asm("Invalid import", "power-as");
       throw std::runtime_error("invalid_import");
     }
 
@@ -330,20 +330,20 @@ static bool asm_read_attributes(std::string &line) {
 
     if (name.find(".code64") != std::string::npos) {
       // data is treated as code.
-      kCurrentRecord.fKind = CompilerKit::kPefCode;
+      kCurrentRecord.fKind = NDK::kPefCode;
     } else if (name.find(".data64") != std::string::npos) {
       // no code will be executed from here.
-      kCurrentRecord.fKind = CompilerKit::kPefData;
+      kCurrentRecord.fKind = NDK::kPefData;
     } else if (name.find(".zero64") != std::string::npos) {
       // this is a bss section.
-      kCurrentRecord.fKind = CompilerKit::kPefZero;
+      kCurrentRecord.fKind = NDK::kPefZero;
     }
 
     // this is a special case for the start stub.
     // we want this so that ld can find it.
 
     if (name == kPefStart) {
-      kCurrentRecord.fKind = CompilerKit::kPefCode;
+      kCurrentRecord.fKind = NDK::kPefCode;
     }
 
     // now we can tell the code size of the previous kCurrentRecord.
@@ -364,9 +364,9 @@ static bool asm_read_attributes(std::string &line) {
   // export is a special keyword used by 64asm to tell the AE output stage to
   // mark this section as a header. it currently supports .code64, .data64.,
   // .zero64
-  else if (CompilerKit::find_word(line, "export")) {
+  else if (NDK::find_word(line, "export")) {
     if (kOutputAsBinary) {
-      detail::print_error("Invalid export directive in flat binary mode.",
+      detail::print_error_asm("Invalid export directive in flat binary mode.",
                           "64asm");
       throw std::runtime_error("invalid_export_bin");
     }
@@ -383,24 +383,24 @@ static bool asm_read_attributes(std::string &line) {
       // data is treated as code.
 
       name_copy.erase(name_copy.find(".code64"), strlen(".code64"));
-      kCurrentRecord.fKind = CompilerKit::kPefCode;
+      kCurrentRecord.fKind = NDK::kPefCode;
     } else if (name.find(".data64") != std::string::npos) {
       // no code will be executed from here.
 
       name_copy.erase(name_copy.find(".data64"), strlen(".data64"));
-      kCurrentRecord.fKind = CompilerKit::kPefData;
+      kCurrentRecord.fKind = NDK::kPefData;
     } else if (name.find(".zero64") != std::string::npos) {
       // this is a bss section.
 
       name_copy.erase(name_copy.find(".zero64"), strlen(".zero64"));
-      kCurrentRecord.fKind = CompilerKit::kPefZero;
+      kCurrentRecord.fKind = NDK::kPefZero;
     }
 
     // this is a special case for the start stub.
     // we want this so that ld can find it.
 
     if (name == kPefStart) {
-      kCurrentRecord.fKind = CompilerKit::kPefCode;
+      kCurrentRecord.fKind = NDK::kPefCode;
     }
 
     while (name_copy.find(" ") != std::string::npos)
@@ -439,7 +439,7 @@ static inline bool is_not_alnum_space(char c) {
            (c == '_') || (c == ':') || (c == '@') || (c == '.'));
 }
 
-bool is_valid(const std::string &str) {
+bool is_valid_64x0(const std::string &str) {
   return std::find_if(str.begin(), str.end(), is_not_alnum_space) == str.end();
 }
 }  // namespace detail::algorithm
@@ -450,20 +450,20 @@ bool is_valid(const std::string &str) {
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
-std::string CompilerKit::Encoder64x0::CheckLine(std::string &line,
+std::string NDK::Encoder64x0::CheckLine(std::string &line,
                                                 const std::string &file) {
   std::string err_str;
 
-  if (line.empty() || CompilerKit::find_word(line, "import") ||
-      CompilerKit::find_word(line, "export") ||
-      line.find('#') != std::string::npos || CompilerKit::find_word(line, ";")) {
+  if (line.empty() || NDK::find_word(line, "import") ||
+      NDK::find_word(line, "export") ||
+      line.find('#') != std::string::npos || NDK::find_word(line, ";")) {
     if (line.find('#') != std::string::npos) {
       line.erase(line.find('#'));
     } else if (line.find(';') != std::string::npos) {
       line.erase(line.find(';'));
     } else {
       // now check the line for validity
-      if (!detail::algorithm::is_valid(line)) {
+      if (!detail::algorithm::is_valid_64x0(line)) {
         err_str = "Line contains non alphanumeric characters.\nhere -> ";
         err_str += line;
       }
@@ -472,7 +472,7 @@ std::string CompilerKit::Encoder64x0::CheckLine(std::string &line,
     return err_str;
   }
 
-  if (!detail::algorithm::is_valid(line)) {
+  if (!detail::algorithm::is_valid_64x0(line)) {
     err_str = "Line contains non alphanumeric characters.\nhere -> ";
     err_str += line;
 
@@ -539,7 +539,7 @@ std::string CompilerKit::Encoder64x0::CheckLine(std::string &line,
       if (auto it = std::find(filter_inst.begin(), filter_inst.end(),
                               opcode64x0.fName);
           it == filter_inst.cend()) {
-        if (CompilerKit::find_word(line, opcode64x0.fName)) {
+        if (NDK::find_word(line, opcode64x0.fName)) {
           if (!isspace(line[line.find(opcode64x0.fName) +
                             strlen(opcode64x0.fName)])) {
             err_str += "\nMissing space between ";
@@ -559,7 +559,7 @@ std::string CompilerKit::Encoder64x0::CheckLine(std::string &line,
   return err_str;
 }
 
-bool CompilerKit::Encoder64x0::WriteNumber(const std::size_t &pos,
+bool NDK::Encoder64x0::WriteNumber(const std::size_t &pos,
                                            std::string &jump_label) {
   if (!isdigit(jump_label[pos])) return false;
 
@@ -568,12 +568,12 @@ bool CompilerKit::Encoder64x0::WriteNumber(const std::size_t &pos,
       if (auto res = strtol(jump_label.substr(pos + 2).c_str(), nullptr, 16);
           !res) {
         if (errno != 0) {
-          detail::print_error("invalid hex number: " + jump_label, "64asm");
+          detail::print_error_asm("invalid hex number: " + jump_label, "64asm");
           throw std::runtime_error("invalid_hex_number");
         }
       }
 
-      CompilerKit::NumberCast64 num(
+      NDK::NumberCast64 num(
           strtol(jump_label.substr(pos + 2).c_str(), nullptr, 16));
 
       for (char &i : num.number) {
@@ -591,12 +591,12 @@ bool CompilerKit::Encoder64x0::WriteNumber(const std::size_t &pos,
       if (auto res = strtol(jump_label.substr(pos + 2).c_str(), nullptr, 2);
           !res) {
         if (errno != 0) {
-          detail::print_error("invalid binary number: " + jump_label, "64asm");
+          detail::print_error_asm("invalid binary number: " + jump_label, "64asm");
           throw std::runtime_error("invalid_bin");
         }
       }
 
-      CompilerKit::NumberCast64 num(
+      NDK::NumberCast64 num(
           strtol(jump_label.substr(pos + 2).c_str(), nullptr, 2));
 
       if (kVerbose) {
@@ -614,12 +614,12 @@ bool CompilerKit::Encoder64x0::WriteNumber(const std::size_t &pos,
       if (auto res = strtol(jump_label.substr(pos + 2).c_str(), nullptr, 7);
           !res) {
         if (errno != 0) {
-          detail::print_error("invalid octal number: " + jump_label, "64asm");
+          detail::print_error_asm("invalid octal number: " + jump_label, "64asm");
           throw std::runtime_error("invalid_octal");
         }
       }
 
-      CompilerKit::NumberCast64 num(
+      NDK::NumberCast64 num(
           strtol(jump_label.substr(pos + 2).c_str(), nullptr, 7));
 
       if (kVerbose) {
@@ -645,7 +645,7 @@ bool CompilerKit::Encoder64x0::WriteNumber(const std::size_t &pos,
     }
   }
 
-  CompilerKit::NumberCast64 num(
+  NDK::NumberCast64 num(
       strtol(jump_label.substr(pos).c_str(), nullptr, 10));
 
   for (char &i : num.number) {
@@ -666,14 +666,14 @@ bool CompilerKit::Encoder64x0::WriteNumber(const std::size_t &pos,
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
-bool CompilerKit::Encoder64x0::WriteLine(std::string &line,
+bool NDK::Encoder64x0::WriteLine(std::string &line,
                                          const std::string &file) {
-  if (CompilerKit::find_word(line, "export ")) return true;
+  if (NDK::find_word(line, "export ")) return true;
 
   for (auto &opcode64x0 : kOpcodes64x0) {
     // strict check here
-    if (CompilerKit::find_word(line, opcode64x0.fName) &&
-        detail::algorithm::is_valid(line)) {
+    if (NDK::find_word(line, opcode64x0.fName) &&
+        detail::algorithm::is_valid_64x0(line)) {
       std::string name(opcode64x0.fName);
       std::string jump_label, cpy_jump_label;
 
@@ -707,11 +707,11 @@ bool CompilerKit::Encoder64x0::WriteLine(std::string &line,
 
               // it ranges from r0 to r19
               // something like r190 doesn't exist in the instruction set.
-              if (kOutputArch == CompilerKit::kPefArch64000) {
+              if (kOutputArch == NDK::kPefArch64000) {
                 if (isdigit(line[line_index + 3]) &&
                     isdigit(line[line_index + 2])) {
                   reg_str += line[line_index + 3];
-                  detail::print_error(
+                  detail::print_error_asm(
                       "invalid register index, r" + reg_str +
                           "\nnote: The 64x0 accepts registers from r0 to r20.",
                       file);
@@ -723,7 +723,7 @@ bool CompilerKit::Encoder64x0::WriteLine(std::string &line,
               std::size_t reg_index = strtol(reg_str.c_str(), nullptr, 10);
 
               if (reg_index > kAsmRegisterLimit) {
-                detail::print_error("invalid register index, r" + reg_str,
+                detail::print_error_asm("invalid register index, r" + reg_str,
                                     file);
                 throw std::runtime_error("invalid_register_index");
               }
@@ -743,7 +743,7 @@ bool CompilerKit::Encoder64x0::WriteLine(std::string &line,
           if (opcode64x0.fFunct7 != kAsmImmediate) {
             // remember! register to register!
             if (found_some == 1) {
-              detail::print_error(
+              detail::print_error_asm(
                   "Too few registers.\ntip: each 64asm register "
                   "starts with 'r'.\nline: " +
                       line,
@@ -754,24 +754,24 @@ bool CompilerKit::Encoder64x0::WriteLine(std::string &line,
 
           if (found_some < 1 && name != "ldw" && name != "lda" &&
               name != "stw") {
-            detail::print_error(
+            detail::print_error_asm(
                 "invalid combination of opcode and registers.\nline: " + line,
                 file);
             throw std::runtime_error("invalid_comb_op_reg");
           } else if (found_some == 1 && name == "add") {
-            detail::print_error(
+            detail::print_error_asm(
                 "invalid combination of opcode and registers.\nline: " + line,
                 file);
             throw std::runtime_error("invalid_comb_op_reg");
           } else if (found_some == 1 && name == "sub") {
-            detail::print_error(
+            detail::print_error_asm(
                 "invalid combination of opcode and registers.\nline: " + line,
                 file);
             throw std::runtime_error("invalid_comb_op_reg");
           }
 
           if (found_some > 0 && name == "pop") {
-            detail::print_error(
+            detail::print_error_asm(
                 "invalid combination for opcode 'pop'.\ntip: it expects "
                 "nothing.\nline: " +
                     line,
@@ -807,7 +807,7 @@ bool CompilerKit::Encoder64x0::WriteLine(std::string &line,
           if (jump_label[0] != kAsmRegisterPrefix[0] &&
               !isdigit(jump_label[1])) {
             if (found_sym) {
-              detail::print_error(
+              detail::print_error_asm(
                   "invalid combination of opcode and operands.\nhere -> " +
                       jump_label,
                   file);
@@ -833,7 +833,7 @@ bool CompilerKit::Encoder64x0::WriteLine(std::string &line,
         if (!this->WriteNumber(0, jump_label)) {
           // sta expects this: sta 0x000000, r0
           if (name == "sta") {
-            detail::print_error(
+            detail::print_error_asm(
                 "invalid combination of opcode and operands.\nHere ->" + line,
                 file);
             throw std::runtime_error("invalid_comb_op_ops");
@@ -841,7 +841,7 @@ bool CompilerKit::Encoder64x0::WriteLine(std::string &line,
         } else {
           if (name == "sta" &&
               cpy_jump_label.find("import ") != std::string::npos) {
-            detail::print_error("invalid usage import on 'sta', here: " + line,
+            detail::print_error_asm("invalid usage import on 'sta', here: " + line,
                                 file);
             throw std::runtime_error("invalid_sta_usage");
           }
@@ -860,7 +860,7 @@ bool CompilerKit::Encoder64x0::WriteLine(std::string &line,
           cpy_jump_label.erase(cpy_jump_label.find("import"), strlen("import"));
 
           if (name == "sta") {
-            detail::print_error("import is not allowed on a sta operation.",
+            detail::print_error_asm("import is not allowed on a sta operation.",
                                 file);
             throw std::runtime_error("import_sta_op");
           } else {
@@ -876,7 +876,7 @@ bool CompilerKit::Encoder64x0::WriteLine(std::string &line,
                         << " to address: " << label.second << std::endl;
               }
 
-              CompilerKit::NumberCast64 num(label.second);
+              NDK::NumberCast64 num(label.second);
 
               for (auto &num : num.number) {
                 kBytes.push_back(num);
@@ -908,7 +908,7 @@ bool CompilerKit::Encoder64x0::WriteLine(std::string &line,
         }
 
         if (cpy_jump_label.size() < 1) {
-          detail::print_error("label is empty, can't jump on it.", file);
+          detail::print_error_asm("label is empty, can't jump on it.", file);
           throw std::runtime_error("label_empty");
         }
 

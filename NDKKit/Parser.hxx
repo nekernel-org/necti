@@ -9,7 +9,7 @@
 #include <NDKKit/AsmKit/AsmKit.hxx>
 #include <vector>
 
-namespace CompilerKit
+namespace NDK
 {
 	inline auto cInvalidLang = "?";
 
@@ -175,4 +175,4 @@ namespace CompilerKit
 
 		return false;
 	}
-} // namespace CompilerKit
+} // namespace NDK

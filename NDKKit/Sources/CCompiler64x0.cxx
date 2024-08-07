@@ -7,10 +7,14 @@
  * 	========================================================
  */
 
-#include <NDKKit/AsmKit/CPU/ppc.hxx>
+/// BUGS: 0
+/// TODO: none
+
+#include <NDKKit/AsmKit/CPU/64x0.hxx>
 #include <NDKKit/Parser.hxx>
 #include <NDKKit/UUID.hxx>
 #include <filesystem>
+#include <cstdio>
 #include <fstream>
 #include <iostream>
 #include <memory>
@@ -18,19 +22,24 @@
 #include <string>
 #include <utility>
 #include <vector>
-#include <cstdio>
 
-#define kOk 0
+/* C driver */
+/* This is part of the NDK. */
+/* (c) ZKA Technologies */
 
 /// @author Amlal El Mahrouss (amlel)
-/// @file cc.cxx
-/// @brief POWER C Compiler.
+/// @file 64x0-cc.cxx
+/// @brief 64x0 C Compiler.
+
+/// TODO: support structures, else if, else, . and  ->
 
 /////////////////////
 
-/// ANSI ESCAPE CODES
+// ANSI ESCAPE CODES
 
 /////////////////////
+
+#define kOk (0)
 
 #define kBlank "\e[0;30m"
 #define kRed   "\e[0;31m"
@@ -38,7 +47,7 @@
 
 /////////////////////////////////////
 
-/// INTERNAL STRUCT OF THE C COMPILER
+// INTERNAL STUFF OF THE C COMPILER
 
 /////////////////////////////////////
 
@@ -55,25 +64,25 @@ namespace detail
 	// \author amlel
 	struct CompilerStructMap final
 	{
-		/// 'struct::my_foo'
+		// 'my_foo'
 		std::string fName;
 
-		/// if instance: stores a valid register.
+		// if instance: stores a valid register.
 		std::string fReg;
 
-		/// offset count
+		// offset count
 		std::size_t fOffsetsCnt;
 
-		/// offset array.
+		// offset array.
 		std::vector<std::pair<Int32, std::string>> fOffsets;
 	};
 
 	struct CompilerState final
 	{
-		std::vector<CompilerKit::SyntaxLeafList> fSyntaxTreeList;
+		std::vector<NDK::SyntaxLeafList> fSyntaxTreeList;
 		std::vector<CompilerRegisterMap>	   kStackFrame;
 		std::vector<CompilerStructMap>		   kStructMap;
-		CompilerKit::SyntaxLeafList*			   fSyntaxTree{nullptr};
+		NDK::SyntaxLeafList*			   fSyntaxTree{nullptr};
 		std::unique_ptr<std::ofstream>		   fOutputAssembly;
 		std::string							   fLastFile;
 		std::string							   fLastError;
@@ -91,35 +100,7 @@ namespace detail
 	/// @brief prints an error into stdout.
 	/// @param reason the reason of the error.
 	/// @param file where does it originate from?
-	void print_error(std::string reason, std::string file) noexcept
-	{
-		if (reason[0] == '\n')
-			reason.erase(0, 1);
-
-		if (file.find(".pp") != std::string::npos)
-			file.erase(file.find(".pp"), 3);
-
-		if (kState.fLastFile != file)
-		{
-			std::cout << kRed << "[ cc ] " << kWhite
-					  << ((file == "cc") ? "internal compiler error "
-										 : ("in file, " + file))
-					  << kBlank << std::endl;
-			std::cout << kRed << "[ cc ] " << kWhite << reason << kBlank << std::endl;
-
-			kState.fLastFile = file;
-		}
-		else
-		{
-			std::cout << kRed << "[ cc ] [ " << kState.fLastFile << " ] " << kWhite
-					  << reason << kBlank << std::endl;
-		}
-
-		if (kAcceptableErrors > kErrorLimit)
-			std::exit(3);
-
-		++kAcceptableErrors;
-	}
+	void print_error_asm(std::string reason, std::string file) noexcept;
 
 	struct CompilerType final
 	{
@@ -152,7 +133,7 @@ static std::string kRegisterPrefix	= kAsmRegisterPrefix;
 /////////////////////////////////////////
 
 static std::vector<std::string>		kFileList;
-static CompilerKit::AssemblyFactory kFactory;
+static NDK::AssemblyFactory kFactory;
 static bool							kInStruct	 = false;
 static bool							kOnWhileLoop = false;
 static bool							kOnForLoop	 = false;
@@ -161,24 +142,24 @@ static bool							kIfFound	 = false;
 static size_t						kBracesCount = 0UL;
 
 /* @brief C compiler backend for C */
-class CompilerBackendCLang final : public CompilerKit::CompilerBackend
+class CompilerBackend64x0 final : public NDK::CompilerBackend
 {
 public:
-	explicit CompilerBackendCLang()	 = default;
-	~CompilerBackendCLang() override = default;
+	explicit CompilerBackend64x0()	 = default;
+	~CompilerBackend64x0() override = default;
 
-	MPCC_COPY_DEFAULT(CompilerBackendCLang);
+	MPCC_COPY_DEFAULT(CompilerBackend64x0);
 
 	std::string Check(const char* text, const char* file);
 	bool		Compile(const std::string& text, const char* file) override;
 
 	const char* Language() override
 	{
-		return "POWER C";
+		return "64k C";
 	}
 };
 
-static CompilerBackendCLang*			 kCompilerBackend = nullptr;
+static CompilerBackend64x0*			 kCompilerBackend = nullptr;
 static std::vector<detail::CompilerType> kCompilerVariables;
 static std::vector<std::string>			 kCompilerFunctions;
 static std::vector<detail::CompilerType> kCompilerTypes;
@@ -220,7 +201,7 @@ namespace detail
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
-bool CompilerBackendCLang::Compile(const std::string& text, const char* file)
+bool CompilerBackend64x0::Compile(const std::string& text, const char* file)
 {
 	std::string textBuffer = text;
 
@@ -238,7 +219,7 @@ bool CompilerBackendCLang::Compile(const std::string& text, const char* file)
 	// start parsing
 	for (size_t text_index = 0; text_index < textBuffer.size(); ++text_index)
 	{
-		auto syntaxLeaf = CompilerKit::SyntaxLeafList::SyntaxLeaf();
+		auto syntaxLeaf = NDK::SyntaxLeafList::SyntaxLeaf();
 
 		auto		gen = uuids::uuid_random_generator{generator};
 		uuids::uuid out = gen();
@@ -357,35 +338,16 @@ bool CompilerBackendCLang::Compile(const std::string& text, const char* file)
 						value += tmp;
 					}
 
-					syntaxLeaf.fUserValue = "\tmr r31, ";
+					syntaxLeaf.fUserValue = "\tldw r19, ";
 
 					// make it pretty.
-					while (value.find('\t') != std::string::npos)
+					if (value.find('\t') != std::string::npos)
 						value.erase(value.find('\t'), 1);
 
-					while (value.find(' ') != std::string::npos)
-						value.erase(value.find(' '), 1);
-
-					while (value.find("import") != std::string::npos)
-						value.erase(value.find("import"), strlen("import"));
-
-					bool found = false;
-
-					for (auto& reg : kState.kStackFrame)
-					{
-						if (value.find(reg.fName) != std::string::npos)
-						{
-							found = true;
-							syntaxLeaf.fUserValue += reg.fReg;
-							break;
-						}
-					}
-
-					if (!found)
-						syntaxLeaf.fUserValue += "r0";
+					syntaxLeaf.fUserValue += value + "\n";
 				}
 
-				syntaxLeaf.fUserValue += "\n\tblr";
+				syntaxLeaf.fUserValue += "\tjlr";
 
 				kState.fSyntaxTree->fLeafList.push_back(syntaxLeaf);
 
@@ -412,13 +374,12 @@ bool CompilerBackendCLang::Compile(const std::string& text, const char* file)
 			kIfFunction = "__MPCC_IF_PROC_";
 			kIfFunction += std::to_string(time_off._Raw);
 
-			syntaxLeaf.fUserValue =
-				"\tcmpw "
-				"r10, r11";
-
-			syntaxLeaf.fUserValue += "\n\tbeq import " + kIfFunction +
-									 " \ndword export .code64 " + kIfFunction + "\n";
-
+			syntaxLeaf.fUserValue = "\tlda r12, import ";
+			syntaxLeaf.fUserValue +=
+				kIfFunction +
+				"\n\t#r12 = Code to jump on, r11 right cond, r10 left cond.\n\tbeq "
+				"r10, r11, r12\ndword export .code64 " +
+				kIfFunction + "\n";
 			kState.fSyntaxTree->fLeafList.push_back(syntaxLeaf);
 
 			kIfFound = true;
@@ -442,8 +403,8 @@ bool CompilerBackendCLang::Compile(const std::string& text, const char* file)
 
 			if (textBuffer[text_index] == '=' && kInStruct)
 			{
-				detail::print_error(
-					"assignement of value inside a struct " + textBuffer, file);
+				detail::print_error_asm("assignement of value in struct " + textBuffer,
+									file);
 				continue;
 			}
 
@@ -497,13 +458,13 @@ bool CompilerBackendCLang::Compile(const std::string& text, const char* file)
 				if (textBuffer.find("*") != std::string::npos)
 				{
 					if (textBuffer.find("=") > textBuffer.find("*"))
-						substr += "\tli ";
+						substr += "\tlda ";
 					else
-						substr += "\tli ";
+						substr += "\tldw ";
 				}
 				else
 				{
-					substr += "\tli ";
+					substr += "\tldw ";
 				}
 			}
 			else if (textBuffer.find('=') != std::string::npos && !kInBraces)
@@ -609,36 +570,25 @@ bool CompilerBackendCLang::Compile(const std::string& text, const char* file)
 								 return type.fName.find(substr) != std::string::npos;
 							 });
 
-			kCompilerVariables.push_back({.fName = substr});
-
-			if (textBuffer[text_index] == ';')
-				break;
+			if (kRegisterCounter == 5 || kRegisterCounter == 6)
+				++kRegisterCounter;
 
 			std::string reg = kAsmRegisterPrefix;
-
-			++kRegisterCounter;
 			reg += std::to_string(kRegisterCounter);
 
-			auto newSubstr = substr.substr(substr.find(" "));
-
-			std::string symbol;
-
-			for (size_t start = 0; start < newSubstr.size(); ++start)
+			if (var_to_find == kCompilerVariables.cend())
 			{
-				if (newSubstr[start] == ',')
-					break;
+				++kRegisterCounter;
 
-				if (newSubstr[start] == ' ')
-					continue;
-
-				symbol += (newSubstr[start]);
+				kState.kStackFrame.push_back({.fName = substr, .fReg = reg});
+				kCompilerVariables.push_back({.fName = substr});
 			}
 
-			kState.kStackFrame.push_back({.fName = symbol, .fReg = reg});
-
-			syntaxLeaf.fUserValue +=
-				"\n\tli " + reg + substr.substr(substr.find(','));
+			syntaxLeaf.fUserValue += substr;
 			kState.fSyntaxTree->fLeafList.push_back(syntaxLeaf);
+
+			if (textBuffer[text_index] == '=')
+				break;
 		}
 
 		// function handler.
@@ -696,7 +646,7 @@ bool CompilerBackendCLang::Compile(const std::string& text, const char* file)
 					}
 
 					args += args_buffer;
-					args += "\n\tli r31, ";
+					args += "\n\tlda r19, ";
 				}
 			}
 
@@ -723,8 +673,7 @@ bool CompilerBackendCLang::Compile(const std::string& text, const char* file)
 			{
 				syntaxLeaf.fUserValue = args;
 				syntaxLeaf.fUserValue += substr;
-
-				syntaxLeaf.fUserValue += "\n\tblr\n";
+				syntaxLeaf.fUserValue += "\n\tjrl\n";
 
 				kState.fSyntaxTree->fLeafList.push_back(syntaxLeaf);
 
@@ -757,7 +706,7 @@ bool CompilerBackendCLang::Compile(const std::string& text, const char* file)
 					textBuffer.erase(_text_i, 1);
 			}
 
-			syntaxLeaf.fUserValue += "dec ";
+			syntaxLeaf.fUserValue += "sub ";
 			syntaxLeaf.fUserValue += textBuffer;
 
 			kState.fSyntaxTree->fLeafList.push_back(syntaxLeaf);
@@ -788,7 +737,7 @@ bool CompilerBackendCLang::Compile(const std::string& text, const char* file)
 		syntaxLeaf.fUserValue.clear();
 	}
 
-	auto syntaxLeaf		  = CompilerKit::SyntaxLeafList::SyntaxLeaf();
+	auto syntaxLeaf		  = NDK::SyntaxLeafList::SyntaxLeaf();
 	syntaxLeaf.fUserValue = "\n";
 	kState.fSyntaxTree->fLeafList.push_back(syntaxLeaf);
 
@@ -798,7 +747,7 @@ bool CompilerBackendCLang::Compile(const std::string& text, const char* file)
 static bool		   kShouldHaveBraces = false;
 static std::string kFnName;
 
-std::string CompilerBackendCLang::Check(const char* text, const char* file)
+std::string CompilerBackend64x0::Check(const char* text, const char* file)
 {
 	std::string err_str;
 	std::string ln = text;
@@ -1056,7 +1005,7 @@ cc_next:
 
 	// extern does not declare anything, it imports a variable.
 	// so that's why it's not declare upper.
-	if (CompilerKit::find_word(ln, "extern"))
+	if (NDK::find_word(ln, "extern"))
 	{
 		auto substr = ln.substr(ln.find("extern") + strlen("extern"));
 		kCompilerVariables.push_back({.fValue = substr});
@@ -1127,7 +1076,7 @@ skip_braces_check:
 
 	for (auto& key : kCompilerTypes)
 	{
-		if (CompilerKit::find_word(ln, key.fName))
+		if (NDK::find_word(ln, key.fName))
 		{
 			if (isdigit(ln[ln.find(key.fName) + key.fName.size() + 1]))
 			{
@@ -1228,9 +1177,9 @@ skip_braces_check:
 
 	if (ln.find('(') != std::string::npos)
 	{
-		if (ln.find(';') == std::string::npos && !CompilerKit::find_word(ln, "|") &&
-			!CompilerKit::find_word(ln, "||") && !CompilerKit::find_word(ln, "&") &&
-			!CompilerKit::find_word(ln, "&&") && !CompilerKit::find_word(ln, "~"))
+		if (ln.find(';') == std::string::npos && !NDK::find_word(ln, "|") &&
+			!NDK::find_word(ln, "||") && !NDK::find_word(ln, "&") &&
+			!NDK::find_word(ln, "&&") && !NDK::find_word(ln, "~"))
 		{
 			bool			  found_func = false;
 			size_t			  i			 = ln.find('(');
@@ -1346,22 +1295,22 @@ skip_braces_check:
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
-class AssemblyMountpointCLang final : public CompilerKit::AssemblyInterface
+class AssemblyCCInterface final : public NDK::AssemblyInterface
 {
 public:
-	explicit AssemblyMountpointCLang()	= default;
-	~AssemblyMountpointCLang() override = default;
+	explicit AssemblyCCInterface()	= default;
+	~AssemblyCCInterface() override = default;
 
-	MPCC_COPY_DEFAULT(AssemblyMountpointCLang);
+	MPCC_COPY_DEFAULT(AssemblyCCInterface);
 
 	[[maybe_unused]] static Int32 Arch() noexcept
 	{
-		return CompilerKit::AssemblyFactory::kArchPowerPC;
+		return NDK::AssemblyFactory::kArch64x0;
 	}
 
 	Int32 CompileToFormat(std::string& src, Int32 arch) override
 	{
-		if (arch != AssemblyMountpointCLang::Arch())
+		if (arch != AssemblyCCInterface::Arch())
 			return -1;
 
 		if (kCompilerBackend == nullptr)
@@ -1388,14 +1337,14 @@ public:
 
 		kState.fOutputAssembly = std::make_unique<std::ofstream>(dest);
 
-		auto fmt = CompilerKit::current_date();
+		auto fmt = NDK::current_date();
 
 		(*kState.fOutputAssembly) << "# Path: " << src_file << "\n";
 		(*kState.fOutputAssembly)
-			<< "# Language: POWER Assembly (Generated from C)\n";
+			<< "# Language: 64x0 Assembly (Generated from ANSI C)\n";
 		(*kState.fOutputAssembly) << "# Date: " << fmt << "\n\n";
 
-		CompilerKit::SyntaxLeafList syntax;
+		NDK::SyntaxLeafList syntax;
 
 		kState.fSyntaxTreeList.push_back(syntax);
 		kState.fSyntaxTree =
@@ -1412,14 +1361,15 @@ public:
 			}
 			else
 			{
-				detail::print_error(err, src.data());
+				detail::print_error_asm(err, src.data());
 			}
 		}
 
 		if (kAcceptableErrors > 0)
 			return -1;
 
-		std::vector<std::string> keywords = {"ld", "stw", "add", "sub", "or"};
+		std::vector<std::string> keywords = {"ldw", "stw", "lda", "sta",
+											 "add", "sub", "mv"};
 
 		///
 		/// Replace, optimize, fix assembly output.
@@ -1431,7 +1381,7 @@ public:
 
 			for (auto& access_ident : access_keywords)
 			{
-				if (CompilerKit::find_word(leaf.fUserValue, access_ident))
+				if (NDK::find_word(leaf.fUserValue, access_ident))
 				{
 					for (auto& struc : kState.kStructMap)
 					{
@@ -1442,7 +1392,7 @@ public:
 
 			for (auto& keyword : keywords)
 			{
-				if (CompilerKit::find_word(leaf.fUserValue, keyword))
+				if (NDK::find_word(leaf.fUserValue, keyword))
 				{
 					std::size_t cnt = 0UL;
 
@@ -1473,13 +1423,15 @@ public:
 							}
 						}
 
-						if (CompilerKit::find_word(leaf.fUserValue, needle))
+						if (NDK::find_word(leaf.fUserValue, needle))
 						{
-							if (leaf.fUserValue.find("import ") != std::string::npos)
+							if (leaf.fUserValue.find("import " + needle) !=
+								std::string::npos)
 							{
-								std::string range = "import ";
-								leaf.fUserValue.replace(leaf.fUserValue.find(range),
-														range.size(), "");
+								std::string range = "import " + needle;
+								leaf.fUserValue.replace(
+									leaf.fUserValue.find("import " + needle), range.size(),
+									needle);
 							}
 
 							if (leaf.fUserValue.find("ldw r6") != std::string::npos)
@@ -1490,7 +1442,7 @@ public:
 								if (countComma == 1)
 								{
 									leaf.fUserValue.replace(leaf.fUserValue.find("ldw"),
-															strlen("ldw"), "mr");
+															strlen("ldw"), "mv");
 								}
 							}
 
@@ -1501,11 +1453,11 @@ public:
 						}
 					}
 
-					if (cnt > 1 && keyword != "mr" && keyword != "add" &&
-						keyword != "dec")
+					if (cnt > 1 && keyword != "mv" && keyword != "add" &&
+						keyword != "sub")
 					{
 						leaf.fUserValue.replace(leaf.fUserValue.find(keyword),
-												keyword.size(), "mr");
+												keyword.size(), "mv");
 					}
 				}
 			}
@@ -1531,7 +1483,7 @@ public:
 
 #define kPrintF printf
 #define kSplashCxx() \
-	kPrintF(kWhite "cc, %s, (c) ZKA Technologies\n", kDistVersion)
+	kPrintF(kWhite "ZKA C Driver, %s, (c) ZKA Technologies\n", kDistVersion)
 
 static void cc_print_help()
 {
@@ -1542,7 +1494,7 @@ static void cc_print_help()
 
 #define kExt ".c"
 
-NDK_MODULE(NewOSCompilerCLangPowerPC)
+NDK_MODULE(NewOSCompilerCLang64x0)
 {
 	kCompilerTypes.push_back({.fName = "void", .fValue = "void"});
 	kCompilerTypes.push_back({.fName = "char", .fValue = "byte"});
@@ -1553,9 +1505,9 @@ NDK_MODULE(NewOSCompilerCLangPowerPC)
 
 	bool skip = false;
 
-	kFactory.Mount(new AssemblyMountpointCLang());
-	kMachine		 = CompilerKit::AssemblyFactory::kArchPowerPC;
-	kCompilerBackend = new CompilerBackendCLang();
+	kFactory.Mount(new AssemblyCCInterface());
+	kMachine		 = NDK::AssemblyFactory::kArch64x0;
+	kCompilerBackend = new CompilerBackend64x0();
 
 	for (auto index = 1UL; index < argc; ++index)
 	{
@@ -1565,30 +1517,30 @@ NDK_MODULE(NewOSCompilerCLangPowerPC)
 			continue;
 		}
 
-		if (argv[index][0] == '-')
+		if (argv[index][0] == '/')
 		{
-			if (strcmp(argv[index], "-v") == 0 ||
-				strcmp(argv[index], "-version") == 0)
+			if (strcmp(argv[index], "/v") == 0 ||
+				strcmp(argv[index], "/version") == 0)
 			{
 				kSplashCxx();
 				return kOk;
 			}
 
-			if (strcmp(argv[index], "-verbose") == 0)
+			if (strcmp(argv[index], "/verbose") == 0)
 			{
 				kState.fVerbose = true;
 
 				continue;
 			}
 
-			if (strcmp(argv[index], "-h") == 0 || strcmp(argv[index], "-help") == 0)
+			if (strcmp(argv[index], "/h") == 0 || strcmp(argv[index], "/help") == 0)
 			{
 				cc_print_help();
 
 				return kOk;
 			}
 
-			if (strcmp(argv[index], "-dialect") == 0)
+			if (strcmp(argv[index], "/dialect") == 0)
 			{
 				if (kCompilerBackend)
 					std::cout << kCompilerBackend->Language() << "\n";
@@ -1596,7 +1548,7 @@ NDK_MODULE(NewOSCompilerCLangPowerPC)
 				return kOk;
 			}
 
-			if (strcmp(argv[index], "-fmax-exceptions") == 0)
+			if (strcmp(argv[index], "/fmax-exceptions") == 0)
 			{
 				try
 				{
@@ -1616,7 +1568,7 @@ NDK_MODULE(NewOSCompilerCLangPowerPC)
 			std::string err = "Unknown command: ";
 			err += argv[index];
 
-			detail::print_error(err, "cc");
+			detail::print_error_asm(err, "cc");
 
 			continue;
 		}
@@ -1629,7 +1581,7 @@ NDK_MODULE(NewOSCompilerCLangPowerPC)
 		{
 			if (kState.fVerbose)
 			{
-				detail::print_error(srcFile + " is not a valid C source.\n", "cc");
+				detail::print_error_asm(srcFile + " is not a valid C source.\n", "cc");
 			}
 
 			return 1;

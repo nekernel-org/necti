@@ -82,7 +82,7 @@
 #include <string>
 #include <vector>
 
-namespace CompilerKit
+namespace NDK
 {
 	inline constexpr int BASE_YEAR = 1900;
 
@@ -122,7 +122,7 @@ namespace CompilerKit
 		str[copy_limit] = '\0';
 		return true;
 	}
-} // namespace CompilerKit
+} // namespace NDK
 
 #define PACKED __attribute__((packed))
 

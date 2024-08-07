@@ -60,7 +60,7 @@ enum
 static std::string kOutput			 = "";
 static Int32	   kAbi				 = eABINewOS;
 static Int32	   kSubArch			 = kPefNoSubCpu;
-static Int32	   kArch			 = CompilerKit::kPefArchInvalid;
+static Int32	   kArch			 = NDK::kPefArchInvalid;
 static Bool		   kFatBinaryEnable	 = false;
 static Bool		   kStartFound		 = false;
 static Bool		   kDuplicateSymbols = false;
@@ -118,31 +118,31 @@ NDK_MODULE(NewOSLinker)
 		}
 		else if (StringCompare(argv[i], "/64x0") == 0)
 		{
-			kArch = CompilerKit::kPefArch64000;
+			kArch = NDK::kPefArch64000;
 
 			continue;
 		}
 		else if (StringCompare(argv[i], "/amd64") == 0)
 		{
-			kArch = CompilerKit::kPefArchAMD64;
+			kArch = NDK::kPefArchAMD64;
 
 			continue;
 		}
 		else if (StringCompare(argv[i], "/32x0") == 0)
 		{
-			kArch = CompilerKit::kPefArch32000;
+			kArch = NDK::kPefArch32000;
 
 			continue;
 		}
 		else if (StringCompare(argv[i], "/power64") == 0)
 		{
-			kArch = CompilerKit::kPefArchPowerPC;
+			kArch = NDK::kPefArchPowerPC;
 
 			continue;
 		}
 		else if (StringCompare(argv[i], "/arm64") == 0)
 		{
-			kArch = CompilerKit::kPefArchARM64;
+			kArch = NDK::kPefArchARM64;
 
 			continue;
 		}
@@ -225,12 +225,12 @@ NDK_MODULE(NewOSLinker)
 		return MPCC_EXEC_ERROR;
 	}
 
-	CompilerKit::PEFContainer pef_container{};
+	NDK::PEFContainer pef_container{};
 
 	int32_t archs = kArch;
 
 	pef_container.Count	   = 0UL;
-	pef_container.Kind	   = CompilerKit::kPefKindExec;
+	pef_container.Kind	   = NDK::kPefKindExec;
 	pef_container.SubCpu   = kSubArch;
 	pef_container.Linker   = kLinkerId; // ZKA Technologies Linker
 	pef_container.Abi	   = kAbi;		// Multi-Processor UX ABI
@@ -242,7 +242,7 @@ NDK_MODULE(NewOSLinker)
 
 	// specify the start address, can be 0x10000
 	pef_container.Start = kLinkerDefaultOrigin;
-	pef_container.HdrSz = sizeof(CompilerKit::PEFContainer);
+	pef_container.HdrSz = sizeof(NDK::PEFContainer);
 
 	std::ofstream outputFc(kOutput, std::ofstream::binary);
 
@@ -258,15 +258,15 @@ NDK_MODULE(NewOSLinker)
 
 	//! Read AE to convert as PEF.
 
-	std::vector<CompilerKit::PEFCommandHeader> commandHdrsList;
-	CompilerKit::Utils::AEReadableProtocol	   readProto{};
+	std::vector<NDK::PEFCommandHeader> commandHdrsList;
+	NDK::Utils::AEReadableProtocol	   readProto{};
 
 	for (const auto& i : kObjectList)
 	{
 		if (!std::filesystem::exists(i))
 			continue;
 
-		CompilerKit::AEHeader hdr{};
+		NDK::AEHeader hdr{};
 
 		readProto.FP = std::ifstream(i, std::ifstream::binary);
 		readProto.FP >> hdr;
@@ -274,7 +274,7 @@ NDK_MODULE(NewOSLinker)
 		auto ae_header = hdr;
 
 		if (ae_header.fMagic[0] == kAEMag0 && ae_header.fMagic[1] == kAEMag1 &&
-			ae_header.fSize == sizeof(CompilerKit::AEHeader))
+			ae_header.fSize == sizeof(NDK::AEHeader))
 		{
 			if (ae_header.fArch != kArch)
 			{
@@ -313,14 +313,14 @@ NDK_MODULE(NewOSLinker)
 			pef_container.Count = cnt;
 
 			char_type* raw_ae_records =
-				new char_type[cnt * sizeof(CompilerKit::AERecordHeader)];
-			memset(raw_ae_records, 0, cnt * sizeof(CompilerKit::AERecordHeader));
+				new char_type[cnt * sizeof(NDK::AERecordHeader)];
+			memset(raw_ae_records, 0, cnt * sizeof(NDK::AERecordHeader));
 
 			auto* ae_records = readProto.Read(raw_ae_records, cnt);
 			for (size_t ae_record_index = 0; ae_record_index < cnt;
 				 ++ae_record_index)
 			{
-				CompilerKit::PEFCommandHeader command_header{0};
+				NDK::PEFCommandHeader command_header{0};
 				size_t						  offsetOfData = ae_records[ae_record_index].fOffset + ae_header.fSize;
 
 				memcpy(command_header.Name, ae_records[ae_record_index].fName,
@@ -508,7 +508,7 @@ NDK_MODULE(NewOSLinker)
 
 	// step 4: write all PEF commands.
 
-	CompilerKit::PEFCommandHeader dateHeader{};
+	NDK::PEFCommandHeader dateHeader{};
 
 	time_t timestamp = time(nullptr);
 
@@ -518,28 +518,28 @@ NDK_MODULE(NewOSLinker)
 	strncpy(dateHeader.Name, timeStampStr.c_str(), timeStampStr.size());
 
 	dateHeader.Flags  = 0;
-	dateHeader.Kind	  = CompilerKit::kPefZero;
+	dateHeader.Kind	  = NDK::kPefZero;
 	dateHeader.Offset = outputFc.tellp();
 	dateHeader.Size	  = timeStampStr.size();
 
 	commandHdrsList.push_back(dateHeader);
 
-	CompilerKit::PEFCommandHeader abiHeader{};
+	NDK::PEFCommandHeader abiHeader{};
 
 	std::string abi = kLinkerAbiContainer;
 
 	switch (kArch)
 	{
-	case CompilerKit::kPefArchAMD64: {
+	case NDK::kPefArchAMD64: {
 		abi += "MSFT";
 		break;
 	}
-	case CompilerKit::kPefArchPowerPC: {
+	case NDK::kPefArchPowerPC: {
 		abi += "SYSV";
 		break;
 	}
-	case CompilerKit::kPefArch32000:
-	case CompilerKit::kPefArch64000: {
+	case NDK::kPefArch32000:
+	case NDK::kPefArch64000: {
 		abi += "MHRA";
 		break;
 	}
@@ -554,11 +554,11 @@ NDK_MODULE(NewOSLinker)
 	abiHeader.Size	 = abi.size();
 	abiHeader.Offset = outputFc.tellp();
 	abiHeader.Flags	 = 0;
-	abiHeader.Kind	 = CompilerKit::kPefLinkerID;
+	abiHeader.Kind	 = NDK::kPefLinkerID;
 
 	commandHdrsList.push_back(abiHeader);
 
-	CompilerKit::PEFCommandHeader uuidHeader{};
+	NDK::PEFCommandHeader uuidHeader{};
 
 	std::random_device rd;
 
@@ -578,7 +578,7 @@ NDK_MODULE(NewOSLinker)
 	uuidHeader.Size	  = 16;
 	uuidHeader.Offset = outputFc.tellp();
 	uuidHeader.Flags  = 0;
-	uuidHeader.Kind	  = CompilerKit::kPefZero;
+	uuidHeader.Kind	  = NDK::kPefZero;
 
 	commandHdrsList.push_back(uuidHeader);
 
@@ -589,7 +589,7 @@ NDK_MODULE(NewOSLinker)
 
 	constexpr Int32 cPaddingOffset = 16;
 
-	size_t previousOffset = (commandHdrsList.size() * sizeof(CompilerKit::PEFCommandHeader)) + cPaddingOffset;
+	size_t previousOffset = (commandHdrsList.size() * sizeof(NDK::PEFCommandHeader)) + cPaddingOffset;
 
 	// Finally write down the command headers.
 	// And check for any duplications
