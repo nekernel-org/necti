@@ -136,11 +136,7 @@ typedef char char_type;
 		".64x", ".32x", ".masm", ".s", ".S", ".asm" \
 	}
 
-#ifdef __NDK_MODULE__
 #define NDK_MODULE(name) int name(int argc, char** argv)
-#else
-#define NDK_MODULE(name) int main(int argc, char** argv)
-#endif /* ifdef __NDK_MODULE__ */
 
 #pragma scalar_storage_order big-endian
 
