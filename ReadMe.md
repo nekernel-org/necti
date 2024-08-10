@@ -5,15 +5,15 @@
 Start by cloning the repo.
 
 ```
-git clone git@bitbucket.org:mahrouss/codetools.git
+git clone git@bitbucket.org:mahrouss/sdk-dll.git
 ```
 
 ## Running makefiles:
 
-And then run the makefile according to your platform.
+And then run the makefile.
 
 ```
-make -f <platform>.make all
+make all
 ```
 
 You can now use the programs.
