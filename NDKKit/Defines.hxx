@@ -84,14 +84,14 @@
 
 namespace NDK
 {
-	inline constexpr int BASE_YEAR = 1900;
+	inline constexpr int cBaseYear = 1900;
 
 	inline std::string current_date() noexcept
 	{
 		auto time_data	 = time(nullptr);
 		auto time_struct = gmtime(&time_data);
 
-		std::string fmt = std::to_string(BASE_YEAR + time_struct->tm_year);
+		std::string fmt = std::to_string(cBaseYear + time_struct->tm_year);
 		fmt += "-";
 		fmt += std::to_string(time_struct->tm_mon + 1);
 		fmt += "-";
@@ -136,7 +136,7 @@ typedef char char_type;
 		".64x", ".32x", ".masm", ".s", ".S", ".asm" \
 	}
 
-#define NDK_MODULE(name) int name(int argc, char** argv)
+#define NDK_MODULE(name) extern "C" int name(int argc, char** argv)
 
 #pragma scalar_storage_order big-endian
 
