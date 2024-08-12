@@ -1,8 +1,8 @@
-# NDKKit, C++ SDK for ZKA.
+# NDK, C++ SDK for New OS.
 
 ## Installing:
 
-Start by cloning the repo.
+Start by cloning the repository.
 
 ```
 git clone git@bitbucket.org:mahrouss/sdk-dll.git
