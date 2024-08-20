@@ -7,7 +7,7 @@
  * 	========================================================
  */
 
-#include <ndkdll/AsmKit/CPU/ppc.hxx>
+#include <ndkdll/Asm/CPU/ppc.hxx>
 #include <ndkdll/Parser.hxx>
 #include <ndkdll/UUID.hxx>
 #include <filesystem>
@@ -24,7 +24,7 @@
 
 /// @author Amlal El Mahrouss (amlel)
 /// @file cc.cxx
-/// @brief POWER C Compiler.
+/// @brief POWER64 C Compiler.
 
 /////////////////////
 
@@ -139,7 +139,7 @@ public:
 	explicit CompilerBackendPower64()	 = default;
 	~CompilerBackendPower64() override = default;
 
-	MPCC_COPY_DEFAULT(CompilerBackendPower64);
+	NDK_COPY_DEFAULT(CompilerBackendPower64);
 
 	std::string Check(const char* text, const char* file);
 	bool		Compile(const std::string& text, const char* file) override;
@@ -381,7 +381,7 @@ bool CompilerBackendPower64::Compile(const std::string& text, const char* file)
 			if (expr.find(")") != std::string::npos)
 				expr.erase(expr.find(")"));
 
-			kIfFunction = "__MPCC_IF_PROC_";
+			kIfFunction = "__NDK_IF_PROC_";
 			kIfFunction += std::to_string(time_off._Raw);
 
 			syntaxLeaf.fUserValue =
@@ -1324,7 +1324,7 @@ public:
 	explicit AssemblyMountpointCLang()	= default;
 	~AssemblyMountpointCLang() override = default;
 
-	MPCC_COPY_DEFAULT(AssemblyMountpointCLang);
+	NDK_COPY_DEFAULT(AssemblyMountpointCLang);
 
 	[[maybe_unused]] static Int32 Arch() noexcept
 	{

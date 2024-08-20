@@ -18,7 +18,7 @@
 #define __ASM_NEED_PPC__ 1
 
 #include <ndkdll/NFC/ErrorID.hxx>
-#include <ndkdll/AsmKit/CPU/ppc.hxx>
+#include <ndkdll/Asm/CPU/ppc.hxx>
 #include <ndkdll/NFC/PEF.hxx>
 #include <ndkdll/Parser.hxx>
 #include <ndkdll/NFC/AE.hxx>
@@ -299,7 +299,7 @@ asm_fail_exit:
 	if (kVerbose)
 		kStdOut << "power-as: Exit failed.\n";
 
-	return MPCC_EXEC_ERROR;
+	return NDK_EXEC_ERROR;
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////

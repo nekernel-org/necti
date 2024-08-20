@@ -4,7 +4,7 @@
 
 ------------------------------------------- */
 
-#include <ndkdll/AsmKit/AsmKit.hxx>
+#include <ndkdll/Asm/Asm.hxx>
 #include <ndkdll/NFC/ErrorID.hxx>
 
 /**
@@ -20,7 +20,7 @@
 
 #include <iostream>
 
-//! @file AsmKit.cpp
+//! @file Asm.cpp
 //! @brief AssemblyKit source implementation.
 
 namespace NDK
@@ -30,7 +30,7 @@ namespace NDK
 								   const Int32& arch) noexcept
 	{
 		if (sourceFile.length() < 1 || !fMounted)
-			return MPCC_UNIMPLEMENTED;
+			return NDK_UNIMPLEMENTED;
 
 		return fMounted->CompileToFormat(sourceFile, arch);
 	}

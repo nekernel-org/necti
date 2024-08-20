@@ -6,7 +6,7 @@
 
 #pragma once
 
-#include <ndkdll/AsmKit/AsmKit.hxx>
+#include <ndkdll/Asm/Asm.hxx>
 #include <vector>
 
 namespace NDK
@@ -21,7 +21,7 @@ namespace NDK
 		explicit CompilerBackend() = default;
 		virtual ~CompilerBackend() = default;
 
-		MPCC_COPY_DEFAULT(CompilerBackend);
+		NDK_COPY_DEFAULT(CompilerBackend);
 
 		// NOTE: cast this to your user defined ast.
 		typedef void* AstType;

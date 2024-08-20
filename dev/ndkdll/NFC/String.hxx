@@ -42,7 +42,7 @@ namespace NDK
 			}
 		}
 
-		MPCC_COPY_DEFAULT(StringView);
+		NDK_COPY_DEFAULT(StringView);
 
 		CharType*		Data();
 		const CharType* CData() const;

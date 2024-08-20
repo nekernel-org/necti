@@ -4,8 +4,8 @@
 
 ------------------------------------------- */
 
-#ifndef __MPCC_DEF__
-#define __MPCC_DEF__
+#ifndef __NDK_DEF__
+#define __NDK_DEF__
 
 #ifndef __GNUC__
 
@@ -28,12 +28,12 @@ typedef char*  caddr_t;
 #endif // !null
 
 #ifdef __GNUC__
-#include <CRT/__mpcc_alloca.hxx>
-#define __mpcc_alloca(sz) __mpcc_alloca_gcc(sz)
+#include <CRT/__ndk_alloca.hxx>
+#define __ndk_alloca(sz) __ndk_alloca_gcc(sz)
 #define __packed__ __attribute__((packed))
-#elif defined(__MPCC__)
-#define __packed__ __mpcc_packed__
-#define __alloca(sz) __mpcc_alloca(sz)
+#elif defined(__NDK__)
+#define __packed__ __ndk_packed__
+#define __alloca(sz) __ndk_alloca(sz)
 #endif
 
 #define __deref(ptr) (*(ptr))
@@ -80,4 +80,4 @@ typedef union double_cast {
 
 #endif // ifndef __GNUC__
 
-#endif /* __MPCC_DEF__ */
+#endif /* __NDK_DEF__ */

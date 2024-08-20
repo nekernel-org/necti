@@ -1,4 +1,4 @@
-# Path: SDK/__mpcc_power.inc
+# Path: SDK/__ndk_power.inc
 # Language: NDK POWER Assembly support for GNU.
 # Build Date: 2024-6-4
 

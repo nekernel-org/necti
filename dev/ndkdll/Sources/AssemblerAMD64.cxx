@@ -27,7 +27,7 @@
 #define kAssemblerPragmaSymStr "#"
 #define kAssemblerPragmaSym	   '#'
 
-#include <ndkdll/AsmKit/CPU/amd64.hxx>
+#include <ndkdll/Asm/CPU/amd64.hxx>
 #include <ndkdll/Parser.hxx>
 #include <ndkdll/NFC/AE.hxx>
 #include <ndkdll/NFC/PEF.hxx>

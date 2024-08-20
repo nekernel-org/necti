@@ -16,7 +16,7 @@
 #include <ndkdll/NFC/ErrorID.hxx>
 
 //! Assembler Kit
-#include <ndkdll/AsmKit/AsmKit.hxx>
+#include <ndkdll/Asm/Asm.hxx>
 
 //! Preferred Executable Format
 #include <ndkdll/NFC/PEF.hxx>
@@ -180,7 +180,7 @@ NDK_MODULE(NewOSLinker)
 			if (argv[i][0] == '/')
 			{
 				kStdOut << "link: unknown flag: " << argv[i] << "\n";
-				return MPCC_EXEC_ERROR;
+				return NDK_EXEC_ERROR;
 			}
 
 			kObjectList.emplace_back(argv[i]);
@@ -192,14 +192,14 @@ NDK_MODULE(NewOSLinker)
 	if (kOutput.empty())
 	{
 		kStdOut << "link: no output filename set." << std::endl;
-		return MPCC_EXEC_ERROR;
+		return NDK_EXEC_ERROR;
 	}
 
 	// sanity check.
 	if (kObjectList.empty())
 	{
 		kStdOut << "link: no input files." << std::endl;
-		return MPCC_EXEC_ERROR;
+		return NDK_EXEC_ERROR;
 	}
 	else
 	{
@@ -213,7 +213,7 @@ NDK_MODULE(NewOSLinker)
 				// if filesystem doesn't find file
 				//          -> throw error.
 				kStdOut << "link: no such file: " << obj << std::endl;
-				return MPCC_EXEC_ERROR;
+				return NDK_EXEC_ERROR;
 			}
 		}
 	}
@@ -222,7 +222,7 @@ NDK_MODULE(NewOSLinker)
 	if (kArch == 0)
 	{
 		kStdOut << "link: no target architecture set, can't continue." << std::endl;
-		return MPCC_EXEC_ERROR;
+		return NDK_EXEC_ERROR;
 	}
 
 	NDK::PEFContainer pef_container{};
@@ -253,7 +253,7 @@ NDK_MODULE(NewOSLinker)
 			kStdOut << "link: error: " << strerror(errno) << "\n";
 		}
 
-		return MPCC_FILE_NOT_FOUND;
+		return NDK_FILE_NOT_FOUND;
 	}
 
 	//! Read AE to convert as PEF.
@@ -292,7 +292,7 @@ NDK_MODULE(NewOSLinker)
 							<< std::endl;
 
 					std::remove(kOutput.c_str());
-					return MPCC_FAT_ERROR;
+					return NDK_FAT_ERROR;
 				}
 				else
 				{
@@ -398,7 +398,7 @@ NDK_MODULE(NewOSLinker)
 		std::remove(kOutput.c_str());
 
 		// don't continue, it is a fatal error.
-		return MPCC_EXEC_ERROR;
+		return NDK_EXEC_ERROR;
 	}
 
 	pef_container.Cpu = archs;
@@ -689,7 +689,7 @@ NDK_MODULE(NewOSLinker)
 		}
 
 		std::remove(kOutput.c_str());
-		return MPCC_EXEC_ERROR;
+		return NDK_EXEC_ERROR;
 	}
 
 	// step 2.5: write program bytes.
@@ -732,7 +732,7 @@ NDK_MODULE(NewOSLinker)
 					<< ", is corrupt, removing file...\n";
 
 		std::remove(kOutput.c_str());
-		return MPCC_EXEC_ERROR;
+		return NDK_EXEC_ERROR;
 	}
 
 	return 0;

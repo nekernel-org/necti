@@ -10,7 +10,7 @@
 /// BUGS: 0
 /// TODO: none
 
-#include <ndkdll/AsmKit/CPU/64x0.hxx>
+#include <ndkdll/Asm/CPU/64x0.hxx>
 #include <ndkdll/Parser.hxx>
 #include <ndkdll/UUID.hxx>
 #include <filesystem>
@@ -148,7 +148,7 @@ public:
 	explicit CompilerBackend64x0()	 = default;
 	~CompilerBackend64x0() override = default;
 
-	MPCC_COPY_DEFAULT(CompilerBackend64x0);
+	NDK_COPY_DEFAULT(CompilerBackend64x0);
 
 	std::string Check(const char* text, const char* file);
 	bool		Compile(const std::string& text, const char* file) override;
@@ -371,7 +371,7 @@ bool CompilerBackend64x0::Compile(const std::string& text, const char* file)
 			if (expr.find(")") != std::string::npos)
 				expr.erase(expr.find(")"));
 
-			kIfFunction = "__MPCC_IF_PROC_";
+			kIfFunction = "__NDK_IF_PROC_";
 			kIfFunction += std::to_string(time_off._Raw);
 
 			syntaxLeaf.fUserValue = "\tlda r12, import ";
@@ -1301,7 +1301,7 @@ public:
 	explicit AssemblyCCInterface()	= default;
 	~AssemblyCCInterface() override = default;
 
-	MPCC_COPY_DEFAULT(AssemblyCCInterface);
+	NDK_COPY_DEFAULT(AssemblyCCInterface);
 
 	[[maybe_unused]] static Int32 Arch() noexcept
 	{

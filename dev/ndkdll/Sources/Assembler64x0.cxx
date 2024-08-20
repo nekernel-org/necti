@@ -19,7 +19,7 @@
 
 #define __ASM_NEED_64x0__ 1
 
-#include <ndkdll/AsmKit/CPU/64x0.hxx>
+#include <ndkdll/Asm/CPU/64x0.hxx>
 #include <ndkdll/Parser.hxx>
 #include <ndkdll/NFC/AE.hxx>
 #include <ndkdll/NFC/PEF.hxx>

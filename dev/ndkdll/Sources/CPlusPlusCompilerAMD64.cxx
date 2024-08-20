@@ -20,7 +20,7 @@
 
 // import, @MLAutoRelease { ... }, fn foo() -> auto { ... }
 
-#include <ndkdll/AsmKit/CPU/amd64.hxx>
+#include <ndkdll/Asm/CPU/amd64.hxx>
 #include <ndkdll/Parser.hxx>
 #include <UUID.hxx>
 
@@ -33,13 +33,13 @@
 #include <utility>
 #include <vector>
 
-/* ZKA C++ driver */
+/* ZKA C++ Compiler driver */
 /* This is part of NDK. */
 /* (c) ZKA Technologies */
 
 /// @author Amlal El Mahrouss (amlel)
 /// @file cc.cxx
-/// @brief Optimized C++ Compiler.
+/// @brief Optimized C++ Compiler Driver.
 /// @todo Throw error for scoped inside scoped variables when they get referenced outside.
 /// @todo Add class/struct/enum support.
 
@@ -55,7 +55,7 @@
 
 /////////////////////////////////////
 
-// INTERNALS OF THE C COMPILER
+// INTERNALS OF THE C++ COMPILER
 
 /////////////////////////////////////
 
@@ -105,7 +105,7 @@ namespace detail
 	/// @param reason the reason of the error.
 	/// @param file where does it originate from?
 	void print_error_asm(std::string reason, std::string file) noexcept;
-	
+
 	struct CompilerType
 	{
 		std::string fName;
@@ -151,7 +151,7 @@ public:
 	explicit CompilerBackendCPlusPlus()	 = default;
 	~CompilerBackendCPlusPlus() override = default;
 
-	MPCC_COPY_DEFAULT(CompilerBackendCPlusPlus);
+	NDK_COPY_DEFAULT(CompilerBackendCPlusPlus);
 
 	bool Compile(const std::string& text, const char* file) override;
 
@@ -404,7 +404,7 @@ bool CompilerBackendCPlusPlus::Compile(const std::string& text,
 					ch = '_';
 			}
 
-			syntax_tree.fUserValue = "export .code64 __MPCC_" + fnName + "\n";
+			syntax_tree.fUserValue = "export .code64 __NDK_" + fnName + "\n";
 
 			++kLevelFunction;
 		}
@@ -732,7 +732,7 @@ public:
 	explicit AssemblyCPlusPlusInterface()  = default;
 	~AssemblyCPlusPlusInterface() override = default;
 
-	MPCC_COPY_DEFAULT(AssemblyCPlusPlusInterface);
+	NDK_COPY_DEFAULT(AssemblyCPlusPlusInterface);
 
 	[[maybe_unused]]
 	static Int32 Arch() noexcept

@@ -6,7 +6,7 @@
 
 #pragma once
 
-#include <ndkdll/AsmKit/AsmKit.hxx>
+#include <ndkdll/Asm/Asm.hxx>
 #include <ndkdll/Parser.hxx>
 
 using namespace NDK;

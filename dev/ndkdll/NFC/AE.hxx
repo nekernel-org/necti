@@ -107,7 +107,7 @@ namespace NDK::Utils
 		explicit AEReadableProtocol() = default;
 		~AEReadableProtocol()		  = default;
 
-		MPCC_COPY_DELETE(AEReadableProtocol);
+		NDK_COPY_DELETE(AEReadableProtocol);
 
 		/**
 		 * @brief Read AE record

@@ -21,7 +21,7 @@ namespace NDK
 		explicit AssemblyInterface() = default;
 		virtual ~AssemblyInterface() = default;
 
-		MPCC_COPY_DEFAULT(AssemblyInterface);
+		NDK_COPY_DEFAULT(AssemblyInterface);
 
 		//@ brief compile to object file.
 		// Example C++ -> MASM -> AE object.
@@ -35,7 +35,7 @@ namespace NDK
 		explicit AssemblyFactory() = default;
 		~AssemblyFactory()		   = default;
 
-		MPCC_COPY_DEFAULT(AssemblyFactory);
+		NDK_COPY_DEFAULT(AssemblyFactory);
 
 	public:
 		enum
@@ -128,7 +128,7 @@ namespace NDK
 		explicit EncoderInterface() = default;
 		virtual ~EncoderInterface() = default;
 
-		MPCC_COPY_DEFAULT(EncoderInterface);
+		NDK_COPY_DEFAULT(EncoderInterface);
 
 		virtual std::string CheckLine(std::string& line, const std::string& file)		= 0;
 		virtual bool		WriteLine(std::string& line, const std::string& file)		= 0;
@@ -143,7 +143,7 @@ namespace NDK
 		explicit EncoderAMD64()	 = default;
 		~EncoderAMD64() override = default;
 
-		MPCC_COPY_DEFAULT(EncoderAMD64);
+		NDK_COPY_DEFAULT(EncoderAMD64);
 
 		virtual std::string CheckLine(std::string&		 line,
 									  const std::string& file) override;
@@ -166,7 +166,7 @@ namespace NDK
 		explicit Encoder64x0()	= default;
 		~Encoder64x0() override = default;
 
-		MPCC_COPY_DEFAULT(Encoder64x0);
+		NDK_COPY_DEFAULT(Encoder64x0);
 
 		virtual std::string CheckLine(std::string&		 line,
 									  const std::string& file) override;
@@ -185,7 +185,7 @@ namespace NDK
 		explicit Encoder32x0()	= default;
 		~Encoder32x0() override = default;
 
-		MPCC_COPY_DEFAULT(Encoder32x0);
+		NDK_COPY_DEFAULT(Encoder32x0);
 
 		virtual std::string CheckLine(std::string&		 line,
 									  const std::string& file) override;
@@ -204,7 +204,7 @@ namespace NDK
 		explicit EncoderPowerPC()  = default;
 		~EncoderPowerPC() override = default;
 
-		MPCC_COPY_DEFAULT(EncoderPowerPC);
+		NDK_COPY_DEFAULT(EncoderPowerPC);
 
 		virtual std::string CheckLine(std::string&		 line,
 									  const std::string& file) override;

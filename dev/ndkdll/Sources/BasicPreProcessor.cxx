@@ -58,7 +58,7 @@ class bpp_pragma final {
   explicit bpp_pragma() = default;
   ~bpp_pragma() = default;
 
-  MPCC_COPY_DEFAULT(bpp_pragma);
+  NDK_COPY_DEFAULT(bpp_pragma);
 
   std::string fMacroName;
   bpp_parser_fn_t fParse;
@@ -877,7 +877,7 @@ NDK_MODULE(NewOSPreprocessor) {
       kFiles.emplace_back(argv[index]);
     }
 
-    if (kFiles.empty()) return MPCC_EXEC_ERROR;
+    if (kFiles.empty()) return NDK_EXEC_ERROR;
 
     for (auto &file : kFiles) {
       if (!std::filesystem::exists(file)) continue;
