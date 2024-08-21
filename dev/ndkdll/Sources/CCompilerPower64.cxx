@@ -142,7 +142,7 @@ public:
 	NDK_COPY_DEFAULT(CompilerBackendPower64);
 
 	std::string Check(const char* text, const char* file);
-	bool		Compile(const std::string& text, const char* file) override;
+	bool		Compile(const std::string text, const std::string file) override;
 
 	const char* Language() override
 	{
@@ -192,7 +192,7 @@ namespace detail
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
-bool CompilerBackendPower64::Compile(const std::string& text, const char* file)
+bool CompilerBackendPower64::Compile(const std::string text, const std::string file)
 {
 	std::string textBuffer = text;
 

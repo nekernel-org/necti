@@ -83,14 +83,13 @@ namespace detail
 
 	struct CompilerState final
 	{
-		std::vector<NDK::SyntaxLeafList> fSyntaxTreeList;
-		std::vector<CompilerRegisterMap>	   kStackFrame;
-		std::vector<CompilerStructMap>		   kStructMap;
-		NDK::SyntaxLeafList*			   fSyntaxTree{nullptr};
-		std::unique_ptr<std::ofstream>		   fOutputAssembly;
-		std::string							   fLastFile;
-		std::string							   fLastError;
-		bool								   fVerbose;
+		std::vector<CompilerRegisterMap> kStackFrame;
+		std::vector<CompilerStructMap>	 kStructMap;
+		NDK::SyntaxLeafList*			 fSyntaxTree{nullptr};
+		std::unique_ptr<std::ofstream>	 fOutputAssembly;
+		std::string						 fLastFile;
+		std::string						 fLastError;
+		bool							 fVerbose;
 	};
 } // namespace detail
 
@@ -124,10 +123,10 @@ static int kMachine = NDK::AssemblyFactory::kArchAMD64;
 
 /////////////////////////////////////////
 
-static size_t								   kRegisterCnt		= kAsmRegisterLimit;
-static size_t								   kStartUsable		= 8;
-static size_t								   kUsableLimit		= 15;
-static size_t								   kRegisterCounter = kStartUsable;
+static size_t							 kRegisterCnt	  = kAsmRegisterLimit;
+static size_t							 kStartUsable	  = 8;
+static size_t							 kUsableLimit	  = 15;
+static size_t							 kRegisterCounter = kStartUsable;
 static std::vector<NDK::CompilerKeyword> kKeywords;
 
 /////////////////////////////////////////
@@ -136,13 +135,13 @@ static std::vector<NDK::CompilerKeyword> kKeywords;
 
 /////////////////////////////////////////
 
-static std::vector<std::string>		kFileList;
-static NDK::AssemblyFactory kFactory;
-static bool							kInStruct	 = false;
-static bool							kOnWhileLoop = false;
-static bool							kOnForLoop	 = false;
-static bool							kInBraces	 = false;
-static size_t						kBracesCount = 0UL;
+static std::vector<std::string> kFileList;
+static NDK::AssemblyFactory		kFactory;
+static bool						kInStruct	 = false;
+static bool						kOnWhileLoop = false;
+static bool						kOnForLoop	 = false;
+static bool						kInBraces	 = false;
+static size_t					kBracesCount = 0UL;
 
 /* @brief C++ compiler backend for the ZKA C++ driver */
 class CompilerBackendCPlusPlus final : public NDK::CompilerBackend
@@ -153,7 +152,7 @@ public:
 
 	NDK_COPY_DEFAULT(CompilerBackendCPlusPlus);
 
-	bool Compile(const std::string& text, const char* file) override;
+	bool Compile(const std::string text, const std::string file) override;
 
 	const char* Language() override;
 };
@@ -206,21 +205,17 @@ const char* CompilerBackendCPlusPlus::Language()
 /////////////////////////////////////////////////////////////////////////////////////////
 
 /// @name Compile
-/// @brief Generate MASM assembly from a C++ source.
+/// @brief Generate assembly from a C++ source.
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
-bool CompilerBackendCPlusPlus::Compile(const std::string& text,
-									   const char*		  file)
+bool CompilerBackendCPlusPlus::Compile(const std::string text,
+									   const std::string file)
 {
 	if (text.empty())
 		return false;
 
-	// if (expr)
-	// int name = expr;
-	// expr;
-
-	std::size_t														index = 0UL;
+	std::size_t												  index = 0UL;
 	std::vector<std::pair<NDK::CompilerKeyword, std::size_t>> keywords_list;
 
 	bool		found		 = false;
@@ -312,7 +307,6 @@ bool CompilerBackendCPlusPlus::Compile(const std::string& text,
 				i = left.size() - 1;
 				try
 				{
-
 					while (!std::isalnum(left[i]))
 					{
 						left.erase(i, 1);
@@ -559,6 +553,20 @@ bool CompilerBackendCPlusPlus::Compile(const std::string& text,
 					syntax_tree.fUserValue = instr + cRegisters[kRegisterMap.size()] + ", " + valueOfVar + "\n";
 				}
 
+				if (valueOfVar[0] != '\"' &&
+					valueOfVar[0] != '\'' &&
+					!isdigit(valueOfVar[0]))
+				{
+					for (auto pair : kRegisterMap)
+					{
+						if (pair == valueOfVar)
+							goto done;
+					}
+
+					detail::print_error_asm("Variable not declared: " + valueOfVar, file);
+					return false;
+				}
+
 			done:
 				kRegisterMap.push_back(varName);
 			}
@@ -711,10 +719,10 @@ bool CompilerBackendCPlusPlus::Compile(const std::string& text,
 		}
 
 		syntax_tree.fUserData = keyword.first;
-		kState.fSyntaxTree->fLeafList.emplace_back(syntax_tree);
+		kState.fSyntaxTree->fLeafList.push_back(syntax_tree);
 	}
 
-_MpccOkay:
+ndk_compile_ok:
 	return true;
 }
 
@@ -734,8 +742,7 @@ public:
 
 	NDK_COPY_DEFAULT(AssemblyCPlusPlusInterface);
 
-	[[maybe_unused]]
-	static Int32 Arch() noexcept
+	[[maybe_unused]] static Int32 Arch() noexcept
 	{
 		return NDK::AssemblyFactory::kArchAMD64;
 	}
@@ -749,13 +756,13 @@ public:
 			return -1;
 
 		/* @brief copy contents wihtout extension */
-		std::string	  src_file = src.data();
+		std::string	  src_file = src;
 		std::ifstream src_fp   = std::ifstream(src_file, std::ios::in);
 
 		const char* cExts[] = kAsmFileExts;
 
 		std::string dest = src_file;
-		dest += cExts[4];
+		dest += cExts[2];
 
 		if (dest.empty())
 		{
@@ -786,24 +793,29 @@ public:
 		(*kState.fOutputAssembly) << "#bits 64\n#org 0x1000000"
 								  << "\n";
 
-		NDK::SyntaxLeafList syntax;
+		kState.fSyntaxTree = new NDK::SyntaxLeafList();
 
-		kState.fSyntaxTreeList.emplace_back(syntax);
-		kState.fSyntaxTree =
-			&kState.fSyntaxTreeList[kState.fSyntaxTreeList.size() - 1];
+		// ===================================
+		// Parse source file.
+		// ===================================
 
-		std::string source;
+		std::string line_source;
 
-		while (std::getline(src_fp, source))
+		while (std::getline(src_fp, line_source))
 		{
-			// Compile into an object file.
-			kCompilerBackend->Compile(source.c_str(), src.c_str());
+			kCompilerBackend->Compile(line_source, src);
 		}
 
-		for (auto& ast : kState.fSyntaxTree->fLeafList)
+		for (auto& ast_generated : kState.fSyntaxTree->fLeafList)
 		{
-			(*kState.fOutputAssembly) << ast.fUserValue;
+			(*kState.fOutputAssembly) << ast_generated.fUserValue;
 		}
+
+		kState.fOutputAssembly->flush();
+		kState.fOutputAssembly->close();
+
+		delete kState.fSyntaxTree;
+		kState.fSyntaxTree = nullptr;
 
 		if (kAcceptableErrors > 0)
 			return -1;
@@ -981,6 +993,8 @@ NDK_MODULE(CompilerCPlusPlusX8664)
 
 			return 1;
 		}
+
+		std::cout << "c++drv: building: " << argv[index] << std::endl;
 
 		if (kFactory.Compile(argv_i, kMachine) != kOk)
 			return -1;

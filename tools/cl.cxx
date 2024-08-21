@@ -34,7 +34,7 @@ int main(int argc, char const* argv[])
 				strstr(argv[index_arg], ".C"))
 			{
                 std::string arg = argv[index_arg];
-                arg += ".S";
+                arg += ".masm";
                 args_list.push_back(arg);
 			}
 		}
@@ -48,7 +48,7 @@ int main(int argc, char const* argv[])
 				std::printf("cl.exe: assembler exited with code %i.", code);
 			}
 		}
-		
+
 	}
 
 	return 0;

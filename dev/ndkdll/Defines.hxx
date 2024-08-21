@@ -136,6 +136,8 @@ typedef char char_type;
 		".64x", ".32x", ".masm", ".s", ".S", ".asm" \
 	}
 
+#define kAsmFileExtsMax 6
+
 #define NDK_MODULE(name) extern "C" int name(int argc, char** argv)
 
 #pragma scalar_storage_order big-endian

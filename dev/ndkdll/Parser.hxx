@@ -29,7 +29,7 @@ namespace NDK
 		//! @brief Compile a syntax tree ouf of the text.
 		//! Also takes the source file name for metadata.
 
-		virtual bool Compile(const std::string& text, const char* file) = 0;
+		virtual bool Compile(const std::string text, const std::string file) = 0;
 
 		//! @brief What language are we dealing with?
 		virtual const char* Language()

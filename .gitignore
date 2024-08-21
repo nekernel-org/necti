@@ -8,6 +8,7 @@ local.properties
 .loadpath
 .recommenders
 
+*.cxx.masm
 *.creator.user
 
 Examples/
