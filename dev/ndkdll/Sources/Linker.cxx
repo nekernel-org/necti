@@ -87,30 +87,30 @@ NDK_MODULE(NewOSLinker)
 	 */
 	for (size_t i = 1; i < argc; ++i)
 	{
-		if (StringCompare(argv[i], "/help") == 0)
+		if (StringCompare(argv[i], "/?") == 0)
 		{
 			kLinkerSplash();
-			kStdOut << "/version: Show linker version.\n";
-			kStdOut << "/help: Show linker help.\n";
-			kStdOut << "/verbose: Enable linker trace.\n";
-			kStdOut << "/shared: Output as a shared PEF.\n";
-			kStdOut << "/fat-bin: Output as a FAT PEF.\n";
+			kStdOut << "/Ver: Show linker version.\n";
+			kStdOut << "/?: Show linker help.\n";
+			kStdOut << "/Verbose: Enable linker trace.\n";
+			kStdOut << "/DLL: Output as a shared PEF.\n";
+			kStdOut << "/FAT: Output as a FAT PEF.\n";
 			kStdOut << "/32x0: Output as a 32x0 PEF.\n";
 			kStdOut << "/64x0: Output as a 64x0 PEF.\n";
 			kStdOut << "/amd64: Output as a AMD64 PEF.\n";
 			kStdOut << "/rv64: Output as a RISC-V PEF.\n";
 			kStdOut << "/power64: Output as a POWER PEF.\n";
 			kStdOut << "/arm64: Output as a ARM64 PEF.\n";
-			kStdOut << "/output-file: Select the output file name.\n";
+			kStdOut << "/Output: Select the output file name.\n";
 
 			return 0;
 		}
-		else if (StringCompare(argv[i], "/version") == 0)
+		else if (StringCompare(argv[i], "/Ver") == 0)
 		{
 			kLinkerSplash();
 			return 0;
 		}
-		else if (StringCompare(argv[i], "/fat-bin") == 0)
+		else if (StringCompare(argv[i], "/FAT") == 0)
 		{
 			kFatBinaryEnable = true;
 
@@ -146,13 +146,13 @@ NDK_MODULE(NewOSLinker)
 
 			continue;
 		}
-		else if (StringCompare(argv[i], "/verbose") == 0)
+		else if (StringCompare(argv[i], "/Verbose") == 0)
 		{
 			kVerbose = true;
 
 			continue;
 		}
-		else if (StringCompare(argv[i], "/shared") == 0)
+		else if (StringCompare(argv[i], "/DLL") == 0)
 		{
 			if (kOutput.empty())
 			{
@@ -168,7 +168,7 @@ NDK_MODULE(NewOSLinker)
 
 			continue;
 		}
-		else if (StringCompare(argv[i], "/output-file") == 0)
+		else if (StringCompare(argv[i], "/Output") == 0)
 		{
 			kOutput = argv[i + 1];
 			++i;

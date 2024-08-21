@@ -1,7 +1,7 @@
 /*
  *	========================================================
  *
- *	cplusplus
+ *	c++-drv
  * 	Copyright ZKA Technologies, all rights reserved.
  *
  * 	========================================================
@@ -818,7 +818,7 @@ static void cxx_print_help()
 {
 	kSplashCxx();
 	kPrintF("%s", "No help available, see:\n");
-	kPrintF("%s", "www.zeta.com/developer/cplusplus\n");
+	kPrintF("%s", "www.zeta.com/developer/c++-drv\n");
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////
@@ -903,28 +903,27 @@ NDK_MODULE(CompilerCPlusPlusX8664)
 				continue;
 			}
 
-			if (strcmp(argv[index], "/v") == 0 ||
-				strcmp(argv[index], "/version") == 0)
+			if (strcmp(argv[index], "/Ver") == 0)
 			{
 				kSplashCxx();
 				return kOk;
 			}
 
-			if (strcmp(argv[index], "/verbose") == 0)
+			if (strcmp(argv[index], "/Verbose") == 0)
 			{
 				kState.fVerbose = true;
 
 				continue;
 			}
 
-			if (strcmp(argv[index], "/h") == 0 || strcmp(argv[index], "/help") == 0)
+			if (strcmp(argv[index], "/?") == 0)
 			{
 				cxx_print_help();
 
 				return kOk;
 			}
 
-			if (strcmp(argv[index], "/dialect") == 0)
+			if (strcmp(argv[index], "/GetC++") == 0)
 			{
 				if (kCompilerBackend)
 					std::cout << kCompilerBackend->Language() << "\n";
@@ -932,7 +931,7 @@ NDK_MODULE(CompilerCPlusPlusX8664)
 				return kOk;
 			}
 
-			if (strcmp(argv[index], "/max-errors") == 0)
+			if (strcmp(argv[index], "/MaxErr") == 0)
 			{
 				try
 				{
@@ -952,7 +951,7 @@ NDK_MODULE(CompilerCPlusPlusX8664)
 			std::string err = "Unknown option: ";
 			err += argv[index];
 
-			detail::print_error_asm(err, "cplusplus");
+			detail::print_error_asm(err, "c++-drv");
 
 			continue;
 		}
@@ -977,7 +976,7 @@ NDK_MODULE(CompilerCPlusPlusX8664)
 		{
 			if (kState.fVerbose)
 			{
-				detail::print_error_asm(argv_i + " is not a valid C++ source.\n", "cplusplus");
+				detail::print_error_asm(argv_i + " is not a valid C++ source.\n", "c++-drv");
 			}
 
 			return 1;
