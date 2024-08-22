@@ -81,7 +81,7 @@ static bool asm_read_attributes(std::string& line);
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
-NDK_MODULE(NewOSAssemblerPowerPC)
+NDK_MODULE(ZKAAssemblerMainPowerPC)
 {
 	for (size_t i = 1; i < argc; ++i)
 	{

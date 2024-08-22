@@ -105,7 +105,7 @@ void print_warning_asm(std::string reason, std::string file) noexcept {
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
-NDK_MODULE(NewOSAssembler64000) {
+NDK_MODULE(ZKAAssemblerMain64000) {
   for (size_t i = 1; i < argc; ++i) {
     if (argv[i][0] == '/') {
       if (strcmp(argv[i], "/version") == 0 || strcmp(argv[i], "/v") == 0) {

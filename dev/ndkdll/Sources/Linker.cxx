@@ -77,7 +77,7 @@ static std::vector<char>		kObjectBytes;
 #define kPrintF			printf
 #define kLinkerSplash() kPrintF(kWhite kLinkerVersion, kDistVersion)
 
-NDK_MODULE(NewOSLinker)
+NDK_MODULE(ZKALinkerMain)
 {
 	bool is_executable = true;
 
