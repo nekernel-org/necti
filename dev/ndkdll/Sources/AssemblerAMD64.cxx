@@ -540,9 +540,9 @@ namespace detail::algorithm
 	static inline bool is_not_alnum_space(char c)
 	{
 		return !(isalpha(c) || isdigit(c) || (c == ' ') || (c == '\t') ||
-				 (c == ',') || (c == '(') || (c == ')') || (c == '"') ||
+				 (c == ',') || (c == '(') || (c == ')') || (c == '"') || (c == '*') ||
 				 (c == '\'') || (c == '[') || (c == ']') || (c == '+') ||
-				 (c == '_') || (c == ':') || (c == '@') || (c == '.') || (c == '#'));
+				 (c == '_') || (c == ':') || (c == '@') || (c == '.') || (c == '#') || (c == ';'));
 	}
 
 	bool is_valid_amd64(const std::string& str)
@@ -1284,16 +1284,18 @@ bool NDK::EncoderAMD64::WriteLine(std::string&		 line,
 							"Invalid combination of operands and registers.", "i64asm");
 						throw std::runtime_error("comb_op_reg");
 					}
-
-					kAppBytes.emplace_back(0x66);
-					kAppBytes.emplace_back(0x89);
+					else
+					{
+						kAppBytes.emplace_back(0x66);
+						kAppBytes.emplace_back(0x89);
+					}
 				}
 
 				if (currentRegList[1].fName[0] == 'r' &&
 					currentRegList[0].fName[0] == 'e')
 				{
 					detail::print_error_asm("Invalid combination of operands and registers.",
-										"i64asm");
+											"i64asm");
 					throw std::runtime_error("comb_op_reg");
 				}
 
@@ -1301,7 +1303,7 @@ bool NDK::EncoderAMD64::WriteLine(std::string&		 line,
 					currentRegList[1].fName[0] == 'e')
 				{
 					detail::print_error_asm("Invalid combination of operands and registers.",
-										"i64asm");
+											"i64asm");
 					throw std::runtime_error("comb_op_reg");
 				}
 
@@ -1311,7 +1313,7 @@ bool NDK::EncoderAMD64::WriteLine(std::string&		 line,
 						currentRegList[0].fName[0] == 'e')
 					{
 						detail::print_error_asm("Invalid combination of operands and registers.",
-											"i64asm");
+												"i64asm");
 						throw std::runtime_error("comb_op_reg");
 					}
 
@@ -1319,7 +1321,7 @@ bool NDK::EncoderAMD64::WriteLine(std::string&		 line,
 						currentRegList[1].fName[0] == 'e')
 					{
 						detail::print_error_asm("Invalid combination of operands and registers.",
-											"i64asm");
+												"i64asm");
 						throw std::runtime_error("comb_op_reg");
 					}
 				}
@@ -1329,7 +1331,7 @@ bool NDK::EncoderAMD64::WriteLine(std::string&		 line,
 						currentRegList[0].fName[0] == 'e')
 					{
 						detail::print_error_asm("Invalid combination of operands and registers.",
-											"i64asm");
+												"i64asm");
 						throw std::runtime_error("comb_op_reg");
 					}
 
@@ -1337,7 +1339,7 @@ bool NDK::EncoderAMD64::WriteLine(std::string&		 line,
 						currentRegList[1].fName[0] == 'e')
 					{
 						detail::print_error_asm("Invalid combination of operands and registers.",
-											"i64asm");
+												"i64asm");
 						throw std::runtime_error("comb_op_reg");
 					}
 				}

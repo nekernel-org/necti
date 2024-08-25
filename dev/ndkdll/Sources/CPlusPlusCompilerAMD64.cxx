@@ -159,9 +159,7 @@ public:
 
 /// @internal compiler variables
 
-static CompilerBackendCPlusPlus*		 kCompilerBackend = nullptr;
-static std::vector<detail::CompilerType> kCompilerVariables;
-static std::vector<std::string>			 kCompilerFunctions;
+static CompilerBackendCPlusPlus* kCompilerBackend = nullptr;
 
 static std::vector<std::string> kRegisterMap;
 
@@ -337,8 +335,6 @@ bool CompilerBackendCPlusPlus::Compile(const std::string text,
 							auto& valueOfVarOpposite = isdigit(left[0]) ? left : right;
 
 							syntax_tree.fUserValue += "mov " + cRegisters[indexRight + 1] + ", " + valueOfVarOpposite + "\n";
-
-							syntax_tree.fUserValue += "mov " + cRegisters[kRegisterMap.size() - 1] + ", " + valueOfVar + "\n";
 							syntax_tree.fUserValue += "cmp " + cRegisters[kRegisterMap.size() - 1] + "," + cRegisters[indexRight + 1] + "\n";
 
 							goto done_iterarting_on_if;
@@ -347,7 +343,6 @@ bool CompilerBackendCPlusPlus::Compile(const std::string text,
 						auto& valueOfVarOpposite = isdigit(left[0]) ? left : right;
 
 						syntax_tree.fUserValue += "mov " + cRegisters[indexRight + 1] + ", " + valueOfVarOpposite + "\n";
-						syntax_tree.fUserValue += "mov " + cRegisters[kRegisterMap.size() - 1] + ", " + valueOfVar + "\n";
 						syntax_tree.fUserValue += "cmp " + cRegisters[kRegisterMap.size() - 1] + ", " + cRegisters[indexRight + 1] + "\n";
 
 						break;
@@ -365,7 +360,7 @@ bool CompilerBackendCPlusPlus::Compile(const std::string text,
 						ch = '_';
 				}
 
-				syntax_tree.fUserValue += "jge offset [rsp + 4]\n";
+				syntax_tree.fUserValue += "jge __OFFSET_ON_TRUE_NDK\n__OFFSET_ON_TRUE_NDK:\n";
 			}
 
 			break;
@@ -540,17 +535,35 @@ bool CompilerBackendCPlusPlus::Compile(const std::string text,
 
 					if (pairRight != valueOfVar)
 					{
-						syntax_tree.fUserValue = instr + cRegisters[kRegisterMap.size() - 1] + ", " + valueOfVar + "\n";
+						if (valueOfVar[0] == '\"')
+						{
+
+							syntax_tree.fUserValue = "__NDK_LOCAL_VAR_" + varName + ": db " + valueOfVar + ", 0\n\n";
+							syntax_tree.fUserValue += instr + cRegisters[kRegisterMap.size() - 1] + ", " + "__NDK_LOCAL_VAR_" + varName + "\n";
+						}
+						else
+						{
+							syntax_tree.fUserValue = instr + cRegisters[kRegisterMap.size() - 1] + ", " + valueOfVar + "\n";
+						}
+
 						goto done;
 					}
-
-					syntax_tree.fUserValue = instr + cRegisters[kRegisterMap.size() - 1] + ", " + valueOfVar + "\n";
-					break;
 				}
 
 				if (((int)indexRight - 1) < 0)
 				{
-					syntax_tree.fUserValue = instr + cRegisters[kRegisterMap.size()] + ", " + valueOfVar + "\n";
+					if (valueOfVar[0] == '\"')
+					{
+
+						syntax_tree.fUserValue = "__NDK_LOCAL_VAR_" + varName + ": db " + valueOfVar + ", 0\n";
+						syntax_tree.fUserValue += instr + cRegisters[kRegisterMap.size()] + ", " + "__NDK_LOCAL_VAR_" + varName + "\n";
+					}
+					else
+					{
+						syntax_tree.fUserValue = instr + cRegisters[kRegisterMap.size()] + ", " + valueOfVar + "\n";
+					}
+
+					goto done;
 				}
 
 				if (valueOfVar[0] != '\"' &&
@@ -563,11 +576,21 @@ bool CompilerBackendCPlusPlus::Compile(const std::string text,
 							goto done;
 					}
 
-					detail::print_error_asm("Variable not declared: " + valueOfVar, file);
+					detail::print_error_asm("Variable not declared: " + varName, file);
 					return false;
 				}
 
 			done:
+				for (auto& keyword : kKeywords)
+				{
+					if (keyword.keyword_kind == NDK::eKeywordKindType &&
+						varName.find(keyword.keyword_name) != std::string::npos)
+					{
+						varName.erase(varName.find(keyword.keyword_name), keyword.keyword_name.size());
+						break;
+					}
+				}
+
 				kRegisterMap.push_back(varName);
 			}
 			else
@@ -692,7 +715,7 @@ bool CompilerBackendCPlusPlus::Compile(const std::string text,
 						if (pair != subText)
 							continue;
 
-						syntax_tree.fUserValue = "mov rax, " + cRegisters[indxReg] + "\r\nret\n";
+						syntax_tree.fUserValue = "mov rax, " + cRegisters[indxReg - 1] + "\r\nret\n";
 						break;
 					}
 
@@ -708,8 +731,8 @@ bool CompilerBackendCPlusPlus::Compile(const std::string text,
 			}
 			else
 			{
-				syntax_tree.fUserValue = "mov rcx, " + subText + "\n";
-				syntax_tree.fUserValue = "mov rax, rcx\r\nret\n";
+				syntax_tree.fUserValue = "__NDK_LOCAL_RETURN_STRING: db " + subText + ", 0\nmov rcx, __NDK_LOCAL_RETURN_STRING\n";
+				syntax_tree.fUserValue += "mov rax, rcx\r\nret\n";
 			}
 
 			break;

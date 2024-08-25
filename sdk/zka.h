@@ -10,6 +10,6 @@
 #ifndef __SDK_ZKA_H__
 #define __SDK_ZKA_H__
 
-#warning this header is incomplete.
+#warning Giving a main symbol for the app.
 
 #endif // ifdef __SDK_ZKA_H__
