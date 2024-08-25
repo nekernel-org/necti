@@ -268,7 +268,7 @@ NDK_MODULE(ZKAAssemblerMainAMD64)
 			if (kRecords.empty())
 			{
 				kStdErr << "i64asm: At least one record is needed to write an object "
-						   "file.\ni64asm: Make one using `export .code64 foo_bar`.\n";
+						   "file.\ni64asm: Make one using `public_segment .code64 foo_bar`.\n";
 
 				std::filesystem::remove(object_output);
 				return -1;
@@ -376,22 +376,22 @@ asm_fail_exit:
 
 static bool asm_read_attributes(std::string& line)
 {
-	// import is the opposite of export, it signals to the ld
+	// extern_segment is the opposite of public_segment, it signals to the ld
 	// that we need this symbol.
-	if (NDK::find_word(line, "import"))
+	if (NDK::find_word(line, "extern_segment"))
 	{
 		if (kOutputAsBinary)
 		{
 			detail::print_error_asm("Invalid directive in flat binary mode.", "i64asm");
-			throw std::runtime_error("invalid_import_bin");
+			throw std::runtime_error("invalid_extern_segment_bin");
 		}
 
-		auto name = line.substr(line.find("import") + strlen("import") + 1);
+		auto name = line.substr(line.find("extern_segment") + strlen("extern_segment") + 1);
 
 		if (name.size() == 0)
 		{
-			detail::print_error_asm("Invalid import", "power-as");
-			throw std::runtime_error("invalid_import");
+			detail::print_error_asm("Invalid extern_segment", "power-as");
+			throw std::runtime_error("invalid_extern_segment");
 		}
 
 		std::string result = std::to_string(name.size());
@@ -446,18 +446,18 @@ static bool asm_read_attributes(std::string& line)
 
 		return true;
 	}
-	// export is a special keyword used by i64asm to tell the AE output stage to
+	// public_segment is a special keyword used by i64asm to tell the AE output stage to
 	// mark this section as a header. it currently supports .code64, .data64 and
 	// .zero64.
-	else if (NDK::find_word(line, "export"))
+	else if (NDK::find_word(line, "public_segment"))
 	{
 		if (kOutputAsBinary)
 		{
 			detail::print_error_asm("Invalid directive in flat binary mode.", "i64asm");
-			throw std::runtime_error("invalid_export_bin");
+			throw std::runtime_error("invalid_public_segment_bin");
 		}
 
-		auto name = line.substr(line.find("export") + strlen("export") + 1);
+		auto name = line.substr(line.find("public_segment") + strlen("public_segment") + 1);
 
 		std::string name_copy = name;
 
@@ -471,7 +471,7 @@ static bool asm_read_attributes(std::string& line)
 			kDefinedSymbols.end())
 		{
 			detail::print_error_asm("Symbol already defined.", "i64asm");
-			throw std::runtime_error("invalid_export_bin");
+			throw std::runtime_error("invalid_public_segment_bin");
 		}
 
 		kDefinedSymbols.push_back(name);
@@ -562,8 +562,8 @@ std::string NDK::EncoderAMD64::CheckLine(std::string&		line,
 {
 	std::string err_str;
 
-	if (line.empty() || NDK::find_word(line, "import") ||
-		NDK::find_word(line, "export") ||
+	if (line.empty() || NDK::find_word(line, "extern_segment") ||
+		NDK::find_word(line, "public_segment") ||
 		NDK::find_word(line, kAssemblerPragmaSymStr) ||
 		NDK::find_word(line, ";") || line[0] == kAssemblerPragmaSym)
 	{
@@ -1150,7 +1150,7 @@ bool NDK::EncoderAMD64::WriteNumber8(const std::size_t& pos,
 bool NDK::EncoderAMD64::WriteLine(std::string&		 line,
 								  const std::string& file)
 {
-	if (NDK::find_word(line, "export "))
+	if (NDK::find_word(line, "public_segment "))
 		return true;
 
 	struct RegMapAMD64

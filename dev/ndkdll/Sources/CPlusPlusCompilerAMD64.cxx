@@ -18,7 +18,7 @@
 #define kSplashCxx() \
 	kPrintF(kWhite "%s\n", "ZKA C++ Compiler Driver, (c) 2024 ZKA Technologies, all rights reserved.")
 
-// import, @MLAutoRelease { ... }, fn foo() -> auto { ... }
+// extern_segment, @MLAutoRelease { ... }, fn foo() -> auto { ... }
 
 #include <ndkdll/Asm/CPU/amd64.hxx>
 #include <ndkdll/Parser.hxx>
@@ -360,7 +360,7 @@ bool CompilerBackendCPlusPlus::Compile(const std::string text,
 						ch = '_';
 				}
 
-				syntax_tree.fUserValue += "jge __OFFSET_ON_TRUE_NDK\n__OFFSET_ON_TRUE_NDK:\n";
+				syntax_tree.fUserValue += "jge __OFFSET_ON_TRUE_NDK\nsegment .code64 __OFFSET_ON_TRUE_NDK:\n";
 			}
 
 			break;
@@ -393,7 +393,7 @@ bool CompilerBackendCPlusPlus::Compile(const std::string text,
 					ch = '_';
 			}
 
-			syntax_tree.fUserValue = "export .code64 __NDK_" + fnName + "\n";
+			syntax_tree.fUserValue = "public_segment .code64 __NDK_" + fnName + "\n";
 
 			++kLevelFunction;
 		}
@@ -538,7 +538,7 @@ bool CompilerBackendCPlusPlus::Compile(const std::string text,
 						if (valueOfVar[0] == '\"')
 						{
 
-							syntax_tree.fUserValue = "__NDK_LOCAL_VAR_" + varName + ": db " + valueOfVar + ", 0\n\n";
+							syntax_tree.fUserValue = "segment .data64 __NDK_LOCAL_VAR_" + varName + ": db " + valueOfVar + ", 0\n\n";
 							syntax_tree.fUserValue += instr + cRegisters[kRegisterMap.size() - 1] + ", " + "__NDK_LOCAL_VAR_" + varName + "\n";
 						}
 						else
@@ -555,7 +555,7 @@ bool CompilerBackendCPlusPlus::Compile(const std::string text,
 					if (valueOfVar[0] == '\"')
 					{
 
-						syntax_tree.fUserValue = "__NDK_LOCAL_VAR_" + varName + ": db " + valueOfVar + ", 0\n";
+						syntax_tree.fUserValue = "segment .data64 __NDK_LOCAL_VAR_" + varName + ": db " + valueOfVar + ", 0\n";
 						syntax_tree.fUserValue += instr + cRegisters[kRegisterMap.size()] + ", " + "__NDK_LOCAL_VAR_" + varName + "\n";
 					}
 					else

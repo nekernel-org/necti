@@ -334,7 +334,7 @@ bool CompilerBackend64x0::Compile(const std::string text, const std::string file
 
 						value.clear();
 
-						value += " import";
+						value += " extern_segment";
 						value += tmp;
 					}
 
@@ -374,11 +374,11 @@ bool CompilerBackend64x0::Compile(const std::string text, const std::string file
 			kIfFunction = "__NDK_IF_PROC_";
 			kIfFunction += std::to_string(time_off._Raw);
 
-			syntaxLeaf.fUserValue = "\tlda r12, import ";
+			syntaxLeaf.fUserValue = "\tlda r12, extern_segment ";
 			syntaxLeaf.fUserValue +=
 				kIfFunction +
 				"\n\t#r12 = Code to jump on, r11 right cond, r10 left cond.\n\tbeq "
-				"r10, r11, r12\ndword export .code64 " +
+				"r10, r11, r12\ndword public_segment .code64 " +
 				kIfFunction + "\n";
 			kState.fSyntaxTree->fLeafList.push_back(syntaxLeaf);
 
@@ -469,7 +469,7 @@ bool CompilerBackend64x0::Compile(const std::string text, const std::string file
 			}
 			else if (textBuffer.find('=') != std::string::npos && !kInBraces)
 			{
-				substr += "stw export .data64 ";
+				substr += "stw public_segment .data64 ";
 			}
 
 			int first_encountered = 0;
@@ -510,9 +510,9 @@ bool CompilerBackend64x0::Compile(const std::string text, const std::string file
 					if (first_encountered != 2)
 					{
 						if (textBuffer[text_index] != '=' &&
-							substr.find("export .data64") == std::string::npos &&
+							substr.find("public_segment .data64") == std::string::npos &&
 							!kInStruct)
-							substr += "export .data64 ";
+							substr += "public_segment .data64 ";
 					}
 
 					++first_encountered;
@@ -524,8 +524,8 @@ bool CompilerBackend64x0::Compile(const std::string text, const std::string file
 				{
 					if (!kInBraces)
 					{
-						substr.replace(substr.find("export .data64"),
-									   strlen("export .data64"), "export .zero64 ");
+						substr.replace(substr.find("public_segment .data64"),
+									   strlen("public_segment .data64"), "public_segment .zero64 ");
 					}
 
 					substr += ",";
@@ -558,10 +558,10 @@ bool CompilerBackend64x0::Compile(const std::string text, const std::string file
 
 			if (substr.find("extern") != std::string::npos)
 			{
-				substr.replace(substr.find("extern"), strlen("extern"), "import ");
+				substr.replace(substr.find("extern"), strlen("extern"), "extern_segment ");
 
-				if (substr.find("export .data64") != std::string::npos)
-					substr.erase(substr.find("export .data64"), strlen("export .data64"));
+				if (substr.find("public_segment .data64") != std::string::npos)
+					substr.erase(substr.find("public_segment .data64"), strlen("public_segment .data64"));
 			}
 
 			auto var_to_find =
@@ -683,7 +683,7 @@ bool CompilerBackend64x0::Compile(const std::string text, const std::string file
 			{
 				syntaxLeaf.fUserValue.clear();
 
-				syntaxLeaf.fUserValue += "export .code64 ";
+				syntaxLeaf.fUserValue += "public_segment .code64 ";
 
 				syntaxLeaf.fUserValue += substr;
 				syntaxLeaf.fUserValue += "\n";
@@ -1003,7 +1003,7 @@ std::string CompilerBackend64x0::Check(const char* text, const char* file)
 
 cc_next:
 
-	// extern does not declare anything, it imports a variable.
+	// extern does not declare anything, it extern_segments a variable.
 	// so that's why it's not declare upper.
 	if (NDK::find_word(ln, "extern"))
 	{
@@ -1425,12 +1425,12 @@ public:
 
 						if (NDK::find_word(leaf.fUserValue, needle))
 						{
-							if (leaf.fUserValue.find("import " + needle) !=
+							if (leaf.fUserValue.find("extern_segment " + needle) !=
 								std::string::npos)
 							{
-								std::string range = "import " + needle;
+								std::string range = "extern_segment " + needle;
 								leaf.fUserValue.replace(
-									leaf.fUserValue.find("import " + needle), range.size(),
+									leaf.fUserValue.find("extern_segment " + needle), range.size(),
 									needle);
 							}
 

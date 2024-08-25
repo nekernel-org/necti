@@ -211,7 +211,7 @@ NDK_MODULE(ZKAAssemblerMain64000) {
 
       if (kRecords.empty()) {
         kStdErr << "64asm: At least one record is needed to write an object "
-                   "file.\n64asm: Make one using `export .code64 foo_bar`.\n";
+                   "file.\n64asm: Make one using `public_segment .code64 foo_bar`.\n";
 
         std::filesystem::remove(object_output);
         return -1;
@@ -301,21 +301,21 @@ asm_fail_exit:
 /////////////////////////////////////////////////////////////////////////////////////////
 
 static bool asm_read_attributes(std::string &line) {
-  // import is the opposite of export, it signals to the ld
+  // extern_segment is the opposite of public_segment, it signals to the ld
   // that we need this symbol.
-  if (NDK::find_word(line, "import")) {
+  if (NDK::find_word(line, "extern_segment")) {
     if (kOutputAsBinary) {
-      detail::print_error_asm("Invalid import directive in flat binary mode.",
+      detail::print_error_asm("Invalid extern_segment directive in flat binary mode.",
                           "64asm");
-      throw std::runtime_error("invalid_import_bin");
+      throw std::runtime_error("invalid_extern_segment_bin");
     }
 
-    auto name = line.substr(line.find("import") + strlen("import"));
+    auto name = line.substr(line.find("extern_segment") + strlen("extern_segment"));
 
     /// sanity check to avoid stupid linker errors.
     if (name.size() == 0) {
-      detail::print_error_asm("Invalid import", "power-as");
-      throw std::runtime_error("invalid_import");
+      detail::print_error_asm("Invalid extern_segment", "power-as");
+      throw std::runtime_error("invalid_extern_segment");
     }
 
     std::string result = std::to_string(name.size());
@@ -361,17 +361,17 @@ static bool asm_read_attributes(std::string &line) {
 
     return true;
   }
-  // export is a special keyword used by 64asm to tell the AE output stage to
+  // public_segment is a special keyword used by 64asm to tell the AE output stage to
   // mark this section as a header. it currently supports .code64, .data64.,
   // .zero64
-  else if (NDK::find_word(line, "export")) {
+  else if (NDK::find_word(line, "public_segment")) {
     if (kOutputAsBinary) {
-      detail::print_error_asm("Invalid export directive in flat binary mode.",
+      detail::print_error_asm("Invalid public_segment directive in flat binary mode.",
                           "64asm");
-      throw std::runtime_error("invalid_export_bin");
+      throw std::runtime_error("invalid_public_segment_bin");
     }
 
-    auto name = line.substr(line.find("export") + strlen("export"));
+    auto name = line.substr(line.find("public_segment") + strlen("public_segment"));
 
     std::string name_copy = name;
 
@@ -454,8 +454,8 @@ std::string NDK::Encoder64x0::CheckLine(std::string &line,
                                                 const std::string &file) {
   std::string err_str;
 
-  if (line.empty() || NDK::find_word(line, "import") ||
-      NDK::find_word(line, "export") ||
+  if (line.empty() || NDK::find_word(line, "extern_segment") ||
+      NDK::find_word(line, "public_segment") ||
       line.find('#') != std::string::npos || NDK::find_word(line, ";")) {
     if (line.find('#') != std::string::npos) {
       line.erase(line.find('#'));
@@ -668,7 +668,7 @@ bool NDK::Encoder64x0::WriteNumber(const std::size_t &pos,
 
 bool NDK::Encoder64x0::WriteLine(std::string &line,
                                          const std::string &file) {
-  if (NDK::find_word(line, "export ")) return true;
+  if (NDK::find_word(line, "public_segment ")) return true;
 
   for (auto &opcode64x0 : kOpcodes64x0) {
     // strict check here
@@ -840,8 +840,8 @@ bool NDK::Encoder64x0::WriteLine(std::string &line,
           }
         } else {
           if (name == "sta" &&
-              cpy_jump_label.find("import ") != std::string::npos) {
-            detail::print_error_asm("invalid usage import on 'sta', here: " + line,
+              cpy_jump_label.find("extern_segment ") != std::string::npos) {
+            detail::print_error_asm("invalid usage extern_segment on 'sta', here: " + line,
                                 file);
             throw std::runtime_error("invalid_sta_usage");
           }
@@ -856,13 +856,13 @@ bool NDK::Encoder64x0::WriteLine(std::string &line,
         if (cpy_jump_label.find('\n') != std::string::npos)
           cpy_jump_label.erase(cpy_jump_label.find('\n'), 1);
 
-        if (cpy_jump_label.find("import") != std::string::npos) {
-          cpy_jump_label.erase(cpy_jump_label.find("import"), strlen("import"));
+        if (cpy_jump_label.find("extern_segment") != std::string::npos) {
+          cpy_jump_label.erase(cpy_jump_label.find("extern_segment"), strlen("extern_segment"));
 
           if (name == "sta") {
-            detail::print_error_asm("import is not allowed on a sta operation.",
+            detail::print_error_asm("extern_segment is not allowed on a sta operation.",
                                 file);
-            throw std::runtime_error("import_sta_op");
+            throw std::runtime_error("extern_segment_sta_op");
           } else {
             goto asm_end_label_cpy;
           }

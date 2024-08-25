@@ -211,7 +211,7 @@ NDK_MODULE(ZKAAssemblerMainPowerPC)
 			if (kRecords.empty())
 			{
 				kStdErr << "power-as: At least one record is needed to write an object "
-						   "file.\npower-as: Make one using `export .code64 foo_bar`.\n";
+						   "file.\npower-as: Make one using `public_segment .code64 foo_bar`.\n";
 
 				std::filesystem::remove(object_output);
 				return -1;
@@ -311,23 +311,23 @@ asm_fail_exit:
 
 static bool asm_read_attributes(std::string& line)
 {
-	// import is the opposite of export, it signals to the li
+	// extern_segment is the opposite of public_segment, it signals to the li
 	// that we need this symbol.
-	if (NDK::find_word(line, "import"))
+	if (NDK::find_word(line, "extern_segment"))
 	{
 		if (kOutputAsBinary)
 		{
-			detail::print_error_asm("Invalid import directive in flat binary mode.",
+			detail::print_error_asm("Invalid extern_segment directive in flat binary mode.",
 								"power-as");
-			throw std::runtime_error("invalid_import_bin");
+			throw std::runtime_error("invalid_extern_segment_bin");
 		}
 
-		auto name = line.substr(line.find("import") + strlen("import") + 1);
+		auto name = line.substr(line.find("extern_segment") + strlen("extern_segment") + 1);
 
 		if (name.size() == 0)
 		{
-			detail::print_error_asm("Invalid import", "power-as");
-			throw std::runtime_error("invalid_import");
+			detail::print_error_asm("Invalid extern_segment", "power-as");
+			throw std::runtime_error("invalid_extern_segment");
 		}
 
 		std::string result = std::to_string(name.size());
@@ -382,19 +382,19 @@ static bool asm_read_attributes(std::string& line)
 
 		return true;
 	}
-	// export is a special keyword used by power-as to tell the AE output stage to
+	// public_segment is a special keyword used by power-as to tell the AE output stage to
 	// mark this section as a header. it currently supports .code64, .data64.,
 	// .zero64
-	else if (NDK::find_word(line, "export"))
+	else if (NDK::find_word(line, "public_segment"))
 	{
 		if (kOutputAsBinary)
 		{
-			detail::print_error_asm("Invalid export directive in flat binary mode.",
+			detail::print_error_asm("Invalid public_segment directive in flat binary mode.",
 								"power-as");
-			throw std::runtime_error("invalid_export_bin");
+			throw std::runtime_error("invalid_public_segment_bin");
 		}
 
-		auto name = line.substr(line.find("export") + strlen("export"));
+		auto name = line.substr(line.find("public_segment") + strlen("public_segment"));
 
 		std::string name_copy = name;
 
@@ -490,8 +490,8 @@ std::string NDK::EncoderPowerPC::CheckLine(std::string&		  line,
 {
 	std::string err_str;
 
-	if (line.empty() || NDK::find_word(line, "import") ||
-		NDK::find_word(line, "export") ||
+	if (line.empty() || NDK::find_word(line, "extern_segment") ||
+		NDK::find_word(line, "public_segment") ||
 		line.find('#') != std::string::npos || NDK::find_word(line, ";"))
 	{
 		if (line.find('#') != std::string::npos)
@@ -745,7 +745,7 @@ bool NDK::EncoderPowerPC::WriteNumber(const std::size_t& pos,
 bool NDK::EncoderPowerPC::WriteLine(std::string&	   line,
 									const std::string& file)
 {
-	if (NDK::find_word(line, "export"))
+	if (NDK::find_word(line, "public_segment"))
 		return true;
 	if (!detail::algorithm::is_valid_power64(line))
 		return true;

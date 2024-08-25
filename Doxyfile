@@ -1360,7 +1360,7 @@ HTML_STYLESHEET        =
 # This is preferred over using HTML_STYLESHEET since it does not replace the
 # standard style sheet and is therefore more robust against future updates.
 # Doxygen will copy the style sheet files to the output directory.
-# Note: The order of the extra style sheet files is of importance (e.g. the last
+# Note: The order of the extra style sheet files is of extern_segmentance (e.g. the last
 # style sheet in the list overrules the setting of the previous ones in the
 # list).
 # Note: Since the styling of scrollbars can currently not be overruled in
@@ -1725,7 +1725,7 @@ ENUM_VALUES_PER_LINE   = 4
 TREEVIEW_WIDTH         = 250
 
 # If the EXT_LINKS_IN_WINDOW option is set to YES, doxygen will open links to
-# external symbols imported via tag files in a separate window.
+# external symbols extern_segmented via tag files in a separate window.
 # The default value is: NO.
 # This tag requires that the tag GENERATE_HTML is set to YES.
 
@@ -2037,7 +2037,7 @@ LATEX_FOOTER           =
 # LaTeX style sheets that are included after the standard style sheets created
 # by doxygen. Using this option one can overrule certain style aspects. Doxygen
 # will copy the style sheet files to the output directory.
-# Note: The order of the extra style sheet files is of importance (e.g. the last
+# Note: The order of the extra style sheet files is of extern_segmentance (e.g. the last
 # style sheet in the list overrules the setting of the previous ones in the
 # list).
 # This tag requires that the tag GENERATE_LATEX is set to YES.
