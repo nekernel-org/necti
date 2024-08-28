@@ -6,8 +6,8 @@
 
 /// @brief provide support for Macros.hpp header.
 
-#ifndef _CK_CL_HPP
-#define _CK_CL_HPP
+#ifndef _MACROS_HXX_
+#define _MACROS_HXX_
 
 #define NDK_COPY_DELETE(KLASS)              \
 	KLASS& operator=(const KLASS&) = delete; \
@@ -30,4 +30,4 @@
 #define NDK_ERROR_PREFIX_CL  "CLxxxx"
 #define NDK_ERROR_PREFIX_ASM "ASMxxxx"
 
-#endif /* ifndef _CK_CL_HPP */
+#endif /* ifndef _MACROS_HXX_ */

@@ -1,4 +1,10 @@
+/* -------------------------------------------
+
+	Copyright ZKA Technologies
+
+------------------------------------------- */
+
 #pragma once
 
-#define kDistVersion "v1.22"
+#define kDistVersion "v1.1.14"
 #define kDistRelease "Havok"

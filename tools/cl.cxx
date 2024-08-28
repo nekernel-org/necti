@@ -5,8 +5,9 @@
 ------------------------------------------- */
 
 /// @file Linker.cxx
-/// @brief ZKA Linker frontend for AE objects.
+/// @brief ZKA C++ frontend for ZKA OS.
 
+#include <ndkdll/Version.hxx>
 #include <iostream>
 #include <cstring>
 #include <vector>
@@ -22,6 +23,7 @@ int main(int argc, char const* argv[])
 		if (strstr(argv[index_arg], "/?"))
 		{
 			std::printf("cl.exe: Frontend C++ Compiler.\n");
+			std::printf("cl.exe: Version: %s, Release: %s.\n", kDistVersion, kDistRelease);
 			std::printf("cl.exe: Designed by Amlal El Mahrouss, Copyright ZKA Technologies.\n");
 			std::printf("libndk.dylib/ndk.dll: Designed by Amlal El Mahrouss, Copyright ZKA Technologies.\n");
 
