@@ -29,10 +29,10 @@
 struct CpuCode32x0
 {
 	const char fName[32];
-	char	   fOpcode;
-	char	   fSize;
-	char	   fFunct3;
-	char	   fFunct7;
+	uint8_t	   fOpcode;
+	uint8_t	   fSize;
+	uint8_t	   fFunct3;
+	uint8_t	   fFunct7;
 };
 
 #define kAsmDWordStr ".dword" /* 64 bit */
@@ -41,16 +41,18 @@ struct CpuCode32x0
 #define kAsmByteStr	 ".byte"  /* 8-bit */
 
 inline std::vector<CpuCode32x0> kOpcodes32x0 = {
-	kAsmOpcodeDecl("nop", 0b0100011, 0b000, kAsmNoArgs)	   // nothing to do.
-	kAsmOpcodeDecl("br", 0b1110011, 0b001, kAsmJump)	   // jump to branch
-	kAsmOpcodeDecl("mr", 0b0100011, 0b101, kAsmImmediate)  // move registers
-	kAsmOpcodeDecl("psh", 0b0111011, 0b000, kAsmImmediate) // push to sp
-	kAsmOpcodeDecl("pop", 0b0111011, 0b001, kAsmImmediate) // pop from sp.
-	kAsmOpcodeDecl("cls", 0b0111011, 0b010,
-				   kAsmImmediate) // setup stack and call, store address to CR.
-	kAsmOpcodeDecl("rts", 0b0111011, 0b110,
-				   kAsmImmediate)						 // pull stack and return form CR.
-	kAsmOpcodeDecl("int", 0b0111111, 0b000, kAsmSyscall) // raise interrupt
+	kAsmOpcodeDecl("nop", 0b0100011, 0b000, kAsmNoArgs)	   // nothing to do. (1C)
+	kAsmOpcodeDecl("jmp", 0b1110011, 0b001, kAsmJump)	   // jump to branch (2C)
+	kAsmOpcodeDecl("mov", 0b0100011, 0b101, kAsmImmediate)  // move registers (3C)
+	kAsmOpcodeDecl("psh", 0b0111011, 0b000, kAsmImmediate) // push to sp (2C)
+	kAsmOpcodeDecl("pop", 0b0111011, 0b001, kAsmImmediate) // pop from sp. (1C)
+	kAsmOpcodeDecl("lea", 0b0111011, 0b010,
+				   kAsmImmediate) // setup stack and call, store address to CR (1C).
+	kAsmOpcodeDecl("ret", 0b0111011, 0b110,
+				   kAsmImmediate)						 // return from procedure (2C).
+	kAsmOpcodeDecl("uc", 0b0111111, 0b000, kAsmSyscall) // user call (1C)
+	kAsmOpcodeDecl("kc", 0b0111111, 0b001, kAsmSyscall) // kernel call (1C)
+	kAsmOpcodeDecl("int", 0b0111111, 0b010, kAsmSyscall) // raise interrupt (1C)
 };
 
 // \brief 64x0 register prefix

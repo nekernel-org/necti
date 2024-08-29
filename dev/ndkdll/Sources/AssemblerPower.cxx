@@ -18,7 +18,7 @@
 #define __ASM_NEED_PPC__ 1
 
 #include <ndkdll/NFC/ErrorID.hxx>
-#include <ndkdll/Asm/CPU/ppc.hxx>
+#include <ndkdll/Asm/CPU/power64.hxx>
 #include <ndkdll/NFC/PEF.hxx>
 #include <ndkdll/Parser.hxx>
 #include <ndkdll/NFC/AE.hxx>
