@@ -1,4 +1,5 @@
-#include "../sdk/zka.h"
+#include "../sdk/xpcom.h"
+
 const int main()
 {
     // help, i'm not a int!
