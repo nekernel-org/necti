@@ -49,6 +49,9 @@
 #define kLinkerId			 0x5046FF
 #define kLinkerAbiContainer	 "Container:Abi:"
 
+/// @brief PEF stack size symbol.
+#define kLinkerStackSizeSymbol "SizeOfReserveStack"
+
 enum
 {
 	eABIStart	  = 0x1010, /* Invalid ABI start of ABI list. */
@@ -73,6 +76,8 @@ static const char* kLdDynamicSym   = ":RuntimeSymbol:";
 /* object code and list. */
 static std::vector<std::string> kObjectList;
 static std::vector<char>		kObjectBytes;
+
+static uintptr_t kMIBCount = 8;
 
 #define kPrintF			printf
 #define kLinkerSplash() kPrintF(kWhite kLinkerVersion, kDistVersion)
@@ -105,7 +110,7 @@ NDK_MODULE(ZKALinkerMain)
 
 			return 0;
 		}
-		else if (StringCompare(argv[i], "/Ver") == 0)
+		else if (StringCompare(argv[i], "/VER") == 0)
 		{
 			kLinkerSplash();
 			return 0;
@@ -116,37 +121,37 @@ NDK_MODULE(ZKALinkerMain)
 
 			continue;
 		}
-		else if (StringCompare(argv[i], "/64x0") == 0)
+		else if (StringCompare(argv[i], "/64X0") == 0)
 		{
 			kArch = NDK::kPefArch64000;
 
 			continue;
 		}
-		else if (StringCompare(argv[i], "/amd64") == 0)
+		else if (StringCompare(argv[i], "/AMD64") == 0)
 		{
 			kArch = NDK::kPefArchAMD64;
 
 			continue;
 		}
-		else if (StringCompare(argv[i], "/32x0") == 0)
+		else if (StringCompare(argv[i], "/32X0") == 0)
 		{
 			kArch = NDK::kPefArch32000;
 
 			continue;
 		}
-		else if (StringCompare(argv[i], "/power64") == 0)
+		else if (StringCompare(argv[i], "/POWER64") == 0)
 		{
 			kArch = NDK::kPefArchPowerPC;
 
 			continue;
 		}
-		else if (StringCompare(argv[i], "/arm64") == 0)
+		else if (StringCompare(argv[i], "/ARM64") == 0)
 		{
 			kArch = NDK::kPefArchARM64;
 
 			continue;
 		}
-		else if (StringCompare(argv[i], "/Verbose") == 0)
+		else if (StringCompare(argv[i], "/VERBOSE") == 0)
 		{
 			kVerbose = true;
 
@@ -557,6 +562,17 @@ NDK_MODULE(ZKALinkerMain)
 	abiHeader.Kind	 = NDK::kPefLinkerID;
 
 	commandHdrsList.push_back(abiHeader);
+
+
+	NDK::PEFCommandHeader stackHeader{0};
+	
+	stackHeader.Cpu = kArch;
+	stackHeader.Flags = 0;
+	stackHeader.Size = sizeof(uintptr_t);
+	stackHeader.Offset = (kMIBCount * 1024 * 1024);
+	memcpy(stackHeader.Name, kLinkerStackSizeSymbol, strlen(kLinkerStackSizeSymbol));
+
+	commandHdrsList.push_back(stackHeader);
 
 	NDK::PEFCommandHeader uuidHeader{};
 
