@@ -2,7 +2,7 @@
 //
 //	Copyright ZKA Technologies 2024
 //
-//	File: xpcom.h
+//	File: w32.h
 //	Purpose: ZKA OS W32 SDK.
 //
 //

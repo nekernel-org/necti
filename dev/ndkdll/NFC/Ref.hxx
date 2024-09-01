@@ -36,12 +36,12 @@ namespace NDK
 
 		Ref& operator=(T ref)
 		{
-			m_Class = ref;
+			*m_Class = ref;
 			return *this;
 		}
 
 	public:
-		T operator->() const
+		T* operator->() const
 		{
 			return m_Class;
 		}

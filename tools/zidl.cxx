@@ -1,0 +1,20 @@
+/* -------------------------------------------
+
+	Copyright ZKA Technologies
+
+------------------------------------------- */
+
+/// @file Linker.cxx
+/// @brief ZKA Linker for AE objects.
+
+extern "C" int ZKAIDLMain(int argc, char const* argv[]);
+
+int main(int argc, char const *argv[])
+{
+    if (argc < 1)
+    {
+        return 1;
+    }
+
+    return ZKAIDLMain(argc, argv);
+}
