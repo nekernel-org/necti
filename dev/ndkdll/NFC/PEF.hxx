@@ -34,7 +34,7 @@ namespace NDK
 {
 	enum
 	{
-	    kPefArchStart = 99,
+		kPefArchStart	 = 99,
 		kPefArchIntel86S = 100,
 		kPefArchAMD64,
 		kPefArchRISCV,
@@ -106,29 +106,29 @@ namespace NDK
 	};
 } // namespace NDK
 
-inline std::ofstream& operator<<(std::ofstream&				fp,
+inline std::ofstream& operator<<(std::ofstream&		fp,
 								 NDK::PEFContainer& container)
 {
 	fp.write((char*)&container, sizeof(NDK::PEFContainer));
 	return fp;
 }
 
-inline std::ofstream& operator<<(std::ofstream&					fp,
+inline std::ofstream& operator<<(std::ofstream&			fp,
 								 NDK::PEFCommandHeader& container)
 {
 	fp.write((char*)&container, sizeof(NDK::PEFCommandHeader));
 	return fp;
 }
 
-inline std::ifstream& operator>>(std::ifstream&			 fp,
-						  NDK::PEFContainer& container)
+inline std::ifstream& operator>>(std::ifstream&		fp,
+								 NDK::PEFContainer& container)
 {
 	fp.read((char*)&container, sizeof(NDK::PEFContainer));
 	return fp;
 }
 
-inline std::ifstream& operator>>(std::ifstream&				 fp,
-						  NDK::PEFCommandHeader& container)
+inline std::ifstream& operator>>(std::ifstream&			fp,
+								 NDK::PEFCommandHeader& container)
 {
 	fp.read((char*)&container, sizeof(NDK::PEFCommandHeader));
 	return fp;

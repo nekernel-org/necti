@@ -22,10 +22,10 @@ namespace NDK
 
 		~Ref()
 		{
-		    if (m_Strong)
-    		{
-        		(*m_Class).~T();
-    		}
+			if (m_Strong)
+			{
+				(*m_Class).~T();
+			}
 		}
 
 	public:
@@ -75,7 +75,7 @@ namespace NDK
 	class NonNullRef final
 	{
 	public:
-		explicit NonNullRef()		= delete;
+		explicit NonNullRef() = delete;
 
 		explicit NonNullRef(T* ref)
 			: m_Ref(ref, true)

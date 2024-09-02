@@ -30,9 +30,9 @@ typedef char*  caddr_t;
 #ifdef __GNUC__
 #include <CRT/__ndk_alloca.hxx>
 #define __ndk_alloca(sz) __ndk_alloca_gcc(sz)
-#define __packed__ __attribute__((packed))
+#define __packed__		 __attribute__((packed))
 #elif defined(__NDK__)
-#define __packed__ __ndk_packed__
+#define __packed__	 __ndk_packed__
 #define __alloca(sz) __ndk_alloca(sz)
 #endif
 
@@ -43,10 +43,9 @@ typedef char*  caddr_t;
 	extern "C"        \
 	{
 
-
 #define __fini_decl() \
-	};				  \
-
+	}                 \
+	;
 
 #else
 #define __init_decl()

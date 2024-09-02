@@ -71,13 +71,13 @@ namespace detail
 	struct CompilerState final
 	{
 		std::vector<NDK::SyntaxLeafList> fSyntaxTreeList;
-		std::vector<CompilerRegisterMap>	   kStackFrame;
-		std::vector<CompilerStructMap>		   kStructMap;
-		NDK::SyntaxLeafList*			   fSyntaxTree{nullptr};
-		std::unique_ptr<std::ofstream>		   fOutputAssembly;
-		std::string							   fLastFile;
-		std::string							   fLastError;
-		bool								   fVerbose;
+		std::vector<CompilerRegisterMap> kStackFrame;
+		std::vector<CompilerStructMap>	 kStructMap;
+		NDK::SyntaxLeafList*			 fSyntaxTree{nullptr};
+		std::unique_ptr<std::ofstream>	 fOutputAssembly;
+		std::string						 fLastFile;
+		std::string						 fLastError;
+		bool							 fVerbose;
 	};
 } // namespace detail
 
@@ -123,20 +123,20 @@ static std::string kRegisterPrefix	= kAsmRegisterPrefix;
 
 /////////////////////////////////////////
 
-static std::vector<std::string>		kFileList;
-static NDK::AssemblyFactory kFactory;
-static bool							kInStruct	 = false;
-static bool							kOnWhileLoop = false;
-static bool							kOnForLoop	 = false;
-static bool							kInBraces	 = false;
-static bool							kIfFound	 = false;
-static size_t						kBracesCount = 0UL;
+static std::vector<std::string> kFileList;
+static NDK::AssemblyFactory		kFactory;
+static bool						kInStruct	 = false;
+static bool						kOnWhileLoop = false;
+static bool						kOnForLoop	 = false;
+static bool						kInBraces	 = false;
+static bool						kIfFound	 = false;
+static size_t					kBracesCount = 0UL;
 
 /* @brief C compiler backend for C */
 class CompilerBackendPower64 final : public NDK::CompilerBackend
 {
 public:
-	explicit CompilerBackendPower64()	 = default;
+	explicit CompilerBackendPower64()  = default;
 	~CompilerBackendPower64() override = default;
 
 	NDK_COPY_DEFAULT(CompilerBackendPower64);

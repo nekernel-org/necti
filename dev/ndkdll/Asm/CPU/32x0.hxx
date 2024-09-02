@@ -43,15 +43,15 @@ struct CpuCode32x0
 inline std::vector<CpuCode32x0> kOpcodes32x0 = {
 	kAsmOpcodeDecl("nop", 0b0100011, 0b000, kAsmNoArgs)	   // nothing to do. (1C)
 	kAsmOpcodeDecl("jmp", 0b1110011, 0b001, kAsmJump)	   // jump to branch (2C)
-	kAsmOpcodeDecl("mov", 0b0100011, 0b101, kAsmImmediate)  // move registers (3C)
+	kAsmOpcodeDecl("mov", 0b0100011, 0b101, kAsmImmediate) // move registers (3C)
 	kAsmOpcodeDecl("psh", 0b0111011, 0b000, kAsmImmediate) // push to sp (2C)
 	kAsmOpcodeDecl("pop", 0b0111011, 0b001, kAsmImmediate) // pop from sp. (1C)
 	kAsmOpcodeDecl("lea", 0b0111011, 0b010,
 				   kAsmImmediate) // setup stack and call, store address to CR (1C).
 	kAsmOpcodeDecl("ret", 0b0111011, 0b110,
 				   kAsmImmediate)						 // return from procedure (2C).
-	kAsmOpcodeDecl("uc", 0b0111111, 0b000, kAsmSyscall) // user call (1C)
-	kAsmOpcodeDecl("kc", 0b0111111, 0b001, kAsmSyscall) // kernel call (1C)
+	kAsmOpcodeDecl("uc", 0b0111111, 0b000, kAsmSyscall)	 // user call (1C)
+	kAsmOpcodeDecl("kc", 0b0111111, 0b001, kAsmSyscall)	 // kernel call (1C)
 	kAsmOpcodeDecl("int", 0b0111111, 0b010, kAsmSyscall) // raise interrupt (1C)
 };
 

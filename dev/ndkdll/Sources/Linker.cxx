@@ -54,10 +54,10 @@
 
 enum
 {
-	eABIStart	  = 0x1010, /* Invalid ABI start of ABI list. */
-	eABINewOS 	  = 0x5046, /* PF (NewOSKrnl) */
-	eABIMTL		  = 0x4650, /* FP (MTL firmware) */
-	eABIInvalid	  = 1,
+	eABIStart	= 0x1010, /* Invalid ABI start of ABI list. */
+	eABINewOS	= 0x5046, /* PF (NewOSKrnl) */
+	eABIMTL		= 0x4650, /* FP (MTL firmware) */
+	eABIInvalid = 1,
 };
 
 static std::string kOutput			 = "";
@@ -326,7 +326,7 @@ NDK_MODULE(ZKALinkerMain)
 				 ++ae_record_index)
 			{
 				NDK::PEFCommandHeader command_header{0};
-				size_t						  offsetOfData = ae_records[ae_record_index].fOffset + ae_header.fSize;
+				size_t				  offsetOfData = ae_records[ae_record_index].fOffset + ae_header.fSize;
 
 				memcpy(command_header.Name, ae_records[ae_record_index].fName,
 					   kPefNameLen);
@@ -563,12 +563,11 @@ NDK_MODULE(ZKALinkerMain)
 
 	commandHdrsList.push_back(abiHeader);
 
-
 	NDK::PEFCommandHeader stackHeader{0};
-	
-	stackHeader.Cpu = kArch;
-	stackHeader.Flags = 0;
-	stackHeader.Size = sizeof(uintptr_t);
+
+	stackHeader.Cpu	   = kArch;
+	stackHeader.Flags  = 0;
+	stackHeader.Size   = sizeof(uintptr_t);
 	stackHeader.Offset = (kMIBCount * 1024 * 1024);
 	memcpy(stackHeader.Name, kLinkerStackSizeSymbol, strlen(kLinkerStackSizeSymbol));
 

@@ -35,9 +35,9 @@
 
 /////////////////////
 
-#define kBlank "\e[0;30m"
-#define kRed "\e[0;31m"
-#define kWhite "\e[0;97m"
+#define kBlank	"\e[0;30m"
+#define kRed	"\e[0;31m"
+#define kWhite	"\e[0;97m"
 #define kYellow "\e[0;33m"
 
 #define kStdOut (std::cout << kWhite)
@@ -49,4 +49,7 @@
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
-NDK_MODULE(ZKAAssemblerMain32000) { return 0; }
+NDK_MODULE(ZKAAssemblerMain32000)
+{
+	return 0;
+}

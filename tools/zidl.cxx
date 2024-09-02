@@ -9,12 +9,12 @@
 
 extern "C" int ZKAIDLMain(int argc, char const* argv[]);
 
-int main(int argc, char const *argv[])
+int main(int argc, char const* argv[])
 {
-    if (argc < 1)
-    {
-        return 1;
-    }
+	if (argc < 1)
+	{
+		return 1;
+	}
 
-    return ZKAIDLMain(argc, argv);
+	return ZKAIDLMain(argc, argv);
 }

@@ -61,19 +61,19 @@
 #define rt_copy_memory(dst, src, len) memcpy(dst, src, len)
 #endif
 
-#define NDK_COPY_DELETE(KLASS)              \
+#define NDK_COPY_DELETE(KLASS)               \
 	KLASS& operator=(const KLASS&) = delete; \
 	KLASS(const KLASS&)			   = delete;
 
-#define NDK_COPY_DEFAULT(KLASS)              \
+#define NDK_COPY_DEFAULT(KLASS)               \
 	KLASS& operator=(const KLASS&) = default; \
 	KLASS(const KLASS&)			   = default;
 
-#define NDK_MOVE_DELETE(KLASS)         \
+#define NDK_MOVE_DELETE(KLASS)          \
 	KLASS& operator=(KLASS&&) = delete; \
 	KLASS(KLASS&&)			  = delete;
 
-#define NDK_MOVE_DEFAULT(KLASS)         \
+#define NDK_MOVE_DEFAULT(KLASS)          \
 	KLASS& operator=(KLASS&&) = default; \
 	KLASS(KLASS&&)			  = default;
 
@@ -140,6 +140,6 @@ typedef char char_type;
 
 #define NDK_MODULE(name) extern "C" int name(int argc, char** argv)
 
-#pragma scalar_storage_order big-endian
+#pragma scalar_storage_order big - endian
 
 #endif /* ifndef __NDK_DEFINES_HPP__ */

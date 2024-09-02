@@ -80,13 +80,13 @@ namespace detail
 	struct CompilerState final
 	{
 		std::vector<NDK::SyntaxLeafList> fSyntaxTreeList;
-		std::vector<CompilerRegisterMap>	   kStackFrame;
-		std::vector<CompilerStructMap>		   kStructMap;
-		NDK::SyntaxLeafList*			   fSyntaxTree{nullptr};
-		std::unique_ptr<std::ofstream>		   fOutputAssembly;
-		std::string							   fLastFile;
-		std::string							   fLastError;
-		bool								   fVerbose;
+		std::vector<CompilerRegisterMap> kStackFrame;
+		std::vector<CompilerStructMap>	 kStructMap;
+		NDK::SyntaxLeafList*			 fSyntaxTree{nullptr};
+		std::unique_ptr<std::ofstream>	 fOutputAssembly;
+		std::string						 fLastFile;
+		std::string						 fLastError;
+		bool							 fVerbose;
 	};
 } // namespace detail
 
@@ -132,20 +132,20 @@ static std::string kRegisterPrefix	= kAsmRegisterPrefix;
 
 /////////////////////////////////////////
 
-static std::vector<std::string>		kFileList;
-static NDK::AssemblyFactory kFactory;
-static bool							kInStruct	 = false;
-static bool							kOnWhileLoop = false;
-static bool							kOnForLoop	 = false;
-static bool							kInBraces	 = false;
-static bool							kIfFound	 = false;
-static size_t						kBracesCount = 0UL;
+static std::vector<std::string> kFileList;
+static NDK::AssemblyFactory		kFactory;
+static bool						kInStruct	 = false;
+static bool						kOnWhileLoop = false;
+static bool						kOnForLoop	 = false;
+static bool						kInBraces	 = false;
+static bool						kIfFound	 = false;
+static size_t					kBracesCount = 0UL;
 
 /* @brief C compiler backend for C */
 class CompilerBackend64x0 final : public NDK::CompilerBackend
 {
 public:
-	explicit CompilerBackend64x0()	 = default;
+	explicit CompilerBackend64x0()	= default;
 	~CompilerBackend64x0() override = default;
 
 	NDK_COPY_DEFAULT(CompilerBackend64x0);
@@ -159,7 +159,7 @@ public:
 	}
 };
 
-static CompilerBackend64x0*			 kCompilerBackend = nullptr;
+static CompilerBackend64x0*				 kCompilerBackend = nullptr;
 static std::vector<detail::CompilerType> kCompilerVariables;
 static std::vector<std::string>			 kCompilerFunctions;
 static std::vector<detail::CompilerType> kCompilerTypes;
@@ -404,7 +404,7 @@ bool CompilerBackend64x0::Compile(const std::string text, const std::string file
 			if (textBuffer[text_index] == '=' && kInStruct)
 			{
 				detail::print_error_asm("assignement of value in struct " + textBuffer,
-									file);
+										file);
 				continue;
 			}
 

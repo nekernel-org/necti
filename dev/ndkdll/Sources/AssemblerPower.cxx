@@ -318,7 +318,7 @@ static bool asm_read_attributes(std::string& line)
 		if (kOutputAsBinary)
 		{
 			detail::print_error_asm("Invalid extern_segment directive in flat binary mode.",
-								"power-as");
+									"power-as");
 			throw std::runtime_error("invalid_extern_segment_bin");
 		}
 
@@ -390,7 +390,7 @@ static bool asm_read_attributes(std::string& line)
 		if (kOutputAsBinary)
 		{
 			detail::print_error_asm("Invalid public_segment directive in flat binary mode.",
-								"power-as");
+									"power-as");
 			throw std::runtime_error("invalid_public_segment_bin");
 		}
 
@@ -833,7 +833,7 @@ bool NDK::EncoderPowerPC::WriteLine(std::string&	   line,
 						if (reg_index > kAsmRegisterLimit)
 						{
 							detail::print_error_asm("invalid register index, r" + reg_str,
-												file);
+													file);
 							throw std::runtime_error("invalid_register_index");
 						}
 
@@ -859,7 +859,7 @@ bool NDK::EncoderPowerPC::WriteLine(std::string&	   line,
 								if (num.number[i] > 0)
 								{
 									detail::print_warning_asm("number overflow on li operation.",
-														  file);
+															  file);
 									break;
 								}
 							}

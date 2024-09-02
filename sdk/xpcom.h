@@ -11,7 +11,7 @@
 #define __SDK_STD_H__
 
 #ifndef __NDK__
-#define object class
+#define object	 class
 #define protocol class
 #define clsid(X)
 
@@ -25,15 +25,15 @@
 #endif
 
 #define PVOID void*
-#define VOID void
+#define VOID  void
 
-#define INT32 __INT32_TYPE__
+#define INT32  __INT32_TYPE__
 #define UINT32 __UINT32_TYPE__
 
-#define INT16 __INT16_TYPE__
+#define INT16  __INT16_TYPE__
 #define UINT16 __UINT16_TYPE__
 
-#define INT64 __INT64_TYPE__
+#define INT64  __INT64_TYPE__
 #define UINT64 __UINT64_TYPE__
 
 #define UINTOFF __UINTPTR_TYPE__
@@ -45,12 +45,12 @@
 
 #define WCHAR __WCHAR_TYPE__
 
-#define TRUE 1
-#define FALSE 0 
+#define TRUE  1
+#define FALSE 0
 
 struct __gHANDLE
 {
-    __CHAR32_TYPE__ __UNUSED;
+	__CHAR32_TYPE__ __UNUSED;
 };
 
 // So actualy we need to define handles.
@@ -61,13 +61,13 @@ typedef INT32 XRESULT;
 
 enum
 {
-    DRIVE_LETTER_START = 0,
-    DRIVE_LETTER_END = 26,
-    DRIVE_LETTER_INVALID,
+	DRIVE_LETTER_START = 0,
+	DRIVE_LETTER_END   = 26,
+	DRIVE_LETTER_INVALID,
 };
 
 EXTERN XHANDLE* X_DESKTOP_LIST;
-EXTERN XHANDLE X_CURRENT_DESKTOP;
+EXTERN XHANDLE	X_CURRENT_DESKTOP;
 
 EXTERN XRESULT XMessageBox(XHANDLE hWnd, XHANDLE hContent, XHANDLE hOnSuccess, XHANDLE hOnFailure);
 
@@ -75,9 +75,9 @@ EXTERN XRESULT XDialogBoxShow(XHANDLE hWnd, XHANDLE hDlg);
 
 EXTERN XRESULT XDialogBoxDestroy(XHANDLE hDlg);
 
-EXTERN XRESULT XVirtualAlloc(SIZE_T szPtr, UINT32 iFlags, PVOID* ppOut); 
+EXTERN XRESULT XVirtualAlloc(SIZE_T szPtr, UINT32 iFlags, PVOID* ppOut);
 
-EXTERN XRESULT XVirtualFree(PVOID* ppOut); 
+EXTERN XRESULT XVirtualFree(PVOID* ppOut);
 
 EXTERN XHANDLE XOpenFile(const WCHAR* szFileName, UINT32 iDriveIdOrIndex, UINT32 iFlags);
 

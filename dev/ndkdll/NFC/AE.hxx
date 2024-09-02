@@ -71,8 +71,8 @@ inline std::ofstream& operator<<(std::ofstream& fp, NDK::AEHeader& container)
 	return fp;
 }
 
-inline std::ofstream& operator<<(std::ofstream&			   fp,
-						  NDK::AERecordHeader& container)
+inline std::ofstream& operator<<(std::ofstream&		  fp,
+								 NDK::AERecordHeader& container)
 {
 	fp.write((char*)&container, sizeof(NDK::AERecordHeader));
 
@@ -85,8 +85,8 @@ inline std::ifstream& operator>>(std::ifstream& fp, NDK::AEHeader& container)
 	return fp;
 }
 
-inline std::ifstream& operator>>(std::ifstream&			   fp,
-						  NDK::AERecordHeader& container)
+inline std::ifstream& operator>>(std::ifstream&		  fp,
+								 NDK::AERecordHeader& container)
 {
 	fp.read((char*)&container, sizeof(NDK::AERecordHeader));
 	return fp;
