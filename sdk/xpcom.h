@@ -15,7 +15,7 @@
 #define protocol class
 #define clsid(X)
 
-#warning ! You may be using the clang version of the ZKA kit, please be cautious that some thing mayn't be present. !
+#warning ! You may be using the clang version of the ZKA NDK, please be cautious that some thing mayn't be present. !
 #endif // !__NDK__
 
 #ifdef __cplusplus
