@@ -7,7 +7,7 @@
 /// @file Linker.cxx
 /// @brief ZKA Linker for AE objects.
 
-extern "C" int ZKAIDLMain(int argc, char const* argv[]);
+extern "C" int ZKAXIDLMain(int argc, char const* argv[]);
 
 int main(int argc, char const* argv[])
 {
@@ -16,5 +16,5 @@ int main(int argc, char const* argv[])
 		return 1;
 	}
 
-	return ZKAIDLMain(argc, argv);
+	return ZKAXIDLMain(argc, argv);
 }

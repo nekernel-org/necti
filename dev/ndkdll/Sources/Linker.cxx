@@ -2,6 +2,9 @@
 
 	Copyright ZKA Technologies
 
+	FILE: Linker.cxx
+	PURPOSE: C++ LINKER
+
 ------------------------------------------- */
 
 /// @file Linker.cxx

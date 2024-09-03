@@ -2,10 +2,13 @@
 
 	Copyright ZKA Technologies
 
+    FILE: XIDL.cxx
+    PURPOSE: XPCOM IDL COMPILER.
+
 ------------------------------------------- */
 
-int main(int argc, char const *argv[])
+int ZKAXIDLMain(int argc, char const *argv[])
 {
-    /* code */
+    
     return 0;
 }
