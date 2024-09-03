@@ -4,9 +4,9 @@
 
 ------------------------------------------- */
 
-/// @file link.cxx
+/// @file Linker.cxx
 /// @author Amlal EL Mahrouss (amlel)
-/// @brief ZKA Technologies Linker.
+/// @brief ZKA Linker.
 
 /// Last Rev: Sat Feb 24 CET 2024
 
@@ -223,7 +223,7 @@ NDK_MODULE(ZKALinkerMain)
 		}
 	}
 
-	// PEF expects a valid architecture when outputing a binary.
+	// PEF expects a valid target architecture when outputing a binary.
 	if (kArch == 0)
 	{
 		kStdOut << "link: no target architecture set, can't continue." << std::endl;
