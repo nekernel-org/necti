@@ -6,7 +6,7 @@
 
 #pragma once
 
-#include <ndkdll/Asm/Asm.hxx>
+#include <NDK/Asm/Asm.hxx>
 #include <vector>
 
 namespace NDK

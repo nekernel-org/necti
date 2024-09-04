@@ -20,8 +20,8 @@
 
 // extern_segment, @MLAutoRelease { ... }, fn foo() -> auto { ... }
 
-#include <ndkdll/Asm/CPU/amd64.hxx>
-#include <ndkdll/Parser.hxx>
+#include <NDK/Asm/CPU/amd64.hxx>
+#include <NDK/Parser.hxx>
 #include <UUID.hxx>
 
 #include <cctype>

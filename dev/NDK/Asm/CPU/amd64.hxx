@@ -6,7 +6,7 @@
 
 #pragma once
 
-#include <ndkdll/Defines.hxx>
+#include <NDK/Defines.hxx>
 
 // @brief AMD64 support.
 // @file CPU/amd64.hpp

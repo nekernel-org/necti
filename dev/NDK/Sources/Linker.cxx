@@ -16,23 +16,23 @@
 /// @note Do not look up for anything with .code64/.data64/.zero64!
 /// It will be loaded when program will start up!
 
-#include <ndkdll/NFC/ErrorID.hxx>
+#include <NDK/NFC/ErrorID.hxx>
 
 //! Assembler Kit
-#include <ndkdll/Asm/Asm.hxx>
+#include <NDK/Asm/Asm.hxx>
 
 //! Preferred Executable Format
-#include <ndkdll/NFC/PEF.hxx>
-#include <ndkdll/UUID.hxx>
+#include <NDK/NFC/PEF.hxx>
+#include <NDK/UUID.hxx>
 #include <filesystem>
 #include <random>
 #include <vector>
 
 //! Dist version
-#include <ndkdll/Version.hxx>
+#include <NDK/Version.hxx>
 
 //! Advanced Executable Object Format
-#include <ndkdll/NFC/AE.hxx>
+#include <NDK/NFC/AE.hxx>
 
 //! C++ I/O headers.
 #include <fstream>

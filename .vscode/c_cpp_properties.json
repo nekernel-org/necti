@@ -3,7 +3,7 @@
     {
       "name": "Macintosh (CLang)",
       "includePath": [
-        "${workspaceFolder}/ndkdll/**",
+        "${workspaceFolder}/NDK/**",
         "${workspaceFolder}/Sources/Detail/**",
         "${workspaceFolder}/**"
       ],
@@ -16,7 +16,7 @@
     {
       "name": "Windows (Cygwin)",
       "includePath": [
-        "${workspaceFolder}/ndkdll/**",
+        "${workspaceFolder}/NDK/**",
         "${workspaceFolder}/Sources/Detail/**",
         "${workspaceFolder}/**"
       ],

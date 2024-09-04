@@ -9,8 +9,8 @@
 
 #pragma once
 
-#include <ndkdll/Defines.hxx>
-#include <ndkdll/NFC/ErrorOr.hxx>
+#include <NDK/Defines.hxx>
+#include <NDK/NFC/ErrorOr.hxx>
 
 namespace NDK
 {

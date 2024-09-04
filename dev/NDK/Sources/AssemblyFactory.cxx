@@ -4,8 +4,8 @@
 
 ------------------------------------------- */
 
-#include <ndkdll/Asm/Asm.hxx>
-#include <ndkdll/NFC/ErrorID.hxx>
+#include <NDK/Asm/Asm.hxx>
+#include <NDK/NFC/ErrorID.hxx>
 
 /**
  * @file AssemblyFactory.cxx

@@ -9,8 +9,8 @@
 
 /// BUGS: 0
 
-#include <ndkdll/Parser.hxx>
-#include <ndkdll/NFC/ErrorID.hxx>
+#include <NDK/Parser.hxx>
+#include <NDK/NFC/ErrorID.hxx>
 #include <algorithm>
 #include <filesystem>
 #include <fstream>

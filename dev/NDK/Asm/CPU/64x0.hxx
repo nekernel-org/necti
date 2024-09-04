@@ -6,7 +6,7 @@
 
 #pragma once
 
-#include <ndkdll/Defines.hxx>
+#include <NDK/Defines.hxx>
 #include <vector>
 
 // @brief 64x0 support.

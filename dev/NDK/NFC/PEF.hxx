@@ -6,7 +6,7 @@
 
 #pragma once
 
-#include <ndkdll/Defines.hxx>
+#include <NDK/Defines.hxx>
 
 // @file PEF.hpp
 // @brief Preferred Executable Format

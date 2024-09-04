@@ -14,7 +14,7 @@
 #ifndef __XCOFF__
 #define __XCOFF__
 
-#include <ndkdll/Defines.hxx>
+#include <NDK/Defines.hxx>
 
 #define kXCOFF64Magic 0x01F7
 
