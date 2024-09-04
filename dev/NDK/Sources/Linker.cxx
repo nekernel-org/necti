@@ -24,19 +24,17 @@
 //! Preferred Executable Format
 #include <NDK/NFC/PEF.hxx>
 #include <NDK/UUID.hxx>
-#include <filesystem>
-#include <random>
-#include <vector>
-
 //! Dist version
 #include <NDK/Version.hxx>
 
 //! Advanced Executable Object Format
 #include <NDK/NFC/AE.hxx>
 
-//! C++ I/O headers.
 #include <fstream>
 #include <iostream>
+#include <filesystem>
+#include <random>
+#include <vector>
 
 #define kLinkerVersion "ZKA Linker Driver %s, (c) ZKA Technologies 2024, all rights reserved.\n"
 
