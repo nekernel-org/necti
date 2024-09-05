@@ -7,7 +7,7 @@
  * 	========================================================
  */
 
-/// bugs: 0
+/// BUGS: 1
 
 #define __PK_USE_STRUCT_INSTEAD__ 1
 
@@ -34,11 +34,11 @@
 #include <vector>
 
 /* ZKA C++ Compiler driver */
-/* This is part of NDK. */
+/* This is part of the NDK. */
 /* (c) ZKA Technologies */
 
 /// @author Amlal El Mahrouss (amlel)
-/// @file cc.cxx
+/// @file CPlusPlusCompilerAMD64.cxx
 /// @brief Optimized C++ Compiler Driver.
 /// @todo Throw error for scoped inside scoped variables when they get referenced outside.
 /// @todo Add class/struct/enum support.
