@@ -43,11 +43,11 @@
 /// @todo Throw error for scoped inside scoped variables when they get referenced outside.
 /// @todo Add class/struct/enum support.
 
-/////////////////////
+///////////////////////
 
-// ANSI ESCAPE CODES
+// ANSI ESCAPE CODES //
 
-/////////////////////
+///////////////////////
 
 #define kBlank "\e[0;30m"
 #define kRed   "\e[0;31m"
@@ -181,14 +181,14 @@ static std::vector<std::string> cRegisters = {
 /// @brief The PEF calling convention (caller must save rax, rbp)
 /// @note callee must return via **rax**.
 static std::vector<std::string> cRegistersCall = {
-	"rcx",
-	"rdx",
 	"r8",
 	"r9",
-	"xmm8",
-	"xmm9",
-	"xmm10",
-	"xmm11",
+	"r10",
+	"r11",
+	"r12",
+	"r13",
+	"r14",
+	"r15",
 };
 
 static size_t kLevelFunction = 0UL;
