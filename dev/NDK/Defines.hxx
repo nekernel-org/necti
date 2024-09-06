@@ -4,8 +4,8 @@
 
 ------------------------------------------- */
 
-#ifndef __NDK_DEFINES_HPP__
-#define __NDK_DEFINES_HPP__
+#ifndef __NDK_DEFINES_HXX__
+#define __NDK_DEFINES_HXX__
 
 #ifndef Yes
 #define Yes true
@@ -14,8 +14,6 @@
 #ifndef No
 #define No false
 #endif // ifndef No
-
-#include <cstdint>
 
 #define SizeType size_t
 
@@ -41,6 +39,7 @@
 #define CharType char
 #define Boolean	 bool
 
+#include <cstdint>
 #include <cassert>
 #include <cstring>
 #include <new>
@@ -133,13 +132,13 @@ typedef char char_type;
 
 #define kAsmFileExts                                \
 	{                                               \
-		".64x", ".32x", ".masm", ".s", ".S", ".asm" \
+		".64x", ".32x", ".masm", ".s", ".S", ".asm", ".x64" \
 	}
 
-#define kAsmFileExtsMax 6
+#define kAsmFileExtsMax 7
 
 #define NDK_MODULE(name) extern "C" int name(int argc, char** argv)
 
 #pragma scalar_storage_order big - endian
 
-#endif /* ifndef __NDK_DEFINES_HPP__ */
+#endif /* ifndef __NDK_DEFINES_HXX__ */
