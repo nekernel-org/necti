@@ -50,7 +50,7 @@
 
 struct __gHANDLE
 {
-	__CHAR32_TYPE__ __UNUSED;
+	UINT32 __UNUSED;
 };
 
 // So actualy we need to define handles.
