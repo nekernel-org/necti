@@ -19,8 +19,10 @@
 #endif // !__NDK__
 
 #ifdef __cplusplus
+#define LANG "C++"
 #define EXTERN extern "C"
 #else
+#define LANG "C"
 #define EXTERN extern
 #endif
 
@@ -50,7 +52,7 @@
 
 struct __gHANDLE
 {
-	UINT32 __UNUSED;
+	UINTPTR __UNUSED;
 };
 
 // So actualy we need to define handles.
@@ -68,6 +70,7 @@ enum
 
 EXTERN XHANDLE* X_DESKTOP_LIST;
 EXTERN XHANDLE	X_CURRENT_DESKTOP;
+EXTERN XHANDLE	X_ABOUT_DLG;
 
 EXTERN XRESULT XMessageBox(XHANDLE hWnd, XHANDLE hContent, XHANDLE hOnSuccess, XHANDLE hOnFailure);
 
@@ -82,6 +85,8 @@ EXTERN XRESULT XVirtualFree(PVOID* ppOut);
 EXTERN XHANDLE XOpenFile(const WCHAR* szFileName, UINT32 iDriveIdOrIndex, UINT32 iFlags);
 
 EXTERN XRESULT XCloseFile(XHANDLE* ppFile);
+
+EXTERN XRESULT XFlushFile(XHANDLE ppFile);
 
 EXTERN XRESULT XWriteFile(XHANDLE pFile, PVOID* ppOutBuf, UINT32 iFlags, UINTOFF pOff);
 

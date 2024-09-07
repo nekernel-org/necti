@@ -1,5 +1,4 @@
-NOTE: sci_base.hxx is included by default on the system, no need to include it here.
+Read Me: XPCOM SDK
 
-XPCOM and W32 SDK, use this to develop ZKA applications.
-
-Warning: XPCOM isn't compatible with Windows, linking against it, will surely cause opcode errors or GPFs.
+XPCOM, W32 and various SDKs.
+Use those to develop ZKA applications.

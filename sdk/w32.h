@@ -13,4 +13,4 @@
 
 typedef struct __gHANDLE* HANDLE; // API handle.
 
-EXTERN __INT32_TYPE__ W32MessageBox(HANDLE hWnd, const __WCHAR_TYPE__* szContent, const __WCHAR_TYPE__* szTitle, __UINT32_TYPE__ iFlags);
+EXTERN __INT32_TYPE__ W32MessageBoxW(HANDLE hWnd, const WCHAR* szContent, const WCHAR* szTitle, UINT32 iFlags);

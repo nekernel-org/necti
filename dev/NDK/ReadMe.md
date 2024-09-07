@@ -1,3 +1,5 @@
 # NDK Compiler DLL
 
-A dll which takes the role of implementing the compilers and linkers.
+## Compiler, Assembler and Linker
+
+This contains a set of tools necessary to compile ZKA programs.

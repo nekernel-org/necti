@@ -30,12 +30,6 @@
 //! Advanced Executable Object Format
 #include <NDK/NFC/AE.hxx>
 
-#include <fstream>
-#include <iostream>
-#include <filesystem>
-#include <random>
-#include <vector>
-
 #define kLinkerVersion "ZKA Linker Driver %s, (c) ZKA Technologies 2024, all rights reserved.\n"
 
 #define StringCompare(DST, SRC) strcmp(DST, SRC)

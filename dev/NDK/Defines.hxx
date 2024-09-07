@@ -43,6 +43,15 @@
 #include <cassert>
 #include <cstring>
 #include <new>
+#include <iostream>
+#include <utility>
+#include <cctype>
+#include <cstdio>
+#include <fstream>
+#include <memory>
+#include <string>
+#include <filesystem>
+#include <vector>
 
 #define nullPtr std::nullptr_t
 

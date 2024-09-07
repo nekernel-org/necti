@@ -24,15 +24,6 @@
 #include <NDK/Parser.hxx>
 #include <UUID.hxx>
 
-#include <cctype>
-#include <cstdio>
-#include <fstream>
-#include <iostream>
-#include <memory>
-#include <string>
-#include <utility>
-#include <vector>
-
 /* ZKA C++ Compiler driver */
 /* This is part of the NDK. */
 /* (c) ZKA Technologies */
