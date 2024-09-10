@@ -22,7 +22,7 @@
 
 #include <NDK/Asm/CPU/amd64.hxx>
 #include <NDK/Parser.hxx>
-#include <UUID.hxx>
+#include <NDK/UUID.hxx>
 
 /* ZKA C++ Compiler driver */
 /* This is part of the NDK. */

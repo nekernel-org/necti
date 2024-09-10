@@ -6,5 +6,5 @@
 
 #pragma once
 
-#define kDistVersion "v1.1.14"
-#define kDistRelease "Havok"
+#define kDistVersion "v1.1.0"
+#define kDistRelease "Master"

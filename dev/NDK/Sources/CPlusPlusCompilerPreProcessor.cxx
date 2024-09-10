@@ -31,7 +31,7 @@ typedef Int32 (*bpp_parser_fn_t)(std::string& line, std::ifstream& hdr_file, std
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
-namespace details
+namespace detail
 {
 	enum
 	{
@@ -67,10 +67,10 @@ namespace details
 		std::string		fMacroName;
 		bpp_parser_fn_t fParse;
 	};
-} // namespace details
+} // namespace detail
 
 static std::vector<std::string>		   kFiles;
-static std::vector<details::bpp_macro> kMacros;
+static std::vector<detail::bpp_macro> kMacros;
 static std::vector<std::string>		   kIncludes;
 
 static std::string kWorkingDir;
@@ -88,13 +88,13 @@ static std::vector<std::string> kKeywords = {
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
-int32_t bpp_parse_if_condition(details::bpp_macro_condition& cond,
-							   details::bpp_macro&			 macro,
+int32_t bpp_parse_if_condition(detail::bpp_macro_condition& cond,
+							   detail::bpp_macro&			 macro,
 							   bool&						 inactive_code,
 							   bool&						 defined,
 							   std::string&					 macro_str)
 {
-	if (cond.fType == details::kEqual)
+	if (cond.fType == detail::kEqual)
 	{
 		auto substr_macro =
 			macro_str.substr(macro_str.find(macro.fName) + macro.fName.size());
@@ -115,7 +115,7 @@ int32_t bpp_parse_if_condition(details::bpp_macro_condition& cond,
 			return 1;
 		}
 	}
-	else if (cond.fType == details::kNotEqual)
+	else if (cond.fType == detail::kNotEqual)
 	{
 		auto substr_macro =
 			macro_str.substr(macro_str.find(macro.fName) + macro.fName.size());
@@ -211,7 +211,7 @@ int32_t bpp_parse_if_condition(details::bpp_macro_condition& cond,
 		lhs = atol(number.c_str());
 	}
 
-	if (cond.fType == details::kGreaterThan)
+	if (cond.fType == detail::kGreaterThan)
 	{
 		if (lhs < rhs)
 		{
@@ -224,7 +224,7 @@ int32_t bpp_parse_if_condition(details::bpp_macro_condition& cond,
 		return 0;
 	}
 
-	if (cond.fType == details::kGreaterEqThan)
+	if (cond.fType == detail::kGreaterEqThan)
 	{
 		if (lhs <= rhs)
 		{
@@ -237,7 +237,7 @@ int32_t bpp_parse_if_condition(details::bpp_macro_condition& cond,
 		return 0;
 	}
 
-	if (cond.fType == details::kLesserEqThan)
+	if (cond.fType == detail::kLesserEqThan)
 	{
 		if (lhs >= rhs)
 		{
@@ -250,7 +250,7 @@ int32_t bpp_parse_if_condition(details::bpp_macro_condition& cond,
 		return 0;
 	}
 
-	if (cond.fType == details::kLesserThan)
+	if (cond.fType == detail::kLesserThan)
 	{
 		if (lhs > rhs)
 		{
@@ -461,7 +461,7 @@ void bpp_parse_file(std::ifstream& hdr_file, std::ofstream& pp_out)
 					}
 				}
 
-				details::bpp_macro macro;
+				detail::bpp_macro macro;
 
 				macro.fArgs	 = args;
 				macro.fName	 = macro_key;
@@ -699,29 +699,29 @@ void bpp_parse_file(std::ifstream& hdr_file, std::ofstream& pp_out)
 			{
 				inactive_code = true;
 
-				std::vector<details::bpp_macro_condition> bpp_macro_condition_list = {
+				std::vector<detail::bpp_macro_condition> bpp_macro_condition_list = {
 					{
-						.fType	   = details::kEqual,
+						.fType	   = detail::kEqual,
 						.fTypeName = "==",
 					},
 					{
-						.fType	   = details::kNotEqual,
+						.fType	   = detail::kNotEqual,
 						.fTypeName = "!=",
 					},
 					{
-						.fType	   = details::kLesserThan,
+						.fType	   = detail::kLesserThan,
 						.fTypeName = "<",
 					},
 					{
-						.fType	   = details::kGreaterThan,
+						.fType	   = detail::kGreaterThan,
 						.fTypeName = ">",
 					},
 					{
-						.fType	   = details::kLesserEqThan,
+						.fType	   = detail::kLesserEqThan,
 						.fTypeName = "<=",
 					},
 					{
-						.fType	   = details::kGreaterEqThan,
+						.fType	   = detail::kGreaterEqThan,
 						.fTypeName = ">=",
 					},
 				};
@@ -941,19 +941,19 @@ NDK_MODULE(CPlusPlusPreprocessorMain)
 		bool skip		 = false;
 		bool double_skip = false;
 
-		details::bpp_macro macro_1;
+		detail::bpp_macro macro_1;
 		macro_1.fName  = "__true";
 		macro_1.fValue = "1";
 
 		kMacros.push_back(macro_1);
 
-		details::bpp_macro macro_0;
+		detail::bpp_macro macro_0;
 		macro_0.fName  = "__false";
 		macro_0.fValue = "0";
 
 		kMacros.push_back(macro_0);
 
-		details::bpp_macro macro_zka;
+		detail::bpp_macro macro_zka;
 		macro_zka.fName	 = "__ZKA__";
 		macro_zka.fValue = "1";
 
@@ -1035,7 +1035,7 @@ NDK_MODULE(CPlusPlusPreprocessorMain)
 					if (is_string)
 						macro_value += "\"";
 
-					details::bpp_macro macro;
+					detail::bpp_macro macro;
 					macro.fName	 = macro_key;
 					macro.fValue = macro_value;
 

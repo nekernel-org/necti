@@ -23,11 +23,6 @@
 #include <NDK/Parser.hxx>
 #include <NDK/NFC/AE.hxx>
 #include <NDK/NFC/PEF.hxx>
-#include <filesystem>
-#include <fstream>
-#include <iostream>
-#include <memory>
-#include <vector>
 
 /////////////////////
 

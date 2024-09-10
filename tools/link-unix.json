@@ -4,6 +4,6 @@
   "headers_path": ["../dev/NDK", "../dev/", "../dev/NDK/Sources/Detail"],
   "sources_path": ["link.cxx"],
   "output_name": "link.exe",
-  "compiler_flags": ["-L/usr/local/lib", "-lndk"],
+  "compiler_flags": ["-L/usr/lib", "-lndk"],
   "cpp_macros": ["__LINK__=202401"]
 }
