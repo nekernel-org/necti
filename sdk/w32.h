@@ -11,6 +11,11 @@
 
 #include <sdk/xpcom.h>
 
-typedef struct __gHANDLE* HANDLE; // API handle.
+typedef XHANDLE HANDLE; // API handle, simply a pointer to an XHANDLE.
 
-EXTERN __INT32_TYPE__ W32MessageBoxW(HANDLE hWnd, const WCHAR* szContent, const WCHAR* szTitle, UINT32 iFlags);
+/// @brief Shows a message box within an handle.
+/// @param hWnd Message box parent handle.
+/// @param szContent Message box text.
+/// @param szTitle Message box title.
+/// @param iFlags Message box flags.
+EXTERN INT32 W32MessageBoxW(HANDLE hWnd, const WCHAR* szContent, const WCHAR* szTitle, UINT32 iFlags);
