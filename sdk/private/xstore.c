@@ -6,3 +6,5 @@
 //	Purpose: ZKA OS STORE SDK.
 //
 //
+
+#include <sdk/xstore.h>
