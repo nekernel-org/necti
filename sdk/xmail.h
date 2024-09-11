@@ -11,8 +11,10 @@
 
 #include <sdk/xpcom.h>
 
-EXTERN XHANDLE XOpenMail(const WCHAR subect, struct XMIME* mime, struct XCONTACT* from);
+typedef XHANDLE MAILHANDLE;
 
-EXTERN XRESULT XSendMail(XHANDLE mail);
+EXTERN MAILHANDLE XOpenMail(const WCHAR subect, struct XMIME* mime, struct XCONTACT* from);
 
-EXTERN XRESULT XCloseMail(XHANDLE* mail);
+EXTERN XRESULT XSendMail(MAILHANDLE mail);
+
+EXTERN XRESULT XCloseMail(MAILHANDLE* mail);
