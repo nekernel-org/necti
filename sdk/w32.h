@@ -18,4 +18,4 @@ typedef XHANDLE HWND; // API handle, simply a pointer to an XHANDLE.
 /// @param szContent Message box text.
 /// @param szTitle Message box title.
 /// @param iFlags Message box flags.
-EXTERN INT32 W32MessageBoxW(HWND hWnd, const WCHAR* szContent, const WCHAR* szTitle, UINT32 iFlags);
+EXTERN INT32 W32MessageBoxW(HWND hWnd, CONST WCHAR* szContent, CONST WCHAR* szTitle, UINT32 iFlags);

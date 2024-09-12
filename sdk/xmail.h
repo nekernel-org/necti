@@ -13,7 +13,7 @@
 
 typedef XHANDLE MAILHANDLE;
 
-EXTERN MAILHANDLE XOpenMail(const WCHAR subect, struct XMIME* mime, struct XCONTACT* from);
+EXTERN MAILHANDLE XOpenMail(CONST WCHAR subect, struct XMIME* mime, struct XCONTACT* from);
 
 EXTERN XRESULT XSendMail(MAILHANDLE mail);
 

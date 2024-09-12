@@ -26,6 +26,17 @@
 #define EXTERN extern
 #endif
 
+#ifndef NULL
+#ifdef __cplusplus
+#define NULL 0
+#else
+#define NULL ((PVOID)0)
+#endif
+#endif
+
+
+#define CONST const
+
 #define PVOID void*
 #define VOID  void
 
@@ -82,7 +93,7 @@ EXTERN XRESULT XVirtualAlloc(SIZE_T szPtr, UINT32 iFlags, PVOID* ppOut);
 
 EXTERN XRESULT XVirtualFree(PVOID* ppOut);
 
-EXTERN XHANDLE XOpenFile(const WCHAR* szFileName, UINT32 iDriveIdOrIndex, UINT32 iFlags);
+EXTERN XHANDLE XOpenFile(CONST WCHAR* szFileName, UINT32 iDriveIdOrIndex, UINT32 iFlags);
 
 EXTERN XRESULT XCloseFile(XHANDLE* ppFile);
 
