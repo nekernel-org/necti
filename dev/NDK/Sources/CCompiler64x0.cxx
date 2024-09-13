@@ -53,7 +53,7 @@
 
 namespace detail
 {
-	// \brief name to register struct.
+	// \brief Register map structure, used to keep track of each variable's registers.
 	struct CompilerRegisterMap final
 	{
 		std::string fName;
