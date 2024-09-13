@@ -13,7 +13,7 @@
 
 #define kPrintF printf
 
-#define kOk (0)
+#define kExitOK (0)
 
 #define kSplashCxx() \
 	kPrintF(kWhite "%s\n", "ZKA C++ Compiler Driver, (c) 2024 ZKA Technologies, all rights reserved.")
@@ -834,7 +834,7 @@ public:
 		if (kAcceptableErrors > 0)
 			return -1;
 
-		return kOk;
+		return kExitOK;
 	}
 };
 
@@ -932,7 +932,7 @@ NDK_MODULE(CompilerCPlusPlusX8664)
 			if (strcmp(argv[index], "/Ver") == 0)
 			{
 				kSplashCxx();
-				return kOk;
+				return kExitOK;
 			}
 
 			if (strcmp(argv[index], "/Verbose") == 0)
@@ -946,7 +946,7 @@ NDK_MODULE(CompilerCPlusPlusX8664)
 			{
 				cxx_print_help();
 
-				return kOk;
+				return kExitOK;
 			}
 
 			if (strcmp(argv[index], "/GetC++") == 0)
@@ -954,7 +954,7 @@ NDK_MODULE(CompilerCPlusPlusX8664)
 				if (kCompilerBackend)
 					std::cout << kCompilerBackend->Language() << "\n";
 
-				return kOk;
+				return kExitOK;
 			}
 
 			if (strcmp(argv[index], "/MaxErr") == 0)
@@ -1010,11 +1010,11 @@ NDK_MODULE(CompilerCPlusPlusX8664)
 
 		std::cout << "c++drv: building: " << argv[index] << std::endl;
 
-		if (kFactory.Compile(argv_i, kMachine) != kOk)
+		if (kFactory.Compile(argv_i, kMachine) != kExitOK)
 			return -1;
 	}
 
-	return kOk;
+	return kExitOK;
 }
 
 // Last rev 8-1-24

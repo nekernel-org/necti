@@ -20,7 +20,7 @@
 #include <vector>
 #include <cstdio>
 
-#define kOk 0
+#define kExitOK 0
 
 /// @author Amlal El Mahrouss (amlel)
 /// @file cc.cxx
@@ -1493,7 +1493,7 @@ public:
 		kState.fOutputAssembly->flush();
 		kState.fOutputAssembly.reset();
 
-		return kOk;
+		return kExitOK;
 	}
 };
 
@@ -1543,7 +1543,7 @@ NDK_MODULE(NewOSCompilerCLangPowerPC)
 				strcmp(argv[index], "-version") == 0)
 			{
 				kSplashCxx();
-				return kOk;
+				return kExitOK;
 			}
 
 			if (strcmp(argv[index], "-verbose") == 0)
@@ -1557,7 +1557,7 @@ NDK_MODULE(NewOSCompilerCLangPowerPC)
 			{
 				cc_print_help();
 
-				return kOk;
+				return kExitOK;
 			}
 
 			if (strcmp(argv[index], "-dialect") == 0)
@@ -1565,7 +1565,7 @@ NDK_MODULE(NewOSCompilerCLangPowerPC)
 				if (kCompilerBackend)
 					std::cout << kCompilerBackend->Language() << "\n";
 
-				return kOk;
+				return kExitOK;
 			}
 
 			if (strcmp(argv[index], "-fmax-exceptions") == 0)
@@ -1607,11 +1607,11 @@ NDK_MODULE(NewOSCompilerCLangPowerPC)
 			return 1;
 		}
 
-		if (kFactory.Compile(srcFile, kMachine) != kOk)
+		if (kFactory.Compile(srcFile, kMachine) != kExitOK)
 			return -1;
 	}
 
-	return kOk;
+	return kExitOK;
 }
 
 // Last rev 8-1-24

@@ -39,7 +39,7 @@
 
 /////////////////////
 
-#define kOk (0)
+#define kExitOK (0)
 
 #define kBlank "\e[0;30m"
 #define kRed   "\e[0;31m"
@@ -1473,7 +1473,7 @@ public:
 		kState.fOutputAssembly->flush();
 		kState.fOutputAssembly.reset();
 
-		return kOk;
+		return kExitOK;
 	}
 };
 
@@ -1523,7 +1523,7 @@ NDK_MODULE(NewOSCompilerCLang64x0)
 				strcmp(argv[index], "/version") == 0)
 			{
 				kSplashCxx();
-				return kOk;
+				return kExitOK;
 			}
 
 			if (strcmp(argv[index], "/verbose") == 0)
@@ -1537,7 +1537,7 @@ NDK_MODULE(NewOSCompilerCLang64x0)
 			{
 				cc_print_help();
 
-				return kOk;
+				return kExitOK;
 			}
 
 			if (strcmp(argv[index], "/dialect") == 0)
@@ -1545,7 +1545,7 @@ NDK_MODULE(NewOSCompilerCLang64x0)
 				if (kCompilerBackend)
 					std::cout << kCompilerBackend->Language() << "\n";
 
-				return kOk;
+				return kExitOK;
 			}
 
 			if (strcmp(argv[index], "/fmax-exceptions") == 0)
@@ -1587,11 +1587,11 @@ NDK_MODULE(NewOSCompilerCLang64x0)
 			return 1;
 		}
 
-		if (kFactory.Compile(srcFile, kMachine) != kOk)
+		if (kFactory.Compile(srcFile, kMachine) != kExitOK)
 			return -1;
 	}
 
-	return kOk;
+	return kExitOK;
 }
 
 // Last rev 8-1-24
