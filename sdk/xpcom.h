@@ -19,10 +19,10 @@
 #endif // !__NDK__
 
 #ifdef __cplusplus
-#define LANG "C++"
+#define LANG   "C++"
 #define EXTERN extern "C"
 #else
-#define LANG "C"
+#define LANG   "C"
 #define EXTERN extern
 #endif
 
@@ -33,7 +33,6 @@
 #define NULL ((PVOID)0)
 #endif
 #endif
-
 
 #define CONST const
 

@@ -69,9 +69,9 @@ namespace detail
 	};
 } // namespace detail
 
-static std::vector<std::string>		   kFiles;
+static std::vector<std::string>		  kFiles;
 static std::vector<detail::bpp_macro> kMacros;
-static std::vector<std::string>		   kIncludes;
+static std::vector<std::string>		  kIncludes;
 
 static std::string kWorkingDir;
 
@@ -89,10 +89,10 @@ static std::vector<std::string> kKeywords = {
 /////////////////////////////////////////////////////////////////////////////////////////
 
 int32_t bpp_parse_if_condition(detail::bpp_macro_condition& cond,
-							   detail::bpp_macro&			 macro,
-							   bool&						 inactive_code,
-							   bool&						 defined,
-							   std::string&					 macro_str)
+							   detail::bpp_macro&			macro,
+							   bool&						inactive_code,
+							   bool&						defined,
+							   std::string&					macro_str)
 {
 	if (cond.fType == detail::kEqual)
 	{

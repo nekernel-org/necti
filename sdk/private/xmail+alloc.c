@@ -8,11 +8,11 @@
 //
 
 /**
-    From: FooBar <Foo@Bar.com>
-    Date: Sat, 20 Apr 2024 01:26:49 CEST
-    MIME-Version: 1.0
-    Content-Type: text/html; charset=us-ascii
-    Subject: Welcome!
+	From: FooBar <Foo@Bar.com>
+	Date: Sat, 20 Apr 2024 01:26:49 CEST
+	MIME-Version: 1.0
+	Content-Type: text/html; charset=us-ascii
+	Subject: Welcome!
 */
 
 #include <sdk/xmail.h>
@@ -20,18 +20,18 @@
 
 EXTERN XHANDLE XOpenMail(const WCHAR subect, struct XMIME* mime, struct XCONTACT* from)
 {
-    XHANDLE handle = XAllocObject();
+	XHANDLE handle = XAllocObject();
 
-    if (!XObjectMustPass(handle)))
+	if (!XObjectMustPass(handle)))
         return NULL;
 
-    XAttachField(handle, mime, 0);
-    XAttachField(handle, from, 1);
+	XAttachField(handle, mime, 0);
+	XAttachField(handle, from, 1);
 
-    return handle;
+	return handle;
 }
 
 EXTERN XRESULT XCloseMail(XHANDLE* handle)
 {
-    return XDestroyObject(handle);
+	return XDestroyObject(handle);
 }

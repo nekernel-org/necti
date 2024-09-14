@@ -77,7 +77,7 @@ static uintptr_t kMIBCount = 8;
 #define kLinkerSplash() kPrintF(kWhite kLinkerVersion, kDistVersion)
 
 /***
-    @brief ZKA linker main
+	@brief ZKA linker main
 */
 
 NDK_MODULE(ZKALinkerMain)

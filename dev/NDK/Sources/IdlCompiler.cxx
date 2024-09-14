@@ -2,8 +2,8 @@
 
 	Copyright ZKA Technologies
 
-    FILE: XIDL.cxx
-    PURPOSE: XPCOM IDL COMPILER.
+	FILE: XIDL.cxx
+	PURPOSE: XPCOM IDL COMPILER.
 
 ------------------------------------------- */
 
@@ -22,11 +22,11 @@
 #include <NDK/NFC/AE.hxx>
 
 /***
-    @brief IDL compiler maih.
+	@brief IDL compiler maih.
 */
 
 NDK_MODULE(ZKAIdlMain)
 {
 
-    return 0;
+	return 0;
 }

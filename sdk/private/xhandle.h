@@ -26,4 +26,4 @@ EXTERN XRESULT XAttachField(XHANDLE handle, PVOID prop, UINT32 off);
 EXTERN XRESULT XDestroyObject(XHANDLE* handle_ptr);
 
 /// @brief Does a sanity check of the XPCOM instance.
-EXTERN BOOL    XObjectMustPass(XHANDLE handle);
+EXTERN BOOL XObjectMustPass(XHANDLE handle);

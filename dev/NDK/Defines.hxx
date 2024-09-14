@@ -139,8 +139,8 @@ typedef char char_type;
 #define kObjectFileExt ".obj"
 #define kBinaryFileExt ".bin"
 
-#define kAsmFileExts                                \
-	{                                               \
+#define kAsmFileExts                                        \
+	{                                                       \
 		".64x", ".32x", ".masm", ".s", ".S", ".asm", ".x64" \
 	}
 
