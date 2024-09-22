@@ -1,8 +1,8 @@
 {
   "compiler_path": "x86_64-w64-mingw32-g++.exe",
   "compiler_std": "c++20",
-  "headers_path": ["./dev/NDK", "./dev", "./dev/ndk/Sources/Detail"],
-  "sources_path": ["dev/ndk/Sources/*.cxx"],
+  "headers_path": ["./dev/NDK", "./dev", "./dev/ndk/src/Detail"],
+  "sources_path": ["dev/ndk/src/*.cxx"],
   "output_name": "ndk.dll",
   "compiler_flags": ["-fPIC", "-shared"],
   "cpp_macros": ["__NDK_DLL__=202401"]
