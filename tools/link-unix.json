@@ -1,7 +1,7 @@
 {
   "compiler_path": "g++",
   "compiler_std": "c++20",
-  "headers_path": ["../dev/NDK", "../dev/", "../dev/NDK/Sources/Detail"],
+  "headers_path": ["../dev/NDK", "../dev/", "../dev/ndk/Sources/Detail"],
   "sources_path": ["link.cxx"],
   "output_name": "link.exe",
   "compiler_flags": ["-L/usr/lib", "-lndk"],

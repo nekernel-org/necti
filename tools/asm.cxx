@@ -7,7 +7,7 @@
 /// @file Linker.cxx
 /// @brief ZKA C++ frontend for ZKA OS.
 
-#include <NDK/Version.hxx>
+#include <ndk/Version.hxx>
 #include <iostream>
 #include <cstring>
 #include <string>
