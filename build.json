@@ -4,6 +4,6 @@
   "headers_path": ["./dev/NDK", "./dev", "./dev/ndk/Sources/Detail"],
   "sources_path": ["dev/ndk/Sources/*.cxx"],
   "output_name": "ndk.dll",
-  "compiler_flags": ["-fPIC", "-shared", "-fPIC"],
+  "compiler_flags": ["-fPIC", "-shared"],
   "cpp_macros": ["__NDK_DLL__=202401"]
 }
