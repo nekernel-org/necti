@@ -37,7 +37,7 @@ int main(int argc, char const* argv[])
 			std::printf("asm.exe: Frontend Assembler (64x0, POWER64, AMD64).\n");
 			std::printf("asm.exe: Version: %s, Release: %s.\n", kDistVersion, kDistRelease);
 			std::printf("asm.exe: Designed by Amlal El Mahrouss, Copyright ZKA Technologies.\n");
-			std::printf("libndk.dylib/ndk.dll: Designed by Amlal El Mahrouss, Copyright ZKA Technologies.\n");
+			std::printf("libndk.so/ndk.dll: Designed by Amlal El Mahrouss, Copyright ZKA Technologies.\n");
 
 			return 0;
 		}

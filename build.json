@@ -7,6 +7,6 @@
   "compiler_flags": ["-fPIC", "-shared"],
   "cpp_macros": [
     "__NDK_DLL__=202401",
-    "kDistRelease=$(git rev-parse --abbrev-ref HEAD)"
+    "kDistReleaseBranch=$(git rev-parse --abbrev-ref HEAD)-$(uuidgen)"
   ]
 }

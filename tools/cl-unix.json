@@ -5,5 +5,8 @@
   "sources_path": ["cl.cxx"],
   "output_name": "cl.exe",
   "compiler_flags": ["-L/usr/lib", "-lndk"],
-  "cpp_macros": ["__CL__=202401"]
+  "cpp_macros": [
+    "__CL__=202401",
+    "kDistReleaseBranch=$(git rev-parse --abbrev-ref HEAD)-$(uuidgen)"
+  ]
 }
