@@ -94,12 +94,15 @@ namespace NDK
 {
 	inline constexpr int cBaseYear = 1900;
 
-	inline std::string current_date() noexcept
+	typedef std::string String;
+
+	inline String current_date() noexcept
 	{
 		auto time_data	 = time(nullptr);
 		auto time_struct = gmtime(&time_data);
 
-		std::string fmt = std::to_string(cBaseYear + time_struct->tm_year);
+		String fmt = std::to_string(cBaseYear + time_struct->tm_year);
+		
 		fmt += "-";
 		fmt += std::to_string(time_struct->tm_mon + 1);
 		fmt += "-";
@@ -148,6 +151,8 @@ typedef char char_type;
 
 #define NDK_MODULE(name) extern "C" int name(int argc, char** argv)
 
-#pragma scalar_storage_order big - endian
+#ifdef MSVC
+#pragma scalar_storage_order big-endian
+#endif // ifdef MSVC
 
 #endif /* ifndef __NDK_DEFINES_HXX__ */

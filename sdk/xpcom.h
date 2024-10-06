@@ -62,12 +62,13 @@
 
 struct __gHANDLE
 {
-	UINTPTR __UNUSED;
+	UINTPTR __unused;
 };
 
 // So actualy we need to define handles.
 
-typedef struct __gHANDLE* XHANDLE; // XPCOM handle type.
+typedef struct __gHANDLE  XSHANDLE; // XPCOM handle struct type.
+typedef XSHANDLE*		 XHANDLE; // XPCOM handle type.
 
 typedef INT32 XRESULT;
 
@@ -88,19 +89,19 @@ EXTERN XRESULT XDialogBoxShow(XHANDLE hWnd, XHANDLE hDlg);
 
 EXTERN XRESULT XDialogBoxDestroy(XHANDLE hDlg);
 
-EXTERN XRESULT XVirtualAlloc(SIZE_T szPtr, UINT32 iFlags, PVOID* ppOut);
+EXTERN XRESULT XVirtualAlloc(CONST SIZE_T szPtr, CONST UINT32 iFlags, PVOID* ppOut);
 
 EXTERN XRESULT XVirtualFree(PVOID* ppOut);
 
-EXTERN XHANDLE XOpenFile(CONST WCHAR* szFileName, UINT32 iDriveIdOrIndex, UINT32 iFlags);
+EXTERN XHANDLE XOpenFile(CONST WCHAR* szFileName, CONST UINT32 iDriveIdOrIndex, CONST UINT32 iFlags);
 
 EXTERN XRESULT XCloseFile(XHANDLE* ppFile);
 
 EXTERN XRESULT XFlushFile(XHANDLE ppFile);
 
-EXTERN XRESULT XWriteFile(XHANDLE pFile, PVOID* ppOutBuf, UINT32 iFlags, UINTOFF pOff);
+EXTERN XRESULT XWriteFile(XHANDLE pFile, PVOID* ppOutBuf, CONST UINT32 iFlags, CONST UINTOFF pOff);
 
-EXTERN XRESULT XReadFile(XHANDLE pFile, PVOID* ppOutBuf, UINT32 iFlags, UINTOFF pOff);
+EXTERN XRESULT XReadFile(XHANDLE pFile, PVOID* ppOutBuf, CONST UINT32 iFlags, CONST UINTOFF pOff);
 
 EXTERN XRESULT XGetLastError(VOID);
 
