@@ -21,10 +21,18 @@
 #define kPefObjectExt ".obj"
 #define kPefDebugExt  ".dbg"
 
-#define kPefMagicLen 5
+#define kPefZero128 ".zero128"
+#define kPefCode128 ".code128"
+#define kPefData128 ".data128"
 
-#define kPefVersion 3
-#define kPefNameLen 255
+#define kPefZero64 ".zero64"
+#define kPefCode64 ".code64"
+#define kPefData64 ".data64"
+
+#define kPefMagicLen (5)
+
+#define kPefVersion (3)
+#define kPefNameLen (255)
 
 #define kPefBaseOrigin (0x40000000)
 

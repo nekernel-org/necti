@@ -133,6 +133,8 @@ namespace NDK
 		str[copy_limit] = '\0';
 		return true;
 	}
+
+	using String = std::basic_string<CharType>;
 } // namespace NDK
 
 #define PACKED __attribute__((packed))

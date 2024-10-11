@@ -54,7 +54,7 @@ enum
 	eABIInvalid = 0xFFFF,
 };
 
-static std::string kOutput			 = "";
+static NDK::String kOutput			 = "";
 static Int32	   kAbi				 = eABINewOS;
 static Int32	   kSubArch			 = kPefNoSubCpu;
 static Int32	   kArch			 = NDK::kPefArchInvalid;
@@ -68,7 +68,7 @@ static const char* kLdDefineSymbol = ":UndefinedSymbol:";
 static const char* kLdDynamicSym   = ":RuntimeSymbol:";
 
 /* object code and list. */
-static std::vector<std::string> kObjectList;
+static std::vector<NDK::String> kObjectList;
 static std::vector<char>		kObjectBytes;
 
 static uintptr_t kMIBCount = 8;
@@ -162,7 +162,7 @@ NDK_MODULE(ZKALinkerMain)
 				continue;
 			}
 
-			if (kOutput.find(kPefExt) != std::string::npos)
+			if (kOutput.find(kPefExt) != NDK::String::npos)
 				kOutput.erase(kOutput.find(kPefExt), strlen(kPefExt));
 
 			kOutput += kPefDylibExt;
@@ -329,20 +329,22 @@ NDK_MODULE(ZKALinkerMain)
 				memcpy(command_header.Name, ae_records[ae_record_index].fName,
 					   kPefNameLen);
 
+				NDK::String cmd_hdr_name(command_header.Name);
+
 				// check this header if it's any valid.
-				if (std::string(command_header.Name).find(".code64") ==
-						std::string::npos &&
-					std::string(command_header.Name).find(".data64") ==
-						std::string::npos &&
-					std::string(command_header.Name).find(".zero64") ==
-						std::string::npos)
+				if (cmd_hdr_name.find(kPefCode64) ==
+						NDK::String::npos &&
+					cmd_hdr_name.find(kPefData64) ==
+						NDK::String::npos &&
+					cmd_hdr_name.find(kPefZero64) ==
+						NDK::String::npos)
 				{
-					if (std::string(command_header.Name).find(kPefStart) ==
-							std::string::npos &&
+					if (cmd_hdr_name.find(kPefStart) ==
+							NDK::String::npos &&
 						*command_header.Name == 0)
 					{
-						if (std::string(command_header.Name).find(kLdDefineSymbol) !=
-							std::string::npos)
+						if (cmd_hdr_name.find(kLdDefineSymbol) !=
+							NDK::String::npos)
 						{
 							goto ld_mark_header;
 						}
@@ -353,10 +355,10 @@ NDK_MODULE(ZKALinkerMain)
 					}
 				}
 
-				if (std::string(command_header.Name).find(kPefStart) !=
-						std::string::npos &&
-					std::string(command_header.Name).find(".code64") !=
-						std::string::npos)
+				if (cmd_hdr_name.find(kPefStart) !=
+						NDK::String::npos &&
+					cmd_hdr_name.find(kPefCode64) !=
+						NDK::String::npos)
 				{
 					kStartFound = true;
 				}
@@ -417,23 +419,23 @@ NDK_MODULE(ZKALinkerMain)
 
 	output_fc.seekp(std::streamsize(pef_container.HdrSz));
 
-	std::vector<std::string> not_found;
-	std::vector<std::string> symbols;
+	std::vector<NDK::String> not_found;
+	std::vector<NDK::String> symbols;
 
 	// step 2: check for errors (multiple symbols, undefined ones)
 
 	for (auto& command_hdr : command_headers)
 	{
 		// check if this symbol needs to be resolved.
-		if (std::string(command_hdr.Name).find(kLdDefineSymbol) !=
-				std::string::npos &&
-			std::string(command_hdr.Name).find(kLdDynamicSym) == std::string::npos)
+		if (NDK::String(command_hdr.Name).find(kLdDefineSymbol) !=
+				NDK::String::npos &&
+			NDK::String(command_hdr.Name).find(kLdDynamicSym) == NDK::String::npos)
 		{
 			if (kVerbose)
 				kStdOut << "link: found undefined symbol: " << command_hdr.Name << "\n";
 
 			if (auto it = std::find(not_found.begin(), not_found.end(),
-									std::string(command_hdr.Name));
+									NDK::String(command_hdr.Name));
 				it == not_found.end())
 			{
 				not_found.emplace_back(command_hdr.Name);
@@ -449,12 +451,12 @@ NDK_MODULE(ZKALinkerMain)
 		 ++not_found_idx)
 	{
 		if (auto it = std::find(not_found.begin(), not_found.end(),
-								std::string(command_headers[not_found_idx].Name));
+								NDK::String(command_headers[not_found_idx].Name));
 			it != not_found.end())
 		{
-			std::string symbol_imp = *it;
+			NDK::String symbol_imp = *it;
 
-			if (symbol_imp.find(kLdDefineSymbol) == std::string::npos)
+			if (symbol_imp.find(kLdDefineSymbol) == NDK::String::npos)
 				continue;
 
 			// erase the lookup prefix.
@@ -462,19 +464,19 @@ NDK_MODULE(ZKALinkerMain)
 				0, symbol_imp.find(kLdDefineSymbol) + strlen(kLdDefineSymbol));
 
 			// demangle everything.
-			while (symbol_imp.find('$') != std::string::npos)
+			while (symbol_imp.find('$') != NDK::String::npos)
 				symbol_imp.erase(symbol_imp.find('$'), 1);
 
 			// the reason we do is because, this may not match the symbol, and we need
 			// to look for other matching symbols.
 			for (auto& command_hdr : command_headers)
 			{
-				if (std::string(command_hdr.Name).find(symbol_imp) !=
-						std::string::npos &&
-					std::string(command_hdr.Name).find(kLdDefineSymbol) ==
-						std::string::npos)
+				if (NDK::String(command_hdr.Name).find(symbol_imp) !=
+						NDK::String::npos &&
+					NDK::String(command_hdr.Name).find(kLdDefineSymbol) ==
+						NDK::String::npos)
 				{
-					std::string undefined_symbol = command_hdr.Name;
+					NDK::String undefined_symbol = command_hdr.Name;
 					auto		result_of_sym =
 						undefined_symbol.substr(undefined_symbol.find(symbol_imp));
 
@@ -517,7 +519,7 @@ NDK_MODULE(ZKALinkerMain)
 
 	time_t timestamp = time(nullptr);
 
-	std::string timeStampStr = "Container:BuildEpoch:";
+	NDK::String timeStampStr = "Container:BuildEpoch:";
 	timeStampStr += std::to_string(timestamp);
 
 	strncpy(dateHeader.Name, timeStampStr.c_str(), timeStampStr.size());
@@ -531,7 +533,7 @@ NDK_MODULE(ZKALinkerMain)
 
 	NDK::PEFCommandHeader abiHeader{};
 
-	std::string abi = kLinkerAbiContainer;
+	NDK::String abi = kLinkerAbiContainer;
 
 	switch (kArch)
 	{
@@ -598,9 +600,9 @@ NDK_MODULE(ZKALinkerMain)
 	command_headers.push_back(uuidHeader);
 
 	// prepare a symbol vector.
-	std::vector<std::string> undef_symbols;
-	std::vector<std::string> dupl_symbols;
-	std::vector<std::string> resolve_symbols;
+	std::vector<NDK::String> undef_symbols;
+	std::vector<NDK::String> dupl_symbols;
+	std::vector<NDK::String> resolve_symbols;
 
 	constexpr Int32 cPaddingOffset = 16;
 
@@ -611,16 +613,16 @@ NDK_MODULE(ZKALinkerMain)
 	for (size_t commandHeaderIndex = 0UL;
 		 commandHeaderIndex < command_headers.size(); ++commandHeaderIndex)
 	{
-		if (std::string(command_headers[commandHeaderIndex].Name)
-					.find(kLdDefineSymbol) != std::string::npos &&
-			std::string(command_headers[commandHeaderIndex].Name)
-					.find(kLdDynamicSym) == std::string::npos)
+		if (NDK::String(command_headers[commandHeaderIndex].Name)
+					.find(kLdDefineSymbol) != NDK::String::npos &&
+			NDK::String(command_headers[commandHeaderIndex].Name)
+					.find(kLdDynamicSym) == NDK::String::npos)
 		{
 			// ignore :UndefinedSymbol: headers, they do not contain code.
 			continue;
 		}
 
-		std::string symbol_name = command_headers[commandHeaderIndex].Name;
+		NDK::String symbol_name = command_headers[commandHeaderIndex].Name;
 
 		if (!symbol_name.empty())
 		{
@@ -630,13 +632,13 @@ NDK_MODULE(ZKALinkerMain)
 		command_headers[commandHeaderIndex].Offset += previous_offset;
 		previous_offset += command_headers[commandHeaderIndex].Size;
 
-		std::string name = command_headers[commandHeaderIndex].Name;
+		NDK::String name = command_headers[commandHeaderIndex].Name;
 
 		/// so this is valid when we get to the entrypoint.
 		/// it is always a code64 container. And should equal to kPefStart as well.
 		/// this chunk of code updates the pef_container.Start with the updated offset.
-		if (name.find(kPefStart) != std::string::npos &&
-			name.find(".code64") != std::string::npos)
+		if (name.find(kPefStart) != NDK::String::npos &&
+			name.find(kPefCode64) != NDK::String::npos)
 		{
 			pef_container.Start = command_headers[commandHeaderIndex].Offset;
 			auto tellCurPos		= output_fc.tellp();
@@ -662,10 +664,10 @@ NDK_MODULE(ZKALinkerMain)
 			if (sub_command_header_index == commandHeaderIndex)
 				continue;
 
-			if (std::string(command_headers[sub_command_header_index].Name)
-						.find(kLdDefineSymbol) != std::string::npos &&
-				std::string(command_headers[sub_command_header_index].Name)
-						.find(kLdDynamicSym) == std::string::npos)
+			if (NDK::String(command_headers[sub_command_header_index].Name)
+						.find(kLdDefineSymbol) != NDK::String::npos &&
+				NDK::String(command_headers[sub_command_header_index].Name)
+						.find(kLdDynamicSym) == NDK::String::npos)
 			{
 				if (kVerbose)
 				{
@@ -679,7 +681,7 @@ NDK_MODULE(ZKALinkerMain)
 			auto& command_hdr = command_headers[sub_command_header_index];
 
 			if (command_hdr.Name ==
-				std::string(command_headers[commandHeaderIndex].Name))
+				NDK::String(command_headers[commandHeaderIndex].Name))
 			{
 				if (std::find(dupl_symbols.cbegin(), dupl_symbols.cend(),
 							  command_hdr.Name) == dupl_symbols.cend())
@@ -719,12 +721,12 @@ NDK_MODULE(ZKALinkerMain)
 
 	// step 3: check if we have those symbols
 
-	std::vector<std::string> unreferenced_symbols;
+	std::vector<NDK::String> unreferenced_symbols;
 
 	for (auto& command_hdr : command_headers)
 	{
 		if (auto it = std::find(not_found.begin(), not_found.end(),
-								std::string(command_hdr.Name));
+								NDK::String(command_hdr.Name));
 			it != not_found.end())
 		{
 			unreferenced_symbols.emplace_back(command_hdr.Name);
