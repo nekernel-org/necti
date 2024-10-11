@@ -1,11 +1,9 @@
-#include <xpcom.h>
+#define sum_of(a,b) a+b
 
-/**
-@brief MsgBox sample app.
-*/
-
-INT32 ENTRY_POINT(XHANDLE POBJ) /* POBJ = Program Object */
+int main()
 {
-	XMessageBox(X_CURRENT_DESKTOP, X_ABOUT_DLG, NULL, NULL);
-	return 0;
+    int sum_of_23_and_100 = sum_of(23, 100);
+    sum_of_23_and_100 -= 100;
+
+	return sum_of_23_and_100;
 }

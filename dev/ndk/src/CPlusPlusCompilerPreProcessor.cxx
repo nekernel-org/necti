@@ -15,6 +15,7 @@
 #include <filesystem>
 #include <fstream>
 #include <iostream>
+#include <stdexcept>
 #include <vector>
 
 #define kMacroPrefix '#'
@@ -54,6 +55,17 @@ namespace detail
 		std::vector<std::string> fArgs;
 		std::string				 fName;
 		std::string				 fValue;
+
+		void Print()
+		{
+			std::cout << "name: " << fName << "\n";
+			std::cout << "value: " << fValue << "\n";
+
+			for (auto& arg : fArgs)
+			{
+				std::cout << "arg: " << arg << "\n";
+			}
+		}
 	};
 
 	class bpp_pragma final
@@ -324,10 +336,12 @@ void bpp_parse_file(std::ifstream& hdr_file, std::ofstream& pp_out)
 				hdr_line.erase(hdr_line.find("/*"));
 			}
 
-			/// BPP Documentation.
-			if (hdr_line.find("@bdoc") != std::string::npos)
+			/// BPP 'brief' documentation.
+			if (hdr_line.find("@brief") != std::string::npos)
 			{
-				hdr_line.erase(hdr_line.find("@bdoc"));
+				hdr_line.erase(hdr_line.find("@brief"));
+
+				// TODO: Write an <file_name>.html or append to it.
 			}
 
 			if (hdr_line[0] == kMacroPrefix &&
@@ -356,13 +370,76 @@ void bpp_parse_file(std::ifstream& hdr_file, std::ofstream& pp_out)
 
 			for (auto macro : kMacros)
 			{
-				if (NDK::find_word(hdr_line, macro.fName) &&
-					hdr_line.find("#define") == std::string::npos)
+				if (NDK::find_word(hdr_line, macro.fName))
 				{
-					auto value = macro.fValue;
+					if (hdr_line.substr(hdr_line.find(macro.fName)).find(macro.fName + '(') != NDK::String::npos)
+					{
+						if (!macro.fArgs.empty())
+						{
+							NDK::String				 symbol_val = macro.fValue;
+							std::vector<NDK::String> args;
 
-					hdr_line.replace(hdr_line.find(macro.fName), macro.fName.size(),
-									 value);
+							size_t x_arg_indx = 0;
+
+							NDK::String line_after_define = hdr_line;
+							NDK::String str_arg;
+
+							if (line_after_define.find("(") != NDK::String::npos)
+							{
+								line_after_define.erase(0, line_after_define.find("(") + 1);
+
+								for (auto& subc : line_after_define)
+								{
+									if (subc == ' ' || subc == '\t')
+										continue;
+
+									if (subc == ',' || subc == ')')
+									{
+										if (str_arg.empty())
+											continue;
+
+										args.push_back(str_arg);
+
+										str_arg.clear();
+
+										continue;
+									}
+
+									str_arg.push_back(subc);
+								}
+							}
+
+							for (auto arg : macro.fArgs)
+							{
+								if (symbol_val.find(macro.fArgs[x_arg_indx]) != NDK::String::npos)
+								{
+									symbol_val.replace(symbol_val.find(macro.fArgs[x_arg_indx]), macro.fArgs[x_arg_indx].size(),
+													   args[x_arg_indx]);
+									++x_arg_indx;
+								}
+								else
+								{
+									throw std::runtime_error("internal: Internal C++ error. (Please report that bug.)");
+								}
+							}
+
+							auto len = macro.fName.size();
+							len += symbol_val.size();
+							len += 2; // ( and )
+
+							hdr_line.erase(hdr_line.find(")"), 1);
+
+							hdr_line.replace(hdr_line.find(hdr_line.substr(hdr_line.find(macro.fName + '('))), len,
+											 symbol_val);
+						}
+						else
+						{
+							auto value = macro.fValue;
+
+							hdr_line.replace(hdr_line.find(macro.fName), macro.fName.size(),
+											 value);
+						}
+					}
 				}
 			}
 
@@ -415,49 +492,27 @@ void bpp_parse_file(std::ifstream& hdr_file, std::ofstream& pp_out)
 					macro_key += ch;
 				}
 
-				std::vector<std::string> dupls;
-				std::string				 str;
+				std::string str;
 
-				line_after_define.erase(0, line_after_define.find("(") + 1);
-
-				for (auto& subc : line_after_define)
+				if (line_after_define.find("(") != NDK::String::npos)
 				{
-					if (subc == ',' || subc == ')')
+					line_after_define.erase(0, line_after_define.find("(") + 1);
+
+					for (auto& subc : line_after_define)
 					{
-						if (str.empty())
-							continue;
-
-						dupls.push_back(str);
-						args.push_back(str);
-
-						str.clear();
-
-						continue;
-					}
-
-					if (isalnum(subc))
-						str.push_back(subc);
-				}
-
-				for (auto& dupl : dupls)
-				{
-					std::size_t cnt = 0;
-
-					for (auto& arg : args)
-					{
-						if (dupl == arg)
-							++cnt;
-					}
-
-					if (cnt > 1)
-					{
-						auto it = std::find(args.begin(), args.end(), dupl);
-
-						while (it != args.end())
+						if (subc == ',' || subc == ')')
 						{
-							args.erase(it);
-							it = std::find(args.begin(), args.end(), dupl);
+							if (str.empty())
+								continue;
+
+							args.push_back(str);
+
+							str.clear();
+
+							continue;
 						}
+
+						str.push_back(subc);
 					}
 				}
 
@@ -477,97 +532,6 @@ void bpp_parse_file(std::ifstream& hdr_file, std::ofstream& pp_out)
 				if (inactive_code)
 				{
 					continue;
-				}
-
-				for (auto& macro : kMacros)
-				{
-					if (hdr_line.find(macro.fName) != std::string::npos)
-					{
-						std::vector<std::string> arg_values;
-
-						if (macro.fArgs.size() > 0)
-						{
-							for (size_t i = 0; i < hdr_line.size(); ++i)
-							{
-								if (hdr_line[i] == '(')
-								{
-									std::string tmp_arg;
-
-									for (size_t x = i; x < hdr_line.size(); x++)
-									{
-										if (hdr_line[x] == ')')
-											break;
-
-										if (hdr_line[x] == ' ')
-											continue;
-
-										if (hdr_line[i] == '\\')
-											continue;
-
-										if (hdr_line[x] == ',')
-										{
-											arg_values.push_back(tmp_arg);
-											tmp_arg.clear();
-											continue;
-										}
-
-										tmp_arg += hdr_line[x];
-									}
-
-									break;
-								}
-							}
-
-							std::string symbol;
-
-							for (char i : macro.fValue)
-							{
-								if (i == '(')
-									break;
-
-								if (i == '\\')
-									continue;
-
-								symbol += i;
-							}
-
-							hdr_line.replace(hdr_line.find(macro.fName), macro.fName.size(),
-											 symbol);
-
-							size_t x_arg_indx = 0;
-
-							for (size_t i = hdr_line.find(macro.fValue); i < hdr_line.size();
-								 ++i)
-							{
-								if (hdr_line.find(macro.fArgs[x_arg_indx]) == i)
-								{
-									hdr_line.replace(i, macro.fArgs[x_arg_indx].size(),
-													 arg_values[x_arg_indx]);
-									++x_arg_indx;
-								}
-							}
-						}
-						else
-						{
-							std::string symbol;
-
-							for (size_t i = 0; i < macro.fValue.size(); i++)
-							{
-								if (macro.fValue[i] == ' ')
-									continue;
-
-								if (macro.fValue[i] == '\\')
-									continue;
-
-								symbol += macro.fValue[i];
-							}
-
-							hdr_line.replace(hdr_line.find(macro.fName), macro.fName.size(),
-											 symbol);
-						}
-
-						break;
-					}
 				}
 
 				pp_out << hdr_line << std::endl;
@@ -808,7 +772,7 @@ void bpp_parse_file(std::ifstream& hdr_file, std::ofstream& pp_out)
 					message += ch;
 				}
 
-				std::cout << "Warning: " << message << std::endl;
+				std::cout << "warn: " << message << std::endl;
 			}
 			else if (hdr_line[0] == kMacroPrefix &&
 					 hdr_line.find("error") != std::string::npos)
@@ -827,7 +791,7 @@ void bpp_parse_file(std::ifstream& hdr_file, std::ofstream& pp_out)
 					message += ch;
 				}
 
-				throw std::runtime_error("Error: " + message);
+				throw std::runtime_error("error: " + message);
 			}
 			else if (hdr_line[0] == kMacroPrefix &&
 					 hdr_line.find("include ") != std::string::npos)
@@ -880,6 +844,16 @@ void bpp_parse_file(std::ifstream& hdr_file, std::ofstream& pp_out)
 				if (not_local)
 				{
 					bool open = false;
+
+					if (path.ends_with('>'))
+					{
+						path.erase(path.find('>'));
+					}
+
+					if (path.ends_with('"'))
+					{
+						path.erase(path.find('"'));
+					}
 
 					for (auto& include : kIncludes)
 					{
@@ -942,22 +916,41 @@ NDK_MODULE(CPlusPlusPreprocessorMain)
 		bool double_skip = false;
 
 		detail::bpp_macro macro_1;
+
 		macro_1.fName  = "__true";
 		macro_1.fValue = "1";
 
 		kMacros.push_back(macro_1);
 
 		detail::bpp_macro macro_0;
+
 		macro_0.fName  = "__false";
 		macro_0.fValue = "0";
 
 		kMacros.push_back(macro_0);
 
 		detail::bpp_macro macro_zka;
-		macro_zka.fName	 = "__ZKA__";
+
+		macro_zka.fName	 = "__NDK__";
 		macro_zka.fValue = "1";
 
 		kMacros.push_back(macro_zka);
+
+		detail::bpp_macro macro_size_t;
+		macro_size_t.fName	= "__SIZE_TYPE__";
+		macro_size_t.fValue = "unsigned long long int";
+
+		kMacros.push_back(macro_size_t);
+
+		macro_size_t.fName	= "__UINT32_TYPE__";
+		macro_size_t.fValue = "unsigned int";
+
+		kMacros.push_back(macro_size_t);
+
+		macro_size_t.fName	= "__UINTPTR_TYPE__";
+		macro_size_t.fValue = "unsigned int";
+
+		kMacros.push_back(macro_size_t);
 
 		for (auto index = 1UL; index < argc; ++index)
 		{

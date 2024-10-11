@@ -143,7 +143,7 @@ namespace NDK
 			if (std::isspace(haystack[index]) || std::ispunct(haystack[index]))
 				return true;
 
-			if (index < 0 || index >= haystack.size())
+			if (index <= 0 || index >= haystack.size())
 				return true;
 
 			return false;

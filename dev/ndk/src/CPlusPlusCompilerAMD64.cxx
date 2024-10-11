@@ -472,17 +472,9 @@ bool CompilerBackendCPlusPlus::Compile(const std::string text,
 
 			std::string instr = "mov ";
 
-			if (typeFound)
+			if (typeFound && keyword.first.keyword_kind != NDK::KeywordKind::eKeywordKindVariableInc &&
+				keyword.first.keyword_kind != NDK::KeywordKind::eKeywordKindVariableDec)
 			{
-				if (keyword.first.keyword_kind == NDK::KeywordKind::eKeywordKindVariableInc)
-				{
-					detail::print_error_asm("Can't increment variable when it's being created.", file);
-				}
-				else if (keyword.first.keyword_kind == NDK::KeywordKind::eKeywordKindVariableDec)
-				{
-					detail::print_error_asm("Can't decrement variable when it's being created.", file);
-				}
-
 				if (kRegisterMap.size() > cRegisters.size())
 				{
 					++kLevelFunction;
@@ -583,107 +575,107 @@ bool CompilerBackendCPlusPlus::Compile(const std::string text,
 				}
 
 				kRegisterMap.push_back(varName);
+
+				break;
 			}
-			else
+
+			if (kKeywords[keyword.second - 1].keyword_kind == NDK::eKeywordKindType ||
+				kKeywords[keyword.second - 1].keyword_kind == NDK::eKeywordKindTypePtr)
 			{
-				if (kKeywords[keyword.second - 1].keyword_kind == NDK::eKeywordKindType ||
-					kKeywords[keyword.second - 1].keyword_kind == NDK::eKeywordKindTypePtr)
-				{
-					syntax_tree.fUserValue = "\n";
+				syntax_tree.fUserValue = "\n";
+				continue;
+			}
+
+			if (keyword.first.keyword_kind == NDK::KeywordKind::eKeywordKindEndInstr)
+			{
+				syntax_tree.fUserValue = "\n";
+				continue;
+			}
+
+			if (keyword.first.keyword_kind == NDK::KeywordKind::eKeywordKindVariableInc)
+			{
+				instr = "add ";
+			}
+			else if (keyword.first.keyword_kind == NDK::KeywordKind::eKeywordKindVariableDec)
+			{
+				instr = "sub ";
+			}
+
+			std::string varErrCpy = varName;
+
+			while (varName.find(" ") != std::string::npos)
+			{
+				varName.erase(varName.find(" "), 1);
+			}
+
+			while (varName.find("\t") != std::string::npos)
+			{
+				varName.erase(varName.find("\t"), 1);
+			}
+
+			std::size_t indxReg = 0UL;
+
+			for (size_t i = 0; !isalnum(valueOfVar[i]); i++)
+			{
+				if (i > valueOfVar.size())
+					break;
+
+				valueOfVar.erase(i, 1);
+			}
+
+			while (valueOfVar.find(" ") != std::string::npos)
+			{
+				valueOfVar.erase(valueOfVar.find(" "), 1);
+			}
+
+			while (valueOfVar.find("\t") != std::string::npos)
+			{
+				valueOfVar.erase(valueOfVar.find("\t"), 1);
+			}
+
+			constexpr auto cTrueVal	 = "true";
+			constexpr auto cFalseVal = "false";
+
+			/// interpet boolean values, since we're on C++
+
+			if (valueOfVar == cTrueVal)
+			{
+				valueOfVar = "1";
+			}
+			else if (valueOfVar == cFalseVal)
+			{
+				valueOfVar = "0";
+			}
+
+			for (auto pair : kRegisterMap)
+			{
+				++indxReg;
+
+				if (pair != varName)
 					continue;
-				}
 
-				if (keyword.first.keyword_kind == NDK::KeywordKind::eKeywordKindEndInstr)
+				std::size_t indexRight = 0ul;
+
+				for (auto pairRight : kRegisterMap)
 				{
-					syntax_tree.fUserValue = "\n";
-					continue;
-				}
+					++indexRight;
 
-				if (keyword.first.keyword_kind == NDK::KeywordKind::eKeywordKindVariableInc)
-				{
-					instr = "add ";
-				}
-				else if (keyword.first.keyword_kind == NDK::KeywordKind::eKeywordKindVariableDec)
-				{
-					instr = "sub ";
-				}
-
-				std::string varErrCpy = varName;
-
-				while (varName.find(" ") != std::string::npos)
-				{
-					varName.erase(varName.find(" "), 1);
-				}
-
-				while (varName.find("\t") != std::string::npos)
-				{
-					varName.erase(varName.find("\t"), 1);
-				}
-
-				std::size_t indxReg = 0UL;
-
-				for (size_t i = 0; !isalnum(valueOfVar[i]); i++)
-				{
-					if (i > valueOfVar.size())
-						break;
-
-					valueOfVar.erase(i, 1);
-				}
-
-				while (valueOfVar.find(" ") != std::string::npos)
-				{
-					valueOfVar.erase(valueOfVar.find(" "), 1);
-				}
-
-				while (valueOfVar.find("\t") != std::string::npos)
-				{
-					valueOfVar.erase(valueOfVar.find("\t"), 1);
-				}
-
-				constexpr auto cTrueVal	 = "true";
-				constexpr auto cFalseVal = "false";
-
-				/// interpet boolean values, since we're on C++
-
-				if (valueOfVar == cTrueVal)
-				{
-					valueOfVar = "1";
-				}
-				else if (valueOfVar == cFalseVal)
-				{
-					valueOfVar = "0";
-				}
-
-				for (auto pair : kRegisterMap)
-				{
-					++indxReg;
-
-					if (pair != varName)
-						continue;
-
-					std::size_t indexRight = 0ul;
-
-					for (auto pairRight : kRegisterMap)
+					if (pairRight != varName)
 					{
-						++indexRight;
-
-						if (pairRight != varName)
-						{
-							syntax_tree.fUserValue = instr + cRegisters[kRegisterMap.size()] + ", " + valueOfVar + "\n";
-							continue;
-						}
-
-						syntax_tree.fUserValue = instr + cRegisters[indexRight - 1] + ", " + valueOfVar + "\n";
-						break;
+						syntax_tree.fUserValue = instr + cRegisters[kRegisterMap.size()] + ", " + valueOfVar + "\n";
+						continue;
 					}
 
+					syntax_tree.fUserValue = instr + cRegisters[indexRight - 1] + ", " + valueOfVar + "\n";
 					break;
 				}
 
-				if (syntax_tree.fUserValue.empty())
-				{
-					detail::print_error_asm("Variable not declared: " + varErrCpy, file);
-				}
+				break;
+			}
+
+			if (syntax_tree.fUserValue.empty())
+			{
+				detail::print_error_asm("Variable not declared: " + varErrCpy, file);
 			}
 
 			break;

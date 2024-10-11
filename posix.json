@@ -3,8 +3,8 @@
   "compiler_std": "c++20",
   "headers_path": ["./dev/ndk", "./dev", "./dev/ndk/src/Detail"],
   "sources_path": ["dev/ndk/src/*.cxx"],
-  "output_name": "/usr/lib/libndk.so",
-  "compiler_flags": ["-fPIC", "-shared", "-fPIC"],
+  "output_name": "/usr/local/lib/libndk.dylib",
+  "compiler_flags": ["-fPIC", "-shared"],
   "cpp_macros": [
     "__NDK_DLL__=202401",
     "kDistReleaseBranch=$(git rev-parse --abbrev-ref HEAD)-$(uuidgen)"

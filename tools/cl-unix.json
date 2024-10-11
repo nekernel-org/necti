@@ -4,7 +4,7 @@
   "headers_path": ["../dev/NDK", "../dev/", "../dev/ndk/src/Detail"],
   "sources_path": ["cl.cxx"],
   "output_name": "cl.exe",
-  "compiler_flags": ["-L/usr/lib", "-lndk"],
+  "compiler_flags": ["-L/usr/local/lib", "-lndk"],
   "cpp_macros": [
     "__CL__=202401",
     "kDistReleaseBranch=$(git rev-parse --abbrev-ref HEAD)-$(uuidgen)"
