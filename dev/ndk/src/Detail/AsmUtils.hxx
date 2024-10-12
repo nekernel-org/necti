@@ -6,7 +6,7 @@
 
 #pragma once
 
-#include <ndk/Asm/Asm.hxx>
+#include <ndk/AAL/Asm.hxx>
 #include <ndk/Parser.hxx>
 
 using namespace NDK;
@@ -26,10 +26,14 @@ static NumberCast32 GetNumber32(std::string lineBuffer, std::string numberKey)
 	auto pos = lineBuffer.find(numberKey) + numberKey.size();
 
 	if (lineBuffer.find(",") != std::string::npos)
-		lineBuffer.erase(lineBuffer.find(","), 1);
+	{
+	   lineBuffer.erase(lineBuffer.find(","), 1);
+	}
 
 	while (lineBuffer[pos] == ' ')
-		++pos;
+	{
+	   ++pos;
+	}
 
 	switch (lineBuffer[pos + 1])
 	{
@@ -38,7 +42,7 @@ static NumberCast32 GetNumber32(std::string lineBuffer, std::string numberKey)
 		{
 			if (errno != 0)
 			{
-				detail::print_error_asm("invalid hex number: " + lineBuffer, "asm");
+				detail::print_error_asm("invalid hex number: " + lineBuffer, "NDK");
 				throw std::runtime_error("invalid_hex");
 			}
 		}
@@ -58,7 +62,7 @@ static NumberCast32 GetNumber32(std::string lineBuffer, std::string numberKey)
 		{
 			if (errno != 0)
 			{
-				detail::print_error_asm("invalid binary number:" + lineBuffer, "asm");
+				detail::print_error_asm("invalid binary number:" + lineBuffer, "NDK");
 				throw std::runtime_error("invalid_bin");
 			}
 		}
@@ -78,7 +82,7 @@ static NumberCast32 GetNumber32(std::string lineBuffer, std::string numberKey)
 		{
 			if (errno != 0)
 			{
-				detail::print_error_asm("invalid octal number: " + lineBuffer, "asm");
+				detail::print_error_asm("invalid octal number: " + lineBuffer, "NDK");
 				throw std::runtime_error("invalid_octal");
 			}
 		}
@@ -98,7 +102,7 @@ static NumberCast32 GetNumber32(std::string lineBuffer, std::string numberKey)
 		{
 			if (errno != 0)
 			{
-				detail::print_error_asm("invalid hex number: " + lineBuffer, "asm");
+				detail::print_error_asm("invalid hex number: " + lineBuffer, "NDK");
 				throw std::runtime_error("invalid_hex");
 			}
 		}

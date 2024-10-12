@@ -27,7 +27,7 @@ namespace NDK
 		explicit StringView(SizeType Sz) noexcept
 			: m_Sz(Sz)
 		{
-			m_Data = new char[Sz];
+			m_Data = new CharType[Sz];
 			assert(m_Data);
 		}
 
@@ -68,7 +68,7 @@ namespace NDK
 		}
 
 	private:
-		char*	 m_Data{nullptr};
+		CharType*	 m_Data{nullptr};
 		SizeType m_Sz{0};
 		SizeType m_Cur{0};
 

@@ -4,7 +4,7 @@
 
 ------------------------------------------- */
 
-#include <ndk/Asm/Asm.hxx>
+#include <ndk/AAL/Asm.hxx>
 #include <ndk/NFC/ErrorID.hxx>
 
 /**

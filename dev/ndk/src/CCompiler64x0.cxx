@@ -10,7 +10,7 @@
 /// BUGS: 0
 /// TODO: none
 
-#include <ndk/Asm/CPU/64x0.hxx>
+#include <ndk/AAL/CPU/64x0.hxx>
 #include <ndk/Parser.hxx>
 #include <ndk/UUID.hxx>
 #include <filesystem>

@@ -6,7 +6,7 @@
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
-/// @file i64asm.cxx
+/// @file AssemblerAMD64.cxx
 /// @author Amlal EL Mahrouss
 /// @brief AMD64 Assembler.
 
@@ -27,7 +27,7 @@
 #define kAssemblerPragmaSymStr "#"
 #define kAssemblerPragmaSym	   '#'
 
-#include <ndk/Asm/CPU/amd64.hxx>
+#include <ndk/AAL/CPU/amd64.hxx>
 #include <ndk/Parser.hxx>
 #include <ndk/NFC/AE.hxx>
 #include <ndk/NFC/PEF.hxx>
@@ -85,7 +85,7 @@ static const std::string kRelocSymbol	  = ":RuntimeSymbol:";
 // \brief forward decl.
 static bool asm_read_attributes(std::string& line);
 
-#include <asmutils.hxx>
+#include <AsmUtils.hxx>
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
@@ -137,15 +137,15 @@ NDK_MODULE(ZKAAssemblerMainAMD64)
 	{
 		if (argv[i][0] == '/')
 		{
-			if (strcmp(argv[i], "/version") == 0 || strcmp(argv[i], "/v") == 0)
+			if (strcmp(argv[i], "/amd64:ver") == 0 || strcmp(argv[i], "/amd64:v") == 0)
 			{
-				kStdOut << "i64asm: AMD64 Assembler Driver.\ni64asm: v1.10\ni64asm: Copyright "
+				kStdOut << "AssemblerAMD64: AMD64 Assembler Driver.\nAssemblerAMD64: v1.10\nAssemblerAMD64: Copyright "
 						   "(c) ZKA Technologies.\n";
 				return 0;
 			}
-			else if (strcmp(argv[i], "/h") == 0)
+			else if (strcmp(argv[i], "/amd64:h") == 0)
 			{
-				kStdOut << "i64asm: AMD64 Assembler Driver.\ni64asm: Copyright (c) 2024 "
+				kStdOut << "AssemblerAMD64: AMD64 Assembler Driver.\nAssemblerAMD64: Copyright (c) 2024 "
 						   "ZKA Technologies.\n";
 				kStdOut << "/version: Print program version.\n";
 				kStdOut << "/verbose: Print verbose output.\n";
@@ -153,24 +153,24 @@ NDK_MODULE(ZKAAssemblerMainAMD64)
 
 				return 0;
 			}
-			else if (strcmp(argv[i], "/binary") == 0)
+			else if (strcmp(argv[i], "/amd64:binary") == 0)
 			{
 				kOutputAsBinary = true;
 				continue;
 			}
-			else if (strcmp(argv[i], "/verbose") == 0)
+			else if (strcmp(argv[i], "/amd64:verbose") == 0)
 			{
 				kVerbose = true;
 				continue;
 			}
 
-			kStdOut << "i64asm: ignore " << argv[i] << "\n";
+			kStdOut << "AssemblerAMD64: ignore " << argv[i] << "\n";
 			continue;
 		}
 
 		if (!std::filesystem::exists(argv[i]))
 		{
-			kStdOut << "i64asm: can't open: " << argv[i] << std::endl;
+			kStdOut << "AssemblerAMD64: can't open: " << argv[i] << std::endl;
 			goto asm_fail_exit;
 		}
 
@@ -193,7 +193,7 @@ NDK_MODULE(ZKAAssemblerMainAMD64)
 		{
 			if (kVerbose)
 			{
-				kStdOut << "i64asm: error: " << strerror(errno) << "\n";
+				kStdOut << "AssemblerAMD64: error: " << strerror(errno) << "\n";
 			}
 		}
 
@@ -201,7 +201,7 @@ NDK_MODULE(ZKAAssemblerMainAMD64)
 
 		NDK::AEHeader hdr{0};
 
-		memset(hdr.fPad, kAEInvalidOpcode, kAEPad);
+		memset(hdr.fPad, kAENullType, kAEPad);
 
 		hdr.fMagic[0] = kAEMag0;
 		hdr.fMagic[1] = kAEMag1;
@@ -234,7 +234,7 @@ NDK_MODULE(ZKAAssemblerMainAMD64)
 				if (kVerbose)
 				{
 					std::string what = e.what();
-					detail::print_warning_asm("exit because of: " + what, "i64asm");
+					detail::print_warning_asm("exit because of: " + what, "NDK");
 				}
 
 				try
@@ -253,7 +253,7 @@ NDK_MODULE(ZKAAssemblerMainAMD64)
 		{
 			if (kVerbose)
 			{
-				kStdOut << "i64asm: Writing object file...\n";
+				kStdOut << "AssemblerAMD64: Writing object file...\n";
 			}
 
 			// this is the final step, write everything to the file.
@@ -266,8 +266,8 @@ NDK_MODULE(ZKAAssemblerMainAMD64)
 
 			if (kRecords.empty())
 			{
-				kStdErr << "i64asm: At least one record is needed to write an object "
-						   "file.\ni64asm: Make one using `public_segment .code64 foo_bar`.\n";
+				kStdErr << "AssemblerAMD64: At least one record is needed to write an object "
+						   "file.\nAssemblerAMD64: Make one using `public_segment .code64 foo_bar`.\n";
 
 				std::filesystem::remove(object_output);
 				return -1;
@@ -280,7 +280,7 @@ NDK_MODULE(ZKAAssemblerMainAMD64)
 			for (auto& rec : kRecords)
 			{
 				if (kVerbose)
-					kStdOut << "i64asm: Wrote record " << rec.fName << " to file...\n";
+					kStdOut << "AssemblerAMD64: Wrote record " << rec.fName << " to file...\n";
 
 				rec.fFlags |= NDK::kKindRelocationAtRuntime;
 				rec.fOffset = record_count;
@@ -297,15 +297,15 @@ NDK_MODULE(ZKAAssemblerMainAMD64)
 				NDK::AERecordHeader _record_hdr{0};
 
 				if (kVerbose)
-					kStdOut << "i64asm: Wrote symbol " << sym << " to file...\n";
+					kStdOut << "AssemblerAMD64: Wrote symbol " << sym << " to file...\n";
 
-				_record_hdr.fKind	= kAEInvalidOpcode;
+				_record_hdr.fKind	= kAENullType;
 				_record_hdr.fSize	= sym.size();
 				_record_hdr.fOffset = record_count;
 
 				++record_count;
 
-				memset(_record_hdr.fPad, kAEInvalidOpcode, kAEPad);
+				memset(_record_hdr.fPad, kAENullType, kAEPad);
 				memcpy(_record_hdr.fName, sym.c_str(), sym.size());
 
 				file_ptr_out << _record_hdr;
@@ -328,7 +328,7 @@ NDK_MODULE(ZKAAssemblerMainAMD64)
 		{
 			if (kVerbose)
 			{
-				kStdOut << "i64asm: Write raw binary...\n";
+				kStdOut << "AssemblerAMD64: Write raw binary...\n";
 			}
 		}
 
@@ -347,13 +347,13 @@ NDK_MODULE(ZKAAssemblerMainAMD64)
 		}
 
 		if (kVerbose)
-			kStdOut << "i64asm: Wrote file with program in it.\n";
+			kStdOut << "AssemblerAMD64: Wrote file with program in it.\n";
 
 		file_ptr_out.flush();
 		file_ptr_out.close();
 
 		if (kVerbose)
-			kStdOut << "i64asm: Exit succeeded.\n";
+			kStdOut << "AssemblerAMD64: Exit succeeded.\n";
 
 		return 0;
 	}
@@ -361,7 +361,7 @@ NDK_MODULE(ZKAAssemblerMainAMD64)
 asm_fail_exit:
 
 	if (kVerbose)
-		kStdOut << "i64asm: Exit failed.\n";
+		kStdOut << "AssemblerAMD64: Exit failed.\n";
 
 	return -1;
 }
@@ -381,7 +381,7 @@ static bool asm_read_attributes(std::string& line)
 	{
 		if (kOutputAsBinary)
 		{
-			detail::print_error_asm("Invalid directive in flat binary mode.", "i64asm");
+			detail::print_error_asm("Invalid directive in flat binary mode.", "NDK");
 			throw std::runtime_error("invalid_extern_segment_bin");
 		}
 
@@ -405,17 +405,17 @@ static bool asm_read_attributes(std::string& line)
 
 		result += name;
 
-		if (name.find(".code64") != std::string::npos)
+		if (name.find(kPefCode64) != std::string::npos)
 		{
 			// data is treated as code.
 			kCurrentRecord.fKind = NDK::kPefCode;
 		}
-		else if (name.find(".data64") != std::string::npos)
+		else if (name.find(kPefData64) != std::string::npos)
 		{
 			// no code will be executed from here.
 			kCurrentRecord.fKind = NDK::kPefData;
 		}
-		else if (name.find(".zero64") != std::string::npos)
+		else if (name.find(kPefZero64) != std::string::npos)
 		{
 			// this is a bss section.
 			kCurrentRecord.fKind = NDK::kPefZero;
@@ -439,20 +439,20 @@ static bool asm_read_attributes(std::string& line)
 
 		++kCounter;
 
-		memset(kCurrentRecord.fPad, kAEInvalidOpcode, kAEPad);
+		memset(kCurrentRecord.fPad, kAENullType, kAEPad);
 
 		kRecords.emplace_back(kCurrentRecord);
 
 		return true;
 	}
-	// public_segment is a special keyword used by i64asm to tell the AE output stage to
+	// public_segment is a special keyword used by AssemblerAMD64 to tell the AE output stage to
 	// mark this section as a header. it currently supports .code64, .data64 and
 	// .zero64.
 	else if (NDK::find_word(line, "public_segment"))
 	{
 		if (kOutputAsBinary)
 		{
-			detail::print_error_asm("Invalid directive in flat binary mode.", "i64asm");
+			detail::print_error_asm("Invalid directive in flat binary mode.", "NDK");
 			throw std::runtime_error("invalid_public_segment_bin");
 		}
 
@@ -469,7 +469,7 @@ static bool asm_read_attributes(std::string& line)
 		if (std::find(kDefinedSymbols.begin(), kDefinedSymbols.end(), name) !=
 			kDefinedSymbols.end())
 		{
-			detail::print_error_asm("Symbol already defined.", "i64asm");
+			detail::print_error_asm("Symbol already defined.", "NDK");
 			throw std::runtime_error("invalid_public_segment_bin");
 		}
 
@@ -521,7 +521,7 @@ static bool asm_read_attributes(std::string& line)
 
 		++kCounter;
 
-		memset(kCurrentRecord.fPad, kAEInvalidOpcode, kAEPad);
+		memset(kCurrentRecord.fPad, kAENullType, kAEPad);
 
 		kRecords.emplace_back(kCurrentRecord);
 
@@ -661,7 +661,7 @@ bool NDK::EncoderAMD64::WriteNumber(const std::size_t& pos,
 		{
 			if (errno != 0)
 			{
-				detail::print_error_asm("invalid hex number: " + jump_label, "i64asm");
+				detail::print_error_asm("invalid hex number: " + jump_label, "NDK");
 				throw std::runtime_error("invalid_hex");
 			}
 		}
@@ -679,7 +679,7 @@ bool NDK::EncoderAMD64::WriteNumber(const std::size_t& pos,
 
 		if (kVerbose)
 		{
-			kStdOut << "i64asm: Found a base 16 number here: "
+			kStdOut << "AssemblerAMD64: Found a base 16 number here: "
 					<< jump_label.substr(pos) << "\n";
 		}
 
@@ -691,7 +691,7 @@ bool NDK::EncoderAMD64::WriteNumber(const std::size_t& pos,
 		{
 			if (errno != 0)
 			{
-				detail::print_error_asm("invalid binary number: " + jump_label, "i64asm");
+				detail::print_error_asm("invalid binary number: " + jump_label, "NDK");
 				throw std::runtime_error("invalid_bin");
 			}
 		}
@@ -701,7 +701,7 @@ bool NDK::EncoderAMD64::WriteNumber(const std::size_t& pos,
 
 		if (kVerbose)
 		{
-			kStdOut << "i64asm: Found a base 2 number here: "
+			kStdOut << "AssemblerAMD64: Found a base 2 number here: "
 					<< jump_label.substr(pos) << "\n";
 		}
 
@@ -721,7 +721,7 @@ bool NDK::EncoderAMD64::WriteNumber(const std::size_t& pos,
 		{
 			if (errno != 0)
 			{
-				detail::print_error_asm("invalid octal number: " + jump_label, "i64asm");
+				detail::print_error_asm("invalid octal number: " + jump_label, "NDK");
 				throw std::runtime_error("invalid_octal");
 			}
 		}
@@ -731,7 +731,7 @@ bool NDK::EncoderAMD64::WriteNumber(const std::size_t& pos,
 
 		if (kVerbose)
 		{
-			kStdOut << "i64asm: Found a base 8 number here: "
+			kStdOut << "AssemblerAMD64: Found a base 8 number here: "
 					<< jump_label.substr(pos) << "\n";
 		}
 
@@ -772,7 +772,7 @@ bool NDK::EncoderAMD64::WriteNumber(const std::size_t& pos,
 
 	if (kVerbose)
 	{
-		kStdOut << "i64asm: Found a base 10 number here: " << jump_label.substr(pos)
+		kStdOut << "AssemblerAMD64: Found a base 10 number here: " << jump_label.substr(pos)
 				<< "\n";
 	}
 
@@ -808,7 +808,7 @@ bool NDK::EncoderAMD64::WriteNumber32(const std::size_t& pos,
 
 		if (kVerbose)
 		{
-			kStdOut << "i64asm: Found a base 16 number here: "
+			kStdOut << "AssemblerAMD64: Found a base 16 number here: "
 					<< jump_label.substr(pos) << "\n";
 		}
 
@@ -827,7 +827,7 @@ bool NDK::EncoderAMD64::WriteNumber32(const std::size_t& pos,
 
 		if (kVerbose)
 		{
-			kStdOut << "i64asm: Found a base 2 number here: "
+			kStdOut << "AssemblerAMD64: Found a base 2 number here: "
 					<< jump_label.substr(pos) << "\n";
 		}
 
@@ -854,7 +854,7 @@ bool NDK::EncoderAMD64::WriteNumber32(const std::size_t& pos,
 
 		if (kVerbose)
 		{
-			kStdOut << "i64asm: Found a base 8 number here: "
+			kStdOut << "AssemblerAMD64: Found a base 8 number here: "
 					<< jump_label.substr(pos) << "\n";
 		}
 
@@ -893,7 +893,7 @@ bool NDK::EncoderAMD64::WriteNumber32(const std::size_t& pos,
 
 	if (kVerbose)
 	{
-		kStdOut << "i64asm: Found a base 10 number here: " << jump_label.substr(pos)
+		kStdOut << "AssemblerAMD64: Found a base 10 number here: " << jump_label.substr(pos)
 				<< "\n";
 	}
 
@@ -914,7 +914,7 @@ bool NDK::EncoderAMD64::WriteNumber16(const std::size_t& pos,
 		{
 			if (errno != 0)
 			{
-				detail::print_error_asm("invalid hex number: " + jump_label, "i64asm");
+				detail::print_error_asm("invalid hex number: " + jump_label, "NDK");
 				throw std::runtime_error("invalid_hex");
 			}
 		}
@@ -932,7 +932,7 @@ bool NDK::EncoderAMD64::WriteNumber16(const std::size_t& pos,
 
 		if (kVerbose)
 		{
-			kStdOut << "i64asm: Found a base 16 number here: "
+			kStdOut << "AssemblerAMD64: Found a base 16 number here: "
 					<< jump_label.substr(pos) << "\n";
 		}
 
@@ -944,7 +944,7 @@ bool NDK::EncoderAMD64::WriteNumber16(const std::size_t& pos,
 		{
 			if (errno != 0)
 			{
-				detail::print_error_asm("invalid binary number: " + jump_label, "i64asm");
+				detail::print_error_asm("invalid binary number: " + jump_label, "NDK");
 				throw std::runtime_error("invalid_bin");
 			}
 		}
@@ -954,7 +954,7 @@ bool NDK::EncoderAMD64::WriteNumber16(const std::size_t& pos,
 
 		if (kVerbose)
 		{
-			kStdOut << "i64asm: Found a base 2 number here: "
+			kStdOut << "AssemblerAMD64: Found a base 2 number here: "
 					<< jump_label.substr(pos) << "\n";
 		}
 
@@ -974,7 +974,7 @@ bool NDK::EncoderAMD64::WriteNumber16(const std::size_t& pos,
 		{
 			if (errno != 0)
 			{
-				detail::print_error_asm("invalid octal number: " + jump_label, "i64asm");
+				detail::print_error_asm("invalid octal number: " + jump_label, "NDK");
 				throw std::runtime_error("invalid_octal");
 			}
 		}
@@ -984,7 +984,7 @@ bool NDK::EncoderAMD64::WriteNumber16(const std::size_t& pos,
 
 		if (kVerbose)
 		{
-			kStdOut << "i64asm: Found a base 8 number here: "
+			kStdOut << "AssemblerAMD64: Found a base 8 number here: "
 					<< jump_label.substr(pos) << "\n";
 		}
 
@@ -1025,7 +1025,7 @@ bool NDK::EncoderAMD64::WriteNumber16(const std::size_t& pos,
 
 	if (kVerbose)
 	{
-		kStdOut << "i64asm: Found a base 10 number here: " << jump_label.substr(pos)
+		kStdOut << "AssemblerAMD64: Found a base 10 number here: " << jump_label.substr(pos)
 				<< "\n";
 	}
 
@@ -1046,7 +1046,7 @@ bool NDK::EncoderAMD64::WriteNumber8(const std::size_t& pos,
 		{
 			if (errno != 0)
 			{
-				detail::print_error_asm("invalid hex number: " + jump_label, "i64asm");
+				detail::print_error_asm("invalid hex number: " + jump_label, "NDK");
 				throw std::runtime_error("invalid_hex");
 			}
 		}
@@ -1058,7 +1058,7 @@ bool NDK::EncoderAMD64::WriteNumber8(const std::size_t& pos,
 
 		if (kVerbose)
 		{
-			kStdOut << "i64asm: Found a base 16 number here: "
+			kStdOut << "AssemblerAMD64: Found a base 16 number here: "
 					<< jump_label.substr(pos) << "\n";
 		}
 
@@ -1070,7 +1070,7 @@ bool NDK::EncoderAMD64::WriteNumber8(const std::size_t& pos,
 		{
 			if (errno != 0)
 			{
-				detail::print_error_asm("invalid binary number: " + jump_label, "i64asm");
+				detail::print_error_asm("invalid binary number: " + jump_label, "NDK");
 				throw std::runtime_error("invalid_bin");
 			}
 		}
@@ -1080,7 +1080,7 @@ bool NDK::EncoderAMD64::WriteNumber8(const std::size_t& pos,
 
 		if (kVerbose)
 		{
-			kStdOut << "i64asm: Found a base 2 number here: "
+			kStdOut << "AssemblerAMD64: Found a base 2 number here: "
 					<< jump_label.substr(pos) << "\n";
 		}
 
@@ -1094,7 +1094,7 @@ bool NDK::EncoderAMD64::WriteNumber8(const std::size_t& pos,
 		{
 			if (errno != 0)
 			{
-				detail::print_error_asm("invalid octal number: " + jump_label, "i64asm");
+				detail::print_error_asm("invalid octal number: " + jump_label, "NDK");
 				throw std::runtime_error("invalid_octal");
 			}
 		}
@@ -1104,7 +1104,7 @@ bool NDK::EncoderAMD64::WriteNumber8(const std::size_t& pos,
 
 		if (kVerbose)
 		{
-			kStdOut << "i64asm: Found a base 8 number here: "
+			kStdOut << "AssemblerAMD64: Found a base 8 number here: "
 					<< jump_label.substr(pos) << "\n";
 		}
 
@@ -1133,7 +1133,7 @@ bool NDK::EncoderAMD64::WriteNumber8(const std::size_t& pos,
 
 	if (kVerbose)
 	{
-		kStdOut << "i64asm: Found a base 10 number here: " << jump_label.substr(pos)
+		kStdOut << "AssemblerAMD64: Found a base 10 number here: " << jump_label.substr(pos)
 				<< "\n";
 	}
 
@@ -1196,7 +1196,7 @@ bool NDK::EncoderAMD64::WriteLine(std::string&		 line,
 
 				if (substr.find(",") == std::string::npos)
 				{
-					detail::print_error_asm("Syntax error.", "i64asm");
+					detail::print_error_asm("Syntax error.", "NDK");
 					throw std::runtime_error("syntax_err");
 				}
 
@@ -1280,7 +1280,7 @@ bool NDK::EncoderAMD64::WriteLine(std::string&		 line,
 					if (hasRBasedRegs)
 					{
 						detail::print_error_asm(
-							"Invalid combination of operands and registers.", "i64asm");
+							"Invalid combination of operands and registers.", "NDK");
 						throw std::runtime_error("comb_op_reg");
 					}
 					else
@@ -1294,7 +1294,7 @@ bool NDK::EncoderAMD64::WriteLine(std::string&		 line,
 					currentRegList[0].fName[0] == 'e')
 				{
 					detail::print_error_asm("Invalid combination of operands and registers.",
-											"i64asm");
+											"NDK");
 					throw std::runtime_error("comb_op_reg");
 				}
 
@@ -1302,7 +1302,7 @@ bool NDK::EncoderAMD64::WriteLine(std::string&		 line,
 					currentRegList[1].fName[0] == 'e')
 				{
 					detail::print_error_asm("Invalid combination of operands and registers.",
-											"i64asm");
+											"NDK");
 					throw std::runtime_error("comb_op_reg");
 				}
 
@@ -1312,7 +1312,7 @@ bool NDK::EncoderAMD64::WriteLine(std::string&		 line,
 						currentRegList[0].fName[0] == 'e')
 					{
 						detail::print_error_asm("Invalid combination of operands and registers.",
-												"i64asm");
+												"NDK");
 						throw std::runtime_error("comb_op_reg");
 					}
 
@@ -1320,7 +1320,7 @@ bool NDK::EncoderAMD64::WriteLine(std::string&		 line,
 						currentRegList[1].fName[0] == 'e')
 					{
 						detail::print_error_asm("Invalid combination of operands and registers.",
-												"i64asm");
+												"NDK");
 						throw std::runtime_error("comb_op_reg");
 					}
 				}
@@ -1330,7 +1330,7 @@ bool NDK::EncoderAMD64::WriteLine(std::string&		 line,
 						currentRegList[0].fName[0] == 'e')
 					{
 						detail::print_error_asm("Invalid combination of operands and registers.",
-												"i64asm");
+												"NDK");
 						throw std::runtime_error("comb_op_reg");
 					}
 
@@ -1338,7 +1338,7 @@ bool NDK::EncoderAMD64::WriteLine(std::string&		 line,
 						currentRegList[1].fName[0] == 'e')
 					{
 						detail::print_error_asm("Invalid combination of operands and registers.",
-												"i64asm");
+												"NDK");
 						throw std::runtime_error("comb_op_reg");
 					}
 				}
@@ -1383,7 +1383,7 @@ bool NDK::EncoderAMD64::WriteLine(std::string&		 line,
 	{
 		if (foundInstruction)
 		{
-			detail::print_error_asm("Syntax error: " + line, "i64asm");
+			detail::print_error_asm("Syntax error: " + line, "NDK");
 			throw std::runtime_error("syntax_err");
 		}
 
@@ -1418,7 +1418,7 @@ bool NDK::EncoderAMD64::WriteLine(std::string&		 line,
 					{
 						if (kVerbose)
 						{
-							kStdOut << "i64asm: origin set: " << kOrigin << std::endl;
+							kStdOut << "AssemblerAMD64: origin set: " << kOrigin << std::endl;
 						}
 
 						break;

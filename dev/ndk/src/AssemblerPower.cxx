@@ -6,7 +6,7 @@
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
-/// @file power-as.cxx
+/// @file AssemblerPower.cxx
 /// @author Amlal EL Mahrouss
 /// @brief POWER Assembler.
 
@@ -18,7 +18,7 @@
 #define __ASM_NEED_PPC__ 1
 
 #include <ndk/NFC/ErrorID.hxx>
-#include <ndk/Asm/CPU/power64.hxx>
+#include <ndk/AAL/CPU/power64.hxx>
 #include <ndk/NFC/PEF.hxx>
 #include <ndk/Parser.hxx>
 #include <ndk/NFC/AE.hxx>
@@ -73,7 +73,7 @@ static const std::string kRelocSymbol	  = ":RuntimeSymbol:";
 static bool asm_read_attributes(std::string& line);
 
 /// Do not move it on top! it uses the assembler detail namespace!
-#include <asmutils.hxx>
+#include <AsmUtils.hxx>
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
@@ -87,16 +87,16 @@ NDK_MODULE(ZKAAssemblerMainPowerPC)
 	{
 		if (argv[i][0] == '/')
 		{
-			if (strcmp(argv[i], "/version") == 0 || strcmp(argv[i], "/v") == 0)
+			if (strcmp(argv[i], "/ver") == 0 || strcmp(argv[i], "/v") == 0)
 			{
-				kStdOut << "power-as: POWER64 Assembler Driver.\npower-as: " << kDistVersion << "\npower-as: "
+				kStdOut << "AssemblerPower: POWER64 Assembler Driver.\nAssemblerPower: " << kDistVersion << "\nAssemblerPower: "
 																								"Copyright (c) "
 																								"ZKA Technologies.\n";
 				return 0;
 			}
 			else if (strcmp(argv[i], "/h") == 0)
 			{
-				kStdOut << "power-as: POWER64 Assembler Driver.\npower-as: Copyright (c) 2024 "
+				kStdOut << "AssemblerPower: POWER64 Assembler Driver.\nAssemblerPower: Copyright (c) 2024 "
 						   "ZKA Technologies.\n";
 				kStdOut << "/version,/v: print program version.\n";
 				kStdOut << "/verbose: print verbose output.\n";
@@ -115,13 +115,13 @@ NDK_MODULE(ZKAAssemblerMainPowerPC)
 				continue;
 			}
 
-			kStdOut << "power-as: ignore " << argv[i] << "\n";
+			kStdOut << "AssemblerPower: ignore " << argv[i] << "\n";
 			continue;
 		}
 
 		if (!std::filesystem::exists(argv[i]))
 		{
-			kStdOut << "power-as: can't open: " << argv[i] << std::endl;
+			kStdOut << "AssemblerPower: can't open: " << argv[i] << std::endl;
 			goto asm_fail_exit;
 		}
 
@@ -144,7 +144,7 @@ NDK_MODULE(ZKAAssemblerMainPowerPC)
 		{
 			if (kVerbose)
 			{
-				kStdOut << "power-as: error: " << strerror(errno) << "\n";
+				kStdOut << "AssemblerPower: error: " << strerror(errno) << "\n";
 			}
 		}
 
@@ -152,7 +152,7 @@ NDK_MODULE(ZKAAssemblerMainPowerPC)
 
 		NDK::AEHeader hdr{0};
 
-		memset(hdr.fPad, kAEInvalidOpcode, kAEPad);
+		memset(hdr.fPad, kAENullType, kAEPad);
 
 		hdr.fMagic[0] = kAEMag0;
 		hdr.fMagic[1] = kAEMag1;
@@ -185,7 +185,7 @@ NDK_MODULE(ZKAAssemblerMainPowerPC)
 				if (kVerbose)
 				{
 					std::string what = e.what();
-					detail::print_warning_asm("exit because of: " + what, "power-as");
+					detail::print_warning_asm("exit because of: " + what, "NDK");
 				}
 
 				std::filesystem::remove(object_output);
@@ -197,7 +197,7 @@ NDK_MODULE(ZKAAssemblerMainPowerPC)
 		{
 			if (kVerbose)
 			{
-				kStdOut << "power-as: Writing object file...\n";
+				kStdOut << "AssemblerPower: Writing object file...\n";
 			}
 
 			// this is the final step, write everything to the file.
@@ -210,8 +210,8 @@ NDK_MODULE(ZKAAssemblerMainPowerPC)
 
 			if (kRecords.empty())
 			{
-				kStdErr << "power-as: At least one record is needed to write an object "
-						   "file.\npower-as: Make one using `public_segment .code64 foo_bar`.\n";
+				kStdErr << "AssemblerPower: At least one record is needed to write an object "
+						   "file.\nAssemblerPower: Make one using `public_segment .code64 foo_bar`.\n";
 
 				std::filesystem::remove(object_output);
 				return -1;
@@ -230,7 +230,7 @@ NDK_MODULE(ZKAAssemblerMainPowerPC)
 				file_ptr_out << record_hdr;
 
 				if (kVerbose)
-					kStdOut << "power-as: Wrote record " << record_hdr.fName << "...\n";
+					kStdOut << "AssemblerPower: Wrote record " << record_hdr.fName << "...\n";
 			}
 
 			// increment once again, so that we won't lie about the kUndefinedSymbols.
@@ -241,15 +241,15 @@ NDK_MODULE(ZKAAssemblerMainPowerPC)
 				NDK::AERecordHeader undefined_sym{0};
 
 				if (kVerbose)
-					kStdOut << "power-as: Wrote symbol " << sym << " to file...\n";
+					kStdOut << "AssemblerPower: Wrote symbol " << sym << " to file...\n";
 
-				undefined_sym.fKind	  = kAEInvalidOpcode;
+				undefined_sym.fKind	  = kAENullType;
 				undefined_sym.fSize	  = sym.size();
 				undefined_sym.fOffset = record_count;
 
 				++record_count;
 
-				memset(undefined_sym.fPad, kAEInvalidOpcode, kAEPad);
+				memset(undefined_sym.fPad, kAENullType, kAEPad);
 				memcpy(undefined_sym.fName, sym.c_str(), sym.size());
 
 				file_ptr_out << undefined_sym;
@@ -272,7 +272,7 @@ NDK_MODULE(ZKAAssemblerMainPowerPC)
 		{
 			if (kVerbose)
 			{
-				kStdOut << "power-as: Write raw binary...\n";
+				kStdOut << "AssemblerPower: Write raw binary...\n";
 			}
 		}
 
@@ -283,13 +283,13 @@ NDK_MODULE(ZKAAssemblerMainPowerPC)
 		}
 
 		if (kVerbose)
-			kStdOut << "power-as: Wrote file with program in it.\n";
+			kStdOut << "AssemblerPower: Wrote file with program in it.\n";
 
 		file_ptr_out.flush();
 		file_ptr_out.close();
 
 		if (kVerbose)
-			kStdOut << "power-as: Exit succeeded.\n";
+			kStdOut << "AssemblerPower: Exit succeeded.\n";
 
 		return 0;
 	}
@@ -297,7 +297,7 @@ NDK_MODULE(ZKAAssemblerMainPowerPC)
 asm_fail_exit:
 
 	if (kVerbose)
-		kStdOut << "power-as: Exit failed.\n";
+		kStdOut << "AssemblerPower: Exit failed.\n";
 
 	return NDK_EXEC_ERROR;
 }
@@ -318,7 +318,7 @@ static bool asm_read_attributes(std::string& line)
 		if (kOutputAsBinary)
 		{
 			detail::print_error_asm("Invalid extern_segment directive in flat binary mode.",
-									"power-as");
+									"NDK");
 			throw std::runtime_error("invalid_extern_segment_bin");
 		}
 
@@ -326,7 +326,7 @@ static bool asm_read_attributes(std::string& line)
 
 		if (name.size() == 0)
 		{
-			detail::print_error_asm("Invalid extern_segment", "power-as");
+			detail::print_error_asm("Invalid extern_segment", "NDK");
 			throw std::runtime_error("invalid_extern_segment");
 		}
 
@@ -376,13 +376,13 @@ static bool asm_read_attributes(std::string& line)
 
 		++kCounter;
 
-		memset(kCurrentRecord.fPad, kAEInvalidOpcode, kAEPad);
+		memset(kCurrentRecord.fPad, kAENullType, kAEPad);
 
 		kRecords.emplace_back(kCurrentRecord);
 
 		return true;
 	}
-	// public_segment is a special keyword used by power-as to tell the AE output stage to
+	// public_segment is a special keyword used by AssemblerPower to tell the AE output stage to
 	// mark this section as a header. it currently supports .code64, .data64.,
 	// .zero64
 	else if (NDK::find_word(line, "public_segment"))
@@ -390,7 +390,7 @@ static bool asm_read_attributes(std::string& line)
 		if (kOutputAsBinary)
 		{
 			detail::print_error_asm("Invalid public_segment directive in flat binary mode.",
-									"power-as");
+									"NDK");
 			throw std::runtime_error("invalid_public_segment_bin");
 		}
 
@@ -450,7 +450,7 @@ static bool asm_read_attributes(std::string& line)
 
 		++kCounter;
 
-		memset(kCurrentRecord.fPad, kAEInvalidOpcode, kAEPad);
+		memset(kCurrentRecord.fPad, kAENullType, kAEPad);
 
 		kRecords.emplace_back(kCurrentRecord);
 
@@ -630,7 +630,7 @@ bool NDK::EncoderPowerPC::WriteNumber(const std::size_t& pos,
 		{
 			if (errno != 0)
 			{
-				detail::print_error_asm("invalid hex number: " + jump_label, "power-as");
+				detail::print_error_asm("invalid hex number: " + jump_label, "NDK");
 				throw std::runtime_error("invalid_hex");
 			}
 		}
@@ -645,7 +645,7 @@ bool NDK::EncoderPowerPC::WriteNumber(const std::size_t& pos,
 
 		if (kVerbose)
 		{
-			kStdOut << "power-as: found a base 16 number here: "
+			kStdOut << "AssemblerPower: found a base 16 number here: "
 					<< jump_label.substr(pos) << "\n";
 		}
 
@@ -657,7 +657,7 @@ bool NDK::EncoderPowerPC::WriteNumber(const std::size_t& pos,
 		{
 			if (errno != 0)
 			{
-				detail::print_error_asm("invalid binary number: " + jump_label, "power-as");
+				detail::print_error_asm("invalid binary number: " + jump_label, "NDK");
 				throw std::runtime_error("invalid_bin");
 			}
 		}
@@ -667,7 +667,7 @@ bool NDK::EncoderPowerPC::WriteNumber(const std::size_t& pos,
 
 		if (kVerbose)
 		{
-			kStdOut << "power-as: found a base 2 number here: "
+			kStdOut << "AssemblerPower: found a base 2 number here: "
 					<< jump_label.substr(pos) << "\n";
 		}
 
@@ -684,7 +684,7 @@ bool NDK::EncoderPowerPC::WriteNumber(const std::size_t& pos,
 		{
 			if (errno != 0)
 			{
-				detail::print_error_asm("invalid octal number: " + jump_label, "power-as");
+				detail::print_error_asm("invalid octal number: " + jump_label, "NDK");
 				throw std::runtime_error("invalid_octal");
 			}
 		}
@@ -694,7 +694,7 @@ bool NDK::EncoderPowerPC::WriteNumber(const std::size_t& pos,
 
 		if (kVerbose)
 		{
-			kStdOut << "power-as: found a base 8 number here: "
+			kStdOut << "AssemblerPower: found a base 8 number here: "
 					<< jump_label.substr(pos) << "\n";
 		}
 
@@ -729,7 +729,7 @@ bool NDK::EncoderPowerPC::WriteNumber(const std::size_t& pos,
 
 	if (kVerbose)
 	{
-		kStdOut << "power-as: found a base 10 number here: " << jump_label.substr(pos)
+		kStdOut << "AssemblerPower: found a base 10 number here: " << jump_label.substr(pos)
 				<< "\n";
 	}
 
@@ -986,9 +986,9 @@ bool NDK::EncoderPowerPC::WriteLine(std::string&	   line,
 
 							if (kVerbose)
 							{
-								kStdOut << "power-as: Found register: " << register_syntax
+								kStdOut << "AssemblerPower: Found register: " << register_syntax
 										<< "\n";
-								kStdOut << "power-as: Amount of registers in instruction: "
+								kStdOut << "AssemblerPower: Amount of registers in instruction: "
 										<< found_some_count << "\n";
 							}
 
@@ -1064,7 +1064,7 @@ bool NDK::EncoderPowerPC::WriteLine(std::string&	   line,
 					if (found_some_count == 1)
 					{
 						detail::print_error_asm(
-							"Unrecognized register found.\ntip: each power-as register "
+							"Unrecognized register found.\ntip: each AssemblerPower register "
 							"starts with 'r'.\nline: " +
 								line,
 							file);

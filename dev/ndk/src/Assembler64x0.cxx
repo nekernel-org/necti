@@ -8,7 +8,7 @@
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
-// @file 64asm.cxx
+// @file Assembler64x0.cxx
 // @author Amlal EL Mahrouss
 // @brief 64x000 Assembler.
 
@@ -19,7 +19,7 @@
 
 #define __ASM_NEED_64x0__ 1
 
-#include <ndk/Asm/CPU/64x0.hxx>
+#include <ndk/AAL/CPU/64x0.hxx>
 #include <ndk/Parser.hxx>
 #include <ndk/NFC/AE.hxx>
 #include <ndk/NFC/PEF.hxx>
@@ -79,11 +79,11 @@ namespace detail
 		if (reason[0] == '\n')
 			reason.erase(0, 1);
 
-		kStdErr << kRed << "[ ndk ] " << kWhite
-				<< ((file == "ndk") ? "internal error "
-									: ("in file, " + file))
+		kStdErr << kRed << "[ NDK ] " << kWhite
+				<< ((file == "NDK") ? "InternalErrorException: "
+									: ("FileException{ " + file + " }: "))
 				<< kBlank << std::endl;
-		kStdErr << kRed << "[ ndk ] " << kWhite << reason << kBlank << std::endl;
+		kStdErr << kRed << "[ NDK ] " << kWhite << reason << kBlank << std::endl;
 
 		if (kAcceptableErrors > kErrorLimit)
 			std::exit(3);
@@ -98,10 +98,10 @@ namespace detail
 
 		if (!file.empty())
 		{
-			kStdOut << kYellow << "[ file ] " << kWhite << file << kBlank << std::endl;
+			kStdOut << kYellow << "[ NDK ] " << kWhite << file << kBlank << std::endl;
 		}
 
-		kStdOut << kYellow << "[ 64asm ] " << kWhite << reason << kBlank << std::endl;
+		kStdOut << kYellow << "[ NDK ] " << kWhite << reason << kBlank << std::endl;
 	}
 } // namespace detail
 
@@ -117,15 +117,15 @@ NDK_MODULE(ZKAAssemblerMain64000)
 	{
 		if (argv[i][0] == '/')
 		{
-			if (strcmp(argv[i], "/version") == 0 || strcmp(argv[i], "/v") == 0)
+			if (strcmp(argv[i], "/ver") == 0 || strcmp(argv[i], "/v") == 0)
 			{
-				kStdOut << "64asm: 64x0 Assembler.\n64asm: v1.10\n64asm: Copyright (c) "
+				kStdOut << "Assembler64x0: 64x0 Assembler.\nAssembler64x0: v1.10\nAssembler64x0: Copyright (c) "
 						   "ZKA Technologies.\n";
 				return 0;
 			}
 			else if (strcmp(argv[i], "/h") == 0)
 			{
-				kStdOut << "64asm: 64x0 Assembler.\n64asm: Copyright (c) 2024 Mahrouss "
+				kStdOut << "Assembler64x0: 64x0 Assembler.\nAssembler64x0: Copyright (c) 2024 Mahrouss "
 						   "Logic.\n";
 				kStdOut << "/version: Print program version.\n";
 				kStdOut << "/verbose: Print verbose output.\n";
@@ -145,13 +145,13 @@ NDK_MODULE(ZKAAssemblerMain64000)
 				continue;
 			}
 
-			kStdOut << "64asm: ignore " << argv[i] << "\n";
+			kStdOut << "Assembler64x0: ignore " << argv[i] << "\n";
 			continue;
 		}
 
 		if (!std::filesystem::exists(argv[i]))
 		{
-			kStdOut << "64asm: can't open: " << argv[i] << std::endl;
+			kStdOut << "Assembler64x0: can't open: " << argv[i] << std::endl;
 			goto asm_fail_exit;
 		}
 
@@ -174,7 +174,7 @@ NDK_MODULE(ZKAAssemblerMain64000)
 		{
 			if (kVerbose)
 			{
-				kStdOut << "64asm: error: " << strerror(errno) << "\n";
+				kStdOut << "Assembler64x0: error: " << strerror(errno) << "\n";
 			}
 		}
 
@@ -182,7 +182,7 @@ NDK_MODULE(ZKAAssemblerMain64000)
 
 		NDK::AEHeader hdr{0};
 
-		memset(hdr.fPad, kAEInvalidOpcode, kAEPad);
+		memset(hdr.fPad, kAENullType, kAEPad);
 
 		hdr.fMagic[0] = kAEMag0;
 		hdr.fMagic[1] = kAEMag1;
@@ -215,7 +215,7 @@ NDK_MODULE(ZKAAssemblerMain64000)
 				if (kVerbose)
 				{
 					std::string what = e.what();
-					detail::print_warning_asm("exit because of: " + what, "64asm");
+					detail::print_warning_asm("exit because of: " + what, "NDK");
 				}
 
 				std::filesystem::remove(object_output);
@@ -227,7 +227,7 @@ NDK_MODULE(ZKAAssemblerMain64000)
 		{
 			if (kVerbose)
 			{
-				kStdOut << "64asm: Writing object file...\n";
+				kStdOut << "Assembler64x0: Writing object file...\n";
 			}
 
 			// this is the final step, write everything to the file.
@@ -240,8 +240,8 @@ NDK_MODULE(ZKAAssemblerMain64000)
 
 			if (kRecords.empty())
 			{
-				kStdErr << "64asm: At least one record is needed to write an object "
-						   "file.\n64asm: Make one using `public_segment .code64 foo_bar`.\n";
+				kStdErr << "Assembler64x0: At least one record is needed to write an object "
+						   "file.\nAssembler64x0: Make one using `public_segment .code64 foo_bar`.\n";
 
 				std::filesystem::remove(object_output);
 				return -1;
@@ -254,7 +254,7 @@ NDK_MODULE(ZKAAssemblerMain64000)
 			for (auto& rec : kRecords)
 			{
 				if (kVerbose)
-					kStdOut << "64asm: Wrote record " << rec.fName << " to file...\n";
+					kStdOut << "Assembler64x0: Wrote record " << rec.fName << " to file...\n";
 
 				rec.fFlags |= NDK::kKindRelocationAtRuntime;
 				rec.fOffset = record_count;
@@ -271,15 +271,15 @@ NDK_MODULE(ZKAAssemblerMain64000)
 				NDK::AERecordHeader _record_hdr{0};
 
 				if (kVerbose)
-					kStdOut << "64asm: Wrote symbol " << sym << " to file...\n";
+					kStdOut << "Assembler64x0: Wrote symbol " << sym << " to file...\n";
 
-				_record_hdr.fKind	= kAEInvalidOpcode;
+				_record_hdr.fKind	= kAENullType;
 				_record_hdr.fSize	= sym.size();
 				_record_hdr.fOffset = record_count;
 
 				++record_count;
 
-				memset(_record_hdr.fPad, kAEInvalidOpcode, kAEPad);
+				memset(_record_hdr.fPad, kAENullType, kAEPad);
 				memcpy(_record_hdr.fName, sym.c_str(), sym.size());
 
 				file_ptr_out << _record_hdr;
@@ -302,7 +302,7 @@ NDK_MODULE(ZKAAssemblerMain64000)
 		{
 			if (kVerbose)
 			{
-				kStdOut << "64asm: Write raw binary...\n";
+				kStdOut << "Assembler64x0: Write raw binary...\n";
 			}
 		}
 
@@ -313,13 +313,13 @@ NDK_MODULE(ZKAAssemblerMain64000)
 		}
 
 		if (kVerbose)
-			kStdOut << "64asm: Wrote file with program in it.\n";
+			kStdOut << "Assembler64x0: Wrote file with program in it.\n";
 
 		file_ptr_out.flush();
 		file_ptr_out.close();
 
 		if (kVerbose)
-			kStdOut << "64asm: Exit succeeded.\n";
+			kStdOut << "Assembler64x0: Exit succeeded.\n";
 
 		return 0;
 	}
@@ -327,7 +327,7 @@ NDK_MODULE(ZKAAssemblerMain64000)
 asm_fail_exit:
 
 	if (kVerbose)
-		kStdOut << "64asm: Exit failed.\n";
+		kStdOut << "Assembler64x0: Exit failed.\n";
 
 	return -1;
 }
@@ -348,7 +348,7 @@ static bool asm_read_attributes(std::string& line)
 		if (kOutputAsBinary)
 		{
 			detail::print_error_asm("Invalid extern_segment directive in flat binary mode.",
-									"64asm");
+									"NDK");
 			throw std::runtime_error("invalid_extern_segment_bin");
 		}
 
@@ -407,13 +407,13 @@ static bool asm_read_attributes(std::string& line)
 
 		++kCounter;
 
-		memset(kCurrentRecord.fPad, kAEInvalidOpcode, kAEPad);
+		memset(kCurrentRecord.fPad, kAENullType, kAEPad);
 
 		kRecords.emplace_back(kCurrentRecord);
 
 		return true;
 	}
-	// public_segment is a special keyword used by 64asm to tell the AE output stage to
+	// public_segment is a special keyword used by Assembler64x0 to tell the AE output stage to
 	// mark this section as a header. it currently supports .code64, .data64.,
 	// .zero64
 	else if (NDK::find_word(line, "public_segment"))
@@ -421,7 +421,7 @@ static bool asm_read_attributes(std::string& line)
 		if (kOutputAsBinary)
 		{
 			detail::print_error_asm("Invalid public_segment directive in flat binary mode.",
-									"64asm");
+									"NDK");
 			throw std::runtime_error("invalid_public_segment_bin");
 		}
 
@@ -481,7 +481,7 @@ static bool asm_read_attributes(std::string& line)
 
 		++kCounter;
 
-		memset(kCurrentRecord.fPad, kAEInvalidOpcode, kAEPad);
+		memset(kCurrentRecord.fPad, kAENullType, kAEPad);
 
 		kRecords.emplace_back(kCurrentRecord);
 
@@ -664,7 +664,7 @@ bool NDK::Encoder64x0::WriteNumber(const std::size_t& pos,
 		{
 			if (errno != 0)
 			{
-				detail::print_error_asm("invalid hex number: " + jump_label, "64asm");
+				detail::print_error_asm("invalid hex number: " + jump_label, "NDK");
 				throw std::runtime_error("invalid_hex_number");
 			}
 		}
@@ -679,7 +679,7 @@ bool NDK::Encoder64x0::WriteNumber(const std::size_t& pos,
 
 		if (kVerbose)
 		{
-			kStdOut << "64asm: found a base 16 number here: "
+			kStdOut << "Assembler64x0: found a base 16 number here: "
 					<< jump_label.substr(pos) << "\n";
 		}
 
@@ -691,7 +691,7 @@ bool NDK::Encoder64x0::WriteNumber(const std::size_t& pos,
 		{
 			if (errno != 0)
 			{
-				detail::print_error_asm("invalid binary number: " + jump_label, "64asm");
+				detail::print_error_asm("invalid binary number: " + jump_label, "NDK");
 				throw std::runtime_error("invalid_bin");
 			}
 		}
@@ -701,7 +701,7 @@ bool NDK::Encoder64x0::WriteNumber(const std::size_t& pos,
 
 		if (kVerbose)
 		{
-			kStdOut << "64asm: found a base 2 number here: "
+			kStdOut << "Assembler64x0: found a base 2 number here: "
 					<< jump_label.substr(pos) << "\n";
 		}
 
@@ -718,7 +718,7 @@ bool NDK::Encoder64x0::WriteNumber(const std::size_t& pos,
 		{
 			if (errno != 0)
 			{
-				detail::print_error_asm("invalid octal number: " + jump_label, "64asm");
+				detail::print_error_asm("invalid octal number: " + jump_label, "NDK");
 				throw std::runtime_error("invalid_octal");
 			}
 		}
@@ -728,7 +728,7 @@ bool NDK::Encoder64x0::WriteNumber(const std::size_t& pos,
 
 		if (kVerbose)
 		{
-			kStdOut << "64asm: found a base 8 number here: "
+			kStdOut << "Assembler64x0: found a base 8 number here: "
 					<< jump_label.substr(pos) << "\n";
 		}
 
@@ -763,7 +763,7 @@ bool NDK::Encoder64x0::WriteNumber(const std::size_t& pos,
 
 	if (kVerbose)
 	{
-		kStdOut << "64asm: found a base 10 number here: " << jump_label.substr(pos)
+		kStdOut << "Assembler64x0: found a base 10 number here: " << jump_label.substr(pos)
 				<< "\n";
 	}
 
@@ -853,8 +853,8 @@ bool NDK::Encoder64x0::WriteLine(std::string&		line,
 
 						if (kVerbose)
 						{
-							kStdOut << "64asm: Register found: " << register_syntax << "\n";
-							kStdOut << "64asm: Register amount in instruction: "
+							kStdOut << "Assembler64x0: Register found: " << register_syntax << "\n";
+							kStdOut << "Assembler64x0: Register amount in instruction: "
 									<< found_some << "\n";
 						}
 					}
@@ -867,7 +867,7 @@ bool NDK::Encoder64x0::WriteLine(std::string&		line,
 					if (found_some == 1)
 					{
 						detail::print_error_asm(
-							"Too few registers.\ntip: each 64asm register "
+							"Too few registers.\ntip: each Assembler64x0 register "
 							"starts with 'r'.\nline: " +
 								line,
 							file);
@@ -1025,7 +1025,7 @@ bool NDK::Encoder64x0::WriteLine(std::string&		line,
 						{
 							if (kVerbose)
 							{
-								kStdOut << "64asm: Replace label " << cpy_jump_label
+								kStdOut << "Assembler64x0: Replace label " << cpy_jump_label
 										<< " to address: " << label.second << std::endl;
 							}
 

@@ -10,11 +10,12 @@
 #include <ndk/NFC/ErrorID.hxx>
 
 //! Assembler Kit
-#include <ndk/Asm/Asm.hxx>
+#include <ndk/AAL/Asm.hxx>
 
 //! Preferred Executable Format
 #include <ndk/NFC/PEF.hxx>
 #include <ndk/UUID.hxx>
+
 //! Dist version
 #include <ndk/Version.hxx>
 

@@ -19,7 +19,7 @@
 
 #define __ASM_NEED_32x0__ 1
 
-#include <ndk/Asm/CPU/32x0.hxx>
+#include <ndk/AAL/CPU/32x0.hxx>
 #include <ndk/Parser.hxx>
 #include <ndk/NFC/AE.hxx>
 #include <ndk/NFC/PEF.hxx>

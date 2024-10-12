@@ -20,7 +20,7 @@
 
 // extern_segment, @MLAutoRelease { ... }, fn foo() -> auto { ... }
 
-#include <ndk/Asm/CPU/amd64.hxx>
+#include <ndk/AAL/CPU/amd64.hxx>
 #include <ndk/Parser.hxx>
 #include <ndk/UUID.hxx>
 
@@ -921,27 +921,27 @@ NDK_MODULE(CompilerCPlusPlusX8664)
 				continue;
 			}
 
-			if (strcmp(argv[index], "/Ver") == 0)
+			if (strcmp(argv[index], "/cl:ver") == 0)
 			{
 				kSplashCxx();
 				return kExitOK;
 			}
 
-			if (strcmp(argv[index], "/Verbose") == 0)
+			if (strcmp(argv[index], "/cl:verbose") == 0)
 			{
 				kState.fVerbose = true;
 
 				continue;
 			}
 
-			if (strcmp(argv[index], "/?") == 0)
+			if (strcmp(argv[index], "/cl:?") == 0)
 			{
 				cxx_print_help();
 
 				return kExitOK;
 			}
 
-			if (strcmp(argv[index], "/GetC++") == 0)
+			if (strcmp(argv[index], "/cl:c++-dialect") == 0)
 			{
 				if (kCompilerBackend)
 					std::cout << kCompilerBackend->Language() << "\n";
@@ -949,7 +949,7 @@ NDK_MODULE(CompilerCPlusPlusX8664)
 				return kExitOK;
 			}
 
-			if (strcmp(argv[index], "/MaxErr") == 0)
+			if (strcmp(argv[index], "/cl:max-err") == 0)
 			{
 				try
 				{
@@ -1000,7 +1000,7 @@ NDK_MODULE(CompilerCPlusPlusX8664)
 			return 1;
 		}
 
-		std::cout << "c++drv: building: " << argv[index] << std::endl;
+		std::cout << "CPlusPlusCompilerAMD64: building: " << argv[index] << std::endl;
 
 		if (kFactory.Compile(argv_i, kMachine) != kExitOK)
 			return -1;

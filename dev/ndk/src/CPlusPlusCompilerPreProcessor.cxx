@@ -969,25 +969,25 @@ NDK_MODULE(CPlusPlusPreprocessorMain)
 
 			if (argv[index][0] == '/')
 			{
-				if (strcmp(argv[index], "/version") == 0)
+				if (strcmp(argv[index], "/bpp:ver") == 0)
 				{
 					printf("%s\n", "bpp v1.11, (c) ZKA Technologies");
 					return 0;
 				}
 
-				if (strcmp(argv[index], "/help") == 0)
+				if (strcmp(argv[index], "/bpp:?") == 0)
 				{
 					printf("%s\n", "ZKA Preprocessor Driver v1.11, (c) ZKA Technologies");
-					printf("%s\n", "/working-dir <path>: set directory to working path.");
-					printf("%s\n", "/include-dir <path>: add directory to include path.");
-					printf("%s\n", "/def <name> <value>: def macro.");
-					printf("%s\n", "/version: print the version.");
-					printf("%s\n", "/help: show help.");
+					printf("%s\n", "/bpp:working-dir <path>: set directory to working path.");
+					printf("%s\n", "/bpp:include-dir <path>: add directory to include path.");
+					printf("%s\n", "/bpp:def <name> <value>: define a macro.");
+					printf("%s\n", "/bpp:ver: print the version.");
+					printf("%s\n", "/bpp:?: show help (this current command).");
 
 					return 0;
 				}
 
-				if (strcmp(argv[index], "/include-dir") == 0)
+				if (strcmp(argv[index], "/bpp:include-dir") == 0)
 				{
 					std::string inc = argv[index + 1];
 
@@ -996,14 +996,14 @@ NDK_MODULE(CPlusPlusPreprocessorMain)
 					kIncludes.push_back(inc);
 				}
 
-				if (strcmp(argv[index], "/working-dir") == 0)
+				if (strcmp(argv[index], "/bpp:working-dir") == 0)
 				{
 					std::string inc = argv[index + 1];
 					skip			= true;
 					kWorkingDir		= inc;
 				}
 
-				if (strcmp(argv[index], "/def") == 0 && argv[index + 1] != nullptr &&
+				if (strcmp(argv[index], "/bpp:def") == 0 && argv[index + 1] != nullptr &&
 					argv[index + 2] != nullptr)
 				{
 					std::string macro_key = argv[index + 1];

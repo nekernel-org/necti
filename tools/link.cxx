@@ -4,7 +4,7 @@
 
 ------------------------------------------- */
 
-/// @file Linker.cxx
+/// @file link.cxx
 /// @brief ZKA Linker for AE objects.
 
 extern "C" int ZKALinkerMain(int argc, char const* argv[]);

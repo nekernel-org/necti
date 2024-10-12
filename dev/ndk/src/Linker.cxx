@@ -19,7 +19,7 @@
 #include <ndk/NFC/ErrorID.hxx>
 
 //! Assembler Kit
-#include <ndk/Asm/Asm.hxx>
+#include <ndk/AAL/Asm.hxx>
 
 //! Preferred Executable Format
 #include <ndk/NFC/PEF.hxx>
@@ -90,72 +90,78 @@ NDK_MODULE(ZKALinkerMain)
 	 */
 	for (size_t i = 1; i < argc; ++i)
 	{
-		if (StringCompare(argv[i], "/?") == 0)
+		if (StringCompare(argv[i], "/link:?") == 0)
 		{
 			kLinkerSplash();
-			kStdOut << "/Ver: Show linker version.\n";
-			kStdOut << "/?: Show linker help.\n";
-			kStdOut << "/Verbose: Enable linker trace.\n";
-			kStdOut << "/DLL: Output as a shared PEF.\n";
-			kStdOut << "/FAT: Output as a FAT PEF.\n";
-			kStdOut << "/32X0: Output as a 32x0 PEF.\n";
-			kStdOut << "/64X0: Output as a 64x0 PEF.\n";
-			kStdOut << "/AMD64: Output as a AMD64 PEF.\n";
-			kStdOut << "/RV64: Output as a RISC-V PEF.\n";
-			kStdOut << "/POWER64: Output as a POWER PEF.\n";
-			kStdOut << "/ARM64: Output as a ARM64 PEF.\n";
-			kStdOut << "/Output: Select the output file name.\n";
+			kStdOut << "/link:ver: Show linker version.\n";
+			kStdOut << "/link:?: Show linker help.\n";
+			kStdOut << "/link:verbose: Enable linker trace.\n";
+			kStdOut << "/link:dll: Output as a shared PEF.\n";
+			kStdOut << "/link:fat: Output as a FAT PEF.\n";
+			kStdOut << "/link:32k: Output as a 32x0 PEF.\n";
+			kStdOut << "/link:64k: Output as a 64x0 PEF.\n";
+			kStdOut << "/link:amd64: Output as a AMD64 PEF.\n";
+			kStdOut << "/link:rv64: Output as a RISC-V PEF.\n";
+			kStdOut << "/link:power64: Output as a POWER PEF.\n";
+			kStdOut << "/link:arm64: Output as a ARM64 PEF.\n";
+			kStdOut << "/link:output: Select the output file name.\n";
 
 			return 0;
 		}
-		else if (StringCompare(argv[i], "/VER") == 0)
+		else if (StringCompare(argv[i], "/link:ver") == 0)
 		{
 			kLinkerSplash();
 			return 0;
 		}
-		else if (StringCompare(argv[i], "/FAT") == 0)
+		else if (StringCompare(argv[i], "/link:fat-binary") == 0)
 		{
 			kFatBinaryEnable = true;
 
 			continue;
 		}
-		else if (StringCompare(argv[i], "/64X0") == 0)
+		else if (StringCompare(argv[i], "/link:64k") == 0)
 		{
 			kArch = NDK::kPefArch64000;
 
 			continue;
 		}
-		else if (StringCompare(argv[i], "/AMD64") == 0)
+		else if (StringCompare(argv[i], "/link:amd64") == 0)
 		{
 			kArch = NDK::kPefArchAMD64;
 
 			continue;
 		}
-		else if (StringCompare(argv[i], "/32X0") == 0)
+		else if (StringCompare(argv[i], "/link:32k") == 0)
 		{
 			kArch = NDK::kPefArch32000;
 
 			continue;
 		}
-		else if (StringCompare(argv[i], "/POWER64") == 0)
+		else if (StringCompare(argv[i], "/link:power64") == 0)
 		{
 			kArch = NDK::kPefArchPowerPC;
 
 			continue;
 		}
-		else if (StringCompare(argv[i], "/ARM64") == 0)
+		else if (StringCompare(argv[i], "/link:riscv64") == 0)
+		{
+			kArch = NDK::kPefArchRISCV;
+
+			continue;
+		}
+		else if (StringCompare(argv[i], "/link:arm64") == 0)
 		{
 			kArch = NDK::kPefArchARM64;
 
 			continue;
 		}
-		else if (StringCompare(argv[i], "/VERBOSE") == 0)
+		else if (StringCompare(argv[i], "/link:verbose") == 0)
 		{
 			kVerbose = true;
 
 			continue;
 		}
-		else if (StringCompare(argv[i], "/DLL") == 0)
+		else if (StringCompare(argv[i], "/link:dll") == 0)
 		{
 			if (kOutput.empty())
 			{
@@ -171,7 +177,7 @@ NDK_MODULE(ZKALinkerMain)
 
 			continue;
 		}
-		else if (StringCompare(argv[i], "/Output") == 0)
+		else if (StringCompare(argv[i], "/link:output") == 0)
 		{
 			kOutput = argv[i + 1];
 			++i;

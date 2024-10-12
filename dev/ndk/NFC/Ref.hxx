@@ -10,9 +10,11 @@
 
 #pragma once
 
+#include <ndk/Defines.hxx>
+
 namespace NDK
 {
-	// @author Amlal
+	// @author Amlal El Mahrouss
 	// @brief Reference holder class, refers to a pointer of data in static memory.
 	template <typename T>
 	class Ref final
@@ -28,8 +30,10 @@ namespace NDK
 			}
 		}
 
+		NDK_COPY_DEFAULT(Ref);
+
 	public:
-		explicit Ref(T cls, const bool& strong = false)
+		explicit Ref(T cls, const Bool& strong = false)
 			: m_Class(&cls), m_Strong(strong)
 		{
 		}
@@ -56,7 +60,7 @@ namespace NDK
 			return *m_Class;
 		}
 
-		bool IsStrong() const
+		Bool IsStrong() const
 		{
 			return m_Strong;
 		}
@@ -67,10 +71,12 @@ namespace NDK
 		}
 
 	private:
-		T*	 m_Class;
-		bool m_Strong{false};
+		T*	 m_Class{nullptr};
+		Bool m_Strong{false};
 	};
 
+	// @author Amlal El Mahrouss
+	// @brief Non null Reference holder class, refers to a pointer of data in static memory.
 	template <typename T>
 	class NonNullRef final
 	{

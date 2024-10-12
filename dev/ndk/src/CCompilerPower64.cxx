@@ -7,7 +7,7 @@
  * 	========================================================
  */
 
-#include <ndk/Asm/CPU/power64.hxx>
+#include <ndk/AAL/CPU/power64.hxx>
 #include <ndk/Parser.hxx>
 #include <ndk/UUID.hxx>
 #include <filesystem>

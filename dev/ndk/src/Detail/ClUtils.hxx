@@ -6,7 +6,7 @@
 
 #pragma once
 
-#include <ndk/Asm/Asm.hxx>
+#include <ndk/AAL/Asm.hxx>
 #include <ndk/Parser.hxx>
 
 #define kZero64Section ".zero64"
