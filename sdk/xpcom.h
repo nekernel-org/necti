@@ -67,8 +67,8 @@ struct __gHANDLE
 
 // So actualy we need to define handles.
 
-typedef struct __gHANDLE  XSHANDLE; // XPCOM handle struct type.
-typedef XSHANDLE*		 XHANDLE; // XPCOM handle type.
+typedef struct __gHANDLE XSHANDLE; // XPCOM handle struct type.
+typedef XSHANDLE*		 XHANDLE;  // XPCOM handle type.
 
 typedef INT32 XRESULT;
 

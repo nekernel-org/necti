@@ -68,9 +68,9 @@ namespace NDK
 		}
 
 	private:
-		CharType*	 m_Data{nullptr};
-		SizeType m_Sz{0};
-		SizeType m_Cur{0};
+		CharType* m_Data{nullptr};
+		SizeType  m_Sz{0};
+		SizeType  m_Cur{0};
 
 		friend class StringBuilder;
 	};

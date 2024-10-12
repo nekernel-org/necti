@@ -27,12 +27,12 @@ static NumberCast32 GetNumber32(std::string lineBuffer, std::string numberKey)
 
 	if (lineBuffer.find(",") != std::string::npos)
 	{
-	   lineBuffer.erase(lineBuffer.find(","), 1);
+		lineBuffer.erase(lineBuffer.find(","), 1);
 	}
 
 	while (lineBuffer[pos] == ' ')
 	{
-	   ++pos;
+		++pos;
 	}
 
 	switch (lineBuffer[pos + 1])

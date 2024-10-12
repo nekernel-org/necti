@@ -102,7 +102,7 @@ namespace NDK
 		auto time_struct = gmtime(&time_data);
 
 		String fmt = std::to_string(cBaseYear + time_struct->tm_year);
-		
+
 		fmt += "-";
 		fmt += std::to_string(time_struct->tm_mon + 1);
 		fmt += "-";
@@ -154,7 +154,7 @@ typedef char char_type;
 #define NDK_MODULE(name) extern "C" int name(int argc, char** argv)
 
 #ifdef MSVC
-#pragma scalar_storage_order big-endian
+#pragma scalar_storage_order big - endian
 #endif // ifdef MSVC
 
 #endif /* ifndef __NDK_DEFINES_HXX__ */

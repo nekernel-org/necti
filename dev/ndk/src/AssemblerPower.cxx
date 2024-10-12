@@ -90,8 +90,8 @@ NDK_MODULE(ZKAAssemblerMainPowerPC)
 			if (strcmp(argv[i], "/ver") == 0 || strcmp(argv[i], "/v") == 0)
 			{
 				kStdOut << "AssemblerPower: POWER64 Assembler Driver.\nAssemblerPower: " << kDistVersion << "\nAssemblerPower: "
-																								"Copyright (c) "
-																								"ZKA Technologies.\n";
+																											"Copyright (c) "
+																											"ZKA Technologies.\n";
 				return 0;
 			}
 			else if (strcmp(argv[i], "/h") == 0)

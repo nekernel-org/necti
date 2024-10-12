@@ -11,7 +11,7 @@
 
 #include <sdk/xpcom.h>
 
-typedef XHANDLE HWND; // Window handle, simply a pointer to an XHANDLE.
+typedef XHANDLE HWND;	// Window handle, simply a pointer to an XHANDLE.
 typedef XHANDLE HANDLE; // WinAPI handle, simply a pointer to an XHANDLE.
 
 /// @brief Shows a message box within an handle.

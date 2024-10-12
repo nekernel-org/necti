@@ -14,10 +14,10 @@
 #define kAEMag0 'A'
 #define kAEMag1 'E'
 
-#define kAESymbolLen	 (255)
-#define kAEPad			 (8)
-#define kAEMagLen		 (2)
-#define kAENullType (0x00)
+#define kAESymbolLen (255)
+#define kAEPad		 (8)
+#define kAEMagLen	 (2)
+#define kAENullType	 (0x00)
 
 // Advanced Executable File Format for MetroLink.
 // Reloctable by offset is the default strategy.
