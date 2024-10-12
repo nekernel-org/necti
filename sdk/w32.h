@@ -9,6 +9,9 @@
 
 #pragma once
 
+/// @brief This is based upon the XPCOM SDK, which takes care of the logic part, the UI part however
+/// @brief is being taken part by W32.
+
 #include <sdk/xpcom.h>
 
 typedef XHANDLE HWND;	// Window handle, simply a pointer to an XHANDLE.
