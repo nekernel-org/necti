@@ -1,7 +1,7 @@
 /* -------------------------------------------
 
 	Some modifications are copyrighted under:
-	ZKA Technologies
+	ZKA Web Services Co
 
 	Original author:
 	Apple Inc

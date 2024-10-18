@@ -1,6 +1,6 @@
 //
 //
-//	Copyright ZKA Technologies 2024
+//	Copyright ZKA Web Services Co 2024
 //
 //	File: xmail.h
 //	Purpose: ZKA OS MAIL SDK.

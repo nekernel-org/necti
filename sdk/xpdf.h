@@ -1,6 +1,6 @@
 //
 //
-//	Copyright ZKA Technologies 2024
+//	Copyright ZKA Web Services Co 2024
 //
 //	File: xpdf.h
 //	Purpose: ZKA OS PDF SDK.

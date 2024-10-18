@@ -1,6 +1,6 @@
 /* -------------------------------------------
 
-	Copyright ZKA Technologies
+	Copyright ZKA Web Services Co
 
 	FILE: XIDL.cxx
 	PURPOSE: XPCOM IDL COMPILER.

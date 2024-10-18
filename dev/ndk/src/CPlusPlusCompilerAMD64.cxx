@@ -2,7 +2,7 @@
  *	========================================================
  *
  *	c++-drv
- * 	Copyright ZKA Technologies, all rights reserved.
+ * 	Copyright ZKA Web Services Co, all rights reserved.
  *
  * 	========================================================
  */
@@ -16,7 +16,7 @@
 #define kExitOK (0)
 
 #define kSplashCxx() \
-	kPrintF(kWhite "%s\n", "ZKA C++ Compiler Driver, (c) 2024 ZKA Technologies, all rights reserved.")
+	kPrintF(kWhite "%s\n", "ZKA C++ Compiler Driver, (c) 2024 ZKA Web Services Co, all rights reserved.")
 
 // extern_segment, @MLAutoRelease { ... }, fn foo() -> auto { ... }
 
@@ -26,7 +26,7 @@
 
 /* ZKA C++ Compiler driver */
 /* This is part of the NDK. */
-/* (c) ZKA Technologies */
+/* (c) ZKA Web Services Co */
 
 /// @author Amlal El Mahrouss (amlel)
 /// @file CPlusPlusCompilerAMD64.cxx

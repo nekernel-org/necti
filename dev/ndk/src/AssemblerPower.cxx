@@ -1,6 +1,6 @@
 /* -------------------------------------------
 
-	Copyright ZKA Technologies
+	Copyright ZKA Web Services Co
 
 ------------------------------------------- */
 
@@ -91,13 +91,13 @@ NDK_MODULE(ZKAAssemblerMainPowerPC)
 			{
 				kStdOut << "AssemblerPower: POWER64 Assembler Driver.\nAssemblerPower: " << kDistVersion << "\nAssemblerPower: "
 																											"Copyright (c) "
-																											"ZKA Technologies.\n";
+																											"ZKA Web Services Co.\n";
 				return 0;
 			}
 			else if (strcmp(argv[i], "/h") == 0)
 			{
 				kStdOut << "AssemblerPower: POWER64 Assembler Driver.\nAssemblerPower: Copyright (c) 2024 "
-						   "ZKA Technologies.\n";
+						   "ZKA Web Services Co.\n";
 				kStdOut << "/version,/v: print program version.\n";
 				kStdOut << "/verbose: print verbose output.\n";
 				kStdOut << "/binary: output as flat binary.\n";

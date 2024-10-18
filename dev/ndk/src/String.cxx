@@ -2,7 +2,7 @@
  *	========================================================
  *
  *	NDK
- * 	Copyright ZKA Technologies, all rights reserved.
+ * 	Copyright ZKA Web Services Co, all rights reserved.
  *
  * 	========================================================
  */
@@ -14,7 +14,7 @@
  * @version 0.2
  * @date 2024-01-23
  *
- * @copyright Copyright (c) ZKA Technologies
+ * @copyright Copyright (c) ZKA Web Services Co
  *
  */
 

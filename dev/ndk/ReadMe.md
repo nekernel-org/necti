@@ -4,4 +4,4 @@
 
 This contains a set of tools necessary to compile a ZKA program.
 
-###### Copyright ZKA Technologies, all rights reserved.
+###### Copyright ZKA Web Services Co, all rights reserved.

@@ -2,7 +2,7 @@
  *	========================================================
  *
  *	cc
- * 	Copyright ZKA Technologies, all rights reserved.
+ * 	Copyright ZKA Web Services Co, all rights reserved.
  *
  * 	========================================================
  */
@@ -1503,7 +1503,7 @@ public:
 
 #define kPrintF printf
 #define kSplashCxx() \
-	kPrintF(kWhite "cc, %s, (c) ZKA Technologies\n", kDistVersion)
+	kPrintF(kWhite "cc, %s, (c) ZKA Web Services Co\n", kDistVersion)
 
 static void cc_print_help()
 {

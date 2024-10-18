@@ -1,6 +1,6 @@
 /* -------------------------------------------
 
-	Copyright ZKA Technologies
+	Copyright ZKA Web Services Co
 
 	FILE: Linker.cxx
 	PURPOSE: C++ LINKER
@@ -30,7 +30,7 @@
 //! Advanced Executable Object Format
 #include <ndk/NFC/AE.hxx>
 
-#define kLinkerVersion "ZKA Linker Driver %s, (c) ZKA Technologies 2024, all rights reserved.\n"
+#define kLinkerVersion "ZKA Linker Driver %s, (c) ZKA Web Services Co 2024, all rights reserved.\n"
 
 #define StringCompare(DST, SRC) strcmp(DST, SRC)
 
@@ -241,7 +241,7 @@ NDK_MODULE(ZKALinkerMain)
 	pef_container.Count	   = 0UL;
 	pef_container.Kind	   = NDK::kPefKindExec;
 	pef_container.SubCpu   = kSubArch;
-	pef_container.Linker   = kLinkerId; // ZKA Technologies Linker
+	pef_container.Linker   = kLinkerId; // ZKA Web Services Co Linker
 	pef_container.Abi	   = kAbi;		// Multi-Processor UX ABI
 	pef_container.Magic[0] = kPefMagic[kFatBinaryEnable ? 2 : 0];
 	pef_container.Magic[1] = kPefMagic[1];

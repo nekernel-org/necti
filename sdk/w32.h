@@ -1,6 +1,6 @@
 //
 //
-//	Copyright ZKA Technologies 2024
+//	Copyright ZKA Web Services Co 2024
 //
 //	File: w32.h
 //	Purpose: ZKA OS W32 SDK.
