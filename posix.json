@@ -1,8 +1,12 @@
 {
   "compiler_path": "clang++",
   "compiler_std": "c++20",
-  "headers_path": ["./dev/ndk", "./dev", "./dev/ndk/src/Detail"],
-  "sources_path": ["dev/ndk/src/*.cxx"],
+  "headers_path": [
+    "./dev/ToolchainKit",
+    "./dev",
+    "./dev/ToolchainKit/src/Detail"
+  ],
+  "sources_path": ["dev/ToolchainKit/src/*.cxx"],
   "output_name": "/usr/local/lib/libndk.dylib",
   "compiler_flags": ["-fPIC", "-shared"],
   "cpp_macros": [

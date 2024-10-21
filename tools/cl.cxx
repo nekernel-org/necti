@@ -7,7 +7,7 @@
 /// @file Linker.cxx
 /// @brief ZKA C++ frontend for ZKA OS.
 
-#include <ndk/Version.hxx>
+#include <ToolchainKit/Version.hxx>
 #include <iostream>
 #include <cstring>
 #include <vector>
@@ -25,7 +25,7 @@ int main(int argc, char const* argv[])
 			std::printf("cl.exe: Frontend C++ Compiler.\n");
 			std::printf("cl.exe: Version: %s, Release: %s.\n", kDistVersion, kDistRelease);
 			std::printf("cl.exe: Designed by Amlal El Mahrouss, Copyright ZKA Web Services Co.\n");
-			std::printf("libndk.dylib/ndk.dll: Designed by Amlal El Mahrouss, Copyright ZKA Web Services Co.\n");
+			std::printf("libndk.dylib/ToolchainKit.dll: Designed by Amlal El Mahrouss, Copyright ZKA Web Services Co.\n");
 
 			return 0;
 		}

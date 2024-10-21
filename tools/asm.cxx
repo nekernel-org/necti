@@ -7,7 +7,7 @@
 /// @file Linker.cxx
 /// @brief ZKA C++ frontend for ZKA OS.
 
-#include <ndk/Version.hxx>
+#include <ToolchainKit/Version.hxx>
 #include <iostream>
 #include <cstring>
 #include <string>
@@ -37,7 +37,7 @@ int main(int argc, char const* argv[])
 			std::printf("asm.exe: Frontend Assembler (64x0, POWER64, AMD64).\n");
 			std::printf("asm.exe: Version: %s, Release: %s.\n", kDistVersion, kDistRelease);
 			std::printf("asm.exe: Designed by Amlal El Mahrouss, Copyright ZKA Web Services Co.\n");
-			std::printf("libndk.so/ndk.dll: Designed by Amlal El Mahrouss, Copyright ZKA Web Services Co.\n");
+			std::printf("libndk.so/ToolchainKit.dll: Designed by Amlal El Mahrouss, Copyright ZKA Web Services Co.\n");
 
 			return 0;
 		}

@@ -1,7 +1,7 @@
 {
   "compiler_path": "x86_64-w64-mingw32-g++.exe",
   "compiler_std": "c++20",
-  "headers_path": ["../dev/NDK", "../dev/", "../dev/ndk/src/Detail"],
+  "headers_path": ["../dev/NDK", "../dev/", "../dev/ToolchainKit/src/Detail"],
   "sources_path": ["asm.cxx"],
   "output_name": "asm.exe",
   "compiler_flags": ["-L../", "-lndk"],
