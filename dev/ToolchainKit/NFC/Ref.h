@@ -10,7 +10,7 @@
 
 #pragma once
 
-#include <ToolchainKit/Defines.hxx>
+#include <ToolchainKit/Defines.h>
 
 namespace NDK
 {

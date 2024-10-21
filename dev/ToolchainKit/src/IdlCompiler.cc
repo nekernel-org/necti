@@ -7,20 +7,20 @@
 
 ------------------------------------------- */
 
-#include <ToolchainKit/NFC/ErrorID.hxx>
+#include <ToolchainKit/NFC/ErrorID.h>
 
 //! Assembler Kit
-#include <ToolchainKit/AAL/Asm.hxx>
+#include <ToolchainKit/AAL/Asm.h>
 
 //! Preferred Executable Format
-#include <ToolchainKit/NFC/PEF.hxx>
-#include <ToolchainKit/UUID.hxx>
+#include <ToolchainKit/NFC/PEF.h>
+#include <ToolchainKit/UUID.h>
 
 //! Dist version
-#include <ToolchainKit/Version.hxx>
+#include <ToolchainKit/Version.h>
 
 //! Advanced Executable Object Format
-#include <ToolchainKit/NFC/AE.hxx>
+#include <ToolchainKit/NFC/AE.h>
 
 /***
 	@brief IDL compiler maih.

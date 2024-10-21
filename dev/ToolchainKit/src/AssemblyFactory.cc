@@ -4,8 +4,8 @@
 
 ------------------------------------------- */
 
-#include <ToolchainKit/AAL/Asm.hxx>
-#include <ToolchainKit/NFC/ErrorID.hxx>
+#include <ToolchainKit/AAL/Asm.h>
+#include <ToolchainKit/NFC/ErrorID.h>
 
 /**
  * @file AssemblyFactory.cxx

@@ -20,9 +20,9 @@
 
 // extern_segment, @MLAutoRelease { ... }, fn foo() -> auto { ... }
 
-#include <ToolchainKit/AAL/CPU/amd64.hxx>
-#include <ToolchainKit/Parser.hxx>
-#include <ToolchainKit/UUID.hxx>
+#include <ToolchainKit/AAL/CPU/amd64.h>
+#include <ToolchainKit/Parser.h>
+#include <ToolchainKit/UUID.h>
 
 /* ZKA C++ Compiler driver */
 /* This is part of the NDK. */

@@ -18,7 +18,7 @@
  *
  */
 
-#include <ToolchainKit/NFC/String.hxx>
+#include <ToolchainKit/NFC/String.h>
 
 namespace NDK
 {

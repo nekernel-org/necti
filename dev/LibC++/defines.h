@@ -34,7 +34,7 @@ typedef char*  caddr_t;
 #endif // !null
 
 #ifdef __GNUC__
-#include <LibC++/alloca.hxx>
+#include <LibC++/alloca.h>
 #elif defined(__NDK__)
 #define __alloca(sz) __ndk_alloca(sz)
 #endif
@@ -94,8 +94,8 @@ typedef union double_cast {
 
 #ifdef __STD_CXX__
 
-#include <LibC++/base_exception.hxx>
-#include <LibC++/base_alloc.hxx>
+#include <LibC++/base_exception.h>
+#include <LibC++/base_alloc.h>
 
 #endif // ifdef __STD_CXX__
 

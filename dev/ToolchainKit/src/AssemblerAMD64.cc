@@ -27,10 +27,10 @@
 #define kAssemblerPragmaSymStr "#"
 #define kAssemblerPragmaSym	   '#'
 
-#include <ToolchainKit/AAL/CPU/amd64.hxx>
-#include <ToolchainKit/Parser.hxx>
-#include <ToolchainKit/NFC/AE.hxx>
-#include <ToolchainKit/NFC/PEF.hxx>
+#include <ToolchainKit/AAL/CPU/amd64.h>
+#include <ToolchainKit/Parser.h>
+#include <ToolchainKit/NFC/AE.h>
+#include <ToolchainKit/NFC/PEF.h>
 #include <algorithm>
 #include <cstdlib>
 #include <filesystem>
@@ -85,7 +85,7 @@ static const std::string kRelocSymbol	  = ":RuntimeSymbol:";
 // \brief forward decl.
 static bool asm_read_attributes(std::string& line);
 
-#include <AsmUtils.hxx>
+#include <AsmUtils.h>
 
 /////////////////////////////////////////////////////////////////////////////////////////
 

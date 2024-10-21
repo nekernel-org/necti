@@ -6,7 +6,7 @@
 
 #pragma once
 
-#include <ToolchainKit/Defines.hxx>
+#include <ToolchainKit/Defines.h>
 
 // @brief AMD64 support.
 // @file CPU/amd64.hpp

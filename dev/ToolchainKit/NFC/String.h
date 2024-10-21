@@ -9,8 +9,8 @@
 
 #pragma once
 
-#include <ToolchainKit/Defines.hxx>
-#include <ToolchainKit/NFC/ErrorOr.hxx>
+#include <ToolchainKit/Defines.h>
+#include <ToolchainKit/NFC/ErrorOr.h>
 
 namespace NDK
 {

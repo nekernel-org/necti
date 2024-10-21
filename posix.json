@@ -6,7 +6,7 @@
     "./dev",
     "./dev/ToolchainKit/src/Detail"
   ],
-  "sources_path": ["dev/ToolchainKit/src/*.cxx"],
+  "sources_path": ["dev/ToolchainKit/src/*.cc"],
   "output_name": "/usr/local/lib/libndk.dylib",
   "compiler_flags": ["-fPIC", "-shared"],
   "cpp_macros": [

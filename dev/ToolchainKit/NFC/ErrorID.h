@@ -9,8 +9,8 @@
 
 #pragma once
 
-#include <ToolchainKit/Defines.hxx>
-#include <ToolchainKit/NFC/ErrorOr.hxx>
+#include <ToolchainKit/Defines.h>
+#include <ToolchainKit/NFC/ErrorOr.h>
 
 #define NDK_EXEC_ERROR	   -30
 #define NDK_FILE_NOT_FOUND -31

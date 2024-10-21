@@ -17,12 +17,12 @@
 
 #define __ASM_NEED_PPC__ 1
 
-#include <ToolchainKit/NFC/ErrorID.hxx>
-#include <ToolchainKit/AAL/CPU/power64.hxx>
-#include <ToolchainKit/NFC/PEF.hxx>
-#include <ToolchainKit/Parser.hxx>
-#include <ToolchainKit/NFC/AE.hxx>
-#include <ToolchainKit/Version.hxx>
+#include <ToolchainKit/NFC/ErrorID.h>
+#include <ToolchainKit/AAL/CPU/power64.h>
+#include <ToolchainKit/NFC/PEF.h>
+#include <ToolchainKit/Parser.h>
+#include <ToolchainKit/NFC/AE.h>
+#include <ToolchainKit/Version.h>
 #include <filesystem>
 #include <algorithm>
 #include <iostream>
@@ -73,7 +73,7 @@ static const std::string kRelocSymbol	  = ":RuntimeSymbol:";
 static bool asm_read_attributes(std::string& line);
 
 /// Do not move it on top! it uses the assembler detail namespace!
-#include <AsmUtils.hxx>
+#include <AsmUtils.h>
 
 /////////////////////////////////////////////////////////////////////////////////////////
 

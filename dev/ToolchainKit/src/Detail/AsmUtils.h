@@ -6,8 +6,8 @@
 
 #pragma once
 
-#include <ToolchainKit/AAL/Asm.hxx>
-#include <ToolchainKit/Parser.hxx>
+#include <ToolchainKit/AAL/Asm.h>
+#include <ToolchainKit/Parser.h>
 
 using namespace NDK;
 

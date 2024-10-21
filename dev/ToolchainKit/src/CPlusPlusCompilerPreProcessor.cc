@@ -9,8 +9,8 @@
 
 /// BUGS: 0
 
-#include <ToolchainKit/Parser.hxx>
-#include <ToolchainKit/NFC/ErrorID.hxx>
+#include <ToolchainKit/Parser.h>
+#include <ToolchainKit/NFC/ErrorID.h>
 #include <algorithm>
 #include <filesystem>
 #include <fstream>

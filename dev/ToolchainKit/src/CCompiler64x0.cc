@@ -10,9 +10,9 @@
 /// BUGS: 0
 /// TODO: none
 
-#include <ToolchainKit/AAL/CPU/64x0.hxx>
-#include <ToolchainKit/Parser.hxx>
-#include <ToolchainKit/UUID.hxx>
+#include <ToolchainKit/AAL/CPU/64x0.h>
+#include <ToolchainKit/Parser.h>
+#include <ToolchainKit/UUID.h>
 #include <filesystem>
 #include <cstdio>
 #include <fstream>
@@ -1479,7 +1479,7 @@ public:
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
-#include <Version.hxx>
+#include <Version.h>
 
 #define kPrintF printf
 #define kSplashCxx() \

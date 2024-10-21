@@ -6,7 +6,7 @@
 
 #pragma once
 
-#include <ToolchainKit/Defines.hxx>
+#include <ToolchainKit/Defines.h>
 
 // @brief 32x0 support.
 // @file CPU/32x0.hpp

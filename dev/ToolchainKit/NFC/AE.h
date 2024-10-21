@@ -9,7 +9,7 @@
 
 #pragma once
 
-#include <ToolchainKit/Defines.hxx>
+#include <ToolchainKit/Defines.h>
 
 #define kAEMag0 'A'
 #define kAEMag1 'E'

@@ -6,9 +6,9 @@
 
 #pragma once
 
-#include <ToolchainKit/Macros.hxx>
-#include <ToolchainKit/Defines.hxx>
-#include <ToolchainKit/NFC/String.hxx>
+#include <ToolchainKit/Macros.h>
+#include <ToolchainKit/Defines.h>
+#include <ToolchainKit/NFC/String.h>
 
 namespace NDK
 {

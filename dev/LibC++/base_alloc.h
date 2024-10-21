@@ -6,7 +6,7 @@
 
 #pragma once
 
-#include <LibC++/defines.hxx>
+#include <LibC++/defines.h>
 
 namespace std::base_alloc
 {

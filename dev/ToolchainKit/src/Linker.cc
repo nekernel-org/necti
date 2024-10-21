@@ -16,19 +16,19 @@
 /// @note Do not look up for anything with .code64/.data64/.zero64!
 /// It will be loaded when program will start up!
 
-#include <ToolchainKit/NFC/ErrorID.hxx>
+#include <ToolchainKit/NFC/ErrorID.h>
 
 //! Assembler Kit
-#include <ToolchainKit/AAL/Asm.hxx>
+#include <ToolchainKit/AAL/Asm.h>
 
 //! Preferred Executable Format
-#include <ToolchainKit/NFC/PEF.hxx>
-#include <ToolchainKit/UUID.hxx>
+#include <ToolchainKit/NFC/PEF.h>
+#include <ToolchainKit/UUID.h>
 //! Dist version
-#include <ToolchainKit/Version.hxx>
+#include <ToolchainKit/Version.h>
 
 //! Advanced Executable Object Format
-#include <ToolchainKit/NFC/AE.hxx>
+#include <ToolchainKit/NFC/AE.h>
 
 #define kLinkerVersion "ZKA Linker Driver %s, (c) ZKA Web Services Co 2024, all rights reserved.\n"
 

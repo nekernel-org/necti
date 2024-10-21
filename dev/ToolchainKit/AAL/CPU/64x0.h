@@ -6,7 +6,7 @@
 
 #pragma once
 
-#include <ToolchainKit/Defines.hxx>
+#include <ToolchainKit/Defines.h>
 #include <vector>
 
 // @brief 64x0 support.

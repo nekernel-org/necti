@@ -6,7 +6,7 @@ Copyright ZKA Web Services Co
 
 #pragma once
 
-#include <ToolchainKit/Defines.hxx>
+#include <ToolchainKit/Defines.h>
 
 /// @brief ARM64 encoding support.
 /// @file CPU/arm64.hpp

@@ -950,16 +950,16 @@ INPUT_FILE_ENCODING    =
 # Note the list of default checked file patterns might differ from the list of
 # default file extension mappings.
 #
-# If left blank the following patterns are tested:*.c, *.cc, *.cxx, *.cpp,
+# If left blank the following patterns are tested:*.c, *.cc, *.cc, *.cpp,
 # *.c++, *.java, *.ii, *.ixx, *.ipp, *.i++, *.inl, *.idl, *.ddl, *.odl, *.h,
-# *.hh, *.hxx, *.hpp, *.h++, *.l, *.cs, *.d, *.php, *.php4, *.php5, *.phtml,
+# *.hh, *.h, *.hpp, *.h++, *.l, *.cs, *.d, *.php, *.php4, *.php5, *.phtml,
 # *.inc, *.m, *.markdown, *.md, *.mm, *.dox (to be provided as doxygen C
 # comment), *.py, *.pyw, *.f90, *.f95, *.f03, *.f08, *.f18, *.f, *.for, *.vhd,
 # *.vhdl, *.ucf, *.qsf and *.ice.
 
 FILE_PATTERNS          = *.c \
                          *.cc \
-                         *.cxx \
+                         *.cc \
                          *.cpp \
                          *.c++ \
                          *.java \
@@ -973,7 +973,7 @@ FILE_PATTERNS          = *.c \
                          *.odl \
                          *.h \
                          *.hh \
-                         *.hxx \
+                         *.h \
                          *.hpp \
                          *.h++ \
                          *.l \

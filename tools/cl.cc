@@ -7,7 +7,7 @@
 /// @file Linker.cxx
 /// @brief ZKA C++ frontend for ZKA OS.
 
-#include <ToolchainKit/Version.hxx>
+#include <ToolchainKit/Version.h>
 #include <iostream>
 #include <cstring>
 #include <vector>

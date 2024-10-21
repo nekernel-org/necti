@@ -6,8 +6,8 @@
 
 #pragma once
 
-#include <LibC++/defines.hxx>
-#include <LibC++/exit.hxx>
+#include <LibC++/defines.h>
+#include <LibC++/exit.h>
 
 namespace std
 {

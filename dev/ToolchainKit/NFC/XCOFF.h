@@ -14,7 +14,7 @@
 #ifndef __XCOFF__
 #define __XCOFF__
 
-#include <ToolchainKit/Defines.hxx>
+#include <ToolchainKit/Defines.h>
 
 #define kXCOFF64Magic 0x01F7
 

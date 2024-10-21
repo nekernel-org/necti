@@ -6,7 +6,7 @@
 
 #pragma once
 
-#include <ToolchainKit/Defines.hxx>
+#include <ToolchainKit/Defines.h>
 
 // @file PEF.hpp
 // @brief Preferred Executable Format

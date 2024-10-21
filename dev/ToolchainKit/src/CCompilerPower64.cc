@@ -7,9 +7,9 @@
  * 	========================================================
  */
 
-#include <ToolchainKit/AAL/CPU/power64.hxx>
-#include <ToolchainKit/Parser.hxx>
-#include <ToolchainKit/UUID.hxx>
+#include <ToolchainKit/AAL/CPU/power64.h>
+#include <ToolchainKit/Parser.h>
+#include <ToolchainKit/UUID.h>
 #include <filesystem>
 #include <fstream>
 #include <iostream>
@@ -1499,7 +1499,7 @@ public:
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
-#include <Version.hxx>
+#include <Version.h>
 
 #define kPrintF printf
 #define kSplashCxx() \

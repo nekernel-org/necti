@@ -6,9 +6,9 @@
 
 #pragma once
 
-#include <LibC++/defines.hxx>
+#include <LibC++/defines.h>
 
-/// @file Math.hxx
+/// @file Math.h
 /// @brief Math functions.
 
 #ifdef __ZKA_USE_DOUBLE__

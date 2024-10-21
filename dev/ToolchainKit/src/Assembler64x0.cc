@@ -19,10 +19,10 @@
 
 #define __ASM_NEED_64x0__ 1
 
-#include <ToolchainKit/AAL/CPU/64x0.hxx>
-#include <ToolchainKit/Parser.hxx>
-#include <ToolchainKit/NFC/AE.hxx>
-#include <ToolchainKit/NFC/PEF.hxx>
+#include <ToolchainKit/AAL/CPU/64x0.h>
+#include <ToolchainKit/Parser.h>
+#include <ToolchainKit/NFC/AE.h>
+#include <ToolchainKit/NFC/PEF.h>
 #include <algorithm>
 #include <filesystem>
 #include <fstream>

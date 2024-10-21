@@ -9,8 +9,8 @@
 
 #pragma once
 
-#include <ToolchainKit/Defines.hxx>
-#include <ToolchainKit/NFC/Ref.hxx>
+#include <ToolchainKit/Defines.h>
+#include <ToolchainKit/NFC/Ref.h>
 
 namespace NDK
 {
