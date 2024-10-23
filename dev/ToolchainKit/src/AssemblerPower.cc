@@ -45,7 +45,7 @@
 
 constexpr auto cPowerIPAlignment = 0x4U;
 
-static CharType kOutputArch		= NDK::kPefArchPowerPC;
+static CharType kOutputArch		= ToolchainKit::kPefArchPowerPC;
 static Boolean	kOutputAsBinary = false;
 
 static UInt32 kErrorLimit		= 10;
@@ -60,10 +60,10 @@ static bool kVerbose = false;
 
 static std::vector<uint8_t> kBytes;
 
-static NDK::AERecordHeader kCurrentRecord{
-	.fName = "", .fKind = NDK::kPefCode, .fSize = 0, .fOffset = 0};
+static ToolchainKit::AERecordHeader kCurrentRecord{
+	.fName = "", .fKind = ToolchainKit::kPefCode, .fSize = 0, .fOffset = 0};
 
-static std::vector<NDK::AERecordHeader> kRecords;
+static std::vector<ToolchainKit::AERecordHeader> kRecords;
 static std::vector<std::string>			kUndefinedSymbols;
 
 static const std::string kUndefinedSymbol = ":UndefinedSymbol:";
@@ -81,7 +81,7 @@ static bool asm_read_attributes(std::string& line);
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
-NDK_MODULE(ZKAAssemblerMainPowerPC)
+TOOLCHAINKIT_MODULE(ZKAAssemblerMainPowerPC)
 {
 	for (size_t i = 1; i < argc; ++i)
 	{
@@ -150,13 +150,13 @@ NDK_MODULE(ZKAAssemblerMainPowerPC)
 
 		std::string line;
 
-		NDK::AEHeader hdr{0};
+		ToolchainKit::AEHeader hdr{0};
 
 		memset(hdr.fPad, kAENullType, kAEPad);
 
 		hdr.fMagic[0] = kAEMag0;
 		hdr.fMagic[1] = kAEMag1;
-		hdr.fSize	  = sizeof(NDK::AEHeader);
+		hdr.fSize	  = sizeof(ToolchainKit::AEHeader);
 		hdr.fArch	  = kOutputArch;
 
 		/////////////////////////////////////////////////////////////////////////////////////////
@@ -165,7 +165,7 @@ NDK_MODULE(ZKAAssemblerMainPowerPC)
 
 		/////////////////////////////////////////////////////////////////////////////////////////
 
-		NDK::EncoderPowerPC asm64;
+		ToolchainKit::EncoderPowerPC asm64;
 
 		while (std::getline(file_ptr, line))
 		{
@@ -185,7 +185,7 @@ NDK_MODULE(ZKAAssemblerMainPowerPC)
 				if (kVerbose)
 				{
 					std::string what = e.what();
-					detail::print_warning_asm("exit because of: " + what, "NDK");
+					detail::print_warning_asm("exit because of: " + what, "ToolchainKit");
 				}
 
 				std::filesystem::remove(object_output);
@@ -223,7 +223,7 @@ NDK_MODULE(ZKAAssemblerMainPowerPC)
 
 			for (auto& record_hdr : kRecords)
 			{
-				record_hdr.fFlags |= NDK::kKindRelocationAtRuntime;
+				record_hdr.fFlags |= ToolchainKit::kKindRelocationAtRuntime;
 				record_hdr.fOffset = record_count;
 				++record_count;
 
@@ -238,7 +238,7 @@ NDK_MODULE(ZKAAssemblerMainPowerPC)
 
 			for (auto& sym : kUndefinedSymbols)
 			{
-				NDK::AERecordHeader undefined_sym{0};
+				ToolchainKit::AERecordHeader undefined_sym{0};
 
 				if (kVerbose)
 					kStdOut << "AssemblerPower: Wrote symbol " << sym << " to file...\n";
@@ -299,7 +299,7 @@ asm_fail_exit:
 	if (kVerbose)
 		kStdOut << "AssemblerPower: Exit failed.\n";
 
-	return NDK_EXEC_ERROR;
+	return TOOLCHAINKIT_EXEC_ERROR;
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////
@@ -313,12 +313,12 @@ static bool asm_read_attributes(std::string& line)
 {
 	// extern_segment is the opposite of public_segment, it signals to the li
 	// that we need this symbol.
-	if (NDK::find_word(line, "extern_segment"))
+	if (ToolchainKit::find_word(line, "extern_segment"))
 	{
 		if (kOutputAsBinary)
 		{
 			detail::print_error_asm("Invalid extern_segment directive in flat binary mode.",
-									"NDK");
+									"ToolchainKit");
 			throw std::runtime_error("invalid_extern_segment_bin");
 		}
 
@@ -326,7 +326,7 @@ static bool asm_read_attributes(std::string& line)
 
 		if (name.size() == 0)
 		{
-			detail::print_error_asm("Invalid extern_segment", "NDK");
+			detail::print_error_asm("Invalid extern_segment", "ToolchainKit");
 			throw std::runtime_error("invalid_extern_segment");
 		}
 
@@ -345,17 +345,17 @@ static bool asm_read_attributes(std::string& line)
 		if (name.find(".code64") != std::string::npos)
 		{
 			// data is treated as code.
-			kCurrentRecord.fKind = NDK::kPefCode;
+			kCurrentRecord.fKind = ToolchainKit::kPefCode;
 		}
 		else if (name.find(".data64") != std::string::npos)
 		{
 			// no code will be executed from here.
-			kCurrentRecord.fKind = NDK::kPefData;
+			kCurrentRecord.fKind = ToolchainKit::kPefData;
 		}
 		else if (name.find(".zero64") != std::string::npos)
 		{
 			// this is a bss section.
-			kCurrentRecord.fKind = NDK::kPefZero;
+			kCurrentRecord.fKind = ToolchainKit::kPefZero;
 		}
 
 		// this is a special case for the start stub.
@@ -363,7 +363,7 @@ static bool asm_read_attributes(std::string& line)
 
 		if (name == kPefStart)
 		{
-			kCurrentRecord.fKind = NDK::kPefCode;
+			kCurrentRecord.fKind = ToolchainKit::kPefCode;
 		}
 
 		// now we can tell the code size of the previous kCurrentRecord.
@@ -385,12 +385,12 @@ static bool asm_read_attributes(std::string& line)
 	// public_segment is a special keyword used by AssemblerPower to tell the AE output stage to
 	// mark this section as a header. it currently supports .code64, .data64.,
 	// .zero64
-	else if (NDK::find_word(line, "public_segment"))
+	else if (ToolchainKit::find_word(line, "public_segment"))
 	{
 		if (kOutputAsBinary)
 		{
 			detail::print_error_asm("Invalid public_segment directive in flat binary mode.",
-									"NDK");
+									"ToolchainKit");
 			throw std::runtime_error("invalid_public_segment_bin");
 		}
 
@@ -409,21 +409,21 @@ static bool asm_read_attributes(std::string& line)
 			// data is treated as code.
 
 			name_copy.erase(name_copy.find(".code64"), strlen(".code64"));
-			kCurrentRecord.fKind = NDK::kPefCode;
+			kCurrentRecord.fKind = ToolchainKit::kPefCode;
 		}
 		else if (name.find(".data64") != std::string::npos)
 		{
 			// no code will be executed from here.
 
 			name_copy.erase(name_copy.find(".data64"), strlen(".data64"));
-			kCurrentRecord.fKind = NDK::kPefData;
+			kCurrentRecord.fKind = ToolchainKit::kPefData;
 		}
 		else if (name.find(".zero64") != std::string::npos)
 		{
 			// this is a bss section.
 
 			name_copy.erase(name_copy.find(".zero64"), strlen(".zero64"));
-			kCurrentRecord.fKind = NDK::kPefZero;
+			kCurrentRecord.fKind = ToolchainKit::kPefZero;
 		}
 
 		// this is a special case for the start stub.
@@ -431,7 +431,7 @@ static bool asm_read_attributes(std::string& line)
 
 		if (name == kPefStart)
 		{
-			kCurrentRecord.fKind = NDK::kPefCode;
+			kCurrentRecord.fKind = ToolchainKit::kPefCode;
 		}
 
 		while (name_copy.find(" ") != std::string::npos)
@@ -485,14 +485,14 @@ namespace detail::algorithm
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
-std::string NDK::EncoderPowerPC::CheckLine(std::string&		  line,
+std::string ToolchainKit::EncoderPowerPC::CheckLine(std::string&		  line,
 										   const std::string& file)
 {
 	std::string err_str;
 
-	if (line.empty() || NDK::find_word(line, "extern_segment") ||
-		NDK::find_word(line, "public_segment") ||
-		line.find('#') != std::string::npos || NDK::find_word(line, ";"))
+	if (line.empty() || ToolchainKit::find_word(line, "extern_segment") ||
+		ToolchainKit::find_word(line, "public_segment") ||
+		line.find('#') != std::string::npos || ToolchainKit::find_word(line, ";"))
 	{
 		if (line.find('#') != std::string::npos)
 		{
@@ -575,7 +575,7 @@ std::string NDK::EncoderPowerPC::CheckLine(std::string&		  line,
 
 	for (auto& opcodePPC : kOpcodesPowerPC)
 	{
-		if (NDK::find_word(line, opcodePPC.name))
+		if (ToolchainKit::find_word(line, opcodePPC.name))
 		{
 			for (auto& op : operands_inst)
 			{
@@ -594,7 +594,7 @@ std::string NDK::EncoderPowerPC::CheckLine(std::string&		  line,
 					std::find(filter_inst.begin(), filter_inst.end(), opcodePPC.name);
 				it == filter_inst.cend())
 			{
-				if (NDK::find_word(line, opcodePPC.name))
+				if (ToolchainKit::find_word(line, opcodePPC.name))
 				{
 					if (!isspace(
 							line[line.find(opcodePPC.name) + strlen(opcodePPC.name)]))
@@ -616,7 +616,7 @@ std::string NDK::EncoderPowerPC::CheckLine(std::string&		  line,
 	return err_str;
 }
 
-bool NDK::EncoderPowerPC::WriteNumber(const std::size_t& pos,
+bool ToolchainKit::EncoderPowerPC::WriteNumber(const std::size_t& pos,
 									  std::string&		 jump_label)
 {
 	if (!isdigit(jump_label[pos]))
@@ -630,12 +630,12 @@ bool NDK::EncoderPowerPC::WriteNumber(const std::size_t& pos,
 		{
 			if (errno != 0)
 			{
-				detail::print_error_asm("invalid hex number: " + jump_label, "NDK");
+				detail::print_error_asm("invalid hex number: " + jump_label, "ToolchainKit");
 				throw std::runtime_error("invalid_hex");
 			}
 		}
 
-		NDK::NumberCast64 num(
+		ToolchainKit::NumberCast64 num(
 			strtol(jump_label.substr(pos + 2).c_str(), nullptr, 16));
 
 		for (char& i : num.number)
@@ -657,12 +657,12 @@ bool NDK::EncoderPowerPC::WriteNumber(const std::size_t& pos,
 		{
 			if (errno != 0)
 			{
-				detail::print_error_asm("invalid binary number: " + jump_label, "NDK");
+				detail::print_error_asm("invalid binary number: " + jump_label, "ToolchainKit");
 				throw std::runtime_error("invalid_bin");
 			}
 		}
 
-		NDK::NumberCast64 num(
+		ToolchainKit::NumberCast64 num(
 			strtol(jump_label.substr(pos + 2).c_str(), nullptr, 2));
 
 		if (kVerbose)
@@ -684,12 +684,12 @@ bool NDK::EncoderPowerPC::WriteNumber(const std::size_t& pos,
 		{
 			if (errno != 0)
 			{
-				detail::print_error_asm("invalid octal number: " + jump_label, "NDK");
+				detail::print_error_asm("invalid octal number: " + jump_label, "ToolchainKit");
 				throw std::runtime_error("invalid_octal");
 			}
 		}
 
-		NDK::NumberCast64 num(
+		ToolchainKit::NumberCast64 num(
 			strtol(jump_label.substr(pos + 2).c_str(), nullptr, 7));
 
 		if (kVerbose)
@@ -719,7 +719,7 @@ bool NDK::EncoderPowerPC::WriteNumber(const std::size_t& pos,
 		}
 	}
 
-	NDK::NumberCast64 num(
+	ToolchainKit::NumberCast64 num(
 		strtol(jump_label.substr(pos).c_str(), nullptr, 10));
 
 	for (char& i : num.number)
@@ -742,10 +742,10 @@ bool NDK::EncoderPowerPC::WriteNumber(const std::size_t& pos,
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
-bool NDK::EncoderPowerPC::WriteLine(std::string&	   line,
+bool ToolchainKit::EncoderPowerPC::WriteLine(std::string&	   line,
 									const std::string& file)
 {
-	if (NDK::find_word(line, "public_segment"))
+	if (ToolchainKit::find_word(line, "public_segment"))
 		return true;
 	if (!detail::algorithm::is_valid_power64(line))
 		return true;
@@ -753,7 +753,7 @@ bool NDK::EncoderPowerPC::WriteLine(std::string&	   line,
 	for (auto& opcodePPC : kOpcodesPowerPC)
 	{
 		// strict check here
-		if (NDK::find_word(line, opcodePPC.name))
+		if (ToolchainKit::find_word(line, opcodePPC.name))
 		{
 			std::string			name(opcodePPC.name);
 			std::string			jump_label, cpy_jump_label;

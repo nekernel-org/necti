@@ -23,7 +23,7 @@
 #define kXCOFFLnno		 0x0004
 #define kXCOFFLSyms		 0x0008
 
-namespace NDK
+namespace ToolchainKit
 {
 	/// @brief XCoff identification header.
 	typedef struct XCoffFileHeader
@@ -36,6 +36,6 @@ namespace NDK
 		UInt32	fNumSyms;
 		UInt16	fOptHdr; // ?: Number of bytes in optional header
 	} XCoffFileHeader;
-} // namespace NDK
+} // namespace ToolchainKit
 
 #endif // ifndef __XCOFF__

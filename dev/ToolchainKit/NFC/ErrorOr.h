@@ -1,7 +1,7 @@
 /*
  *	========================================================
  *
- *	NDK
+ *	ToolchainKit
  * 	Copyright ZKA Web Services Co, all rights reserved.
  *
  * 	========================================================
@@ -12,7 +12,7 @@
 #include <ToolchainKit/Defines.h>
 #include <ToolchainKit/NFC/Ref.h>
 
-namespace NDK
+namespace ToolchainKit
 {
 	using ErrorT = UInt32;
 
@@ -58,4 +58,4 @@ namespace NDK
 
 	using ErrorOrAny = ErrorOr<voidPtr>;
 
-} // namespace NDK
+} // namespace ToolchainKit

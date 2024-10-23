@@ -43,7 +43,7 @@
 #define kStdOut (std::cout << kWhite)
 #define kStdErr (std::cout << kRed)
 
-static char	   kOutputArch	   = NDK::kPefArch64000;
+static char	   kOutputArch	   = ToolchainKit::kPefArch64000;
 static Boolean kOutputAsBinary = false;
 
 static UInt32 kErrorLimit		= 10;
@@ -60,10 +60,10 @@ static bool kVerbose = false;
 
 static std::vector<e64k_num_t> kBytes;
 
-static NDK::AERecordHeader kCurrentRecord{
-	.fName = "", .fKind = NDK::kPefCode, .fSize = 0, .fOffset = 0};
+static ToolchainKit::AERecordHeader kCurrentRecord{
+	.fName = "", .fKind = ToolchainKit::kPefCode, .fSize = 0, .fOffset = 0};
 
-static std::vector<NDK::AERecordHeader> kRecords;
+static std::vector<ToolchainKit::AERecordHeader> kRecords;
 static std::vector<std::string>			kUndefinedSymbols;
 
 static const std::string kUndefinedSymbol = ":UndefinedSymbol:";
@@ -79,11 +79,11 @@ namespace detail
 		if (reason[0] == '\n')
 			reason.erase(0, 1);
 
-		kStdErr << kRed << "[ NDK ] " << kWhite
-				<< ((file == "NDK") ? "InternalErrorException: "
+		kStdErr << kRed << "[ ToolchainKit ] " << kWhite
+				<< ((file == "ToolchainKit") ? "InternalErrorException: "
 									: ("FileException{ " + file + " }: "))
 				<< kBlank << std::endl;
-		kStdErr << kRed << "[ NDK ] " << kWhite << reason << kBlank << std::endl;
+		kStdErr << kRed << "[ ToolchainKit ] " << kWhite << reason << kBlank << std::endl;
 
 		if (kAcceptableErrors > kErrorLimit)
 			std::exit(3);
@@ -98,10 +98,10 @@ namespace detail
 
 		if (!file.empty())
 		{
-			kStdOut << kYellow << "[ NDK ] " << kWhite << file << kBlank << std::endl;
+			kStdOut << kYellow << "[ ToolchainKit ] " << kWhite << file << kBlank << std::endl;
 		}
 
-		kStdOut << kYellow << "[ NDK ] " << kWhite << reason << kBlank << std::endl;
+		kStdOut << kYellow << "[ ToolchainKit ] " << kWhite << reason << kBlank << std::endl;
 	}
 } // namespace detail
 
@@ -111,7 +111,7 @@ namespace detail
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
-NDK_MODULE(ZKAAssemblerMain64000)
+TOOLCHAINKIT_MODULE(ZKAAssemblerMain64000)
 {
 	for (size_t i = 1; i < argc; ++i)
 	{
@@ -180,13 +180,13 @@ NDK_MODULE(ZKAAssemblerMain64000)
 
 		std::string line;
 
-		NDK::AEHeader hdr{0};
+		ToolchainKit::AEHeader hdr{0};
 
 		memset(hdr.fPad, kAENullType, kAEPad);
 
 		hdr.fMagic[0] = kAEMag0;
 		hdr.fMagic[1] = kAEMag1;
-		hdr.fSize	  = sizeof(NDK::AEHeader);
+		hdr.fSize	  = sizeof(ToolchainKit::AEHeader);
 		hdr.fArch	  = kOutputArch;
 
 		/////////////////////////////////////////////////////////////////////////////////////////
@@ -195,7 +195,7 @@ NDK_MODULE(ZKAAssemblerMain64000)
 
 		/////////////////////////////////////////////////////////////////////////////////////////
 
-		NDK::Encoder64x0 asm64;
+		ToolchainKit::Encoder64x0 asm64;
 
 		while (std::getline(file_ptr, line))
 		{
@@ -215,7 +215,7 @@ NDK_MODULE(ZKAAssemblerMain64000)
 				if (kVerbose)
 				{
 					std::string what = e.what();
-					detail::print_warning_asm("exit because of: " + what, "NDK");
+					detail::print_warning_asm("exit because of: " + what, "ToolchainKit");
 				}
 
 				std::filesystem::remove(object_output);
@@ -256,7 +256,7 @@ NDK_MODULE(ZKAAssemblerMain64000)
 				if (kVerbose)
 					kStdOut << "Assembler64x0: Wrote record " << rec.fName << " to file...\n";
 
-				rec.fFlags |= NDK::kKindRelocationAtRuntime;
+				rec.fFlags |= ToolchainKit::kKindRelocationAtRuntime;
 				rec.fOffset = record_count;
 				++record_count;
 
@@ -268,7 +268,7 @@ NDK_MODULE(ZKAAssemblerMain64000)
 
 			for (auto& sym : kUndefinedSymbols)
 			{
-				NDK::AERecordHeader _record_hdr{0};
+				ToolchainKit::AERecordHeader _record_hdr{0};
 
 				if (kVerbose)
 					kStdOut << "Assembler64x0: Wrote symbol " << sym << " to file...\n";
@@ -343,12 +343,12 @@ static bool asm_read_attributes(std::string& line)
 {
 	// extern_segment is the opposite of public_segment, it signals to the ld
 	// that we need this symbol.
-	if (NDK::find_word(line, "extern_segment"))
+	if (ToolchainKit::find_word(line, "extern_segment"))
 	{
 		if (kOutputAsBinary)
 		{
 			detail::print_error_asm("Invalid extern_segment directive in flat binary mode.",
-									"NDK");
+									"ToolchainKit");
 			throw std::runtime_error("invalid_extern_segment_bin");
 		}
 
@@ -376,17 +376,17 @@ static bool asm_read_attributes(std::string& line)
 		if (name.find(".code64") != std::string::npos)
 		{
 			// data is treated as code.
-			kCurrentRecord.fKind = NDK::kPefCode;
+			kCurrentRecord.fKind = ToolchainKit::kPefCode;
 		}
 		else if (name.find(".data64") != std::string::npos)
 		{
 			// no code will be executed from here.
-			kCurrentRecord.fKind = NDK::kPefData;
+			kCurrentRecord.fKind = ToolchainKit::kPefData;
 		}
 		else if (name.find(".zero64") != std::string::npos)
 		{
 			// this is a bss section.
-			kCurrentRecord.fKind = NDK::kPefZero;
+			kCurrentRecord.fKind = ToolchainKit::kPefZero;
 		}
 
 		// this is a special case for the start stub.
@@ -394,7 +394,7 @@ static bool asm_read_attributes(std::string& line)
 
 		if (name == kPefStart)
 		{
-			kCurrentRecord.fKind = NDK::kPefCode;
+			kCurrentRecord.fKind = ToolchainKit::kPefCode;
 		}
 
 		// now we can tell the code size of the previous kCurrentRecord.
@@ -416,12 +416,12 @@ static bool asm_read_attributes(std::string& line)
 	// public_segment is a special keyword used by Assembler64x0 to tell the AE output stage to
 	// mark this section as a header. it currently supports .code64, .data64.,
 	// .zero64
-	else if (NDK::find_word(line, "public_segment"))
+	else if (ToolchainKit::find_word(line, "public_segment"))
 	{
 		if (kOutputAsBinary)
 		{
 			detail::print_error_asm("Invalid public_segment directive in flat binary mode.",
-									"NDK");
+									"ToolchainKit");
 			throw std::runtime_error("invalid_public_segment_bin");
 		}
 
@@ -440,21 +440,21 @@ static bool asm_read_attributes(std::string& line)
 			// data is treated as code.
 
 			name_copy.erase(name_copy.find(".code64"), strlen(".code64"));
-			kCurrentRecord.fKind = NDK::kPefCode;
+			kCurrentRecord.fKind = ToolchainKit::kPefCode;
 		}
 		else if (name.find(".data64") != std::string::npos)
 		{
 			// no code will be executed from here.
 
 			name_copy.erase(name_copy.find(".data64"), strlen(".data64"));
-			kCurrentRecord.fKind = NDK::kPefData;
+			kCurrentRecord.fKind = ToolchainKit::kPefData;
 		}
 		else if (name.find(".zero64") != std::string::npos)
 		{
 			// this is a bss section.
 
 			name_copy.erase(name_copy.find(".zero64"), strlen(".zero64"));
-			kCurrentRecord.fKind = NDK::kPefZero;
+			kCurrentRecord.fKind = ToolchainKit::kPefZero;
 		}
 
 		// this is a special case for the start stub.
@@ -462,7 +462,7 @@ static bool asm_read_attributes(std::string& line)
 
 		if (name == kPefStart)
 		{
-			kCurrentRecord.fKind = NDK::kPefCode;
+			kCurrentRecord.fKind = ToolchainKit::kPefCode;
 		}
 
 		while (name_copy.find(" ") != std::string::npos)
@@ -516,14 +516,14 @@ namespace detail::algorithm
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
-std::string NDK::Encoder64x0::CheckLine(std::string&	   line,
+std::string ToolchainKit::Encoder64x0::CheckLine(std::string&	   line,
 										const std::string& file)
 {
 	std::string err_str;
 
-	if (line.empty() || NDK::find_word(line, "extern_segment") ||
-		NDK::find_word(line, "public_segment") ||
-		line.find('#') != std::string::npos || NDK::find_word(line, ";"))
+	if (line.empty() || ToolchainKit::find_word(line, "extern_segment") ||
+		ToolchainKit::find_word(line, "public_segment") ||
+		line.find('#') != std::string::npos || ToolchainKit::find_word(line, ";"))
 	{
 		if (line.find('#') != std::string::npos)
 		{
@@ -628,7 +628,7 @@ std::string NDK::Encoder64x0::CheckLine(std::string&	   line,
 									opcode64x0.fName);
 				it == filter_inst.cend())
 			{
-				if (NDK::find_word(line, opcode64x0.fName))
+				if (ToolchainKit::find_word(line, opcode64x0.fName))
 				{
 					if (!isspace(line[line.find(opcode64x0.fName) +
 									  strlen(opcode64x0.fName)]))
@@ -650,7 +650,7 @@ std::string NDK::Encoder64x0::CheckLine(std::string&	   line,
 	return err_str;
 }
 
-bool NDK::Encoder64x0::WriteNumber(const std::size_t& pos,
+bool ToolchainKit::Encoder64x0::WriteNumber(const std::size_t& pos,
 								   std::string&		  jump_label)
 {
 	if (!isdigit(jump_label[pos]))
@@ -664,12 +664,12 @@ bool NDK::Encoder64x0::WriteNumber(const std::size_t& pos,
 		{
 			if (errno != 0)
 			{
-				detail::print_error_asm("invalid hex number: " + jump_label, "NDK");
+				detail::print_error_asm("invalid hex number: " + jump_label, "ToolchainKit");
 				throw std::runtime_error("invalid_hex_number");
 			}
 		}
 
-		NDK::NumberCast64 num(
+		ToolchainKit::NumberCast64 num(
 			strtol(jump_label.substr(pos + 2).c_str(), nullptr, 16));
 
 		for (char& i : num.number)
@@ -691,12 +691,12 @@ bool NDK::Encoder64x0::WriteNumber(const std::size_t& pos,
 		{
 			if (errno != 0)
 			{
-				detail::print_error_asm("invalid binary number: " + jump_label, "NDK");
+				detail::print_error_asm("invalid binary number: " + jump_label, "ToolchainKit");
 				throw std::runtime_error("invalid_bin");
 			}
 		}
 
-		NDK::NumberCast64 num(
+		ToolchainKit::NumberCast64 num(
 			strtol(jump_label.substr(pos + 2).c_str(), nullptr, 2));
 
 		if (kVerbose)
@@ -718,12 +718,12 @@ bool NDK::Encoder64x0::WriteNumber(const std::size_t& pos,
 		{
 			if (errno != 0)
 			{
-				detail::print_error_asm("invalid octal number: " + jump_label, "NDK");
+				detail::print_error_asm("invalid octal number: " + jump_label, "ToolchainKit");
 				throw std::runtime_error("invalid_octal");
 			}
 		}
 
-		NDK::NumberCast64 num(
+		ToolchainKit::NumberCast64 num(
 			strtol(jump_label.substr(pos + 2).c_str(), nullptr, 7));
 
 		if (kVerbose)
@@ -753,7 +753,7 @@ bool NDK::Encoder64x0::WriteNumber(const std::size_t& pos,
 		}
 	}
 
-	NDK::NumberCast64 num(
+	ToolchainKit::NumberCast64 num(
 		strtol(jump_label.substr(pos).c_str(), nullptr, 10));
 
 	for (char& i : num.number)
@@ -776,16 +776,16 @@ bool NDK::Encoder64x0::WriteNumber(const std::size_t& pos,
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
-bool NDK::Encoder64x0::WriteLine(std::string&		line,
+bool ToolchainKit::Encoder64x0::WriteLine(std::string&		line,
 								 const std::string& file)
 {
-	if (NDK::find_word(line, "public_segment "))
+	if (ToolchainKit::find_word(line, "public_segment "))
 		return true;
 
 	for (auto& opcode64x0 : kOpcodes64x0)
 	{
 		// strict check here
-		if (NDK::find_word(line, opcode64x0.fName) &&
+		if (ToolchainKit::find_word(line, opcode64x0.fName) &&
 			detail::algorithm::is_valid_64x0(line))
 		{
 			std::string name(opcode64x0.fName);
@@ -824,7 +824,7 @@ bool NDK::Encoder64x0::WriteLine(std::string&		line,
 
 						// it ranges from r0 to r19
 						// something like r190 doesn't exist in the instruction set.
-						if (kOutputArch == NDK::kPefArch64000)
+						if (kOutputArch == ToolchainKit::kPefArch64000)
 						{
 							if (isdigit(line[line_index + 3]) &&
 								isdigit(line[line_index + 2]))
@@ -1029,7 +1029,7 @@ bool NDK::Encoder64x0::WriteLine(std::string&		line,
 										<< " to address: " << label.second << std::endl;
 							}
 
-							NDK::NumberCast64 num(label.second);
+							ToolchainKit::NumberCast64 num(label.second);
 
 							for (auto& num : num.number)
 							{

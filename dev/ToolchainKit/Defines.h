@@ -4,8 +4,8 @@
 
 ------------------------------------------- */
 
-#ifndef __NDK_DEFINES_HXX__
-#define __NDK_DEFINES_HXX__
+#ifndef __TOOLCHAINKIT_DEFINES_HXX__
+#define __TOOLCHAINKIT_DEFINES_HXX__
 
 #ifndef Yes
 #define Yes true
@@ -69,19 +69,19 @@
 #define rt_copy_memory(dst, src, len) memcpy(dst, src, len)
 #endif
 
-#define NDK_COPY_DELETE(KLASS)               \
+#define TOOLCHAINKIT_COPY_DELETE(KLASS)               \
 	KLASS& operator=(const KLASS&) = delete; \
 	KLASS(const KLASS&)			   = delete;
 
-#define NDK_COPY_DEFAULT(KLASS)               \
+#define TOOLCHAINKIT_COPY_DEFAULT(KLASS)               \
 	KLASS& operator=(const KLASS&) = default; \
 	KLASS(const KLASS&)			   = default;
 
-#define NDK_MOVE_DELETE(KLASS)          \
+#define TOOLCHAINKIT_MOVE_DELETE(KLASS)          \
 	KLASS& operator=(KLASS&&) = delete; \
 	KLASS(KLASS&&)			  = delete;
 
-#define NDK_MOVE_DEFAULT(KLASS)          \
+#define TOOLCHAINKIT_MOVE_DEFAULT(KLASS)          \
 	KLASS& operator=(KLASS&&) = default; \
 	KLASS(KLASS&&)			  = default;
 
@@ -90,7 +90,7 @@
 #include <string>
 #include <vector>
 
-namespace NDK
+namespace ToolchainKit
 {
 	inline constexpr int cBaseYear = 1900;
 
@@ -135,7 +135,7 @@ namespace NDK
 	}
 
 	using String = std::basic_string<CharType>;
-} // namespace NDK
+} // namespace ToolchainKit
 
 #define PACKED __attribute__((packed))
 
@@ -151,10 +151,10 @@ typedef char char_type;
 
 #define kAsmFileExtsMax 7
 
-#define NDK_MODULE(name) extern "C" int name(int argc, char** argv)
+#define TOOLCHAINKIT_MODULE(name) extern "C" int name(int argc, char** argv)
 
 #ifdef MSVC
 #pragma scalar_storage_order big - endian
 #endif // ifdef MSVC
 
-#endif /* ifndef __NDK_DEFINES_HXX__ */
+#endif /* ifndef __TOOLCHAINKIT_DEFINES_HXX__ */

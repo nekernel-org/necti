@@ -1,8 +1,8 @@
 # Path: LibC++/power.inc
-# Language: NDK POWER Assembly support for GNU.
+# Language: ToolchainKit POWER Assembly support for GNU.
 # Build Date: 2024-6-4
 
-%ifdef __NDK__
+%ifdef __TOOLCHAINKIT__
 
 %define lda li
 %define sta stw

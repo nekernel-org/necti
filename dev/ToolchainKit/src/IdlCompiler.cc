@@ -26,7 +26,7 @@
 	@brief IDL compiler maih.
 */
 
-NDK_MODULE(ZKAIdlMain)
+TOOLCHAINKIT_MODULE(ZKAIdlMain)
 {
 
 	return 0;

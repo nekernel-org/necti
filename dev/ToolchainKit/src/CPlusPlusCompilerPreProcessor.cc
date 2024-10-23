@@ -74,7 +74,7 @@ namespace detail
 		explicit bpp_pragma() = default;
 		~bpp_pragma()		  = default;
 
-		NDK_COPY_DEFAULT(bpp_pragma);
+		TOOLCHAINKIT_COPY_DEFAULT(bpp_pragma);
 
 		std::string		fMacroName;
 		bpp_parser_fn_t fParse;
@@ -370,21 +370,21 @@ void bpp_parse_file(std::ifstream& hdr_file, std::ofstream& pp_out)
 
 			for (auto macro : kMacros)
 			{
-				if (NDK::find_word(hdr_line, macro.fName))
+				if (ToolchainKit::find_word(hdr_line, macro.fName))
 				{
-					if (hdr_line.substr(hdr_line.find(macro.fName)).find(macro.fName + '(') != NDK::String::npos)
+					if (hdr_line.substr(hdr_line.find(macro.fName)).find(macro.fName + '(') != ToolchainKit::String::npos)
 					{
 						if (!macro.fArgs.empty())
 						{
-							NDK::String				 symbol_val = macro.fValue;
-							std::vector<NDK::String> args;
+							ToolchainKit::String				 symbol_val = macro.fValue;
+							std::vector<ToolchainKit::String> args;
 
 							size_t x_arg_indx = 0;
 
-							NDK::String line_after_define = hdr_line;
-							NDK::String str_arg;
+							ToolchainKit::String line_after_define = hdr_line;
+							ToolchainKit::String str_arg;
 
-							if (line_after_define.find("(") != NDK::String::npos)
+							if (line_after_define.find("(") != ToolchainKit::String::npos)
 							{
 								line_after_define.erase(0, line_after_define.find("(") + 1);
 
@@ -411,7 +411,7 @@ void bpp_parse_file(std::ifstream& hdr_file, std::ofstream& pp_out)
 
 							for (auto arg : macro.fArgs)
 							{
-								if (symbol_val.find(macro.fArgs[x_arg_indx]) != NDK::String::npos)
+								if (symbol_val.find(macro.fArgs[x_arg_indx]) != ToolchainKit::String::npos)
 								{
 									symbol_val.replace(symbol_val.find(macro.fArgs[x_arg_indx]), macro.fArgs[x_arg_indx].size(),
 													   args[x_arg_indx]);
@@ -494,7 +494,7 @@ void bpp_parse_file(std::ifstream& hdr_file, std::ofstream& pp_out)
 
 				std::string str;
 
-				if (line_after_define.find("(") != NDK::String::npos)
+				if (line_after_define.find("(") != ToolchainKit::String::npos)
 				{
 					line_after_define.erase(0, line_after_define.find("(") + 1);
 
@@ -908,7 +908,7 @@ void bpp_parse_file(std::ifstream& hdr_file, std::ofstream& pp_out)
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
-NDK_MODULE(CPlusPlusPreprocessorMain)
+TOOLCHAINKIT_MODULE(CPlusPlusPreprocessorMain)
 {
 	try
 	{
@@ -931,7 +931,7 @@ NDK_MODULE(CPlusPlusPreprocessorMain)
 
 		detail::bpp_macro macro_zka;
 
-		macro_zka.fName	 = "__NDK__";
+		macro_zka.fName	 = "__TOOLCHAINKIT__";
 		macro_zka.fValue = "1";
 
 		kMacros.push_back(macro_zka);
@@ -1044,7 +1044,7 @@ NDK_MODULE(CPlusPlusPreprocessorMain)
 		}
 
 		if (kFiles.empty())
-			return NDK_EXEC_ERROR;
+			return TOOLCHAINKIT_EXEC_ERROR;
 
 		for (auto& file : kFiles)
 		{

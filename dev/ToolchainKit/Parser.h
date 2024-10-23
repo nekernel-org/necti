@@ -9,7 +9,7 @@
 #include <ToolchainKit/AAL/Asm.h>
 #include <vector>
 
-namespace NDK
+namespace ToolchainKit
 {
 	inline auto kInvalidFrontend = "No Language";
 
@@ -21,7 +21,7 @@ namespace NDK
 		explicit ICompilerFrontend() = default;
 		virtual ~ICompilerFrontend() = default;
 
-		NDK_COPY_DEFAULT(ICompilerFrontend);
+		TOOLCHAINKIT_COPY_DEFAULT(ICompilerFrontend);
 
 		// NOTE: cast this to your user defined ast.
 		typedef void* AstType;
@@ -175,4 +175,4 @@ namespace NDK
 
 		return false;
 	}
-} // namespace NDK
+} // namespace ToolchainKit

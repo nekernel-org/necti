@@ -1,7 +1,7 @@
 /*
  * ========================================================
  *
- *      NDK
+ *      ToolchainKit
  *      Copyright ZKA Web Services Co, all rights reserved.
  *
  * ========================================================
@@ -24,7 +24,7 @@
 // You can also relocate at runtime but that's up to the operating system
 // loader.
 
-namespace NDK
+namespace ToolchainKit
 {
 	// @brief Advanced Executable Header
 	// One thing to keep in mind.
@@ -60,39 +60,39 @@ namespace NDK
 		kKindRelocationByOffset	 = 0x23f,
 		kKindRelocationAtRuntime = 0x34f,
 	};
-} // namespace NDK
+} // namespace ToolchainKit
 
 // provide operator<< for AE
 
-inline std::ofstream& operator<<(std::ofstream& fp, NDK::AEHeader& container)
+inline std::ofstream& operator<<(std::ofstream& fp, ToolchainKit::AEHeader& container)
 {
-	fp.write((char*)&container, sizeof(NDK::AEHeader));
+	fp.write((char*)&container, sizeof(ToolchainKit::AEHeader));
 
 	return fp;
 }
 
 inline std::ofstream& operator<<(std::ofstream&		  fp,
-								 NDK::AERecordHeader& container)
+								 ToolchainKit::AERecordHeader& container)
 {
-	fp.write((char*)&container, sizeof(NDK::AERecordHeader));
+	fp.write((char*)&container, sizeof(ToolchainKit::AERecordHeader));
 
 	return fp;
 }
 
-inline std::ifstream& operator>>(std::ifstream& fp, NDK::AEHeader& container)
+inline std::ifstream& operator>>(std::ifstream& fp, ToolchainKit::AEHeader& container)
 {
-	fp.read((char*)&container, sizeof(NDK::AEHeader));
+	fp.read((char*)&container, sizeof(ToolchainKit::AEHeader));
 	return fp;
 }
 
 inline std::ifstream& operator>>(std::ifstream&		  fp,
-								 NDK::AERecordHeader& container)
+								 ToolchainKit::AERecordHeader& container)
 {
-	fp.read((char*)&container, sizeof(NDK::AERecordHeader));
+	fp.read((char*)&container, sizeof(ToolchainKit::AERecordHeader));
 	return fp;
 }
 
-namespace NDK::Utils
+namespace ToolchainKit::Utils
 {
 	/**
 	 * @brief AE Reader protocol
@@ -107,7 +107,7 @@ namespace NDK::Utils
 		explicit AEReadableProtocol() = default;
 		~AEReadableProtocol()		  = default;
 
-		NDK_COPY_DELETE(AEReadableProtocol);
+		TOOLCHAINKIT_COPY_DELETE(AEReadableProtocol);
 
 		/**
 		 * @brief Read AE Record headers.
@@ -140,4 +140,4 @@ namespace NDK::Utils
 			return reinterpret_cast<TypeClass*>(raw);
 		}
 	};
-} // namespace NDK::Utils
+} // namespace ToolchainKit::Utils

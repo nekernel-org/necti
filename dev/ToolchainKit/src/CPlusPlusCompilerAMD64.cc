@@ -25,7 +25,7 @@
 #include <ToolchainKit/UUID.h>
 
 /* ZKA C++ Compiler driver */
-/* This is part of the NDK. */
+/* This is part of the ToolchainKit. */
 /* (c) ZKA Web Services Co */
 
 /// @author Amlal El Mahrouss (amlel)
@@ -76,7 +76,7 @@ namespace detail
 	{
 		std::vector<CompilerRegisterMap> kStackFrame;
 		std::vector<CompilerStructMap>	 kStructMap;
-		NDK::SyntaxLeafList*			 fSyntaxTree{nullptr};
+		ToolchainKit::SyntaxLeafList*			 fSyntaxTree{nullptr};
 		std::unique_ptr<std::ofstream>	 fOutputAssembly;
 		std::string						 fLastFile;
 		std::string						 fLastError;
@@ -106,7 +106,7 @@ namespace detail
 /////////////////////////////////////////////////////////////////////////////////////////
 
 // Target architecture.
-static int kMachine = NDK::AssemblyFactory::kArchAMD64;
+static int kMachine = ToolchainKit::AssemblyFactory::kArchAMD64;
 
 /////////////////////////////////////////
 
@@ -118,7 +118,7 @@ static size_t							 kRegisterCnt	  = kAsmRegisterLimit;
 static size_t							 kStartUsable	  = 8;
 static size_t							 kUsableLimit	  = 15;
 static size_t							 kRegisterCounter = kStartUsable;
-static std::vector<NDK::CompilerKeyword> kKeywords;
+static std::vector<ToolchainKit::CompilerKeyword> kKeywords;
 
 /////////////////////////////////////////
 
@@ -127,7 +127,7 @@ static std::vector<NDK::CompilerKeyword> kKeywords;
 /////////////////////////////////////////
 
 static std::vector<std::string> kFileList;
-static NDK::AssemblyFactory		kFactory;
+static ToolchainKit::AssemblyFactory		kFactory;
 static bool						kInStruct	 = false;
 static bool						kOnWhileLoop = false;
 static bool						kOnForLoop	 = false;
@@ -135,13 +135,13 @@ static bool						kInBraces	 = false;
 static size_t					kBracesCount = 0UL;
 
 /* @brief C++ compiler backend for the ZKA C++ driver */
-class CompilerFrontendCPlusPlus final : public NDK::ICompilerFrontend
+class CompilerFrontendCPlusPlus final : public ToolchainKit::ICompilerFrontend
 {
 public:
 	explicit CompilerFrontendCPlusPlus()  = default;
 	~CompilerFrontendCPlusPlus() override = default;
 
-	NDK_COPY_DEFAULT(CompilerFrontendCPlusPlus);
+	TOOLCHAINKIT_COPY_DEFAULT(CompilerFrontendCPlusPlus);
 
 	bool Compile(const std::string text, const std::string file) override;
 
@@ -205,7 +205,7 @@ bool CompilerFrontendCPlusPlus::Compile(const std::string text,
 		return false;
 
 	std::size_t												  index = 0UL;
-	std::vector<std::pair<NDK::CompilerKeyword, std::size_t>> keywords_list;
+	std::vector<std::pair<ToolchainKit::CompilerKeyword, std::size_t>> keywords_list;
 
 	bool		found		 = false;
 	static bool commentBlock = false;
@@ -216,15 +216,15 @@ bool CompilerFrontendCPlusPlus::Compile(const std::string text,
 		{
 			switch (keyword.keyword_kind)
 			{
-			case NDK::eKeywordKindCommentMultiLineStart: {
+			case ToolchainKit::eKeywordKindCommentMultiLineStart: {
 				commentBlock = true;
 				return true;
 			}
-			case NDK::eKeywordKindCommentMultiLineEnd: {
+			case ToolchainKit::eKeywordKindCommentMultiLineEnd: {
 				commentBlock = false;
 				break;
 			}
-			case NDK::eKeywordKindCommentInline: {
+			case ToolchainKit::eKeywordKindCommentInline: {
 				break;
 			}
 			default:
@@ -232,15 +232,15 @@ bool CompilerFrontendCPlusPlus::Compile(const std::string text,
 			}
 
 			if (text[text.find(keyword.keyword_name) - 1] == '+' &&
-				keyword.keyword_kind == NDK::KeywordKind::eKeywordKindVariableAssign)
+				keyword.keyword_kind == ToolchainKit::KeywordKind::eKeywordKindVariableAssign)
 				continue;
 
 			if (text[text.find(keyword.keyword_name) - 1] == '-' &&
-				keyword.keyword_kind == NDK::KeywordKind::eKeywordKindVariableAssign)
+				keyword.keyword_kind == ToolchainKit::KeywordKind::eKeywordKindVariableAssign)
 				continue;
 
 			if (text[text.find(keyword.keyword_name) + 1] == '=' &&
-				keyword.keyword_kind == NDK::KeywordKind::eKeywordKindVariableAssign)
+				keyword.keyword_kind == ToolchainKit::KeywordKind::eKeywordKindVariableAssign)
 				continue;
 
 			keywords_list.emplace_back(std::make_pair(keyword, index));
@@ -264,11 +264,11 @@ bool CompilerFrontendCPlusPlus::Compile(const std::string text,
 
 	for (auto& keyword : keywords_list)
 	{
-		auto syntax_tree = NDK::SyntaxLeafList::SyntaxLeaf();
+		auto syntax_tree = ToolchainKit::SyntaxLeafList::SyntaxLeaf();
 
 		switch (keyword.first.keyword_kind)
 		{
-		case NDK::KeywordKind::eKeywordKindIf: {
+		case ToolchainKit::KeywordKind::eKeywordKindIf: {
 			auto expr = text.substr(text.find(keyword.first.keyword_name) + keyword.first.keyword_name.size() + 1, text.find(")") - 1);
 
 			if (expr.find(">=") != std::string::npos)
@@ -356,7 +356,7 @@ bool CompilerFrontendCPlusPlus::Compile(const std::string text,
 
 			break;
 		}
-		case NDK::KeywordKind::eKeywordKindFunctionStart: {
+		case ToolchainKit::KeywordKind::eKeywordKindFunctionStart: {
 			if (text.ends_with(";"))
 			{
 				break;
@@ -384,11 +384,11 @@ bool CompilerFrontendCPlusPlus::Compile(const std::string text,
 					ch = '_';
 			}
 
-			syntax_tree.fUserValue = "public_segment .code64 __NDK_" + fnName + "\n";
+			syntax_tree.fUserValue = "public_segment .code64 __TOOLCHAINKIT_" + fnName + "\n";
 
 			++kLevelFunction;
 		}
-		case NDK::KeywordKind::eKeywordKindFunctionEnd: {
+		case ToolchainKit::KeywordKind::eKeywordKindFunctionEnd: {
 			if (text.ends_with(";"))
 				break;
 
@@ -403,50 +403,50 @@ bool CompilerFrontendCPlusPlus::Compile(const std::string text,
 				kRegisterMap.clear();
 			break;
 		}
-		case NDK::KeywordKind::eKeywordKindEndInstr:
-		case NDK::KeywordKind::eKeywordKindVariableInc:
-		case NDK::KeywordKind::eKeywordKindVariableDec:
-		case NDK::KeywordKind::eKeywordKindVariableAssign: {
+		case ToolchainKit::KeywordKind::eKeywordKindEndInstr:
+		case ToolchainKit::KeywordKind::eKeywordKindVariableInc:
+		case ToolchainKit::KeywordKind::eKeywordKindVariableDec:
+		case ToolchainKit::KeywordKind::eKeywordKindVariableAssign: {
 			std::string valueOfVar = "";
 
-			if (keyword.first.keyword_kind == NDK::KeywordKind::eKeywordKindVariableInc)
+			if (keyword.first.keyword_kind == ToolchainKit::KeywordKind::eKeywordKindVariableInc)
 			{
 				valueOfVar = text.substr(text.find("+=") + 2);
 			}
-			else if (keyword.first.keyword_kind == NDK::KeywordKind::eKeywordKindVariableDec)
+			else if (keyword.first.keyword_kind == ToolchainKit::KeywordKind::eKeywordKindVariableDec)
 			{
 				valueOfVar = text.substr(text.find("-=") + 2);
 			}
-			else if (keyword.first.keyword_kind == NDK::KeywordKind::eKeywordKindVariableAssign)
+			else if (keyword.first.keyword_kind == ToolchainKit::KeywordKind::eKeywordKindVariableAssign)
 			{
 				valueOfVar = text.substr(text.find("=") + 1);
 			}
-			else if (keyword.first.keyword_kind == NDK::KeywordKind::eKeywordKindEndInstr)
+			else if (keyword.first.keyword_kind == ToolchainKit::KeywordKind::eKeywordKindEndInstr)
 			{
 				break;
 			}
 
 			while (valueOfVar.find(";") != std::string::npos &&
-				   keyword.first.keyword_kind != NDK::KeywordKind::eKeywordKindEndInstr)
+				   keyword.first.keyword_kind != ToolchainKit::KeywordKind::eKeywordKindEndInstr)
 			{
 				valueOfVar.erase(valueOfVar.find(";"));
 			}
 
 			std::string varName = text;
 
-			if (keyword.first.keyword_kind == NDK::KeywordKind::eKeywordKindVariableInc)
+			if (keyword.first.keyword_kind == ToolchainKit::KeywordKind::eKeywordKindVariableInc)
 			{
 				varName.erase(varName.find("+="));
 			}
-			else if (keyword.first.keyword_kind == NDK::KeywordKind::eKeywordKindVariableDec)
+			else if (keyword.first.keyword_kind == ToolchainKit::KeywordKind::eKeywordKindVariableDec)
 			{
 				varName.erase(varName.find("-="));
 			}
-			else if (keyword.first.keyword_kind == NDK::KeywordKind::eKeywordKindVariableAssign)
+			else if (keyword.first.keyword_kind == ToolchainKit::KeywordKind::eKeywordKindVariableAssign)
 			{
 				varName.erase(varName.find("="));
 			}
-			else if (keyword.first.keyword_kind == NDK::KeywordKind::eKeywordKindEndInstr)
+			else if (keyword.first.keyword_kind == ToolchainKit::KeywordKind::eKeywordKindEndInstr)
 			{
 				varName.erase(varName.find(";"));
 			}
@@ -455,7 +455,7 @@ bool CompilerFrontendCPlusPlus::Compile(const std::string text,
 
 			for (auto& keyword : kKeywords)
 			{
-				if (keyword.keyword_kind == NDK::eKeywordKindType)
+				if (keyword.keyword_kind == ToolchainKit::eKeywordKindType)
 				{
 					if (text.find(keyword.keyword_name) != std::string::npos)
 					{
@@ -472,8 +472,8 @@ bool CompilerFrontendCPlusPlus::Compile(const std::string text,
 
 			std::string instr = "mov ";
 
-			if (typeFound && keyword.first.keyword_kind != NDK::KeywordKind::eKeywordKindVariableInc &&
-				keyword.first.keyword_kind != NDK::KeywordKind::eKeywordKindVariableDec)
+			if (typeFound && keyword.first.keyword_kind != ToolchainKit::KeywordKind::eKeywordKindVariableInc &&
+				keyword.first.keyword_kind != ToolchainKit::KeywordKind::eKeywordKindVariableDec)
 			{
 				if (kRegisterMap.size() > cRegisters.size())
 				{
@@ -521,8 +521,8 @@ bool CompilerFrontendCPlusPlus::Compile(const std::string text,
 						if (valueOfVar[0] == '\"')
 						{
 
-							syntax_tree.fUserValue = "segment .data64 __NDK_LOCAL_VAR_" + varName + ": db " + valueOfVar + ", 0\n\n";
-							syntax_tree.fUserValue += instr + cRegisters[kRegisterMap.size() - 1] + ", " + "__NDK_LOCAL_VAR_" + varName + "\n";
+							syntax_tree.fUserValue = "segment .data64 __TOOLCHAINKIT_LOCAL_VAR_" + varName + ": db " + valueOfVar + ", 0\n\n";
+							syntax_tree.fUserValue += instr + cRegisters[kRegisterMap.size() - 1] + ", " + "__TOOLCHAINKIT_LOCAL_VAR_" + varName + "\n";
 						}
 						else
 						{
@@ -538,8 +538,8 @@ bool CompilerFrontendCPlusPlus::Compile(const std::string text,
 					if (valueOfVar[0] == '\"')
 					{
 
-						syntax_tree.fUserValue = "segment .data64 __NDK_LOCAL_VAR_" + varName + ": db " + valueOfVar + ", 0\n";
-						syntax_tree.fUserValue += instr + cRegisters[kRegisterMap.size()] + ", " + "__NDK_LOCAL_VAR_" + varName + "\n";
+						syntax_tree.fUserValue = "segment .data64 __TOOLCHAINKIT_LOCAL_VAR_" + varName + ": db " + valueOfVar + ", 0\n";
+						syntax_tree.fUserValue += instr + cRegisters[kRegisterMap.size()] + ", " + "__TOOLCHAINKIT_LOCAL_VAR_" + varName + "\n";
 					}
 					else
 					{
@@ -566,7 +566,7 @@ bool CompilerFrontendCPlusPlus::Compile(const std::string text,
 			done:
 				for (auto& keyword : kKeywords)
 				{
-					if (keyword.keyword_kind == NDK::eKeywordKindType &&
+					if (keyword.keyword_kind == ToolchainKit::eKeywordKindType &&
 						varName.find(keyword.keyword_name) != std::string::npos)
 					{
 						varName.erase(varName.find(keyword.keyword_name), keyword.keyword_name.size());
@@ -579,24 +579,24 @@ bool CompilerFrontendCPlusPlus::Compile(const std::string text,
 				break;
 			}
 
-			if (kKeywords[keyword.second - 1].keyword_kind == NDK::eKeywordKindType ||
-				kKeywords[keyword.second - 1].keyword_kind == NDK::eKeywordKindTypePtr)
+			if (kKeywords[keyword.second - 1].keyword_kind == ToolchainKit::eKeywordKindType ||
+				kKeywords[keyword.second - 1].keyword_kind == ToolchainKit::eKeywordKindTypePtr)
 			{
 				syntax_tree.fUserValue = "\n";
 				continue;
 			}
 
-			if (keyword.first.keyword_kind == NDK::KeywordKind::eKeywordKindEndInstr)
+			if (keyword.first.keyword_kind == ToolchainKit::KeywordKind::eKeywordKindEndInstr)
 			{
 				syntax_tree.fUserValue = "\n";
 				continue;
 			}
 
-			if (keyword.first.keyword_kind == NDK::KeywordKind::eKeywordKindVariableInc)
+			if (keyword.first.keyword_kind == ToolchainKit::KeywordKind::eKeywordKindVariableInc)
 			{
 				instr = "add ";
 			}
-			else if (keyword.first.keyword_kind == NDK::KeywordKind::eKeywordKindVariableDec)
+			else if (keyword.first.keyword_kind == ToolchainKit::KeywordKind::eKeywordKindVariableDec)
 			{
 				instr = "sub ";
 			}
@@ -680,7 +680,7 @@ bool CompilerFrontendCPlusPlus::Compile(const std::string text,
 
 			break;
 		}
-		case NDK::KeywordKind::eKeywordKindReturn: {
+		case ToolchainKit::KeywordKind::eKeywordKindReturn: {
 			auto		pos		= text.find("return") + strlen("return") + 1;
 			std::string subText = text.substr(pos);
 			subText				= subText.erase(subText.find(";"));
@@ -714,7 +714,7 @@ bool CompilerFrontendCPlusPlus::Compile(const std::string text,
 			}
 			else
 			{
-				syntax_tree.fUserValue = "__NDK_LOCAL_RETURN_STRING: db " + subText + ", 0\nmov rcx, __NDK_LOCAL_RETURN_STRING\n";
+				syntax_tree.fUserValue = "__TOOLCHAINKIT_LOCAL_RETURN_STRING: db " + subText + ", 0\nmov rcx, __TOOLCHAINKIT_LOCAL_RETURN_STRING\n";
 				syntax_tree.fUserValue += "mov rax, rcx\r\nret\n";
 			}
 
@@ -740,17 +740,17 @@ ndk_compile_ok:
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
-class AssemblyCPlusPlusInterface final : public NDK::AssemblyInterface
+class AssemblyCPlusPlusInterface final : public ToolchainKit::AssemblyInterface
 {
 public:
 	explicit AssemblyCPlusPlusInterface()  = default;
 	~AssemblyCPlusPlusInterface() override = default;
 
-	NDK_COPY_DEFAULT(AssemblyCPlusPlusInterface);
+	TOOLCHAINKIT_COPY_DEFAULT(AssemblyCPlusPlusInterface);
 
 	[[maybe_unused]] static Int32 Arch() noexcept
 	{
-		return NDK::AssemblyFactory::kArchAMD64;
+		return ToolchainKit::AssemblyFactory::kArchAMD64;
 	}
 
 	Int32 CompileToFormat(std::string& src, Int32 arch) override
@@ -772,7 +772,7 @@ public:
 
 		if (dest.empty())
 		{
-			dest = "CXX-NDK-";
+			dest = "CXX-ToolchainKit-";
 
 			std::random_device rd;
 			auto			   seed_data = std::array<int, std::mt19937::state_size>{};
@@ -790,7 +790,7 @@ public:
 
 		kState.fOutputAssembly = std::make_unique<std::ofstream>(dest);
 
-		auto fmt = NDK::current_date();
+		auto fmt = ToolchainKit::current_date();
 
 		(*kState.fOutputAssembly) << "; Path: " << src_file << "\n";
 		(*kState.fOutputAssembly)
@@ -799,7 +799,7 @@ public:
 		(*kState.fOutputAssembly) << "#bits 64\n#org 0x1000000"
 								  << "\n";
 
-		kState.fSyntaxTree = new NDK::SyntaxLeafList();
+		kState.fSyntaxTree = new ToolchainKit::SyntaxLeafList();
 
 		// ===================================
 		// Parse source file.
@@ -846,67 +846,67 @@ static void cxx_print_help()
 		".cpp", ".cxx", ".cc", ".c++", ".cp" \
 	}
 
-NDK_MODULE(CompilerCPlusPlusX8664)
+TOOLCHAINKIT_MODULE(CompilerCPlusPlusX8664)
 {
 	bool skip = false;
 
-	kKeywords.push_back({.keyword_name = "if", .keyword_kind = NDK::eKeywordKindIf});
-	kKeywords.push_back({.keyword_name = "else", .keyword_kind = NDK::eKeywordKindElse});
-	kKeywords.push_back({.keyword_name = "else if", .keyword_kind = NDK::eKeywordKindElseIf});
+	kKeywords.push_back({.keyword_name = "if", .keyword_kind = ToolchainKit::eKeywordKindIf});
+	kKeywords.push_back({.keyword_name = "else", .keyword_kind = ToolchainKit::eKeywordKindElse});
+	kKeywords.push_back({.keyword_name = "else if", .keyword_kind = ToolchainKit::eKeywordKindElseIf});
 
-	kKeywords.push_back({.keyword_name = "class", .keyword_kind = NDK::eKeywordKindClass});
-	kKeywords.push_back({.keyword_name = "struct", .keyword_kind = NDK::eKeywordKindClass});
-	kKeywords.push_back({.keyword_name = "namespace", .keyword_kind = NDK::eKeywordKindNamespace});
-	kKeywords.push_back({.keyword_name = "typedef", .keyword_kind = NDK::eKeywordKindTypedef});
-	kKeywords.push_back({.keyword_name = "using", .keyword_kind = NDK::eKeywordKindTypedef});
-	kKeywords.push_back({.keyword_name = "{", .keyword_kind = NDK::eKeywordKindBodyStart});
-	kKeywords.push_back({.keyword_name = "}", .keyword_kind = NDK::eKeywordKindBodyEnd});
-	kKeywords.push_back({.keyword_name = "auto", .keyword_kind = NDK::eKeywordKindVariable});
-	kKeywords.push_back({.keyword_name = "int", .keyword_kind = NDK::eKeywordKindType});
-	kKeywords.push_back({.keyword_name = "bool", .keyword_kind = NDK::eKeywordKindType});
-	kKeywords.push_back({.keyword_name = "unsigned", .keyword_kind = NDK::eKeywordKindType});
-	kKeywords.push_back({.keyword_name = "short", .keyword_kind = NDK::eKeywordKindType});
-	kKeywords.push_back({.keyword_name = "char", .keyword_kind = NDK::eKeywordKindType});
-	kKeywords.push_back({.keyword_name = "long", .keyword_kind = NDK::eKeywordKindType});
-	kKeywords.push_back({.keyword_name = "float", .keyword_kind = NDK::eKeywordKindType});
-	kKeywords.push_back({.keyword_name = "double", .keyword_kind = NDK::eKeywordKindType});
-	kKeywords.push_back({.keyword_name = "void", .keyword_kind = NDK::eKeywordKindType});
+	kKeywords.push_back({.keyword_name = "class", .keyword_kind = ToolchainKit::eKeywordKindClass});
+	kKeywords.push_back({.keyword_name = "struct", .keyword_kind = ToolchainKit::eKeywordKindClass});
+	kKeywords.push_back({.keyword_name = "namespace", .keyword_kind = ToolchainKit::eKeywordKindNamespace});
+	kKeywords.push_back({.keyword_name = "typedef", .keyword_kind = ToolchainKit::eKeywordKindTypedef});
+	kKeywords.push_back({.keyword_name = "using", .keyword_kind = ToolchainKit::eKeywordKindTypedef});
+	kKeywords.push_back({.keyword_name = "{", .keyword_kind = ToolchainKit::eKeywordKindBodyStart});
+	kKeywords.push_back({.keyword_name = "}", .keyword_kind = ToolchainKit::eKeywordKindBodyEnd});
+	kKeywords.push_back({.keyword_name = "auto", .keyword_kind = ToolchainKit::eKeywordKindVariable});
+	kKeywords.push_back({.keyword_name = "int", .keyword_kind = ToolchainKit::eKeywordKindType});
+	kKeywords.push_back({.keyword_name = "bool", .keyword_kind = ToolchainKit::eKeywordKindType});
+	kKeywords.push_back({.keyword_name = "unsigned", .keyword_kind = ToolchainKit::eKeywordKindType});
+	kKeywords.push_back({.keyword_name = "short", .keyword_kind = ToolchainKit::eKeywordKindType});
+	kKeywords.push_back({.keyword_name = "char", .keyword_kind = ToolchainKit::eKeywordKindType});
+	kKeywords.push_back({.keyword_name = "long", .keyword_kind = ToolchainKit::eKeywordKindType});
+	kKeywords.push_back({.keyword_name = "float", .keyword_kind = ToolchainKit::eKeywordKindType});
+	kKeywords.push_back({.keyword_name = "double", .keyword_kind = ToolchainKit::eKeywordKindType});
+	kKeywords.push_back({.keyword_name = "void", .keyword_kind = ToolchainKit::eKeywordKindType});
 
-	kKeywords.push_back({.keyword_name = "auto*", .keyword_kind = NDK::eKeywordKindVariablePtr});
-	kKeywords.push_back({.keyword_name = "int*", .keyword_kind = NDK::eKeywordKindTypePtr});
-	kKeywords.push_back({.keyword_name = "bool*", .keyword_kind = NDK::eKeywordKindTypePtr});
-	kKeywords.push_back({.keyword_name = "unsigned*", .keyword_kind = NDK::eKeywordKindTypePtr});
-	kKeywords.push_back({.keyword_name = "short*", .keyword_kind = NDK::eKeywordKindTypePtr});
-	kKeywords.push_back({.keyword_name = "char*", .keyword_kind = NDK::eKeywordKindTypePtr});
-	kKeywords.push_back({.keyword_name = "long*", .keyword_kind = NDK::eKeywordKindTypePtr});
-	kKeywords.push_back({.keyword_name = "float*", .keyword_kind = NDK::eKeywordKindTypePtr});
-	kKeywords.push_back({.keyword_name = "double*", .keyword_kind = NDK::eKeywordKindTypePtr});
-	kKeywords.push_back({.keyword_name = "void*", .keyword_kind = NDK::eKeywordKindTypePtr});
+	kKeywords.push_back({.keyword_name = "auto*", .keyword_kind = ToolchainKit::eKeywordKindVariablePtr});
+	kKeywords.push_back({.keyword_name = "int*", .keyword_kind = ToolchainKit::eKeywordKindTypePtr});
+	kKeywords.push_back({.keyword_name = "bool*", .keyword_kind = ToolchainKit::eKeywordKindTypePtr});
+	kKeywords.push_back({.keyword_name = "unsigned*", .keyword_kind = ToolchainKit::eKeywordKindTypePtr});
+	kKeywords.push_back({.keyword_name = "short*", .keyword_kind = ToolchainKit::eKeywordKindTypePtr});
+	kKeywords.push_back({.keyword_name = "char*", .keyword_kind = ToolchainKit::eKeywordKindTypePtr});
+	kKeywords.push_back({.keyword_name = "long*", .keyword_kind = ToolchainKit::eKeywordKindTypePtr});
+	kKeywords.push_back({.keyword_name = "float*", .keyword_kind = ToolchainKit::eKeywordKindTypePtr});
+	kKeywords.push_back({.keyword_name = "double*", .keyword_kind = ToolchainKit::eKeywordKindTypePtr});
+	kKeywords.push_back({.keyword_name = "void*", .keyword_kind = ToolchainKit::eKeywordKindTypePtr});
 
-	kKeywords.push_back({.keyword_name = "(", .keyword_kind = NDK::eKeywordKindFunctionStart});
-	kKeywords.push_back({.keyword_name = ")", .keyword_kind = NDK::eKeywordKindFunctionEnd});
-	kKeywords.push_back({.keyword_name = "=", .keyword_kind = NDK::eKeywordKindVariableAssign});
-	kKeywords.push_back({.keyword_name = "+=", .keyword_kind = NDK::eKeywordKindVariableInc});
-	kKeywords.push_back({.keyword_name = "-=", .keyword_kind = NDK::eKeywordKindVariableDec});
-	kKeywords.push_back({.keyword_name = "const", .keyword_kind = NDK::eKeywordKindConstant});
-	kKeywords.push_back({.keyword_name = "*", .keyword_kind = NDK::eKeywordKindPtr});
-	kKeywords.push_back({.keyword_name = "->", .keyword_kind = NDK::eKeywordKindPtrAccess});
-	kKeywords.push_back({.keyword_name = ".", .keyword_kind = NDK::eKeywordKindAccess});
-	kKeywords.push_back({.keyword_name = ",", .keyword_kind = NDK::eKeywordKindArgSeparator});
-	kKeywords.push_back({.keyword_name = ";", .keyword_kind = NDK::eKeywordKindEndInstr});
-	kKeywords.push_back({.keyword_name = ":", .keyword_kind = NDK::eKeywordKindSpecifier});
-	kKeywords.push_back({.keyword_name = "public:", .keyword_kind = NDK::eKeywordKindSpecifier});
-	kKeywords.push_back({.keyword_name = "private:", .keyword_kind = NDK::eKeywordKindSpecifier});
-	kKeywords.push_back({.keyword_name = "protected:", .keyword_kind = NDK::eKeywordKindSpecifier});
-	kKeywords.push_back({.keyword_name = "final", .keyword_kind = NDK::eKeywordKindSpecifier});
-	kKeywords.push_back({.keyword_name = "return", .keyword_kind = NDK::eKeywordKindReturn});
-	kKeywords.push_back({.keyword_name = "/*", .keyword_kind = NDK::eKeywordKindCommentMultiLineStart});
-	kKeywords.push_back({.keyword_name = "*/", .keyword_kind = NDK::eKeywordKindCommentMultiLineStart});
-	kKeywords.push_back({.keyword_name = "//", .keyword_kind = NDK::eKeywordKindCommentInline});
-	kKeywords.push_back({.keyword_name = "==", .keyword_kind = NDK::eKeywordKindEq});
-	kKeywords.push_back({.keyword_name = "!=", .keyword_kind = NDK::eKeywordKindNotEq});
-	kKeywords.push_back({.keyword_name = ">=", .keyword_kind = NDK::eKeywordKindGreaterEq});
-	kKeywords.push_back({.keyword_name = "<=", .keyword_kind = NDK::eKeywordKindLessEq});
+	kKeywords.push_back({.keyword_name = "(", .keyword_kind = ToolchainKit::eKeywordKindFunctionStart});
+	kKeywords.push_back({.keyword_name = ")", .keyword_kind = ToolchainKit::eKeywordKindFunctionEnd});
+	kKeywords.push_back({.keyword_name = "=", .keyword_kind = ToolchainKit::eKeywordKindVariableAssign});
+	kKeywords.push_back({.keyword_name = "+=", .keyword_kind = ToolchainKit::eKeywordKindVariableInc});
+	kKeywords.push_back({.keyword_name = "-=", .keyword_kind = ToolchainKit::eKeywordKindVariableDec});
+	kKeywords.push_back({.keyword_name = "const", .keyword_kind = ToolchainKit::eKeywordKindConstant});
+	kKeywords.push_back({.keyword_name = "*", .keyword_kind = ToolchainKit::eKeywordKindPtr});
+	kKeywords.push_back({.keyword_name = "->", .keyword_kind = ToolchainKit::eKeywordKindPtrAccess});
+	kKeywords.push_back({.keyword_name = ".", .keyword_kind = ToolchainKit::eKeywordKindAccess});
+	kKeywords.push_back({.keyword_name = ",", .keyword_kind = ToolchainKit::eKeywordKindArgSeparator});
+	kKeywords.push_back({.keyword_name = ";", .keyword_kind = ToolchainKit::eKeywordKindEndInstr});
+	kKeywords.push_back({.keyword_name = ":", .keyword_kind = ToolchainKit::eKeywordKindSpecifier});
+	kKeywords.push_back({.keyword_name = "public:", .keyword_kind = ToolchainKit::eKeywordKindSpecifier});
+	kKeywords.push_back({.keyword_name = "private:", .keyword_kind = ToolchainKit::eKeywordKindSpecifier});
+	kKeywords.push_back({.keyword_name = "protected:", .keyword_kind = ToolchainKit::eKeywordKindSpecifier});
+	kKeywords.push_back({.keyword_name = "final", .keyword_kind = ToolchainKit::eKeywordKindSpecifier});
+	kKeywords.push_back({.keyword_name = "return", .keyword_kind = ToolchainKit::eKeywordKindReturn});
+	kKeywords.push_back({.keyword_name = "/*", .keyword_kind = ToolchainKit::eKeywordKindCommentMultiLineStart});
+	kKeywords.push_back({.keyword_name = "*/", .keyword_kind = ToolchainKit::eKeywordKindCommentMultiLineStart});
+	kKeywords.push_back({.keyword_name = "//", .keyword_kind = ToolchainKit::eKeywordKindCommentInline});
+	kKeywords.push_back({.keyword_name = "==", .keyword_kind = ToolchainKit::eKeywordKindEq});
+	kKeywords.push_back({.keyword_name = "!=", .keyword_kind = ToolchainKit::eKeywordKindNotEq});
+	kKeywords.push_back({.keyword_name = ">=", .keyword_kind = ToolchainKit::eKeywordKindGreaterEq});
+	kKeywords.push_back({.keyword_name = "<=", .keyword_kind = ToolchainKit::eKeywordKindLessEq});
 
 	kFactory.Mount(new AssemblyCPlusPlusInterface());
 	kCompilerFrontend = new CompilerFrontendCPlusPlus();

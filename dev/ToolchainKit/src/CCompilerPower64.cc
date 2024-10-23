@@ -70,10 +70,10 @@ namespace detail
 
 	struct CompilerState final
 	{
-		std::vector<NDK::SyntaxLeafList> fSyntaxTreeList;
+		std::vector<ToolchainKit::SyntaxLeafList> fSyntaxTreeList;
 		std::vector<CompilerRegisterMap> kStackFrame;
 		std::vector<CompilerStructMap>	 kStructMap;
-		NDK::SyntaxLeafList*			 fSyntaxTree{nullptr};
+		ToolchainKit::SyntaxLeafList*			 fSyntaxTree{nullptr};
 		std::unique_ptr<std::ofstream>	 fOutputAssembly;
 		std::string						 fLastFile;
 		std::string						 fLastError;
@@ -124,7 +124,7 @@ static std::string kRegisterPrefix	= kAsmRegisterPrefix;
 /////////////////////////////////////////
 
 static std::vector<std::string> kFileList;
-static NDK::AssemblyFactory		kFactory;
+static ToolchainKit::AssemblyFactory		kFactory;
 static bool						kInStruct	 = false;
 static bool						kOnWhileLoop = false;
 static bool						kOnForLoop	 = false;
@@ -133,13 +133,13 @@ static bool						kIfFound	 = false;
 static size_t					kBracesCount = 0UL;
 
 /* @brief C compiler backend for C */
-class CompilerFrontendPower64 final : public NDK::ICompilerFrontend
+class CompilerFrontendPower64 final : public ToolchainKit::ICompilerFrontend
 {
 public:
 	explicit CompilerFrontendPower64()	= default;
 	~CompilerFrontendPower64() override = default;
 
-	NDK_COPY_DEFAULT(CompilerFrontendPower64);
+	TOOLCHAINKIT_COPY_DEFAULT(CompilerFrontendPower64);
 
 	std::string Check(const char* text, const char* file);
 	bool		Compile(const std::string text, const std::string file) override;
@@ -210,7 +210,7 @@ bool CompilerFrontendPower64::Compile(const std::string text, const std::string 
 	// start parsing
 	for (size_t text_index = 0; text_index < textBuffer.size(); ++text_index)
 	{
-		auto syntaxLeaf = NDK::SyntaxLeafList::SyntaxLeaf();
+		auto syntaxLeaf = ToolchainKit::SyntaxLeafList::SyntaxLeaf();
 
 		auto		gen = uuids::uuid_random_generator{generator};
 		uuids::uuid out = gen();
@@ -381,7 +381,7 @@ bool CompilerFrontendPower64::Compile(const std::string text, const std::string 
 			if (expr.find(")") != std::string::npos)
 				expr.erase(expr.find(")"));
 
-			kIfFunction = "__NDK_IF_PROC_";
+			kIfFunction = "__TOOLCHAINKIT_IF_PROC_";
 			kIfFunction += std::to_string(time_off._Raw);
 
 			syntaxLeaf.fUserValue =
@@ -760,7 +760,7 @@ bool CompilerFrontendPower64::Compile(const std::string text, const std::string 
 		syntaxLeaf.fUserValue.clear();
 	}
 
-	auto syntaxLeaf		  = NDK::SyntaxLeafList::SyntaxLeaf();
+	auto syntaxLeaf		  = ToolchainKit::SyntaxLeafList::SyntaxLeaf();
 	syntaxLeaf.fUserValue = "\n";
 	kState.fSyntaxTree->fLeafList.push_back(syntaxLeaf);
 
@@ -1028,7 +1028,7 @@ cc_next:
 
 	// extern does not declare anything, it extern_segments a variable.
 	// so that's why it's not declare upper.
-	if (NDK::find_word(ln, "extern"))
+	if (ToolchainKit::find_word(ln, "extern"))
 	{
 		auto substr = ln.substr(ln.find("extern") + strlen("extern"));
 		kCompilerVariables.push_back({.fValue = substr});
@@ -1099,7 +1099,7 @@ skip_braces_check:
 
 	for (auto& key : kCompilerTypes)
 	{
-		if (NDK::find_word(ln, key.fName))
+		if (ToolchainKit::find_word(ln, key.fName))
 		{
 			if (isdigit(ln[ln.find(key.fName) + key.fName.size() + 1]))
 			{
@@ -1200,9 +1200,9 @@ skip_braces_check:
 
 	if (ln.find('(') != std::string::npos)
 	{
-		if (ln.find(';') == std::string::npos && !NDK::find_word(ln, "|") &&
-			!NDK::find_word(ln, "||") && !NDK::find_word(ln, "&") &&
-			!NDK::find_word(ln, "&&") && !NDK::find_word(ln, "~"))
+		if (ln.find(';') == std::string::npos && !ToolchainKit::find_word(ln, "|") &&
+			!ToolchainKit::find_word(ln, "||") && !ToolchainKit::find_word(ln, "&") &&
+			!ToolchainKit::find_word(ln, "&&") && !ToolchainKit::find_word(ln, "~"))
 		{
 			bool			  found_func = false;
 			size_t			  i			 = ln.find('(');
@@ -1318,17 +1318,17 @@ skip_braces_check:
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
-class AssemblyMountpointCLang final : public NDK::AssemblyInterface
+class AssemblyMountpointCLang final : public ToolchainKit::AssemblyInterface
 {
 public:
 	explicit AssemblyMountpointCLang()	= default;
 	~AssemblyMountpointCLang() override = default;
 
-	NDK_COPY_DEFAULT(AssemblyMountpointCLang);
+	TOOLCHAINKIT_COPY_DEFAULT(AssemblyMountpointCLang);
 
 	[[maybe_unused]] static Int32 Arch() noexcept
 	{
-		return NDK::AssemblyFactory::kArchPowerPC;
+		return ToolchainKit::AssemblyFactory::kArchPowerPC;
 	}
 
 	Int32 CompileToFormat(std::string& src, Int32 arch) override
@@ -1360,14 +1360,14 @@ public:
 
 		kState.fOutputAssembly = std::make_unique<std::ofstream>(dest);
 
-		auto fmt = NDK::current_date();
+		auto fmt = ToolchainKit::current_date();
 
 		(*kState.fOutputAssembly) << "# Path: " << src_file << "\n";
 		(*kState.fOutputAssembly)
 			<< "# Language: POWER Assembly (Generated from C)\n";
 		(*kState.fOutputAssembly) << "# Date: " << fmt << "\n\n";
 
-		NDK::SyntaxLeafList syntax;
+		ToolchainKit::SyntaxLeafList syntax;
 
 		kState.fSyntaxTreeList.push_back(syntax);
 		kState.fSyntaxTree =
@@ -1403,7 +1403,7 @@ public:
 
 			for (auto& access_ident : access_keywords)
 			{
-				if (NDK::find_word(leaf.fUserValue, access_ident))
+				if (ToolchainKit::find_word(leaf.fUserValue, access_ident))
 				{
 					for (auto& struc : kState.kStructMap)
 					{
@@ -1414,7 +1414,7 @@ public:
 
 			for (auto& keyword : keywords)
 			{
-				if (NDK::find_word(leaf.fUserValue, keyword))
+				if (ToolchainKit::find_word(leaf.fUserValue, keyword))
 				{
 					std::size_t cnt = 0UL;
 
@@ -1445,7 +1445,7 @@ public:
 							}
 						}
 
-						if (NDK::find_word(leaf.fUserValue, needle))
+						if (ToolchainKit::find_word(leaf.fUserValue, needle))
 						{
 							if (leaf.fUserValue.find("extern_segment ") != std::string::npos)
 							{
@@ -1514,7 +1514,7 @@ static void cc_print_help()
 
 #define kExt ".c"
 
-NDK_MODULE(NewOSCompilerCLangPowerPC)
+TOOLCHAINKIT_MODULE(NewOSCompilerCLangPowerPC)
 {
 	kCompilerTypes.push_back({.fName = "void", .fValue = "void"});
 	kCompilerTypes.push_back({.fName = "char", .fValue = "byte"});
@@ -1526,7 +1526,7 @@ NDK_MODULE(NewOSCompilerCLangPowerPC)
 	bool skip = false;
 
 	kFactory.Mount(new AssemblyMountpointCLang());
-	kMachine		  = NDK::AssemblyFactory::kArchPowerPC;
+	kMachine		  = ToolchainKit::AssemblyFactory::kArchPowerPC;
 	kCompilerFrontend = new CompilerFrontendPower64();
 
 	for (auto index = 1UL; index < argc; ++index)

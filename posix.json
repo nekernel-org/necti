@@ -10,7 +10,7 @@
   "output_name": "/usr/local/lib/libndk.dylib",
   "compiler_flags": ["-fPIC", "-shared"],
   "cpp_macros": [
-    "__NDK_DLL__=202401",
+    "__TOOLCHAINKIT_DLL__=202401",
     "kDistReleaseBranch=$(git rev-parse --abbrev-ref HEAD)-$(uuidgen)"
   ]
 }

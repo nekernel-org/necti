@@ -10,7 +10,7 @@
 #include <ToolchainKit/Defines.h>
 #include <ToolchainKit/NFC/String.h>
 
-namespace NDK
+namespace ToolchainKit
 {
 	//
 	//	@brief Frontend to Assembly mountpoint.
@@ -21,7 +21,7 @@ namespace NDK
 		explicit AssemblyInterface() = default;
 		virtual ~AssemblyInterface() = default;
 
-		NDK_COPY_DEFAULT(AssemblyInterface);
+		TOOLCHAINKIT_COPY_DEFAULT(AssemblyInterface);
 
 		//@ brief compile to object file.
 		// Example C++ -> MASM -> AE object.
@@ -35,7 +35,7 @@ namespace NDK
 		explicit AssemblyFactory() = default;
 		~AssemblyFactory()		   = default;
 
-		NDK_COPY_DEFAULT(AssemblyFactory);
+		TOOLCHAINKIT_COPY_DEFAULT(AssemblyFactory);
 
 	public:
 		enum
@@ -128,7 +128,7 @@ namespace NDK
 		explicit EncoderInterface() = default;
 		virtual ~EncoderInterface() = default;
 
-		NDK_COPY_DEFAULT(EncoderInterface);
+		TOOLCHAINKIT_COPY_DEFAULT(EncoderInterface);
 
 		virtual std::string CheckLine(std::string& line, const std::string& file)		= 0;
 		virtual bool		WriteLine(std::string& line, const std::string& file)		= 0;
@@ -143,7 +143,7 @@ namespace NDK
 		explicit EncoderAMD64()	 = default;
 		~EncoderAMD64() override = default;
 
-		NDK_COPY_DEFAULT(EncoderAMD64);
+		TOOLCHAINKIT_COPY_DEFAULT(EncoderAMD64);
 
 		virtual std::string CheckLine(std::string&		 line,
 									  const std::string& file) override;
@@ -166,7 +166,7 @@ namespace NDK
 		explicit Encoder64x0()	= default;
 		~Encoder64x0() override = default;
 
-		NDK_COPY_DEFAULT(Encoder64x0);
+		TOOLCHAINKIT_COPY_DEFAULT(Encoder64x0);
 
 		virtual std::string CheckLine(std::string&		 line,
 									  const std::string& file) override;
@@ -185,7 +185,7 @@ namespace NDK
 		explicit Encoder32x0()	= default;
 		~Encoder32x0() override = default;
 
-		NDK_COPY_DEFAULT(Encoder32x0);
+		TOOLCHAINKIT_COPY_DEFAULT(Encoder32x0);
 
 		virtual std::string CheckLine(std::string&		 line,
 									  const std::string& file) override;
@@ -204,7 +204,7 @@ namespace NDK
 		explicit EncoderPowerPC()  = default;
 		~EncoderPowerPC() override = default;
 
-		NDK_COPY_DEFAULT(EncoderPowerPC);
+		TOOLCHAINKIT_COPY_DEFAULT(EncoderPowerPC);
 
 		virtual std::string CheckLine(std::string&		 line,
 									  const std::string& file) override;
@@ -214,4 +214,4 @@ namespace NDK
 	};
 
 #endif // __ASM_NEED_32x0__
-} // namespace NDK
+} // namespace ToolchainKit

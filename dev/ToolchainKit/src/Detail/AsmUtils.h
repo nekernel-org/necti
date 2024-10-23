@@ -9,7 +9,7 @@
 #include <ToolchainKit/AAL/Asm.h>
 #include <ToolchainKit/Parser.h>
 
-using namespace NDK;
+using namespace ToolchainKit;
 
 namespace detail
 {
@@ -42,7 +42,7 @@ static NumberCast32 GetNumber32(std::string lineBuffer, std::string numberKey)
 		{
 			if (errno != 0)
 			{
-				detail::print_error_asm("invalid hex number: " + lineBuffer, "NDK");
+				detail::print_error_asm("invalid hex number: " + lineBuffer, "ToolchainKit");
 				throw std::runtime_error("invalid_hex");
 			}
 		}
@@ -62,7 +62,7 @@ static NumberCast32 GetNumber32(std::string lineBuffer, std::string numberKey)
 		{
 			if (errno != 0)
 			{
-				detail::print_error_asm("invalid binary number:" + lineBuffer, "NDK");
+				detail::print_error_asm("invalid binary number:" + lineBuffer, "ToolchainKit");
 				throw std::runtime_error("invalid_bin");
 			}
 		}
@@ -82,7 +82,7 @@ static NumberCast32 GetNumber32(std::string lineBuffer, std::string numberKey)
 		{
 			if (errno != 0)
 			{
-				detail::print_error_asm("invalid octal number: " + lineBuffer, "NDK");
+				detail::print_error_asm("invalid octal number: " + lineBuffer, "ToolchainKit");
 				throw std::runtime_error("invalid_octal");
 			}
 		}
@@ -102,7 +102,7 @@ static NumberCast32 GetNumber32(std::string lineBuffer, std::string numberKey)
 		{
 			if (errno != 0)
 			{
-				detail::print_error_asm("invalid hex number: " + lineBuffer, "NDK");
+				detail::print_error_asm("invalid hex number: " + lineBuffer, "ToolchainKit");
 				throw std::runtime_error("invalid_hex");
 			}
 		}

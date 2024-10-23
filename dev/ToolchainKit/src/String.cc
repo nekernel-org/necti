@@ -1,7 +1,7 @@
 /*
  *	========================================================
  *
- *	NDK
+ *	ToolchainKit
  * 	Copyright ZKA Web Services Co, all rights reserved.
  *
  * 	========================================================
@@ -20,7 +20,7 @@
 
 #include <ToolchainKit/NFC/String.h>
 
-namespace NDK
+namespace ToolchainKit
 {
 	CharType* StringView::Data()
 	{
@@ -252,4 +252,4 @@ namespace NDK
 
 		return *this;
 	}
-} // namespace NDK
+} // namespace ToolchainKit

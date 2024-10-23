@@ -38,7 +38,7 @@
 
 #define kPefStart "__ImageStart"
 
-namespace NDK
+namespace ToolchainKit
 {
 	enum
 	{
@@ -112,32 +112,32 @@ namespace NDK
 		kPefCount	 = 4,
 		kPefInvalid	 = 0xFF,
 	};
-} // namespace NDK
+} // namespace ToolchainKit
 
 inline std::ofstream& operator<<(std::ofstream&		fp,
-								 NDK::PEFContainer& container)
+								 ToolchainKit::PEFContainer& container)
 {
-	fp.write((char*)&container, sizeof(NDK::PEFContainer));
+	fp.write((char*)&container, sizeof(ToolchainKit::PEFContainer));
 	return fp;
 }
 
 inline std::ofstream& operator<<(std::ofstream&			fp,
-								 NDK::PEFCommandHeader& container)
+								 ToolchainKit::PEFCommandHeader& container)
 {
-	fp.write((char*)&container, sizeof(NDK::PEFCommandHeader));
+	fp.write((char*)&container, sizeof(ToolchainKit::PEFCommandHeader));
 	return fp;
 }
 
 inline std::ifstream& operator>>(std::ifstream&		fp,
-								 NDK::PEFContainer& container)
+								 ToolchainKit::PEFContainer& container)
 {
-	fp.read((char*)&container, sizeof(NDK::PEFContainer));
+	fp.read((char*)&container, sizeof(ToolchainKit::PEFContainer));
 	return fp;
 }
 
 inline std::ifstream& operator>>(std::ifstream&			fp,
-								 NDK::PEFCommandHeader& container)
+								 ToolchainKit::PEFCommandHeader& container)
 {
-	fp.read((char*)&container, sizeof(NDK::PEFCommandHeader));
+	fp.read((char*)&container, sizeof(ToolchainKit::PEFCommandHeader));
 	return fp;
 }

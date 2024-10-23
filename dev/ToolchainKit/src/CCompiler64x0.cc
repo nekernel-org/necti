@@ -24,7 +24,7 @@
 #include <vector>
 
 /* C driver */
-/* This is part of the NDK. */
+/* This is part of the ToolchainKit. */
 /* (c) ZKA Web Services Co */
 
 /// @author Amlal El Mahrouss (amlel)
@@ -79,10 +79,10 @@ namespace detail
 
 	struct CompilerState final
 	{
-		std::vector<NDK::SyntaxLeafList> fSyntaxTreeList;
+		std::vector<ToolchainKit::SyntaxLeafList> fSyntaxTreeList;
 		std::vector<CompilerRegisterMap> kStackFrame;
 		std::vector<CompilerStructMap>	 kStructMap;
-		NDK::SyntaxLeafList*			 fSyntaxTree{nullptr};
+		ToolchainKit::SyntaxLeafList*			 fSyntaxTree{nullptr};
 		std::unique_ptr<std::ofstream>	 fOutputAssembly;
 		std::string						 fLastFile;
 		std::string						 fLastError;
@@ -133,7 +133,7 @@ static std::string kRegisterPrefix	= kAsmRegisterPrefix;
 /////////////////////////////////////////
 
 static std::vector<std::string> kFileList;
-static NDK::AssemblyFactory		kFactory;
+static ToolchainKit::AssemblyFactory		kFactory;
 static bool						kInStruct	 = false;
 static bool						kOnWhileLoop = false;
 static bool						kOnForLoop	 = false;
@@ -142,13 +142,13 @@ static bool						kIfFound	 = false;
 static size_t					kBracesCount = 0UL;
 
 /* @brief C compiler backend for C */
-class CompilerFrontend64x0 final : public NDK::ICompilerFrontend
+class CompilerFrontend64x0 final : public ToolchainKit::ICompilerFrontend
 {
 public:
 	explicit CompilerFrontend64x0()	 = default;
 	~CompilerFrontend64x0() override = default;
 
-	NDK_COPY_DEFAULT(CompilerFrontend64x0);
+	TOOLCHAINKIT_COPY_DEFAULT(CompilerFrontend64x0);
 
 	std::string Check(const char* text, const char* file);
 	bool		Compile(const std::string text, const std::string file) override;
@@ -219,7 +219,7 @@ bool CompilerFrontend64x0::Compile(const std::string text, const std::string fil
 	// start parsing
 	for (size_t text_index = 0; text_index < textBuffer.size(); ++text_index)
 	{
-		auto syntaxLeaf = NDK::SyntaxLeafList::SyntaxLeaf();
+		auto syntaxLeaf = ToolchainKit::SyntaxLeafList::SyntaxLeaf();
 
 		auto		gen = uuids::uuid_random_generator{generator};
 		uuids::uuid out = gen();
@@ -371,7 +371,7 @@ bool CompilerFrontend64x0::Compile(const std::string text, const std::string fil
 			if (expr.find(")") != std::string::npos)
 				expr.erase(expr.find(")"));
 
-			kIfFunction = "__NDK_IF_PROC_";
+			kIfFunction = "__TOOLCHAINKIT_IF_PROC_";
 			kIfFunction += std::to_string(time_off._Raw);
 
 			syntaxLeaf.fUserValue = "\tlda r12, extern_segment ";
@@ -737,7 +737,7 @@ bool CompilerFrontend64x0::Compile(const std::string text, const std::string fil
 		syntaxLeaf.fUserValue.clear();
 	}
 
-	auto syntaxLeaf		  = NDK::SyntaxLeafList::SyntaxLeaf();
+	auto syntaxLeaf		  = ToolchainKit::SyntaxLeafList::SyntaxLeaf();
 	syntaxLeaf.fUserValue = "\n";
 	kState.fSyntaxTree->fLeafList.push_back(syntaxLeaf);
 
@@ -1005,7 +1005,7 @@ cc_next:
 
 	// extern does not declare anything, it extern_segments a variable.
 	// so that's why it's not declare upper.
-	if (NDK::find_word(ln, "extern"))
+	if (ToolchainKit::find_word(ln, "extern"))
 	{
 		auto substr = ln.substr(ln.find("extern") + strlen("extern"));
 		kCompilerVariables.push_back({.fValue = substr});
@@ -1076,7 +1076,7 @@ skip_braces_check:
 
 	for (auto& key : kCompilerTypes)
 	{
-		if (NDK::find_word(ln, key.fName))
+		if (ToolchainKit::find_word(ln, key.fName))
 		{
 			if (isdigit(ln[ln.find(key.fName) + key.fName.size() + 1]))
 			{
@@ -1177,9 +1177,9 @@ skip_braces_check:
 
 	if (ln.find('(') != std::string::npos)
 	{
-		if (ln.find(';') == std::string::npos && !NDK::find_word(ln, "|") &&
-			!NDK::find_word(ln, "||") && !NDK::find_word(ln, "&") &&
-			!NDK::find_word(ln, "&&") && !NDK::find_word(ln, "~"))
+		if (ln.find(';') == std::string::npos && !ToolchainKit::find_word(ln, "|") &&
+			!ToolchainKit::find_word(ln, "||") && !ToolchainKit::find_word(ln, "&") &&
+			!ToolchainKit::find_word(ln, "&&") && !ToolchainKit::find_word(ln, "~"))
 		{
 			bool			  found_func = false;
 			size_t			  i			 = ln.find('(');
@@ -1295,17 +1295,17 @@ skip_braces_check:
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
-class AssemblyCCInterface final : public NDK::AssemblyInterface
+class AssemblyCCInterface final : public ToolchainKit::AssemblyInterface
 {
 public:
 	explicit AssemblyCCInterface()	= default;
 	~AssemblyCCInterface() override = default;
 
-	NDK_COPY_DEFAULT(AssemblyCCInterface);
+	TOOLCHAINKIT_COPY_DEFAULT(AssemblyCCInterface);
 
 	[[maybe_unused]] static Int32 Arch() noexcept
 	{
-		return NDK::AssemblyFactory::kArch64x0;
+		return ToolchainKit::AssemblyFactory::kArch64x0;
 	}
 
 	Int32 CompileToFormat(std::string& src, Int32 arch) override
@@ -1337,14 +1337,14 @@ public:
 
 		kState.fOutputAssembly = std::make_unique<std::ofstream>(dest);
 
-		auto fmt = NDK::current_date();
+		auto fmt = ToolchainKit::current_date();
 
 		(*kState.fOutputAssembly) << "# Path: " << src_file << "\n";
 		(*kState.fOutputAssembly)
 			<< "# Language: 64x0 Assembly (Generated from ANSI C)\n";
 		(*kState.fOutputAssembly) << "# Date: " << fmt << "\n\n";
 
-		NDK::SyntaxLeafList syntax;
+		ToolchainKit::SyntaxLeafList syntax;
 
 		kState.fSyntaxTreeList.push_back(syntax);
 		kState.fSyntaxTree =
@@ -1381,7 +1381,7 @@ public:
 
 			for (auto& access_ident : access_keywords)
 			{
-				if (NDK::find_word(leaf.fUserValue, access_ident))
+				if (ToolchainKit::find_word(leaf.fUserValue, access_ident))
 				{
 					for (auto& struc : kState.kStructMap)
 					{
@@ -1392,7 +1392,7 @@ public:
 
 			for (auto& keyword : keywords)
 			{
-				if (NDK::find_word(leaf.fUserValue, keyword))
+				if (ToolchainKit::find_word(leaf.fUserValue, keyword))
 				{
 					std::size_t cnt = 0UL;
 
@@ -1423,7 +1423,7 @@ public:
 							}
 						}
 
-						if (NDK::find_word(leaf.fUserValue, needle))
+						if (ToolchainKit::find_word(leaf.fUserValue, needle))
 						{
 							if (leaf.fUserValue.find("extern_segment " + needle) !=
 								std::string::npos)
@@ -1494,7 +1494,7 @@ static void cc_print_help()
 
 #define kExt ".c"
 
-NDK_MODULE(NewOSCompilerCLang64x0)
+TOOLCHAINKIT_MODULE(NewOSCompilerCLang64x0)
 {
 	kCompilerTypes.push_back({.fName = "void", .fValue = "void"});
 	kCompilerTypes.push_back({.fName = "char", .fValue = "byte"});
@@ -1506,7 +1506,7 @@ NDK_MODULE(NewOSCompilerCLang64x0)
 	bool skip = false;
 
 	kFactory.Mount(new AssemblyCCInterface());
-	kMachine		  = NDK::AssemblyFactory::kArch64x0;
+	kMachine		  = ToolchainKit::AssemblyFactory::kArch64x0;
 	kCompilerFrontend = new CompilerFrontend64x0();
 
 	for (auto index = 1UL; index < argc; ++index)

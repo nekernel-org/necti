@@ -1,7 +1,7 @@
 /*
  *	========================================================
  *
- *	NDK
+ *	ToolchainKit
  * 	Copyright ZKA Web Services Co, all rights reserved.
  *
  * 	========================================================
@@ -12,7 +12,7 @@
 #include <ToolchainKit/Defines.h>
 #include <ToolchainKit/NFC/ErrorOr.h>
 
-namespace NDK
+namespace ToolchainKit
 {
 	/**
 	 * @brief StringView class, contains a C string and manages it.
@@ -42,7 +42,7 @@ namespace NDK
 			}
 		}
 
-		NDK_COPY_DEFAULT(StringView);
+		TOOLCHAINKIT_COPY_DEFAULT(StringView);
 
 		CharType*		Data();
 		const CharType* CData() const;
@@ -87,4 +87,4 @@ namespace NDK
 		static const char* Format(const char* fmt, const char* from);
 		static bool		   Equals(const char* lhs, const char* rhs);
 	};
-} // namespace NDK
+} // namespace ToolchainKit

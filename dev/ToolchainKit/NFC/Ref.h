@@ -2,7 +2,7 @@
 /*
  *	========================================================
  *
- *	NDK
+ *	ToolchainKit
  * 	Copyright ZKA Web Services Co, all rights reserved.
  *
  * 	========================================================
@@ -12,7 +12,7 @@
 
 #include <ToolchainKit/Defines.h>
 
-namespace NDK
+namespace ToolchainKit
 {
 	// @author Amlal El Mahrouss
 	// @brief Reference holder class, refers to a pointer of data in static memory.
@@ -30,7 +30,7 @@ namespace NDK
 			}
 		}
 
-		NDK_COPY_DEFAULT(Ref);
+		TOOLCHAINKIT_COPY_DEFAULT(Ref);
 
 	public:
 		explicit Ref(T cls, const Bool& strong = false)
@@ -100,4 +100,4 @@ namespace NDK
 	private:
 		Ref<T> m_Ref{nullptr};
 	};
-} // namespace NDK
+} // namespace ToolchainKit

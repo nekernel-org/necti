@@ -23,14 +23,14 @@
 //! @file Asm.cpp
 //! @brief AssemblyKit source implementation.
 
-namespace NDK
+namespace ToolchainKit
 {
 	///! @brief Compile for specific format (ELF, PEF, ZBIN)
 	Int32 AssemblyFactory::Compile(std::string& sourceFile,
 								   const Int32& arch) noexcept
 	{
 		if (sourceFile.length() < 1 || !fMounted)
-			return NDK_UNIMPLEMENTED;
+			return TOOLCHAINKIT_UNIMPLEMENTED;
 
 		return fMounted->CompileToFormat(sourceFile, arch);
 	}
@@ -56,4 +56,4 @@ namespace NDK
 
 		return mount_prev;
 	}
-} // namespace NDK
+} // namespace ToolchainKit

@@ -10,13 +10,13 @@
 #ifndef __SDK_STD_H__
 #define __SDK_STD_H__
 
-#ifndef __NDK__
+#ifndef __TOOLCHAINKIT__
 #define object	 class
 #define protocol class
 #define clsid(X)
 
-#warning ! You may be using the clang version of the ZKA NDK, please be cautious that some thing mayn't be present. !
-#endif // !__NDK__
+#warning ! You may be using the clang version of the ZKA ToolchainKit, please be cautious that some thing mayn't be present. !
+#endif // !__TOOLCHAINKIT__
 
 #ifdef __cplusplus
 #define LANG   "C++"

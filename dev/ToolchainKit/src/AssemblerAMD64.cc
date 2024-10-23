@@ -52,7 +52,7 @@
 #define kStdOut (std::cout << kWhite)
 #define kStdErr (std::cout << kRed)
 
-static char	   kOutputArch	   = NDK::kPefArchAMD64;
+static char	   kOutputArch	   = ToolchainKit::kPefArchAMD64;
 static Boolean kOutputAsBinary = false;
 
 static UInt32 kErrorLimit		= 10;
@@ -72,10 +72,10 @@ static bool kVerbose = false;
 
 static std::vector<i64_byte_t> kAppBytes;
 
-static NDK::AERecordHeader kCurrentRecord{
-	.fName = "", .fKind = NDK::kPefCode, .fSize = 0, .fOffset = 0};
+static ToolchainKit::AERecordHeader kCurrentRecord{
+	.fName = "", .fKind = ToolchainKit::kPefCode, .fSize = 0, .fOffset = 0};
 
-static std::vector<NDK::AERecordHeader> kRecords;
+static std::vector<ToolchainKit::AERecordHeader> kRecords;
 static std::vector<std::string>			kDefinedSymbols;
 static std::vector<std::string>			kUndefinedSymbols;
 
@@ -93,7 +93,7 @@ static bool asm_read_attributes(std::string& line);
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
-NDK_MODULE(ZKAAssemblerMainAMD64)
+TOOLCHAINKIT_MODULE(ZKAAssemblerMainAMD64)
 {
 	//////////////// CPU OPCODES BEGIN ////////////////
 
@@ -199,13 +199,13 @@ NDK_MODULE(ZKAAssemblerMainAMD64)
 
 		std::string line;
 
-		NDK::AEHeader hdr{0};
+		ToolchainKit::AEHeader hdr{0};
 
 		memset(hdr.fPad, kAENullType, kAEPad);
 
 		hdr.fMagic[0] = kAEMag0;
 		hdr.fMagic[1] = kAEMag1;
-		hdr.fSize	  = sizeof(NDK::AEHeader);
+		hdr.fSize	  = sizeof(ToolchainKit::AEHeader);
 		hdr.fArch	  = kOutputArch;
 
 		/////////////////////////////////////////////////////////////////////////////////////////
@@ -214,7 +214,7 @@ NDK_MODULE(ZKAAssemblerMainAMD64)
 
 		/////////////////////////////////////////////////////////////////////////////////////////
 
-		NDK::EncoderAMD64 asm64;
+		ToolchainKit::EncoderAMD64 asm64;
 
 		while (std::getline(file_ptr, line))
 		{
@@ -234,7 +234,7 @@ NDK_MODULE(ZKAAssemblerMainAMD64)
 				if (kVerbose)
 				{
 					std::string what = e.what();
-					detail::print_warning_asm("exit because of: " + what, "NDK");
+					detail::print_warning_asm("exit because of: " + what, "ToolchainKit");
 				}
 
 				try
@@ -282,7 +282,7 @@ NDK_MODULE(ZKAAssemblerMainAMD64)
 				if (kVerbose)
 					kStdOut << "AssemblerAMD64: Wrote record " << rec.fName << " to file...\n";
 
-				rec.fFlags |= NDK::kKindRelocationAtRuntime;
+				rec.fFlags |= ToolchainKit::kKindRelocationAtRuntime;
 				rec.fOffset = record_count;
 				++record_count;
 
@@ -294,7 +294,7 @@ NDK_MODULE(ZKAAssemblerMainAMD64)
 
 			for (auto& sym : kUndefinedSymbols)
 			{
-				NDK::AERecordHeader _record_hdr{0};
+				ToolchainKit::AERecordHeader _record_hdr{0};
 
 				if (kVerbose)
 					kStdOut << "AssemblerAMD64: Wrote symbol " << sym << " to file...\n";
@@ -377,11 +377,11 @@ static bool asm_read_attributes(std::string& line)
 {
 	// extern_segment is the opposite of public_segment, it signals to the ld
 	// that we need this symbol.
-	if (NDK::find_word(line, "extern_segment"))
+	if (ToolchainKit::find_word(line, "extern_segment"))
 	{
 		if (kOutputAsBinary)
 		{
-			detail::print_error_asm("Invalid directive in flat binary mode.", "NDK");
+			detail::print_error_asm("Invalid directive in flat binary mode.", "ToolchainKit");
 			throw std::runtime_error("invalid_extern_segment_bin");
 		}
 
@@ -408,17 +408,17 @@ static bool asm_read_attributes(std::string& line)
 		if (name.find(kPefCode64) != std::string::npos)
 		{
 			// data is treated as code.
-			kCurrentRecord.fKind = NDK::kPefCode;
+			kCurrentRecord.fKind = ToolchainKit::kPefCode;
 		}
 		else if (name.find(kPefData64) != std::string::npos)
 		{
 			// no code will be executed from here.
-			kCurrentRecord.fKind = NDK::kPefData;
+			kCurrentRecord.fKind = ToolchainKit::kPefData;
 		}
 		else if (name.find(kPefZero64) != std::string::npos)
 		{
 			// this is a bss section.
-			kCurrentRecord.fKind = NDK::kPefZero;
+			kCurrentRecord.fKind = ToolchainKit::kPefZero;
 		}
 
 		// this is a special case for the start stub.
@@ -426,7 +426,7 @@ static bool asm_read_attributes(std::string& line)
 
 		if (name == kPefStart)
 		{
-			kCurrentRecord.fKind = NDK::kPefCode;
+			kCurrentRecord.fKind = ToolchainKit::kPefCode;
 		}
 
 		// now we can tell the code size of the previous kCurrentRecord.
@@ -448,11 +448,11 @@ static bool asm_read_attributes(std::string& line)
 	// public_segment is a special keyword used by AssemblerAMD64 to tell the AE output stage to
 	// mark this section as a header. it currently supports .code64, .data64 and
 	// .zero64.
-	else if (NDK::find_word(line, "public_segment"))
+	else if (ToolchainKit::find_word(line, "public_segment"))
 	{
 		if (kOutputAsBinary)
 		{
-			detail::print_error_asm("Invalid directive in flat binary mode.", "NDK");
+			detail::print_error_asm("Invalid directive in flat binary mode.", "ToolchainKit");
 			throw std::runtime_error("invalid_public_segment_bin");
 		}
 
@@ -469,7 +469,7 @@ static bool asm_read_attributes(std::string& line)
 		if (std::find(kDefinedSymbols.begin(), kDefinedSymbols.end(), name) !=
 			kDefinedSymbols.end())
 		{
-			detail::print_error_asm("Symbol already defined.", "NDK");
+			detail::print_error_asm("Symbol already defined.", "ToolchainKit");
 			throw std::runtime_error("invalid_public_segment_bin");
 		}
 
@@ -480,21 +480,21 @@ static bool asm_read_attributes(std::string& line)
 			// data is treated as code.
 
 			name_copy.erase(name_copy.find(".code64"), strlen(".code64"));
-			kCurrentRecord.fKind = NDK::kPefCode;
+			kCurrentRecord.fKind = ToolchainKit::kPefCode;
 		}
 		else if (name.find(".data64") != std::string::npos)
 		{
 			// no code will be executed from here.
 
 			name_copy.erase(name_copy.find(".data64"), strlen(".data64"));
-			kCurrentRecord.fKind = NDK::kPefData;
+			kCurrentRecord.fKind = ToolchainKit::kPefData;
 		}
 		else if (name.find(".zero64") != std::string::npos)
 		{
 			// this is a bss section.
 
 			name_copy.erase(name_copy.find(".zero64"), strlen(".zero64"));
-			kCurrentRecord.fKind = NDK::kPefZero;
+			kCurrentRecord.fKind = ToolchainKit::kPefZero;
 		}
 
 		// this is a special case for the start stub.
@@ -502,7 +502,7 @@ static bool asm_read_attributes(std::string& line)
 
 		if (name == kPefStart)
 		{
-			kCurrentRecord.fKind = NDK::kPefCode;
+			kCurrentRecord.fKind = ToolchainKit::kPefCode;
 		}
 
 		while (name_copy.find(" ") != std::string::npos)
@@ -556,15 +556,15 @@ namespace detail::algorithm
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
-std::string NDK::EncoderAMD64::CheckLine(std::string&		line,
+std::string ToolchainKit::EncoderAMD64::CheckLine(std::string&		line,
 										 const std::string& file)
 {
 	std::string err_str;
 
-	if (line.empty() || NDK::find_word(line, "extern_segment") ||
-		NDK::find_word(line, "public_segment") ||
-		NDK::find_word(line, kAssemblerPragmaSymStr) ||
-		NDK::find_word(line, ";") || line[0] == kAssemblerPragmaSym)
+	if (line.empty() || ToolchainKit::find_word(line, "extern_segment") ||
+		ToolchainKit::find_word(line, "public_segment") ||
+		ToolchainKit::find_word(line, kAssemblerPragmaSymStr) ||
+		ToolchainKit::find_word(line, ";") || line[0] == kAssemblerPragmaSym)
 	{
 		if (line.find(';') != std::string::npos)
 		{
@@ -636,7 +636,7 @@ std::string NDK::EncoderAMD64::CheckLine(std::string&		line,
 	}
 	for (auto& opcodeAMD64 : kOpcodesAMD64)
 	{
-		if (NDK::find_word(line, opcodeAMD64.fName))
+		if (ToolchainKit::find_word(line, opcodeAMD64.fName))
 		{
 			return err_str;
 		}
@@ -647,7 +647,7 @@ std::string NDK::EncoderAMD64::CheckLine(std::string&		line,
 	return err_str;
 }
 
-bool NDK::EncoderAMD64::WriteNumber(const std::size_t& pos,
+bool ToolchainKit::EncoderAMD64::WriteNumber(const std::size_t& pos,
 									std::string&	   jump_label)
 {
 	if (!isdigit(jump_label[pos]))
@@ -661,12 +661,12 @@ bool NDK::EncoderAMD64::WriteNumber(const std::size_t& pos,
 		{
 			if (errno != 0)
 			{
-				detail::print_error_asm("invalid hex number: " + jump_label, "NDK");
+				detail::print_error_asm("invalid hex number: " + jump_label, "ToolchainKit");
 				throw std::runtime_error("invalid_hex");
 			}
 		}
 
-		NDK::NumberCast64 num = NDK::NumberCast64(
+		ToolchainKit::NumberCast64 num = ToolchainKit::NumberCast64(
 			strtol(jump_label.substr(pos + 2).c_str(), nullptr, 16));
 
 		for (char& i : num.number)
@@ -691,12 +691,12 @@ bool NDK::EncoderAMD64::WriteNumber(const std::size_t& pos,
 		{
 			if (errno != 0)
 			{
-				detail::print_error_asm("invalid binary number: " + jump_label, "NDK");
+				detail::print_error_asm("invalid binary number: " + jump_label, "ToolchainKit");
 				throw std::runtime_error("invalid_bin");
 			}
 		}
 
-		NDK::NumberCast64 num = NDK::NumberCast64(
+		ToolchainKit::NumberCast64 num = ToolchainKit::NumberCast64(
 			strtol(jump_label.substr(pos + 2).c_str(), nullptr, 2));
 
 		if (kVerbose)
@@ -721,12 +721,12 @@ bool NDK::EncoderAMD64::WriteNumber(const std::size_t& pos,
 		{
 			if (errno != 0)
 			{
-				detail::print_error_asm("invalid octal number: " + jump_label, "NDK");
+				detail::print_error_asm("invalid octal number: " + jump_label, "ToolchainKit");
 				throw std::runtime_error("invalid_octal");
 			}
 		}
 
-		NDK::NumberCast64 num = NDK::NumberCast64(
+		ToolchainKit::NumberCast64 num = ToolchainKit::NumberCast64(
 			strtol(jump_label.substr(pos + 2).c_str(), nullptr, 7));
 
 		if (kVerbose)
@@ -759,7 +759,7 @@ bool NDK::EncoderAMD64::WriteNumber(const std::size_t& pos,
 		}
 	}
 
-	NDK::NumberCast64 num = NDK::NumberCast64(
+	ToolchainKit::NumberCast64 num = ToolchainKit::NumberCast64(
 		strtol(jump_label.substr(pos).c_str(), nullptr, 10));
 
 	for (char& i : num.number)
@@ -779,7 +779,7 @@ bool NDK::EncoderAMD64::WriteNumber(const std::size_t& pos,
 	return true;
 }
 
-bool NDK::EncoderAMD64::WriteNumber32(const std::size_t& pos,
+bool ToolchainKit::EncoderAMD64::WriteNumber32(const std::size_t& pos,
 									  std::string&		 jump_label)
 {
 	if (!isdigit(jump_label[pos]))
@@ -796,7 +796,7 @@ bool NDK::EncoderAMD64::WriteNumber32(const std::size_t& pos,
 			return false;
 		}
 
-		NDK::NumberCast32 num = NDK::NumberCast32(res);
+		ToolchainKit::NumberCast32 num = ToolchainKit::NumberCast32(res);
 
 		for (char& i : num.number)
 		{
@@ -823,7 +823,7 @@ bool NDK::EncoderAMD64::WriteNumber32(const std::size_t& pos,
 			return false;
 		}
 
-		NDK::NumberCast32 num = NDK::NumberCast32(res);
+		ToolchainKit::NumberCast32 num = ToolchainKit::NumberCast32(res);
 
 		if (kVerbose)
 		{
@@ -850,7 +850,7 @@ bool NDK::EncoderAMD64::WriteNumber32(const std::size_t& pos,
 			return false;
 		}
 
-		NDK::NumberCast32 num = NDK::NumberCast32(res);
+		ToolchainKit::NumberCast32 num = ToolchainKit::NumberCast32(res);
 
 		if (kVerbose)
 		{
@@ -881,7 +881,7 @@ bool NDK::EncoderAMD64::WriteNumber32(const std::size_t& pos,
 		return false;
 	}
 
-	NDK::NumberCast32 num = NDK::NumberCast32(res);
+	ToolchainKit::NumberCast32 num = ToolchainKit::NumberCast32(res);
 
 	for (char& i : num.number)
 	{
@@ -900,7 +900,7 @@ bool NDK::EncoderAMD64::WriteNumber32(const std::size_t& pos,
 	return true;
 }
 
-bool NDK::EncoderAMD64::WriteNumber16(const std::size_t& pos,
+bool ToolchainKit::EncoderAMD64::WriteNumber16(const std::size_t& pos,
 									  std::string&		 jump_label)
 {
 	if (!isdigit(jump_label[pos]))
@@ -914,12 +914,12 @@ bool NDK::EncoderAMD64::WriteNumber16(const std::size_t& pos,
 		{
 			if (errno != 0)
 			{
-				detail::print_error_asm("invalid hex number: " + jump_label, "NDK");
+				detail::print_error_asm("invalid hex number: " + jump_label, "ToolchainKit");
 				throw std::runtime_error("invalid_hex");
 			}
 		}
 
-		NDK::NumberCast16 num = NDK::NumberCast16(
+		ToolchainKit::NumberCast16 num = ToolchainKit::NumberCast16(
 			strtol(jump_label.substr(pos + 2).c_str(), nullptr, 16));
 
 		for (char& i : num.number)
@@ -944,12 +944,12 @@ bool NDK::EncoderAMD64::WriteNumber16(const std::size_t& pos,
 		{
 			if (errno != 0)
 			{
-				detail::print_error_asm("invalid binary number: " + jump_label, "NDK");
+				detail::print_error_asm("invalid binary number: " + jump_label, "ToolchainKit");
 				throw std::runtime_error("invalid_bin");
 			}
 		}
 
-		NDK::NumberCast16 num = NDK::NumberCast16(
+		ToolchainKit::NumberCast16 num = ToolchainKit::NumberCast16(
 			strtol(jump_label.substr(pos + 2).c_str(), nullptr, 2));
 
 		if (kVerbose)
@@ -974,12 +974,12 @@ bool NDK::EncoderAMD64::WriteNumber16(const std::size_t& pos,
 		{
 			if (errno != 0)
 			{
-				detail::print_error_asm("invalid octal number: " + jump_label, "NDK");
+				detail::print_error_asm("invalid octal number: " + jump_label, "ToolchainKit");
 				throw std::runtime_error("invalid_octal");
 			}
 		}
 
-		NDK::NumberCast16 num = NDK::NumberCast16(
+		ToolchainKit::NumberCast16 num = ToolchainKit::NumberCast16(
 			strtol(jump_label.substr(pos + 2).c_str(), nullptr, 7));
 
 		if (kVerbose)
@@ -1012,7 +1012,7 @@ bool NDK::EncoderAMD64::WriteNumber16(const std::size_t& pos,
 		}
 	}
 
-	NDK::NumberCast16 num = NDK::NumberCast16(
+	ToolchainKit::NumberCast16 num = ToolchainKit::NumberCast16(
 		strtol(jump_label.substr(pos).c_str(), nullptr, 10));
 
 	for (char& i : num.number)
@@ -1032,7 +1032,7 @@ bool NDK::EncoderAMD64::WriteNumber16(const std::size_t& pos,
 	return true;
 }
 
-bool NDK::EncoderAMD64::WriteNumber8(const std::size_t& pos,
+bool ToolchainKit::EncoderAMD64::WriteNumber8(const std::size_t& pos,
 									 std::string&		jump_label)
 {
 	if (!isdigit(jump_label[pos]))
@@ -1046,12 +1046,12 @@ bool NDK::EncoderAMD64::WriteNumber8(const std::size_t& pos,
 		{
 			if (errno != 0)
 			{
-				detail::print_error_asm("invalid hex number: " + jump_label, "NDK");
+				detail::print_error_asm("invalid hex number: " + jump_label, "ToolchainKit");
 				throw std::runtime_error("invalid_hex");
 			}
 		}
 
-		NDK::NumberCast8 num = NDK::NumberCast8(
+		ToolchainKit::NumberCast8 num = ToolchainKit::NumberCast8(
 			strtol(jump_label.substr(pos + 2).c_str(), nullptr, 16));
 
 		kAppBytes.push_back(num.number);
@@ -1070,12 +1070,12 @@ bool NDK::EncoderAMD64::WriteNumber8(const std::size_t& pos,
 		{
 			if (errno != 0)
 			{
-				detail::print_error_asm("invalid binary number: " + jump_label, "NDK");
+				detail::print_error_asm("invalid binary number: " + jump_label, "ToolchainKit");
 				throw std::runtime_error("invalid_bin");
 			}
 		}
 
-		NDK::NumberCast8 num = NDK::NumberCast8(
+		ToolchainKit::NumberCast8 num = ToolchainKit::NumberCast8(
 			strtol(jump_label.substr(pos + 2).c_str(), nullptr, 2));
 
 		if (kVerbose)
@@ -1094,12 +1094,12 @@ bool NDK::EncoderAMD64::WriteNumber8(const std::size_t& pos,
 		{
 			if (errno != 0)
 			{
-				detail::print_error_asm("invalid octal number: " + jump_label, "NDK");
+				detail::print_error_asm("invalid octal number: " + jump_label, "ToolchainKit");
 				throw std::runtime_error("invalid_octal");
 			}
 		}
 
-		NDK::NumberCast8 num = NDK::NumberCast8(
+		ToolchainKit::NumberCast8 num = ToolchainKit::NumberCast8(
 			strtol(jump_label.substr(pos + 2).c_str(), nullptr, 7));
 
 		if (kVerbose)
@@ -1126,7 +1126,7 @@ bool NDK::EncoderAMD64::WriteNumber8(const std::size_t& pos,
 		}
 	}
 
-	NDK::NumberCast8 num = NDK::NumberCast8(
+	ToolchainKit::NumberCast8 num = ToolchainKit::NumberCast8(
 		strtol(jump_label.substr(pos).c_str(), nullptr, 10));
 
 	kAppBytes.push_back(num.number);
@@ -1146,10 +1146,10 @@ bool NDK::EncoderAMD64::WriteNumber8(const std::size_t& pos,
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
-bool NDK::EncoderAMD64::WriteLine(std::string&		 line,
+bool ToolchainKit::EncoderAMD64::WriteLine(std::string&		 line,
 								  const std::string& file)
 {
-	if (NDK::find_word(line, "public_segment "))
+	if (ToolchainKit::find_word(line, "public_segment "))
 		return true;
 
 	struct RegMapAMD64
@@ -1181,7 +1181,7 @@ bool NDK::EncoderAMD64::WriteLine(std::string&		 line,
 	for (auto& opcodeAMD64 : kOpcodesAMD64)
 	{
 		// strict check here
-		if (NDK::find_word(line, opcodeAMD64.fName) &&
+		if (ToolchainKit::find_word(line, opcodeAMD64.fName) &&
 			detail::algorithm::is_valid_amd64(line))
 		{
 			foundInstruction = true;
@@ -1196,7 +1196,7 @@ bool NDK::EncoderAMD64::WriteLine(std::string&		 line,
 
 				if (substr.find(",") == std::string::npos)
 				{
-					detail::print_error_asm("Syntax error.", "NDK");
+					detail::print_error_asm("Syntax error.", "ToolchainKit");
 					throw std::runtime_error("syntax_err");
 				}
 
@@ -1280,7 +1280,7 @@ bool NDK::EncoderAMD64::WriteLine(std::string&		 line,
 					if (hasRBasedRegs)
 					{
 						detail::print_error_asm(
-							"Invalid combination of operands and registers.", "NDK");
+							"Invalid combination of operands and registers.", "ToolchainKit");
 						throw std::runtime_error("comb_op_reg");
 					}
 					else
@@ -1294,7 +1294,7 @@ bool NDK::EncoderAMD64::WriteLine(std::string&		 line,
 					currentRegList[0].fName[0] == 'e')
 				{
 					detail::print_error_asm("Invalid combination of operands and registers.",
-											"NDK");
+											"ToolchainKit");
 					throw std::runtime_error("comb_op_reg");
 				}
 
@@ -1302,7 +1302,7 @@ bool NDK::EncoderAMD64::WriteLine(std::string&		 line,
 					currentRegList[1].fName[0] == 'e')
 				{
 					detail::print_error_asm("Invalid combination of operands and registers.",
-											"NDK");
+											"ToolchainKit");
 					throw std::runtime_error("comb_op_reg");
 				}
 
@@ -1312,7 +1312,7 @@ bool NDK::EncoderAMD64::WriteLine(std::string&		 line,
 						currentRegList[0].fName[0] == 'e')
 					{
 						detail::print_error_asm("Invalid combination of operands and registers.",
-												"NDK");
+												"ToolchainKit");
 						throw std::runtime_error("comb_op_reg");
 					}
 
@@ -1320,7 +1320,7 @@ bool NDK::EncoderAMD64::WriteLine(std::string&		 line,
 						currentRegList[1].fName[0] == 'e')
 					{
 						detail::print_error_asm("Invalid combination of operands and registers.",
-												"NDK");
+												"ToolchainKit");
 						throw std::runtime_error("comb_op_reg");
 					}
 				}
@@ -1330,7 +1330,7 @@ bool NDK::EncoderAMD64::WriteLine(std::string&		 line,
 						currentRegList[0].fName[0] == 'e')
 					{
 						detail::print_error_asm("Invalid combination of operands and registers.",
-												"NDK");
+												"ToolchainKit");
 						throw std::runtime_error("comb_op_reg");
 					}
 
@@ -1338,7 +1338,7 @@ bool NDK::EncoderAMD64::WriteLine(std::string&		 line,
 						currentRegList[1].fName[0] == 'e')
 					{
 						detail::print_error_asm("Invalid combination of operands and registers.",
-												"NDK");
+												"ToolchainKit");
 						throw std::runtime_error("comb_op_reg");
 					}
 				}
@@ -1383,7 +1383,7 @@ bool NDK::EncoderAMD64::WriteLine(std::string&		 line,
 	{
 		if (foundInstruction)
 		{
-			detail::print_error_asm("Syntax error: " + line, "NDK");
+			detail::print_error_asm("Syntax error: " + line, "ToolchainKit");
 			throw std::runtime_error("syntax_err");
 		}
 
