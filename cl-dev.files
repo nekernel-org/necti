@@ -58,3 +58,4 @@ tools/link.cc
 tools/link.json
 tools/xidl.cc
 win32.json
+compile_flags.txt
