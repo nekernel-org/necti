@@ -71,7 +71,7 @@ inline std::ofstream& operator<<(std::ofstream& fp, ToolchainKit::AEHeader& cont
 	return fp;
 }
 
-inline std::ofstream& operator<<(std::ofstream&		  fp,
+inline std::ofstream& operator<<(std::ofstream&				   fp,
 								 ToolchainKit::AERecordHeader& container)
 {
 	fp.write((char*)&container, sizeof(ToolchainKit::AERecordHeader));
@@ -85,7 +85,7 @@ inline std::ifstream& operator>>(std::ifstream& fp, ToolchainKit::AEHeader& cont
 	return fp;
 }
 
-inline std::ifstream& operator>>(std::ifstream&		  fp,
+inline std::ifstream& operator>>(std::ifstream&				   fp,
 								 ToolchainKit::AERecordHeader& container)
 {
 	fp.read((char*)&container, sizeof(ToolchainKit::AERecordHeader));

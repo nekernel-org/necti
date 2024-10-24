@@ -114,28 +114,28 @@ namespace ToolchainKit
 	};
 } // namespace ToolchainKit
 
-inline std::ofstream& operator<<(std::ofstream&		fp,
+inline std::ofstream& operator<<(std::ofstream&				 fp,
 								 ToolchainKit::PEFContainer& container)
 {
 	fp.write((char*)&container, sizeof(ToolchainKit::PEFContainer));
 	return fp;
 }
 
-inline std::ofstream& operator<<(std::ofstream&			fp,
+inline std::ofstream& operator<<(std::ofstream&					 fp,
 								 ToolchainKit::PEFCommandHeader& container)
 {
 	fp.write((char*)&container, sizeof(ToolchainKit::PEFCommandHeader));
 	return fp;
 }
 
-inline std::ifstream& operator>>(std::ifstream&		fp,
+inline std::ifstream& operator>>(std::ifstream&				 fp,
 								 ToolchainKit::PEFContainer& container)
 {
 	fp.read((char*)&container, sizeof(ToolchainKit::PEFContainer));
 	return fp;
 }
 
-inline std::ifstream& operator>>(std::ifstream&			fp,
+inline std::ifstream& operator>>(std::ifstream&					 fp,
 								 ToolchainKit::PEFCommandHeader& container)
 {
 	fp.read((char*)&container, sizeof(ToolchainKit::PEFCommandHeader));
