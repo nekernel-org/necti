@@ -4,8 +4,8 @@
 
 ------------------------------------------- */
 
-#ifndef __TOOLCHAINKIT_DEFINES_HXX__
-#define __TOOLCHAINKIT_DEFINES_HXX__
+#ifndef __TOOLCHAINKIT_DEFINES_H__
+#define __TOOLCHAINKIT_DEFINES_H__
 
 #ifndef Yes
 #define Yes true
@@ -157,4 +157,4 @@ typedef char char_type;
 #pragma scalar_storage_order big - endian
 #endif // ifdef MSVC
 
-#endif /* ifndef __TOOLCHAINKIT_DEFINES_HXX__ */
+#endif /* ifndef __TOOLCHAINKIT_DEFINES_H__ */

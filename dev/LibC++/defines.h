@@ -4,8 +4,8 @@
 
 ------------------------------------------- */
 
-#ifndef __TOOLCHAINKIT_DEFINES_HXX__
-#define __TOOLCHAINKIT_DEFINES_HXX__
+#ifndef __TOOLCHAINKIT_DEFINES_H__
+#define __TOOLCHAINKIT_DEFINES_H__
 
 #include <stdint.h>
 #include <stddef.h>
@@ -122,4 +122,4 @@ namespace std
 	}
 } // namespace std
 
-#endif /* __TOOLCHAINKIT_DEFINES_HXX__ */
+#endif /* __TOOLCHAINKIT_DEFINES_H__ */
