@@ -6,8 +6,8 @@
 
 /// @brief provide support for Macros.hpp header.
 
-#ifndef _MACROS_HXX_
-#define _MACROS_HXX_
+#ifndef _MACROS_H_
+#define _MACROS_H_
 
 #define TOOLCHAINKIT_COPY_DELETE(KLASS)      \
 	KLASS& operator=(const KLASS&) = delete; \
@@ -30,4 +30,4 @@
 #define TOOLCHAINKIT_ERROR_PREFIX_CL  "CLxxxx"
 #define TOOLCHAINKIT_ERROR_PREFIX_ASM "ASMxxxx"
 
-#endif /* ifndef _MACROS_HXX_ */
+#endif /* ifndef _MACROS_H_ */
