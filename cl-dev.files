@@ -37,16 +37,6 @@ dev/ToolchainKit/src/IdlCompiler.cc
 dev/ToolchainKit/src/Linker.cc
 dev/ToolchainKit/src/String.cc
 posix.json
-sdk/private/xhandle.c
-sdk/private/xhandle.h
-sdk/private/xmail+alloc.c
-sdk/private/xstore.c
-sdk/w32.h
-sdk/xmail.h
-sdk/xpcom.h
-sdk/xpdf.h
-sdk/xstore.h
-tests/xpcom-msgbox.cc
 tools/asm-unix.json
 tools/asm.cc
 tools/asm.json
