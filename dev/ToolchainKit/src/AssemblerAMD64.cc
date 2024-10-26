@@ -135,30 +135,30 @@ TOOLCHAINKIT_MODULE(ZKAAssemblerMainAMD64)
 
 	for (size_t i = 1; i < argc; ++i)
 	{
-		if (argv[i][0] == '/')
+		if (argv[i][0] == '-')
 		{
-			if (strcmp(argv[i], "/amd64:ver") == 0 || strcmp(argv[i], "/amd64:v") == 0)
+			if (strcmp(argv[i], "--amd64:ver") == 0 || strcmp(argv[i], "--amd64:v") == 0)
 			{
 				kStdOut << "AssemblerAMD64: AMD64 Assembler Driver.\nAssemblerAMD64: v1.10\nAssemblerAMD64: Copyright "
 						   "(c) ZKA Web Services Co.\n";
 				return 0;
 			}
-			else if (strcmp(argv[i], "/amd64:h") == 0)
+			else if (strcmp(argv[i], "--amd64:h") == 0)
 			{
 				kStdOut << "AssemblerAMD64: AMD64 Assembler Driver.\nAssemblerAMD64: Copyright (c) 2024 "
 						   "ZKA Web Services Co.\n";
-				kStdOut << "/version: Print program version.\n";
-				kStdOut << "/verbose: Print verbose output.\n";
-				kStdOut << "/binary: Output as flat binary.\n";
+				kStdOut << "--version: Print program version.\n";
+				kStdOut << "--verbose: Print verbose output.\n";
+				kStdOut << "--binary: Output as flat binary.\n";
 
 				return 0;
 			}
-			else if (strcmp(argv[i], "/amd64:binary") == 0)
+			else if (strcmp(argv[i], "--amd64:binary") == 0)
 			{
 				kOutputAsBinary = true;
 				continue;
 			}
-			else if (strcmp(argv[i], "/amd64:verbose") == 0)
+			else if (strcmp(argv[i], "--amd64:verbose") == 0)
 			{
 				kVerbose = true;
 				continue;

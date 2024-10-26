@@ -85,31 +85,31 @@ TOOLCHAINKIT_MODULE(ZKAAssemblerMainPowerPC)
 {
 	for (size_t i = 1; i < argc; ++i)
 	{
-		if (argv[i][0] == '/')
+		if (argv[i][0] == '-')
 		{
-			if (strcmp(argv[i], "/ver") == 0 || strcmp(argv[i], "/v") == 0)
+			if (strcmp(argv[i], "--ver") == 0 || strcmp(argv[i], "--v") == 0)
 			{
 				kStdOut << "AssemblerPower: POWER64 Assembler Driver.\nAssemblerPower: " << kDistVersion << "\nAssemblerPower: "
 																											"Copyright (c) "
 																											"ZKA Web Services Co.\n";
 				return 0;
 			}
-			else if (strcmp(argv[i], "/h") == 0)
+			else if (strcmp(argv[i], "--h") == 0)
 			{
 				kStdOut << "AssemblerPower: POWER64 Assembler Driver.\nAssemblerPower: Copyright (c) 2024 "
 						   "ZKA Web Services Co.\n";
-				kStdOut << "/version,/v: print program version.\n";
-				kStdOut << "/verbose: print verbose output.\n";
-				kStdOut << "/binary: output as flat binary.\n";
+				kStdOut << "--version,/v: print program version.\n";
+				kStdOut << "--verbose: print verbose output.\n";
+				kStdOut << "--binary: output as flat binary.\n";
 
 				return 0;
 			}
-			else if (strcmp(argv[i], "/binary") == 0)
+			else if (strcmp(argv[i], "--binary") == 0)
 			{
 				kOutputAsBinary = true;
 				continue;
 			}
-			else if (strcmp(argv[i], "/verbose") == 0)
+			else if (strcmp(argv[i], "--verbose") == 0)
 			{
 				kVerbose = true;
 				continue;

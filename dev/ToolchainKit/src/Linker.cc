@@ -90,79 +90,79 @@ TOOLCHAINKIT_MODULE(ZKALinkerMain)
 	 */
 	for (size_t linker_arg = 1;	linker_arg < argc; ++linker_arg)
 	{
-		if (StringCompare(argv[linker_arg], "/link:?") == 0)
+		if (StringCompare(argv[linker_arg], "--link:?") == 0)
 		{
 			kLinkerSplash();
 
-			kStdOut << "/link:ver: Show linker version.\n";
-			kStdOut << "/link:?: Show linker help.\n";
-			kStdOut << "/link:verbose: Enable linker trace.\n";
-			kStdOut << "/link:dll: Output as a shared PEF.\n";
-			kStdOut << "/link:fat: Output as a FAT PEF.\n";
-			kStdOut << "/link:32k: Output as a 32x0 PEF.\n";
-			kStdOut << "/link:64k: Output as a 64x0 PEF.\n";
-			kStdOut << "/link:amd64: Output as a AMD64 PEF.\n";
-			kStdOut << "/link:rv64: Output as a RISC-V PEF.\n";
-			kStdOut << "/link:power64: Output as a POWER PEF.\n";
-			kStdOut << "/link:arm64: Output as a ARM64 PEF.\n";
-			kStdOut << "/link:output: Select the output file name.\n";
+			kStdOut << "--link:ver: Show linker version.\n";
+			kStdOut << "--link:?: Show linker help.\n";
+			kStdOut << "--link:verbose: Enable linker trace.\n";
+			kStdOut << "--link:dll: Output as a shared PEF.\n";
+			kStdOut << "--link:fat: Output as a FAT PEF.\n";
+			kStdOut << "--link:32k: Output as a 32x0 PEF.\n";
+			kStdOut << "--link:64k: Output as a 64x0 PEF.\n";
+			kStdOut << "--link:amd64: Output as a AMD64 PEF.\n";
+			kStdOut << "--link:rv64: Output as a RISC-V PEF.\n";
+			kStdOut << "--link:power64: Output as a POWER PEF.\n";
+			kStdOut << "--link:arm64: Output as a ARM64 PEF.\n";
+			kStdOut << "--link:output: Select the output file name.\n";
 
 			return 0;
 		}
-		else if (StringCompare(argv[linker_arg], "/link:ver") == 0)
+		else if (StringCompare(argv[linker_arg], "--link:ver") == 0)
 		{
 			kLinkerSplash();
 			return 0;
 		}
-		else if (StringCompare(argv[linker_arg], "/link:fat-binary") == 0)
+		else if (StringCompare(argv[linker_arg], "--link:fat-binary") == 0)
 		{
 			kFatBinaryEnable = true;
 
 			continue;
 		}
-		else if (StringCompare(argv[linker_arg], "/link:64k") == 0)
+		else if (StringCompare(argv[linker_arg], "--link:64k") == 0)
 		{
 			kArch = ToolchainKit::kPefArch64000;
 
 			continue;
 		}
-		else if (StringCompare(argv[linker_arg], "/link:amd64") == 0)
+		else if (StringCompare(argv[linker_arg], "--link:amd64") == 0)
 		{
 			kArch = ToolchainKit::kPefArchAMD64;
 
 			continue;
 		}
-		else if (StringCompare(argv[linker_arg], "/link:32k") == 0)
+		else if (StringCompare(argv[linker_arg], "--link:32k") == 0)
 		{
 			kArch = ToolchainKit::kPefArch32000;
 
 			continue;
 		}
-		else if (StringCompare(argv[linker_arg], "/link:power64") == 0)
+		else if (StringCompare(argv[linker_arg], "--link:power64") == 0)
 		{
 			kArch = ToolchainKit::kPefArchPowerPC;
 
 			continue;
 		}
-		else if (StringCompare(argv[linker_arg], "/link:riscv64") == 0)
+		else if (StringCompare(argv[linker_arg], "--link:riscv64") == 0)
 		{
 			kArch = ToolchainKit::kPefArchRISCV;
 
 			continue;
 		}
-		else if (StringCompare(argv[linker_arg], "/link:arm64") == 0)
+		else if (StringCompare(argv[linker_arg], "--link:arm64") == 0)
 		{
 			kArch = ToolchainKit::kPefArchARM64;
 
 			continue;
 		}
-		else if (StringCompare(argv[linker_arg], "/link:verbose") == 0)
+		else if (StringCompare(argv[linker_arg], "--link:verbose") == 0)
 		{
 			kVerbose = true;
 
 			continue;
 		}
-		else if (StringCompare(argv[linker_arg], "/link:dll") == 0)
+		else if (StringCompare(argv[linker_arg], "--link:dll") == 0)
 		{
 			if (kOutput.empty())
 			{
@@ -178,7 +178,7 @@ TOOLCHAINKIT_MODULE(ZKALinkerMain)
 
 			continue;
 		}
-		else if (StringCompare(argv[linker_arg], "/link:output") == 0)
+		else if (StringCompare(argv[linker_arg], "--link:output") == 0)
 		{
 			kOutput = argv[linker_arg + 1];
 			++linker_arg;
@@ -187,7 +187,7 @@ TOOLCHAINKIT_MODULE(ZKALinkerMain)
 		}
 		else
 		{
-			if (argv[linker_arg][0] == '/')
+			if (argv[linker_arg][0] == '-')
 			{
 				kStdOut << "link: unknown flag: " << argv[linker_arg] << "\n";
 				continue;

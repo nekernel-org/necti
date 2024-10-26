@@ -847,7 +847,7 @@ std::string CompilerFrontendPower64::Check(const char* text, const char* file)
 		forbidden_words.push_back("@");
 		forbidden_words.push_back("~");
 		forbidden_words.push_back("::");
-		forbidden_words.push_back("/*");
+		forbidden_words.push_back("--*");
 		forbidden_words.push_back("*/");
 
 		// add them to avoid stupid mistakes.

@@ -324,16 +324,16 @@ void bpp_parse_file(std::ifstream& hdr_file, std::ofstream& pp_out)
 				}
 			}
 
-			if (hdr_line.find("//") != std::string::npos)
+			if (hdr_line.find("--/") != std::string::npos)
 			{
-				hdr_line.erase(hdr_line.find("//"));
+				hdr_line.erase(hdr_line.find("--/"));
 			}
 
-			if (hdr_line.find("/*") != std::string::npos)
+			if (hdr_line.find("--*") != std::string::npos)
 			{
 				inactive_code = true;
 				// get rid of comment.
-				hdr_line.erase(hdr_line.find("/*"));
+				hdr_line.erase(hdr_line.find("--*"));
 			}
 
 			/// BPP 'brief' documentation.
@@ -858,7 +858,7 @@ void bpp_parse_file(std::ifstream& hdr_file, std::ofstream& pp_out)
 					for (auto& include : kIncludes)
 					{
 						std::string header_path = include;
-						header_path.push_back('/');
+						header_path.push_back('-');
 						header_path += path;
 
 						std::ifstream header(header_path);
@@ -967,27 +967,27 @@ TOOLCHAINKIT_MODULE(CPlusPlusPreprocessorMain)
 				continue;
 			}
 
-			if (argv[index][0] == '/')
+			if (argv[index][0] == '-')
 			{
-				if (strcmp(argv[index], "/bpp:ver") == 0)
+				if (strcmp(argv[index], "--bpp:ver") == 0)
 				{
 					printf("%s\n", "bpp v1.11, (c) ZKA Web Services Co");
 					return 0;
 				}
 
-				if (strcmp(argv[index], "/bpp:?") == 0)
+				if (strcmp(argv[index], "--bpp:?") == 0)
 				{
 					printf("%s\n", "ZKA Preprocessor Driver v1.11, (c) ZKA Web Services Co");
-					printf("%s\n", "/bpp:working-dir <path>: set directory to working path.");
-					printf("%s\n", "/bpp:include-dir <path>: add directory to include path.");
-					printf("%s\n", "/bpp:def <name> <value>: define a macro.");
-					printf("%s\n", "/bpp:ver: print the version.");
-					printf("%s\n", "/bpp:?: show help (this current command).");
+					printf("%s\n", "--bpp:working-dir <path>: set directory to working path.");
+					printf("%s\n", "--bpp:include-dir <path>: add directory to include path.");
+					printf("%s\n", "--bpp:def <name> <value>: define a macro.");
+					printf("%s\n", "--bpp:ver: print the version.");
+					printf("%s\n", "--bpp:?: show help (this current command).");
 
 					return 0;
 				}
 
-				if (strcmp(argv[index], "/bpp:include-dir") == 0)
+				if (strcmp(argv[index], "--bpp:include-dir") == 0)
 				{
 					std::string inc = argv[index + 1];
 
@@ -996,14 +996,14 @@ TOOLCHAINKIT_MODULE(CPlusPlusPreprocessorMain)
 					kIncludes.push_back(inc);
 				}
 
-				if (strcmp(argv[index], "/bpp:working-dir") == 0)
+				if (strcmp(argv[index], "--bpp:working-dir") == 0)
 				{
 					std::string inc = argv[index + 1];
 					skip			= true;
 					kWorkingDir		= inc;
 				}
 
-				if (strcmp(argv[index], "/bpp:def") == 0 && argv[index + 1] != nullptr &&
+				if (strcmp(argv[index], "--bpp:def") == 0 && argv[index + 1] != nullptr &&
 					argv[index + 2] != nullptr)
 				{
 					std::string macro_key = argv[index + 1];

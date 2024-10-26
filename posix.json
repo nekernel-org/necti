@@ -7,7 +7,7 @@
     "./dev/ToolchainKit/src/Detail"
   ],
   "sources_path": ["dev/ToolchainKit/src/*.cc"],
-  "output_name": "/usr/local/lib/libndk.dylib",
+  "output_name": "--usr/local/lib/libndk.dylib",
   "compiler_flags": ["-fPIC", "-shared"],
   "cpp_macros": [
     "__TOOLCHAINKIT_DLL__=202401",

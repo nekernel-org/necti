@@ -900,9 +900,9 @@ TOOLCHAINKIT_MODULE(CompilerCPlusPlusX8664)
 	kKeywords.push_back({.keyword_name = "protected:", .keyword_kind = ToolchainKit::eKeywordKindSpecifier});
 	kKeywords.push_back({.keyword_name = "final", .keyword_kind = ToolchainKit::eKeywordKindSpecifier});
 	kKeywords.push_back({.keyword_name = "return", .keyword_kind = ToolchainKit::eKeywordKindReturn});
-	kKeywords.push_back({.keyword_name = "/*", .keyword_kind = ToolchainKit::eKeywordKindCommentMultiLineStart});
+	kKeywords.push_back({.keyword_name = "--*", .keyword_kind = ToolchainKit::eKeywordKindCommentMultiLineStart});
 	kKeywords.push_back({.keyword_name = "*/", .keyword_kind = ToolchainKit::eKeywordKindCommentMultiLineStart});
-	kKeywords.push_back({.keyword_name = "//", .keyword_kind = ToolchainKit::eKeywordKindCommentInline});
+	kKeywords.push_back({.keyword_name = "--/", .keyword_kind = ToolchainKit::eKeywordKindCommentInline});
 	kKeywords.push_back({.keyword_name = "==", .keyword_kind = ToolchainKit::eKeywordKindEq});
 	kKeywords.push_back({.keyword_name = "!=", .keyword_kind = ToolchainKit::eKeywordKindNotEq});
 	kKeywords.push_back({.keyword_name = ">=", .keyword_kind = ToolchainKit::eKeywordKindGreaterEq});
@@ -913,7 +913,7 @@ TOOLCHAINKIT_MODULE(CompilerCPlusPlusX8664)
 
 	for (auto index = 1UL; index < argc; ++index)
 	{
-		if (argv[index][0] == '/')
+		if (argv[index][0] == '-')
 		{
 			if (skip)
 			{
@@ -921,27 +921,27 @@ TOOLCHAINKIT_MODULE(CompilerCPlusPlusX8664)
 				continue;
 			}
 
-			if (strcmp(argv[index], "/cl:ver") == 0)
+			if (strcmp(argv[index], "--cl:ver") == 0)
 			{
 				kSplashCxx();
 				return kExitOK;
 			}
 
-			if (strcmp(argv[index], "/cl:verbose") == 0)
+			if (strcmp(argv[index], "--cl:verbose") == 0)
 			{
 				kState.fVerbose = true;
 
 				continue;
 			}
 
-			if (strcmp(argv[index], "/cl:?") == 0)
+			if (strcmp(argv[index], "--cl:?") == 0)
 			{
 				cxx_print_help();
 
 				return kExitOK;
 			}
 
-			if (strcmp(argv[index], "/cl:c++-dialect") == 0)
+			if (strcmp(argv[index], "--cl:c++-dialect") == 0)
 			{
 				if (kCompilerFrontend)
 					std::cout << kCompilerFrontend->Language() << "\n";
@@ -949,7 +949,7 @@ TOOLCHAINKIT_MODULE(CompilerCPlusPlusX8664)
 				return kExitOK;
 			}
 
-			if (strcmp(argv[index], "/cl:max-err") == 0)
+			if (strcmp(argv[index], "--cl:max-err") == 0)
 			{
 				try
 				{

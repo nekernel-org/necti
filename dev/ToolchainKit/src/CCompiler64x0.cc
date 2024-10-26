@@ -824,7 +824,7 @@ std::string CompilerFrontend64x0::Check(const char* text, const char* file)
 		forbidden_words.push_back("@");
 		forbidden_words.push_back("~");
 		forbidden_words.push_back("::");
-		forbidden_words.push_back("/*");
+		forbidden_words.push_back("--*");
 		forbidden_words.push_back("*/");
 
 		// add them to avoid stupid mistakes.
@@ -1517,30 +1517,30 @@ TOOLCHAINKIT_MODULE(NewOSCompilerCLang64x0)
 			continue;
 		}
 
-		if (argv[index][0] == '/')
+		if (argv[index][0] == '-')
 		{
-			if (strcmp(argv[index], "/v") == 0 ||
-				strcmp(argv[index], "/version") == 0)
+			if (strcmp(argv[index], "--v") == 0 ||
+				strcmp(argv[index], "--version") == 0)
 			{
 				kSplashCxx();
 				return kExitOK;
 			}
 
-			if (strcmp(argv[index], "/verbose") == 0)
+			if (strcmp(argv[index], "--verbose") == 0)
 			{
 				kState.fVerbose = true;
 
 				continue;
 			}
 
-			if (strcmp(argv[index], "/h") == 0 || strcmp(argv[index], "/help") == 0)
+			if (strcmp(argv[index], "--h") == 0 || strcmp(argv[index], "--help") == 0)
 			{
 				cc_print_help();
 
 				return kExitOK;
 			}
 
-			if (strcmp(argv[index], "/dialect") == 0)
+			if (strcmp(argv[index], "--dialect") == 0)
 			{
 				if (kCompilerFrontend)
 					std::cout << kCompilerFrontend->Language() << "\n";
@@ -1548,7 +1548,7 @@ TOOLCHAINKIT_MODULE(NewOSCompilerCLang64x0)
 				return kExitOK;
 			}
 
-			if (strcmp(argv[index], "/fmax-exceptions") == 0)
+			if (strcmp(argv[index], "--fmax-exceptions") == 0)
 			{
 				try
 				{

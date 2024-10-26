@@ -6,9 +6,10 @@
 
 #pragma once
 
-#define kDistVersion "v1.1.0"
+#define kDistVersion	"v1.1.0"
+#define kDistVersionBCD 0x0110
 
-#define ToPPString(X) __Str(X)
-#define __Str(X)	  #X
+#define ToString(X)	 Stringify(X)
+#define Stringify(X) #X
 
-#define kDistRelease ToPPString(kDistReleaseBranch)
+#define kDistRelease ToString(kDistReleaseBranch)

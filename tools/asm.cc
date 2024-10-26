@@ -32,7 +32,7 @@ int main(int argc, char const* argv[])
 
 	for (size_t index_arg = 1; index_arg < argc; ++index_arg)
 	{
-		if (strstr(argv[index_arg], "/Asm:?"))
+		if (strstr(argv[index_arg], "--Asm:?"))
 		{
 			std::printf("asm.exe: Frontend Assembler (64x0, POWER64, AMD64).\n");
 			std::printf("asm.exe: Version: %s, Release: %s.\n", kDistVersion, kDistRelease);
@@ -41,15 +41,15 @@ int main(int argc, char const* argv[])
 
 			return 0;
 		}
-		else if (strstr(argv[index_arg], "/Asm:x64"))
+		else if (strstr(argv[index_arg], "--Asm:x64"))
 		{
 			cAsm = eX64Assembler;
 		}
-		else if (strstr(argv[index_arg], "/Asm:64x0"))
+		else if (strstr(argv[index_arg], "--Asm:64x0"))
 		{
 			cAsm = e64X0Assembler;
 		}
-		else if (strstr(argv[index_arg], "/Asm:POWER64"))
+		else if (strstr(argv[index_arg], "--Asm:POWER64"))
 		{
 			cAsm = ePOWER64Assembler;
 		}

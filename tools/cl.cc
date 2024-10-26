@@ -20,7 +20,7 @@ int main(int argc, char const* argv[])
 {
 	for (size_t index_arg = 0; index_arg < argc; ++index_arg)
 	{
-		if (strstr(argv[index_arg], "/Cl:?"))
+		if (strstr(argv[index_arg], "--Cl:?"))
 		{
 			std::printf("cl.exe: Frontend C++ Compiler.\n");
 			std::printf("cl.exe: Version: %s, Release: %s.\n", kDistVersion, kDistRelease);
