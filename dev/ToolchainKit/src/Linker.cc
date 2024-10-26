@@ -49,13 +49,13 @@
 
 enum
 {
-	eABIStart	= 0x1010, /* Invalid ABI start of ABI list. */
-	eABINewOS	= 0x5046, /* PF (ZKA PEF ABI) */
-	eABIInvalid = 0xFFFF,
+	kABITypeStart	= 0x1010, /* Invalid ABI start of ABI list. */
+	kABITypeZKA	= 0x5046, /* PF (ZKA PEF ABI) */
+	kABITypeInvalid = 0xFFFF,
 };
 
 static ToolchainKit::String kOutput			 = "";
-static Int32	   kAbi				 = eABINewOS;
+static Int32	   kAbi				 = kABITypeZKA;
 static Int32	   kSubArch			 = kPefNoSubCpu;
 static Int32	   kArch			 = ToolchainKit::kPefArchInvalid;
 static Bool		   kFatBinaryEnable	 = false;
@@ -76,17 +76,14 @@ static uintptr_t kMIBCount = 8;
 #define kPrintF			printf
 #define kLinkerSplash() kPrintF(kWhite kLinkerVersion, kDistVersion)
 
-/***
-	@brief ZKA linker main
-*/
-
+///	@brief ZKA 64-bit Linker.
+/// @note This linker is made for PEF executable, thus ZKA based OSes.
 TOOLCHAINKIT_MODULE(ZKALinkerMain)
 {
 	bool is_executable = true;
 
 	/**
-	 * @brief parse flags and such.
-	 *
+	 * @brief parse flags and trigger options.
 	 */
 	for (size_t linker_arg = 1;	linker_arg < argc; ++linker_arg)
 	{

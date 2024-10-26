@@ -117,8 +117,9 @@ namespace ToolchainKit
 
 		memset(ret, 0, ret_len);
 
-		CharType result[8];
-		if (!to_str(result, sizeof(int), i))
+		CharType result[sizeof(int64_t)];
+
+		if (!to_str(result, sizeof(int64_t), i))
 		{
 			delete[] ret;
 			return ("-1");
@@ -133,9 +134,9 @@ namespace ToolchainKit
 			{
 				SizeType result_cnt = idx;
 
-				for (auto y_idx = idx; y_idx < res_len; ++y_idx)
+				for (auto y_idx = 0; y_idx < res_len; ++y_idx)
 				{
-					ret[result_cnt] = result[y_idx];
+					ret[y_idxcnt] = result[result_idx];
 					++result_cnt;
 				}
 
