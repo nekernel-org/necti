@@ -9,7 +9,7 @@
 
 /**
  * @file AssemblyFactory.cxx
- * @author amlal (amlal@zeta.com)
+ * @author amlal (amlal@zka.com)
  * @brief Assembler Kit
  * @version 0.1
  * @date 2024-01-27

@@ -4,10 +4,12 @@
 
 ------------------------------------------- */
 
-/// @file Linker.cxx
+#include <ToolchainKit/Defines.h>
+
+/// @file ld64.cxx
 /// @brief ZKA Linker for AE objects.
 
-extern "C" int ZKAXIDLMain(int argc, char const* argv[]);
+TK_IMPORT_C int Linker64Main(int argc, char const* argv[]);
 
 int main(int argc, char const* argv[])
 {
@@ -16,5 +18,5 @@ int main(int argc, char const* argv[])
 		return 1;
 	}
 
-	return ZKAXIDLMain(argc, argv);
+	return Linker64Main(argc, argv);
 }

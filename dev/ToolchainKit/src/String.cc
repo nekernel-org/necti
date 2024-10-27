@@ -136,7 +136,7 @@ namespace ToolchainKit
 
 				for (auto y_idx = 0; y_idx < res_len; ++y_idx)
 				{
-					ret[y_idxcnt] = result[result_idx];
+					ret[y_idx] = result[result_cnt];
 					++result_cnt;
 				}
 

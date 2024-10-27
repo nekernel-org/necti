@@ -58,7 +58,7 @@ static Boolean kOutputAsBinary = false;
 static UInt32 kErrorLimit		= 10;
 static UInt32 kAcceptableErrors = 0;
 
-constexpr auto cAMD64IPAlignment = 0x4U;
+constexpr auto kIPAlignement = 0x4U;
 
 static std::size_t kCounter = 1UL;
 
@@ -93,7 +93,7 @@ static bool asm_read_attributes(std::string& line);
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
-TOOLCHAINKIT_MODULE(ZKAAssemblerMainAMD64)
+TOOLCHAINKIT_MODULE(AssemblerAMD64)
 {
 	//////////////// CPU OPCODES BEGIN ////////////////
 
@@ -175,12 +175,14 @@ TOOLCHAINKIT_MODULE(ZKAAssemblerMainAMD64)
 		}
 
 		std::string object_output(argv[i]);
+		std::string asm_input(argv[i]);
 
 		for (auto& ext : kAsmFileExts)
 		{
-			if (object_output.find(ext) != std::string::npos)
+			if (object_output.ends_with(ext))
 			{
 				object_output.erase(object_output.find(ext), std::strlen(ext));
+				break;
 			}
 		}
 
@@ -195,6 +197,8 @@ TOOLCHAINKIT_MODULE(ZKAAssemblerMainAMD64)
 			{
 				kStdOut << "AssemblerAMD64: error: " << strerror(errno) << "\n";
 			}
+
+			return 1;
 		}
 
 		std::string line;
@@ -216,8 +220,15 @@ TOOLCHAINKIT_MODULE(ZKAAssemblerMainAMD64)
 
 		ToolchainKit::EncoderAMD64 asm64;
 
+		if (kVerbose)
+		{
+			kStdOut << "Compiling: " + asm_input << "\n";
+		}
+
 		while (std::getline(file_ptr, line))
 		{
+			kStdOut << "Compiling: " + line << "\n";
+
 			if (auto ln = asm64.CheckLine(line, argv[i]); !ln.empty())
 			{
 				detail::print_error_asm(ln, argv[i]);
@@ -1158,7 +1169,7 @@ bool ToolchainKit::EncoderAMD64::WriteLine(std::string&		 line,
 		i64_byte_t	fModRM;
 	};
 
-	std::vector<RegMapAMD64> REGISTER_LIST{
+	std::vector<RegMapAMD64> kRegisterList{
 		{.fName = "ax", .fModRM = 0x0},
 		{.fName = "cx", .fModRM = 1},
 		{.fName = "dx", .fModRM = 0x2},
@@ -1188,7 +1199,8 @@ bool ToolchainKit::EncoderAMD64::WriteLine(std::string&		 line,
 			std::string name(opcodeAMD64.fName);
 
 			/// Move instruction handler.
-			if (name.find("mov") != std::string::npos)
+			if (line.find(name) != std::string::npos &&
+				name == "mov")
 			{
 				std::string substr = line.substr(line.find(name) + name.size());
 
@@ -1196,7 +1208,7 @@ bool ToolchainKit::EncoderAMD64::WriteLine(std::string&		 line,
 
 				if (substr.find(",") == std::string::npos)
 				{
-					detail::print_error_asm("Syntax error.", "ToolchainKit");
+					detail::print_error_asm("Syntax error: missing right operand.", "ToolchainKit");
 					throw std::runtime_error("syntax_err");
 				}
 
@@ -1204,7 +1216,7 @@ bool ToolchainKit::EncoderAMD64::WriteLine(std::string&		 line,
 
 				std::vector<RegMapAMD64> currentRegList;
 
-				for (auto& reg : REGISTER_LIST)
+				for (auto& reg : kRegisterList)
 				{
 					std::vector<char> regExt = {'e', 'r'};
 
@@ -1273,7 +1285,8 @@ bool ToolchainKit::EncoderAMD64::WriteLine(std::string&		 line,
 						kAppBytes.emplace_back(opcodeAMD64.fOpcode);
 					}
 
-					kAppBytes.emplace_back(0x89);
+					if (!onlyOneReg)
+						kAppBytes.emplace_back(0x89);
 				}
 				else if (bits == 16)
 				{
@@ -1288,6 +1301,29 @@ bool ToolchainKit::EncoderAMD64::WriteLine(std::string&		 line,
 						kAppBytes.emplace_back(0x66);
 						kAppBytes.emplace_back(0x89);
 					}
+				}
+
+				if (onlyOneReg)
+				{
+					auto num = GetNumber32(line, ",");
+
+					for (auto& num_idx: num.number)
+					{
+						if (num_idx == 0)
+							num_idx = 0xFF;
+					}
+
+					auto modrm = (0x3 << 6 |
+								  currentRegList[0].fModRM);
+
+					kAppBytes.emplace_back(0xc7);
+					kAppBytes.emplace_back(modrm);
+					kAppBytes.emplace_back(num.number[0]);
+					kAppBytes.emplace_back(num.number[1]);
+					kAppBytes.emplace_back(num.number[2]);
+					kAppBytes.emplace_back(num.number[3]);
+
+					break;
 				}
 
 				if (currentRegList[1].fName[0] == 'r' &&
@@ -1443,7 +1479,7 @@ bool ToolchainKit::EncoderAMD64::WriteLine(std::string&		 line,
 		this->WriteNumber16(line.find(".word") + strlen(".word") + 1, line);
 	}
 
-	kOrigin += cAMD64IPAlignment;
+	kOrigin += kIPAlignement;
 
 	return true;
 }

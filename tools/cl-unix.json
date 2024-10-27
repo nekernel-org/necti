@@ -2,9 +2,9 @@
   "compiler_path": "g++",
   "compiler_std": "c++20",
   "headers_path": ["../dev/ToolchainKit", "../dev/", "../dev/ToolchainKit/src/Detail"],
-  "sources_path": ["cl.cxx"],
-  "output_name": "cl.exe",
-  "compiler_flags": ["-L/usr/local/lib", "-lndk"],
+  "sources_path": ["cl.cc"],
+  "output_name": "cl.o",
+  "compiler_flags": ["-L/usr/local/lib", "-lToolchainKit"],
   "cpp_macros": [
     "__CL__=202401",
     "kDistReleaseBranch=$(git rev-parse --abbrev-ref HEAD)-$(uuidgen)"

@@ -111,7 +111,7 @@ namespace detail
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
-TOOLCHAINKIT_MODULE(ZKAAssemblerMain64000)
+TOOLCHAINKIT_MODULE(AssemblerMain64x0)
 {
 	for (size_t i = 1; i < argc; ++i)
 	{

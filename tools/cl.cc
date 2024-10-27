@@ -4,28 +4,29 @@
 
 ------------------------------------------- */
 
-/// @file Linker.cxx
-/// @brief ZKA C++ frontend for ZKA OS.
+/// @file cl.cc
+/// @brief ZKA C++ frontend compiler.
 
+#include <ToolchainKit/Defines.h>
 #include <ToolchainKit/Version.h>
 #include <iostream>
 #include <cstring>
 #include <vector>
 
-extern "C" int CPlusPlusPreprocessorMain(int argc, char const* argv[]);
-extern "C" int CompilerCPlusPlusX8664(int argc, char const* argv[]);
-extern "C" int ZKAAssemblerMainAMD64(int argc, char const* argv[]);
+TK_IMPORT_C int CPlusPlusPreprocessorMain(int argc, char const* argv[]);
+TK_IMPORT_C int CompilerCPlusPlusX8664(int argc, char const* argv[]);
+TK_IMPORT_C int AssemblerAMD64(int argc, char const* argv[]);
 
 int main(int argc, char const* argv[])
 {
 	for (size_t index_arg = 0; index_arg < argc; ++index_arg)
 	{
-		if (strstr(argv[index_arg], "--Cl:?"))
+		if (strstr(argv[index_arg], "--cl:h"))
 		{
 			std::printf("cl.exe: Frontend C++ Compiler.\n");
 			std::printf("cl.exe: Version: %s, Release: %s.\n", kDistVersion, kDistRelease);
 			std::printf("cl.exe: Designed by Amlal El Mahrouss, Copyright ZKA Web Services Co.\n");
-			std::printf("libndk.dylib/ToolchainKit.dll: Designed by Amlal El Mahrouss, Copyright ZKA Web Services Co.\n");
+			std::printf("libToolchainKit.dylib: Designed by Amlal El Mahrouss, Copyright ZKA Web Services Co.\n");
 
 			return 0;
 		}
@@ -75,7 +76,7 @@ int main(int argc, char const* argv[])
 		{
 			const char* arr_cli[] = {argv[0], cli.data()};
 
-			if (auto code = ZKAAssemblerMainAMD64(2, arr_cli); code)
+			if (auto code = AssemblerAMD64(2, arr_cli); code)
 			{
 				std::printf("cl.exe: assembler exited with code %i.", code);
 			}

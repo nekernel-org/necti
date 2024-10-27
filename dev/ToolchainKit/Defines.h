@@ -15,6 +15,14 @@
 #define No false
 #endif // ifndef No
 
+#ifndef YES
+#define YES true
+#endif // ifndef YES
+
+#ifndef NO
+#define NO false
+#endif // ifndef NO
+
 #define SizeType size_t
 
 #define VoidPtr void*
@@ -85,6 +93,9 @@
 	KLASS& operator=(KLASS&&) = default; \
 	KLASS(KLASS&&)			  = default;
 
+#define TK_IMPORT_C extern "C"
+#define TK_IMPORT extern
+
 #include <ctime>
 #include <fstream>
 #include <string>
@@ -92,7 +103,7 @@
 
 namespace ToolchainKit
 {
-	inline constexpr int cBaseYear = 1900;
+	inline constexpr int kBaseYear = 1900;
 
 	typedef std::string String;
 
@@ -101,7 +112,7 @@ namespace ToolchainKit
 		auto time_data	 = time(nullptr);
 		auto time_struct = gmtime(&time_data);
 
-		String fmt = std::to_string(cBaseYear + time_struct->tm_year);
+		String fmt = std::to_string(kBaseYear + time_struct->tm_year);
 
 		fmt += "-";
 		fmt += std::to_string(time_struct->tm_mon + 1);

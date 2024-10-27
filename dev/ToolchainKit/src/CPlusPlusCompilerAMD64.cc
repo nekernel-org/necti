@@ -735,7 +735,7 @@ ndk_compile_ok:
 /////////////////////////////////////////////////////////////////////////////////////////
 
 /**
- * @brief C To Assembly mount-point.
+ * @brief C++ assembler class.
  */
 
 /////////////////////////////////////////////////////////////////////////////////////////
@@ -836,7 +836,7 @@ static void cxx_print_help()
 {
 	kSplashCxx();
 	kPrintF("%s", "No help available, see:\n");
-	kPrintF("%s", "www.zeta.com/developer/c++-drv\n");
+	kPrintF("%s", "www.zws.zka.com/help/c++lang\n");
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////
@@ -921,7 +921,7 @@ TOOLCHAINKIT_MODULE(CompilerCPlusPlusX8664)
 				continue;
 			}
 
-			if (strcmp(argv[index], "--cl:ver") == 0)
+			if (strcmp(argv[index], "--cl:version") == 0)
 			{
 				kSplashCxx();
 				return kExitOK;
@@ -934,7 +934,7 @@ TOOLCHAINKIT_MODULE(CompilerCPlusPlusX8664)
 				continue;
 			}
 
-			if (strcmp(argv[index], "--cl:?") == 0)
+			if (strcmp(argv[index], "--cl:h") == 0)
 			{
 				cxx_print_help();
 

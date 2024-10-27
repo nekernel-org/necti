@@ -63,7 +63,7 @@ static Bool		   kStartFound		 = false;
 static Bool		   kDuplicateSymbols = false;
 static Bool		   kVerbose			 = false;
 
-/* link is to be found, mld is to be found at runtime. */
+/* ld64 is to be found, mld is to be found at runtime. */
 static const char* kLdDefineSymbol = ":UndefinedSymbol:";
 static const char* kLdDynamicSym   = ":RuntimeSymbol:";
 
@@ -72,13 +72,14 @@ static std::vector<ToolchainKit::String> kObjectList;
 static std::vector<char>		kObjectBytes;
 
 static uintptr_t kMIBCount = 8;
+static uintptr_t kByteCount	= 1024;
 
 #define kPrintF			printf
 #define kLinkerSplash() kPrintF(kWhite kLinkerVersion, kDistVersion)
 
 ///	@brief ZKA 64-bit Linker.
 /// @note This linker is made for PEF executable, thus ZKA based OSes.
-TOOLCHAINKIT_MODULE(ZKALinkerMain)
+TOOLCHAINKIT_MODULE(Linker64Main)
 {
 	bool is_executable = true;
 
@@ -87,79 +88,79 @@ TOOLCHAINKIT_MODULE(ZKALinkerMain)
 	 */
 	for (size_t linker_arg = 1;	linker_arg < argc; ++linker_arg)
 	{
-		if (StringCompare(argv[linker_arg], "--link:?") == 0)
+		if (StringCompare(argv[linker_arg], "--ld64:?") == 0)
 		{
 			kLinkerSplash();
 
-			kStdOut << "--link:ver: Show linker version.\n";
-			kStdOut << "--link:?: Show linker help.\n";
-			kStdOut << "--link:verbose: Enable linker trace.\n";
-			kStdOut << "--link:dll: Output as a shared PEF.\n";
-			kStdOut << "--link:fat: Output as a FAT PEF.\n";
-			kStdOut << "--link:32k: Output as a 32x0 PEF.\n";
-			kStdOut << "--link:64k: Output as a 64x0 PEF.\n";
-			kStdOut << "--link:amd64: Output as a AMD64 PEF.\n";
-			kStdOut << "--link:rv64: Output as a RISC-V PEF.\n";
-			kStdOut << "--link:power64: Output as a POWER PEF.\n";
-			kStdOut << "--link:arm64: Output as a ARM64 PEF.\n";
-			kStdOut << "--link:output: Select the output file name.\n";
+			kStdOut << "--ld64:ver: Show linker version.\n";
+			kStdOut << "--ld64:?: Show linker help.\n";
+			kStdOut << "--ld64:verbose: Enable linker trace.\n";
+			kStdOut << "--ld64:dylib: Output as a Dylib PEF.\n";
+			kStdOut << "--ld64:fat: Output as a FAT PEF.\n";
+			kStdOut << "--ld64:32k: Output as a 32x0 PEF.\n";
+			kStdOut << "--ld64:64k: Output as a 64x0 PEF.\n";
+			kStdOut << "--ld64:amd64: Output as a AMD64 PEF.\n";
+			kStdOut << "--ld64:rv64: Output as a RISC-V PEF.\n";
+			kStdOut << "--ld64:power64: Output as a POWER PEF.\n";
+			kStdOut << "--ld64:arm64: Output as a ARM64 PEF.\n";
+			kStdOut << "--ld64:output: Select the output file name.\n";
 
 			return 0;
 		}
-		else if (StringCompare(argv[linker_arg], "--link:ver") == 0)
+		else if (StringCompare(argv[linker_arg], "--ld64:ver") == 0)
 		{
 			kLinkerSplash();
 			return 0;
 		}
-		else if (StringCompare(argv[linker_arg], "--link:fat-binary") == 0)
+		else if (StringCompare(argv[linker_arg], "--ld64:fat-binary") == 0)
 		{
 			kFatBinaryEnable = true;
 
 			continue;
 		}
-		else if (StringCompare(argv[linker_arg], "--link:64k") == 0)
+		else if (StringCompare(argv[linker_arg], "--ld64:64k") == 0)
 		{
 			kArch = ToolchainKit::kPefArch64000;
 
 			continue;
 		}
-		else if (StringCompare(argv[linker_arg], "--link:amd64") == 0)
+		else if (StringCompare(argv[linker_arg], "--ld64:amd64") == 0)
 		{
 			kArch = ToolchainKit::kPefArchAMD64;
 
 			continue;
 		}
-		else if (StringCompare(argv[linker_arg], "--link:32k") == 0)
+		else if (StringCompare(argv[linker_arg], "--ld64:32k") == 0)
 		{
 			kArch = ToolchainKit::kPefArch32000;
 
 			continue;
 		}
-		else if (StringCompare(argv[linker_arg], "--link:power64") == 0)
+		else if (StringCompare(argv[linker_arg], "--ld64:power64") == 0)
 		{
 			kArch = ToolchainKit::kPefArchPowerPC;
 
 			continue;
 		}
-		else if (StringCompare(argv[linker_arg], "--link:riscv64") == 0)
+		else if (StringCompare(argv[linker_arg], "--ld64:riscv64") == 0)
 		{
 			kArch = ToolchainKit::kPefArchRISCV;
 
 			continue;
 		}
-		else if (StringCompare(argv[linker_arg], "--link:arm64") == 0)
+		else if (StringCompare(argv[linker_arg], "--ld64:arm64") == 0)
 		{
 			kArch = ToolchainKit::kPefArchARM64;
 
 			continue;
 		}
-		else if (StringCompare(argv[linker_arg], "--link:verbose") == 0)
+		else if (StringCompare(argv[linker_arg], "--ld64:verbose") == 0)
 		{
 			kVerbose = true;
 
 			continue;
 		}
-		else if (StringCompare(argv[linker_arg], "--link:dll") == 0)
+		else if (StringCompare(argv[linker_arg], "--ld64:dylib") == 0)
 		{
 			if (kOutput.empty())
 			{
@@ -175,7 +176,7 @@ TOOLCHAINKIT_MODULE(ZKALinkerMain)
 
 			continue;
 		}
-		else if (StringCompare(argv[linker_arg], "--link:output") == 0)
+		else if (StringCompare(argv[linker_arg], "--ld64:output") == 0)
 		{
 			kOutput = argv[linker_arg + 1];
 			++linker_arg;
@@ -186,7 +187,7 @@ TOOLCHAINKIT_MODULE(ZKALinkerMain)
 		{
 			if (argv[linker_arg][0] == '-')
 			{
-				kStdOut << "link: unknown flag: " << argv[linker_arg] << "\n";
+				kStdOut << "ld64: unknown flag: " << argv[linker_arg] << "\n";
 				continue;
 			}
 
@@ -198,14 +199,14 @@ TOOLCHAINKIT_MODULE(ZKALinkerMain)
 
 	if (kOutput.empty())
 	{
-		kStdOut << "link: no output filename set." << std::endl;
+		kStdOut << "ld64: no output filename set." << std::endl;
 		return TOOLCHAINKIT_EXEC_ERROR;
 	}
 
 	// sanity check.
 	if (kObjectList.empty())
 	{
-		kStdOut << "link: no input files." << std::endl;
+		kStdOut << "ld64: no input files." << std::endl;
 		return TOOLCHAINKIT_EXEC_ERROR;
 	}
 	else
@@ -219,7 +220,7 @@ TOOLCHAINKIT_MODULE(ZKALinkerMain)
 			{
 				// if filesystem doesn't find file
 				//          -> throw error.
-				kStdOut << "link: no such file: " << obj << std::endl;
+				kStdOut << "ld64: no such file: " << obj << std::endl;
 				return TOOLCHAINKIT_EXEC_ERROR;
 			}
 		}
@@ -228,7 +229,7 @@ TOOLCHAINKIT_MODULE(ZKALinkerMain)
 	// PEF expects a valid target architecture when outputing a binary.
 	if (kArch == 0)
 	{
-		kStdOut << "link: no target architecture set, can't continue." << std::endl;
+		kStdOut << "ld64: no target architecture set, can't continue." << std::endl;
 		return TOOLCHAINKIT_EXEC_ERROR;
 	}
 
@@ -237,7 +238,7 @@ TOOLCHAINKIT_MODULE(ZKALinkerMain)
 	int32_t archs = kArch;
 
 	pef_container.Count	   = 0UL;
-	pef_container.Kind	   = ToolchainKit::kPefKindExec;
+	pef_container.Kind	   = is_executable ? ToolchainKit::kPefKindExec : ToolchainKit::kPefKindDylib;
 	pef_container.SubCpu   = kSubArch;
 	pef_container.Linker   = kLinkerId; // ZKA Web Services Co Linker
 	pef_container.Abi	   = kAbi;		// Multi-Processor UX ABI
@@ -257,7 +258,7 @@ TOOLCHAINKIT_MODULE(ZKALinkerMain)
 	{
 		if (kVerbose)
 		{
-			kStdOut << "link: error: " << strerror(errno) << "\n";
+			kStdOut << "ld64: error: " << strerror(errno) << "\n";
 		}
 
 		return TOOLCHAINKIT_FILE_NOT_FOUND;
@@ -268,14 +269,14 @@ TOOLCHAINKIT_MODULE(ZKALinkerMain)
 	std::vector<ToolchainKit::PEFCommandHeader> command_headers;
 	ToolchainKit::Utils::AEReadableProtocol	   readProto{};
 
-	for (const auto& i : kObjectList)
+	for (const auto& objectFile : kObjectList)
 	{
-		if (!std::filesystem::exists(i))
+		if (!std::filesystem::exists(objectFile))
 			continue;
 
 		ToolchainKit::AEHeader hdr{};
 
-		readProto.FP = std::ifstream(i, std::ifstream::binary);
+		readProto.FP = std::ifstream(objectFile, std::ifstream::binary);
 		readProto.FP >> hdr;
 
 		auto ae_header = hdr;
@@ -286,26 +287,25 @@ TOOLCHAINKIT_MODULE(ZKALinkerMain)
 			if (ae_header.fArch != kArch)
 			{
 				if (kVerbose)
-					kStdOut << "link: info: is this a FAT binary? : ";
+					kStdOut << "ld64: info: is this a FAT binary? : ";
 
 				if (!kFatBinaryEnable)
 				{
 					if (kVerbose)
 						kStdOut << "No.\n";
 
-					kStdOut << "link: error: object " << i
+					kStdOut << "ld64: error: object " << objectFile
 							<< " is a different kind of architecture and output isn't "
 							   "treated as a FAT binary."
 							<< std::endl;
 
-					std::remove(kOutput.c_str());
 					return TOOLCHAINKIT_FAT_ERROR;
 				}
 				else
 				{
 					if (kVerbose)
 					{
-						kStdOut << "Architecture matches.\n";
+						kStdOut << "Architecture matches what we expect.\n";
 					}
 				}
 			}
@@ -315,20 +315,22 @@ TOOLCHAINKIT_MODULE(ZKALinkerMain)
 			std::size_t cnt = ae_header.fCount;
 
 			if (kVerbose)
-				kStdOut << "link: object header found, record count: " << cnt << "\n";
+				kStdOut << "ld64: object header found, record count: " << cnt << "\n";
 
 			pef_container.Count = cnt;
 
 			char_type* raw_ae_records =
 				new char_type[cnt * sizeof(ToolchainKit::AERecordHeader)];
+
 			memset(raw_ae_records, 0, cnt * sizeof(ToolchainKit::AERecordHeader));
 
 			auto* ae_records = readProto.Read(raw_ae_records, cnt);
+
 			for (size_t ae_record_index = 0; ae_record_index < cnt;
 				 ++ae_record_index)
 			{
 				ToolchainKit::PEFCommandHeader command_header{0};
-				size_t				  offsetOfData = ae_records[ae_record_index].fOffset + ae_header.fSize;
+				size_t				  offset_of_obj = ae_records[ae_record_index].fOffset;
 
 				memcpy(command_header.Name, ae_records[ae_record_index].fName,
 					   kPefNameLen);
@@ -368,7 +370,7 @@ TOOLCHAINKIT_MODULE(ZKALinkerMain)
 				}
 
 			ld_mark_header:
-				command_header.Offset = offsetOfData;
+				command_header.Offset = offset_of_obj;
 				command_header.Kind	  = ae_records[ae_record_index].fKind;
 				command_header.Size	  = ae_records[ae_record_index].fSize;
 				command_header.Cpu	  = ae_header.fArch;
@@ -376,10 +378,10 @@ TOOLCHAINKIT_MODULE(ZKALinkerMain)
 
 				if (kVerbose)
 				{
-					kStdOut << "link: object record: "
-							<< ae_records[ae_record_index].fName << " was marked.\n";
+					kStdOut << "ld64: record: "
+							<< ae_records[ae_record_index].fName << " is marked.\n";
 
-					kStdOut << "link: object record offset: " << command_header.Offset << "\n";
+					kStdOut << "ld64: record offset: " << command_header.Offset << "\n";
 				}
 
 				command_headers.emplace_back(command_header);
@@ -405,9 +407,7 @@ TOOLCHAINKIT_MODULE(ZKALinkerMain)
 			continue;
 		}
 
-		kStdOut << "link: not an object: " << i << std::endl;
-		std::remove(kOutput.c_str());
-
+		kStdOut << "ld64: not an object file: " << objectFile << std::endl;
 		// don't continue, it is a fatal error.
 		return TOOLCHAINKIT_EXEC_ERROR;
 	}
@@ -418,7 +418,7 @@ TOOLCHAINKIT_MODULE(ZKALinkerMain)
 
 	if (kVerbose)
 	{
-		kStdOut << "link: wrote container header.\n";
+		kStdOut << "ld64: wrote container header.\n";
 	}
 
 	output_fc.seekp(std::streamsize(pef_container.HdrSz));
@@ -436,7 +436,7 @@ TOOLCHAINKIT_MODULE(ZKALinkerMain)
 			ToolchainKit::String(command_hdr.Name).find(kLdDynamicSym) == ToolchainKit::String::npos)
 		{
 			if (kVerbose)
-				kStdOut << "link: found undefined symbol: " << command_hdr.Name << "\n";
+				kStdOut << "ld64: found undefined symbol: " << command_hdr.Name << "\n";
 
 			if (auto it = std::find(not_found.begin(), not_found.end(),
 									ToolchainKit::String(command_hdr.Name));
@@ -493,7 +493,7 @@ TOOLCHAINKIT_MODULE(ZKALinkerMain)
 					not_found.erase(it);
 
 					if (kVerbose)
-						kStdOut << "link: found symbol: " << command_hdr.Name << "\n";
+						kStdOut << "ld64: found symbol: " << command_hdr.Name << "\n";
 
 					break;
 				}
@@ -510,32 +510,32 @@ TOOLCHAINKIT_MODULE(ZKALinkerMain)
 	{
 		if (kVerbose)
 			kStdOut
-				<< "link: undefined entrypoint: " << kPefStart << ", you may have forget to link "
+				<< "ld64: undefined entrypoint: " << kPefStart << ", you may have forget to ld64 "
 																  "against your compiler's runtime library.\n";
 
-		kStdOut << "link: undefined entrypoint " << kPefStart
+		kStdOut << "ld64: undefined entrypoint " << kPefStart
 				<< " for executable: " << kOutput << "\n";
 	}
 
 	// step 4: write all PEF commands.
 
-	ToolchainKit::PEFCommandHeader dateHeader{};
+	ToolchainKit::PEFCommandHeader date_cmd_hdr{};
 
 	time_t timestamp = time(nullptr);
 
 	ToolchainKit::String timeStampStr = "Container:BuildEpoch:";
 	timeStampStr += std::to_string(timestamp);
 
-	strncpy(dateHeader.Name, timeStampStr.c_str(), timeStampStr.size());
+	strncpy(date_cmd_hdr.Name, timeStampStr.c_str(), timeStampStr.size());
 
-	dateHeader.Flags  = 0;
-	dateHeader.Kind	  = ToolchainKit::kPefZero;
-	dateHeader.Offset = output_fc.tellp();
-	dateHeader.Size	  = timeStampStr.size();
+	date_cmd_hdr.Flags  = 0;
+	date_cmd_hdr.Kind	  = ToolchainKit::kPefZero;
+	date_cmd_hdr.Offset = output_fc.tellp();
+	date_cmd_hdr.Size	  = timeStampStr.size();
 
-	command_headers.push_back(dateHeader);
+	command_headers.push_back(date_cmd_hdr);
 
-	ToolchainKit::PEFCommandHeader abiHeader{};
+	ToolchainKit::PEFCommandHeader abi_cmd_hdr{};
 
 	ToolchainKit::String abi = kLinkerAbiContainer;
 
@@ -551,7 +551,7 @@ TOOLCHAINKIT_MODULE(ZKALinkerMain)
 	}
 	case ToolchainKit::kPefArch32000:
 	case ToolchainKit::kPefArch64000: {
-		abi += "MHRA";
+		abi += " ZWS";
 		break;
 	}
 	default: {
@@ -560,26 +560,26 @@ TOOLCHAINKIT_MODULE(ZKALinkerMain)
 	}
 	}
 
-	memcpy(abiHeader.Name, abi.c_str(), abi.size());
+	memcpy(abi_cmd_hdr.Name, abi.c_str(), abi.size());
 
-	abiHeader.Size	 = abi.size();
-	abiHeader.Offset = output_fc.tellp();
-	abiHeader.Flags	 = 0;
-	abiHeader.Kind	 = ToolchainKit::kPefLinkerID;
+	abi_cmd_hdr.Size	 = abi.size();
+	abi_cmd_hdr.Offset = output_fc.tellp();
+	abi_cmd_hdr.Flags	 = 0;
+	abi_cmd_hdr.Kind	 = ToolchainKit::kPefLinkerID;
 
-	command_headers.push_back(abiHeader);
+	command_headers.push_back(abi_cmd_hdr);
 
-	ToolchainKit::PEFCommandHeader stackHeader{0};
+	ToolchainKit::PEFCommandHeader stack_cmd_hdr{0};
 
-	stackHeader.Cpu	   = kArch;
-	stackHeader.Flags  = 0;
-	stackHeader.Size   = sizeof(uintptr_t);
-	stackHeader.Offset = (kMIBCount * 1024 * 1024);
-	memcpy(stackHeader.Name, kLinkerStackSizeSymbol, strlen(kLinkerStackSizeSymbol));
+	stack_cmd_hdr.Cpu	   = kArch;
+	stack_cmd_hdr.Flags  = 0;
+	stack_cmd_hdr.Size   = sizeof(uintptr_t);
+	stack_cmd_hdr.Offset = (kMIBCount * kByteCount * kByteCount);
+	memcpy(stack_cmd_hdr.Name, kLinkerStackSizeSymbol, strlen(kLinkerStackSizeSymbol));
 
-	command_headers.push_back(stackHeader);
+	command_headers.push_back(stack_cmd_hdr);
 
-	ToolchainKit::PEFCommandHeader uuidHeader{};
+	ToolchainKit::PEFCommandHeader uuid_cmd_hdr{};
 
 	std::random_device rd;
 
@@ -592,16 +592,16 @@ TOOLCHAINKIT_MODULE(ZKALinkerMain)
 	uuids::uuid id		= gen();
 	auto		uuidStr = uuids::to_string(id);
 
-	memcpy(uuidHeader.Name, "Container:GUID:4:", strlen("Container:GUID:4:"));
-	memcpy(uuidHeader.Name + strlen("Container:GUID:4:"), uuidStr.c_str(),
+	memcpy(uuid_cmd_hdr.Name, "Container:GUID:4:", strlen("Container:GUID:4:"));
+	memcpy(uuid_cmd_hdr.Name + strlen("Container:GUID:4:"), uuidStr.c_str(),
 		   uuidStr.size());
 
-	uuidHeader.Size	  = strlen(uuidHeader.Name);
-	uuidHeader.Offset = output_fc.tellp();
-	uuidHeader.Flags  = ToolchainKit::kPefLinkerID;
-	uuidHeader.Kind	  = ToolchainKit::kPefZero;
+	uuid_cmd_hdr.Size	  = strlen(uuid_cmd_hdr.Name);
+	uuid_cmd_hdr.Offset = output_fc.tellp();
+	uuid_cmd_hdr.Flags  = ToolchainKit::kPefLinkerID;
+	uuid_cmd_hdr.Kind	  = ToolchainKit::kPefZero;
 
-	command_headers.push_back(uuidHeader);
+	command_headers.push_back(uuid_cmd_hdr);
 
 	// prepare a symbol vector.
 	std::vector<ToolchainKit::String> undef_symbols;
@@ -655,8 +655,8 @@ TOOLCHAINKIT_MODULE(ZKALinkerMain)
 
 		if (kVerbose)
 		{
-			kStdOut << "link: command header name: " << name << "\n";
-			kStdOut << "link: real address of command header content: " << command_headers[commandHeaderIndex].Offset << "\n";
+			kStdOut << "ld64: command header name: " << name << "\n";
+			kStdOut << "ld64: real address of command header content: " << command_headers[commandHeaderIndex].Offset << "\n";
 		}
 
 		output_fc << command_headers[commandHeaderIndex];
@@ -675,7 +675,7 @@ TOOLCHAINKIT_MODULE(ZKALinkerMain)
 			{
 				if (kVerbose)
 				{
-					kStdOut << "link: ignore :UndefinedSymbol: command header...\n";
+					kStdOut << "ld64: ignore :UndefinedSymbol: command header...\n";
 				}
 
 				// ignore :UndefinedSymbol: headers, they do not contain code.
@@ -694,7 +694,7 @@ TOOLCHAINKIT_MODULE(ZKALinkerMain)
 				}
 
 				if (kVerbose)
-					kStdOut << "link: found duplicate symbol: " << command_hdr.Name
+					kStdOut << "ld64: found duplicate symbol: " << command_hdr.Name
 							<< "\n";
 
 				kDuplicateSymbols = true;
@@ -706,10 +706,9 @@ TOOLCHAINKIT_MODULE(ZKALinkerMain)
 	{
 		for (auto& symbol : dupl_symbols)
 		{
-			kStdOut << "link: multiple symbols of " << symbol << ".\n";
+			kStdOut << "ld64: multiple symbols of " << symbol << ".\n";
 		}
 
-		std::remove(kOutput.c_str());
 		return TOOLCHAINKIT_EXEC_ERROR;
 	}
 
@@ -721,7 +720,7 @@ TOOLCHAINKIT_MODULE(ZKALinkerMain)
 	}
 
 	if (kVerbose)
-		kStdOut << "link: wrote contents of: " << kOutput << "\n";
+		kStdOut << "ld64: wrote contents of: " << kOutput << "\n";
 
 	// step 3: check if we have those symbols
 
@@ -741,7 +740,7 @@ TOOLCHAINKIT_MODULE(ZKALinkerMain)
 	{
 		for (auto& unreferenced_symbol : unreferenced_symbols)
 		{
-			kStdOut << "link: undefined symbol " << unreferenced_symbol << "\n";
+			kStdOut << "ld64: undefined symbol " << unreferenced_symbol << "\n";
 		}
 	}
 
@@ -749,10 +748,9 @@ TOOLCHAINKIT_MODULE(ZKALinkerMain)
 		!unreferenced_symbols.empty())
 	{
 		if (kVerbose)
-			kStdOut << "link: file: " << kOutput
+			kStdOut << "ld64: file: " << kOutput
 					<< ", is corrupt, removing file...\n";
 
-		std::remove(kOutput.c_str());
 		return TOOLCHAINKIT_EXEC_ERROR;
 	}
 

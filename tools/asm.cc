@@ -7,15 +7,16 @@
 /// @file Linker.cxx
 /// @brief ZKA C++ frontend for ZKA OS.
 
+#include <ToolchainKit/Defines.h>
 #include <ToolchainKit/Version.h>
 #include <iostream>
 #include <cstring>
 #include <string>
 #include <vector>
 
-extern "C" int ZKAAssemblerMainPowerPC(int argc, char const* argv[]);
-extern "C" int ZKAAssemblerMain64000(int argc, char const* argv[]);
-extern "C" int ZKAAssemblerMainAMD64(int argc, char const* argv[]);
+TK_IMPORT_C int AssemblerMainPower64(int argc, char const* argv[]);
+TK_IMPORT_C int AssemblerMain64x0(int argc, char const* argv[]);
+TK_IMPORT_C int AssemblerAMD64(int argc, char const* argv[]);
 
 int main(int argc, char const* argv[])
 {
@@ -24,34 +25,34 @@ int main(int argc, char const* argv[])
 
 	enum
 	{
-		eX64Assembler,
-		e64X0Assembler,
-		ePOWER64Assembler,
-		eInvalidAssembler
-	} cAsm = eInvalidAssembler;
+		kX64Assembler,
+		k64X0Assembler,
+		kPOWER64Assembler,
+		kInvalidAssembler
+	} asm_type = kInvalidAssembler;
 
 	for (size_t index_arg = 1; index_arg < argc; ++index_arg)
 	{
-		if (strstr(argv[index_arg], "--Asm:?"))
+		if (strstr(argv[index_arg], "--asm:h"))
 		{
-			std::printf("asm.exe: Frontend Assembler (64x0, POWER64, AMD64).\n");
+			std::printf("asm.exe: Frontend Assembler (64x0, power64, x64).\n");
 			std::printf("asm.exe: Version: %s, Release: %s.\n", kDistVersion, kDistRelease);
 			std::printf("asm.exe: Designed by Amlal El Mahrouss, Copyright ZKA Web Services Co.\n");
-			std::printf("libndk.so/ToolchainKit.dll: Designed by Amlal El Mahrouss, Copyright ZKA Web Services Co.\n");
+			std::printf("libToolchainKit.dylib: Designed by Amlal El Mahrouss, Copyright ZKA Web Services Co.\n");
 
 			return 0;
 		}
-		else if (strstr(argv[index_arg], "--Asm:x64"))
+		else if (strstr(argv[index_arg], "--asm:x64"))
 		{
-			cAsm = eX64Assembler;
+			asm_type = kX64Assembler;
 		}
-		else if (strstr(argv[index_arg], "--Asm:64x0"))
+		else if (strstr(argv[index_arg], "--asm:64x0"))
 		{
-			cAsm = e64X0Assembler;
+			asm_type = k64X0Assembler;
 		}
-		else if (strstr(argv[index_arg], "--Asm:POWER64"))
+		else if (strstr(argv[index_arg], "--asm:power64"))
 		{
-			cAsm = ePOWER64Assembler;
+			asm_type = kPOWER64Assembler;
 		}
 		else
 		{
@@ -59,26 +60,26 @@ int main(int argc, char const* argv[])
 		}
 	}
 
-	switch (cAsm)
+	switch (asm_type)
 	{
-	case ePOWER64Assembler: {
-		if (int32_t code = ZKAAssemblerMainPowerPC(arg_vec_cstr.size(), arg_vec_cstr.data()); code)
+	case kPOWER64Assembler: {
+		if (int32_t code = AssemblerMainPower64(arg_vec_cstr.size(), arg_vec_cstr.data()); code)
 		{
 			std::printf("asm.exe: frontend exited with code %i.\n", code);
 			return code;
 		}
 		break;
 	}
-	case e64X0Assembler: {
-		if (int32_t code = ZKAAssemblerMain64000(arg_vec_cstr.size(), arg_vec_cstr.data()); code)
+	case k64X0Assembler: {
+		if (int32_t code = AssemblerMain64x0(arg_vec_cstr.size(), arg_vec_cstr.data()); code)
 		{
 			std::printf("asm.exe: frontend exited with code %i.\n", code);
 			return code;
 		}
 		break;
 	}
-	case eX64Assembler: {
-		if (int32_t code = ZKAAssemblerMainAMD64(arg_vec_cstr.size(), arg_vec_cstr.data()); code)
+	case kX64Assembler: {
+		if (int32_t code = AssemblerAMD64(arg_vec_cstr.size(), arg_vec_cstr.data()); code)
 		{
 			std::printf("asm.exe: frontend exited with code %i.\n", code);
 			return code;

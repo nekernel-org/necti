@@ -14,9 +14,8 @@
 #define kPefMagic	 "Joy!"
 #define kPefMagicFat "yoJ!"
 
-/* not mandatory, only for non fork based filesystems */
-#define kPefExt		  ".exe"
-#define kPefDylibExt  ".dll"
+#define kPefExt		  ".o"
+#define kPefDylibExt  ".dylib"
 #define kPefLibExt	  ".lib"
 #define kPefObjectExt ".obj"
 #define kPefDebugExt  ".dbg"
@@ -58,17 +57,18 @@ namespace ToolchainKit
 	{
 		kPefSubArchAMD,
 		kPefSubArchIntel,
+		kPefSubArchARM,
 		kPefSubArchGeneric,
 		kPefSubArchIBM,
 	};
 
 	enum
 	{
-		kPefKindExec		 = 1, /* .exe */
-		kPefKindSharedObject = 2, /* .lib */
-		kPefKindObject		 = 4, /* .obj */
-		kPefKindDebug		 = 5, /* .dbg */
-		kPefKindDriver		 = 6,
+		kPefKindExec   = 1, /* .o */
+		kPefKindDylib  = 2, /* .dylib */
+		kPefKindObject = 4, /* .obj */
+		kPefKindDebug  = 5, /* .dbg */
+		kPefKindDriver = 6,
 		kPefKindCount,
 	};
 

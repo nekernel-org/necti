@@ -81,7 +81,7 @@ static bool asm_read_attributes(std::string& line);
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
-TOOLCHAINKIT_MODULE(ZKAAssemblerMainPowerPC)
+TOOLCHAINKIT_MODULE(AssemblerMainPower64)
 {
 	for (size_t i = 1; i < argc; ++i)
 	{
