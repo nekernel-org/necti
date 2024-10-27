@@ -1316,7 +1316,7 @@ bool ToolchainKit::EncoderAMD64::WriteLine(std::string&		 line,
 					auto modrm = (0x3 << 6 |
 								  currentRegList[0].fModRM);
 
-					kAppBytes.emplace_back(0xc7);
+					kAppBytes.emplace_back(0xC7); // prefixed before placing the modrm and then the number.
 					kAppBytes.emplace_back(modrm);
 					kAppBytes.emplace_back(num.number[0]);
 					kAppBytes.emplace_back(num.number[1]);
