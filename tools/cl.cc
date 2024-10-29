@@ -1,6 +1,6 @@
 /* -------------------------------------------
 
-	Copyright ZKA Web Services Co
+	Copyright EL Mahrouss Logic
 
 ------------------------------------------- */
 
@@ -25,8 +25,8 @@ int main(int argc, char const* argv[])
 		{
 			std::printf("cl.exe: Frontend C++ Compiler.\n");
 			std::printf("cl.exe: Version: %s, Release: %s.\n", kDistVersion, kDistRelease);
-			std::printf("cl.exe: Designed by Amlal El Mahrouss, Copyright ZKA Web Services Co.\n");
-			std::printf("libToolchainKit.dylib: Designed by Amlal El Mahrouss, Copyright ZKA Web Services Co.\n");
+			std::printf("cl.exe: Designed by Amlal El Mahrouss, Copyright EL Mahrouss Logic.\n");
+			std::printf("libToolchainKit.dylib: Designed by Amlal El Mahrouss, Copyright EL Mahrouss Logic.\n");
 
 			return 0;
 		}

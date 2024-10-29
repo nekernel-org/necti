@@ -1,6 +1,6 @@
 /* -------------------------------------------
 
-	Copyright ZKA Web Services Co
+	Copyright EL Mahrouss Logic
 
 ------------------------------------------- */
 
@@ -9,7 +9,7 @@
 /////////////////////////////////////////////////////////////////////////////////////////
 
 // @file 32asm.cxx
-// @author ZKA Web Services Co
+// @author EL Mahrouss Logic
 // @brief 32x0 Assembler.
 
 // REMINDER: when dealing with an undefined symbol use (string

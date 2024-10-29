@@ -1,6 +1,6 @@
 /* -------------------------------------------
 
-	Copyright ZKA Web Services Co
+	Copyright EL Mahrouss Logic
 
 ------------------------------------------- */
 
@@ -37,8 +37,8 @@ int main(int argc, char const* argv[])
 		{
 			std::printf("asm.exe: Frontend Assembler (64x0, power64, x64).\n");
 			std::printf("asm.exe: Version: %s, Release: %s.\n", kDistVersion, kDistRelease);
-			std::printf("asm.exe: Designed by Amlal El Mahrouss, Copyright ZKA Web Services Co.\n");
-			std::printf("libToolchainKit.dylib: Designed by Amlal El Mahrouss, Copyright ZKA Web Services Co.\n");
+			std::printf("asm.exe: Designed by Amlal El Mahrouss, Copyright EL Mahrouss Logic.\n");
+			std::printf("libToolchainKit.dylib: Designed by Amlal El Mahrouss, Copyright EL Mahrouss Logic.\n");
 
 			return 0;
 		}

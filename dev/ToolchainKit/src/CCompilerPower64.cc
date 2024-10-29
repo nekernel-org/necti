@@ -2,7 +2,7 @@
  *	========================================================
  *
  *	cc
- * 	Copyright ZKA Web Services Co, all rights reserved.
+ * 	Copyright EL Mahrouss Logic, all rights reserved.
  *
  * 	========================================================
  */
@@ -1503,7 +1503,7 @@ public:
 
 #define kPrintF printf
 #define kSplashCxx() \
-	kPrintF(kWhite "cc, %s, (c) ZKA Web Services Co\n", kDistVersion)
+	kPrintF(kWhite "cc, %s, (c) EL Mahrouss Logic\n", kDistVersion)
 
 static void cc_print_help()
 {

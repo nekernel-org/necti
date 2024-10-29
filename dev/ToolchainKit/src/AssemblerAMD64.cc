@@ -1,6 +1,6 @@
 /* -------------------------------------------
 
-	Copyright ZKA Web Services Co
+	Copyright EL Mahrouss Logic
 
 ------------------------------------------- */
 
@@ -140,13 +140,13 @@ TOOLCHAINKIT_MODULE(AssemblerAMD64)
 			if (strcmp(argv[i], "--amd64:ver") == 0 || strcmp(argv[i], "--amd64:v") == 0)
 			{
 				kStdOut << "AssemblerAMD64: AMD64 Assembler Driver.\nAssemblerAMD64: v1.10\nAssemblerAMD64: Copyright "
-						   "(c) ZKA Web Services Co.\n";
+						   "(c) EL Mahrouss Logic.\n";
 				return 0;
 			}
 			else if (strcmp(argv[i], "--amd64:h") == 0)
 			{
 				kStdOut << "AssemblerAMD64: AMD64 Assembler Driver.\nAssemblerAMD64: Copyright (c) 2024 "
-						   "ZKA Web Services Co.\n";
+						   "EL Mahrouss Logic.\n";
 				kStdOut << "--version: Print program version.\n";
 				kStdOut << "--verbose: Print verbose output.\n";
 				kStdOut << "--binary: Output as flat binary.\n";

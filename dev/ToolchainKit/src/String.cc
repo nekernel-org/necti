@@ -2,7 +2,7 @@
  *	========================================================
  *
  *	ToolchainKit
- * 	Copyright ZKA Web Services Co, all rights reserved.
+ * 	Copyright EL Mahrouss Logic, all rights reserved.
  *
  * 	========================================================
  */
@@ -14,7 +14,7 @@
  * @version 0.2
  * @date 2024-01-23
  *
- * @copyright Copyright (c) ZKA Web Services Co
+ * @copyright Copyright (c) EL Mahrouss Logic
  *
  */
 

@@ -1,6 +1,6 @@
 /* -------------------------------------------
 
-	Copyright ZKA Web Services Co
+	Copyright EL Mahrouss Logic
 
 ------------------------------------------- */
 
@@ -91,13 +91,13 @@ TOOLCHAINKIT_MODULE(AssemblerMainPower64)
 			{
 				kStdOut << "AssemblerPower: POWER64 Assembler Driver.\nAssemblerPower: " << kDistVersion << "\nAssemblerPower: "
 																											"Copyright (c) "
-																											"ZKA Web Services Co.\n";
+																											"EL Mahrouss Logic.\n";
 				return 0;
 			}
 			else if (strcmp(argv[i], "--h") == 0)
 			{
 				kStdOut << "AssemblerPower: POWER64 Assembler Driver.\nAssemblerPower: Copyright (c) 2024 "
-						   "ZKA Web Services Co.\n";
+						   "EL Mahrouss Logic.\n";
 				kStdOut << "--version,/v: print program version.\n";
 				kStdOut << "--verbose: print verbose output.\n";
 				kStdOut << "--binary: output as flat binary.\n";

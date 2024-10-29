@@ -1,7 +1,7 @@
 /* -------------------------------------------
 
 	Some modifications are copyrighted under:
-	ZKA Web Services Co
+	EL Mahrouss Logic
 
 	Original author:
 	Apple Inc
