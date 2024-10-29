@@ -1,4 +1,6 @@
-# NDK, C++ SDK for New OS.
+# ZKA C++
+
+ZKA's Toolchain sources.
 
 ## Installing:
 
