@@ -7,12 +7,10 @@
 
 ------------------------------------------- */
 
-/// @file Linker.cxx
+/// @file Linker.cc
 /// @author Amlal EL Mahrouss (amlel)
 /// @brief ZKA Linker.
-
 /// Last Rev: Sat Feb 24 CET 2024
-
 /// @note Do not look up for anything with .code64/.data64/.zero64!
 /// It will be loaded when program will start up!
 
