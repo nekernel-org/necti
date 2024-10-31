@@ -87,7 +87,7 @@ int main(int argc, char const* argv[])
 		break;
 	}
 	default: {
-		return -1;
+		return 1;
 	}
 	}
 

@@ -281,7 +281,7 @@ TOOLCHAINKIT_MODULE(AssemblerAMD64)
 						   "file.\nAssemblerAMD64: Make one using `public_segment .code64 foo_bar`.\n";
 
 				std::filesystem::remove(object_output);
-				return -1;
+				return 1;
 			}
 
 			kRecords[kRecords.size() - 1].fSize = kAppBytes.size();
@@ -374,7 +374,7 @@ asm_fail_exit:
 	if (kVerbose)
 		kStdOut << "AssemblerAMD64: Exit failed.\n";
 
-	return -1;
+	return 1;
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////

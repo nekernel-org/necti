@@ -214,7 +214,7 @@ TOOLCHAINKIT_MODULE(AssemblerMainPower64)
 						   "file.\nAssemblerPower: Make one using `public_segment .code64 foo_bar`.\n";
 
 				std::filesystem::remove(object_output);
-				return -1;
+				return 1;
 			}
 
 			kRecords[kRecords.size() - 1].fSize = kBytes.size();

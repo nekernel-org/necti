@@ -756,10 +756,10 @@ public:
 	Int32 CompileToFormat(std::string& src, Int32 arch) override
 	{
 		if (arch != AssemblyCPlusPlusInterface::Arch())
-			return -1;
+			return 1;
 
 		if (kCompilerFrontend == nullptr)
-			return -1;
+			return 1;
 
 		/* @brief copy contents wihtout extension */
 		std::string	  src_file = src;
@@ -824,7 +824,7 @@ public:
 		kState.fSyntaxTree = nullptr;
 
 		if (kAcceptableErrors > 0)
-			return -1;
+			return 1;
 
 		return kExitOK;
 	}
@@ -1003,7 +1003,7 @@ TOOLCHAINKIT_MODULE(CompilerCPlusPlusX8664)
 		std::cout << "CPlusPlusCompilerAMD64: building: " << argv[index] << std::endl;
 
 		if (kFactory.Compile(argv_i, kMachine) != kExitOK)
-			return -1;
+			return 1;
 	}
 
 	return kExitOK;

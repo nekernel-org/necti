@@ -1311,10 +1311,10 @@ public:
 	Int32 CompileToFormat(std::string& src, Int32 arch) override
 	{
 		if (arch != AssemblyCCInterface::Arch())
-			return -1;
+			return 1;
 
 		if (kCompilerFrontend == nullptr)
-			return -1;
+			return 1;
 
 		/* @brief copy contents wihtout extension */
 		std::string	  src_file = src.data();
@@ -1366,7 +1366,7 @@ public:
 		}
 
 		if (kAcceptableErrors > 0)
-			return -1;
+			return 1;
 
 		std::vector<std::string> keywords = {"ldw", "stw", "lda", "sta",
 											 "add", "sub", "mv"};
@@ -1588,7 +1588,7 @@ TOOLCHAINKIT_MODULE(NewOSCompilerCLang64x0)
 		}
 
 		if (kFactory.Compile(srcFile, kMachine) != kExitOK)
-			return -1;
+			return 1;
 	}
 
 	return kExitOK;
