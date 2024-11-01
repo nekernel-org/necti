@@ -1,9 +1,10 @@
 dev/LibC++/base_alloc.h
 dev/LibC++/base_exception.h
+dev/LibC++/base_math.h
 dev/LibC++/defines.h
-dev/LibC++/exit.h
-dev/LibC++/math.h
 dev/LibC++/power64.inc
+dev/LibC++/process_base.h
+dev/LibC++/utility.h
 dev/ToolchainKit/AAL/Asm.h
 dev/ToolchainKit/AAL/CPU/32x0.h
 dev/ToolchainKit/AAL/CPU/64x0.h
@@ -33,7 +34,7 @@ dev/ToolchainKit/src/CPlusPlusCompilerAMD64.cc
 dev/ToolchainKit/src/CPlusPlusCompilerPreProcessor.cc
 dev/ToolchainKit/src/Detail/AsmUtils.h
 dev/ToolchainKit/src/Detail/ClUtils.h
-dev/ToolchainKit/src/Linker.cc
+dev/ToolchainKit/src/Linker64.cc
 dev/ToolchainKit/src/String.cc
 posix.json
 tools/asm-unix.json

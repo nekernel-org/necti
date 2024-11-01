@@ -94,7 +94,7 @@
 	KLASS(KLASS&&)			  = default;
 
 #define TK_IMPORT_C extern "C"
-#define TK_IMPORT extern
+#define TK_IMPORT	extern
 
 #include <ctime>
 #include <fstream>

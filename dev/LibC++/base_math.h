@@ -17,7 +17,7 @@ typedef double real_type;
 typedef float real_type;
 #endif
 
-namespace std::math
+namespace std::base_math
 {
 	/// @brief Power function, with Repeat argument.
 	template <size_t Exponent>
@@ -59,4 +59,4 @@ namespace std::math
 		real_type diff = (to - from);
 		return from + (diff * stat);
 	}
-} // namespace std::math
+} // namespace std::base_math

@@ -7,9 +7,9 @@
 #pragma once
 
 #include <LibC++/defines.h>
-#include <LibC++/exit.h>
+#include <LibC++/process_base.h>
 
-namespace std
+namespace std::base_exception
 {
 	inline void __throw_general(void)
 	{
@@ -27,4 +27,4 @@ namespace std
 		__throw_general();
 		__builtin_unreachable(); // prevent from continuing.
 	}
-} // namespace std
+} // namespace std::base_exception

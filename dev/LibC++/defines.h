@@ -7,8 +7,10 @@
 #ifndef __TOOLCHAINKIT_DEFINES_H__
 #define __TOOLCHAINKIT_DEFINES_H__
 
+extern "C" {
 #include <stdint.h>
 #include <stddef.h>
+}
 
 #ifndef __GNUC__
 
@@ -89,37 +91,5 @@ typedef union double_cast {
 } __attribute__((packed)) double_cast_t;
 
 #endif // ifndef __GNUC__
-
-/// Include these helpers as well.
-
-#ifdef __STD_CXX__
-
-#include <LibC++/base_exception.h>
-#include <LibC++/base_alloc.h>
-
-#endif // ifdef __STD_CXX__
-
-namespace std
-{
-	/// @brief Forward object.
-	/// @tparam Args the object type.
-	/// @param arg the object.
-	/// @return object's rvalue
-	template <typename Args>
-	inline Args&& forward(Args& arg)
-	{
-		return static_cast<Args&&>(arg);
-	}
-
-	/// @brief Move object.
-	/// @tparam Args the object type.
-	/// @param arg the object.
-	/// @return object's rvalue
-	template <typename Args>
-	inline Args&& move(Args&& arg)
-	{
-		return static_cast<Args&&>(arg);
-	}
-} // namespace std
 
 #endif /* __TOOLCHAINKIT_DEFINES_H__ */
