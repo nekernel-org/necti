@@ -98,7 +98,7 @@ namespace ToolchainKit
 		struct SyntaxLeaf final
 		{
 			Int32 fUserType;
-#ifdef __PK_USE_STRUCT_INSTEAD__
+#ifdef TK_USE_STRUCTS
 			CompilerKeyword fUserData;
 #else
 			std::string fUserData;

@@ -9,8 +9,6 @@
 
 /// BUGS: 1
 
-#define __PK_USE_STRUCT_INSTEAD__ 1
-
 #define kPrintF printf
 
 #define kExitOK (EXIT_SUCCESS)
