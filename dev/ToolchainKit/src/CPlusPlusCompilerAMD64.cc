@@ -13,7 +13,8 @@
 
 #define kPrintF printf
 
-#define kExitOK (0)
+#define kExitOK (EXIT_SUCCESS)
+#define kExitFail (EXIT_FAILURE)
 
 #define kSplashCxx() \
 	kPrintF(kWhite "%s\n", "ZKA C++ Compiler Driver, (c) 2024 EL Mahrouss Logic, all rights reserved.")
