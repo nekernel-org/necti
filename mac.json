@@ -1,5 +1,5 @@
 {
-  "compiler_path": "g++",
+  "compiler_path": "clang++",
   "compiler_std": "c++20",
   "headers_path": [
     "./dev/ToolchainKit",
@@ -7,7 +7,7 @@
     "./dev/ToolchainKit/src/Detail"
   ],
   "sources_path": ["dev/ToolchainKit/src/*.cc"],
-  "output_name": "/usr/local/lib/libToolchainKit.dylib",
+  "output_name": "/usr/local/lib/libToolchainKit.so",
   "compiler_flags": ["-fPIC", "-shared"],
   "cpp_macros": [
     "__TOOLCHAINKIT_DLL__=202401",
