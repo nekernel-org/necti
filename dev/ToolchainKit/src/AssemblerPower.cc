@@ -1,6 +1,6 @@
 /* -------------------------------------------
 
-	Copyright EL Mahrouss Logic
+	Copyright Amlal EL Mahrouss
 
 ------------------------------------------- */
 
@@ -91,13 +91,13 @@ TOOLCHAINKIT_MODULE(AssemblerMainPower64)
 			{
 				kStdOut << "AssemblerPower: POWER64 Assembler Driver.\nAssemblerPower: " << kDistVersion << "\nAssemblerPower: "
 																											"Copyright (c) "
-																											"EL Mahrouss Logic.\n";
+																											"Amlal EL Mahrouss.\n";
 				return 0;
 			}
 			else if (strcmp(argv[i], "--h") == 0)
 			{
 				kStdOut << "AssemblerPower: POWER64 Assembler Driver.\nAssemblerPower: Copyright (c) 2024 "
-						   "EL Mahrouss Logic.\n";
+						   "Amlal EL Mahrouss.\n";
 				kStdOut << "--version,/v: print program version.\n";
 				kStdOut << "--verbose: print verbose output.\n";
 				kStdOut << "--binary: output as flat binary.\n";

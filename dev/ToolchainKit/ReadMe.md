@@ -4,4 +4,4 @@
 
 This contains a set of tools necessary to compile a ZKA program.
 
-###### Copyright EL Mahrouss Logic, all rights reserved.
+###### Copyright Amlal EL Mahrouss, all rights reserved.

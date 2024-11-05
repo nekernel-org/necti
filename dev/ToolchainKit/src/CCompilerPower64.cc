@@ -2,7 +2,7 @@
  *	========================================================
  *
  *	cc
- * 	Copyright EL Mahrouss Logic, all rights reserved.
+ * 	Copyright Amlal EL Mahrouss, all rights reserved.
  *
  * 	========================================================
  */
@@ -1503,7 +1503,7 @@ public:
 
 #define kPrintF printf
 #define kSplashCxx() \
-	kPrintF(kWhite "cc, %s, (c) EL Mahrouss Logic\n", kDistVersion)
+	kPrintF(kWhite "cc, %s, (c) Amlal EL Mahrouss\n", kDistVersion)
 
 static void cc_print_help()
 {

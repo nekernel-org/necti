@@ -1,6 +1,6 @@
 /* -------------------------------------------
 
-	Copyright EL Mahrouss Logic
+	Copyright Amlal EL Mahrouss
 
 ------------------------------------------- */
 
@@ -9,7 +9,7 @@
 /////////////////////////////////////////////////////////////////////////////////////////
 
 // @file 32asm.cxx
-// @author EL Mahrouss Logic
+// @author Amlal EL Mahrouss
 // @brief 32x0 Assembler.
 
 // REMINDER: when dealing with an undefined symbol use (string

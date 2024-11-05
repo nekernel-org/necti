@@ -20,4 +20,4 @@ make all
 
 You can now use the programs.
 
-###### Copyright EL Mahrouss Logic, all rights reserved.
+###### Copyright Amlal EL Mahrouss, all rights reserved.
