@@ -2,7 +2,7 @@
  *	========================================================
  *
  *	c++-drv
- * 	Copyright Amlal EL Mahrouss, all rights reserved.
+ * 	Copyright (C) 2024, EL Mahrouss Logic, all rights reserved, all rights reserved.
  *
  * 	========================================================
  */
@@ -25,7 +25,7 @@
 
 /* ZKA C++ Compiler driver */
 /* This is part of the ToolchainKit. */
-/* (c) Amlal EL Mahrouss */
+/* (c) EL Mahrouss Logic */
 
 /// @author Amlal El Mahrouss (amlel)
 /// @file CPlusPlusCompilerAMD64.cxx

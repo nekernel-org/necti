@@ -1,6 +1,6 @@
 /* -------------------------------------------
 
-	Copyright Amlal EL Mahrouss
+	Copyright (C) 2024, EL Mahrouss Logic, all rights reserved
 
 ------------------------------------------- */
 
@@ -139,7 +139,7 @@ TOOLCHAINKIT_MODULE(AssemblerAMD64)
 			if (strcmp(argv[i], "--amd64:ver") == 0 || strcmp(argv[i], "--amd64:v") == 0)
 			{
 				kStdOut << "AssemblerAMD64: AMD64 Assembler Driver.\nAssemblerAMD64: v1.10\nAssemblerAMD64: Copyright "
-						   "(c) Amlal EL Mahrouss.\n";
+						   "(c) EL Mahrouss Logic.\n";
 				return 0;
 			}
 			else if (strcmp(argv[i], "--amd64:h") == 0)

@@ -1,15 +1,15 @@
 /* -------------------------------------------
 
-	Copyright Amlal EL Mahrouss
+	Copyright (C) 2024, EL Mahrouss Logic, all rights reserved
 
 	FILE: Linker.cxx
-	PURPOSE: C++ LINKER
+	PURPOSE: C++ 64-BIT LINKER
 
 ------------------------------------------- */
 
-/// @file Linker.cc
+/// @file Linker64.cc
 /// @author Amlal EL Mahrouss (amlel)
-/// @brief ZKA Linker.
+/// @brief ZKA 64-bit Linker.
 /// Last Rev: Sat Feb 24 CET 2024
 /// @note Do not look up for anything with .code64/.data64/.zero64!
 /// It will be loaded when program will start up!
@@ -28,7 +28,7 @@
 //! Advanced Executable Object Format
 #include <ToolchainKit/NFC/AE.h>
 
-#define kLinkerVersion "ZKA Linker Driver %s, (c) Amlal EL Mahrouss 2024, all rights reserved.\n"
+#define kLinkerVersion "ZKA 64-Bit Dynamic Linker %s, (c) EL Mahrouss Logic 2024, all rights reserved.\n"
 
 #define StringCompare(DST, SRC) strcmp(DST, SRC)
 

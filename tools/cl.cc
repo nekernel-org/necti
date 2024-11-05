@@ -1,6 +1,6 @@
 /* -------------------------------------------
 
-	Copyright Amlal EL Mahrouss
+	Copyright (C) 2024, EL Mahrouss Logic, all rights reserved
 
 ------------------------------------------- */
 
@@ -25,8 +25,8 @@ int main(int argc, char const* argv[])
 		{
 			std::printf("cl.exe: Frontend C++ Compiler.\n");
 			std::printf("cl.exe: Version: %s, Release: %s.\n", kDistVersion, kDistRelease);
-			std::printf("cl.exe: Designed by Amlal El Mahrouss, Copyright Amlal EL Mahrouss.\n");
-			std::printf("libToolchainKit.dylib: Designed by Amlal El Mahrouss, Copyright Amlal EL Mahrouss.\n");
+			std::printf("cl.exe: Designed by Amlal El Mahrouss, Copyright (C) 2024, EL Mahrouss Logic, all rights reserved.\n");
+			std::printf("libToolchainKit.dylib: Designed by Amlal El Mahrouss, Copyright (C) 2024, EL Mahrouss Logic, all rights reserved.\n");
 
 			return 0;
 		}

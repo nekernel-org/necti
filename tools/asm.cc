@@ -1,6 +1,6 @@
 /* -------------------------------------------
 
-	Copyright Amlal EL Mahrouss
+	Copyright (C) 2024, EL Mahrouss Logic, all rights reserved
 
 ------------------------------------------- */
 
@@ -37,8 +37,8 @@ int main(int argc, char const* argv[])
 		{
 			std::printf("asm.exe: Frontend Assembler (64x0, power64, x64).\n");
 			std::printf("asm.exe: Version: %s, Release: %s.\n", kDistVersion, kDistRelease);
-			std::printf("asm.exe: Designed by Amlal El Mahrouss, Copyright Amlal EL Mahrouss.\n");
-			std::printf("libToolchainKit.dylib: Designed by Amlal El Mahrouss, Copyright Amlal EL Mahrouss.\n");
+			std::printf("asm.exe: Designed by Amlal El Mahrouss, Copyright (C) 2024, EL Mahrouss Logic, all rights reserved.\n");
+			std::printf("libToolchainKit.dylib: Designed by Amlal El Mahrouss, Copyright (C) 2024, EL Mahrouss Logic, all rights reserved.\n");
 
 			return 0;
 		}

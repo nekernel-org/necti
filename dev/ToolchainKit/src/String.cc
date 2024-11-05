@@ -2,7 +2,7 @@
  *	========================================================
  *
  *	ToolchainKit
- * 	Copyright Amlal EL Mahrouss, all rights reserved.
+ * 	Copyright (C) 2024, EL Mahrouss Logic, all rights reserved, all rights reserved.
  *
  * 	========================================================
  */
@@ -14,7 +14,7 @@
  * @version 0.2
  * @date 2024-01-23
  *
- * @copyright Copyright (c) Amlal EL Mahrouss
+ * @copyright Copyright (c) EL Mahrouss Logic
  *
  */
 
