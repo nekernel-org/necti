@@ -3,7 +3,7 @@
  *	========================================================
  *
  *	ToolchainKit
- * 	Copyright (C) 2024, Amlal EL Mahrouss, all rights reserved, all rights reserved.
+ * 	Copyright (C) 2024, EL Mahrouss Logic, all rights reserved, all rights reserved.
  *
  * 	========================================================
  */
@@ -14,7 +14,7 @@
 
 namespace ToolchainKit
 {
-	// @author Amlal EL Mahrouss
+	// @author EL Mahrouss Logic
 	// @brief Reference holder class, refers to a pointer of data in static memory.
 	template <typename T>
 	class Ref final
@@ -75,7 +75,7 @@ namespace ToolchainKit
 		Bool m_Strong{false};
 	};
 
-	// @author Amlal EL Mahrouss
+	// @author EL Mahrouss Logic
 	// @brief Non null Reference holder class, refers to a pointer of data in static memory.
 	template <typename T>
 	class NonNullRef final

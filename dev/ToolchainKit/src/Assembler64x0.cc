@@ -1,6 +1,6 @@
 /* -------------------------------------------
 
-	Copyright (C) 2024, Amlal EL Mahrouss, all rights reserved
+	Copyright (C) 2024, EL Mahrouss Logic, all rights reserved
 
 ------------------------------------------- */
 
@@ -9,7 +9,7 @@
 /////////////////////////////////////////////////////////////////////////////////////////
 
 // @file Assembler64x0.cxx
-// @author Amlal EL Mahrouss
+// @author EL Mahrouss Logic
 // @brief 64x000 Assembler.
 
 // REMINDER: when dealing with an undefined symbol use (string
@@ -120,7 +120,7 @@ TOOLCHAINKIT_MODULE(AssemblerMain64x0)
 			if (strcmp(argv[i], "--ver") == 0 || strcmp(argv[i], "--v") == 0)
 			{
 				kStdOut << "Assembler64x0: 64x0 Assembler.\nAssembler64x0: v1.10\nAssembler64x0: Copyright (c) "
-						   "Amlal EL Mahrouss.\n";
+						   "EL Mahrouss Logic.\n";
 				return 0;
 			}
 			else if (strcmp(argv[i], "--h") == 0)
