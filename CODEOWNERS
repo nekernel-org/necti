@@ -1,6 +1,6 @@
 # ToolchainKit is managed by Amlal, this can be owned by someone else though.
 
-/dev/ToolchainKit/ @ZKA-Technologies
-/dev/LibC++/ @ZKA-Technologies
+/dev/ToolchainKit/ @Amlal-ElMahrouss
+/dev/LibC++/ @Amlal-ElMahrouss
 
-# CRT needs an owner.
+# LibC++ needs an owner.
