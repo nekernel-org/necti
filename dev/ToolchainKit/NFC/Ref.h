@@ -14,7 +14,7 @@
 
 namespace ToolchainKit
 {
-	// @author Amlal El Mahrouss
+	// @author Amlal EL Mahrouss
 	// @brief Reference holder class, refers to a pointer of data in static memory.
 	template <typename T>
 	class Ref final
@@ -75,7 +75,7 @@ namespace ToolchainKit
 		Bool m_Strong{false};
 	};
 
-	// @author Amlal El Mahrouss
+	// @author Amlal EL Mahrouss
 	// @brief Non null Reference holder class, refers to a pointer of data in static memory.
 	template <typename T>
 	class NonNullRef final

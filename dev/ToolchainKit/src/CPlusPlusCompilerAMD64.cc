@@ -15,7 +15,7 @@
 #define kExitFail (EXIT_FAILURE)
 
 #define kSplashCxx() \
-	kPrintF(kWhite "%s\n", "ZKA C++ Compiler Driver, (c) 2024 Amlal EL Mahrouss, all rights reserved.")
+	kPrintF(kWhite "%s\n", "ZKA C++ Compiler Driver, (c) 2024 EL Mahrouss Logic, all rights reserved.")
 
 // extern_segment, @MLAutoRelease { ... }, fn foo() -> auto { ... }
 
@@ -27,7 +27,7 @@
 /* This is part of the ToolchainKit. */
 /* (c) EL Mahrouss Logic */
 
-/// @author Amlal El Mahrouss (amlel)
+/// @author Amlal EL Mahrouss (amlel)
 /// @file CPlusPlusCompilerAMD64.cxx
 /// @brief Optimized C++ Compiler Driver.
 /// @todo Throw error for scoped inside scoped variables when they get referenced outside.

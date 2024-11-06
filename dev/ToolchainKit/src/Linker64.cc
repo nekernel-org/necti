@@ -238,7 +238,7 @@ TOOLCHAINKIT_MODULE(Linker64Main)
 	pef_container.Count	   = 0UL;
 	pef_container.Kind	   = is_executable ? ToolchainKit::kPefKindExec : ToolchainKit::kPefKindDylib;
 	pef_container.SubCpu   = kSubArch;
-	pef_container.Linker   = kLinkerId; // Amlal EL Mahrouss Linker
+	pef_container.Linker   = kLinkerId; // EL Mahrouss Logic Linker
 	pef_container.Abi	   = kAbi;		// Multi-Processor UX ABI
 	pef_container.Magic[0] = kPefMagic[kFatBinaryEnable ? 2 : 0];
 	pef_container.Magic[1] = kPefMagic[1];

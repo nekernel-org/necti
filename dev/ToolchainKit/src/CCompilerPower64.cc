@@ -22,7 +22,7 @@
 
 #define kExitOK 0
 
-/// @author Amlal El Mahrouss (amlel)
+/// @author Amlal EL Mahrouss (amlel)
 /// @file cc.cxx
 /// @brief POWER64 C Compiler.
 

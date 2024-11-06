@@ -145,7 +145,7 @@ TOOLCHAINKIT_MODULE(AssemblerAMD64)
 			else if (strcmp(argv[i], "--amd64:h") == 0)
 			{
 				kStdOut << "AssemblerAMD64: AMD64 Assembler Driver.\nAssemblerAMD64: Copyright (c) 2024 "
-						   "Amlal EL Mahrouss.\n";
+						   "EL Mahrouss Logic.\n";
 				kStdOut << "--version: Print program version.\n";
 				kStdOut << "--verbose: Print verbose output.\n";
 				kStdOut << "--binary: Output as flat binary.\n";
