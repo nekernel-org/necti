@@ -2,7 +2,7 @@
  *	========================================================
  *
  *	bpp
- * 	Copyright (C) 2024, EL Mahrouss Logic, all rights reserved, all rights reserved.
+ * 	Copyright (C) 2024, Amlal EL Mahrouss, all rights reserved, all rights reserved.
  *
  * 	========================================================
  */
@@ -971,13 +971,13 @@ TOOLCHAINKIT_MODULE(CPlusPlusPreprocessorMain)
 			{
 				if (strcmp(argv[index], "--bpp:ver") == 0)
 				{
-					printf("%s\n", "bpp v1.11, (c) EL Mahrouss Logic");
+					printf("%s\n", "bpp v1.11, (c) Amlal EL Mahrouss");
 					return 0;
 				}
 
 				if (strcmp(argv[index], "--bpp:?") == 0)
 				{
-					printf("%s\n", "ZKA Preprocessor Driver v1.11, (c) EL Mahrouss Logic");
+					printf("%s\n", "ZKA Preprocessor Driver v1.11, (c) Amlal EL Mahrouss");
 					printf("%s\n", "--bpp:working-dir <path>: set directory to working path.");
 					printf("%s\n", "--bpp:include-dir <path>: add directory to include path.");
 					printf("%s\n", "--bpp:def <name> <value>: define a macro.");
