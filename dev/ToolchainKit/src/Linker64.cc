@@ -1,6 +1,6 @@
 /* -------------------------------------------
 
-	Copyright (C) 2024, Amlal EL Mahrouss, all rights reserved
+	Copyright (C) 2024, EL Mahrouss Logic, all rights reserved
 
 	FILE: Linker.cxx
 	PURPOSE: C++ 64-BIT LINKER
@@ -28,7 +28,7 @@
 //! Advanced Executable Object Format
 #include <ToolchainKit/NFC/AE.h>
 
-#define kLinkerVersion "ZKA 64-Bit Dynamic Linker %s, (c) Amlal EL Mahrouss 2024, all rights reserved.\n"
+#define kLinkerVersion "ZKA 64-Bit Dynamic Linker %s, (c) EL Mahrouss Logic 2024, all rights reserved.\n"
 
 #define StringCompare(DST, SRC) strcmp(DST, SRC)
 
@@ -238,7 +238,7 @@ TOOLCHAINKIT_MODULE(Linker64Main)
 	pef_container.Count	   = 0UL;
 	pef_container.Kind	   = is_executable ? ToolchainKit::kPefKindExec : ToolchainKit::kPefKindDylib;
 	pef_container.SubCpu   = kSubArch;
-	pef_container.Linker   = kLinkerId; // Amlal EL Mahrouss Linker
+	pef_container.Linker   = kLinkerId; // EL Mahrouss Logic Linker
 	pef_container.Abi	   = kAbi;		// Multi-Processor UX ABI
 	pef_container.Magic[0] = kPefMagic[kFatBinaryEnable ? 2 : 0];
 	pef_container.Magic[1] = kPefMagic[1];
