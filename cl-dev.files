@@ -1,9 +1,23 @@
+CODEOWNERS
+Doxyfile
+MailMap
+ReadMe.md
+cl-dev.cflags
+cl-dev.cxxflags
+compile_flags.txt
 dev/LibC++/base_alloc.h
 dev/LibC++/base_exception.h
 dev/LibC++/base_math.h
 dev/LibC++/defines.h
+dev/LibC++/make_cxx_headers.sh
 dev/LibC++/power64.inc
 dev/LibC++/process_base.h
+dev/LibC++/stdcxx/base_alloc
+dev/LibC++/stdcxx/base_exception
+dev/LibC++/stdcxx/base_math
+dev/LibC++/stdcxx/defines
+dev/LibC++/stdcxx/process_base
+dev/LibC++/stdcxx/utility
 dev/LibC++/utility.h
 dev/ToolchainKit/AAL/Asm.h
 dev/ToolchainKit/AAL/CPU/32x0.h
@@ -21,6 +35,7 @@ dev/ToolchainKit/NFC/Ref.h
 dev/ToolchainKit/NFC/String.h
 dev/ToolchainKit/NFC/XCOFF.h
 dev/ToolchainKit/Parser.h
+dev/ToolchainKit/ReadMe.md
 dev/ToolchainKit/UUID.h
 dev/ToolchainKit/Version.h
 dev/ToolchainKit/src/Assembler32x0.cc
@@ -34,9 +49,18 @@ dev/ToolchainKit/src/CPlusPlusCompilerAMD64.cc
 dev/ToolchainKit/src/CPlusPlusCompilerPreProcessor.cc
 dev/ToolchainKit/src/Detail/AsmUtils.h
 dev/ToolchainKit/src/Detail/ClUtils.h
+dev/ToolchainKit/src/Detail/ReadMe.md
 dev/ToolchainKit/src/Linker64.cc
 dev/ToolchainKit/src/String.cc
+doc/ASM Specs.txt
+doc/HAVP DSP.txt
+doc/Inside 64x0.pdf
+doc/Notice.txt
+doc/RISC CPU.txt
+mac.json
+make_docs.sh
 posix.json
+run_format.sh
 tools/asm-unix.json
 tools/asm.cc
 tools/cl-unix.json
@@ -44,4 +68,3 @@ tools/cl.cc
 tools/ld64-unix.json
 tools/ld64.cc
 win32.json
-compile_flags.txt
