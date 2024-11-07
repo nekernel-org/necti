@@ -2,7 +2,7 @@
  *	========================================================
  *
  *	cc
- * 	Copyright (C) 2024, EL Mahrouss Logic, all rights reserved.
+ * 	Copyright (C) 2024, Amlal EL Mahrouss, all rights reserved.
  *
  * 	========================================================
  */
@@ -25,7 +25,7 @@
 
 /* C driver */
 /* This is part of the ToolchainKit. */
-/* (c) EL Mahrouss Logic */
+/* (c) Amlal EL Mahrouss */
 
 /// @author EL Mahrouss Amlal (amlel)
 /// @file 64x0-cc.cxx
@@ -1483,7 +1483,7 @@ public:
 
 #define kPrintF printf
 #define kSplashCxx() \
-	kPrintF(kWhite "ZKA C Driver, %s, (c) EL Mahrouss Logic\n", kDistVersion)
+	kPrintF(kWhite "ZKA C Driver, %s, (c) Amlal EL Mahrouss\n", kDistVersion)
 
 static void cc_print_help()
 {
