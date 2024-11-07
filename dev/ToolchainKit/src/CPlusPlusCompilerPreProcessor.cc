@@ -20,7 +20,7 @@
 
 #define kMacroPrefix '#'
 
-/// @author EL Mahrouss Logic (amlel)
+/// @author EL Mahrouss Amlal (amlel)
 /// @file bpp.cxx
 /// @brief Preprocessor.
 

@@ -8,7 +8,7 @@
 ------------------------------------------- */
 
 /// @file Linker64.cc
-/// @author EL Mahrouss Logic (amlel)
+/// @author EL Mahrouss Amlal (amlel)
 /// @brief ZKA 64-bit Linker.
 /// Last Rev: Sat Feb 24 CET 2024
 /// @note Do not look up for anything with .code64/.data64/.zero64!

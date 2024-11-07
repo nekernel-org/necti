@@ -27,7 +27,7 @@
 /* This is part of the ToolchainKit. */
 /* (c) EL Mahrouss Logic */
 
-/// @author EL Mahrouss Logic (amlel)
+/// @author EL Mahrouss Amlal (amlel)
 /// @file 64x0-cc.cxx
 /// @brief 64x0 C Compiler.
 

@@ -17,17 +17,17 @@
 #define kSplashCxx() \
 	kPrintF(kWhite "%s\n", "ZKA C++ Compiler Driver, (c) 2024 EL Mahrouss Logic, all rights reserved.")
 
-// extern_segment, @MLAutoRelease { ... }, fn foo() -> auto { ... }
+// extern_segment, @autodelete { ... }, fn foo() -> auto { ... }
 
 #include <ToolchainKit/AAL/CPU/amd64.h>
 #include <ToolchainKit/Parser.h>
 #include <ToolchainKit/UUID.h>
 
-/* ZKA C++ Compiler driver */
+/* ZKA C++ Compiler */
 /* This is part of the ToolchainKit. */
 /* (c) EL Mahrouss Logic */
 
-/// @author EL Mahrouss Logic (amlel)
+/// @author EL Mahrouss Amlal (amlel)
 /// @file CPlusPlusCompilerAMD64.cxx
 /// @brief Optimized C++ Compiler Driver.
 /// @todo Throw error for scoped inside scoped variables when they get referenced outside.
@@ -73,9 +73,9 @@ namespace detail
 
 	struct CompilerState final
 	{
-		std::vector<CompilerRegisterMap> kStackFrame;
-		std::vector<CompilerStructMap>	 kStructMap;
-		ToolchainKit::SyntaxLeafList*			 fSyntaxTree{nullptr};
+		std::vector<CompilerRegisterMap> fStackMapVector;
+		std::vector<CompilerStructMap>	 fStructMapVector;
+		ToolchainKit::SyntaxLeafList*    fSyntaxTree{nullptr};
 		std::unique_ptr<std::ofstream>	 fOutputAssembly;
 		std::string						 fLastFile;
 		std::string						 fLastError;
@@ -95,7 +95,7 @@ namespace detail
 	/// @param file where does it originate from?
 	void print_error_asm(std::string reason, std::string file) noexcept;
 
-	struct CompilerType
+	struct CompilerType final
 	{
 		std::string fName;
 		std::string fValue;

@@ -9,7 +9,7 @@
 /////////////////////////////////////////////////////////////////////////////////////////
 
 // @file Assembler64x0.cxx
-// @author EL Mahrouss Logic
+// @author EL Mahrouss Amlal
 // @brief 64x000 Assembler.
 
 // REMINDER: when dealing with an undefined symbol use (string

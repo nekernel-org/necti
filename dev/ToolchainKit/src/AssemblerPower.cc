@@ -7,7 +7,7 @@
 /////////////////////////////////////////////////////////////////////////////////////////
 
 /// @file AssemblerPower.cxx
-/// @author EL Mahrouss Logic
+/// @author EL Mahrouss Amlal
 /// @brief POWER Assembler.
 
 /// REMINDER: when dealing with an undefined symbol use (string
