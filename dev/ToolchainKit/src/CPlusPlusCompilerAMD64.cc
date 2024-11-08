@@ -15,7 +15,7 @@
 #define kExitFail (EXIT_FAILURE)
 
 #define kSplashCxx() \
-	kPrintF(kWhite "%s\n", "ZKA C++ Compiler Driver, (c) 2024 EL Mahrouss Logic, all rights reserved.")
+	kPrintF(kWhite "%s\n", "Amlal's C++ Compiler Driver, (c) 2024 EL Mahrouss Logic, all rights reserved.")
 
 // extern_segment, @autodelete { ... }, fn foo() -> auto { ... }
 

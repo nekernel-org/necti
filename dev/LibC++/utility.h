@@ -30,5 +30,4 @@ namespace std
 	}
 } // namespace std
 
-
 #endif // LIBCXX_UTILITY_H

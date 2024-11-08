@@ -14,6 +14,7 @@
 /// @note Do not look up for anything with .code64/.data64/.zero64!
 /// It will be loaded when program will start up!
 
+#include "ToolchainKit/Defines.h"
 #include <ToolchainKit/NFC/ErrorID.h>
 
 //! Assembler Kit
@@ -28,7 +29,7 @@
 //! Advanced Executable Object Format
 #include <ToolchainKit/NFC/AE.h>
 
-#define kLinkerVersionStr "ZKA 64-Bit Dynamic Linker %s, (c) EL Mahrouss Logic 2024, all rights reserved.\n"
+#define kLinkerVersionStr "Amlal's 64-Bit Dynamic Linker %s, (c) EL Mahrouss Logic 2024, all rights reserved.\n"
 
 #define StringCompare(DST, SRC) strcmp(DST, SRC)
 
@@ -40,7 +41,7 @@
 
 #define kLinkerDefaultOrigin kPefBaseOrigin
 #define kLinkerId			 (0x5046FF)
-#define kLinkerAbiContainer	 "Container:Abi:"
+#define kLinkerAbiContainer	 "Container:ABI:"
 
 /// @brief PEF stack size symbol.
 #define kLinkerStackSizeSymbol "SizeOfReserveStack"
@@ -52,7 +53,7 @@ enum
 	kABITypeInvalid = 0xFFFF,
 };
 
-static ToolchainKit::String kOutput			 = "";
+static ToolchainKit::String kOutput	 = "";
 static Int32	   kAbi				 = kABITypeZKA;
 static Int32	   kSubArch			 = kPefNoSubCpu;
 static Int32	   kArch			 = ToolchainKit::kPefArchInvalid;
@@ -67,7 +68,7 @@ static const char* kLdDynamicSym   = ":RuntimeSymbol:";
 
 /* object code and list. */
 static std::vector<ToolchainKit::String> kObjectList;
-static std::vector<char>		kObjectBytes;
+static std::vector<CharType>		kObjectBytes;
 
 static uintptr_t kMIBCount = 8;
 static uintptr_t kByteCount	= 1024;
@@ -77,7 +78,7 @@ static uintptr_t kByteCount	= 1024;
 
 ///	@brief ZKA 64-bit Linker.
 /// @note This linker is made for PEF executable, thus ZKA based OSes.
-TOOLCHAINKIT_MODULE(Linker64Main)
+TOOLCHAINKIT_MODULE(DynamicLinker64PEF)
 {
 	bool is_executable = true;
 
@@ -265,7 +266,7 @@ TOOLCHAINKIT_MODULE(Linker64Main)
 	//! Read AE to convert as PEF.
 
 	std::vector<ToolchainKit::PEFCommandHeader> command_headers;
-	ToolchainKit::Utils::AEReadableProtocol	   readProto{};
+	ToolchainKit::Utils::AEReadableProtocol	   reader_protocol{};
 
 	for (const auto& objectFile : kObjectList)
 	{
@@ -274,8 +275,8 @@ TOOLCHAINKIT_MODULE(Linker64Main)
 
 		ToolchainKit::AEHeader hdr{};
 
-		readProto.FP = std::ifstream(objectFile, std::ifstream::binary);
-		readProto.FP >> hdr;
+		reader_protocol.FP = std::ifstream(objectFile, std::ifstream::binary);
+		reader_protocol.FP >> hdr;
 
 		auto ae_header = hdr;
 
@@ -322,7 +323,7 @@ TOOLCHAINKIT_MODULE(Linker64Main)
 
 			memset(raw_ae_records, 0, cnt * sizeof(ToolchainKit::AERecordHeader));
 
-			auto* ae_records = readProto.Read(raw_ae_records, cnt);
+			auto* ae_records = reader_protocol.Read(raw_ae_records, cnt);
 
 			for (size_t ae_record_index = 0; ae_record_index < cnt;
 				 ++ae_record_index)
@@ -390,17 +391,17 @@ TOOLCHAINKIT_MODULE(Linker64Main)
 			std::vector<char> bytes;
 			bytes.resize(ae_header.fCodeSize);
 
-			// TODO: Port this for NeFS filesystems.
+			// TODO: Port this to NeFS.
 
-			readProto.FP.seekg(std::streamsize(ae_header.fStartCode));
-			readProto.FP.read(bytes.data(), std::streamsize(ae_header.fCodeSize));
+			reader_protocol.FP.seekg(std::streamsize(ae_header.fStartCode));
+			reader_protocol.FP.read(bytes.data(), std::streamsize(ae_header.fCodeSize));
 
 			for (auto& byte : bytes)
 			{
 				kObjectBytes.push_back(byte);
 			}
 
-			readProto.FP.close();
+			reader_protocol.FP.close();
 
 			continue;
 		}
@@ -572,7 +573,7 @@ TOOLCHAINKIT_MODULE(Linker64Main)
 	stack_cmd_hdr.Cpu	   = kArch;
 	stack_cmd_hdr.Flags  = 0;
 	stack_cmd_hdr.Size   = sizeof(uintptr_t);
-	stack_cmd_hdr.Offset = (kMIBCount * kByteCount * kByteCount);
+	stack_cmd_hdr.Offset = 0;
 	memcpy(stack_cmd_hdr.Name, kLinkerStackSizeSymbol, strlen(kLinkerStackSizeSymbol));
 
 	command_headers.push_back(stack_cmd_hdr);

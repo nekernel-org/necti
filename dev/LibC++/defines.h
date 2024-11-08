@@ -7,7 +7,8 @@
 #ifndef __TOOLCHAINKIT_DEFINES_H__
 #define __TOOLCHAINKIT_DEFINES_H__
 
-extern "C" {
+extern "C"
+{
 #include <stdint.h>
 #include <stddef.h>
 }

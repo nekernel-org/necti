@@ -13,6 +13,6 @@ namespace std
 	class filesystem_error;
 	class directory_entry;
 	class directory_iterator;
-}
+} // namespace std
 
 #endif // __TOOLCHAINKIT_FS_H__
