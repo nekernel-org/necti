@@ -3,11 +3,11 @@
 	Copyright (C) 2024, EL Mahrouss Logic, all rights reserved
 
 	FILE: Linker.cxx
-	PURPOSE: C++ 64-BIT LINKER
+	PURPOSE: C++ 64-Bit Linker
 
 ------------------------------------------- */
 
-/// @file Linker64.cc
+/// @file LD64.cc
 /// @author EL Mahrouss Amlal (amlel)
 /// @brief ZKA 64-bit Linker.
 /// Last Rev: Sat Feb 24 CET 2024
@@ -28,7 +28,7 @@
 //! Advanced Executable Object Format
 #include <ToolchainKit/NFC/AE.h>
 
-#define kLinkerVersion "ZKA 64-Bit Dynamic Linker %s, (c) EL Mahrouss Logic 2024, all rights reserved.\n"
+#define kLinkerVersionStr "ZKA 64-Bit Dynamic Linker %s, (c) EL Mahrouss Logic 2024, all rights reserved.\n"
 
 #define StringCompare(DST, SRC) strcmp(DST, SRC)
 
@@ -39,7 +39,7 @@
 #define kStdOut (std::cout << kWhite)
 
 #define kLinkerDefaultOrigin kPefBaseOrigin
-#define kLinkerId			 0x5046FF
+#define kLinkerId			 (0x5046FF)
 #define kLinkerAbiContainer	 "Container:Abi:"
 
 /// @brief PEF stack size symbol.
@@ -73,7 +73,7 @@ static uintptr_t kMIBCount = 8;
 static uintptr_t kByteCount	= 1024;
 
 #define kPrintF			printf
-#define kLinkerSplash() kPrintF(kWhite kLinkerVersion, kDistVersion)
+#define kLinkerSplash() kPrintF(kWhite kLinkerVersionStr, kDistVersion)
 
 ///	@brief ZKA 64-bit Linker.
 /// @note This linker is made for PEF executable, thus ZKA based OSes.
