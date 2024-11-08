@@ -9,7 +9,7 @@
 
 /**
  * @file String.cxx
- * @author Amlal (amlal@mahrouss-logic.com)
+ * @author Amlal (amlal@el-mahrouss-logic.com)
  * @brief C++ string manipulation API.
  * @version 0.2
  * @date 2024-01-23

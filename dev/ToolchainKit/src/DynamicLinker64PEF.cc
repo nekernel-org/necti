@@ -28,9 +28,11 @@
 
 //! Advanced Executable Object Format
 #include <ToolchainKit/NFC/AE.h>
+#include <cstdint>
 
 #define kLinkerVersionStr "Amlal's 64-Bit Dynamic Linker %s, (c) EL Mahrouss Logic 2024, all rights reserved.\n"
 
+#define MemoryCopy(DST, SRC, SZ) memcpy(DST, SRC, SZ)
 #define StringCompare(DST, SRC) strcmp(DST, SRC)
 
 #define kPefNoCpu	 0U
@@ -45,6 +47,15 @@
 
 /// @brief PEF stack size symbol.
 #define kLinkerStackSizeSymbol "SizeOfReserveStack"
+
+namespace detail 
+{
+struct DynamicLinkerBlob final
+{
+	std::vector<CharType> fPefBlob; // PEF code/bss/data blob.
+	std::uintptr_t fAEOffset; // the offset of the PEF container header..
+};
+}
 
 enum
 {
@@ -68,7 +79,7 @@ static const char* kLdDynamicSym   = ":RuntimeSymbol:";
 
 /* object code and list. */
 static std::vector<ToolchainKit::String> kObjectList;
-static std::vector<CharType>		kObjectBytes;
+static std::vector<detail::DynamicLinkerBlob> kObjectBytes;
 
 static uintptr_t kMIBCount = 8;
 static uintptr_t kByteCount	= 1024;
@@ -87,7 +98,7 @@ TOOLCHAINKIT_MODULE(DynamicLinker64PEF)
 	 */
 	for (size_t linker_arg = 1;	linker_arg < argc; ++linker_arg)
 	{
-		if (StringCompare(argv[linker_arg], "--ld64:?") == 0)
+		if (StringCompare(argv[linker_arg], "--ld64:help") == 0)
 		{
 			kLinkerSplash();
 
@@ -104,12 +115,12 @@ TOOLCHAINKIT_MODULE(DynamicLinker64PEF)
 			kStdOut << "--ld64:arm64: Output as a ARM64 PEF.\n";
 			kStdOut << "--ld64:output: Select the output file name.\n";
 
-			return 0;
+			return EXIT_SUCCESS;
 		}
-		else if (StringCompare(argv[linker_arg], "--ld64:ver") == 0)
+		else if (StringCompare(argv[linker_arg], "--ld64:version") == 0)
 		{
 			kLinkerSplash();
-			return 0;
+			return EXIT_SUCCESS;
 		}
 		else if (StringCompare(argv[linker_arg], "--ld64:fat-binary") == 0)
 		{
@@ -187,7 +198,7 @@ TOOLCHAINKIT_MODULE(DynamicLinker64PEF)
 			if (argv[linker_arg][0] == '-')
 			{
 				kStdOut << "ld64: unknown flag: " << argv[linker_arg] << "\n";
-				continue;
+				return EXIT_FAILURE;
 			}
 
 			kObjectList.emplace_back(argv[linker_arg]);
@@ -329,9 +340,9 @@ TOOLCHAINKIT_MODULE(DynamicLinker64PEF)
 				 ++ae_record_index)
 			{
 				ToolchainKit::PEFCommandHeader command_header{0};
-				size_t				  offset_of_obj = ae_records[ae_record_index].fOffset;
+				std::size_t offset_of_obj = ae_records[ae_record_index].fOffset;
 
-				memcpy(command_header.Name, ae_records[ae_record_index].fName,
+				MemoryCopy(command_header.Name, ae_records[ae_record_index].fName,
 					   kPefNameLen);
 
 				ToolchainKit::String cmd_hdr_name(command_header.Name);
@@ -377,10 +388,10 @@ TOOLCHAINKIT_MODULE(DynamicLinker64PEF)
 
 				if (kVerbose)
 				{
-					kStdOut << "ld64: record: "
+					kStdOut << "ld64: Record: "
 							<< ae_records[ae_record_index].fName << " is marked.\n";
 
-					kStdOut << "ld64: record offset: " << command_header.Offset << "\n";
+					kStdOut << "ld64: Record offset: " << command_header.Offset << "\n";
 				}
 
 				command_headers.emplace_back(command_header);
@@ -398,7 +409,7 @@ TOOLCHAINKIT_MODULE(DynamicLinker64PEF)
 
 			for (auto& byte : bytes)
 			{
-				kObjectBytes.push_back(byte);
+				kObjectBytes.push_back({ .fPefBlob = bytes, .fAEOffset = ae_header.fStartCode });
 			}
 
 			reader_protocol.FP.close();
@@ -406,7 +417,7 @@ TOOLCHAINKIT_MODULE(DynamicLinker64PEF)
 			continue;
 		}
 
-		kStdOut << "ld64: not an object file: " << objectFile << std::endl;
+		kStdOut << "ld64: Not an object container: " << objectFile << std::endl;
 		// don't continue, it is a fatal error.
 		return TOOLCHAINKIT_EXEC_ERROR;
 	}
@@ -417,7 +428,7 @@ TOOLCHAINKIT_MODULE(DynamicLinker64PEF)
 
 	if (kVerbose)
 	{
-		kStdOut << "ld64: wrote container header.\n";
+		kStdOut << "ld64: Wrote container header.\n";
 	}
 
 	output_fc.seekp(std::streamsize(pef_container.HdrSz));
@@ -435,7 +446,7 @@ TOOLCHAINKIT_MODULE(DynamicLinker64PEF)
 			ToolchainKit::String(command_hdr.Name).find(kLdDynamicSym) == ToolchainKit::String::npos)
 		{
 			if (kVerbose)
-				kStdOut << "ld64: found undefined symbol: " << command_hdr.Name << "\n";
+				kStdOut << "ld64: Found undefined symbol: " << command_hdr.Name << "\n";
 
 			if (auto it = std::find(not_found.begin(), not_found.end(),
 									ToolchainKit::String(command_hdr.Name));
@@ -453,7 +464,7 @@ TOOLCHAINKIT_MODULE(DynamicLinker64PEF)
 	for (size_t not_found_idx = 0; not_found_idx < command_headers.size();
 		 ++not_found_idx)
 	{
-		if (auto it = std::find(not_found.begin(), not_found.end(),
+		if (const auto it = std::find(not_found.begin(), not_found.end(),
 								ToolchainKit::String(command_headers[not_found_idx].Name));
 			it != not_found.end())
 		{
@@ -559,7 +570,7 @@ TOOLCHAINKIT_MODULE(DynamicLinker64PEF)
 	}
 	}
 
-	memcpy(abi_cmd_hdr.Name, abi.c_str(), abi.size());
+	MemoryCopy(abi_cmd_hdr.Name, abi.c_str(), abi.size());
 
 	abi_cmd_hdr.Size	 = abi.size();
 	abi_cmd_hdr.Offset = output_fc.tellp();
@@ -574,7 +585,8 @@ TOOLCHAINKIT_MODULE(DynamicLinker64PEF)
 	stack_cmd_hdr.Flags  = 0;
 	stack_cmd_hdr.Size   = sizeof(uintptr_t);
 	stack_cmd_hdr.Offset = 0;
-	memcpy(stack_cmd_hdr.Name, kLinkerStackSizeSymbol, strlen(kLinkerStackSizeSymbol));
+
+	MemoryCopy(stack_cmd_hdr.Name, kLinkerStackSizeSymbol, strlen(kLinkerStackSizeSymbol));
 
 	command_headers.push_back(stack_cmd_hdr);
 
@@ -591,8 +603,8 @@ TOOLCHAINKIT_MODULE(DynamicLinker64PEF)
 	uuids::uuid id		= gen();
 	auto		uuidStr = uuids::to_string(id);
 
-	memcpy(uuid_cmd_hdr.Name, "Container:GUID:4:", strlen("Container:GUID:4:"));
-	memcpy(uuid_cmd_hdr.Name + strlen("Container:GUID:4:"), uuidStr.c_str(),
+	MemoryCopy(uuid_cmd_hdr.Name, "Container:GUID:4:", strlen("Container:GUID:4:"));
+	MemoryCopy(uuid_cmd_hdr.Name + strlen("Container:GUID:4:"), uuidStr.c_str(),
 		   uuidStr.size());
 
 	uuid_cmd_hdr.Size	  = strlen(uuid_cmd_hdr.Name);
@@ -654,8 +666,8 @@ TOOLCHAINKIT_MODULE(DynamicLinker64PEF)
 
 		if (kVerbose)
 		{
-			kStdOut << "ld64: command header name: " << name << "\n";
-			kStdOut << "ld64: real address of command header content: " << command_headers[commandHeaderIndex].Offset << "\n";
+			kStdOut << "ld64: Command header name: " << name << "\n";
+			kStdOut << "ld64: Real address of command header content: " << command_headers[commandHeaderIndex].Offset << "\n";
 		}
 
 		output_fc << command_headers[commandHeaderIndex];
@@ -705,7 +717,7 @@ TOOLCHAINKIT_MODULE(DynamicLinker64PEF)
 	{
 		for (auto& symbol : dupl_symbols)
 		{
-			kStdOut << "ld64: multiple symbols of " << symbol << ".\n";
+			kStdOut << "ld64: Multiple symbols of " << symbol << ".\n";
 		}
 
 		return TOOLCHAINKIT_EXEC_ERROR;
@@ -713,9 +725,9 @@ TOOLCHAINKIT_MODULE(DynamicLinker64PEF)
 
 	// step 2.5: write program bytes.
 
-	for (auto byte : kObjectBytes)
+	for (auto& struct_of_blob : kObjectBytes)
 	{
-		output_fc << byte;
+		output_fc.write(struct_of_blob.fPefBlob.data(), struct_of_blob.fPefBlob.size());
 	}
 
 	if (kVerbose)
@@ -753,7 +765,7 @@ TOOLCHAINKIT_MODULE(DynamicLinker64PEF)
 		return TOOLCHAINKIT_EXEC_ERROR;
 	}
 
-	return 0;
+	return EXIT_SUCCESS;
 }
 
 // Last rev 13-1-24
