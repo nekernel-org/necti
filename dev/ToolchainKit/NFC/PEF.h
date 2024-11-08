@@ -19,6 +19,7 @@
 #define kPefLibExt	  ".lib"
 #define kPefObjectExt ".obj"
 #define kPefDebugExt  ".dbg"
+#define kPefDriverExt ".sys"
 
 #define kPefZero128 ".zero128"
 #define kPefCode128 ".code128"
