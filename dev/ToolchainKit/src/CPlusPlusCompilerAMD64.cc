@@ -2,7 +2,7 @@
  *	========================================================
  *
  *	c++-drv
- * 	Copyright (C) 2024, EL Mahrouss Logic, all rights reserved.
+ * 	Copyright (C) 2024, Amlal EL Mahrouss, all rights reserved.
  *
  * 	========================================================
  */
@@ -15,7 +15,7 @@
 #define kExitFail (EXIT_FAILURE)
 
 #define kSplashCxx() \
-	kPrintF(kWhite "%s\n", "Amlal's C++ Compiler Driver, (c) 2024 EL Mahrouss Logic, all rights reserved.")
+	kPrintF(kWhite "%s\n", "Amlal's C++ Compiler Driver, (c) 2024 Amlal EL Mahrouss, all rights reserved.")
 
 // extern_segment, @autodelete { ... }, fn foo() -> auto { ... }
 
@@ -25,7 +25,7 @@
 
 /* ZKA C++ Compiler */
 /* This is part of the ToolchainKit. */
-/* (c) EL Mahrouss Logic */
+/* (c) Amlal EL Mahrouss */
 
 /// @author EL Mahrouss Amlal (amlel)
 /// @file CPlusPlusCompilerAMD64.cxx
