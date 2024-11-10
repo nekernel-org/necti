@@ -30,7 +30,7 @@
 #include <ToolchainKit/NFC/AE.h>
 #include <cstdint>
 
-#define kLinkerVersionStr "Amlal's 64-Bit Dynamic Linker %s, (c) EL Mahrouss Logic 2024, all rights reserved.\n"
+#define kLinkerVersionStr "ELMH 64-Bit Dynamic Linker %s, (c) EL Mahrouss Logic 2024, all rights reserved.\n"
 
 #define MemoryCopy(DST, SRC, SZ) memcpy(DST, SRC, SZ)
 #define StringCompare(DST, SRC) strcmp(DST, SRC)
