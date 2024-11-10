@@ -153,7 +153,7 @@ static CompilerFrontendCPlusPlus* kCompilerFrontend = nullptr;
 
 static std::vector<std::string> kRegisterMap;
 
-static std::vector<std::string> cRegisters = {
+static std::vector<std::string> kRegisterList = {
 	"rbx",
 	"rsi",
 	"r10",
@@ -170,7 +170,7 @@ static std::vector<std::string> cRegisters = {
 
 /// @brief The PEF calling convention (caller must save rax, rbp)
 /// @note callee must return via **rax**.
-static std::vector<std::string> cRegistersCall = {
+static std::vector<std::string> kRegisterConventionCallList = {
 	"r8",
 	"r9",
 	"r10",
@@ -181,7 +181,7 @@ static std::vector<std::string> cRegistersCall = {
 	"r15",
 };
 
-static size_t kLevelFunction = 0UL;
+static std::size_t kFunctionEmbedLevel = 0UL;
 
 /// detail namespaces
 
@@ -324,16 +324,16 @@ bool CompilerFrontendCPlusPlus::Compile(const std::string text,
 
 							auto& valueOfVarOpposite = isdigit(left[0]) ? left : right;
 
-							syntax_tree.fUserValue += "mov " + cRegisters[indexRight + 1] + ", " + valueOfVarOpposite + "\n";
-							syntax_tree.fUserValue += "cmp " + cRegisters[kRegisterMap.size() - 1] + "," + cRegisters[indexRight + 1] + "\n";
+							syntax_tree.fUserValue += "mov " + kRegisterList[indexRight + 1] + ", " + valueOfVarOpposite + "\n";
+							syntax_tree.fUserValue += "cmp " + kRegisterList[kRegisterMap.size() - 1] + "," + kRegisterList[indexRight + 1] + "\n";
 
 							goto done_iterarting_on_if;
 						}
 
 						auto& valueOfVarOpposite = isdigit(left[0]) ? left : right;
 
-						syntax_tree.fUserValue += "mov " + cRegisters[indexRight + 1] + ", " + valueOfVarOpposite + "\n";
-						syntax_tree.fUserValue += "cmp " + cRegisters[kRegisterMap.size() - 1] + ", " + cRegisters[indexRight + 1] + "\n";
+						syntax_tree.fUserValue += "mov " + kRegisterList[indexRight + 1] + ", " + valueOfVarOpposite + "\n";
+						syntax_tree.fUserValue += "cmp " + kRegisterList[kRegisterMap.size() - 1] + ", " + kRegisterList[indexRight + 1] + "\n";
 
 						break;
 					}
@@ -385,20 +385,20 @@ bool CompilerFrontendCPlusPlus::Compile(const std::string text,
 
 			syntax_tree.fUserValue = "public_segment .code64 __TOOLCHAINKIT_" + fnName + "\n";
 
-			++kLevelFunction;
+			++kFunctionEmbedLevel;
 		}
 		case ToolchainKit::KeywordKind::eKeywordKindFunctionEnd: {
 			if (text.ends_with(";"))
 				break;
 
-			--kLevelFunction;
+			--kFunctionEmbedLevel;
 
-			if (kRegisterMap.size() > cRegisters.size())
+			if (kRegisterMap.size() > kRegisterList.size())
 			{
-				--kLevelFunction;
+				--kFunctionEmbedLevel;
 			}
 
-			if (kLevelFunction < 1)
+			if (kFunctionEmbedLevel < 1)
 				kRegisterMap.clear();
 			break;
 		}
@@ -474,9 +474,9 @@ bool CompilerFrontendCPlusPlus::Compile(const std::string text,
 			if (typeFound && keyword.first.keyword_kind != ToolchainKit::KeywordKind::eKeywordKindVariableInc &&
 				keyword.first.keyword_kind != ToolchainKit::KeywordKind::eKeywordKindVariableDec)
 			{
-				if (kRegisterMap.size() > cRegisters.size())
+				if (kRegisterMap.size() > kRegisterList.size())
 				{
-					++kLevelFunction;
+					++kFunctionEmbedLevel;
 				}
 
 				while (varName.find(" ") != std::string::npos)
@@ -521,11 +521,11 @@ bool CompilerFrontendCPlusPlus::Compile(const std::string text,
 						{
 
 							syntax_tree.fUserValue = "segment .data64 __TOOLCHAINKIT_LOCAL_VAR_" + varName + ": db " + valueOfVar + ", 0\n\n";
-							syntax_tree.fUserValue += instr + cRegisters[kRegisterMap.size() - 1] + ", " + "__TOOLCHAINKIT_LOCAL_VAR_" + varName + "\n";
+							syntax_tree.fUserValue += instr + kRegisterList[kRegisterMap.size() - 1] + ", " + "__TOOLCHAINKIT_LOCAL_VAR_" + varName + "\n";
 						}
 						else
 						{
-							syntax_tree.fUserValue = instr + cRegisters[kRegisterMap.size() - 1] + ", " + valueOfVar + "\n";
+							syntax_tree.fUserValue = instr + kRegisterList[kRegisterMap.size() - 1] + ", " + valueOfVar + "\n";
 						}
 
 						goto done;
@@ -538,11 +538,11 @@ bool CompilerFrontendCPlusPlus::Compile(const std::string text,
 					{
 
 						syntax_tree.fUserValue = "segment .data64 __TOOLCHAINKIT_LOCAL_VAR_" + varName + ": db " + valueOfVar + ", 0\n";
-						syntax_tree.fUserValue += instr + cRegisters[kRegisterMap.size()] + ", " + "__TOOLCHAINKIT_LOCAL_VAR_" + varName + "\n";
+						syntax_tree.fUserValue += instr + kRegisterList[kRegisterMap.size()] + ", " + "__TOOLCHAINKIT_LOCAL_VAR_" + varName + "\n";
 					}
 					else
 					{
-						syntax_tree.fUserValue = instr + cRegisters[kRegisterMap.size()] + ", " + valueOfVar + "\n";
+						syntax_tree.fUserValue = instr + kRegisterList[kRegisterMap.size()] + ", " + valueOfVar + "\n";
 					}
 
 					goto done;
@@ -661,11 +661,11 @@ bool CompilerFrontendCPlusPlus::Compile(const std::string text,
 
 					if (pairRight != varName)
 					{
-						syntax_tree.fUserValue = instr + cRegisters[kRegisterMap.size()] + ", " + valueOfVar + "\n";
+						syntax_tree.fUserValue = instr + kRegisterList[kRegisterMap.size()] + ", " + valueOfVar + "\n";
 						continue;
 					}
 
-					syntax_tree.fUserValue = instr + cRegisters[indexRight - 1] + ", " + valueOfVar + "\n";
+					syntax_tree.fUserValue = instr + kRegisterList[indexRight - 1] + ", " + valueOfVar + "\n";
 					break;
 				}
 
@@ -697,7 +697,7 @@ bool CompilerFrontendCPlusPlus::Compile(const std::string text,
 						if (pair != subText)
 							continue;
 
-						syntax_tree.fUserValue = "mov rax, " + cRegisters[indxReg - 1] + "\r\nret\n";
+						syntax_tree.fUserValue = "mov rax, " + kRegisterList[indxReg - 1] + "\r\nret\n";
 						break;
 					}
 
