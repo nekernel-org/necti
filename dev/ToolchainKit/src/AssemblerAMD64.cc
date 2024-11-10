@@ -79,7 +79,6 @@ static std::vector<std::string>			kDefinedSymbols;
 static std::vector<std::string>			kUndefinedSymbols;
 
 static const std::string kUndefinedSymbol = ":UndefinedSymbol:";
-static const std::string kRelocSymbol	  = ":RuntimeSymbol:";
 
 // \brief forward decl.
 static bool asm_read_attributes(std::string& line);
@@ -190,6 +189,8 @@ TOOLCHAINKIT_MODULE(AssemblerAMD64)
 		std::ifstream file_ptr(argv[i]);
 		std::ofstream file_ptr_out(object_output, std::ofstream::binary);
 
+		kStdOut << "AssemblerAMD64: assembling: " << argv[i] << "\n";
+
 		if (file_ptr_out.bad())
 		{
 			if (kVerbose)
@@ -222,12 +223,11 @@ TOOLCHAINKIT_MODULE(AssemblerAMD64)
 		if (kVerbose)
 		{
 			kStdOut << "Compiling: " + asm_input << "\n";
+			kStdOut << "From: " + line << "\n";
 		}
 
 		while (std::getline(file_ptr, line))
 		{
-			kStdOut << "Compiling: " + line << "\n";
-
 			if (auto ln = asm64.CheckLine(line, argv[i]); !ln.empty())
 			{
 				detail::print_error_asm(ln, argv[i]);
@@ -546,17 +546,20 @@ static bool asm_read_attributes(std::string& line)
 namespace detail::algorithm
 {
 	// \brief authorize a brief set of characters.
-	static inline bool is_not_alnum_space(char c)
+	static inline bool is_not_valid(char c)
 	{
-		return !(isalpha(c) || isdigit(c) || (c == ' ') || (c == '\t') ||
+		if ((isalpha(c) || isdigit(c)) || ((c == ' ') || (c == '\t') ||
 				 (c == ',') || (c == '(') || (c == ')') || (c == '"') || (c == '*') ||
 				 (c == '\'') || (c == '[') || (c == ']') || (c == '+') ||
-				 (c == '_') || (c == ':') || (c == '@') || (c == '.') || (c == '#') || (c == ';'));
+				 (c == '_') || (c == ':') || (c == '@') || (c == '.') || (c == '#') || (c == ';')))
+				 return false;
+
+		return true;
 	}
 
 	bool is_valid_amd64(const std::string& str)
 	{
-		return std::find_if(str.begin(), str.end(), is_not_alnum_space) == str.end();
+		return std::find_if(str.begin(), str.end(), is_not_valid) == str.end();
 	}
 } // namespace detail::algorithm
 
@@ -589,14 +592,6 @@ std::string ToolchainKit::EncoderAMD64::CheckLine(std::string&		line,
 				err_str += line;
 			}
 		}
-
-		return err_str;
-	}
-
-	if (!detail::algorithm::is_valid_amd64(line))
-	{
-		err_str = "Line contains non alphanumeric characters.\nHere -> ";
-		err_str += line;
 
 		return err_str;
 	}

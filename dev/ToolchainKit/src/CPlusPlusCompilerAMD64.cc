@@ -9,10 +9,11 @@
 
 /// BUGS: 1
 
+#include <cstdio>
 #define kPrintF printf
 
-#define kExitOK (EXIT_SUCCESS)
-#define kExitFail (EXIT_FAILURE)
+#define kExitOK	  (EXIT_SUCCESS)
+#define kExitNO (EXIT_FAILURE)
 
 #define kSplashCxx() \
 	kPrintF(kWhite "%s\n", "ELMH C++ Compiler Driver, (c) 2024 EL Mahrouss Logic, all rights reserved.")
@@ -52,6 +53,27 @@
 /// @internal
 namespace detail
 {
+	std::filesystem::path expand_home(const std::filesystem::path& p)
+	{
+		if (!p.empty() && p.string()[0] == '~')
+		{
+			const char* home = std::getenv("HOME"); // For Unix-like systems
+			if (!home)
+			{
+				home = std::getenv("USERPROFILE"); // For Windows
+			}
+			if (home)
+			{
+				return std::filesystem::path(home) / p.relative_path().string().substr(1);
+			}
+			else
+			{
+				throw std::runtime_error("Home directory not found in environment variables");
+			}
+		}
+		return p;
+	}
+
 	struct CompilerRegisterMap final
 	{
 		std::string fName;
@@ -75,7 +97,7 @@ namespace detail
 	{
 		std::vector<CompilerRegisterMap> fStackMapVector;
 		std::vector<CompilerStructMap>	 fStructMapVector;
-		ToolchainKit::SyntaxLeafList*    fSyntaxTree{nullptr};
+		ToolchainKit::SyntaxLeafList*	 fSyntaxTree{nullptr};
 		std::unique_ptr<std::ofstream>	 fOutputAssembly;
 		std::string						 fLastFile;
 		std::string						 fLastError;
@@ -113,10 +135,10 @@ static int kMachine = ToolchainKit::AssemblyFactory::kArchAMD64;
 
 /////////////////////////////////////////
 
-static size_t							 kRegisterCnt	  = kAsmRegisterLimit;
-static size_t							 kStartUsable	  = 8;
-static size_t							 kUsableLimit	  = 15;
-static size_t							 kRegisterCounter = kStartUsable;
+static size_t									  kRegisterCnt	   = kAsmRegisterLimit;
+static size_t									  kStartUsable	   = 8;
+static size_t									  kUsableLimit	   = 15;
+static size_t									  kRegisterCounter = kStartUsable;
 static std::vector<ToolchainKit::CompilerKeyword> kKeywords;
 
 /////////////////////////////////////////
@@ -125,13 +147,13 @@ static std::vector<ToolchainKit::CompilerKeyword> kKeywords;
 
 /////////////////////////////////////////
 
-static std::vector<std::string> kFileList;
-static ToolchainKit::AssemblyFactory		kFactory;
-static bool						kInStruct	 = false;
-static bool						kOnWhileLoop = false;
-static bool						kOnForLoop	 = false;
-static bool						kInBraces	 = false;
-static size_t					kBracesCount = 0UL;
+static std::vector<std::string>		 kFileList;
+static ToolchainKit::AssemblyFactory kFactory;
+static bool							 kInStruct	  = false;
+static bool							 kOnWhileLoop = false;
+static bool							 kOnForLoop	  = false;
+static bool							 kInBraces	  = false;
+static size_t						 kBracesCount = 0UL;
 
 /* @brief C++ compiler backend for the ZKA C++ driver */
 class CompilerFrontendCPlusPlus final : public ToolchainKit::ICompilerFrontend
@@ -203,7 +225,7 @@ bool CompilerFrontendCPlusPlus::Compile(const std::string text,
 	if (text.empty())
 		return false;
 
-	std::size_t												  index = 0UL;
+	std::size_t														   index = 0UL;
 	std::vector<std::pair<ToolchainKit::CompilerKeyword, std::size_t>> keywords_list;
 
 	bool		found		 = false;
@@ -680,44 +702,51 @@ bool CompilerFrontendCPlusPlus::Compile(const std::string text,
 			break;
 		}
 		case ToolchainKit::KeywordKind::eKeywordKindReturn: {
-			auto		pos		= text.find("return") + strlen("return") + 1;
-			std::string subText = text.substr(pos);
-			subText				= subText.erase(subText.find(";"));
-			size_t indxReg		= 0UL;
-
-			if (subText[0] != '\"' &&
-				subText[0] != '\'')
+			try
 			{
-				if (!isdigit(subText[0]))
+				auto		pos		= text.find("return") + strlen("return") + 1;
+				std::string subText = text.substr(pos);
+				subText				= subText.erase(subText.find(";"));
+				size_t indxReg		= 0UL;
+
+				if (subText[0] != '\"' &&
+					subText[0] != '\'')
 				{
-					for (auto pair : kRegisterMap)
+					if (!isdigit(subText[0]))
 					{
-						++indxReg;
+						for (auto pair : kRegisterMap)
+						{
+							++indxReg;
 
-						if (pair != subText)
-							continue;
+							if (pair != subText)
+								continue;
 
-						syntax_tree.fUserValue = "mov rax, " + kRegisterList[indxReg - 1] + "\r\nret\n";
-						break;
+							syntax_tree.fUserValue = "mov rax," + kRegisterList[indxReg - 1] + "\r\nret\n";
+							break;
+						}
+
+						if (syntax_tree.fUserValue.empty())
+						{
+							detail::print_error_asm("Variable not declared: " + subText, file);
+						}
 					}
-
-					if (syntax_tree.fUserValue.empty())
+					else
 					{
-						detail::print_error_asm("Variable not declared: " + subText, file);
+						syntax_tree.fUserValue = "mov rax, " + subText + "\r\nret\n";
 					}
 				}
 				else
 				{
-					syntax_tree.fUserValue = "mov rax, " + subText + "\r\nret\n";
+					syntax_tree.fUserValue = "__TOOLCHAINKIT_LOCAL_RETURN_STRING: db " + subText + ", 0\nmov rcx, __TOOLCHAINKIT_LOCAL_RETURN_STRING\n";
+					syntax_tree.fUserValue += "mov rax, rcx\r\nret\n";
 				}
-			}
-			else
-			{
-				syntax_tree.fUserValue = "__TOOLCHAINKIT_LOCAL_RETURN_STRING: db " + subText + ", 0\nmov rcx, __TOOLCHAINKIT_LOCAL_RETURN_STRING\n";
-				syntax_tree.fUserValue += "mov rax, rcx\r\nret\n";
-			}
 
-			break;
+				break;
+			}
+			catch (...)
+			{
+				syntax_tree.fUserValue = "ret\n";
+			}
 		}
 		default:
 			break;
@@ -791,9 +820,27 @@ public:
 
 		auto fmt = ToolchainKit::current_date();
 
-		(*kState.fOutputAssembly) << "; Path: " << src_file << "\n";
+		(*kState.fOutputAssembly) << "; Repository Path: /" << src_file << "\n";
+
+		std::filesystem::path path = std::filesystem::path("./");
+
+		while (path != detail::expand_home(std::filesystem::path("~")))
+		{
+			for (auto const& dir_entry : std::filesystem::recursive_directory_iterator{path})
+			{
+				if (dir_entry.is_directory() &&
+					dir_entry.path().string().find(".git") != std::string::npos)
+					goto break_loop;
+			}
+
+			path = path.parent_path();
+		break_loop:
+			(*kState.fOutputAssembly) << "; Repository Style: Git\n";
+			break;
+		}
+
 		(*kState.fOutputAssembly)
-			<< "; Language: AMD64 assembly. (Generated from C++)\n";
+			<< "; Assembler Dialect: AMD64 ToolchainKit Assembler. (Generated from C++)\n";
 		(*kState.fOutputAssembly) << "; Date: " << fmt << "\n";
 		(*kState.fOutputAssembly) << "#bits 64\n#org 0x1000000"
 								  << "\n";
