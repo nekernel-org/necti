@@ -13,7 +13,9 @@
 /// @note Do not look up for anything with .code64/.data64/.zero64!
 /// It will be loaded when the program loader will start the image.
 
-#include "ToolchainKit/Defines.h"
+//! Toplchain Kit.
+#include <ToolchainKit/Defines.h>
+
 #include <ToolchainKit/NFC/ErrorID.h>
 
 //! Assembler Kit
@@ -22,10 +24,11 @@
 //! Preferred Executable Format
 #include <ToolchainKit/NFC/PEF.h>
 #include <ToolchainKit/UUID.h>
-//! Dist version
+
+//! Release macros.
 #include <ToolchainKit/Version.h>
 
-//! Advanced Executable Object Format
+//! Amlal ELMahrouss Object Format
 #include <ToolchainKit/NFC/AE.h>
 #include <cstdint>
 
