@@ -2,17 +2,15 @@
 
 	Copyright (C) 2024, EL Mahrouss Logic, all rights reserved
 
-	FILE: Linker.cxx
-	PURPOSE: C++ 64-Bit Linker
+	@brief: C++ 64-Bit PEF Linker.
 
 ------------------------------------------- */
 
-/// @file LD64.cc
 /// @author EL Mahrouss Amlal (amlel)
-/// @brief ZKA 64-bit Linker.
+/// @brief ELMH 64-bit PEF Linker.
 /// Last Rev: Sat Feb 24 CET 2024
 /// @note Do not look up for anything with .code64/.data64/.zero64!
-/// It will be loaded when program will start up!
+/// It will be loaded when the program loader will start the image.
 
 #include "ToolchainKit/Defines.h"
 #include <ToolchainKit/NFC/ErrorID.h>
