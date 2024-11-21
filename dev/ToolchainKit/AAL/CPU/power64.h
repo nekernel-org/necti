@@ -1,7 +1,7 @@
 /* -------------------------------------------
 
 	Some modifications are copyrighted under:
-	EL Mahrouss Logic
+	Amlal EL Mahrouss
 
 	Original author:
 	Apple Inc
