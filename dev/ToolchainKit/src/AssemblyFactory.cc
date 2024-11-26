@@ -1,6 +1,6 @@
 /* -------------------------------------------
 
-	Copyright (C) 2024, EL Mahrouss Logic, all rights reserved
+	Copyright (C) 2024, ELMH Group, all rights reserved
 
 ------------------------------------------- */
 
@@ -14,7 +14,7 @@
  * @version 0.1
  * @date 2024-01-27
  *
- * @copyright Copyright (c) 2024, EL Mahrouss Logic
+ * @copyright Copyright (c) 2024, ELMH Group
  *
  */
 
