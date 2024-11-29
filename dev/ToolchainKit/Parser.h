@@ -6,7 +6,7 @@
 
 #pragma once
 
-#include <ToolchainKit/AAL/Asm.h>
+#include <ToolchainKit/AAL/AssemblyInterface.h>
 #include <vector>
 
 namespace ToolchainKit

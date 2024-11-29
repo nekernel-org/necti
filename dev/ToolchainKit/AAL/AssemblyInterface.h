@@ -12,9 +12,8 @@
 
 namespace ToolchainKit
 {
-	//
-	//	@brief Frontend to Assembly mountpoint.
-	//
+	///	@brief Assembly to binary generator class.
+	/// @note This interface creates according to the CPU target of the child class.
 	class AssemblyInterface
 	{
 	public:
@@ -23,8 +22,8 @@ namespace ToolchainKit
 
 		TOOLCHAINKIT_COPY_DEFAULT(AssemblyInterface);
 
-		//@ brief compile to object file.
-		// Example C++ -> MASM -> AE object.
+		/// @brief compile to object file.
+		/// @note Example C++ -> MASM -> AE object.
 		virtual Int32 CompileToFormat(std::string& src, Int32 arch) = 0;
 	};
 
@@ -57,17 +56,20 @@ namespace ToolchainKit
 		AssemblyInterface* fMounted{nullptr};
 	};
 
-	union NumberCastBase {
+	union NumberCastBase
+	{
 		NumberCastBase()  = default;
 		~NumberCastBase() = default;
 	};
 
-	union NumberCast64 final {
+	union NumberCast64 final
+	{
 		NumberCast64() = default;
 		explicit NumberCast64(UInt64 raw)
 			: raw(raw)
 		{
 		}
+
 		~NumberCast64()
 		{
 			raw = 0;
@@ -77,12 +79,14 @@ namespace ToolchainKit
 		UInt64	 raw;
 	};
 
-	union NumberCast32 final {
+	union NumberCast32 final
+	{
 		NumberCast32() = default;
 		explicit NumberCast32(UInt32 raw)
 			: raw(raw)
 		{
 		}
+
 		~NumberCast32()
 		{
 			raw = 0;
@@ -92,12 +96,14 @@ namespace ToolchainKit
 		UInt32	 raw;
 	};
 
-	union NumberCast16 final {
+	union NumberCast16 final
+	{
 		NumberCast16() = default;
 		explicit NumberCast16(UInt16 raw)
 			: raw(raw)
 		{
 		}
+
 		~NumberCast16()
 		{
 			raw = 0;
@@ -107,12 +113,14 @@ namespace ToolchainKit
 		UInt16	 raw;
 	};
 
-	union NumberCast8 final {
+	union NumberCast8 final
+	{
 		NumberCast8() = default;
 		explicit NumberCast8(UInt8 raw)
 			: raw(raw)
 		{
 		}
+
 		~NumberCast8()
 		{
 			raw = 0;

@@ -19,7 +19,7 @@
 #include <ToolchainKit/NFC/ErrorID.h>
 
 //! Assembler Kit
-#include <ToolchainKit/AAL/Asm.h>
+#include <ToolchainKit/AAL/AssemblyInterface.h>
 
 //! Preferred Executable Format
 #include <ToolchainKit/NFC/PEF.h>

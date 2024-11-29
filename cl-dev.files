@@ -5,6 +5,7 @@ ReadMe.md
 cl-dev.cflags
 cl-dev.cxxflags
 compile_flags.txt
+dev/CodeKit/TerminalEmulator.h
 dev/LibC++/base_alloc.h
 dev/LibC++/base_exception.h
 dev/LibC++/base_math.h
@@ -19,7 +20,7 @@ dev/LibC++/stdcxx/defines
 dev/LibC++/stdcxx/process_base
 dev/LibC++/stdcxx/utility
 dev/LibC++/utility.h
-dev/ToolchainKit/AAL/Asm.h
+dev/ToolchainKit/AAL/AssemblyInterface.h
 dev/ToolchainKit/AAL/CPU/32x0.h
 dev/ToolchainKit/AAL/CPU/64x0.h
 dev/ToolchainKit/AAL/CPU/amd64.h
@@ -47,9 +48,11 @@ dev/ToolchainKit/src/CCompiler64x0.cc
 dev/ToolchainKit/src/CCompilerPower64.cc
 dev/ToolchainKit/src/CPlusPlusCompilerAMD64.cc
 dev/ToolchainKit/src/CPlusPlusCompilerPreProcessor.cc
+dev/ToolchainKit/src/CPlusPlusRuleChecker.cc
 dev/ToolchainKit/src/Detail/AsmUtils.h
 dev/ToolchainKit/src/Detail/ClUtils.h
 dev/ToolchainKit/src/Detail/ReadMe.md
+dev/ToolchainKit/src/DynamicLinker64PEF.cc
 dev/ToolchainKit/src/Linker64.cc
 dev/ToolchainKit/src/String.cc
 doc/ASM Specs.txt

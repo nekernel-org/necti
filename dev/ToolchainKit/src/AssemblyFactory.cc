@@ -4,7 +4,7 @@
 
 ------------------------------------------- */
 
-#include <ToolchainKit/AAL/Asm.h>
+#include <ToolchainKit/AAL/AssemblyInterface.h>
 #include <ToolchainKit/NFC/ErrorID.h>
 
 /**
