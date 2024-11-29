@@ -51,7 +51,7 @@
 /////////////////////////////////////
 
 /// @internal
-namespace detail
+namespace Details
 {
 	std::filesystem::path expand_home(const std::filesystem::path& p)
 	{
@@ -103,14 +103,14 @@ namespace detail
 		std::string						 fLastError;
 		bool							 fVerbose;
 	};
-} // namespace detail
+} // namespace Details
 
-static detail::CompilerState kState;
+static Details::CompilerState kState;
 static SizeType				 kErrorLimit = 100;
 
 static Int32 kAcceptableErrors = 0;
 
-namespace detail
+namespace Details
 {
 	/// @brief prints an error into stdout.
 	/// @param reason the reason of the error.
@@ -122,7 +122,7 @@ namespace detail
 		std::string fName;
 		std::string fValue;
 	};
-} // namespace detail
+} // namespace Details
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
@@ -277,7 +277,7 @@ bool CompilerFrontendCPlusPlus::Compile(const std::string text,
 		{
 			if (isalnum(text[i]))
 			{
-				detail::print_error_asm("syntax error: " + text, file);
+				Details::print_error_asm("syntax error: " + text, file);
 				return false;
 			}
 		}
@@ -580,7 +580,7 @@ bool CompilerFrontendCPlusPlus::Compile(const std::string text,
 							goto done;
 					}
 
-					detail::print_error_asm("Variable not declared: " + varName, file);
+					Details::print_error_asm("Variable not declared: " + varName, file);
 					return false;
 				}
 
@@ -696,7 +696,7 @@ bool CompilerFrontendCPlusPlus::Compile(const std::string text,
 
 			if (syntax_tree.fUserValue.empty())
 			{
-				detail::print_error_asm("Variable not declared: " + varErrCpy, file);
+				Details::print_error_asm("Variable not declared: " + varErrCpy, file);
 			}
 
 			break;
@@ -727,7 +727,7 @@ bool CompilerFrontendCPlusPlus::Compile(const std::string text,
 
 						if (syntax_tree.fUserValue.empty())
 						{
-							detail::print_error_asm("Variable not declared: " + subText, file);
+							Details::print_error_asm("Variable not declared: " + subText, file);
 						}
 					}
 					else
@@ -824,7 +824,7 @@ public:
 
 		std::filesystem::path path = std::filesystem::path("./");
 
-		while (path != detail::expand_home(std::filesystem::path("~")))
+		while (path != Details::expand_home(std::filesystem::path("~")))
 		{
 			for (auto const& dir_entry : std::filesystem::recursive_directory_iterator{path})
 			{
@@ -1015,7 +1015,7 @@ TOOLCHAINKIT_MODULE(CompilerCPlusPlusX8664)
 			std::string err = "Unknown option: ";
 			err += argv[index];
 
-			detail::print_error_asm(err, "c++-drv");
+			Details::print_error_asm(err, "c++-drv");
 
 			continue;
 		}
@@ -1040,7 +1040,7 @@ TOOLCHAINKIT_MODULE(CompilerCPlusPlusX8664)
 		{
 			if (kState.fVerbose)
 			{
-				detail::print_error_asm(argv_i + " is not a valid C++ source.\n", "c++-drv");
+				Details::print_error_asm(argv_i + " is not a valid C++ source.\n", "c++-drv");
 			}
 
 			return 1;

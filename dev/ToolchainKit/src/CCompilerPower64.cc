@@ -42,7 +42,7 @@
 
 /////////////////////////////////////
 
-namespace detail
+namespace Details
 {
 	// \brief name to register struct.
 	struct CompilerRegisterMap final
@@ -79,14 +79,14 @@ namespace detail
 		std::string						 fLastError;
 		bool							 fVerbose;
 	};
-} // namespace detail
+} // namespace Details
 
-static detail::CompilerState kState;
+static Details::CompilerState kState;
 static SizeType				 kErrorLimit	   = 100;
 static std::string			 kIfFunction	   = "";
 static Int32				 kAcceptableErrors = 0;
 
-namespace detail
+namespace Details
 {
 	/// @brief prints an error into stdout.
 	/// @param reason the reason of the error.
@@ -98,7 +98,7 @@ namespace detail
 		std::string fName;
 		std::string fValue;
 	};
-} // namespace detail
+} // namespace Details
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
@@ -151,11 +151,11 @@ public:
 };
 
 static CompilerFrontendPower64*			 kCompilerFrontend = nullptr;
-static std::vector<detail::CompilerType> kCompilerVariables;
+static std::vector<Details::CompilerType> kCompilerVariables;
 static std::vector<std::string>			 kCompilerFunctions;
-static std::vector<detail::CompilerType> kCompilerTypes;
+static std::vector<Details::CompilerType> kCompilerTypes;
 
-namespace detail
+namespace Details
 {
 	union number_cast final {
 	public:
@@ -183,7 +183,7 @@ namespace detail
 
 		float _Raw;
 	};
-} // namespace detail
+} // namespace Details
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
@@ -215,7 +215,7 @@ bool CompilerFrontendPower64::Compile(const std::string text, const std::string 
 		auto		gen = uuids::uuid_random_generator{generator};
 		uuids::uuid out = gen();
 
-		detail::number_cast time_off = (UInt64)out.as_bytes().data();
+		Details::number_cast time_off = (UInt64)out.as_bytes().data();
 
 		if (!typeFound)
 		{
@@ -414,7 +414,7 @@ bool CompilerFrontendPower64::Compile(const std::string text, const std::string 
 
 			if (textBuffer[text_index] == '=' && kInStruct)
 			{
-				detail::print_error_asm(
+				Details::print_error_asm(
 					"assignement of value inside a struct " + textBuffer, file);
 				continue;
 			}
@@ -577,7 +577,7 @@ bool CompilerFrontendPower64::Compile(const std::string text, const std::string 
 
 			auto var_to_find =
 				std::find_if(kCompilerVariables.cbegin(), kCompilerVariables.cend(),
-							 [&](detail::CompilerType type) {
+							 [&](Details::CompilerType type) {
 								 return type.fName.find(substr) != std::string::npos;
 							 });
 
@@ -1384,7 +1384,7 @@ public:
 			}
 			else
 			{
-				detail::print_error_asm(err, src.data());
+				Details::print_error_asm(err, src.data());
 			}
 		}
 
@@ -1588,7 +1588,7 @@ TOOLCHAINKIT_MODULE(NewOSCompilerCLangPowerPC)
 			std::string err = "Unknown command: ";
 			err += argv[index];
 
-			detail::print_error_asm(err, "cc");
+			Details::print_error_asm(err, "cc");
 
 			continue;
 		}
@@ -1601,7 +1601,7 @@ TOOLCHAINKIT_MODULE(NewOSCompilerCLangPowerPC)
 		{
 			if (kState.fVerbose)
 			{
-				detail::print_error_asm(srcFile + " is not a valid C source.\n", "cc");
+				Details::print_error_asm(srcFile + " is not a valid C source.\n", "cc");
 			}
 
 			return 1;

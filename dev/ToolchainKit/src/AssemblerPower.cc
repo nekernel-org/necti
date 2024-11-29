@@ -24,7 +24,7 @@
 #include <ToolchainKit/NFC/AE.h>
 #include <ToolchainKit/Version.h>
 #include <filesystem>
-#include <algorithm>
+#include <Algorithms>
 #include <iostream>
 #include <fstream>
 #include <vector>
@@ -171,7 +171,7 @@ TOOLCHAINKIT_MODULE(AssemblerMainPower64)
 		{
 			if (auto ln = asm64.CheckLine(line, argv[i]); !ln.empty())
 			{
-				detail::print_error_asm(ln, argv[i]);
+				Details::print_error_asm(ln, argv[i]);
 				continue;
 			}
 
@@ -185,7 +185,7 @@ TOOLCHAINKIT_MODULE(AssemblerMainPower64)
 				if (kVerbose)
 				{
 					std::string what = e.what();
-					detail::print_warning_asm("exit because of: " + what, "ToolchainKit");
+					Details::print_warning_asm("exit because of: " + what, "ToolchainKit");
 				}
 
 				std::filesystem::remove(object_output);
@@ -317,7 +317,7 @@ static bool asm_read_attributes(std::string& line)
 	{
 		if (kOutputAsBinary)
 		{
-			detail::print_error_asm("Invalid extern_segment directive in flat binary mode.",
+			Details::print_error_asm("Invalid extern_segment directive in flat binary mode.",
 									"ToolchainKit");
 			throw std::runtime_error("invalid_extern_segment_bin");
 		}
@@ -326,7 +326,7 @@ static bool asm_read_attributes(std::string& line)
 
 		if (name.size() == 0)
 		{
-			detail::print_error_asm("Invalid extern_segment", "ToolchainKit");
+			Details::print_error_asm("Invalid extern_segment", "ToolchainKit");
 			throw std::runtime_error("invalid_extern_segment");
 		}
 
@@ -389,7 +389,7 @@ static bool asm_read_attributes(std::string& line)
 	{
 		if (kOutputAsBinary)
 		{
-			detail::print_error_asm("Invalid public_segment directive in flat binary mode.",
+			Details::print_error_asm("Invalid public_segment directive in flat binary mode.",
 									"ToolchainKit");
 			throw std::runtime_error("invalid_public_segment_bin");
 		}
@@ -462,7 +462,7 @@ static bool asm_read_attributes(std::string& line)
 
 // \brief algorithms and helpers.
 
-namespace detail::algorithm
+namespace Details::Algorithms
 {
 	// \brief authorize a brief set of characters.
 	static inline bool is_not_alnum_space(char c)
@@ -477,7 +477,7 @@ namespace detail::algorithm
 	{
 		return std::find_if(str.begin(), str.end(), is_not_alnum_space) == str.end();
 	}
-} // namespace detail::algorithm
+} // namespace Details::Algorithms
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
@@ -505,7 +505,7 @@ std::string ToolchainKit::EncoderPowerPC::CheckLine(std::string&		  line,
 		else
 		{
 			/// does the line contains valid input?
-			if (!detail::algorithm::is_valid_power64(line))
+			if (!Details::Algorithms::is_valid_power64(line))
 			{
 				err_str = "Line contains non alphanumeric characters.\nhere -> ";
 				err_str += line;
@@ -515,7 +515,7 @@ std::string ToolchainKit::EncoderPowerPC::CheckLine(std::string&		  line,
 		return err_str;
 	}
 
-	if (!detail::algorithm::is_valid_power64(line))
+	if (!Details::Algorithms::is_valid_power64(line))
 	{
 		err_str = "Line contains non alphanumeric characters.\nhere -> ";
 		err_str += line;
@@ -630,7 +630,7 @@ bool ToolchainKit::EncoderPowerPC::WriteNumber(const std::size_t& pos,
 		{
 			if (errno != 0)
 			{
-				detail::print_error_asm("invalid hex number: " + jump_label, "ToolchainKit");
+				Details::print_error_asm("invalid hex number: " + jump_label, "ToolchainKit");
 				throw std::runtime_error("invalid_hex");
 			}
 		}
@@ -657,7 +657,7 @@ bool ToolchainKit::EncoderPowerPC::WriteNumber(const std::size_t& pos,
 		{
 			if (errno != 0)
 			{
-				detail::print_error_asm("invalid binary number: " + jump_label, "ToolchainKit");
+				Details::print_error_asm("invalid binary number: " + jump_label, "ToolchainKit");
 				throw std::runtime_error("invalid_bin");
 			}
 		}
@@ -684,7 +684,7 @@ bool ToolchainKit::EncoderPowerPC::WriteNumber(const std::size_t& pos,
 		{
 			if (errno != 0)
 			{
-				detail::print_error_asm("invalid octal number: " + jump_label, "ToolchainKit");
+				Details::print_error_asm("invalid octal number: " + jump_label, "ToolchainKit");
 				throw std::runtime_error("invalid_octal");
 			}
 		}
@@ -747,7 +747,7 @@ bool ToolchainKit::EncoderPowerPC::WriteLine(std::string&	   line,
 {
 	if (ToolchainKit::find_word(line, "public_segment"))
 		return true;
-	if (!detail::algorithm::is_valid_power64(line))
+	if (!Details::Algorithms::is_valid_power64(line))
 		return true;
 
 	for (auto& opcodePPC : kOpcodesPowerPC)
@@ -820,7 +820,7 @@ bool ToolchainKit::EncoderPowerPC::WriteLine(std::string&	   line,
 							isdigit(line[line_index + 2]))
 						{
 							reg_str += line[line_index + 3];
-							detail::print_error_asm(
+							Details::print_error_asm(
 								"invalid register index, r" + reg_str +
 									"\nnote: The POWER accepts registers from r0 to r32.",
 								file);
@@ -832,7 +832,7 @@ bool ToolchainKit::EncoderPowerPC::WriteLine(std::string&	   line,
 
 						if (reg_index > kAsmRegisterLimit)
 						{
-							detail::print_error_asm("invalid register index, r" + reg_str,
+							Details::print_error_asm("invalid register index, r" + reg_str,
 													file);
 							throw std::runtime_error("invalid_register_index");
 						}
@@ -858,7 +858,7 @@ bool ToolchainKit::EncoderPowerPC::WriteLine(std::string&	   line,
 							{
 								if (num.number[i] > 0)
 								{
-									detail::print_warning_asm("number overflow on li operation.",
+									Details::print_warning_asm("number overflow on li operation.",
 															  file);
 									break;
 								}
@@ -948,7 +948,7 @@ bool ToolchainKit::EncoderPowerPC::WriteLine(std::string&	   line,
 
 							if (found_some_count > 3)
 							{
-								detail::print_error_asm("Too much registers. -> " + line, file);
+								Details::print_error_asm("Too much registers. -> " + line, file);
 								throw std::runtime_error("too_much_regs");
 							}
 						}
@@ -959,7 +959,7 @@ bool ToolchainKit::EncoderPowerPC::WriteLine(std::string&	   line,
 
 							if (found_some_count > 3)
 							{
-								detail::print_error_asm("Too much registers. -> " + line, file);
+								Details::print_error_asm("Too much registers. -> " + line, file);
 								throw std::runtime_error("too_much_regs");
 							}
 						}
@@ -980,7 +980,7 @@ bool ToolchainKit::EncoderPowerPC::WriteLine(std::string&	   line,
 
 							if (found_some_count > 1)
 							{
-								detail::print_error_asm("Too much registers. -> " + line, file);
+								Details::print_error_asm("Too much registers. -> " + line, file);
 								throw std::runtime_error("too_much_regs");
 							}
 
@@ -1052,7 +1052,7 @@ bool ToolchainKit::EncoderPowerPC::WriteLine(std::string&	   line,
 				{
 					if (register_count == 1)
 					{
-						detail::print_error_asm("Too few registers. -> " + line, file);
+						Details::print_error_asm("Too few registers. -> " + line, file);
 						throw std::runtime_error("too_few_registers");
 					}
 				}
@@ -1063,7 +1063,7 @@ bool ToolchainKit::EncoderPowerPC::WriteLine(std::string&	   line,
 					// remember! register to register!
 					if (found_some_count == 1)
 					{
-						detail::print_error_asm(
+						Details::print_error_asm(
 							"Unrecognized register found.\ntip: each AssemblerPower register "
 							"starts with 'r'.\nline: " +
 								line,
@@ -1075,7 +1075,7 @@ bool ToolchainKit::EncoderPowerPC::WriteLine(std::string&	   line,
 
 				if (found_some_count < 1 && name[0] != 'l' && name[0] != 's')
 				{
-					detail::print_error_asm(
+					Details::print_error_asm(
 						"invalid combination of opcode and registers.\nline: " + line,
 						file);
 					throw std::runtime_error("invalid_comb_op_reg");

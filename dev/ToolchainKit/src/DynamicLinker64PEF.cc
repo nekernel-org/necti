@@ -13,7 +13,7 @@
 /// @note Do not look up for anything with .code64/.data64/.zero64!
 /// It will be loaded when the program loader will start the image.
 
-//! Toplchain Kit.
+//! Toolchain Kit.
 #include <ToolchainKit/Defines.h>
 
 #include <ToolchainKit/NFC/ErrorID.h>
@@ -28,7 +28,7 @@
 //! Release macros.
 #include <ToolchainKit/Version.h>
 
-//! Amlal ELMahrouss Object Format
+//! Advanced Executable Object Format.
 #include <ToolchainKit/NFC/AE.h>
 #include <cstdint>
 
@@ -50,7 +50,7 @@
 /// @brief PEF stack size symbol.
 #define kLinkerStackSizeSymbol "SizeOfReserveStack"
 
-namespace detail 
+namespace Details 
 {
 struct DynamicLinkerBlob final
 {
@@ -81,7 +81,7 @@ static const char* kLdDynamicSym   = ":RuntimeSymbol:";
 
 /* object code and list. */
 static std::vector<ToolchainKit::String> kObjectList;
-static std::vector<detail::DynamicLinkerBlob> kObjectBytes;
+static std::vector<Details::DynamicLinkerBlob> kObjectBytes;
 
 static uintptr_t kMIBCount = 8;
 static uintptr_t kByteCount	= 1024;

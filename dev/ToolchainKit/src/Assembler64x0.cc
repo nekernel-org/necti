@@ -23,7 +23,7 @@
 #include <ToolchainKit/Parser.h>
 #include <ToolchainKit/NFC/AE.h>
 #include <ToolchainKit/NFC/PEF.h>
-#include <algorithm>
+#include <Algorithms>
 #include <filesystem>
 #include <fstream>
 #include <iostream>
@@ -72,7 +72,7 @@ static const std::string kRelocSymbol	  = ":RuntimeSymbol:";
 // \brief forward decl.
 static bool asm_read_attributes(std::string& line);
 
-namespace detail
+namespace Details
 {
 	void print_error_asm(std::string reason, std::string file) noexcept
 	{
@@ -103,7 +103,7 @@ namespace detail
 
 		kStdOut << kYellow << "[ ToolchainKit ] " << kWhite << reason << kBlank << std::endl;
 	}
-} // namespace detail
+} // namespace Details
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
@@ -201,7 +201,7 @@ TOOLCHAINKIT_MODULE(AssemblerMain64x0)
 		{
 			if (auto ln = asm64.CheckLine(line, argv[i]); !ln.empty())
 			{
-				detail::print_error_asm(ln, argv[i]);
+				Details::print_error_asm(ln, argv[i]);
 				continue;
 			}
 
@@ -215,7 +215,7 @@ TOOLCHAINKIT_MODULE(AssemblerMain64x0)
 				if (kVerbose)
 				{
 					std::string what = e.what();
-					detail::print_warning_asm("exit because of: " + what, "ToolchainKit");
+					Details::print_warning_asm("exit because of: " + what, "ToolchainKit");
 				}
 
 				std::filesystem::remove(object_output);
@@ -347,7 +347,7 @@ static bool asm_read_attributes(std::string& line)
 	{
 		if (kOutputAsBinary)
 		{
-			detail::print_error_asm("Invalid extern_segment directive in flat binary mode.",
+			Details::print_error_asm("Invalid extern_segment directive in flat binary mode.",
 									"ToolchainKit");
 			throw std::runtime_error("invalid_extern_segment_bin");
 		}
@@ -357,7 +357,7 @@ static bool asm_read_attributes(std::string& line)
 		/// sanity check to avoid stupid linker errors.
 		if (name.size() == 0)
 		{
-			detail::print_error_asm("Invalid extern_segment", "power-as");
+			Details::print_error_asm("Invalid extern_segment", "power-as");
 			throw std::runtime_error("invalid_extern_segment");
 		}
 
@@ -420,7 +420,7 @@ static bool asm_read_attributes(std::string& line)
 	{
 		if (kOutputAsBinary)
 		{
-			detail::print_error_asm("Invalid public_segment directive in flat binary mode.",
+			Details::print_error_asm("Invalid public_segment directive in flat binary mode.",
 									"ToolchainKit");
 			throw std::runtime_error("invalid_public_segment_bin");
 		}
@@ -493,7 +493,7 @@ static bool asm_read_attributes(std::string& line)
 
 // \brief algorithms and helpers.
 
-namespace detail::algorithm
+namespace Details::Algorithms
 {
 	// \brief authorize a brief set of characters.
 	static inline bool is_not_alnum_space(char c)
@@ -508,7 +508,7 @@ namespace detail::algorithm
 	{
 		return std::find_if(str.begin(), str.end(), is_not_alnum_space) == str.end();
 	}
-} // namespace detail::algorithm
+} // namespace Details::Algorithms
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
@@ -536,7 +536,7 @@ std::string ToolchainKit::Encoder64x0::CheckLine(std::string&	   line,
 		else
 		{
 			// now check the line for validity
-			if (!detail::algorithm::is_valid_64x0(line))
+			if (!Details::Algorithms::is_valid_64x0(line))
 			{
 				err_str = "Line contains non alphanumeric characters.\nhere -> ";
 				err_str += line;
@@ -546,7 +546,7 @@ std::string ToolchainKit::Encoder64x0::CheckLine(std::string&	   line,
 		return err_str;
 	}
 
-	if (!detail::algorithm::is_valid_64x0(line))
+	if (!Details::Algorithms::is_valid_64x0(line))
 	{
 		err_str = "Line contains non alphanumeric characters.\nhere -> ";
 		err_str += line;
@@ -664,7 +664,7 @@ bool ToolchainKit::Encoder64x0::WriteNumber(const std::size_t& pos,
 		{
 			if (errno != 0)
 			{
-				detail::print_error_asm("invalid hex number: " + jump_label, "ToolchainKit");
+				Details::print_error_asm("invalid hex number: " + jump_label, "ToolchainKit");
 				throw std::runtime_error("invalid_hex_number");
 			}
 		}
@@ -691,7 +691,7 @@ bool ToolchainKit::Encoder64x0::WriteNumber(const std::size_t& pos,
 		{
 			if (errno != 0)
 			{
-				detail::print_error_asm("invalid binary number: " + jump_label, "ToolchainKit");
+				Details::print_error_asm("invalid binary number: " + jump_label, "ToolchainKit");
 				throw std::runtime_error("invalid_bin");
 			}
 		}
@@ -718,7 +718,7 @@ bool ToolchainKit::Encoder64x0::WriteNumber(const std::size_t& pos,
 		{
 			if (errno != 0)
 			{
-				detail::print_error_asm("invalid octal number: " + jump_label, "ToolchainKit");
+				Details::print_error_asm("invalid octal number: " + jump_label, "ToolchainKit");
 				throw std::runtime_error("invalid_octal");
 			}
 		}
@@ -786,7 +786,7 @@ bool ToolchainKit::Encoder64x0::WriteLine(std::string&		line,
 	{
 		// strict check here
 		if (ToolchainKit::find_word(line, opcode64x0.fName) &&
-			detail::algorithm::is_valid_64x0(line))
+			Details::Algorithms::is_valid_64x0(line))
 		{
 			std::string name(opcode64x0.fName);
 			std::string jump_label, cpy_jump_label;
@@ -830,7 +830,7 @@ bool ToolchainKit::Encoder64x0::WriteLine(std::string&		line,
 								isdigit(line[line_index + 2]))
 							{
 								reg_str += line[line_index + 3];
-								detail::print_error_asm(
+								Details::print_error_asm(
 									"invalid register index, r" + reg_str +
 										"\nnote: The 64x0 accepts registers from r0 to r20.",
 									file);
@@ -843,7 +843,7 @@ bool ToolchainKit::Encoder64x0::WriteLine(std::string&		line,
 
 						if (reg_index > kAsmRegisterLimit)
 						{
-							detail::print_error_asm("invalid register index, r" + reg_str,
+							Details::print_error_asm("invalid register index, r" + reg_str,
 													file);
 							throw std::runtime_error("invalid_register_index");
 						}
@@ -866,7 +866,7 @@ bool ToolchainKit::Encoder64x0::WriteLine(std::string&		line,
 					// remember! register to register!
 					if (found_some == 1)
 					{
-						detail::print_error_asm(
+						Details::print_error_asm(
 							"Too few registers.\ntip: each Assembler64x0 register "
 							"starts with 'r'.\nline: " +
 								line,
@@ -878,21 +878,21 @@ bool ToolchainKit::Encoder64x0::WriteLine(std::string&		line,
 				if (found_some < 1 && name != "ldw" && name != "lda" &&
 					name != "stw")
 				{
-					detail::print_error_asm(
+					Details::print_error_asm(
 						"invalid combination of opcode and registers.\nline: " + line,
 						file);
 					throw std::runtime_error("invalid_comb_op_reg");
 				}
 				else if (found_some == 1 && name == "add")
 				{
-					detail::print_error_asm(
+					Details::print_error_asm(
 						"invalid combination of opcode and registers.\nline: " + line,
 						file);
 					throw std::runtime_error("invalid_comb_op_reg");
 				}
 				else if (found_some == 1 && name == "sub")
 				{
-					detail::print_error_asm(
+					Details::print_error_asm(
 						"invalid combination of opcode and registers.\nline: " + line,
 						file);
 					throw std::runtime_error("invalid_comb_op_reg");
@@ -900,7 +900,7 @@ bool ToolchainKit::Encoder64x0::WriteLine(std::string&		line,
 
 				if (found_some > 0 && name == "pop")
 				{
-					detail::print_error_asm(
+					Details::print_error_asm(
 						"invalid combination for opcode 'pop'.\ntip: it expects "
 						"nothing.\nline: " +
 							line,
@@ -941,7 +941,7 @@ bool ToolchainKit::Encoder64x0::WriteLine(std::string&		line,
 					{
 						if (found_sym)
 						{
-							detail::print_error_asm(
+							Details::print_error_asm(
 								"invalid combination of opcode and operands.\nhere -> " +
 									jump_label,
 								file);
@@ -974,7 +974,7 @@ bool ToolchainKit::Encoder64x0::WriteLine(std::string&		line,
 					// sta expects this: sta 0x000000, r0
 					if (name == "sta")
 					{
-						detail::print_error_asm(
+						Details::print_error_asm(
 							"invalid combination of opcode and operands.\nHere ->" + line,
 							file);
 						throw std::runtime_error("invalid_comb_op_ops");
@@ -985,7 +985,7 @@ bool ToolchainKit::Encoder64x0::WriteLine(std::string&		line,
 					if (name == "sta" &&
 						cpy_jump_label.find("extern_segment ") != std::string::npos)
 					{
-						detail::print_error_asm("invalid usage extern_segment on 'sta', here: " + line,
+						Details::print_error_asm("invalid usage extern_segment on 'sta', here: " + line,
 												file);
 						throw std::runtime_error("invalid_sta_usage");
 					}
@@ -1007,7 +1007,7 @@ bool ToolchainKit::Encoder64x0::WriteLine(std::string&		line,
 
 					if (name == "sta")
 					{
-						detail::print_error_asm("extern_segment is not allowed on a sta operation.",
+						Details::print_error_asm("extern_segment is not allowed on a sta operation.",
 												file);
 						throw std::runtime_error("extern_segment_sta_op");
 					}
@@ -1067,7 +1067,7 @@ bool ToolchainKit::Encoder64x0::WriteLine(std::string&		line,
 
 				if (cpy_jump_label.size() < 1)
 				{
-					detail::print_error_asm("label is empty, can't jump on it.", file);
+					Details::print_error_asm("label is empty, can't jump on it.", file);
 					throw std::runtime_error("label_empty");
 				}
 

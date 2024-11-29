@@ -30,7 +30,7 @@
 #include <ToolchainKit/Parser.h>
 #include <ToolchainKit/NFC/AE.h>
 #include <ToolchainKit/NFC/PEF.h>
-#include <algorithm>
+#include <Algorithms>
 #include <cstdlib>
 #include <filesystem>
 #include <fstream>
@@ -230,7 +230,7 @@ TOOLCHAINKIT_MODULE(AssemblerAMD64)
 		{
 			if (auto ln = asm64.CheckLine(line, argv[i]); !ln.empty())
 			{
-				detail::print_error_asm(ln, argv[i]);
+				Details::print_error_asm(ln, argv[i]);
 				continue;
 			}
 
@@ -244,7 +244,7 @@ TOOLCHAINKIT_MODULE(AssemblerAMD64)
 				if (kVerbose)
 				{
 					std::string what = e.what();
-					detail::print_warning_asm("exit because of: " + what, "ToolchainKit");
+					Details::print_warning_asm("exit because of: " + what, "ToolchainKit");
 				}
 
 				try
@@ -391,7 +391,7 @@ static bool asm_read_attributes(std::string& line)
 	{
 		if (kOutputAsBinary)
 		{
-			detail::print_error_asm("Invalid directive in flat binary mode.", "ToolchainKit");
+			Details::print_error_asm("Invalid directive in flat binary mode.", "ToolchainKit");
 			throw std::runtime_error("invalid_extern_segment_bin");
 		}
 
@@ -399,7 +399,7 @@ static bool asm_read_attributes(std::string& line)
 
 		if (name.size() == 0)
 		{
-			detail::print_error_asm("Invalid extern_segment", "power-as");
+			Details::print_error_asm("Invalid extern_segment", "power-as");
 			throw std::runtime_error("invalid_extern_segment");
 		}
 
@@ -462,7 +462,7 @@ static bool asm_read_attributes(std::string& line)
 	{
 		if (kOutputAsBinary)
 		{
-			detail::print_error_asm("Invalid directive in flat binary mode.", "ToolchainKit");
+			Details::print_error_asm("Invalid directive in flat binary mode.", "ToolchainKit");
 			throw std::runtime_error("invalid_public_segment_bin");
 		}
 
@@ -479,7 +479,7 @@ static bool asm_read_attributes(std::string& line)
 		if (std::find(kDefinedSymbols.begin(), kDefinedSymbols.end(), name) !=
 			kDefinedSymbols.end())
 		{
-			detail::print_error_asm("Symbol already defined.", "ToolchainKit");
+			Details::print_error_asm("Symbol already defined.", "ToolchainKit");
 			throw std::runtime_error("invalid_public_segment_bin");
 		}
 
@@ -543,7 +543,7 @@ static bool asm_read_attributes(std::string& line)
 
 // \brief algorithms and helpers.
 
-namespace detail::algorithm
+namespace Details::Algorithms
 {
 	// \brief authorize a brief set of characters.
 	static inline bool is_not_valid(char c)
@@ -561,7 +561,7 @@ namespace detail::algorithm
 	{
 		return std::find_if(str.begin(), str.end(), is_not_valid) == str.end();
 	}
-} // namespace detail::algorithm
+} // namespace Details::Algorithms
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
@@ -586,7 +586,7 @@ std::string ToolchainKit::EncoderAMD64::CheckLine(std::string&		line,
 		else
 		{
 			// now check the line for validity
-			if (!detail::algorithm::is_valid_amd64(line))
+			if (!Details::Algorithms::is_valid_amd64(line))
 			{
 				err_str = "Line contains non valid characters.\nhere -> ";
 				err_str += line;
@@ -666,7 +666,7 @@ bool ToolchainKit::EncoderAMD64::WriteNumber(const std::size_t& pos,
 		{
 			if (errno != 0)
 			{
-				detail::print_error_asm("invalid hex number: " + jump_label, "ToolchainKit");
+				Details::print_error_asm("invalid hex number: " + jump_label, "ToolchainKit");
 				throw std::runtime_error("invalid_hex");
 			}
 		}
@@ -696,7 +696,7 @@ bool ToolchainKit::EncoderAMD64::WriteNumber(const std::size_t& pos,
 		{
 			if (errno != 0)
 			{
-				detail::print_error_asm("invalid binary number: " + jump_label, "ToolchainKit");
+				Details::print_error_asm("invalid binary number: " + jump_label, "ToolchainKit");
 				throw std::runtime_error("invalid_bin");
 			}
 		}
@@ -726,7 +726,7 @@ bool ToolchainKit::EncoderAMD64::WriteNumber(const std::size_t& pos,
 		{
 			if (errno != 0)
 			{
-				detail::print_error_asm("invalid octal number: " + jump_label, "ToolchainKit");
+				Details::print_error_asm("invalid octal number: " + jump_label, "ToolchainKit");
 				throw std::runtime_error("invalid_octal");
 			}
 		}
@@ -919,7 +919,7 @@ bool ToolchainKit::EncoderAMD64::WriteNumber16(const std::size_t& pos,
 		{
 			if (errno != 0)
 			{
-				detail::print_error_asm("invalid hex number: " + jump_label, "ToolchainKit");
+				Details::print_error_asm("invalid hex number: " + jump_label, "ToolchainKit");
 				throw std::runtime_error("invalid_hex");
 			}
 		}
@@ -949,7 +949,7 @@ bool ToolchainKit::EncoderAMD64::WriteNumber16(const std::size_t& pos,
 		{
 			if (errno != 0)
 			{
-				detail::print_error_asm("invalid binary number: " + jump_label, "ToolchainKit");
+				Details::print_error_asm("invalid binary number: " + jump_label, "ToolchainKit");
 				throw std::runtime_error("invalid_bin");
 			}
 		}
@@ -979,7 +979,7 @@ bool ToolchainKit::EncoderAMD64::WriteNumber16(const std::size_t& pos,
 		{
 			if (errno != 0)
 			{
-				detail::print_error_asm("invalid octal number: " + jump_label, "ToolchainKit");
+				Details::print_error_asm("invalid octal number: " + jump_label, "ToolchainKit");
 				throw std::runtime_error("invalid_octal");
 			}
 		}
@@ -1051,7 +1051,7 @@ bool ToolchainKit::EncoderAMD64::WriteNumber8(const std::size_t& pos,
 		{
 			if (errno != 0)
 			{
-				detail::print_error_asm("invalid hex number: " + jump_label, "ToolchainKit");
+				Details::print_error_asm("invalid hex number: " + jump_label, "ToolchainKit");
 				throw std::runtime_error("invalid_hex");
 			}
 		}
@@ -1075,7 +1075,7 @@ bool ToolchainKit::EncoderAMD64::WriteNumber8(const std::size_t& pos,
 		{
 			if (errno != 0)
 			{
-				detail::print_error_asm("invalid binary number: " + jump_label, "ToolchainKit");
+				Details::print_error_asm("invalid binary number: " + jump_label, "ToolchainKit");
 				throw std::runtime_error("invalid_bin");
 			}
 		}
@@ -1099,7 +1099,7 @@ bool ToolchainKit::EncoderAMD64::WriteNumber8(const std::size_t& pos,
 		{
 			if (errno != 0)
 			{
-				detail::print_error_asm("invalid octal number: " + jump_label, "ToolchainKit");
+				Details::print_error_asm("invalid octal number: " + jump_label, "ToolchainKit");
 				throw std::runtime_error("invalid_octal");
 			}
 		}
@@ -1187,7 +1187,7 @@ bool ToolchainKit::EncoderAMD64::WriteLine(std::string&		 line,
 	{
 		// strict check here
 		if (ToolchainKit::find_word(line, opcodeAMD64.fName) &&
-			detail::algorithm::is_valid_amd64(line))
+			Details::Algorithms::is_valid_amd64(line))
 		{
 			foundInstruction = true;
 			std::string name(opcodeAMD64.fName);
@@ -1202,7 +1202,7 @@ bool ToolchainKit::EncoderAMD64::WriteLine(std::string&		 line,
 
 				if (substr.find(",") == std::string::npos)
 				{
-					detail::print_error_asm("Syntax error: missing right operand.", "ToolchainKit");
+					Details::print_error_asm("Syntax error: missing right operand.", "ToolchainKit");
 					throw std::runtime_error("syntax_err");
 				}
 
@@ -1231,7 +1231,7 @@ bool ToolchainKit::EncoderAMD64::WriteLine(std::string&		 line,
 							{
 								if (registerName[0] == 'r')
 								{
-									detail::print_error_asm(
+									Details::print_error_asm(
 										"invalid size for register, current bit width is: " +
 											std::to_string(kRegisterBitWidth),
 										file);
@@ -1286,7 +1286,7 @@ bool ToolchainKit::EncoderAMD64::WriteLine(std::string&		 line,
 				{
 					if (hasRBasedRegs)
 					{
-						detail::print_error_asm(
+						Details::print_error_asm(
 							"Invalid combination of operands and registers.", "ToolchainKit");
 						throw std::runtime_error("comb_op_reg");
 					}
@@ -1323,7 +1323,7 @@ bool ToolchainKit::EncoderAMD64::WriteLine(std::string&		 line,
 				if (currentRegList[1].fName[0] == 'r' &&
 					currentRegList[0].fName[0] == 'e')
 				{
-					detail::print_error_asm("Invalid combination of operands and registers.",
+					Details::print_error_asm("Invalid combination of operands and registers.",
 											"ToolchainKit");
 					throw std::runtime_error("comb_op_reg");
 				}
@@ -1331,7 +1331,7 @@ bool ToolchainKit::EncoderAMD64::WriteLine(std::string&		 line,
 				if (currentRegList[0].fName[0] == 'r' &&
 					currentRegList[1].fName[0] == 'e')
 				{
-					detail::print_error_asm("Invalid combination of operands and registers.",
+					Details::print_error_asm("Invalid combination of operands and registers.",
 											"ToolchainKit");
 					throw std::runtime_error("comb_op_reg");
 				}
@@ -1341,7 +1341,7 @@ bool ToolchainKit::EncoderAMD64::WriteLine(std::string&		 line,
 					if (currentRegList[0].fName[0] == 'r' ||
 						currentRegList[0].fName[0] == 'e')
 					{
-						detail::print_error_asm("Invalid combination of operands and registers.",
+						Details::print_error_asm("Invalid combination of operands and registers.",
 												"ToolchainKit");
 						throw std::runtime_error("comb_op_reg");
 					}
@@ -1349,7 +1349,7 @@ bool ToolchainKit::EncoderAMD64::WriteLine(std::string&		 line,
 					if (currentRegList[1].fName[0] == 'r' ||
 						currentRegList[1].fName[0] == 'e')
 					{
-						detail::print_error_asm("Invalid combination of operands and registers.",
+						Details::print_error_asm("Invalid combination of operands and registers.",
 												"ToolchainKit");
 						throw std::runtime_error("comb_op_reg");
 					}
@@ -1359,7 +1359,7 @@ bool ToolchainKit::EncoderAMD64::WriteLine(std::string&		 line,
 					if (currentRegList[0].fName[0] != 'r' ||
 						currentRegList[0].fName[0] == 'e')
 					{
-						detail::print_error_asm("Invalid combination of operands and registers.",
+						Details::print_error_asm("Invalid combination of operands and registers.",
 												"ToolchainKit");
 						throw std::runtime_error("comb_op_reg");
 					}
@@ -1367,7 +1367,7 @@ bool ToolchainKit::EncoderAMD64::WriteLine(std::string&		 line,
 					if (currentRegList[1].fName[0] != 'r' ||
 						currentRegList[1].fName[0] == 'e')
 					{
-						detail::print_error_asm("Invalid combination of operands and registers.",
+						Details::print_error_asm("Invalid combination of operands and registers.",
 												"ToolchainKit");
 						throw std::runtime_error("comb_op_reg");
 					}
@@ -1413,7 +1413,7 @@ bool ToolchainKit::EncoderAMD64::WriteLine(std::string&		 line,
 	{
 		if (foundInstruction)
 		{
-			detail::print_error_asm("Syntax error: " + line, "ToolchainKit");
+			Details::print_error_asm("Syntax error: " + line, "ToolchainKit");
 			throw std::runtime_error("syntax_err");
 		}
 

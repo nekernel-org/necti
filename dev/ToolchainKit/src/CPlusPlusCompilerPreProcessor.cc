@@ -11,7 +11,7 @@
 
 #include <ToolchainKit/Parser.h>
 #include <ToolchainKit/NFC/ErrorID.h>
-#include <algorithm>
+#include <Algorithms>
 #include <filesystem>
 #include <fstream>
 #include <iostream>
@@ -32,7 +32,7 @@ typedef Int32 (*bpp_parser_fn_t)(std::string& line, std::ifstream& hdr_file, std
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
-namespace detail
+namespace Details
 {
 	enum
 	{
@@ -79,10 +79,10 @@ namespace detail
 		std::string		fMacroName;
 		bpp_parser_fn_t fParse;
 	};
-} // namespace detail
+} // namespace Details
 
 static std::vector<std::string>		  kFiles;
-static std::vector<detail::bpp_macro> kMacros;
+static std::vector<Details::bpp_macro> kMacros;
 static std::vector<std::string>		  kIncludes;
 
 static std::string kWorkingDir;
@@ -100,13 +100,13 @@ static std::vector<std::string> kKeywords = {
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
-int32_t bpp_parse_if_condition(detail::bpp_macro_condition& cond,
-							   detail::bpp_macro&			macro,
+int32_t bpp_parse_if_condition(Details::bpp_macro_condition& cond,
+							   Details::bpp_macro&			macro,
 							   bool&						inactive_code,
 							   bool&						defined,
 							   std::string&					macro_str)
 {
-	if (cond.fType == detail::kEqual)
+	if (cond.fType == Details::kEqual)
 	{
 		auto substr_macro =
 			macro_str.substr(macro_str.find(macro.fName) + macro.fName.size());
@@ -127,7 +127,7 @@ int32_t bpp_parse_if_condition(detail::bpp_macro_condition& cond,
 			return 1;
 		}
 	}
-	else if (cond.fType == detail::kNotEqual)
+	else if (cond.fType == Details::kNotEqual)
 	{
 		auto substr_macro =
 			macro_str.substr(macro_str.find(macro.fName) + macro.fName.size());
@@ -223,7 +223,7 @@ int32_t bpp_parse_if_condition(detail::bpp_macro_condition& cond,
 		lhs = atol(number.c_str());
 	}
 
-	if (cond.fType == detail::kGreaterThan)
+	if (cond.fType == Details::kGreaterThan)
 	{
 		if (lhs < rhs)
 		{
@@ -236,7 +236,7 @@ int32_t bpp_parse_if_condition(detail::bpp_macro_condition& cond,
 		return 0;
 	}
 
-	if (cond.fType == detail::kGreaterEqThan)
+	if (cond.fType == Details::kGreaterEqThan)
 	{
 		if (lhs <= rhs)
 		{
@@ -249,7 +249,7 @@ int32_t bpp_parse_if_condition(detail::bpp_macro_condition& cond,
 		return 0;
 	}
 
-	if (cond.fType == detail::kLesserEqThan)
+	if (cond.fType == Details::kLesserEqThan)
 	{
 		if (lhs >= rhs)
 		{
@@ -262,7 +262,7 @@ int32_t bpp_parse_if_condition(detail::bpp_macro_condition& cond,
 		return 0;
 	}
 
-	if (cond.fType == detail::kLesserThan)
+	if (cond.fType == Details::kLesserThan)
 	{
 		if (lhs > rhs)
 		{
@@ -516,7 +516,7 @@ void bpp_parse_file(std::ifstream& hdr_file, std::ofstream& pp_out)
 					}
 				}
 
-				detail::bpp_macro macro;
+				Details::bpp_macro macro;
 
 				macro.fArgs	 = args;
 				macro.fName	 = macro_key;
@@ -663,29 +663,29 @@ void bpp_parse_file(std::ifstream& hdr_file, std::ofstream& pp_out)
 			{
 				inactive_code = true;
 
-				std::vector<detail::bpp_macro_condition> bpp_macro_condition_list = {
+				std::vector<Details::bpp_macro_condition> bpp_macro_condition_list = {
 					{
-						.fType	   = detail::kEqual,
+						.fType	   = Details::kEqual,
 						.fTypeName = "==",
 					},
 					{
-						.fType	   = detail::kNotEqual,
+						.fType	   = Details::kNotEqual,
 						.fTypeName = "!=",
 					},
 					{
-						.fType	   = detail::kLesserThan,
+						.fType	   = Details::kLesserThan,
 						.fTypeName = "<",
 					},
 					{
-						.fType	   = detail::kGreaterThan,
+						.fType	   = Details::kGreaterThan,
 						.fTypeName = ">",
 					},
 					{
-						.fType	   = detail::kLesserEqThan,
+						.fType	   = Details::kLesserEqThan,
 						.fTypeName = "<=",
 					},
 					{
-						.fType	   = detail::kGreaterEqThan,
+						.fType	   = Details::kGreaterEqThan,
 						.fTypeName = ">=",
 					},
 				};
@@ -915,28 +915,28 @@ TOOLCHAINKIT_MODULE(CPlusPlusPreprocessorMain)
 		bool skip		 = false;
 		bool double_skip = false;
 
-		detail::bpp_macro macro_1;
+		Details::bpp_macro macro_1;
 
 		macro_1.fName  = "__true";
 		macro_1.fValue = "1";
 
 		kMacros.push_back(macro_1);
 
-		detail::bpp_macro macro_0;
+		Details::bpp_macro macro_0;
 
 		macro_0.fName  = "__false";
 		macro_0.fValue = "0";
 
 		kMacros.push_back(macro_0);
 
-		detail::bpp_macro macro_zka;
+		Details::bpp_macro macro_zka;
 
 		macro_zka.fName	 = "__TOOLCHAINKIT__";
 		macro_zka.fValue = "1";
 
 		kMacros.push_back(macro_zka);
 
-		detail::bpp_macro macro_size_t;
+		Details::bpp_macro macro_size_t;
 		macro_size_t.fName	= "__SIZE_TYPE__";
 		macro_size_t.fValue = "unsigned long long int";
 
@@ -1028,7 +1028,7 @@ TOOLCHAINKIT_MODULE(CPlusPlusPreprocessorMain)
 					if (is_string)
 						macro_value += "\"";
 
-					detail::bpp_macro macro;
+					Details::bpp_macro macro;
 					macro.fName	 = macro_key;
 					macro.fValue = macro_value;
 
