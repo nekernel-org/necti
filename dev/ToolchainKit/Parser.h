@@ -7,11 +7,10 @@
 #pragma once
 
 #include <ToolchainKit/AAL/AssemblyInterface.h>
-#include <vector>
 
 namespace ToolchainKit
 {
-	inline auto kInvalidFrontend = "No Language";
+	inline auto kInvalidFrontend = "NoLang";
 
 	/// @brief Compiler backend, implements a frontend, such as C, C++...
 	/// See Toolchain, for some examples.

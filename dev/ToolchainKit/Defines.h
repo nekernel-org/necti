@@ -47,10 +47,10 @@
 #define CharType char
 #define Boolean	 bool
 
+#include <filesystem>
 #include <cstdint>
 #include <cassert>
 #include <cstring>
-#include <new>
 #include <iostream>
 #include <utility>
 #include <cctype>
@@ -58,8 +58,9 @@
 #include <fstream>
 #include <memory>
 #include <string>
-#include <filesystem>
 #include <vector>
+#include <vector>
+#include <new>
 
 #define nullPtr std::nullptr_t
 
