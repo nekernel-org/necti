@@ -2,7 +2,7 @@
  *	========================================================
  *
  *	cc
- * 	Copyright (C) 2024, ELMH Group, all rights reserved.
+ * 	Copyright (C) 2024 Theater Quality Incorporated., all rights reserved.
  *
  * 	========================================================
  */
@@ -13,7 +13,6 @@
 #include <ToolchainKit/AAL/CPU/64x0.h>
 #include <ToolchainKit/Parser.h>
 #include <ToolchainKit/UUID.h>
-#include <filesystem>
 #include <cstdio>
 #include <fstream>
 #include <iostream>
@@ -25,7 +24,7 @@
 
 /* C driver */
 /* This is part of the ToolchainKit. */
-/* (c) ELMH Group */
+/* (c) Theater Quality Incorporated */
 
 /// @author EL Mahrouss Amlal (amlel)
 /// @file 64x0-cc.cxx
@@ -1295,7 +1294,7 @@ skip_braces_check:
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
-class AssemblyCCInterface final : public ToolchainKit::AssemblyInterface
+class AssemblyCCInterface final ASSEMBLY_INTERFACE
 {
 public:
 	explicit AssemblyCCInterface()	= default;
@@ -1483,7 +1482,7 @@ public:
 
 #define kPrintF printf
 #define kSplashCxx() \
-	kPrintF(kWhite "ZKA C Driver, %s, (c) ELMH Group\n", kDistVersion)
+	kPrintF(kWhite "ZKA C Driver, %s, (c) Theater Quality Incorporated\n", kDistVersion)
 
 static void cc_print_help()
 {

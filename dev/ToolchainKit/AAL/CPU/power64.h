@@ -1,7 +1,7 @@
 /* -------------------------------------------
 
 	Some modifications are copyrighted under:
-	ELMH Group
+	Theater Quality Incorporated
 
 	Original author:
 	Apple Inc

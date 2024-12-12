@@ -1,6 +1,6 @@
 /* -------------------------------------------
 
-	Copyright (C) 2024, ELMH Group, all rights reserved
+	Copyright (C) 2024 Theater Quality Incorporated., all rights reserved
 
 ------------------------------------------- */
 
@@ -37,8 +37,8 @@ int main(int argc, char const* argv[])
 		{
 			std::printf("asm.exe: Frontend Assembler (64x0, power64, x64).\n");
 			std::printf("asm.exe: Version: %s, Release: %s.\n", kDistVersion, kDistRelease);
-			std::printf("asm.exe: Designed by ELMH Group, Copyright (C) 2024, ELMH Group, all rights reserved.\n");
-			std::printf("libToolchainKit.dylib: Designed by ELMH Group, Copyright (C) 2024, ELMH Group, all rights reserved.\n");
+			std::printf("asm.exe: Designed by Theater Quality Incorporated, Copyright (C) 2024 Theater Quality Incorporated., all rights reserved.\n");
+			std::printf("libToolchainKit.dylib: Designed by Theater Quality Incorporated, Copyright (C) 2024 Theater Quality Incorporated., all rights reserved.\n");
 
 			return 0;
 		}

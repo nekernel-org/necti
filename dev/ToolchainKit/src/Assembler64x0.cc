@@ -1,6 +1,6 @@
 /* -------------------------------------------
 
-	Copyright (C) 2024, ELMH Group, all rights reserved
+	Copyright (C) 2024 Theater Quality Incorporated., all rights reserved
 
 ------------------------------------------- */
 
@@ -120,7 +120,7 @@ TOOLCHAINKIT_MODULE(AssemblerMain64x0)
 			if (strcmp(argv[i], "--ver") == 0 || strcmp(argv[i], "--v") == 0)
 			{
 				kStdOut << "Assembler64x0: 64x0 Assembler.\nAssembler64x0: v1.10\nAssembler64x0: Copyright (c) "
-						   "ELMH Group.\n";
+						   "Theater Quality Incorporated.\n";
 				return 0;
 			}
 			else if (strcmp(argv[i], "--h") == 0)

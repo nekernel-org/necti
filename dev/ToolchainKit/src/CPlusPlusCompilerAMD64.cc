@@ -2,7 +2,7 @@
  *	========================================================
  *
  *	c++-drv
- * 	Copyright (C) 2024, ELMH Group, all rights reserved.
+ * 	Copyright (C) 2024 Theater Quality Incorporated., all rights reserved.
  *
  * 	========================================================
  */
@@ -16,7 +16,7 @@
 #define kExitNO (EXIT_FAILURE)
 
 #define kSplashCxx() \
-	kPrintF(kWhite "%s\n", "ELMH C++ Compiler Driver, (c) 2024 ELMH Group, all rights reserved.")
+	kPrintF(kWhite "%s\n", "ELMH C++ Compiler Driver, (c) 2024 Theater Quality Incorporated, all rights reserved.")
 
 // extern_segment, @autodelete { ... }, fn foo() -> auto { ... }
 
@@ -26,7 +26,7 @@
 
 /* ZKA C++ Compiler */
 /* This is part of the ToolchainKit. */
-/* (c) ELMH Group */
+/* (c) Theater Quality Incorporated */
 
 /// @author EL Mahrouss Amlal (amlel)
 /// @file CPlusPlusCompilerAMD64.cxx
@@ -768,7 +768,7 @@ ndk_compile_ok:
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
-class AssemblyCPlusPlusInterface final : public ToolchainKit::AssemblyInterface
+class AssemblyCPlusPlusInterface final ASSEMBLY_INTERFACE
 {
 public:
 	explicit AssemblyCPlusPlusInterface()  = default;

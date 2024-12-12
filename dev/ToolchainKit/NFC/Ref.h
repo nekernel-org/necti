@@ -3,7 +3,7 @@
  *	========================================================
  *
  *	ToolchainKit
- * 	Copyright (C) 2024, ELMH Group, all rights reserved.
+ * 	Copyright (C) 2024 Theater Quality Incorporated., all rights reserved.
  *
  * 	========================================================
  */

@@ -2,7 +2,7 @@
  *	========================================================
  *
  *	CCompilerPower64
- * 	Copyright (C) 2024, ELMH Group, all rights reserved.
+ * 	Copyright (C) 2024 Theater Quality Incorporated., all rights reserved.
  *
  * 	========================================================
  */
@@ -10,7 +10,6 @@
 #include <ToolchainKit/AAL/CPU/power64.h>
 #include <ToolchainKit/Parser.h>
 #include <ToolchainKit/UUID.h>
-#include <filesystem>
 #include <fstream>
 #include <iostream>
 #include <memory>
@@ -1318,7 +1317,7 @@ skip_braces_check:
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
-class AssemblyMountpointCLang final : public ToolchainKit::AssemblyInterface
+class AssemblyMountpointCLang final ASSEMBLY_INTERFACE
 {
 public:
 	explicit AssemblyMountpointCLang()	= default;
@@ -1503,7 +1502,7 @@ public:
 
 #define kPrintF printf
 #define kSplashCxx() \
-	kPrintF(kWhite "cc, %s, (c) ELMH Group\n", kDistVersion)
+	kPrintF(kWhite "cc, %s, (c) Theater Quality Incorporated\n", kDistVersion)
 
 static void cc_print_help()
 {

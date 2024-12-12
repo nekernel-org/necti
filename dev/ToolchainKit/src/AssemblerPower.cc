@@ -1,6 +1,6 @@
 /* -------------------------------------------
 
-	Copyright (C) 2024, ELMH Group, all rights reserved
+	Copyright (C) 2024 Theater Quality Incorporated., all rights reserved
 
 ------------------------------------------- */
 
@@ -91,13 +91,13 @@ TOOLCHAINKIT_MODULE(AssemblerMainPower64)
 			{
 				kStdOut << "AssemblerPower: POWER64 Assembler Driver.\nAssemblerPower: " << kDistVersion << "\nAssemblerPower: "
 																											"Copyright (c) "
-																											"ELMH Group.\n";
+																											"Theater Quality Incorporated.\n";
 				return 0;
 			}
 			else if (strcmp(argv[i], "--h") == 0)
 			{
 				kStdOut << "AssemblerPower: POWER64 Assembler Driver.\nAssemblerPower: Copyright (c) 2024 "
-						   "ELMH Group.\n";
+						   "Theater Quality Incorporated.\n";
 				kStdOut << "--version,/v: print program version.\n";
 				kStdOut << "--verbose: print verbose output.\n";
 				kStdOut << "--binary: output as flat binary.\n";
