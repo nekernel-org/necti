@@ -1,15 +1,17 @@
 # ToolchainKit C/C++
 
-Made to provide an altnerative to CLang.
+## Brief:
+
+TQ's C++ Optimizing Compiler.
 
 ## Installing:
 
-Start by cloning the repository.
+Start by cloning the repository:
 
 ```
-git clone git@github.com:ElMahroussLogic/cl-dev.git
+git clone git@github.com:tq-corp/toolchain-kit.git
 ```
 
-And then follow the build instructions. (Install.md)
+And then follow the build instructions (Install.md)
 
 ###### Copyright (C) 2024 Theater Quality Incorporated., all rights reserved.
