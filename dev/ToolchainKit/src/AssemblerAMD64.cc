@@ -1,6 +1,6 @@
 /* -------------------------------------------
 
-	Copyright (C) 2024 Theater Quality Incorporated., all rights reserved
+	Copyright (C) 2024 Amlal EL Mahrouss, all rights reserved
 
 ------------------------------------------- */
 
@@ -138,13 +138,13 @@ TOOLCHAINKIT_MODULE(AssemblerAMD64)
 			if (strcmp(argv[i], "--amd64:ver") == 0 || strcmp(argv[i], "--amd64:v") == 0)
 			{
 				kStdOut << "AssemblerAMD64: AMD64 Assembler Driver.\nAssemblerAMD64: v1.10\nAssemblerAMD64: Copyright "
-						   "(c) Theater Quality Incorporated.\n";
+						   "(c) Amlal EL Mahrouss\n";
 				return 0;
 			}
 			else if (strcmp(argv[i], "--amd64:h") == 0)
 			{
 				kStdOut << "AssemblerAMD64: AMD64 Assembler Driver.\nAssemblerAMD64: Copyright (c) 2024 "
-						   "Theater Quality Incorporated.\n";
+						   "Amlal EL Mahrouss\n";
 				kStdOut << "--version: Print program version.\n";
 				kStdOut << "--verbose: Print verbose output.\n";
 				kStdOut << "--binary: Output as flat binary.\n";

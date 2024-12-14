@@ -1,6 +1,6 @@
 /* -------------------------------------------
 
-	Copyright (C) 2024 Theater Quality Incorporated., all rights reserved
+	Copyright (C) 2024 Amlal EL Mahrouss, all rights reserved
 
 	@file DynamicLinker64PEF.cc
 	@brief: C++ 64-Bit PEF Linker.

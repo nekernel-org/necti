@@ -1,6 +1,6 @@
 /* -------------------------------------------
 
-	Copyright (C) 2024 Theater Quality Incorporated., all rights reserved
+	Copyright (C) 2024 Amlal EL Mahrouss, all rights reserved
 
 ------------------------------------------- */
 
@@ -14,7 +14,7 @@
  * @version 0.1
  * @date 2024-01-27
  *
- * @copyright Copyright (c) 2024 Theater Quality Incorporated.
+ * @copyright Copyright (c) 2024 Amlal EL Mahrouss
  *
  */
 

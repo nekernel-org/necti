@@ -4,4 +4,4 @@
 
 This contains a set of tools necessary to compile a ZKA program.
 
-###### Copyright (C) 2024 Theater Quality Incorporated., all rights reserved.
+###### Copyright (C) 2024 Amlal EL Mahrouss, all rights reserved.
