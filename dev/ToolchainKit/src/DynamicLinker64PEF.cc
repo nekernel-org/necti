@@ -8,7 +8,7 @@
 ------------------------------------------- */
 
 /// @author EL Mahrouss Amlal (amlel)
-/// @brief ELMH 64-bit PEF Linker.
+/// @brief TQ Media 64-bit PEF Linker.
 /// Last Rev: Sat Feb 24 CET 2024
 /// @note Do not look up for anything with .code64/.data64/.zero64!
 /// It will be loaded when the program loader will start the image.
@@ -32,7 +32,7 @@
 #include <ToolchainKit/NFC/AE.h>
 #include <cstdint>
 
-#define kLinkerVersionStr "ELMH 64-Bit Dynamic Linker %s, (c) Theater Quality Incorporated 2024, all rights reserved.\n"
+#define kLinkerVersionStr "TQ Media 64-Bit Linker %s, (c) Theater Quality Incorporated 2024, all rights reserved.\n"
 
 #define MemoryCopy(DST, SRC, SZ) memcpy(DST, SRC, SZ)
 #define StringCompare(DST, SRC) strcmp(DST, SRC)
@@ -41,7 +41,8 @@
 #define kPefNoSubCpu 0U
 
 #define kWhite	"\e[0;97m"
-#define kStdOut (std::cout << kWhite)
+
+#define kStdOut (std::cout << kWhite << "ld64: ")
 
 #define kLinkerDefaultOrigin kPefBaseOrigin
 #define kLinkerId			 (0x5046FF)
@@ -199,7 +200,7 @@ TOOLCHAINKIT_MODULE(DynamicLinker64PEF)
 		{
 			if (argv[linker_arg][0] == '-')
 			{
-				kStdOut << "ld64: unknown flag: " << argv[linker_arg] << "\n";
+				kStdOut << "unknown flag: " << argv[linker_arg] << "\n";
 				return EXIT_FAILURE;
 			}
 
@@ -211,14 +212,14 @@ TOOLCHAINKIT_MODULE(DynamicLinker64PEF)
 
 	if (kOutput.empty())
 	{
-		kStdOut << "ld64: no output filename set." << std::endl;
+		kStdOut << "no output filename set." << std::endl;
 		return TOOLCHAINKIT_EXEC_ERROR;
 	}
 
 	// sanity check.
 	if (kObjectList.empty())
 	{
-		kStdOut << "ld64: no input files." << std::endl;
+		kStdOut << "no input files." << std::endl;
 		return TOOLCHAINKIT_EXEC_ERROR;
 	}
 	else
@@ -232,7 +233,7 @@ TOOLCHAINKIT_MODULE(DynamicLinker64PEF)
 			{
 				// if filesystem doesn't find file
 				//          -> throw error.
-				kStdOut << "ld64: no such file: " << obj << std::endl;
+				kStdOut << "no such file: " << obj << std::endl;
 				return TOOLCHAINKIT_EXEC_ERROR;
 			}
 		}
@@ -241,7 +242,7 @@ TOOLCHAINKIT_MODULE(DynamicLinker64PEF)
 	// PEF expects a valid target architecture when outputing a binary.
 	if (kArch == 0)
 	{
-		kStdOut << "ld64: no target architecture set, can't continue." << std::endl;
+		kStdOut << "no target architecture set, can't continue." << std::endl;
 		return TOOLCHAINKIT_EXEC_ERROR;
 	}
 
@@ -270,7 +271,7 @@ TOOLCHAINKIT_MODULE(DynamicLinker64PEF)
 	{
 		if (kVerbose)
 		{
-			kStdOut << "ld64: error: " << strerror(errno) << "\n";
+			kStdOut << "error: " << strerror(errno) << "\n";
 		}
 
 		return TOOLCHAINKIT_FILE_NOT_FOUND;
@@ -299,14 +300,14 @@ TOOLCHAINKIT_MODULE(DynamicLinker64PEF)
 			if (ae_header.fArch != kArch)
 			{
 				if (kVerbose)
-					kStdOut << "ld64: info: is this a FAT binary? : ";
+					kStdOut << "info: is this a FAT binary? : ";
 
 				if (!kFatBinaryEnable)
 				{
 					if (kVerbose)
 						kStdOut << "No.\n";
 
-					kStdOut << "ld64: error: object " << objectFile
+					kStdOut << "error: object " << objectFile
 							<< " is a different kind of architecture and output isn't "
 							   "treated as a FAT binary."
 							<< std::endl;
@@ -327,7 +328,7 @@ TOOLCHAINKIT_MODULE(DynamicLinker64PEF)
 			std::size_t cnt = ae_header.fCount;
 
 			if (kVerbose)
-				kStdOut << "ld64: object header found, record count: " << cnt << "\n";
+				kStdOut << "object header found, record count: " << cnt << "\n";
 
 			pef_container.Count = cnt;
 
@@ -390,10 +391,10 @@ TOOLCHAINKIT_MODULE(DynamicLinker64PEF)
 
 				if (kVerbose)
 				{
-					kStdOut << "ld64: Record: "
+					kStdOut << "Record: "
 							<< ae_records[ae_record_index].fName << " is marked.\n";
 
-					kStdOut << "ld64: Record offset: " << command_header.Offset << "\n";
+					kStdOut << "Record offset: " << command_header.Offset << "\n";
 				}
 
 				command_headers.emplace_back(command_header);
@@ -419,7 +420,7 @@ TOOLCHAINKIT_MODULE(DynamicLinker64PEF)
 			continue;
 		}
 
-		kStdOut << "ld64: Not an object container: " << objectFile << std::endl;
+		kStdOut << "Not an object container: " << objectFile << std::endl;
 		// don't continue, it is a fatal error.
 		return TOOLCHAINKIT_EXEC_ERROR;
 	}
@@ -430,7 +431,7 @@ TOOLCHAINKIT_MODULE(DynamicLinker64PEF)
 
 	if (kVerbose)
 	{
-		kStdOut << "ld64: Wrote container header.\n";
+		kStdOut << "Wrote container header.\n";
 	}
 
 	output_fc.seekp(std::streamsize(pef_container.HdrSz));
@@ -448,7 +449,7 @@ TOOLCHAINKIT_MODULE(DynamicLinker64PEF)
 			ToolchainKit::String(command_hdr.Name).find(kLdDynamicSym) == ToolchainKit::String::npos)
 		{
 			if (kVerbose)
-				kStdOut << "ld64: Found undefined symbol: " << command_hdr.Name << "\n";
+				kStdOut << "Found undefined symbol: " << command_hdr.Name << "\n";
 
 			if (auto it = std::find(not_found.begin(), not_found.end(),
 									ToolchainKit::String(command_hdr.Name));
@@ -505,7 +506,7 @@ TOOLCHAINKIT_MODULE(DynamicLinker64PEF)
 					not_found.erase(it);
 
 					if (kVerbose)
-						kStdOut << "ld64: found symbol: " << command_hdr.Name << "\n";
+						kStdOut << "found symbol: " << command_hdr.Name << "\n";
 
 					break;
 				}
@@ -522,10 +523,10 @@ TOOLCHAINKIT_MODULE(DynamicLinker64PEF)
 	{
 		if (kVerbose)
 			kStdOut
-				<< "ld64: undefined entrypoint: " << kPefStart << ", you may have forget to ld64 "
+				<< "undefined entrypoint: " << kPefStart << ", you may have forget to ld64 "
 																  "against your compiler's runtime library.\n";
 
-		kStdOut << "ld64: undefined entrypoint " << kPefStart
+		kStdOut << "undefined entrypoint " << kPefStart
 				<< " for executable: " << kOutput << "\n";
 	}
 
@@ -668,8 +669,8 @@ TOOLCHAINKIT_MODULE(DynamicLinker64PEF)
 
 		if (kVerbose)
 		{
-			kStdOut << "ld64: Command header name: " << name << "\n";
-			kStdOut << "ld64: Real address of command header content: " << command_headers[commandHeaderIndex].Offset << "\n";
+			kStdOut << "Command header name: " << name << "\n";
+			kStdOut << "Real address of command header content: " << command_headers[commandHeaderIndex].Offset << "\n";
 		}
 
 		output_fc << command_headers[commandHeaderIndex];
@@ -688,7 +689,7 @@ TOOLCHAINKIT_MODULE(DynamicLinker64PEF)
 			{
 				if (kVerbose)
 				{
-					kStdOut << "ld64: ignore :UndefinedSymbol: command header...\n";
+					kStdOut << "ignore :UndefinedSymbol: command header...\n";
 				}
 
 				// ignore :UndefinedSymbol: headers, they do not contain code.
@@ -707,7 +708,7 @@ TOOLCHAINKIT_MODULE(DynamicLinker64PEF)
 				}
 
 				if (kVerbose)
-					kStdOut << "ld64: found duplicate symbol: " << command_hdr.Name
+					kStdOut << "found duplicate symbol: " << command_hdr.Name
 							<< "\n";
 
 				kDuplicateSymbols = true;
@@ -719,7 +720,7 @@ TOOLCHAINKIT_MODULE(DynamicLinker64PEF)
 	{
 		for (auto& symbol : dupl_symbols)
 		{
-			kStdOut << "ld64: Multiple symbols of " << symbol << ".\n";
+			kStdOut << "Multiple symbols of " << symbol << ".\n";
 		}
 
 		return TOOLCHAINKIT_EXEC_ERROR;
@@ -733,7 +734,7 @@ TOOLCHAINKIT_MODULE(DynamicLinker64PEF)
 	}
 
 	if (kVerbose)
-		kStdOut << "ld64: wrote contents of: " << kOutput << "\n";
+		kStdOut << "wrote contents of: " << kOutput << "\n";
 
 	// step 3: check if we have those symbols
 
@@ -753,7 +754,7 @@ TOOLCHAINKIT_MODULE(DynamicLinker64PEF)
 	{
 		for (auto& unreferenced_symbol : unreferenced_symbols)
 		{
-			kStdOut << "ld64: undefined symbol " << unreferenced_symbol << "\n";
+			kStdOut << "undefined symbol " << unreferenced_symbol << "\n";
 		}
 	}
 
@@ -761,7 +762,7 @@ TOOLCHAINKIT_MODULE(DynamicLinker64PEF)
 		!unreferenced_symbols.empty())
 	{
 		if (kVerbose)
-			kStdOut << "ld64: file: " << kOutput
+			kStdOut << "file: " << kOutput
 					<< ", is corrupt, removing file...\n";
 
 		return TOOLCHAINKIT_EXEC_ERROR;

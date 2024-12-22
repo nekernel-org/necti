@@ -12,11 +12,11 @@
 #include <cstdio>
 #define kPrintF printf
 
-#define kExitOK	  (EXIT_SUCCESS)
+#define kExitOK	(EXIT_SUCCESS)
 #define kExitNO (EXIT_FAILURE)
 
 #define kSplashCxx() \
-	kPrintF(kWhite "%s\n", "ELMH C++ Compiler Driver, (c) 2024 Theater Quality Incorporated, all rights reserved.")
+	kPrintF(kWhite "%s\n", "TQ Media C++ Compiler Driver, (c) 2024 Theater Quality Incorporated, all rights reserved.")
 
 // extern_segment, @autodelete { ... }, fn foo() -> auto { ... }
 
