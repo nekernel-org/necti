@@ -11,7 +11,7 @@
 
 #include <ToolchainKit/Parser.h>
 #include <ToolchainKit/NFC/ErrorID.h>
-#include <Algorithms>
+#include <algorithm>
 #include <filesystem>
 #include <fstream>
 #include <iostream>

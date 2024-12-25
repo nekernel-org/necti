@@ -115,7 +115,7 @@ namespace Details
 	/// @brief prints an error into stdout.
 	/// @param reason the reason of the error.
 	/// @param file where does it originate from?
-	void print_error_asm(std::string reason, std::string file) noexcept;
+	void print_error(std::string reason, std::string file) noexcept;
 
 	struct CompilerType final
 	{
@@ -277,7 +277,7 @@ bool CompilerFrontendCPlusPlus::Compile(const std::string text,
 		{
 			if (isalnum(text[i]))
 			{
-				Details::print_error_asm("syntax error: " + text, file);
+				Details::print_error("syntax error: " + text, file);
 				return false;
 			}
 		}
@@ -378,11 +378,6 @@ bool CompilerFrontendCPlusPlus::Compile(const std::string text,
 			break;
 		}
 		case ToolchainKit::KeywordKind::eKeywordKindFunctionStart: {
-			if (text.ends_with(";"))
-			{
-				break;
-			}
-
 			for (auto& ch : text)
 			{
 				if (isdigit(ch))
@@ -394,20 +389,55 @@ bool CompilerFrontendCPlusPlus::Compile(const std::string text,
 			goto accept;
 
 		dont_accept:
-			return true;
+			return false;
 
 		accept:
 			std::string fnName = text;
+			size_t indexFnName = 0;
+
+			// this one is for the type.
+			for (auto& ch : text)
+			{
+				++indexFnName;
+
+				if (ch == '\t')
+					break;
+
+				if (ch == ' ')
+					break;
+			}
+
+			fnName = text.substr(indexFnName);
+
+			if (text.ends_with(";"))
+				goto tk_write_assembly;
+			else if (text.size() <= indexFnName)
+				Details::print_error("Invalid function name: " + fnName, file);
+
+			indexFnName = 0;
 
 			for (auto& ch : fnName)
 			{
-				if (ch == ' ')
-					ch = '_';
+				if (ch == ' ' ||
+					ch == '\t')
+				{
+					if (fnName[indexFnName - 1] != ')')
+						Details::print_error("Invalid function name: " + fnName, file);
+				
+					if ((indexFnName + 1) != fnName.size())
+						Details::print_error("Extra characters after function name: " + fnName, file);
+				}
+
+				++indexFnName;
 			}
 
 			syntax_tree.fUserValue = "public_segment .code64 __TOOLCHAINKIT_" + fnName + "\n";
-
 			++kFunctionEmbedLevel;
+
+			break;
+
+tk_write_assembly:
+			syntax_tree.fUserValue = "jmp __TOOLCHAINKIT_" + fnName + "\n";
 		}
 		case ToolchainKit::KeywordKind::eKeywordKindFunctionEnd: {
 			if (text.ends_with(";"))
@@ -580,7 +610,7 @@ bool CompilerFrontendCPlusPlus::Compile(const std::string text,
 							goto done;
 					}
 
-					Details::print_error_asm("Variable not declared: " + varName, file);
+					Details::print_error("Variable not declared: " + varName, file);
 					return false;
 				}
 
@@ -696,7 +726,7 @@ bool CompilerFrontendCPlusPlus::Compile(const std::string text,
 
 			if (syntax_tree.fUserValue.empty())
 			{
-				Details::print_error_asm("Variable not declared: " + varErrCpy, file);
+				Details::print_error("Variable not declared: " + varErrCpy, file);
 			}
 
 			break;
@@ -727,7 +757,7 @@ bool CompilerFrontendCPlusPlus::Compile(const std::string text,
 
 						if (syntax_tree.fUserValue.empty())
 						{
-							Details::print_error_asm("Variable not declared: " + subText, file);
+							Details::print_error("Variable not declared: " + subText, file);
 						}
 					}
 					else
@@ -749,7 +779,9 @@ bool CompilerFrontendCPlusPlus::Compile(const std::string text,
 			}
 		}
 		default:
+		{
 			break;
+		}
 		}
 
 		syntax_tree.fUserData = keyword.first;
@@ -1015,7 +1047,7 @@ TOOLCHAINKIT_MODULE(CompilerCPlusPlusX8664)
 			std::string err = "Unknown option: ";
 			err += argv[index];
 
-			Details::print_error_asm(err, "c++-drv");
+			Details::print_error(err, "c++-drv");
 
 			continue;
 		}
@@ -1040,13 +1072,13 @@ TOOLCHAINKIT_MODULE(CompilerCPlusPlusX8664)
 		{
 			if (kState.fVerbose)
 			{
-				Details::print_error_asm(argv_i + " is not a valid C++ source.\n", "c++-drv");
+				Details::print_error(argv_i + " is not a valid C++ source.\n", "c++-drv");
 			}
 
 			return 1;
 		}
 
-		std::cout << "CPlusPlusCompilerAMD64: building: " << argv[index] << std::endl;
+		std::cout << "CPlusPlusCompilerAMD64: Building: " << argv[index] << std::endl;
 
 		if (kFactory.Compile(argv_i, kMachine) != kExitOK)
 			return 1;

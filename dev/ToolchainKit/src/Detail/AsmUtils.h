@@ -13,8 +13,8 @@ using namespace ToolchainKit;
 
 namespace Details
 {
-	extern void print_error_asm(std::string reason, std::string file) noexcept;
-	extern void print_warning_asm(std::string reason, std::string file) noexcept;
+	extern void print_error(std::string reason, std::string file) noexcept;
+	extern void print_warning(std::string reason, std::string file) noexcept;
 } // namespace Details
 
 /// @brief Get Number from lineBuffer.
@@ -37,7 +37,7 @@ static NumberCast32 GetNumber32(std::string lineBuffer, std::string numberKey)
 		{
 			if (errno != 0)
 			{
-				Details::print_error_asm("invalid hex number: " + lineBuffer, "ToolchainKit");
+				Details::print_error("invalid hex number: " + lineBuffer, "ToolchainKit");
 				throw std::runtime_error("invalid_hex");
 			}
 		}
@@ -57,7 +57,7 @@ static NumberCast32 GetNumber32(std::string lineBuffer, std::string numberKey)
 		{
 			if (errno != 0)
 			{
-				Details::print_error_asm("invalid binary number:" + lineBuffer, "ToolchainKit");
+				Details::print_error("invalid binary number:" + lineBuffer, "ToolchainKit");
 				throw std::runtime_error("invalid_bin");
 			}
 		}
@@ -77,7 +77,7 @@ static NumberCast32 GetNumber32(std::string lineBuffer, std::string numberKey)
 		{
 			if (errno != 0)
 			{
-				Details::print_error_asm("invalid octal number: " + lineBuffer, "ToolchainKit");
+				Details::print_error("invalid octal number: " + lineBuffer, "ToolchainKit");
 				throw std::runtime_error("invalid_octal");
 			}
 		}
@@ -97,7 +97,7 @@ static NumberCast32 GetNumber32(std::string lineBuffer, std::string numberKey)
 		{
 			if (errno != 0)
 			{
-				Details::print_error_asm("invalid hex number: " + lineBuffer, "ToolchainKit");
+				Details::print_error("invalid hex number: " + lineBuffer, "ToolchainKit");
 				throw std::runtime_error("invalid_hex");
 			}
 		}

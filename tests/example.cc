@@ -1,11 +1,6 @@
-void foo_bar()
-{
-	printf("%s", "Hello");
-	return;
-}
+#define AppMain int __ImageStart
 
-int __autorelease__ main() 
+AppMain() 
 {
-	foo();
 	return 0;
 }

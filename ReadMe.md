@@ -1,8 +1,8 @@
-# ToolchainKit C/C++
+# TQ C/C++
 
 ## Brief:
 
-TQ's C++ Optimizing Compiler.
+A dialect of C++ for ZkaOS.
 
 ## Installing:
 

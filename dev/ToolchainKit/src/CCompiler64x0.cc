@@ -99,7 +99,7 @@ namespace Details
 	/// @brief prints an error into stdout.
 	/// @param reason the reason of the error.
 	/// @param file where does it originate from?
-	void print_error_asm(std::string reason, std::string file) noexcept;
+	void print_error(std::string reason, std::string file) noexcept;
 
 	struct CompilerType final
 	{
@@ -402,7 +402,7 @@ bool CompilerFrontend64x0::Compile(const std::string text, const std::string fil
 
 			if (textBuffer[text_index] == '=' && kInStruct)
 			{
-				Details::print_error_asm("assignement of value in struct " + textBuffer,
+				Details::print_error("assignement of value in struct " + textBuffer,
 										file);
 				continue;
 			}
@@ -1360,7 +1360,7 @@ public:
 			}
 			else
 			{
-				Details::print_error_asm(err, src.data());
+				Details::print_error(err, src.data());
 			}
 		}
 
@@ -1567,7 +1567,7 @@ TOOLCHAINKIT_MODULE(NewOSCompilerCLang64x0)
 			std::string err = "Unknown command: ";
 			err += argv[index];
 
-			Details::print_error_asm(err, "cc");
+			Details::print_error(err, "cc");
 
 			continue;
 		}
@@ -1580,7 +1580,7 @@ TOOLCHAINKIT_MODULE(NewOSCompilerCLang64x0)
 		{
 			if (kState.fVerbose)
 			{
-				Details::print_error_asm(srcFile + " is not a valid C source.\n", "cc");
+				Details::print_error(srcFile + " is not a valid C source.\n", "cc");
 			}
 
 			return 1;
