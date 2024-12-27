@@ -7,8 +7,8 @@
 /// @file Linker.cxx
 /// @brief ZKA C++ frontend for ZKA OS.
 
-#include <ToolchainKit/Defines.h>
-#include <ToolchainKit/Version.h>
+#include <LibCompiler/Defines.h>
+#include <LibCompiler/Version.h>
 #include <iostream>
 #include <cstring>
 #include <string>
@@ -38,7 +38,7 @@ int main(int argc, char const* argv[])
 			std::printf("asm.exe: Frontend Assembler (64x0, power64, x64).\n");
 			std::printf("asm.exe: Version: %s, Release: %s.\n", kDistVersion, kDistRelease);
 			std::printf("asm.exe: Designed by Theater Quality Incorporated, Copyright (C) 2024 Theater Quality Inc, all rights reserved.\n");
-			std::printf("libToolchainKit.dylib: Designed by Theater Quality Incorporated, Copyright (C) 2024 Theater Quality Inc, all rights reserved.\n");
+			std::printf("libCxxCompiler.dylib: Designed by Theater Quality Incorporated, Copyright (C) 2024 Theater Quality Inc, all rights reserved.\n");
 
 			return 0;
 		}

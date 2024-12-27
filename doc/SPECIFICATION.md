@@ -1,4 +1,4 @@
-# Specification of ToolchainKit
+# Specification of LibCompiler
 
 ==================================
 ## Brief:
@@ -9,7 +9,7 @@
 - SDK Language: C++
 
 ==================================
-## ToolchainKit:
+## LibCompiler:
 ==================================
 
 - Shall support compilation and linking.

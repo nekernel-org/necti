@@ -8,6 +8,10 @@ local.properties
 .loadpath
 .recommenders
 
+tools/asm
+tools/ld64
+tools/tqcc
+
 *.pp
 *.masm
 *.creator.user

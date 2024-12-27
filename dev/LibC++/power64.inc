@@ -1,5 +1,5 @@
 # Path: LibC++/power.inc
-# Language: ToolchainKit POWER Assembly support for GNU.
+# Language: LibCompiler POWER Assembly support for GNU.
 # Build Date: 2024-6-4
 
 %ifdef __TOOLCHAINKIT__
