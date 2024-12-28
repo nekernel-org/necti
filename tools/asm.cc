@@ -1,6 +1,6 @@
 /* -------------------------------------------
 
-	Copyright (C) 2024 Theater Quality Inc, all rights reserved
+	Copyright (C) 2024 Theater Quality Corp, all rights reserved
 
 ------------------------------------------- */
 
@@ -37,8 +37,8 @@ int main(int argc, char const* argv[])
 		{
 			std::printf("asm.exe: Frontend Assembler (64x0, power64, x64).\n");
 			std::printf("asm.exe: Version: %s, Release: %s.\n", kDistVersion, kDistRelease);
-			std::printf("asm.exe: Designed by Theater Quality Incorporated, Copyright (C) 2024 Theater Quality Inc, all rights reserved.\n");
-			std::printf("libCxxCompiler.dylib: Designed by Theater Quality Incorporated, Copyright (C) 2024 Theater Quality Inc, all rights reserved.\n");
+			std::printf("asm.exe: Designed by Theater Quality Corporporated, Copyright (C) 2024 Theater Quality Corp, all rights reserved.\n");
+			std::printf("libCxxCompiler.dylib: Designed by Theater Quality Corporporated, Copyright (C) 2024 Theater Quality Corp, all rights reserved.\n");
 
 			return 0;
 		}

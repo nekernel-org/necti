@@ -2,7 +2,7 @@
  *	========================================================
  *
  *	c++-drv
- * 	Copyright (C) 2024 Theater Quality Inc, all rights reserved.
+ * 	Copyright (C) 2024 Theater Quality Corp, all rights reserved.
  *
  * 	========================================================
  */
@@ -16,7 +16,7 @@
 #define kExitNO (EXIT_FAILURE)
 
 #define kSplashCxx() \
-	kPrintF(kWhite "%s\n", "TQ Media C++ Compiler Driver, (c) 2024 Theater Quality Incorporated, all rights reserved.")
+	kPrintF(kWhite "%s\n", "TQ Media C++ Compiler Driver, (c) 2024 Theater Quality Corporporated, all rights reserved.")
 
 // extern_segment, @autodelete { ... }, fn foo() -> auto { ... }
 
@@ -26,7 +26,7 @@
 
 /* ZKA C++ Compiler */
 /* This is part of the LibCompiler. */
-/* (c) Theater Quality Incorporated */
+/* (c) Theater Quality Corporporated */
 
 /// @author EL Mahrouss Amlal (amlel)
 /// @file CPlusPlusCompilerAMD64.cxx
