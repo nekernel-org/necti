@@ -24,7 +24,7 @@
 
 /* C driver */
 /* This is part of the LibCompiler. */
-/* (c) Theater Quality Corporporated */
+/* (c) Theater Quality Corp. */
 
 /// @author EL Mahrouss Amlal (amlel)
 /// @file 64x0-cc.cxx
@@ -1482,7 +1482,7 @@ public:
 
 #define kPrintF printf
 #define kSplashCxx() \
-	kPrintF(kWhite "ZKA C Driver, %s, (c) Theater Quality Corporporated\n", kDistVersion)
+	kPrintF(kWhite "ZKA C Driver, %s, (c) Theater Quality Corp.\n", kDistVersion)
 
 static void cc_print_help()
 {

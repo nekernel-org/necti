@@ -25,8 +25,8 @@ int main(int argc, char const* argv[])
 		{
 			std::printf("cl.exe: Frontend C++ Compiler.\n");
 			std::printf("cl.exe: Version: %s, Release: %s.\n", kDistVersion, kDistRelease);
-			std::printf("cl.exe: Designed by Theater Quality Corporporated, Copyright (C) 2024 Theater Quality Corp, all rights reserved.\n");
-			std::printf("libCxxCompiler.dylib: Designed by Theater Quality Corporporated, Copyright (C) 2024 Theater Quality Corp, all rights reserved.\n");
+			std::printf("cl.exe: Designed by Theater Quality Corp., Copyright (C) 2024 Theater Quality Corp, all rights reserved.\n");
+			std::printf("libCxxCompiler.dylib: Designed by Theater Quality Corp., Copyright (C) 2024 Theater Quality Corp, all rights reserved.\n");
 
 			return 0;
 		}

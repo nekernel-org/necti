@@ -971,13 +971,13 @@ TOOLCHAINKIT_MODULE(CPlusPlusPreprocessorMain)
 			{
 				if (strcmp(argv[index], "--bpp:ver") == 0)
 				{
-					printf("%s\n", "bpp v1.11, (c) Theater Quality Corporporated");
+					printf("%s\n", "bpp v1.11, (c) Theater Quality Corp.");
 					return 0;
 				}
 
 				if (strcmp(argv[index], "--bpp:?") == 0)
 				{
-					printf("%s\n", "ZKA Preprocessor Driver v1.11, (c) Theater Quality Corporporated");
+					printf("%s\n", "ZKA Preprocessor Driver v1.11, (c) Theater Quality Corp.");
 					printf("%s\n", "--bpp:working-dir <path>: set directory to working path.");
 					printf("%s\n", "--bpp:include-dir <path>: add directory to include path.");
 					printf("%s\n", "--bpp:def <name> <value>: define a macro.");

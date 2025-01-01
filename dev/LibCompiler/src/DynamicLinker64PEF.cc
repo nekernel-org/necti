@@ -8,7 +8,7 @@
 ------------------------------------------- */
 
 /// @author EL Mahrouss Amlal (amlel)
-/// @brief TQ Media 64-bit PEF Linker.
+/// @brief TQ 64-bit PEF Linker.
 /// Last Rev: Sat Feb 24 CET 2024
 /// @note Do not look up for anything with .code64/.data64/.zero64!
 /// It will be loaded when the program loader will start the image.
@@ -32,7 +32,7 @@
 #include <LibCompiler/NFC/AE.h>
 #include <cstdint>
 
-#define kLinkerVersionStr "TQ Media 64-Bit Linker %s, (c) Theater Quality Corporporated 2024, all rights reserved.\n"
+#define kLinkerVersionStr "TQ 64-Bit Linker %s, (c) Theater Quality Corp. 2024, all rights reserved.\n"
 
 #define MemoryCopy(DST, SRC, SZ) memcpy(DST, SRC, SZ)
 #define StringCompare(DST, SRC) strcmp(DST, SRC)
@@ -253,7 +253,7 @@ TOOLCHAINKIT_MODULE(DynamicLinker64PEF)
 	pef_container.Count	   = 0UL;
 	pef_container.Kind	   = is_executable ? LibCompiler::kPefKindExec : LibCompiler::kPefKindDylib;
 	pef_container.SubCpu   = kSubArch;
-	pef_container.Linker   = kLinkerId; // Theater Quality Corporporated Linker
+	pef_container.Linker   = kLinkerId; // Theater Quality Corp. Linker
 	pef_container.Abi	   = kAbi;		// Multi-Processor UX ABI
 	pef_container.Magic[0] = kPefMagic[kFatBinaryEnable ? 2 : 0];
 	pef_container.Magic[1] = kPefMagic[1];

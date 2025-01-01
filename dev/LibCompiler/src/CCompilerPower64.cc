@@ -1502,7 +1502,7 @@ public:
 
 #define kPrintF printf
 #define kSplashCxx() \
-	kPrintF(kWhite "cc, %s, (c) Theater Quality Corporporated\n", kDistVersion)
+	kPrintF(kWhite "cc, %s, (c) Theater Quality Corp.\n", kDistVersion)
 
 static void cc_print_help()
 {

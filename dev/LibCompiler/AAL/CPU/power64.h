@@ -1,7 +1,7 @@
 /* -------------------------------------------
 
 	Some modifications are copyrighted under:
-	Theater Quality Corporporated
+	Theater Quality Corp.
 
 	Original author:
 	Apple Inc

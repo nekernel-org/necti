@@ -16,7 +16,7 @@
 #define kExitNO (EXIT_FAILURE)
 
 #define kSplashCxx() \
-	kPrintF(kWhite "%s\n", "TQ Media C++ Compiler Driver, (c) 2024 Theater Quality Corporporated, all rights reserved.")
+	kPrintF(kWhite "%s\n", "TQ C++ Compiler Driver, (c) 2024 Theater Quality Corp., all rights reserved.")
 
 // extern_segment, @autodelete { ... }, fn foo() -> auto { ... }
 
@@ -26,7 +26,7 @@
 
 /* ZKA C++ Compiler */
 /* This is part of the LibCompiler. */
-/* (c) Theater Quality Corporporated */
+/* (c) Theater Quality Corp. */
 
 /// @author EL Mahrouss Amlal (amlel)
 /// @file CPlusPlusCompilerAMD64.cxx
