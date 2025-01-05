@@ -23,9 +23,9 @@ int main(int argc, char const* argv[])
 	{
 		if (strstr(argv[index_arg], "--cl:h"))
 		{
-			std::printf("cl.exe: Frontend C++ Compiler.\n");
-			std::printf("cl.exe: Version: %s, Release: %s.\n", kDistVersion, kDistRelease);
-			std::printf("cl.exe: Designed by Theater Quality Corp., Copyright (C) 2024 Theater Quality Corp, all rights reserved.\n");
+			std::printf("tqc++: Frontend C++ Compiler.\n");
+			std::printf("tqc++: Version: %s, Release: %s.\n", kDistVersion, kDistRelease);
+			std::printf("tqc++: Designed by Theater Quality Corp., Copyright (C) 2024 Theater Quality Corp, all rights reserved.\n");
 			std::printf("libCxxCompiler.dylib: Designed by Theater Quality Corp., Copyright (C) 2024 Theater Quality Corp, all rights reserved.\n");
 
 			return 0;
@@ -34,7 +34,7 @@ int main(int argc, char const* argv[])
 
 	if (auto code = CPlusPlusPreprocessorMain(argc, argv); code)
 	{
-		std::printf("cl.exe: frontend exited with code %i.\n", code);
+		std::printf("tqc++: frontend exited with code %i.\n", code);
 		return 1;
 	}
 	else
@@ -59,6 +59,10 @@ int main(int argc, char const* argv[])
 				arg += ".pp";
 
 				args_list_cxx.push_back(arg);
+			} else if (strstr(argv[index_arg], ".c"))
+			{
+				std::printf("tqcc: error: C is not ready yet.\n");
+				return EXIT_FAILURE;
 			}
 		}
 
@@ -68,7 +72,7 @@ int main(int argc, char const* argv[])
 
 			if (auto code = CompilerCPlusPlusX8664(2, arr_cli); code)
 			{
-				std::printf("cl.exe: assembler exited with code %i.", code);
+				std::printf("tqc++: assembler exited with code %i.", code);
 			}
 		}
 
@@ -78,7 +82,7 @@ int main(int argc, char const* argv[])
 
 			if (auto code = AssemblerAMD64(2, arr_cli); code)
 			{
-				std::printf("cl.exe: assembler exited with code %i.", code);
+				std::printf("tqc++: assembler exited with code %i.", code);
 			}
 		}
 	}

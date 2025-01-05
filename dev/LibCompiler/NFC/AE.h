@@ -71,7 +71,7 @@ inline std::ofstream& operator<<(std::ofstream& fp, LibCompiler::AEHeader& conta
 	return fp;
 }
 
-inline std::ofstream& operator<<(std::ofstream&				   fp,
+inline std::ofstream& operator<<(std::ofstream&				  fp,
 								 LibCompiler::AERecordHeader& container)
 {
 	fp.write((char*)&container, sizeof(LibCompiler::AERecordHeader));
@@ -85,7 +85,7 @@ inline std::ifstream& operator>>(std::ifstream& fp, LibCompiler::AEHeader& conta
 	return fp;
 }
 
-inline std::ifstream& operator>>(std::ifstream&				   fp,
+inline std::ifstream& operator>>(std::ifstream&				  fp,
 								 LibCompiler::AERecordHeader& container)
 {
 	fp.read((char*)&container, sizeof(LibCompiler::AERecordHeader));

@@ -32,7 +32,7 @@
 #include <LibCompiler/NFC/AE.h>
 #include <cstdint>
 
-#define kLinkerVersionStr "TQ 64-Bit Linker %s, (c) Theater Quality Corp. 2024, all rights reserved.\n"
+#define kLinkerVersionStr "TQ 64-Bit Linker (Preferred Executable) %s, (c) Theater Quality Corp. 2024, all rights reserved.\n"
 
 #define MemoryCopy(DST, SRC, SZ) memcpy(DST, SRC, SZ)
 #define StringCompare(DST, SRC) strcmp(DST, SRC)

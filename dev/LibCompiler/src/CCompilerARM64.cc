@@ -1,15 +1,19 @@
 /*
  *	========================================================
  *
- *	CCompilerPower64
+ *	cc
  * 	Copyright (C) 2024 Theater Quality Corp, all rights reserved.
  *
  * 	========================================================
  */
 
-#include <LibCompiler/AAL/CPU/power64.h>
+/// BUGS: 0
+/// TODO: none
+
+#include <LibCompiler/AAL/CPU/arm64.h>
 #include <LibCompiler/Parser.h>
 #include <LibCompiler/UUID.h>
+#include <cstdio>
 #include <fstream>
 #include <iostream>
 #include <memory>
@@ -17,19 +21,24 @@
 #include <string>
 #include <utility>
 #include <vector>
-#include <cstdio>
 
-#define kExitOK 0
+/* C driver */
+/* This is part of the LibCompiler. */
+/* (c) Theater Quality Corp. */
 
 /// @author EL Mahrouss Amlal (amlel)
-/// @file cc.cxx
-/// @brief POWER64 C Compiler.
+/// @file ARM64-cc.cxx
+/// @brief ARM64 C Compiler.
+
+/// TODO: support structures, else if, else, . and  ->
 
 /////////////////////
 
-/// ANSI ESCAPE CODES
+// ANSI ESCAPE CODES
 
 /////////////////////
+
+#define kExitOK (0)
 
 #define kBlank "\e[0;30m"
 #define kRed   "\e[0;31m"
@@ -37,13 +46,13 @@
 
 /////////////////////////////////////
 
-/// INTERNAL STRUCTURES OF THE C COMPILER
+// INTERNAL STUFF OF THE C COMPILER
 
 /////////////////////////////////////
 
 namespace Details
 {
-	// \brief name to register struct.
+	// \brief Register map structure, used to keep track of each variable's registers.
 	struct CompilerRegisterMap final
 	{
 		std::string fName;
@@ -54,16 +63,16 @@ namespace Details
 	// \author amlel
 	struct CompilerStructMap final
 	{
-		/// 'struct::my_foo'
+		// 'my_foo'
 		std::string fName;
 
-		/// if instance: stores a valid register.
+		// if instance: stores a valid register.
 		std::string fReg;
 
-		/// offset count
+		// offset count
 		std::size_t fOffsetsCnt;
 
-		/// offset array.
+		// offset array.
 		std::vector<std::pair<Int32, std::string>> fOffsets;
 	};
 
@@ -111,7 +120,7 @@ static int kMachine = 0;
 /////////////////////////////////////////
 
 static size_t	   kRegisterCnt		= kAsmRegisterLimit;
-static size_t	   kStartUsable		= 2;
+static size_t	   kStartUsable		= 8;
 static size_t	   kUsableLimit		= 15;
 static size_t	   kRegisterCounter = kStartUsable;
 static std::string kRegisterPrefix	= kAsmRegisterPrefix;
@@ -132,24 +141,24 @@ static bool						kIfFound	 = false;
 static size_t					kBracesCount = 0UL;
 
 /* @brief C compiler backend for C */
-class CompilerFrontendPower64 final : public LibCompiler::ICompilerFrontend
+class CompilerFrontendARM64 final : public LibCompiler::ICompilerFrontend
 {
 public:
-	explicit CompilerFrontendPower64()	= default;
-	~CompilerFrontendPower64() override = default;
+	explicit CompilerFrontendARM64()	 = default;
+	~CompilerFrontendARM64() override = default;
 
-	TOOLCHAINKIT_COPY_DEFAULT(CompilerFrontendPower64);
+	TOOLCHAINKIT_COPY_DEFAULT(CompilerFrontendARM64);
 
 	std::string Check(const char* text, const char* file);
 	bool		Compile(const std::string text, const std::string file) override;
 
 	const char* Language() override
 	{
-		return "POWER C";
+		return "64k C";
 	}
 };
 
-static CompilerFrontendPower64*			 kCompilerFrontend = nullptr;
+static CompilerFrontendARM64*			 kCompilerFrontend = nullptr;
 static std::vector<Details::CompilerType> kCompilerVariables;
 static std::vector<std::string>			 kCompilerFunctions;
 static std::vector<Details::CompilerType> kCompilerTypes;
@@ -191,7 +200,7 @@ namespace Details
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
-bool CompilerFrontendPower64::Compile(const std::string text, const std::string file)
+bool CompilerFrontendARM64::Compile(const std::string text, const std::string file)
 {
 	std::string textBuffer = text;
 
@@ -328,35 +337,16 @@ bool CompilerFrontendPower64::Compile(const std::string text, const std::string 
 						value += tmp;
 					}
 
-					syntaxLeaf.fUserValue = "\tmr r31, ";
+					syntaxLeaf.fUserValue = "\tldw r19, ";
 
 					// make it pretty.
-					while (value.find('\t') != std::string::npos)
+					if (value.find('\t') != std::string::npos)
 						value.erase(value.find('\t'), 1);
 
-					while (value.find(' ') != std::string::npos)
-						value.erase(value.find(' '), 1);
-
-					while (value.find("extern_segment") != std::string::npos)
-						value.erase(value.find("extern_segment"), strlen("extern_segment"));
-
-					bool found = false;
-
-					for (auto& reg : kState.kStackFrame)
-					{
-						if (value.find(reg.fName) != std::string::npos)
-						{
-							found = true;
-							syntaxLeaf.fUserValue += reg.fReg;
-							break;
-						}
-					}
-
-					if (!found)
-						syntaxLeaf.fUserValue += "r0";
+					syntaxLeaf.fUserValue += value + "\n";
 				}
 
-				syntaxLeaf.fUserValue += "\n\tblr";
+				syntaxLeaf.fUserValue += "\tjlr";
 
 				kState.fSyntaxTree->fLeafList.push_back(syntaxLeaf);
 
@@ -383,13 +373,12 @@ bool CompilerFrontendPower64::Compile(const std::string text, const std::string 
 			kIfFunction = "__TOOLCHAINKIT_IF_PROC_";
 			kIfFunction += std::to_string(time_off._Raw);
 
-			syntaxLeaf.fUserValue =
-				"\tcmpw "
-				"r10, r11";
-
-			syntaxLeaf.fUserValue += "\n\tbeq extern_segment " + kIfFunction +
-									 " \ndword public_segment .code64 " + kIfFunction + "\n";
-
+			syntaxLeaf.fUserValue = "\tlda r12, extern_segment ";
+			syntaxLeaf.fUserValue +=
+				kIfFunction +
+				"\n\t#r12 = Code to jump on, r11 right cond, r10 left cond.\n\tbeq "
+				"r10, r11, r12\ndword public_segment .code64 " +
+				kIfFunction + "\n";
 			kState.fSyntaxTree->fLeafList.push_back(syntaxLeaf);
 
 			kIfFound = true;
@@ -413,8 +402,8 @@ bool CompilerFrontendPower64::Compile(const std::string text, const std::string 
 
 			if (textBuffer[text_index] == '=' && kInStruct)
 			{
-				Details::print_error(
-					"assignement of value inside a struct " + textBuffer, file);
+				Details::print_error("assignement of value in struct " + textBuffer,
+										file);
 				continue;
 			}
 
@@ -468,13 +457,13 @@ bool CompilerFrontendPower64::Compile(const std::string text, const std::string 
 				if (textBuffer.find("*") != std::string::npos)
 				{
 					if (textBuffer.find("=") > textBuffer.find("*"))
-						substr += "\tli ";
+						substr += "\tlda ";
 					else
-						substr += "\tli ";
+						substr += "\tldw ";
 				}
 				else
 				{
-					substr += "\tli ";
+					substr += "\tldw ";
 				}
 			}
 			else if (textBuffer.find('=') != std::string::npos && !kInBraces)
@@ -580,36 +569,25 @@ bool CompilerFrontendPower64::Compile(const std::string text, const std::string 
 								 return type.fName.find(substr) != std::string::npos;
 							 });
 
-			kCompilerVariables.push_back({.fName = substr});
-
-			if (textBuffer[text_index] == ';')
-				break;
+			if (kRegisterCounter == 5 || kRegisterCounter == 6)
+				++kRegisterCounter;
 
 			std::string reg = kAsmRegisterPrefix;
-
-			++kRegisterCounter;
 			reg += std::to_string(kRegisterCounter);
 
-			auto newSubstr = substr.substr(substr.find(" "));
-
-			std::string symbol;
-
-			for (size_t start = 0; start < newSubstr.size(); ++start)
+			if (var_to_find == kCompilerVariables.cend())
 			{
-				if (newSubstr[start] == ',')
-					break;
+				++kRegisterCounter;
 
-				if (newSubstr[start] == ' ')
-					continue;
-
-				symbol += (newSubstr[start]);
+				kState.kStackFrame.push_back({.fName = substr, .fReg = reg});
+				kCompilerVariables.push_back({.fName = substr});
 			}
 
-			kState.kStackFrame.push_back({.fName = symbol, .fReg = reg});
-
-			syntaxLeaf.fUserValue +=
-				"\n\tli " + reg + substr.substr(substr.find(','));
+			syntaxLeaf.fUserValue += substr;
 			kState.fSyntaxTree->fLeafList.push_back(syntaxLeaf);
+
+			if (textBuffer[text_index] == '=')
+				break;
 		}
 
 		// function handler.
@@ -667,7 +645,7 @@ bool CompilerFrontendPower64::Compile(const std::string text, const std::string 
 					}
 
 					args += args_buffer;
-					args += "\n\tli r31, ";
+					args += "\n\tlda r19, ";
 				}
 			}
 
@@ -694,8 +672,7 @@ bool CompilerFrontendPower64::Compile(const std::string text, const std::string 
 			{
 				syntaxLeaf.fUserValue = args;
 				syntaxLeaf.fUserValue += substr;
-
-				syntaxLeaf.fUserValue += "\n\tblr\n";
+				syntaxLeaf.fUserValue += "\n\tjrl\n";
 
 				kState.fSyntaxTree->fLeafList.push_back(syntaxLeaf);
 
@@ -728,7 +705,7 @@ bool CompilerFrontendPower64::Compile(const std::string text, const std::string 
 					textBuffer.erase(_text_i, 1);
 			}
 
-			syntaxLeaf.fUserValue += "dec ";
+			syntaxLeaf.fUserValue += "sub ";
 			syntaxLeaf.fUserValue += textBuffer;
 
 			kState.fSyntaxTree->fLeafList.push_back(syntaxLeaf);
@@ -769,7 +746,7 @@ bool CompilerFrontendPower64::Compile(const std::string text, const std::string 
 static bool		   kShouldHaveBraces = false;
 static std::string kFnName;
 
-std::string CompilerFrontendPower64::Check(const char* text, const char* file)
+std::string CompilerFrontendARM64::Check(const char* text, const char* file)
 {
 	std::string err_str;
 	std::string ln = text;
@@ -1317,22 +1294,22 @@ skip_braces_check:
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
-class AssemblyMountpointCLang final ASSEMBLY_INTERFACE
+class AssemblyCCInterface final ASSEMBLY_INTERFACE
 {
 public:
-	explicit AssemblyMountpointCLang()	= default;
-	~AssemblyMountpointCLang() override = default;
+	explicit AssemblyCCInterface()	= default;
+	~AssemblyCCInterface() override = default;
 
-	TOOLCHAINKIT_COPY_DEFAULT(AssemblyMountpointCLang);
+	TOOLCHAINKIT_COPY_DEFAULT(AssemblyCCInterface);
 
 	[[maybe_unused]] static Int32 Arch() noexcept
 	{
-		return LibCompiler::AssemblyFactory::kArchPowerPC;
+		return LibCompiler::AssemblyFactory::kArchARM64;
 	}
 
 	Int32 CompileToFormat(std::string& src, Int32 arch) override
 	{
-		if (arch != AssemblyMountpointCLang::Arch())
+		if (arch != AssemblyCCInterface::Arch())
 			return 1;
 
 		if (kCompilerFrontend == nullptr)
@@ -1363,7 +1340,7 @@ public:
 
 		(*kState.fOutputAssembly) << "# Path: " << src_file << "\n";
 		(*kState.fOutputAssembly)
-			<< "# Language: POWER Assembly (Generated from C)\n";
+			<< "# Language: ARM64 Assembly (Generated from ANSI C)\n";
 		(*kState.fOutputAssembly) << "# Date: " << fmt << "\n\n";
 
 		LibCompiler::SyntaxLeafList syntax;
@@ -1390,7 +1367,8 @@ public:
 		if (kAcceptableErrors > 0)
 			return 1;
 
-		std::vector<std::string> keywords = {"ld", "stw", "add", "sub", "or"};
+		std::vector<std::string> keywords = {"ldw", "stw", "lda", "sta",
+											 "add", "sub", "mv"};
 
 		///
 		/// Replace, optimize, fix assembly output.
@@ -1446,11 +1424,13 @@ public:
 
 						if (LibCompiler::find_word(leaf.fUserValue, needle))
 						{
-							if (leaf.fUserValue.find("extern_segment ") != std::string::npos)
+							if (leaf.fUserValue.find("extern_segment " + needle) !=
+								std::string::npos)
 							{
-								std::string range = "extern_segment ";
-								leaf.fUserValue.replace(leaf.fUserValue.find(range),
-														range.size(), "");
+								std::string range = "extern_segment " + needle;
+								leaf.fUserValue.replace(
+									leaf.fUserValue.find("extern_segment " + needle), range.size(),
+									needle);
 							}
 
 							if (leaf.fUserValue.find("ldw r6") != std::string::npos)
@@ -1461,7 +1441,7 @@ public:
 								if (countComma == 1)
 								{
 									leaf.fUserValue.replace(leaf.fUserValue.find("ldw"),
-															strlen("ldw"), "mr");
+															strlen("ldw"), "mv");
 								}
 							}
 
@@ -1472,11 +1452,11 @@ public:
 						}
 					}
 
-					if (cnt > 1 && keyword != "mr" && keyword != "add" &&
-						keyword != "dec")
+					if (cnt > 1 && keyword != "mv" && keyword != "add" &&
+						keyword != "sub")
 					{
 						leaf.fUserValue.replace(leaf.fUserValue.find(keyword),
-												keyword.size(), "mr");
+												keyword.size(), "mv");
 					}
 				}
 			}
@@ -1502,7 +1482,7 @@ public:
 
 #define kPrintF printf
 #define kSplashCxx() \
-	kPrintF(kWhite "cc, %s, (c) Theater Quality Corp.\n", kDistVersion)
+	kPrintF(kWhite "ZKA C Driver, %s, (c) Theater Quality Corp.\n", kDistVersion)
 
 static void cc_print_help()
 {
@@ -1511,9 +1491,9 @@ static void cc_print_help()
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
-#define kExt ".c"
+#define kCExtension ".c"
 
-TOOLCHAINKIT_MODULE(ZkaOSCompilerCLangPowerPC)
+TOOLCHAINKIT_MODULE(ZkaOSCompilerCLangARM64)
 {
 	kCompilerTypes.push_back({.fName = "void", .fValue = "void"});
 	kCompilerTypes.push_back({.fName = "char", .fValue = "byte"});
@@ -1524,9 +1504,9 @@ TOOLCHAINKIT_MODULE(ZkaOSCompilerCLangPowerPC)
 
 	bool skip = false;
 
-	kFactory.Mount(new AssemblyMountpointCLang());
-	kMachine		  = LibCompiler::AssemblyFactory::kArchPowerPC;
-	kCompilerFrontend = new CompilerFrontendPower64();
+	kFactory.Mount(new AssemblyCCInterface());
+	kMachine		  = LibCompiler::AssemblyFactory::kArchARM64;
+	kCompilerFrontend = new CompilerFrontendARM64();
 
 	for (auto index = 1UL; index < argc; ++index)
 	{
@@ -1538,28 +1518,28 @@ TOOLCHAINKIT_MODULE(ZkaOSCompilerCLangPowerPC)
 
 		if (argv[index][0] == '-')
 		{
-			if (strcmp(argv[index], "-v") == 0 ||
-				strcmp(argv[index], "-version") == 0)
+			if (strcmp(argv[index], "--v") == 0 ||
+				strcmp(argv[index], "--version") == 0)
 			{
 				kSplashCxx();
 				return kExitOK;
 			}
 
-			if (strcmp(argv[index], "-verbose") == 0)
+			if (strcmp(argv[index], "--verbose") == 0)
 			{
 				kState.fVerbose = true;
 
 				continue;
 			}
 
-			if (strcmp(argv[index], "-h") == 0 || strcmp(argv[index], "-help") == 0)
+			if (strcmp(argv[index], "--h") == 0 || strcmp(argv[index], "--help") == 0)
 			{
 				cc_print_help();
 
 				return kExitOK;
 			}
 
-			if (strcmp(argv[index], "-dialect") == 0)
+			if (strcmp(argv[index], "--dialect") == 0)
 			{
 				if (kCompilerFrontend)
 					std::cout << kCompilerFrontend->Language() << "\n";
@@ -1567,7 +1547,7 @@ TOOLCHAINKIT_MODULE(ZkaOSCompilerCLangPowerPC)
 				return kExitOK;
 			}
 
-			if (strcmp(argv[index], "-fmax-exceptions") == 0)
+			if (strcmp(argv[index], "--fmax-exceptions") == 0)
 			{
 				try
 				{
@@ -1596,7 +1576,7 @@ TOOLCHAINKIT_MODULE(ZkaOSCompilerCLangPowerPC)
 
 		std::string srcFile = argv[index];
 
-		if (strstr(argv[index], kExt) == nullptr)
+		if (strstr(argv[index], kCExtension) == nullptr)
 		{
 			if (kState.fVerbose)
 			{

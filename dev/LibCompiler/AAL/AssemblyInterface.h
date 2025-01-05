@@ -58,14 +58,12 @@ namespace LibCompiler
 		AssemblyInterface* fMounted{nullptr};
 	};
 
-	union NumberCastBase
-	{
+	union NumberCastBase {
 		NumberCastBase()  = default;
 		~NumberCastBase() = default;
 	};
 
-	union NumberCast64 final
-	{
+	union NumberCast64 final {
 		NumberCast64() = default;
 		explicit NumberCast64(UInt64 raw)
 			: raw(raw)
@@ -81,8 +79,7 @@ namespace LibCompiler
 		UInt64	 raw;
 	};
 
-	union NumberCast32 final
-	{
+	union NumberCast32 final {
 		NumberCast32() = default;
 		explicit NumberCast32(UInt32 raw)
 			: raw(raw)
@@ -98,8 +95,7 @@ namespace LibCompiler
 		UInt32	 raw;
 	};
 
-	union NumberCast16 final
-	{
+	union NumberCast16 final {
 		NumberCast16() = default;
 		explicit NumberCast16(UInt16 raw)
 			: raw(raw)
@@ -115,8 +111,7 @@ namespace LibCompiler
 		UInt16	 raw;
 	};
 
-	union NumberCast8 final
-	{
+	union NumberCast8 final {
 		NumberCast8() = default;
 		explicit NumberCast8(UInt8 raw)
 			: raw(raw)

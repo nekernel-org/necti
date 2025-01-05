@@ -18,6 +18,8 @@ typedef uint8_t	 i64_byte_t;
 typedef uint16_t i64_hword_t;
 typedef uint32_t i64_word_t;
 
+#define kAsmRegisterPrefix "r"
+
 struct CpuOpcodeAMD64
 {
 	std::string fName;

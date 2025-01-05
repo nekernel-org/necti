@@ -3,7 +3,7 @@
 	Copyright (C) 2024 Theater Quality Corp, all rights reserved
 
 	File: XCOFF.hpp
-	Purpose: XCOFF for NewOS.
+	Purpose: XCOFF for ZkaOS.
 
 	Revision History:
 

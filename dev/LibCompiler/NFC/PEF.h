@@ -115,28 +115,28 @@ namespace LibCompiler
 	};
 } // namespace LibCompiler
 
-inline std::ofstream& operator<<(std::ofstream&				 fp,
+inline std::ofstream& operator<<(std::ofstream&				fp,
 								 LibCompiler::PEFContainer& container)
 {
 	fp.write((char*)&container, sizeof(LibCompiler::PEFContainer));
 	return fp;
 }
 
-inline std::ofstream& operator<<(std::ofstream&					 fp,
+inline std::ofstream& operator<<(std::ofstream&					fp,
 								 LibCompiler::PEFCommandHeader& container)
 {
 	fp.write((char*)&container, sizeof(LibCompiler::PEFCommandHeader));
 	return fp;
 }
 
-inline std::ifstream& operator>>(std::ifstream&				 fp,
+inline std::ifstream& operator>>(std::ifstream&				fp,
 								 LibCompiler::PEFContainer& container)
 {
 	fp.read((char*)&container, sizeof(LibCompiler::PEFContainer));
 	return fp;
 }
 
-inline std::ifstream& operator>>(std::ifstream&					 fp,
+inline std::ifstream& operator>>(std::ifstream&					fp,
 								 LibCompiler::PEFCommandHeader& container)
 {
 	fp.read((char*)&container, sizeof(LibCompiler::PEFCommandHeader));

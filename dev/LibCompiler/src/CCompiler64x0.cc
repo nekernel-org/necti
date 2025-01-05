@@ -1493,7 +1493,7 @@ static void cc_print_help()
 
 #define kExt ".c"
 
-TOOLCHAINKIT_MODULE(NewOSCompilerCLang64x0)
+TOOLCHAINKIT_MODULE(ZkaOSCompilerCLang64x0)
 {
 	kCompilerTypes.push_back({.fName = "void", .fValue = "void"});
 	kCompilerTypes.push_back({.fName = "char", .fValue = "byte"});
