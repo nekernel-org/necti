@@ -55,8 +55,8 @@ namespace Details
 {
 struct DynamicLinkerBlob final
 {
-	std::vector<CharType> fPefBlob; // PEF code/bss/data blob.
-	std::uintptr_t fAEOffset; // the offset of the PEF container header..
+	std::vector<CharType> mBlob; // PEF code/bss/data blob.
+	std::uintptr_t mObjOffset; // the offset of the PEF container header..
 };
 }
 
@@ -92,7 +92,7 @@ static uintptr_t kByteCount	= 1024;
 
 ///	@brief ZKA 64-bit Linker.
 /// @note This linker is made for PEF executable, thus ZKA based OSes.
-TOOLCHAINKIT_MODULE(DynamicLinker64PEF)
+LIBCOMPILER_MODULE(DynamicLinker64PEF)
 {
 	bool is_executable = true;
 
@@ -213,14 +213,14 @@ TOOLCHAINKIT_MODULE(DynamicLinker64PEF)
 	if (kOutput.empty())
 	{
 		kStdOut << "no output filename set." << std::endl;
-		return TOOLCHAINKIT_EXEC_ERROR;
+		return LIBCOMPILER_EXEC_ERROR;
 	}
 
 	// sanity check.
 	if (kObjectList.empty())
 	{
 		kStdOut << "no input files." << std::endl;
-		return TOOLCHAINKIT_EXEC_ERROR;
+		return LIBCOMPILER_EXEC_ERROR;
 	}
 	else
 	{
@@ -234,7 +234,7 @@ TOOLCHAINKIT_MODULE(DynamicLinker64PEF)
 				// if filesystem doesn't find file
 				//          -> throw error.
 				kStdOut << "no such file: " << obj << std::endl;
-				return TOOLCHAINKIT_EXEC_ERROR;
+				return LIBCOMPILER_EXEC_ERROR;
 			}
 		}
 	}
@@ -243,7 +243,7 @@ TOOLCHAINKIT_MODULE(DynamicLinker64PEF)
 	if (kArch == 0)
 	{
 		kStdOut << "no target architecture set, can't continue." << std::endl;
-		return TOOLCHAINKIT_EXEC_ERROR;
+		return LIBCOMPILER_EXEC_ERROR;
 	}
 
 	LibCompiler::PEFContainer pef_container{};
@@ -274,7 +274,7 @@ TOOLCHAINKIT_MODULE(DynamicLinker64PEF)
 			kStdOut << "error: " << strerror(errno) << "\n";
 		}
 
-		return TOOLCHAINKIT_FILE_NOT_FOUND;
+		return LIBCOMPILER_FILE_NOT_FOUND;
 	}
 
 	//! Read AE to convert as PEF.
@@ -312,7 +312,7 @@ TOOLCHAINKIT_MODULE(DynamicLinker64PEF)
 							   "treated as a FAT binary."
 							<< std::endl;
 
-					return TOOLCHAINKIT_FAT_ERROR;
+					return LIBCOMPILER_FAT_ERROR;
 				}
 				else
 				{
@@ -412,7 +412,7 @@ TOOLCHAINKIT_MODULE(DynamicLinker64PEF)
 
 			for (auto& byte : bytes)
 			{
-				kObjectBytes.push_back({ .fPefBlob = bytes, .fAEOffset = ae_header.fStartCode });
+				kObjectBytes.push_back({ .mBlob = bytes, .mObjOffset = ae_header.fStartCode });
 			}
 
 			reader_protocol.FP.close();
@@ -422,7 +422,7 @@ TOOLCHAINKIT_MODULE(DynamicLinker64PEF)
 
 		kStdOut << "Not an object container: " << objectFile << std::endl;
 		// don't continue, it is a fatal error.
-		return TOOLCHAINKIT_EXEC_ERROR;
+		return LIBCOMPILER_EXEC_ERROR;
 	}
 
 	pef_container.Cpu = archs;
@@ -723,14 +723,14 @@ TOOLCHAINKIT_MODULE(DynamicLinker64PEF)
 			kStdOut << "Multiple symbols of " << symbol << ".\n";
 		}
 
-		return TOOLCHAINKIT_EXEC_ERROR;
+		return LIBCOMPILER_EXEC_ERROR;
 	}
 
 	// step 2.5: write program bytes.
 
 	for (auto& struct_of_blob : kObjectBytes)
 	{
-		output_fc.write(struct_of_blob.fPefBlob.data(), struct_of_blob.fPefBlob.size());
+		output_fc.write(struct_of_blob.mBlob.data(), struct_of_blob.mBlob.size());
 	}
 
 	if (kVerbose)
@@ -765,7 +765,7 @@ TOOLCHAINKIT_MODULE(DynamicLinker64PEF)
 			kStdOut << "file: " << kOutput
 					<< ", is corrupt, removing file...\n";
 
-		return TOOLCHAINKIT_EXEC_ERROR;
+		return LIBCOMPILER_EXEC_ERROR;
 	}
 
 	return EXIT_SUCCESS;

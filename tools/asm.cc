@@ -15,8 +15,9 @@
 #include <vector>
 
 TK_IMPORT_C int AssemblerMainPower64(int argc, char const* argv[]);
+TK_IMPORT_C int AssemblerMainARM64(int argc, char const* argv[]);
 TK_IMPORT_C int AssemblerMain64x0(int argc, char const* argv[]);
-TK_IMPORT_C int AssemblerAMD64(int argc, char const* argv[]);
+TK_IMPORT_C int AssemblerMainAMD64(int argc, char const* argv[]);
 
 int main(int argc, char const* argv[])
 {
@@ -28,6 +29,7 @@ int main(int argc, char const* argv[])
 		kX64Assembler,
 		k64X0Assembler,
 		kPOWER64Assembler,
+		kARM64Assembler,
 		kInvalidAssembler
 	} asm_type = kInvalidAssembler;
 
@@ -45,6 +47,10 @@ int main(int argc, char const* argv[])
 		else if (strstr(argv[index_arg], "--asm:x64"))
 		{
 			asm_type = kX64Assembler;
+		}
+		else if (strstr(argv[index_arg], "--asm:aarch64"))
+		{
+			asm_type = kARM64Assembler;
 		}
 		else if (strstr(argv[index_arg], "--asm:64x0"))
 		{
@@ -78,8 +84,16 @@ int main(int argc, char const* argv[])
 		}
 		break;
 	}
+	case kARM64Assembler: {
+		if (int32_t code = AssemblerMainARM64(arg_vec_cstr.size(), arg_vec_cstr.data()); code)
+		{
+			std::printf("asm.exe: frontend exited with code %i.\n", code);
+			return code;
+		}
+		break;
+	}
 	case kX64Assembler: {
-		if (int32_t code = AssemblerAMD64(arg_vec_cstr.size(), arg_vec_cstr.data()); code)
+		if (int32_t code = AssemblerMainAMD64(arg_vec_cstr.size(), arg_vec_cstr.data()); code)
 		{
 			std::printf("asm.exe: frontend exited with code %i.\n", code);
 			return code;

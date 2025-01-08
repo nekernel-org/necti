@@ -81,7 +81,7 @@ static bool asm_read_attributes(std::string& line);
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
-TOOLCHAINKIT_MODULE(AssemblerMainPower64)
+LIBCOMPILER_MODULE(AssemblerMainPower64)
 {
 	for (size_t i = 1; i < argc; ++i)
 	{
@@ -299,7 +299,7 @@ asm_fail_exit:
 	if (kVerbose)
 		kStdOut << "AssemblerPower: Exit failed.\n";
 
-	return TOOLCHAINKIT_EXEC_ERROR;
+	return LIBCOMPILER_EXEC_ERROR;
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////
@@ -573,9 +573,9 @@ std::string LibCompiler::EncoderPowerPC::CheckLine(std::string&		  line,
 	// these don't.
 	std::vector<std::string> filter_inst = {"blr", "bl", "sc"};
 
-	for (auto& opcodePPC : kOpcodesPowerPC)
+	for (auto& opcode_risc : kOpcodesPowerPC)
 	{
-		if (LibCompiler::find_word(line, opcodePPC.name))
+		if (LibCompiler::find_word(line, opcode_risc.name))
 		{
 			for (auto& op : operands_inst)
 			{
@@ -591,16 +591,16 @@ std::string LibCompiler::EncoderPowerPC::CheckLine(std::string&		  line,
 
 			// if it is like that -> addr1, 0x0
 			if (auto it =
-					std::find(filter_inst.begin(), filter_inst.end(), opcodePPC.name);
+					std::find(filter_inst.begin(), filter_inst.end(), opcode_risc.name);
 				it == filter_inst.cend())
 			{
-				if (LibCompiler::find_word(line, opcodePPC.name))
+				if (LibCompiler::find_word(line, opcode_risc.name))
 				{
 					if (!isspace(
-							line[line.find(opcodePPC.name) + strlen(opcodePPC.name)]))
+							line[line.find(opcode_risc.name) + strlen(opcode_risc.name)]))
 					{
 						err_str += "\nMissing space between ";
-						err_str += opcodePPC.name;
+						err_str += opcode_risc.name;
 						err_str += " and operands.\nhere -> ";
 						err_str += line;
 					}
@@ -746,24 +746,24 @@ bool LibCompiler::EncoderPowerPC::WriteLine(std::string&	   line,
 									const std::string& file)
 {
 	if (LibCompiler::find_word(line, "public_segment"))
-		return true;
+		return false;
 	if (!Details::algorithm::is_valid_power64(line))
-		return true;
+		return false;
 
-	for (auto& opcodePPC : kOpcodesPowerPC)
+	for (auto& opcode_risc : kOpcodesPowerPC)
 	{
 		// strict check here
-		if (LibCompiler::find_word(line, opcodePPC.name))
+		if (LibCompiler::find_word(line, opcode_risc.name))
 		{
-			std::string			name(opcodePPC.name);
+			std::string			name(opcode_risc.name);
 			std::string			jump_label, cpy_jump_label;
 			std::vector<size_t> found_registers_index;
 
 			// check funct7 type.
-			switch (opcodePPC.ops->type)
+			switch (opcode_risc.ops->type)
 			{
 			default: {
-				NumberCast32 num(opcodePPC.opcode);
+				NumberCast32 num(opcode_risc.opcode);
 
 				for (auto ch : num.number)
 				{
@@ -791,10 +791,10 @@ bool LibCompiler::EncoderPowerPC::WriteLine(std::string&	   line,
 				// \brief how many registers we found.
 				std::size_t found_some_count = 0UL;
 				std::size_t register_count	 = 0UL;
-				std::string opcodeName		 = opcodePPC.name;
+				std::string opcodeName		 = opcode_risc.name;
 				std::size_t register_sum	 = 0;
 
-				NumberCast64 num(opcodePPC.opcode);
+				NumberCast64 num(opcode_risc.opcode);
 
 				for (size_t line_index = 0UL; line_index < line.size();
 					 line_index++)
@@ -1058,7 +1058,7 @@ bool LibCompiler::EncoderPowerPC::WriteLine(std::string&	   line,
 				}
 
 				// we're not in immediate addressing, reg to reg.
-				if (opcodePPC.ops->type != GREG)
+				if (opcode_risc.ops->type != GREG)
 				{
 					// remember! register to register!
 					if (found_some_count == 1)

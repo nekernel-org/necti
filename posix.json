@@ -10,7 +10,7 @@
   "output_name": "/usr/local/lib/libCxxCompiler.dylib",
   "compiler_flags": ["-fPIC", "-shared"],
   "cpp_macros": [
-    "__TOOLCHAINKIT_DLL__=202401",
+    "__LIBCOMPILER_DLL__=202401",
     "TK_USE_STRUCTS=1",
     "kDistReleaseBranch=$(git rev-parse --abbrev-ref HEAD)-$(uuidgen)"
   ]

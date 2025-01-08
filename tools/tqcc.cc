@@ -15,7 +15,7 @@
 
 TK_IMPORT_C int CPlusPlusPreprocessorMain(int argc, char const* argv[]);
 TK_IMPORT_C int CompilerCPlusPlusX8664(int argc, char const* argv[]);
-TK_IMPORT_C int AssemblerAMD64(int argc, char const* argv[]);
+TK_IMPORT_C int AssemblerMainAMD64(int argc, char const* argv[]);
 
 int main(int argc, char const* argv[])
 {
@@ -80,7 +80,7 @@ int main(int argc, char const* argv[])
 		{
 			const char* arr_cli[] = {argv[0], cli.data()};
 
-			if (auto code = AssemblerAMD64(2, arr_cli); code)
+			if (auto code = AssemblerMainAMD64(2, arr_cli); code)
 			{
 				std::printf("tqc++: assembler exited with code %i.", code);
 			}

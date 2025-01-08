@@ -91,7 +91,7 @@ static bool asm_read_attributes(std::string& line);
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
-TOOLCHAINKIT_MODULE(AssemblerAMD64)
+LIBCOMPILER_MODULE(AssemblerMainAMD64)
 {
 	//////////////// CPU OPCODES BEGIN ////////////////
 

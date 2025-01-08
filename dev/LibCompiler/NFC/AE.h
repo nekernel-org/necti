@@ -107,7 +107,7 @@ namespace LibCompiler::Utils
 		explicit AEReadableProtocol() = default;
 		~AEReadableProtocol()		  = default;
 
-		TOOLCHAINKIT_COPY_DELETE(AEReadableProtocol);
+		LIBCOMPILER_COPY_DELETE(AEReadableProtocol);
 
 		/**
 		 * @brief Read AE Record headers.

@@ -4,8 +4,8 @@
 
 ------------------------------------------- */
 
-#ifndef __TOOLCHAINKIT_DEFINES_H__
-#define __TOOLCHAINKIT_DEFINES_H__
+#ifndef __LIBCOMPILER_DEFINES_H__
+#define __LIBCOMPILER_DEFINES_H__
 
 #ifndef Yes
 #define Yes true
@@ -78,19 +78,19 @@
 #define rt_copy_memory(dst, src, len) memcpy(dst, src, len)
 #endif
 
-#define TOOLCHAINKIT_COPY_DELETE(KLASS)      \
+#define LIBCOMPILER_COPY_DELETE(KLASS)      \
 	KLASS& operator=(const KLASS&) = delete; \
 	KLASS(const KLASS&)			   = delete;
 
-#define TOOLCHAINKIT_COPY_DEFAULT(KLASS)      \
+#define LIBCOMPILER_COPY_DEFAULT(KLASS)      \
 	KLASS& operator=(const KLASS&) = default; \
 	KLASS(const KLASS&)			   = default;
 
-#define TOOLCHAINKIT_MOVE_DELETE(KLASS) \
+#define LIBCOMPILER_MOVE_DELETE(KLASS) \
 	KLASS& operator=(KLASS&&) = delete; \
 	KLASS(KLASS&&)			  = delete;
 
-#define TOOLCHAINKIT_MOVE_DEFAULT(KLASS) \
+#define LIBCOMPILER_MOVE_DEFAULT(KLASS) \
 	KLASS& operator=(KLASS&&) = default; \
 	KLASS(KLASS&&)			  = default;
 
@@ -163,10 +163,10 @@ typedef char char_type;
 
 #define kAsmFileExtsMax 7
 
-#define TOOLCHAINKIT_MODULE(name) extern "C" int name(int argc, char** argv)
+#define LIBCOMPILER_MODULE(name) extern "C" int name(int argc, char** argv)
 
 #ifdef MSVC
 #pragma scalar_storage_order big - endian
 #endif // ifdef MSVC
 
-#endif /* ifndef __TOOLCHAINKIT_DEFINES_H__ */
+#endif /* ifndef __LIBCOMPILER_DEFINES_H__ */

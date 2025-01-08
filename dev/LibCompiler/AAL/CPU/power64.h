@@ -10,10 +10,12 @@
 
 #pragma once
 
-#include <cstdint>
+#include <stdint.h>
 
 /// @note Based of:
 /// https://opensource.apple.com/source/cctools/cctools-750/as/ppc-opcode.h.auto.html
+
+#define kOpcodePPCCount (1073U)
 
 /*
  * These defines are use in the cpus field of the instructions.  If the field
@@ -27,7 +29,7 @@
 #define CPU970		0x10 /* added to OPTIONAL insts that the 970 has */
 #define CPUMAHROUSS 0x12 /* optional mahrouss insts. */
 
-enum optype
+enum OpcodeType
 {
 	NONE,	 /* no operand */
 	JBSR,	 /* jbsr pseudo op */
@@ -57,22 +59,20 @@ enum optype
 	ZERO	 /* the number zero */
 };
 
-struct op
-{
-	uint32_t	offset : 5;
-	uint32_t	width : 5;
-	enum optype type : 6;
-};
-
 struct CpuOpcodePPC
 {
+	struct OpcodeType final
+	{
+		uint32_t offset : 5;
+		uint32_t width : 5;
+		uint32_t type : 6;
+	};
+
 	uint32_t	opcode;
 	const char* name; // c++ wants the string to be const, it makes sense here.
-	struct op	ops[5];
+	OpcodeType	ops[5];
 	uint32_t	cpus;
 };
-
-#define kOpcodePPCCount (1073U)
 
 inline CpuOpcodePPC kOpcodesPowerPC[] = {
 	{0x38000000, "addi", {{21, 5, GREG}, {16, 5, G0REG}, {0, 16, SI}}},

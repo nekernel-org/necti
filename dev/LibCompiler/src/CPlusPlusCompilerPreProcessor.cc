@@ -74,7 +74,7 @@ namespace Details
 		explicit bpp_pragma() = default;
 		~bpp_pragma()		  = default;
 
-		TOOLCHAINKIT_COPY_DEFAULT(bpp_pragma);
+		LIBCOMPILER_COPY_DEFAULT(bpp_pragma);
 
 		std::string		fMacroName;
 		bpp_parser_fn_t fParse;
@@ -908,7 +908,7 @@ void bpp_parse_file(std::ifstream& hdr_file, std::ofstream& pp_out)
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
-TOOLCHAINKIT_MODULE(CPlusPlusPreprocessorMain)
+LIBCOMPILER_MODULE(CPlusPlusPreprocessorMain)
 {
 	try
 	{
@@ -931,7 +931,7 @@ TOOLCHAINKIT_MODULE(CPlusPlusPreprocessorMain)
 
 		Details::bpp_macro macro_zka;
 
-		macro_zka.fName	 = "__TOOLCHAINKIT__";
+		macro_zka.fName	 = "__LIBCOMPILER__";
 		macro_zka.fValue = "1";
 
 		kMacros.push_back(macro_zka);
@@ -1044,7 +1044,7 @@ TOOLCHAINKIT_MODULE(CPlusPlusPreprocessorMain)
 		}
 
 		if (kFiles.empty())
-			return TOOLCHAINKIT_EXEC_ERROR;
+			return LIBCOMPILER_EXEC_ERROR;
 
 		for (auto& file : kFiles)
 		{

@@ -4,8 +4,8 @@
 
 ------------------------------------------- */
 
-#ifndef __TOOLCHAINKIT_DEFINES_H__
-#define __TOOLCHAINKIT_DEFINES_H__
+#ifndef __LIBCOMPILER_DEFINES_H__
+#define __LIBCOMPILER_DEFINES_H__
 
 extern "C"
 {
@@ -38,7 +38,7 @@ typedef char*  caddr_t;
 
 #ifdef __GNUC__
 #include <LibC++/alloca.h>
-#elif defined(__TOOLCHAINKIT__)
+#elif defined(__LIBCOMPILER__)
 #define __alloca(sz) __ndk_alloca(sz)
 #endif
 
@@ -93,4 +93,4 @@ typedef union double_cast {
 
 #endif // ifndef __GNUC__
 
-#endif /* __TOOLCHAINKIT_DEFINES_H__ */
+#endif /* __LIBCOMPILER_DEFINES_H__ */

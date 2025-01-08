@@ -41,18 +41,19 @@ struct CpuOpcodeAMD64
 
 inline std::vector<CpuOpcodeAMD64> kOpcodesAMD64 = {
 	kAsmOpcodeDecl("int", 0xCD)
-		kAsmOpcodeDecl("into", 0xCE)
-			kAsmOpcodeDecl("intd", 0xF1)
-				kAsmOpcodeDecl("int3", 0xC3)
-					kAsmOpcodeDecl("iret", 0xCF)
-						kAsmOpcodeDecl("retf", 0xCB)
-							kAsmOpcodeDecl("retn", 0xC3)
-								kAsmOpcodeDecl("ret", 0xC3)
-									kAsmOpcodeDecl("sti", 0xfb)
-										kAsmOpcodeDecl("cli", 0xfa)
-											kAsmOpcodeDecl("hlt", 0xf4)
-												kAsmOpcodeDecl("nop", 0x90)
-													kAsmOpcodeDecl("mov", 0x48)
-														kAsmOpcodeDecl("call", 0xFF)};
+	kAsmOpcodeDecl("into", 0xCE)
+	kAsmOpcodeDecl("intd", 0xF1)
+	kAsmOpcodeDecl("int3", 0xC3)
+	kAsmOpcodeDecl("iret", 0xCF)
+	kAsmOpcodeDecl("retf", 0xCB)
+	kAsmOpcodeDecl("retn", 0xC3)
+	kAsmOpcodeDecl("ret", 0xC3)
+	kAsmOpcodeDecl("sti", 0xfb)
+	kAsmOpcodeDecl("cli", 0xfa)
+	kAsmOpcodeDecl("hlt", 0xf4)
+	kAsmOpcodeDecl("nop", 0x90)
+	kAsmOpcodeDecl("mov", 0x48)
+	kAsmOpcodeDecl("call", 0xFF)
+};
 
-#define kAsmRegisterLimit 15
+#define kAsmRegisterLimit 16

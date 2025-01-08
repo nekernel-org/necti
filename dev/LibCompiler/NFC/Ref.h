@@ -30,7 +30,7 @@ namespace LibCompiler
 			}
 		}
 
-		TOOLCHAINKIT_COPY_DEFAULT(Ref);
+		LIBCOMPILER_COPY_DEFAULT(Ref);
 
 	public:
 		explicit Ref(T cls, const Bool& strong = false)

@@ -22,7 +22,7 @@ namespace LibCompiler
 		explicit AssemblyInterface() = default;
 		virtual ~AssemblyInterface() = default;
 
-		TOOLCHAINKIT_COPY_DEFAULT(AssemblyInterface);
+		LIBCOMPILER_COPY_DEFAULT(AssemblyInterface);
 
 		/// @brief compile to object file.
 		/// @note Example C++ -> MASM -> AE object.
@@ -36,7 +36,7 @@ namespace LibCompiler
 		explicit AssemblyFactory() = default;
 		~AssemblyFactory()		   = default;
 
-		TOOLCHAINKIT_COPY_DEFAULT(AssemblyFactory);
+		LIBCOMPILER_COPY_DEFAULT(AssemblyFactory);
 
 	public:
 		enum
@@ -46,6 +46,7 @@ namespace LibCompiler
 			kArch64x0,
 			kArchRISCV,
 			kArchPowerPC,
+			kArchAARCH64,
 			kArchUnknown,
 		};
 
@@ -133,7 +134,7 @@ namespace LibCompiler
 		explicit EncoderInterface() = default;
 		virtual ~EncoderInterface() = default;
 
-		TOOLCHAINKIT_COPY_DEFAULT(EncoderInterface);
+		LIBCOMPILER_COPY_DEFAULT(EncoderInterface);
 
 		virtual std::string CheckLine(std::string& line, const std::string& file)		= 0;
 		virtual bool		WriteLine(std::string& line, const std::string& file)		= 0;
@@ -148,7 +149,7 @@ namespace LibCompiler
 		explicit EncoderAMD64()	 = default;
 		~EncoderAMD64() override = default;
 
-		TOOLCHAINKIT_COPY_DEFAULT(EncoderAMD64);
+		LIBCOMPILER_COPY_DEFAULT(EncoderAMD64);
 
 		virtual std::string CheckLine(std::string&		 line,
 									  const std::string& file) override;
@@ -163,6 +164,25 @@ namespace LibCompiler
 
 #endif // __ASM_NEED_AMD64__
 
+#ifdef __ASM_NEED_ARM64__
+
+	class EncoderARM64 final : public EncoderInterface
+	{
+	public:
+		explicit EncoderARM64()	 = default;
+		~EncoderARM64() override = default;
+
+		LIBCOMPILER_COPY_DEFAULT(EncoderARM64);
+
+		virtual std::string CheckLine(std::string&		 line,
+									  const std::string& file) override;
+		virtual bool		WriteLine(std::string& line, const std::string& file) override;
+		virtual bool		WriteNumber(const std::size_t& pos,
+										std::string&	   from_what) override;
+	};
+
+#endif // __ASM_NEED_ARM64__
+
 #ifdef __ASM_NEED_64x0__
 
 	class Encoder64x0 final : public EncoderInterface
@@ -171,7 +191,7 @@ namespace LibCompiler
 		explicit Encoder64x0()	= default;
 		~Encoder64x0() override = default;
 
-		TOOLCHAINKIT_COPY_DEFAULT(Encoder64x0);
+		LIBCOMPILER_COPY_DEFAULT(Encoder64x0);
 
 		virtual std::string CheckLine(std::string&		 line,
 									  const std::string& file) override;
@@ -190,7 +210,7 @@ namespace LibCompiler
 		explicit Encoder32x0()	= default;
 		~Encoder32x0() override = default;
 
-		TOOLCHAINKIT_COPY_DEFAULT(Encoder32x0);
+		LIBCOMPILER_COPY_DEFAULT(Encoder32x0);
 
 		virtual std::string CheckLine(std::string&		 line,
 									  const std::string& file) override;
@@ -209,7 +229,7 @@ namespace LibCompiler
 		explicit EncoderPowerPC()  = default;
 		~EncoderPowerPC() override = default;
 
-		TOOLCHAINKIT_COPY_DEFAULT(EncoderPowerPC);
+		LIBCOMPILER_COPY_DEFAULT(EncoderPowerPC);
 
 		virtual std::string CheckLine(std::string&		 line,
 									  const std::string& file) override;

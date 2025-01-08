@@ -9,7 +9,6 @@
 
 /// BUGS: 1
 
-#include <cstdio>
 #define kPrintF printf
 
 #define kExitOK	(EXIT_SUCCESS)
@@ -23,6 +22,8 @@
 #include <LibCompiler/AAL/CPU/amd64.h>
 #include <LibCompiler/Parser.h>
 #include <LibCompiler/UUID.h>
+
+#include <cstdio>
 
 /* ZKA C++ Compiler */
 /* This is part of the LibCompiler. */
@@ -162,7 +163,7 @@ public:
 	explicit CompilerFrontendCPlusPlus()  = default;
 	~CompilerFrontendCPlusPlus() override = default;
 
-	TOOLCHAINKIT_COPY_DEFAULT(CompilerFrontendCPlusPlus);
+	LIBCOMPILER_COPY_DEFAULT(CompilerFrontendCPlusPlus);
 
 	bool Compile(const std::string text, const std::string file) override;
 
@@ -431,13 +432,13 @@ bool CompilerFrontendCPlusPlus::Compile(const std::string text,
 				++indexFnName;
 			}
 
-			syntax_tree.fUserValue = "public_segment .code64 __TOOLCHAINKIT_" + fnName + "\n";
+			syntax_tree.fUserValue = "public_segment .code64 __LIBCOMPILER_" + fnName + "\n";
 			++kFunctionEmbedLevel;
 
 			break;
 
 tk_write_assembly:
-			syntax_tree.fUserValue = "jmp __TOOLCHAINKIT_" + fnName + "\n";
+			syntax_tree.fUserValue = "jmp __LIBCOMPILER_" + fnName + "\n";
 		}
 		case LibCompiler::KeywordKind::kKeywordKindFunctionEnd: {
 			if (text.ends_with(";"))
@@ -572,8 +573,8 @@ tk_write_assembly:
 						if (valueOfVar[0] == '\"')
 						{
 
-							syntax_tree.fUserValue = "segment .data64 __TOOLCHAINKIT_LOCAL_VAR_" + varName + ": db " + valueOfVar + ", 0\n\n";
-							syntax_tree.fUserValue += instr + kRegisterList[kRegisterMap.size() - 1] + ", " + "__TOOLCHAINKIT_LOCAL_VAR_" + varName + "\n";
+							syntax_tree.fUserValue = "segment .data64 __LIBCOMPILER_LOCAL_VAR_" + varName + ": db " + valueOfVar + ", 0\n\n";
+							syntax_tree.fUserValue += instr + kRegisterList[kRegisterMap.size() - 1] + ", " + "__LIBCOMPILER_LOCAL_VAR_" + varName + "\n";
 						}
 						else
 						{
@@ -589,8 +590,8 @@ tk_write_assembly:
 					if (valueOfVar[0] == '\"')
 					{
 
-						syntax_tree.fUserValue = "segment .data64 __TOOLCHAINKIT_LOCAL_VAR_" + varName + ": db " + valueOfVar + ", 0\n";
-						syntax_tree.fUserValue += instr + kRegisterList[kRegisterMap.size()] + ", " + "__TOOLCHAINKIT_LOCAL_VAR_" + varName + "\n";
+						syntax_tree.fUserValue = "segment .data64 __LIBCOMPILER_LOCAL_VAR_" + varName + ": db " + valueOfVar + ", 0\n";
+						syntax_tree.fUserValue += instr + kRegisterList[kRegisterMap.size()] + ", " + "__LIBCOMPILER_LOCAL_VAR_" + varName + "\n";
 					}
 					else
 					{
@@ -767,7 +768,7 @@ tk_write_assembly:
 				}
 				else
 				{
-					syntax_tree.fUserValue = "__TOOLCHAINKIT_LOCAL_RETURN_STRING: db " + subText + ", 0\nmov rcx, __TOOLCHAINKIT_LOCAL_RETURN_STRING\n";
+					syntax_tree.fUserValue = "__LIBCOMPILER_LOCAL_RETURN_STRING: db " + subText + ", 0\nmov rcx, __LIBCOMPILER_LOCAL_RETURN_STRING\n";
 					syntax_tree.fUserValue += "mov rax, rcx\r\nret\n";
 				}
 
@@ -806,7 +807,7 @@ public:
 	explicit AssemblyCPlusPlusInterface()  = default;
 	~AssemblyCPlusPlusInterface() override = default;
 
-	TOOLCHAINKIT_COPY_DEFAULT(AssemblyCPlusPlusInterface);
+	LIBCOMPILER_COPY_DEFAULT(AssemblyCPlusPlusInterface);
 
 	[[maybe_unused]] static Int32 Arch() noexcept
 	{
@@ -924,7 +925,7 @@ static void cxx_print_help()
 		".cpp", ".cxx", ".cc", ".c++", ".cp" \
 	}
 
-TOOLCHAINKIT_MODULE(CompilerCPlusPlusX8664)
+LIBCOMPILER_MODULE(CompilerCPlusPlusX8664)
 {
 	bool skip = false;
 

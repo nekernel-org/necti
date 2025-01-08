@@ -20,7 +20,7 @@ namespace LibCompiler
 		explicit ICompilerFrontend() = default;
 		virtual ~ICompilerFrontend() = default;
 
-		TOOLCHAINKIT_COPY_DEFAULT(ICompilerFrontend);
+		LIBCOMPILER_COPY_DEFAULT(ICompilerFrontend);
 
 		// NOTE: cast this to your user defined ast.
 		typedef void* AstType;
@@ -28,7 +28,7 @@ namespace LibCompiler
 		//! @brief Compile a syntax tree ouf of the text.
 		//! Also takes the source file name for metadata.
 
-		virtual bool Compile(const std::string text, const std::string file) = 0;
+		virtual bool Compile(std::string text, const std::string file) = 0;
 
 		//! @brief What language are we dealing with?
 		virtual const char* Language()

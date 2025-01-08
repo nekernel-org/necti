@@ -4,8 +4,8 @@
 
 ------------------------------------------- */
 
-#ifndef __TOOLCHAINKIT_FS_H__
-#define __TOOLCHAINKIT_FS_H__
+#ifndef __LIBCOMPILER_FS_H__
+#define __LIBCOMPILER_FS_H__
 
 namespace std
 {
@@ -15,4 +15,4 @@ namespace std
 	class directory_iterator;
 } // namespace std
 
-#endif // __TOOLCHAINKIT_FS_H__
+#endif // __LIBCOMPILER_FS_H__

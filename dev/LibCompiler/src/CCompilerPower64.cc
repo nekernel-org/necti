@@ -70,20 +70,20 @@ namespace Details
 	struct CompilerState final
 	{
 		std::vector<LibCompiler::SyntaxLeafList> fSyntaxTreeList;
-		std::vector<CompilerRegisterMap> kStackFrame;
-		std::vector<CompilerStructMap>	 kStructMap;
+		std::vector<CompilerRegisterMap>		 kStackFrame;
+		std::vector<CompilerStructMap>			 kStructMap;
 		LibCompiler::SyntaxLeafList*			 fSyntaxTree{nullptr};
-		std::unique_ptr<std::ofstream>	 fOutputAssembly;
-		std::string						 fLastFile;
-		std::string						 fLastError;
-		bool							 fVerbose;
+		std::unique_ptr<std::ofstream>			 fOutputAssembly;
+		std::string								 fLastFile;
+		std::string								 fLastError;
+		bool									 fVerbose;
 	};
 } // namespace Details
 
 static Details::CompilerState kState;
-static SizeType				 kErrorLimit	   = 100;
-static std::string			 kIfFunction	   = "";
-static Int32				 kAcceptableErrors = 0;
+static SizeType				  kErrorLimit		= 100;
+static std::string			  kIfFunction		= "";
+static Int32				  kAcceptableErrors = 0;
 
 namespace Details
 {
@@ -122,14 +122,14 @@ static std::string kRegisterPrefix	= kAsmRegisterPrefix;
 
 /////////////////////////////////////////
 
-static std::vector<std::string> kFileList;
-static LibCompiler::AssemblyFactory		kFactory;
-static bool						kInStruct	 = false;
-static bool						kOnWhileLoop = false;
-static bool						kOnForLoop	 = false;
-static bool						kInBraces	 = false;
-static bool						kIfFound	 = false;
-static size_t					kBracesCount = 0UL;
+static std::vector<std::string>		kFileList;
+static LibCompiler::AssemblyFactory kFactory;
+static bool							kInStruct	 = false;
+static bool							kOnWhileLoop = false;
+static bool							kOnForLoop	 = false;
+static bool							kInBraces	 = false;
+static bool							kIfFound	 = false;
+static size_t						kBracesCount = 0UL;
 
 /* @brief C compiler backend for C */
 class CompilerFrontendPower64 final : public LibCompiler::ICompilerFrontend
@@ -138,10 +138,10 @@ public:
 	explicit CompilerFrontendPower64()	= default;
 	~CompilerFrontendPower64() override = default;
 
-	TOOLCHAINKIT_COPY_DEFAULT(CompilerFrontendPower64);
+	LIBCOMPILER_COPY_DEFAULT(CompilerFrontendPower64);
 
 	std::string Check(const char* text, const char* file);
-	bool		Compile(const std::string text, const std::string file) override;
+	bool		Compile(std::string text, const std::string file) override;
 
 	const char* Language() override
 	{
@@ -149,9 +149,9 @@ public:
 	}
 };
 
-static CompilerFrontendPower64*			 kCompilerFrontend = nullptr;
+static CompilerFrontendPower64*			  kCompilerFrontend = nullptr;
 static std::vector<Details::CompilerType> kCompilerVariables;
-static std::vector<std::string>			 kCompilerFunctions;
+static std::vector<std::string>			  kCompilerFunctions;
 static std::vector<Details::CompilerType> kCompilerTypes;
 
 namespace Details
@@ -191,9 +191,9 @@ namespace Details
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
-bool CompilerFrontendPower64::Compile(const std::string text, const std::string file)
+bool CompilerFrontendPower64::Compile(std::string text_, const std::string file)
 {
-	std::string textBuffer = text;
+	std::string text = text_;
 
 	bool typeFound = false;
 	bool fnFound   = false;
@@ -207,7 +207,7 @@ bool CompilerFrontendPower64::Compile(const std::string text, const std::string 
 	std::mt19937  generator(seq);
 
 	// start parsing
-	for (size_t text_index = 0; text_index < textBuffer.size(); ++text_index)
+	for (size_t text_index = 0; text_index < text.size(); ++text_index)
 	{
 		auto syntaxLeaf = LibCompiler::SyntaxLeafList::SyntaxLeaf();
 
@@ -218,7 +218,7 @@ bool CompilerFrontendPower64::Compile(const std::string text, const std::string 
 
 		if (!typeFound)
 		{
-			auto		substr = textBuffer.substr(text_index);
+			auto		substr = text.substr(text_index);
 			std::string match_type;
 
 			for (size_t y = 0; y < substr.size(); ++y)
@@ -246,7 +246,7 @@ bool CompilerFrontendPower64::Compile(const std::string text, const std::string 
 								break;
 							}
 
-							if (textBuffer.find('(') != std::string::npos)
+							if (text.find('(') != std::string::npos)
 							{
 								syntaxLeaf.fUserValue = buf;
 
@@ -265,7 +265,7 @@ bool CompilerFrontendPower64::Compile(const std::string text, const std::string 
 			}
 		}
 
-		if (textBuffer[text_index] == '{')
+		if (text[text_index] == '{')
 		{
 			if (kInStruct)
 			{
@@ -279,7 +279,7 @@ bool CompilerFrontendPower64::Compile(const std::string text, const std::string 
 		}
 
 		// return keyword handler
-		if (textBuffer[text_index] == 'r')
+		if (text[text_index] == 'r')
 		{
 			std::string return_keyword;
 			return_keyword += "return";
@@ -288,18 +288,18 @@ bool CompilerFrontendPower64::Compile(const std::string text, const std::string 
 
 			std::string value;
 
-			for (size_t return_index = text_index; return_index < textBuffer.size();
+			for (size_t return_index = text_index; return_index < text.size();
 				 ++return_index)
 			{
-				if (textBuffer[return_index] != return_keyword[index])
+				if (text[return_index] != return_keyword[index])
 				{
 					for (size_t value_index = return_index;
-						 value_index < textBuffer.size(); ++value_index)
+						 value_index < text.size(); ++value_index)
 					{
-						if (textBuffer[value_index] == ';')
+						if (text[value_index] == ';')
 							break;
 
-						value += textBuffer[value_index];
+						value += text[value_index];
 					}
 
 					break;
@@ -364,10 +364,10 @@ bool CompilerFrontendPower64::Compile(const std::string text, const std::string 
 			}
 		}
 
-		if (textBuffer[text_index] == 'i' && textBuffer[text_index + 1] == 'f')
+		if (text[text_index] == 'i' && text[text_index + 1] == 'f')
 		{
-			auto expr = textBuffer.substr(text_index + 2);
-			textBuffer.erase(text_index, 2);
+			auto expr = text.substr(text_index + 2);
+			text.erase(text_index, 2);
 
 			if (expr.find("{") != std::string::npos)
 			{
@@ -380,7 +380,7 @@ bool CompilerFrontendPower64::Compile(const std::string text, const std::string 
 			if (expr.find(")") != std::string::npos)
 				expr.erase(expr.find(")"));
 
-			kIfFunction = "__TOOLCHAINKIT_IF_PROC_";
+			kIfFunction = "__LIBCOMPILER_IF_PROC_";
 			kIfFunction += std::to_string(time_off._Raw);
 
 			syntaxLeaf.fUserValue =
@@ -398,32 +398,32 @@ bool CompilerFrontendPower64::Compile(const std::string text, const std::string 
 		// Parse expressions and instructions here.
 		// what does this mean?
 		// we encounter an assignment, or we reached the end of an expression.
-		if (textBuffer[text_index] == '=' || textBuffer[text_index] == ';')
+		if (text[text_index] == '=' || text[text_index] == ';')
 		{
 			if (fnFound)
 				continue;
 			if (kIfFound)
 				continue;
 
-			if (textBuffer[text_index] == ';' && kInStruct)
+			if (text[text_index] == ';' && kInStruct)
 				continue;
 
-			if (textBuffer.find("typedef ") != std::string::npos)
+			if (text.find("typedef ") != std::string::npos)
 				continue;
 
-			if (textBuffer[text_index] == '=' && kInStruct)
+			if (text[text_index] == '=' && kInStruct)
 			{
 				Details::print_error(
-					"assignement of value inside a struct " + textBuffer, file);
+					"assignement of value inside a struct " + text, file);
 				continue;
 			}
 
-			if (textBuffer[text_index] == ';' && kInStruct)
+			if (text[text_index] == ';' && kInStruct)
 			{
 				bool		space_found_ = false;
 				std::string sym;
 
-				for (auto& ch : textBuffer)
+				for (auto& ch : text)
 				{
 					if (ch == ' ')
 					{
@@ -448,26 +448,26 @@ bool CompilerFrontendPower64::Compile(const std::string text, const std::string 
 				continue;
 			}
 
-			if (textBuffer[text_index] == '=' && kInStruct)
+			if (text[text_index] == '=' && kInStruct)
 			{
 				continue;
 			}
 
-			if (textBuffer[text_index + 1] == '=' ||
-				textBuffer[text_index - 1] == '!' ||
-				textBuffer[text_index - 1] == '<' ||
-				textBuffer[text_index - 1] == '>')
+			if (text[text_index + 1] == '=' ||
+				text[text_index - 1] == '!' ||
+				text[text_index - 1] == '<' ||
+				text[text_index - 1] == '>')
 			{
 				continue;
 			}
 
 			std::string substr;
 
-			if (textBuffer.find('=') != std::string::npos && kInBraces && !kIfFound)
+			if (text.find('=') != std::string::npos && kInBraces && !kIfFound)
 			{
-				if (textBuffer.find("*") != std::string::npos)
+				if (text.find("*") != std::string::npos)
 				{
-					if (textBuffer.find("=") > textBuffer.find("*"))
+					if (text.find("=") > text.find("*"))
 						substr += "\tli ";
 					else
 						substr += "\tli ";
@@ -477,7 +477,7 @@ bool CompilerFrontendPower64::Compile(const std::string text, const std::string 
 					substr += "\tli ";
 				}
 			}
-			else if (textBuffer.find('=') != std::string::npos && !kInBraces)
+			else if (text.find('=') != std::string::npos && !kInBraces)
 			{
 				substr += "stw public_segment .data64 ";
 			}
@@ -486,10 +486,10 @@ bool CompilerFrontendPower64::Compile(const std::string text, const std::string 
 
 			std::string str_name;
 
-			for (size_t text_index_2 = 0; text_index_2 < textBuffer.size();
+			for (size_t text_index_2 = 0; text_index_2 < text.size();
 				 ++text_index_2)
 			{
-				if (textBuffer[text_index_2] == '\"')
+				if (text[text_index_2] == '\"')
 				{
 					++text_index_2;
 
@@ -497,29 +497,29 @@ bool CompilerFrontendPower64::Compile(const std::string text, const std::string 
 					// string.
 					substr += '"';
 
-					for (; text_index_2 < textBuffer.size(); ++text_index_2)
+					for (; text_index_2 < text.size(); ++text_index_2)
 					{
-						if (textBuffer[text_index_2] == '\"')
+						if (text[text_index_2] == '\"')
 							break;
 
-						substr += textBuffer[text_index_2];
+						substr += text[text_index_2];
 					}
 				}
 
-				if (textBuffer[text_index_2] == '{' || textBuffer[text_index_2] == '}')
+				if (text[text_index_2] == '{' || text[text_index_2] == '}')
 					continue;
 
-				if (textBuffer[text_index_2] == ';')
+				if (text[text_index_2] == ';')
 				{
 					break;
 				}
 
-				if (textBuffer[text_index_2] == ' ' ||
-					textBuffer[text_index_2] == '\t')
+				if (text[text_index_2] == ' ' ||
+					text[text_index_2] == '\t')
 				{
 					if (first_encountered != 2)
 					{
-						if (textBuffer[text_index] != '=' &&
+						if (text[text_index] != '=' &&
 							substr.find("public_segment .data64") == std::string::npos &&
 							!kInStruct)
 							substr += "public_segment .data64 ";
@@ -530,7 +530,7 @@ bool CompilerFrontendPower64::Compile(const std::string text, const std::string 
 					continue;
 				}
 
-				if (textBuffer[text_index_2] == '=')
+				if (text[text_index_2] == '=')
 				{
 					if (!kInBraces)
 					{
@@ -542,7 +542,7 @@ bool CompilerFrontendPower64::Compile(const std::string text, const std::string 
 					continue;
 				}
 
-				substr += textBuffer[text_index_2];
+				substr += text[text_index_2];
 			}
 
 			for (auto& clType : kCompilerTypes)
@@ -582,7 +582,7 @@ bool CompilerFrontendPower64::Compile(const std::string text, const std::string 
 
 			kCompilerVariables.push_back({.fName = substr});
 
-			if (textBuffer[text_index] == ';')
+			if (text[text_index] == ';')
 				break;
 
 			std::string reg = kAsmRegisterPrefix;
@@ -614,7 +614,7 @@ bool CompilerFrontendPower64::Compile(const std::string text, const std::string 
 
 		// function handler.
 
-		if (textBuffer[text_index] == '(' && !fnFound && !kIfFound)
+		if (text[text_index] == '(' && !fnFound && !kIfFound)
 		{
 			std::string substr;
 			std::string args_buffer;
@@ -622,20 +622,20 @@ bool CompilerFrontendPower64::Compile(const std::string text, const std::string 
 
 			bool type_crossed = false;
 
-			for (size_t idx = textBuffer.find('(') + 1; idx < textBuffer.size();
+			for (size_t idx = text.find('(') + 1; idx < text.size();
 				 ++idx)
 			{
-				if (textBuffer[idx] == ',')
+				if (text[idx] == ',')
 					continue;
 
-				if (textBuffer[idx] == ' ')
+				if (text[idx] == ' ')
 					continue;
 
-				if (textBuffer[idx] == ')')
+				if (text[idx] == ')')
 					break;
 			}
 
-			for (char substr_first_index : textBuffer)
+			for (char substr_first_index : text)
 			{
 				if (substr_first_index != ',')
 					args_buffer += substr_first_index;
@@ -671,7 +671,7 @@ bool CompilerFrontendPower64::Compile(const std::string text, const std::string 
 				}
 			}
 
-			for (char _text_i : textBuffer)
+			for (char _text_i : text)
 			{
 				if (_text_i == '\t' || _text_i == ' ')
 				{
@@ -715,27 +715,27 @@ bool CompilerFrontendPower64::Compile(const std::string text, const std::string 
 				fnFound = true;
 			}
 
-			kCompilerFunctions.push_back(textBuffer);
+			kCompilerFunctions.push_back(text);
 		}
 
-		if (textBuffer[text_index] == '-' && textBuffer[text_index + 1] == '-')
+		if (text[text_index] == '-' && text[text_index + 1] == '-')
 		{
-			textBuffer = textBuffer.replace(textBuffer.find("--"), strlen("--"), "");
+			text = text.replace(text.find("--"), strlen("--"), "");
 
-			for (int _text_i = 0; _text_i < textBuffer.size(); ++_text_i)
+			for (int _text_i = 0; _text_i < text.size(); ++_text_i)
 			{
-				if (textBuffer[_text_i] == '\t' || textBuffer[_text_i] == ' ')
-					textBuffer.erase(_text_i, 1);
+				if (text[_text_i] == '\t' || text[_text_i] == ' ')
+					text.erase(_text_i, 1);
 			}
 
 			syntaxLeaf.fUserValue += "dec ";
-			syntaxLeaf.fUserValue += textBuffer;
+			syntaxLeaf.fUserValue += text;
 
 			kState.fSyntaxTree->fLeafList.push_back(syntaxLeaf);
 			break;
 		}
 
-		if (textBuffer[text_index] == '}')
+		if (text[text_index] == '}')
 		{
 			kRegisterCounter = kStartUsable;
 
@@ -1323,7 +1323,7 @@ public:
 	explicit AssemblyMountpointCLang()	= default;
 	~AssemblyMountpointCLang() override = default;
 
-	TOOLCHAINKIT_COPY_DEFAULT(AssemblyMountpointCLang);
+	LIBCOMPILER_COPY_DEFAULT(AssemblyMountpointCLang);
 
 	[[maybe_unused]] static Int32 Arch() noexcept
 	{
@@ -1498,7 +1498,7 @@ public:
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
-#include <Version.h>
+#include <LibCompiler/Version.h>
 
 #define kPrintF printf
 #define kSplashCxx() \
@@ -1513,7 +1513,7 @@ static void cc_print_help()
 
 #define kExt ".c"
 
-TOOLCHAINKIT_MODULE(ZkaOSCompilerCLangPowerPC)
+LIBCOMPILER_MODULE(ZkaOSCompilerCLangPowerPC)
 {
 	kCompilerTypes.push_back({.fName = "void", .fValue = "void"});
 	kCompilerTypes.push_back({.fName = "char", .fValue = "byte"});

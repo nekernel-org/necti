@@ -55,8 +55,8 @@ namespace Details
 {
 struct DynamicLinkerBlob final
 {
-	std::vector<CharType> fPefBlob; // PEF code/bss/data blob.
-	std::uintptr_t fAEOffset; // the offset of the PEF container header..
+	std::vector<CharType> mBlob; // PEF code/bss/data blob.
+	std::uintptr_t mObjOffset; // the offset of the PEF container header..
 };
 }
 
@@ -84,7 +84,7 @@ static uintptr_t kByteCount	= 1024;
 
 ///	@brief ZKA 64-bit Linker.
 /// @note This linker is made for XCOFF executable, thus ZKA based OSes.
-TOOLCHAINKIT_MODULE(DynamicLinker64XCOFF)
+LIBCOMPILER_MODULE(DynamicLinker64XCOFF)
 {
 	return EXIT_SUCCESS;
 }

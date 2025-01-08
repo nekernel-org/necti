@@ -2,7 +2,7 @@
 # Language: LibCompiler POWER Assembly support for GNU.
 # Build Date: 2024-6-4
 
-%ifdef __TOOLCHAINKIT__
+%ifdef __LIBCOMPILER__
 
 %define lda li
 %define sta stw

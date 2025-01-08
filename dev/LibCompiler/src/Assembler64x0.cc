@@ -111,7 +111,7 @@ namespace Details
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
-TOOLCHAINKIT_MODULE(AssemblerMain64x0)
+LIBCOMPILER_MODULE(AssemblerMain64x0)
 {
 	for (size_t i = 1; i < argc; ++i)
 	{

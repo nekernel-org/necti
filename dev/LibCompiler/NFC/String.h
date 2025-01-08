@@ -42,7 +42,7 @@ namespace LibCompiler
 			}
 		}
 
-		TOOLCHAINKIT_COPY_DEFAULT(StringView);
+		LIBCOMPILER_COPY_DEFAULT(StringView);
 
 		CharType*		Data();
 		const CharType* CData() const;

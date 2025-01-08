@@ -30,7 +30,7 @@ namespace LibCompiler
 								   const Int32& arch) noexcept
 	{
 		if (sourceFile.length() < 1 || !fMounted)
-			return TOOLCHAINKIT_UNIMPLEMENTED;
+			return LIBCOMPILER_UNIMPLEMENTED;
 
 		return fMounted->CompileToFormat(sourceFile, arch);
 	}
