@@ -1,6 +1,6 @@
-# NDK Compiler DLL.
+# LibCompiler
 
-## Compiler, Assembler and Linker DLL.
+## Compiler, Assembler and Linker Library.
 
 This contains a set of tools necessary to compile a ZKA program.
 
