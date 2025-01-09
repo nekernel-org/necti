@@ -72,7 +72,7 @@ static const std::string kRelocSymbol	  = ":RuntimeSymbol:";
 // \brief forward decl.
 static bool asm_read_attributes(std::string& line);
 
-namespace Details
+namespace Detail
 {
 	void print_error(std::string reason, std::string file) noexcept
 	{
@@ -103,7 +103,7 @@ namespace Details
 
 		kStdOut << kYellow << "[ TQC++ ] " << kWhite << reason << kBlank << std::endl;
 	}
-} // namespace Details
+} // namespace Detail
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
@@ -201,7 +201,7 @@ LIBCOMPILER_MODULE(AssemblerMain64x0)
 		{
 			if (auto ln = asm64.CheckLine(line, argv[i]); !ln.empty())
 			{
-				Details::print_error(ln, argv[i]);
+				Detail::print_error(ln, argv[i]);
 				continue;
 			}
 
@@ -215,7 +215,7 @@ LIBCOMPILER_MODULE(AssemblerMain64x0)
 				if (kVerbose)
 				{
 					std::string what = e.what();
-					Details::print_warning("exit because of: " + what, "LibCompiler");
+					Detail::print_warning("exit because of: " + what, "LibCompiler");
 				}
 
 				std::filesystem::remove(object_output);
@@ -347,7 +347,7 @@ static bool asm_read_attributes(std::string& line)
 	{
 		if (kOutputAsBinary)
 		{
-			Details::print_error("Invalid extern_segment directive in flat binary mode.",
+			Detail::print_error("Invalid extern_segment directive in flat binary mode.",
 									"LibCompiler");
 			throw std::runtime_error("invalid_extern_segment_bin");
 		}
@@ -357,7 +357,7 @@ static bool asm_read_attributes(std::string& line)
 		/// sanity check to avoid stupid linker errors.
 		if (name.size() == 0)
 		{
-			Details::print_error("Invalid extern_segment", "power-as");
+			Detail::print_error("Invalid extern_segment", "power-as");
 			throw std::runtime_error("invalid_extern_segment");
 		}
 
@@ -420,7 +420,7 @@ static bool asm_read_attributes(std::string& line)
 	{
 		if (kOutputAsBinary)
 		{
-			Details::print_error("Invalid public_segment directive in flat binary mode.",
+			Detail::print_error("Invalid public_segment directive in flat binary mode.",
 									"LibCompiler");
 			throw std::runtime_error("invalid_public_segment_bin");
 		}
@@ -493,7 +493,7 @@ static bool asm_read_attributes(std::string& line)
 
 // \brief algorithms and helpers.
 
-namespace Details::algorithm
+namespace Detail::algorithm
 {
 	// \brief authorize a brief set of characters.
 	static inline bool is_not_alnum_space(char c)
@@ -508,7 +508,7 @@ namespace Details::algorithm
 	{
 		return std::find_if(str.begin(), str.end(), is_not_alnum_space) == str.end();
 	}
-} // namespace Details::algorithm
+} // namespace Detail::algorithm
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
@@ -536,7 +536,7 @@ std::string LibCompiler::Encoder64x0::CheckLine(std::string&	   line,
 		else
 		{
 			// now check the line for validity
-			if (!Details::algorithm::is_valid_64x0(line))
+			if (!Detail::algorithm::is_valid_64x0(line))
 			{
 				err_str = "Line contains non alphanumeric characters.\nhere -> ";
 				err_str += line;
@@ -546,7 +546,7 @@ std::string LibCompiler::Encoder64x0::CheckLine(std::string&	   line,
 		return err_str;
 	}
 
-	if (!Details::algorithm::is_valid_64x0(line))
+	if (!Detail::algorithm::is_valid_64x0(line))
 	{
 		err_str = "Line contains non alphanumeric characters.\nhere -> ";
 		err_str += line;
@@ -664,7 +664,7 @@ bool LibCompiler::Encoder64x0::WriteNumber(const std::size_t& pos,
 		{
 			if (errno != 0)
 			{
-				Details::print_error("invalid hex number: " + jump_label, "LibCompiler");
+				Detail::print_error("invalid hex number: " + jump_label, "LibCompiler");
 				throw std::runtime_error("invalid_hex_number");
 			}
 		}
@@ -691,7 +691,7 @@ bool LibCompiler::Encoder64x0::WriteNumber(const std::size_t& pos,
 		{
 			if (errno != 0)
 			{
-				Details::print_error("invalid binary number: " + jump_label, "LibCompiler");
+				Detail::print_error("invalid binary number: " + jump_label, "LibCompiler");
 				throw std::runtime_error("invalid_bin");
 			}
 		}
@@ -718,7 +718,7 @@ bool LibCompiler::Encoder64x0::WriteNumber(const std::size_t& pos,
 		{
 			if (errno != 0)
 			{
-				Details::print_error("invalid octal number: " + jump_label, "LibCompiler");
+				Detail::print_error("invalid octal number: " + jump_label, "LibCompiler");
 				throw std::runtime_error("invalid_octal");
 			}
 		}
@@ -786,7 +786,7 @@ bool LibCompiler::Encoder64x0::WriteLine(std::string&		line,
 	{
 		// strict check here
 		if (LibCompiler::find_word(line, opcode64x0.fName) &&
-			Details::algorithm::is_valid_64x0(line))
+			Detail::algorithm::is_valid_64x0(line))
 		{
 			std::string name(opcode64x0.fName);
 			std::string jump_label, cpy_jump_label;
@@ -830,7 +830,7 @@ bool LibCompiler::Encoder64x0::WriteLine(std::string&		line,
 								isdigit(line[line_index + 2]))
 							{
 								reg_str += line[line_index + 3];
-								Details::print_error(
+								Detail::print_error(
 									"invalid register index, r" + reg_str +
 										"\nnote: The 64x0 accepts registers from r0 to r20.",
 									file);
@@ -843,7 +843,7 @@ bool LibCompiler::Encoder64x0::WriteLine(std::string&		line,
 
 						if (reg_index > kAsmRegisterLimit)
 						{
-							Details::print_error("invalid register index, r" + reg_str,
+							Detail::print_error("invalid register index, r" + reg_str,
 													file);
 							throw std::runtime_error("invalid_register_index");
 						}
@@ -866,7 +866,7 @@ bool LibCompiler::Encoder64x0::WriteLine(std::string&		line,
 					// remember! register to register!
 					if (found_some == 1)
 					{
-						Details::print_error(
+						Detail::print_error(
 							"Too few registers.\ntip: each Assembler64x0 register "
 							"starts with 'r'.\nline: " +
 								line,
@@ -878,21 +878,21 @@ bool LibCompiler::Encoder64x0::WriteLine(std::string&		line,
 				if (found_some < 1 && name != "ldw" && name != "lda" &&
 					name != "stw")
 				{
-					Details::print_error(
+					Detail::print_error(
 						"invalid combination of opcode and registers.\nline: " + line,
 						file);
 					throw std::runtime_error("invalid_comb_op_reg");
 				}
 				else if (found_some == 1 && name == "add")
 				{
-					Details::print_error(
+					Detail::print_error(
 						"invalid combination of opcode and registers.\nline: " + line,
 						file);
 					throw std::runtime_error("invalid_comb_op_reg");
 				}
 				else if (found_some == 1 && name == "sub")
 				{
-					Details::print_error(
+					Detail::print_error(
 						"invalid combination of opcode and registers.\nline: " + line,
 						file);
 					throw std::runtime_error("invalid_comb_op_reg");
@@ -900,7 +900,7 @@ bool LibCompiler::Encoder64x0::WriteLine(std::string&		line,
 
 				if (found_some > 0 && name == "pop")
 				{
-					Details::print_error(
+					Detail::print_error(
 						"invalid combination for opcode 'pop'.\ntip: it expects "
 						"nothing.\nline: " +
 							line,
@@ -941,7 +941,7 @@ bool LibCompiler::Encoder64x0::WriteLine(std::string&		line,
 					{
 						if (found_sym)
 						{
-							Details::print_error(
+							Detail::print_error(
 								"invalid combination of opcode and operands.\nhere -> " +
 									jump_label,
 								file);
@@ -974,7 +974,7 @@ bool LibCompiler::Encoder64x0::WriteLine(std::string&		line,
 					// sta expects this: sta 0x000000, r0
 					if (name == "sta")
 					{
-						Details::print_error(
+						Detail::print_error(
 							"invalid combination of opcode and operands.\nHere ->" + line,
 							file);
 						throw std::runtime_error("invalid_comb_op_ops");
@@ -985,7 +985,7 @@ bool LibCompiler::Encoder64x0::WriteLine(std::string&		line,
 					if (name == "sta" &&
 						cpy_jump_label.find("extern_segment ") != std::string::npos)
 					{
-						Details::print_error("invalid usage extern_segment on 'sta', here: " + line,
+						Detail::print_error("invalid usage extern_segment on 'sta', here: " + line,
 												file);
 						throw std::runtime_error("invalid_sta_usage");
 					}
@@ -1007,7 +1007,7 @@ bool LibCompiler::Encoder64x0::WriteLine(std::string&		line,
 
 					if (name == "sta")
 					{
-						Details::print_error("extern_segment is not allowed on a sta operation.",
+						Detail::print_error("extern_segment is not allowed on a sta operation.",
 												file);
 						throw std::runtime_error("extern_segment_sta_op");
 					}
@@ -1067,7 +1067,7 @@ bool LibCompiler::Encoder64x0::WriteLine(std::string&		line,
 
 				if (cpy_jump_label.size() < 1)
 				{
-					Details::print_error("label is empty, can't jump on it.", file);
+					Detail::print_error("label is empty, can't jump on it.", file);
 					throw std::runtime_error("label_empty");
 				}
 

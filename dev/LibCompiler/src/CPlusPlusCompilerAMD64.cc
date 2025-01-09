@@ -52,7 +52,7 @@
 /////////////////////////////////////
 
 /// @internal
-namespace Details
+namespace Detail
 {
 	std::filesystem::path expand_home(const std::filesystem::path& p)
 	{
@@ -104,14 +104,14 @@ namespace Details
 		std::string						 fLastError;
 		bool							 fVerbose;
 	};
-} // namespace Details
+} // namespace Detail
 
-static Details::CompilerState kState;
+static Detail::CompilerState kState;
 static SizeType				 kErrorLimit = 100;
 
 static Int32 kAcceptableErrors = 0;
 
-namespace Details
+namespace Detail
 {
 	/// @brief prints an error into stdout.
 	/// @param reason the reason of the error.
@@ -123,7 +123,7 @@ namespace Details
 		std::string fName;
 		std::string fValue;
 	};
-} // namespace Details
+} // namespace Detail
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
@@ -278,7 +278,7 @@ bool CompilerFrontendCPlusPlus::Compile(const std::string text,
 		{
 			if (isalnum(text[i]))
 			{
-				Details::print_error("syntax error: " + text, file);
+				Detail::print_error("syntax error: " + text, file);
 				return false;
 			}
 		}
@@ -413,7 +413,7 @@ bool CompilerFrontendCPlusPlus::Compile(const std::string text,
 			if (text.ends_with(";"))
 				goto tk_write_assembly;
 			else if (text.size() <= indexFnName)
-				Details::print_error("Invalid function name: " + fnName, file);
+				Detail::print_error("Invalid function name: " + fnName, file);
 
 			indexFnName = 0;
 
@@ -423,10 +423,10 @@ bool CompilerFrontendCPlusPlus::Compile(const std::string text,
 					ch == '\t')
 				{
 					if (fnName[indexFnName - 1] != ')')
-						Details::print_error("Invalid function name: " + fnName, file);
+						Detail::print_error("Invalid function name: " + fnName, file);
 				
 					if ((indexFnName + 1) != fnName.size())
-						Details::print_error("Extra characters after function name: " + fnName, file);
+						Detail::print_error("Extra characters after function name: " + fnName, file);
 				}
 
 				++indexFnName;
@@ -611,7 +611,7 @@ tk_write_assembly:
 							goto done;
 					}
 
-					Details::print_error("Variable not declared: " + varName, file);
+					Detail::print_error("Variable not declared: " + varName, file);
 					return false;
 				}
 
@@ -727,7 +727,7 @@ tk_write_assembly:
 
 			if (syntax_tree.fUserValue.empty())
 			{
-				Details::print_error("Variable not declared: " + varErrCpy, file);
+				Detail::print_error("Variable not declared: " + varErrCpy, file);
 			}
 
 			break;
@@ -758,7 +758,7 @@ tk_write_assembly:
 
 						if (syntax_tree.fUserValue.empty())
 						{
-							Details::print_error("Variable not declared: " + subText, file);
+							Detail::print_error("Variable not declared: " + subText, file);
 						}
 					}
 					else
@@ -857,7 +857,7 @@ public:
 
 		std::filesystem::path path = std::filesystem::path("./");
 
-		while (path != Details::expand_home(std::filesystem::path("~")))
+		while (path != Detail::expand_home(std::filesystem::path("~")))
 		{
 			for (auto const& dir_entry : std::filesystem::recursive_directory_iterator{path})
 			{
@@ -1048,7 +1048,7 @@ LIBCOMPILER_MODULE(CompilerCPlusPlusX8664)
 			std::string err = "Unknown option: ";
 			err += argv[index];
 
-			Details::print_error(err, "c++-drv");
+			Detail::print_error(err, "c++-drv");
 
 			continue;
 		}
@@ -1073,7 +1073,7 @@ LIBCOMPILER_MODULE(CompilerCPlusPlusX8664)
 		{
 			if (kState.fVerbose)
 			{
-				Details::print_error(argv_i + " is not a valid C++ source.\n", "c++-drv");
+				Detail::print_error(argv_i + " is not a valid C++ source.\n", "c++-drv");
 			}
 
 			return 1;

@@ -11,11 +11,11 @@
 
 using namespace LibCompiler;
 
-namespace Details
+namespace Detail
 {
 	extern void print_error(std::string reason, std::string file) noexcept;
 	extern void print_warning(std::string reason, std::string file) noexcept;
-} // namespace Details
+} // namespace Detail
 
 /// @brief Get Number from lineBuffer.
 /// @param lineBuffer the lineBuffer to fetch from.
@@ -37,7 +37,7 @@ static NumberCast32 GetNumber32(std::string lineBuffer, std::string numberKey)
 		{
 			if (errno != 0)
 			{
-				Details::print_error("invalid hex number: " + lineBuffer, "LibCompiler");
+				Detail::print_error("invalid hex number: " + lineBuffer, "LibCompiler");
 				throw std::runtime_error("invalid_hex");
 			}
 		}
@@ -57,7 +57,7 @@ static NumberCast32 GetNumber32(std::string lineBuffer, std::string numberKey)
 		{
 			if (errno != 0)
 			{
-				Details::print_error("invalid binary number:" + lineBuffer, "LibCompiler");
+				Detail::print_error("invalid binary number:" + lineBuffer, "LibCompiler");
 				throw std::runtime_error("invalid_bin");
 			}
 		}
@@ -77,7 +77,7 @@ static NumberCast32 GetNumber32(std::string lineBuffer, std::string numberKey)
 		{
 			if (errno != 0)
 			{
-				Details::print_error("invalid octal number: " + lineBuffer, "LibCompiler");
+				Detail::print_error("invalid octal number: " + lineBuffer, "LibCompiler");
 				throw std::runtime_error("invalid_octal");
 			}
 		}
@@ -97,7 +97,7 @@ static NumberCast32 GetNumber32(std::string lineBuffer, std::string numberKey)
 		{
 			if (errno != 0)
 			{
-				Details::print_error("invalid hex number: " + lineBuffer, "LibCompiler");
+				Detail::print_error("invalid hex number: " + lineBuffer, "LibCompiler");
 				throw std::runtime_error("invalid_hex");
 			}
 		}

@@ -171,7 +171,7 @@ LIBCOMPILER_MODULE(AssemblerMainARM64)
 		{
 			if (auto ln = asm64.CheckLine(line, argv[i]); !ln.empty())
 			{
-				Details::print_error(ln, argv[i]);
+				Detail::print_error(ln, argv[i]);
 				continue;
 			}
 
@@ -185,7 +185,7 @@ LIBCOMPILER_MODULE(AssemblerMainARM64)
 				if (kVerbose)
 				{
 					std::string what = e.what();
-					Details::print_warning("exit because of: " + what, "LibCompiler");
+					Detail::print_warning("exit because of: " + what, "LibCompiler");
 				}
 
 				std::filesystem::remove(object_output);
@@ -317,7 +317,7 @@ static bool asm_read_attributes(std::string& line)
 	{
 		if (kOutputAsBinary)
 		{
-			Details::print_error("Invalid extern_segment directive in flat binary mode.",
+			Detail::print_error("Invalid extern_segment directive in flat binary mode.",
 									"LibCompiler");
 			throw std::runtime_error("invalid_extern_segment_bin");
 		}
@@ -326,7 +326,7 @@ static bool asm_read_attributes(std::string& line)
 
 		if (name.size() == 0)
 		{
-			Details::print_error("Invalid extern_segment", "LibCompiler");
+			Detail::print_error("Invalid extern_segment", "LibCompiler");
 			throw std::runtime_error("invalid_extern_segment");
 		}
 
@@ -389,7 +389,7 @@ static bool asm_read_attributes(std::string& line)
 	{
 		if (kOutputAsBinary)
 		{
-			Details::print_error("Invalid public_segment directive in flat binary mode.",
+			Detail::print_error("Invalid public_segment directive in flat binary mode.",
 									"LibCompiler");
 			throw std::runtime_error("invalid_public_segment_bin");
 		}
@@ -462,7 +462,7 @@ static bool asm_read_attributes(std::string& line)
 
 // \brief algorithms and helpers.
 
-namespace Details::algorithm
+namespace Detail::algorithm
 {
 	// \brief authorize a brief set of characters.
 	static inline bool is_not_alnum_space(char c)
@@ -477,7 +477,7 @@ namespace Details::algorithm
 	{
 		return std::find_if(str.begin(), str.end(), is_not_alnum_space) == str.end();
 	}
-} // namespace Details::algorithm
+} // namespace Detail::algorithm
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
@@ -505,7 +505,7 @@ std::string LibCompiler::EncoderARM64::CheckLine(std::string&		  line,
 		else
 		{
 			/// does the line contains valid input?
-			if (!Details::algorithm::is_valid_arm64(line))
+			if (!Detail::algorithm::is_valid_arm64(line))
 			{
 				err_str = "Line contains non alphanumeric characters.\nhere -> ";
 				err_str += line;
@@ -515,7 +515,7 @@ std::string LibCompiler::EncoderARM64::CheckLine(std::string&		  line,
 		return err_str;
 	}
 
-	if (!Details::algorithm::is_valid_arm64(line))
+	if (!Detail::algorithm::is_valid_arm64(line))
 	{
 		err_str = "Line contains non alphanumeric characters.\nhere -> ";
 		err_str += line;
@@ -584,7 +584,7 @@ bool LibCompiler::EncoderARM64::WriteNumber(const std::size_t& pos,
 		{
 			if (errno != 0)
 			{
-				Details::print_error("invalid hex number: " + jump_label, "LibCompiler");
+				Detail::print_error("invalid hex number: " + jump_label, "LibCompiler");
 				throw std::runtime_error("invalid_hex");
 			}
 		}
@@ -611,7 +611,7 @@ bool LibCompiler::EncoderARM64::WriteNumber(const std::size_t& pos,
 		{
 			if (errno != 0)
 			{
-				Details::print_error("invalid binary number: " + jump_label, "LibCompiler");
+				Detail::print_error("invalid binary number: " + jump_label, "LibCompiler");
 				throw std::runtime_error("invalid_bin");
 			}
 		}
@@ -638,7 +638,7 @@ bool LibCompiler::EncoderARM64::WriteNumber(const std::size_t& pos,
 		{
 			if (errno != 0)
 			{
-				Details::print_error("invalid octal number: " + jump_label, "LibCompiler");
+				Detail::print_error("invalid octal number: " + jump_label, "LibCompiler");
 				throw std::runtime_error("invalid_octal");
 			}
 		}
@@ -702,7 +702,7 @@ bool LibCompiler::EncoderARM64::WriteLine(std::string&	   line,
 	if (LibCompiler::find_word(line, "public_segment"))
 		return false;
 
-	if (!Details::algorithm::is_valid_arm64(line))
+	if (!Detail::algorithm::is_valid_arm64(line))
 		return false;
 
 

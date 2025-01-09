@@ -51,21 +51,14 @@
 /// @brief PEF stack size symbol.
 #define kLinkerStackSizeSymbol "SizeOfReserveStack"
 
-namespace Details 
+namespace Detail
 {
 struct DynamicLinkerBlob final
 {
-	std::vector<CharType> mBlob; // PEF code/bss/data blob.
-	std::uintptr_t mObjOffset; // the offset of the PEF container header..
+	std::vector<CharType> mBlob{}; // PEF code/bss/data blob.
+	UIntPtr mObjOffset{0UL}; // the offset of the PEF container header..
 };
 }
-
-enum
-{
-	kABITypeStart	= 0x1010, /* Invalid ABI start of ABI list. */
-	kABITypeZKA	= 0x5046, /* PF (ZKA PEF ABI) */
-	kABITypeInvalid = 0xFFFF,
-};
 
 static Bool		   kFatBinaryEnable	 = false;
 static Bool		   kStartFound		 = false;
@@ -74,7 +67,7 @@ static Bool		   kVerbose			 = false;
 
 /* object code and list. */
 static std::vector<LibCompiler::String> kObjectList;
-static std::vector<Details::DynamicLinkerBlob> kObjectBytes;
+static std::vector<Detail::DynamicLinkerBlob> kObjectBytes;
 
 static uintptr_t kMIBCount = 8;
 static uintptr_t kByteCount	= 1024;

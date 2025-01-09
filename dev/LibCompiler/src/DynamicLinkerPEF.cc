@@ -51,12 +51,12 @@
 /// @brief PEF stack size symbol.
 #define kLinkerStackSizeSymbol "SizeOfReserveStack"
 
-namespace Details 
+namespace Detail 
 {
 struct DynamicLinkerBlob final
 {
-	std::vector<CharType> mBlob; // PEF code/bss/data blob.
-	std::uintptr_t mObjOffset; // the offset of the PEF container header..
+	std::vector<CharType> mBlob{}; // PEF code/bss/data blob.
+	UIntPtr mObjOffset{0UL}; // the offset of the PEF container header..
 };
 }
 
@@ -82,7 +82,7 @@ static const char* kLdDynamicSym   = ":RuntimeSymbol:";
 
 /* object code and list. */
 static std::vector<LibCompiler::String> kObjectList;
-static std::vector<Details::DynamicLinkerBlob> kObjectBytes;
+static std::vector<Detail::DynamicLinkerBlob> kObjectBytes;
 
 static uintptr_t kMIBCount = 8;
 static uintptr_t kByteCount	= 1024;

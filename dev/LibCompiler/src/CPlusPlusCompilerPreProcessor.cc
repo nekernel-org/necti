@@ -32,7 +32,7 @@ typedef Int32 (*bpp_parser_fn_t)(std::string& line, std::ifstream& hdr_file, std
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
-namespace Details
+namespace Detail
 {
 	enum
 	{
@@ -79,10 +79,10 @@ namespace Details
 		std::string		fMacroName;
 		bpp_parser_fn_t fParse;
 	};
-} // namespace Details
+} // namespace Detail
 
 static std::vector<std::string>		  kFiles;
-static std::vector<Details::bpp_macro> kMacros;
+static std::vector<Detail::bpp_macro> kMacros;
 static std::vector<std::string>		  kIncludes;
 
 static std::string kWorkingDir;
@@ -100,13 +100,13 @@ static std::vector<std::string> kKeywords = {
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
-int32_t bpp_parse_if_condition(Details::bpp_macro_condition& cond,
-							   Details::bpp_macro&			macro,
+int32_t bpp_parse_if_condition(Detail::bpp_macro_condition& cond,
+							   Detail::bpp_macro&			macro,
 							   bool&						inactive_code,
 							   bool&						defined,
 							   std::string&					macro_str)
 {
-	if (cond.fType == Details::kEqual)
+	if (cond.fType == Detail::kEqual)
 	{
 		auto substr_macro =
 			macro_str.substr(macro_str.find(macro.fName) + macro.fName.size());
@@ -127,7 +127,7 @@ int32_t bpp_parse_if_condition(Details::bpp_macro_condition& cond,
 			return 1;
 		}
 	}
-	else if (cond.fType == Details::kNotEqual)
+	else if (cond.fType == Detail::kNotEqual)
 	{
 		auto substr_macro =
 			macro_str.substr(macro_str.find(macro.fName) + macro.fName.size());
@@ -223,7 +223,7 @@ int32_t bpp_parse_if_condition(Details::bpp_macro_condition& cond,
 		lhs = atol(number.c_str());
 	}
 
-	if (cond.fType == Details::kGreaterThan)
+	if (cond.fType == Detail::kGreaterThan)
 	{
 		if (lhs < rhs)
 		{
@@ -236,7 +236,7 @@ int32_t bpp_parse_if_condition(Details::bpp_macro_condition& cond,
 		return 0;
 	}
 
-	if (cond.fType == Details::kGreaterEqThan)
+	if (cond.fType == Detail::kGreaterEqThan)
 	{
 		if (lhs <= rhs)
 		{
@@ -249,7 +249,7 @@ int32_t bpp_parse_if_condition(Details::bpp_macro_condition& cond,
 		return 0;
 	}
 
-	if (cond.fType == Details::kLesserEqThan)
+	if (cond.fType == Detail::kLesserEqThan)
 	{
 		if (lhs >= rhs)
 		{
@@ -262,7 +262,7 @@ int32_t bpp_parse_if_condition(Details::bpp_macro_condition& cond,
 		return 0;
 	}
 
-	if (cond.fType == Details::kLesserThan)
+	if (cond.fType == Detail::kLesserThan)
 	{
 		if (lhs > rhs)
 		{
@@ -516,7 +516,7 @@ void bpp_parse_file(std::ifstream& hdr_file, std::ofstream& pp_out)
 					}
 				}
 
-				Details::bpp_macro macro;
+				Detail::bpp_macro macro;
 
 				macro.fArgs	 = args;
 				macro.fName	 = macro_key;
@@ -663,29 +663,29 @@ void bpp_parse_file(std::ifstream& hdr_file, std::ofstream& pp_out)
 			{
 				inactive_code = true;
 
-				std::vector<Details::bpp_macro_condition> bpp_macro_condition_list = {
+				std::vector<Detail::bpp_macro_condition> bpp_macro_condition_list = {
 					{
-						.fType	   = Details::kEqual,
+						.fType	   = Detail::kEqual,
 						.fTypeName = "==",
 					},
 					{
-						.fType	   = Details::kNotEqual,
+						.fType	   = Detail::kNotEqual,
 						.fTypeName = "!=",
 					},
 					{
-						.fType	   = Details::kLesserThan,
+						.fType	   = Detail::kLesserThan,
 						.fTypeName = "<",
 					},
 					{
-						.fType	   = Details::kGreaterThan,
+						.fType	   = Detail::kGreaterThan,
 						.fTypeName = ">",
 					},
 					{
-						.fType	   = Details::kLesserEqThan,
+						.fType	   = Detail::kLesserEqThan,
 						.fTypeName = "<=",
 					},
 					{
-						.fType	   = Details::kGreaterEqThan,
+						.fType	   = Detail::kGreaterEqThan,
 						.fTypeName = ">=",
 					},
 				};
@@ -915,28 +915,28 @@ LIBCOMPILER_MODULE(CPlusPlusPreprocessorMain)
 		bool skip		 = false;
 		bool double_skip = false;
 
-		Details::bpp_macro macro_1;
+		Detail::bpp_macro macro_1;
 
 		macro_1.fName  = "__true";
 		macro_1.fValue = "1";
 
 		kMacros.push_back(macro_1);
 
-		Details::bpp_macro macro_0;
+		Detail::bpp_macro macro_0;
 
 		macro_0.fName  = "__false";
 		macro_0.fValue = "0";
 
 		kMacros.push_back(macro_0);
 
-		Details::bpp_macro macro_zka;
+		Detail::bpp_macro macro_zka;
 
 		macro_zka.fName	 = "__LIBCOMPILER__";
 		macro_zka.fValue = "1";
 
 		kMacros.push_back(macro_zka);
 
-		Details::bpp_macro macro_size_t;
+		Detail::bpp_macro macro_size_t;
 		macro_size_t.fName	= "__SIZE_TYPE__";
 		macro_size_t.fValue = "unsigned long long int";
 
@@ -1028,7 +1028,7 @@ LIBCOMPILER_MODULE(CPlusPlusPreprocessorMain)
 					if (is_string)
 						macro_value += "\"";
 
-					Details::bpp_macro macro;
+					Detail::bpp_macro macro;
 					macro.fName	 = macro_key;
 					macro.fValue = macro_value;
 

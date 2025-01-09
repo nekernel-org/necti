@@ -73,7 +73,7 @@ namespace uuids
 	using span = gsl::span<ElementType, Extent>;
 #endif
 
-	namespace Details
+	namespace Detail
 	{
 		template <typename TChar>
 		[[nodiscard]] constexpr inline unsigned char hex2char(TChar const ch) noexcept
@@ -319,7 +319,7 @@ namespace uuids
 
 		template <>
 		inline constexpr wchar_t guid_encoder<wchar_t>[17] = L"0123456789abcdef";
-	} // namespace Details
+	} // namespace Detail
 
 	// --------------------------------------------------------------------------------------------------------------------------
 	// UUID format https://tools.ietf.org/html/rfc4122
@@ -486,7 +486,7 @@ namespace uuids
 		[[nodiscard]] constexpr static bool is_valid_uuid(
 			StringType const& in_str) noexcept
 		{
-			auto   str		  = Details::to_string_view(in_str);
+			auto   str		  = Detail::to_string_view(in_str);
 			bool   firstDigit = true;
 			size_t hasBraces  = 0;
 			size_t index	  = 0;
@@ -504,7 +504,7 @@ namespace uuids
 				if (str[i] == '-')
 					continue;
 
-				if (index >= 16 || !Details::is_hex(str[i]))
+				if (index >= 16 || !Detail::is_hex(str[i]))
 				{
 					return false;
 				}
@@ -532,7 +532,7 @@ namespace uuids
 		[[nodiscard]] constexpr static std::optional<uuid> from_string(
 			StringType const& in_str) noexcept
 		{
-			auto   str		  = Details::to_string_view(in_str);
+			auto   str		  = Detail::to_string_view(in_str);
 			bool   firstDigit = true;
 			size_t hasBraces  = 0;
 			size_t index	  = 0;
@@ -552,20 +552,20 @@ namespace uuids
 				if (str[i] == '-')
 					continue;
 
-				if (index >= 16 || !Details::is_hex(str[i]))
+				if (index >= 16 || !Detail::is_hex(str[i]))
 				{
 					return {};
 				}
 
 				if (firstDigit)
 				{
-					data[index] = static_cast<uint8_t>(Details::hex2char(str[i]) << 4);
+					data[index] = static_cast<uint8_t>(Detail::hex2char(str[i]) << 4);
 					firstDigit	= false;
 				}
 				else
 				{
 					data[index] =
-						static_cast<uint8_t>(data[index] | Details::hex2char(str[i]));
+						static_cast<uint8_t>(data[index] | Detail::hex2char(str[i]));
 					index++;
 					firstDigit = true;
 				}
@@ -620,7 +620,7 @@ namespace uuids
 	[[nodiscard]] inline std::basic_string<CharT, Traits, Allocator> to_string(
 		uuid const& id)
 	{
-		std::basic_string<CharT, Traits, Allocator> uustr{Details::empty_guid<CharT>};
+		std::basic_string<CharT, Traits, Allocator> uustr{Detail::empty_guid<CharT>};
 
 		for (size_t i = 0, index = 0; i < 36; ++i)
 		{
@@ -628,8 +628,8 @@ namespace uuids
 			{
 				continue;
 			}
-			uustr[i]   = Details::guid_encoder<CharT>[id.data[index] >> 4 & 0x0f];
-			uustr[++i] = Details::guid_encoder<CharT>[id.data[index] & 0x0f];
+			uustr[i]   = Detail::guid_encoder<CharT>[id.data[index] >> 4 & 0x0f];
+			uustr[++i] = Detail::guid_encoder<CharT>[id.data[index] & 0x0f];
 			index++;
 		}
 
@@ -796,7 +796,7 @@ namespace uuids
 		[[nodiscard]] uuid operator()(StringType const& name)
 		{
 			reset();
-			process_characters(Details::to_string_view(name));
+			process_characters(Detail::to_string_view(name));
 			return make_uuid();
 		}
 
@@ -827,7 +827,7 @@ namespace uuids
 
 		[[nodiscard]] uuid make_uuid()
 		{
-			Details::sha1::digest8_t digest;
+			Detail::sha1::digest8_t digest;
 			hasher.get_digest_bytes(digest);
 
 			// variant must be 0b10xxxxxx
@@ -843,7 +843,7 @@ namespace uuids
 
 	private:
 		uuid		  nsuuid;
-		Details::sha1 hasher;
+		Detail::sha1 hasher;
 	};
 
 #ifdef UUID_TIME_GENERATOR
