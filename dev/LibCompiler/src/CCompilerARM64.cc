@@ -2,7 +2,7 @@
  *	========================================================
  *
  *	cc
- * 	Copyright (C) 2024 Theater Quality Corp, all rights reserved.
+ * 	Copyright (C) 2024 t& Corporation, all rights reserved.
  *
  * 	========================================================
  */
@@ -24,7 +24,7 @@
 
 /* C driver */
 /* This is part of the LibCompiler. */
-/* (c) Theater Quality Corp. */
+/* (c) t& Corporation. */
 
 /// @author EL Mahrouss Amlal (amlel)
 /// @file ARM64-cc.cxx
@@ -1480,7 +1480,7 @@ public:
 
 #define kPrintF printf
 #define kSplashCxx() \
-	kPrintF(kWhite "ZKA C Driver, %s, (c) Theater Quality Corp.\n", kDistVersion)
+	kPrintF(kWhite "ZKA C Driver, %s, (c) t& Corporation.\n", kDistVersion)
 
 static void cc_print_help()
 {

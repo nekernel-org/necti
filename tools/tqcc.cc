@@ -1,6 +1,6 @@
 /* -------------------------------------------
 
-	Copyright (C) 2024 Theater Quality Corp, all rights reserved
+	Copyright (C) 2024 t& Corporation, all rights reserved
 
 ------------------------------------------- */
 
@@ -25,8 +25,8 @@ int main(int argc, char const* argv[])
 		{
 			std::printf("tqc++: Frontend C++ Compiler.\n");
 			std::printf("tqc++: Version: %s, Release: %s.\n", kDistVersion, kDistRelease);
-			std::printf("tqc++: Designed by Theater Quality Corp., Copyright (C) 2024 Theater Quality Corp, all rights reserved.\n");
-			std::printf("libCxxCompiler.dylib: Designed by Theater Quality Corp., Copyright (C) 2024 Theater Quality Corp, all rights reserved.\n");
+			std::printf("tqc++: Designed by t& Corporation., Copyright (C) 2024 t& Corporation, all rights reserved.\n");
+			std::printf("libCxxCompiler.dylib: Designed by t& Corporation., Copyright (C) 2024 t& Corporation, all rights reserved.\n");
 
 			return 0;
 		}

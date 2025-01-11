@@ -1,6 +1,6 @@
 /* -------------------------------------------
 
-	Copyright (C) 2024 Theater Quality Corp, all rights reserved
+	Copyright (C) 2024 t& Corporation, all rights reserved
 
 ------------------------------------------- */
 
@@ -138,13 +138,13 @@ LIBCOMPILER_MODULE(AssemblerMainAMD64)
 			if (strcmp(argv[i], "--amd64:ver") == 0 || strcmp(argv[i], "--amd64:v") == 0)
 			{
 				kStdOut << "AssemblerAMD64: AMD64 Assembler Driver.\nAssemblerAMD64: v1.10\nAssemblerAMD64: Copyright "
-						   "(c) Theater Quality Corp\n";
+						   "(c) t& Corporation\n";
 				return 0;
 			}
 			else if (strcmp(argv[i], "--amd64:h") == 0)
 			{
 				kStdOut << "AssemblerAMD64: AMD64 Assembler Driver.\nAssemblerAMD64: Copyright (c) 2024 "
-						   "Theater Quality Corp\n";
+						   "t& Corporation\n";
 				kStdOut << "--version: Print program version.\n";
 				kStdOut << "--verbose: Print verbose output.\n";
 				kStdOut << "--binary: Output as flat binary.\n";

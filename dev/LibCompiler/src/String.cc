@@ -2,7 +2,7 @@
  *	========================================================
  *
  *	LibCompiler
- * 	Copyright (C) 2024 Theater Quality Corp, all rights reserved.
+ * 	Copyright (C) 2024 t& Corporation, all rights reserved.
  *
  * 	========================================================
  */
@@ -14,7 +14,7 @@
  * @version 0.2
  * @date 2024-01-23
  *
- * @copyright Copyright (c) Theater Quality Corp.
+ * @copyright Copyright (c) t& Corporation.
  *
  */
 
