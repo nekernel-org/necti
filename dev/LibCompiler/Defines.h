@@ -78,19 +78,19 @@
 #define rt_copy_memory(dst, src, len) memcpy(dst, src, len)
 #endif
 
-#define LIBCOMPILER_COPY_DELETE(KLASS)      \
+#define LIBCOMPILER_COPY_DELETE(KLASS)       \
 	KLASS& operator=(const KLASS&) = delete; \
 	KLASS(const KLASS&)			   = delete;
 
-#define LIBCOMPILER_COPY_DEFAULT(KLASS)      \
+#define LIBCOMPILER_COPY_DEFAULT(KLASS)       \
 	KLASS& operator=(const KLASS&) = default; \
 	KLASS(const KLASS&)			   = default;
 
-#define LIBCOMPILER_MOVE_DELETE(KLASS) \
+#define LIBCOMPILER_MOVE_DELETE(KLASS)  \
 	KLASS& operator=(KLASS&&) = delete; \
 	KLASS(KLASS&&)			  = delete;
 
-#define LIBCOMPILER_MOVE_DEFAULT(KLASS) \
+#define LIBCOMPILER_MOVE_DEFAULT(KLASS)  \
 	KLASS& operator=(KLASS&&) = default; \
 	KLASS(KLASS&&)			  = default;
 

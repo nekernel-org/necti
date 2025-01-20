@@ -24,17 +24,19 @@ struct PACKED CpuOpcodeArm64_Data final
 	uint32_t fRd : 5;	   // Bits 4–0: Destination register Rd
 };
 
-typedef  struct {
-    uint32_t opcode  : 6;   // Bits 31–26: Branch opcode
-    int32_t  offset  : 26;  // Bits 25–0: Signed offset (branch target)
+typedef struct
+{
+	uint32_t opcode : 6;  // Bits 31–26: Branch opcode
+	int32_t	 offset : 26; // Bits 25–0: Signed offset (branch target)
 } PACKED CpuOpcodeArm64_Branch;
 
-typedef struct {
-    uint32_t size    : 2;   // Bits 31–30: Size of the data
-    uint32_t opcode  : 7;   // Bits 29–23: Opcode for load/store
-    uint32_t offset  : 12;  // Bits 22–10: Offset
-    uint32_t rn      : 5;   // Bits 9–5: Base address register Rn
-    uint32_t rt      : 5;   // Bits 4–0: Target/source register Rt
+typedef struct
+{
+	uint32_t size : 2;	  // Bits 31–30: Size of the data
+	uint32_t opcode : 7;  // Bits 29–23: Opcode for load/store
+	uint32_t offset : 12; // Bits 22–10: Offset
+	uint32_t rn : 5;	  // Bits 9–5: Base address register Rn
+	uint32_t rt : 5;	  // Bits 4–0: Target/source register Rt
 } PACKED CpuOpcodeArm64_LoadStore;
 
 #define kAsmRegisterLimit  (30)

@@ -197,7 +197,7 @@ LIBCOMPILER_MODULE(AssemblerMainARM64)
 		{
 			if (kVerbose)
 			{
-				kStdOut << "AssemblerPower: Writing object file...\n";
+				kStdOut << "AssemblerARM64: Writing object file...\n";
 			}
 
 			// this is the final step, write everything to the file.
@@ -210,8 +210,8 @@ LIBCOMPILER_MODULE(AssemblerMainARM64)
 
 			if (kRecords.empty())
 			{
-				kStdErr << "AssemblerPower: At least one record is needed to write an object "
-						   "file.\nAssemblerPower: Make one using `public_segment .code64 foo_bar`.\n";
+				kStdErr << "AssemblerARM64: At least one record is needed to write an object "
+						   "file.\nAssemblerARM64: Make one using `public_segment .code64 foo_bar`.\n";
 
 				std::filesystem::remove(object_output);
 				return 1;
@@ -230,7 +230,7 @@ LIBCOMPILER_MODULE(AssemblerMainARM64)
 				file_ptr_out << record_hdr;
 
 				if (kVerbose)
-					kStdOut << "AssemblerPower: Wrote record " << record_hdr.fName << "...\n";
+					kStdOut << "AssemblerARM64: Wrote record " << record_hdr.fName << "...\n";
 			}
 
 			// increment once again, so that we won't lie about the kUndefinedSymbols.
@@ -241,7 +241,7 @@ LIBCOMPILER_MODULE(AssemblerMainARM64)
 				LibCompiler::AERecordHeader undefined_sym{0};
 
 				if (kVerbose)
-					kStdOut << "AssemblerPower: Wrote symbol " << sym << " to file...\n";
+					kStdOut << "AssemblerARM64: Wrote symbol " << sym << " to file...\n";
 
 				undefined_sym.fKind	  = kAENullType;
 				undefined_sym.fSize	  = sym.size();
@@ -272,7 +272,7 @@ LIBCOMPILER_MODULE(AssemblerMainARM64)
 		{
 			if (kVerbose)
 			{
-				kStdOut << "AssemblerPower: Write raw binary...\n";
+				kStdOut << "AssemblerARM64: Write raw binary...\n";
 			}
 		}
 
@@ -283,13 +283,13 @@ LIBCOMPILER_MODULE(AssemblerMainARM64)
 		}
 
 		if (kVerbose)
-			kStdOut << "AssemblerPower: Wrote file with program in it.\n";
+			kStdOut << "AssemblerARM64: Wrote file with program in it.\n";
 
 		file_ptr_out.flush();
 		file_ptr_out.close();
 
 		if (kVerbose)
-			kStdOut << "AssemblerPower: Exit succeeded.\n";
+			kStdOut << "AssemblerARM64: Exit succeeded.\n";
 
 		return 0;
 	}
@@ -297,7 +297,7 @@ LIBCOMPILER_MODULE(AssemblerMainARM64)
 asm_fail_exit:
 
 	if (kVerbose)
-		kStdOut << "AssemblerPower: Exit failed.\n";
+		kStdOut << "AssemblerARM64: Exit failed.\n";
 
 	return LIBCOMPILER_EXEC_ERROR;
 }
@@ -382,7 +382,7 @@ static bool asm_read_attributes(std::string& line)
 
 		return true;
 	}
-	// public_segment is a special keyword used by AssemblerPower to tell the AE output stage to
+	// public_segment is a special keyword used by Assembler to tell the AE output stage to
 	// mark this section as a header. it currently supports .code64, .data64.,
 	// .zero64
 	else if (LibCompiler::find_word(line, "public_segment"))
@@ -599,7 +599,7 @@ bool LibCompiler::EncoderARM64::WriteNumber(const std::size_t& pos,
 
 		if (kVerbose)
 		{
-			kStdOut << "AssemblerPower: found a base 16 number here: "
+			kStdOut << "AssemblerARM64: found a base 16 number here: "
 					<< jump_label.substr(pos) << "\n";
 		}
 
@@ -621,7 +621,7 @@ bool LibCompiler::EncoderARM64::WriteNumber(const std::size_t& pos,
 
 		if (kVerbose)
 		{
-			kStdOut << "AssemblerPower: found a base 2 number here: "
+			kStdOut << "AssemblerARM64: found a base 2 number here: "
 					<< jump_label.substr(pos) << "\n";
 		}
 
@@ -648,7 +648,7 @@ bool LibCompiler::EncoderARM64::WriteNumber(const std::size_t& pos,
 
 		if (kVerbose)
 		{
-			kStdOut << "AssemblerPower: found a base 8 number here: "
+			kStdOut << "AssemblerARM64: found a base 8 number here: "
 					<< jump_label.substr(pos) << "\n";
 		}
 
@@ -683,7 +683,7 @@ bool LibCompiler::EncoderARM64::WriteNumber(const std::size_t& pos,
 
 	if (kVerbose)
 	{
-		kStdOut << "AssemblerPower: found a base 10 number here: " << jump_label.substr(pos)
+		kStdOut << "AssemblerARM64: found a base 10 number here: " << jump_label.substr(pos)
 				<< "\n";
 	}
 

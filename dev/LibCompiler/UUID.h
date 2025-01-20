@@ -199,7 +199,7 @@ namespace uuids
 				process_byte(static_cast<unsigned char>((bitCount >> 24) & 0xFF));
 				process_byte(static_cast<unsigned char>((bitCount >> 16) & 0xFF));
 				process_byte(static_cast<unsigned char>((bitCount >> 8) & 0xFF));
-				process_byte(static_cast<unsigned char>((bitCount)&0xFF));
+				process_byte(static_cast<unsigned char>((bitCount) & 0xFF));
 
 				memcpy(digest, m_digest, 5 * sizeof(uint32_t));
 				return digest;
@@ -842,7 +842,7 @@ namespace uuids
 		}
 
 	private:
-		uuid		  nsuuid;
+		uuid		 nsuuid;
 		Detail::sha1 hasher;
 	};
 
