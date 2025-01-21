@@ -1,0 +1,18 @@
+{
+  "compiler_path": "g++",
+  "compiler_std": "c++20",
+  "headers_path": [
+    "./dev/LibCompiler",
+    "./dev",
+    "./dev/LibCompiler/src/",
+    "./dev/LibCompiler/src/Detail"
+  ],
+  "sources_path": ["dev/LibCompiler/src/*.cc"],
+  "output_name": "/usr/local/lib/libCxxCompiler.dylib",
+  "compiler_flags": ["-fPIC", "-shared"],
+  "cpp_macros": [
+    "__LIBCOMPILER_DLL__=202401",
+    "TK_USE_STRUCTS=1",
+    "kDistReleaseBranch=$(git rev-parse --abbrev-ref HEAD)-$(uuidgen)"
+  ]
+}
