@@ -1,7 +1,7 @@
 /* -------------------------------------------
 
 	Some modifications are copyrighted under:
-	t& Corporation.
+	MediaSwirl.
 
 	Original author:
 	Apple Inc

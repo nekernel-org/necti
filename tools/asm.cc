@@ -1,6 +1,6 @@
 /* -------------------------------------------
 
-	Copyright (C) 2024 t& Corporation, all rights reserved
+	Copyright (C) 2024 MediaSwirl, all rights reserved
 
 ------------------------------------------- */
 
@@ -39,8 +39,8 @@ int main(int argc, char const* argv[])
 		{
 			std::printf("asm.exe: Frontend Assembler (64x0, power64, x64).\n");
 			std::printf("asm.exe: Version: %s, Release: %s.\n", kDistVersion, kDistRelease);
-			std::printf("asm.exe: Designed by t& Corporation., Copyright (C) 2024 t& Corporation, all rights reserved.\n");
-			std::printf("libCxxCompiler.dylib: Designed by t& Corporation., Copyright (C) 2024 t& Corporation, all rights reserved.\n");
+			std::printf("asm.exe: Designed by MediaSwirl., Copyright (C) 2024 MediaSwirl, all rights reserved.\n");
+			std::printf("libCxxCompiler.dylib: Designed by MediaSwirl., Copyright (C) 2024 MediaSwirl, all rights reserved.\n");
 
 			return 0;
 		}

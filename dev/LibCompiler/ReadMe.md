@@ -4,4 +4,4 @@
 
 This contains a set of tools necessary to compile a ZKA program.
 
-###### Copyright (C) 2024 t& Corporation, all rights reserved.
+###### Copyright (C) 2024 MediaSwirl, all rights reserved.

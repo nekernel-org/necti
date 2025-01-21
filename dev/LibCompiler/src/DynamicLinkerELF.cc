@@ -1,6 +1,6 @@
 /* -------------------------------------------
 
-	Copyright (C) 2024 t& Corporation, all rights reserved
+	Copyright (C) 2024 MediaSwirl, all rights reserved
 
 	@file DynamicLinker64PEF.cc
 	@brief: C++ 64-Bit PEF Linker.
@@ -32,7 +32,7 @@
 #include <LibCompiler/NFC/AE.h>
 #include <cstdint>
 
-#define kLinkerVersionStr "TQ 64-Bit Linker (ELF) %s, (c) t& Corporation. 2024, all rights reserved.\n"
+#define kLinkerVersionStr "TQ 64-Bit Linker (ELF) %s, (c) MediaSwirl. 2024, all rights reserved.\n"
 
 #define MemoryCopy(DST, SRC, SZ) memcpy(DST, SRC, SZ)
 #define StringCompare(DST, SRC) strcmp(DST, SRC)

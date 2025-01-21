@@ -2,7 +2,7 @@
  *	========================================================
  *
  *	cc
- * 	Copyright (C) 2024 t& Corporation, all rights reserved.
+ * 	Copyright (C) 2024 MediaSwirl, all rights reserved.
  *
  * 	========================================================
  */
@@ -24,7 +24,7 @@
 
 /* C driver */
 /* This is part of the LibCompiler. */
-/* (c) t& Corporation. */
+/* (c) MediaSwirl. */
 
 /// @author EL Mahrouss Amlal (amlel)
 /// @file 64x0-cc.cxx
@@ -1482,7 +1482,7 @@ public:
 
 #define kPrintF printf
 #define kSplashCxx() \
-	kPrintF(kWhite "ZKA C Driver, %s, (c) t& Corporation.\n", kDistVersion)
+	kPrintF(kWhite "ZKA C Driver, %s, (c) MediaSwirl.\n", kDistVersion)
 
 static void cc_print_help()
 {

@@ -2,7 +2,7 @@
  *	========================================================
  *
  *	LibCompiler
- * 	Copyright (C) 2024 t& Corporation, all rights reserved.
+ * 	Copyright (C) 2024 MediaSwirl, all rights reserved.
  *
  * 	========================================================
  */
@@ -14,7 +14,7 @@
  * @version 0.2
  * @date 2024-01-23
  *
- * @copyright Copyright (c) t& Corporation.
+ * @copyright Copyright (c) MediaSwirl.
  *
  */
 

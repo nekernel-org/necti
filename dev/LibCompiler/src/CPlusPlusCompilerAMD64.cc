@@ -2,7 +2,7 @@
  *	========================================================
  *
  *	c++-drv
- * 	Copyright (C) 2024 t& Corporation, all rights reserved.
+ * 	Copyright (C) 2024 MediaSwirl, all rights reserved.
  *
  * 	========================================================
  */
@@ -15,7 +15,7 @@
 #define kExitNO (EXIT_FAILURE)
 
 #define kSplashCxx() \
-	kPrintF(kWhite "%s\n", "TQ C++ Compiler Driver, (c) 2024 t& Corporation., all rights reserved.")
+	kPrintF(kWhite "%s\n", "TQ C++ Compiler Driver, (c) 2024 MediaSwirl., all rights reserved.")
 
 // extern_segment, @autodelete { ... }, fn foo() -> auto { ... }
 
@@ -27,7 +27,7 @@
 
 /* ZKA C++ Compiler */
 /* This is part of the LibCompiler. */
-/* (c) t& Corporation. */
+/* (c) MediaSwirl. */
 
 /// @author EL Mahrouss Amlal (amlel)
 /// @file CPlusPlusCompilerAMD64.cxx

@@ -2,7 +2,7 @@
  *	========================================================
  *
  *	CCompilerPower64
- * 	Copyright (C) 2024 t& Corporation, all rights reserved.
+ * 	Copyright (C) 2024 MediaSwirl, all rights reserved.
  *
  * 	========================================================
  */
@@ -1502,7 +1502,7 @@ public:
 
 #define kPrintF printf
 #define kSplashCxx() \
-	kPrintF(kWhite "cc, %s, (c) t& Corporation.\n", kDistVersion)
+	kPrintF(kWhite "cc, %s, (c) MediaSwirl.\n", kDistVersion)
 
 static void cc_print_help()
 {
