@@ -4,7 +4,7 @@
 
 ------------------------------------------- */
 
-/// @file tqcc.cc
+/// @file necc.cc
 /// @brief ZKA C++ frontend compiler.
 
 #include <LibCompiler/Defines.h>
@@ -61,7 +61,7 @@ int main(int argc, char const* argv[])
 				args_list_cxx.push_back(arg);
 			} else if (strstr(argv[index_arg], ".c"))
 			{
-				std::printf("tqcc: error: C is not ready yet.\n");
+				std::printf("necc: error: C is not ready yet.\n");
 				return EXIT_FAILURE;
 			}
 		}

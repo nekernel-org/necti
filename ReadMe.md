@@ -9,7 +9,7 @@ A dialect of C++ for ZkaOS.
 Start by cloning the repository:
 
 ```
-git clone git@github.com:amlel-el-mahrouss/compiler.git
+git clone git@github.com:mediaswirl/necc.git
 ```
 
 And then follow the build instructions (Install.md)
