@@ -5,3 +5,7 @@
 ------------------------------------------- */
 
 #pragma once
+
+class ITerminalEmulator;
+class iTerminalEscapeCode;
+
