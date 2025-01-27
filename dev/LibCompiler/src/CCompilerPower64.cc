@@ -81,9 +81,9 @@ namespace Detail
 } // namespace Detail
 
 static Detail::CompilerState kState;
-static SizeType				  kErrorLimit		= 100;
-static std::string			  kIfFunction		= "";
-static Int32				  kAcceptableErrors = 0;
+static SizeType				 kErrorLimit	   = 100;
+static std::string			 kIfFunction	   = "";
+static Int32				 kAcceptableErrors = 0;
 
 namespace Detail
 {
@@ -149,9 +149,9 @@ public:
 	}
 };
 
-static CompilerFrontendPower64*			  kCompilerFrontend = nullptr;
+static CompilerFrontendPower64*			 kCompilerFrontend = nullptr;
 static std::vector<Detail::CompilerType> kCompilerVariables;
-static std::vector<std::string>			  kCompilerFunctions;
+static std::vector<std::string>			 kCompilerFunctions;
 static std::vector<Detail::CompilerType> kCompilerTypes;
 
 namespace Detail

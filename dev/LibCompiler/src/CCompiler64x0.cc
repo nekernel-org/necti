@@ -79,13 +79,13 @@ namespace Detail
 	struct CompilerState final
 	{
 		std::vector<LibCompiler::SyntaxLeafList> fSyntaxTreeList;
-		std::vector<CompilerRegisterMap> kStackFrame;
-		std::vector<CompilerStructMap>	 kStructMap;
+		std::vector<CompilerRegisterMap>		 kStackFrame;
+		std::vector<CompilerStructMap>			 kStructMap;
 		LibCompiler::SyntaxLeafList*			 fSyntaxTree{nullptr};
-		std::unique_ptr<std::ofstream>	 fOutputAssembly;
-		std::string						 fLastFile;
-		std::string						 fLastError;
-		bool							 fVerbose;
+		std::unique_ptr<std::ofstream>			 fOutputAssembly;
+		std::string								 fLastFile;
+		std::string								 fLastError;
+		bool									 fVerbose;
 	};
 } // namespace Detail
 
@@ -131,14 +131,14 @@ static std::string kRegisterPrefix	= kAsmRegisterPrefix;
 
 /////////////////////////////////////////
 
-static std::vector<std::string> kFileList;
-static LibCompiler::AssemblyFactory		kFactory;
-static bool						kInStruct	 = false;
-static bool						kOnWhileLoop = false;
-static bool						kOnForLoop	 = false;
-static bool						kInBraces	 = false;
-static bool						kIfFound	 = false;
-static size_t					kBracesCount = 0UL;
+static std::vector<std::string>		kFileList;
+static LibCompiler::AssemblyFactory kFactory;
+static bool							kInStruct	 = false;
+static bool							kOnWhileLoop = false;
+static bool							kOnForLoop	 = false;
+static bool							kInBraces	 = false;
+static bool							kIfFound	 = false;
+static size_t						kBracesCount = 0UL;
 
 /* @brief C compiler backend for C */
 class CompilerFrontend64x0 final : public LibCompiler::ICompilerFrontend
@@ -403,7 +403,7 @@ bool CompilerFrontend64x0::Compile(std::string text_, const std::string file)
 			if (text[text_index] == '=' && kInStruct)
 			{
 				Detail::print_error("assignement of value in struct " + text,
-										file);
+									file);
 				continue;
 			}
 

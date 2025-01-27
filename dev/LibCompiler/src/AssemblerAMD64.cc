@@ -75,8 +75,8 @@ static LibCompiler::AERecordHeader kCurrentRecord{
 	.fName = "", .fKind = LibCompiler::kPefCode, .fSize = 0, .fOffset = 0};
 
 static std::vector<LibCompiler::AERecordHeader> kRecords;
-static std::vector<std::string>			kDefinedSymbols;
-static std::vector<std::string>			kUndefinedSymbols;
+static std::vector<std::string>					kDefinedSymbols;
+static std::vector<std::string>					kUndefinedSymbols;
 
 static const std::string kUndefinedSymbol = ":UndefinedSymbol:";
 
@@ -549,10 +549,10 @@ namespace Detail::algorithm
 	static inline bool is_not_valid(char c)
 	{
 		if ((isalpha(c) || isdigit(c)) || ((c == ' ') || (c == '\t') ||
-				 (c == ',') || (c == '(') || (c == ')') || (c == '"') || (c == '*') ||
-				 (c == '\'') || (c == '[') || (c == ']') || (c == '+') ||
-				 (c == '_') || (c == ':') || (c == '@') || (c == '.') || (c == '#') || (c == ';')))
-				 return false;
+										   (c == ',') || (c == '(') || (c == ')') || (c == '"') || (c == '*') ||
+										   (c == '\'') || (c == '[') || (c == ']') || (c == '+') ||
+										   (c == '_') || (c == ':') || (c == '@') || (c == '.') || (c == '#') || (c == ';')))
+			return false;
 
 		return true;
 	}
@@ -570,7 +570,7 @@ namespace Detail::algorithm
 /////////////////////////////////////////////////////////////////////////////////////////
 
 std::string LibCompiler::EncoderAMD64::CheckLine(std::string&		line,
-										 const std::string& file)
+												 const std::string& file)
 {
 	std::string err_str;
 
@@ -653,7 +653,7 @@ std::string LibCompiler::EncoderAMD64::CheckLine(std::string&		line,
 }
 
 bool LibCompiler::EncoderAMD64::WriteNumber(const std::size_t& pos,
-									std::string&	   jump_label)
+											std::string&	   jump_label)
 {
 	if (!isdigit(jump_label[pos]))
 		return false;
@@ -785,7 +785,7 @@ bool LibCompiler::EncoderAMD64::WriteNumber(const std::size_t& pos,
 }
 
 bool LibCompiler::EncoderAMD64::WriteNumber32(const std::size_t& pos,
-									  std::string&		 jump_label)
+											  std::string&		 jump_label)
 {
 	if (!isdigit(jump_label[pos]))
 		return false;
@@ -906,7 +906,7 @@ bool LibCompiler::EncoderAMD64::WriteNumber32(const std::size_t& pos,
 }
 
 bool LibCompiler::EncoderAMD64::WriteNumber16(const std::size_t& pos,
-									  std::string&		 jump_label)
+											  std::string&		 jump_label)
 {
 	if (!isdigit(jump_label[pos]))
 		return false;
@@ -1038,7 +1038,7 @@ bool LibCompiler::EncoderAMD64::WriteNumber16(const std::size_t& pos,
 }
 
 bool LibCompiler::EncoderAMD64::WriteNumber8(const std::size_t& pos,
-									 std::string&		jump_label)
+											 std::string&		jump_label)
 {
 	if (!isdigit(jump_label[pos]))
 		return false;
@@ -1152,7 +1152,7 @@ bool LibCompiler::EncoderAMD64::WriteNumber8(const std::size_t& pos,
 /////////////////////////////////////////////////////////////////////////////////////////
 
 bool LibCompiler::EncoderAMD64::WriteLine(std::string&		 line,
-								  const std::string& file)
+										  const std::string& file)
 {
 	if (LibCompiler::find_word(line, "public_segment "))
 		return true;
@@ -1301,7 +1301,7 @@ bool LibCompiler::EncoderAMD64::WriteLine(std::string&		 line,
 				{
 					auto num = GetNumber32(line, ",");
 
-					for (auto& num_idx: num.number)
+					for (auto& num_idx : num.number)
 					{
 						if (num_idx == 0)
 							num_idx = 0xFF;
@@ -1324,7 +1324,7 @@ bool LibCompiler::EncoderAMD64::WriteLine(std::string&		 line,
 					currentRegList[0].fName[0] == 'e')
 				{
 					Detail::print_error("Invalid combination of operands and registers.",
-											"LibCompiler");
+										"LibCompiler");
 					throw std::runtime_error("comb_op_reg");
 				}
 
@@ -1332,7 +1332,7 @@ bool LibCompiler::EncoderAMD64::WriteLine(std::string&		 line,
 					currentRegList[1].fName[0] == 'e')
 				{
 					Detail::print_error("Invalid combination of operands and registers.",
-											"LibCompiler");
+										"LibCompiler");
 					throw std::runtime_error("comb_op_reg");
 				}
 
@@ -1342,7 +1342,7 @@ bool LibCompiler::EncoderAMD64::WriteLine(std::string&		 line,
 						currentRegList[0].fName[0] == 'e')
 					{
 						Detail::print_error("Invalid combination of operands and registers.",
-												"LibCompiler");
+											"LibCompiler");
 						throw std::runtime_error("comb_op_reg");
 					}
 
@@ -1350,7 +1350,7 @@ bool LibCompiler::EncoderAMD64::WriteLine(std::string&		 line,
 						currentRegList[1].fName[0] == 'e')
 					{
 						Detail::print_error("Invalid combination of operands and registers.",
-												"LibCompiler");
+											"LibCompiler");
 						throw std::runtime_error("comb_op_reg");
 					}
 				}
@@ -1360,7 +1360,7 @@ bool LibCompiler::EncoderAMD64::WriteLine(std::string&		 line,
 						currentRegList[0].fName[0] == 'e')
 					{
 						Detail::print_error("Invalid combination of operands and registers.",
-												"LibCompiler");
+											"LibCompiler");
 						throw std::runtime_error("comb_op_reg");
 					}
 
@@ -1368,7 +1368,7 @@ bool LibCompiler::EncoderAMD64::WriteLine(std::string&		 line,
 						currentRegList[1].fName[0] == 'e')
 					{
 						Detail::print_error("Invalid combination of operands and registers.",
-												"LibCompiler");
+											"LibCompiler");
 						throw std::runtime_error("comb_op_reg");
 					}
 				}

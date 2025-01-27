@@ -59,7 +59,8 @@ int main(int argc, char const* argv[])
 				arg += ".pp";
 
 				args_list_cxx.push_back(arg);
-			} else if (strstr(argv[index_arg], ".c"))
+			}
+			else if (strstr(argv[index_arg], ".c"))
 			{
 				std::printf("necc: error: C is not ready yet.\n");
 				return EXIT_FAILURE;

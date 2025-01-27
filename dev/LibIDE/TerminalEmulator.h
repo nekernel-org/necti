@@ -8,4 +8,3 @@
 
 class ITerminalEmulator;
 class iTerminalEscapeCode;
-

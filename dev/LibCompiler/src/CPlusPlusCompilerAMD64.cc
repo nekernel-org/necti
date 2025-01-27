@@ -11,7 +11,7 @@
 
 #define kPrintF printf
 
-#define kExitOK	(EXIT_SUCCESS)
+#define kExitOK (EXIT_SUCCESS)
 #define kExitNO (EXIT_FAILURE)
 
 #define kSplashCxx() \
@@ -136,10 +136,10 @@ static int kMachine = LibCompiler::AssemblyFactory::kArchAMD64;
 
 /////////////////////////////////////////
 
-static size_t									  kRegisterCnt	   = kAsmRegisterLimit;
-static size_t									  kStartUsable	   = 8;
-static size_t									  kUsableLimit	   = 15;
-static size_t									  kRegisterCounter = kStartUsable;
+static size_t									 kRegisterCnt	  = kAsmRegisterLimit;
+static size_t									 kStartUsable	  = 8;
+static size_t									 kUsableLimit	  = 15;
+static size_t									 kRegisterCounter = kStartUsable;
 static std::vector<LibCompiler::CompilerKeyword> kKeywords;
 
 /////////////////////////////////////////
@@ -148,13 +148,13 @@ static std::vector<LibCompiler::CompilerKeyword> kKeywords;
 
 /////////////////////////////////////////
 
-static std::vector<std::string>		 kFileList;
+static std::vector<std::string>		kFileList;
 static LibCompiler::AssemblyFactory kFactory;
-static bool							 kInStruct	  = false;
-static bool							 kOnWhileLoop = false;
-static bool							 kOnForLoop	  = false;
-static bool							 kInBraces	  = false;
-static size_t						 kBracesCount = 0UL;
+static bool							kInStruct	 = false;
+static bool							kOnWhileLoop = false;
+static bool							kOnForLoop	 = false;
+static bool							kInBraces	 = false;
+static size_t						kBracesCount = 0UL;
 
 /* @brief C++ compiler backend for the ZKA C++ driver */
 class CompilerFrontendCPlusPlus final : public LibCompiler::ICompilerFrontend
@@ -226,7 +226,7 @@ bool CompilerFrontendCPlusPlus::Compile(const std::string text,
 	if (text.empty())
 		return false;
 
-	std::size_t														   index = 0UL;
+	std::size_t														  index = 0UL;
 	std::vector<std::pair<LibCompiler::CompilerKeyword, std::size_t>> keywords_list;
 
 	bool		found		 = false;
@@ -393,8 +393,8 @@ bool CompilerFrontendCPlusPlus::Compile(const std::string text,
 			return false;
 
 		accept:
-			std::string fnName = text;
-			size_t indexFnName = 0;
+			std::string fnName		= text;
+			size_t		indexFnName = 0;
 
 			// this one is for the type.
 			for (auto& ch : text)
@@ -424,7 +424,7 @@ bool CompilerFrontendCPlusPlus::Compile(const std::string text,
 				{
 					if (fnName[indexFnName - 1] != ')')
 						Detail::print_error("Invalid function name: " + fnName, file);
-				
+
 					if ((indexFnName + 1) != fnName.size())
 						Detail::print_error("Extra characters after function name: " + fnName, file);
 				}
@@ -437,7 +437,7 @@ bool CompilerFrontendCPlusPlus::Compile(const std::string text,
 
 			break;
 
-tk_write_assembly:
+		tk_write_assembly:
 			syntax_tree.fUserValue = "jmp __LIBCOMPILER_" + fnName + "\n";
 		}
 		case LibCompiler::KeywordKind::kKeywordKindFunctionEnd: {
@@ -779,8 +779,7 @@ tk_write_assembly:
 				syntax_tree.fUserValue = "ret\n";
 			}
 		}
-		default:
-		{
+		default: {
 			break;
 		}
 		}

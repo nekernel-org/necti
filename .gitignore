@@ -12,6 +12,8 @@ tools/asm
 tools/ld64
 tools/necc
 
+tools/dbg
+
 *.pp
 *.masm
 *.creator.user

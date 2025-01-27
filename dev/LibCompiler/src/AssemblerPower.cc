@@ -64,7 +64,7 @@ static LibCompiler::AERecordHeader kCurrentRecord{
 	.fName = "", .fKind = LibCompiler::kPefCode, .fSize = 0, .fOffset = 0};
 
 static std::vector<LibCompiler::AERecordHeader> kRecords;
-static std::vector<std::string>			kUndefinedSymbols;
+static std::vector<std::string>					kUndefinedSymbols;
 
 static const std::string kUndefinedSymbol = ":UndefinedSymbol:";
 static const std::string kRelocSymbol	  = ":RuntimeSymbol:";
@@ -318,7 +318,7 @@ static bool asm_read_attributes(std::string& line)
 		if (kOutputAsBinary)
 		{
 			Detail::print_error("Invalid extern_segment directive in flat binary mode.",
-									"LibCompiler");
+								"LibCompiler");
 			throw std::runtime_error("invalid_extern_segment_bin");
 		}
 
@@ -390,7 +390,7 @@ static bool asm_read_attributes(std::string& line)
 		if (kOutputAsBinary)
 		{
 			Detail::print_error("Invalid public_segment directive in flat binary mode.",
-									"LibCompiler");
+								"LibCompiler");
 			throw std::runtime_error("invalid_public_segment_bin");
 		}
 
@@ -486,7 +486,7 @@ namespace Detail::algorithm
 /////////////////////////////////////////////////////////////////////////////////////////
 
 std::string LibCompiler::EncoderPowerPC::CheckLine(std::string&		  line,
-										   const std::string& file)
+												   const std::string& file)
 {
 	std::string err_str;
 
@@ -617,7 +617,7 @@ std::string LibCompiler::EncoderPowerPC::CheckLine(std::string&		  line,
 }
 
 bool LibCompiler::EncoderPowerPC::WriteNumber(const std::size_t& pos,
-									  std::string&		 jump_label)
+											  std::string&		 jump_label)
 {
 	if (!isdigit(jump_label[pos]))
 		return false;
@@ -743,7 +743,7 @@ bool LibCompiler::EncoderPowerPC::WriteNumber(const std::size_t& pos,
 /////////////////////////////////////////////////////////////////////////////////////////
 
 bool LibCompiler::EncoderPowerPC::WriteLine(std::string&	   line,
-									const std::string& file)
+											const std::string& file)
 {
 	if (LibCompiler::find_word(line, "public_segment"))
 		return false;
@@ -833,7 +833,7 @@ bool LibCompiler::EncoderPowerPC::WriteLine(std::string&	   line,
 						if (reg_index > kAsmRegisterLimit)
 						{
 							Detail::print_error("invalid register index, r" + reg_str,
-													file);
+												file);
 							throw std::runtime_error("invalid_register_index");
 						}
 
@@ -859,7 +859,7 @@ bool LibCompiler::EncoderPowerPC::WriteLine(std::string&	   line,
 								if (num.number[i] > 0)
 								{
 									Detail::print_warning("number overflow on li operation.",
-															  file);
+														  file);
 									break;
 								}
 							}

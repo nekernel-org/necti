@@ -35,12 +35,12 @@
 #define kLinkerVersionStr "TQ 64-Bit Linker (Preferred Executable) %s, (c) Amlal EL Mahrouss. 2024, all rights reserved.\n"
 
 #define MemoryCopy(DST, SRC, SZ) memcpy(DST, SRC, SZ)
-#define StringCompare(DST, SRC) strcmp(DST, SRC)
+#define StringCompare(DST, SRC)	 strcmp(DST, SRC)
 
 #define kPefNoCpu	 0U
 #define kPefNoSubCpu 0U
 
-#define kWhite	"\e[0;97m"
+#define kWhite "\e[0;97m"
 
 #define kStdOut (std::cout << kWhite << "ld64: ")
 
@@ -51,41 +51,41 @@
 /// @brief PEF stack size symbol.
 #define kLinkerStackSizeSymbol "SizeOfReserveStack"
 
-namespace Detail 
+namespace Detail
 {
-struct DynamicLinkerBlob final
-{
-	std::vector<CharType> mBlob{}; // PEF code/bss/data blob.
-	UIntPtr mObjOffset{0UL}; // the offset of the PEF container header..
-};
-}
+	struct DynamicLinkerBlob final
+	{
+		std::vector<CharType> mBlob{};		   // PEF code/bss/data blob.
+		UIntPtr				  mObjOffset{0UL}; // the offset of the PEF container header..
+	};
+} // namespace Detail
 
 enum
 {
 	kABITypeStart	= 0x1010, /* Invalid ABI start of ABI list. */
-	kABITypeZKA	= 0x5046, /* PF (ZKA PEF ABI) */
+	kABITypeZKA		= 0x5046, /* PF (ZKA PEF ABI) */
 	kABITypeInvalid = 0xFFFF,
 };
 
-static LibCompiler::String kOutput	 = "";
-static Int32	   kAbi				 = kABITypeZKA;
-static Int32	   kSubArch			 = kPefNoSubCpu;
-static Int32	   kArch			 = LibCompiler::kPefArchInvalid;
-static Bool		   kFatBinaryEnable	 = false;
-static Bool		   kStartFound		 = false;
-static Bool		   kDuplicateSymbols = false;
-static Bool		   kVerbose			 = false;
+static LibCompiler::String kOutput			 = "";
+static Int32			   kAbi				 = kABITypeZKA;
+static Int32			   kSubArch			 = kPefNoSubCpu;
+static Int32			   kArch			 = LibCompiler::kPefArchInvalid;
+static Bool				   kFatBinaryEnable	 = false;
+static Bool				   kStartFound		 = false;
+static Bool				   kDuplicateSymbols = false;
+static Bool				   kVerbose			 = false;
 
 /* ld64 is to be found, mld is to be found at runtime. */
 static const char* kLdDefineSymbol = ":UndefinedSymbol:";
 static const char* kLdDynamicSym   = ":RuntimeSymbol:";
 
 /* object code and list. */
-static std::vector<LibCompiler::String> kObjectList;
+static std::vector<LibCompiler::String>		  kObjectList;
 static std::vector<Detail::DynamicLinkerBlob> kObjectBytes;
 
-static uintptr_t kMIBCount = 8;
-static uintptr_t kByteCount	= 1024;
+static uintptr_t kMIBCount	= 8;
+static uintptr_t kByteCount = 1024;
 
 #define kPrintF			printf
 #define kLinkerSplash() kPrintF(kWhite kLinkerVersionStr, kDistVersion)
@@ -99,7 +99,7 @@ LIBCOMPILER_MODULE(DynamicLinker64PEF)
 	/**
 	 * @brief parse flags and trigger options.
 	 */
-	for (size_t linker_arg = 1;	linker_arg < argc; ++linker_arg)
+	for (size_t linker_arg = 1; linker_arg < argc; ++linker_arg)
 	{
 		if (StringCompare(argv[linker_arg], "--ld64:help") == 0)
 		{
@@ -343,10 +343,10 @@ LIBCOMPILER_MODULE(DynamicLinker64PEF)
 				 ++ae_record_index)
 			{
 				LibCompiler::PEFCommandHeader command_header{0};
-				std::size_t offset_of_obj = ae_records[ae_record_index].fOffset;
+				std::size_t					  offset_of_obj = ae_records[ae_record_index].fOffset;
 
 				MemoryCopy(command_header.Name, ae_records[ae_record_index].fName,
-					   kPefNameLen);
+						   kPefNameLen);
 
 				LibCompiler::String cmd_hdr_name(command_header.Name);
 
@@ -412,7 +412,7 @@ LIBCOMPILER_MODULE(DynamicLinker64PEF)
 
 			for (auto& byte : bytes)
 			{
-				kObjectBytes.push_back({ .mBlob = bytes, .mObjOffset = ae_header.fStartCode });
+				kObjectBytes.push_back({.mBlob = bytes, .mObjOffset = ae_header.fStartCode});
 			}
 
 			reader_protocol.FP.close();
@@ -468,7 +468,7 @@ LIBCOMPILER_MODULE(DynamicLinker64PEF)
 		 ++not_found_idx)
 	{
 		if (const auto it = std::find(not_found.begin(), not_found.end(),
-								LibCompiler::String(command_headers[not_found_idx].Name));
+									  LibCompiler::String(command_headers[not_found_idx].Name));
 			it != not_found.end())
 		{
 			LibCompiler::String symbol_imp = *it;
@@ -494,7 +494,7 @@ LIBCOMPILER_MODULE(DynamicLinker64PEF)
 						LibCompiler::String::npos)
 				{
 					LibCompiler::String undefined_symbol = command_hdr.Name;
-					auto		result_of_sym =
+					auto				result_of_sym =
 						undefined_symbol.substr(undefined_symbol.find(symbol_imp));
 
 					for (int i = 0; result_of_sym[i] != 0; ++i)
@@ -524,7 +524,7 @@ LIBCOMPILER_MODULE(DynamicLinker64PEF)
 		if (kVerbose)
 			kStdOut
 				<< "undefined entrypoint: " << kPefStart << ", you may have forget to ld64 "
-																  "against your compiler's runtime library.\n";
+															"against your compiler's runtime library.\n";
 
 		kStdOut << "undefined entrypoint " << kPefStart
 				<< " for executable: " << kOutput << "\n";
@@ -541,10 +541,10 @@ LIBCOMPILER_MODULE(DynamicLinker64PEF)
 
 	strncpy(date_cmd_hdr.Name, timeStampStr.c_str(), timeStampStr.size());
 
-	date_cmd_hdr.Flags  = 0;
-	date_cmd_hdr.Kind	  = LibCompiler::kPefZero;
+	date_cmd_hdr.Flags	= 0;
+	date_cmd_hdr.Kind	= LibCompiler::kPefZero;
 	date_cmd_hdr.Offset = output_fc.tellp();
-	date_cmd_hdr.Size	  = timeStampStr.size();
+	date_cmd_hdr.Size	= timeStampStr.size();
 
 	command_headers.push_back(date_cmd_hdr);
 
@@ -575,18 +575,18 @@ LIBCOMPILER_MODULE(DynamicLinker64PEF)
 
 	MemoryCopy(abi_cmd_hdr.Name, abi.c_str(), abi.size());
 
-	abi_cmd_hdr.Size	 = abi.size();
+	abi_cmd_hdr.Size   = abi.size();
 	abi_cmd_hdr.Offset = output_fc.tellp();
-	abi_cmd_hdr.Flags	 = 0;
-	abi_cmd_hdr.Kind	 = LibCompiler::kPefLinkerID;
+	abi_cmd_hdr.Flags  = 0;
+	abi_cmd_hdr.Kind   = LibCompiler::kPefLinkerID;
 
 	command_headers.push_back(abi_cmd_hdr);
 
 	LibCompiler::PEFCommandHeader stack_cmd_hdr{0};
 
-	stack_cmd_hdr.Cpu	   = kArch;
-	stack_cmd_hdr.Flags  = 0;
-	stack_cmd_hdr.Size   = sizeof(uintptr_t);
+	stack_cmd_hdr.Cpu	 = kArch;
+	stack_cmd_hdr.Flags	 = 0;
+	stack_cmd_hdr.Size	 = sizeof(uintptr_t);
 	stack_cmd_hdr.Offset = 0;
 
 	MemoryCopy(stack_cmd_hdr.Name, kLinkerStackSizeSymbol, strlen(kLinkerStackSizeSymbol));
@@ -608,12 +608,12 @@ LIBCOMPILER_MODULE(DynamicLinker64PEF)
 
 	MemoryCopy(uuid_cmd_hdr.Name, "Container:GUID:4:", strlen("Container:GUID:4:"));
 	MemoryCopy(uuid_cmd_hdr.Name + strlen("Container:GUID:4:"), uuidStr.c_str(),
-		   uuidStr.size());
+			   uuidStr.size());
 
-	uuid_cmd_hdr.Size	  = strlen(uuid_cmd_hdr.Name);
+	uuid_cmd_hdr.Size	= strlen(uuid_cmd_hdr.Name);
 	uuid_cmd_hdr.Offset = output_fc.tellp();
-	uuid_cmd_hdr.Flags  = LibCompiler::kPefLinkerID;
-	uuid_cmd_hdr.Kind	  = LibCompiler::kPefZero;
+	uuid_cmd_hdr.Flags	= LibCompiler::kPefLinkerID;
+	uuid_cmd_hdr.Kind	= LibCompiler::kPefZero;
 
 	command_headers.push_back(uuid_cmd_hdr);
 

@@ -1,6 +1,6 @@
 #define AppMain int __ImageStart
 
-AppMain() 
+AppMain()
 {
 	return 0;
 }
