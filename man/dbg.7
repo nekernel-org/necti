@@ -1,0 +1,67 @@
+.TH DBG 1 "NeKernel Internal Kit" "January 2025" "NeKernel Manual"
+.SH NAME
+.B dbg
+\- NeKernel internal debugger
+
+.SH SYNOPSIS
+.B dbg
+[␌IOPTIONS␌R] [␌ICOMMAND␌R]
+
+.SH DESCRIPTION
+.B dbg
+is the internal debugging tool for NeKernel. It provides a low-level
+interface for inspecting and manipulating running processes,
+memory, and kernel state.
+
+.SH OPTIONS
+.TP
+.B -p
+Attach to a process by its PID.
+.TP
+.B -s
+Start a new debugging session.
+.TP
+.B -m
+Enable memory inspection mode.
+.TP
+.B -r
+Display register values.
+.TP
+.B -b
+Set a breakpoint at a function or address.
+.TP
+.B -c
+Continue execution after a breakpoint.
+.TP
+.B -h
+Display help information.
+
+.SH USAGE EXAMPLES
+.TP
+.B Start a new debugging session:
+.B dbg -s
+.TP
+.B Attach to a running process (PID 1234):
+.B dbg -p 1234
+.TP
+.B Inspect memory at address 0x1000:
+.B dbg -m 0x1000
+.TP
+.B Set a breakpoint at function "main":
+.B dbg -b main
+.TP
+.B Display register values:
+.B dbg -r
+
+.SH EXIT STATUS
+.TP
+0  Successful execution.
+.TP
+1  Error occurred during debugging.
+
+.SH SEE ALSO
+.BR nekernel (7), gdb (1)
+
+.SH AUTHOR
+NeKernel Development Team
+

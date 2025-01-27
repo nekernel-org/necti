@@ -6,5 +6,8 @@
 
 #pragma once
 
-class ITerminalEmulator;
-class iTerminalEscapeCode;
+namespace LibIDE
+{
+  class Terminal;
+  class BuildSystem;
+}
