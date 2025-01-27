@@ -132,7 +132,8 @@ int main(int argc, char* argv[])
 			std::cout << "[?] Enter a PID to attach on: ";
 
 			std::getline(std::cin, cmd);
-			pid = std::stoi(argv[1]);
+			pid = std::stoi(cmd.c_str());
+      
 			debugger.Attach(pid);
 		}
 
