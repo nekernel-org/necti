@@ -47,7 +47,7 @@ namespace LibDebugger
 			if (original_data == -1)
 			{
 				perror("dbg: Peek");
-			  return;
+				return;
 			}
 
 			long data_with_int3 = (original_data & ~0xFF) | 0xCC; // Insert INT3 (0xCC)
@@ -67,7 +67,7 @@ namespace LibDebugger
 			if (ptrace(PTRACE_CONT, m_pid, nullptr, nullptr) == -1)
 			{
 				perror("dbg: Cont");
-        return;
+				return;
 			}
 
 			int status;

@@ -8,6 +8,6 @@
 
 namespace LibIDE
 {
-  class Terminal;
-  class BuildSystem;
-}
+	class Terminal;
+	class BuildSystem;
+} // namespace LibIDE
