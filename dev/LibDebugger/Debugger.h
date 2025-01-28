@@ -14,7 +14,7 @@
 
 namespace LibDebugger
 {
-	/// \brief Debug IDebugger class in C++
+	/// \brief Debugger interface class in C++
 	/// \author Amlal El Mahrouss
 	class IDebugger final
 	{
@@ -33,7 +33,7 @@ namespace LibDebugger
 			if (ptrace(PTRACE_ATTACH, this->m_pid, nullptr, nullptr) == -1)
 			{
 				perror("dbg: Attach");
-				exit(1);
+				return;
 			}
 
 			waitpid(m_pid, nullptr, 0);
@@ -47,14 +47,14 @@ namespace LibDebugger
 			if (original_data == -1)
 			{
 				perror("dbg: Peek");
-				exit(1);
+			  return;
 			}
 
 			long data_with_int3 = (original_data & ~0xFF) | 0xCC; // Insert INT3 (0xCC)
 			if (ptrace(PTRACE_POKETEXT, m_pid, addr, data_with_int3) == -1)
 			{
 				perror("dbg: Poke");
-				exit(1);
+				return;
 			}
 
 			std::cout << "[+] Breakpoint set at: " << addr << std::endl;
@@ -67,7 +67,7 @@ namespace LibDebugger
 			if (ptrace(PTRACE_CONT, m_pid, nullptr, nullptr) == -1)
 			{
 				perror("dbg: Cont");
-				exit(1);
+        return;
 			}
 
 			int status;
@@ -84,7 +84,7 @@ namespace LibDebugger
 			if (ptrace(PTRACE_DETACH, m_pid, nullptr, nullptr) == -1)
 			{
 				perror("dbg: Detach");
-				exit(1);
+				return;
 			}
 
 			std::cout << "[-] Detached from process: " << m_pid << std::endl;
