@@ -41,11 +41,12 @@ int main(int argc, char* argv[])
 
 		if (cmd == "exit")
 		{
-			std::exit(0);
+			debugger.Detach();
+			break;
 		}
 
-		if (cmd == "b" ||
-			cmd == "break")
+		if (cmd == "break" ||
+			cmd == "bp")
 		{
 			std::cout << "[?] Enter an address to add a breakpoint on: ";
 
