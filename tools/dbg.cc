@@ -2,7 +2,7 @@
 	(C) 2025 Amlal El Mahrouss
  */
 
-#include <LibDebugger/Debugger.h>
+#include <LibDebugger/IDebugger.h>
 
 int main(int argc, char* argv[])
 {
@@ -52,7 +52,7 @@ int main(int argc, char* argv[])
 
 			std::getline(std::cin, cmd);
 
-			void* breakpoint_addr = reinterpret_cast<void*>(std::stoul(cmd.c_str(), nullptr, 16));
+			LibDebugger::VmAddress breakpoint_addr = reinterpret_cast<LibDebugger::VmAddress>(std::stoul(cmd.c_str(), nullptr, 16));
 
 			if (breakpoint_addr)
 				debugger.SetBreakpoint(breakpoint_addr);

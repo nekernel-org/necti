@@ -12,8 +12,18 @@
 #include <unistd.h>
 #include <stdint.h>
 
+#ifdef __APPLE__
+#define PTRACE_ATTACH	PT_ATTACH
+#define PTRACE_DETACH	PT_DETACH
+#define PTRACE_POKETEXT PT_WRITE_I
+#define PTRACE_CONT		PT_CONTINUE
+#define PTRACE_PEEKTEXT PT_READ_I
+#endif
+
 namespace LibDebugger
 {
+	typedef char* VmAddress;
+
 	/// \brief Debugger interface class in C++
 	/// \author Amlal El Mahrouss
 	class IDebugger final
@@ -30,7 +40,7 @@ namespace LibDebugger
 		{
 			this->m_pid = pid;
 
-			if (ptrace(PTRACE_ATTACH, this->m_pid, nullptr, nullptr) == -1)
+			if (ptrace(PTRACE_ATTACH, this->m_pid, nullptr, 0) == -1)
 			{
 				perror("dbg: Attach");
 				return;
@@ -41,9 +51,10 @@ namespace LibDebugger
 			std::cout << "[+] Attached to process: " << m_pid << std::endl;
 		}
 
-		void SetBreakpoint(void* addr)
+		void SetBreakpoint(VmAddress addr)
 		{
-			long original_data = ptrace(PTRACE_PEEKTEXT, m_pid, addr, nullptr);
+			long original_data = ptrace(PTRACE_PEEKTEXT, m_pid, addr, 0);
+
 			if (original_data == -1)
 			{
 				perror("dbg: Peek");
@@ -64,7 +75,7 @@ namespace LibDebugger
 
 		void ContinueExecution()
 		{
-			if (ptrace(PTRACE_CONT, m_pid, nullptr, nullptr) == -1)
+			if (ptrace(PTRACE_CONT, m_pid, nullptr, 0) == -1)
 			{
 				perror("dbg: Cont");
 				return;
@@ -81,7 +92,7 @@ namespace LibDebugger
 
 		void Detach()
 		{
-			if (ptrace(PTRACE_DETACH, m_pid, nullptr, nullptr) == -1)
+			if (ptrace(PTRACE_DETACH, m_pid, nullptr, 0) == -1)
 			{
 				perror("dbg: Detach");
 				return;
