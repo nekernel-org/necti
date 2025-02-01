@@ -37,10 +37,10 @@ int main(int argc, char const* argv[])
 	{
 		if (strstr(argv[index_arg], "--asm:h"))
 		{
-			std::printf("asm.exe: Frontend Assembler (64x0, power64, x64).\n");
+			std::printf("asm.exe: Frontend Assembler (64x0, power64, arm64, x64).\n");
 			std::printf("asm.exe: Version: %s, Release: %s.\n", kDistVersion, kDistRelease);
-			std::printf("asm.exe: Designed by Amlal EL Mahrouss., Copyright (C) 2024 Amlal EL Mahrouss, all rights reserved.\n");
-			std::printf("libCxxCompiler.dylib: Designed by Amlal EL Mahrouss., Copyright (C) 2024 Amlal EL Mahrouss, all rights reserved.\n");
+			std::printf("asm.exe: Designed by Amlal EL Mahrouss., Copyright (C) 2024-2025 Amlal EL Mahrouss, all rights reserved.\n");
+			std::printf("libCxxCompiler.dylib: Designed by Amlal EL Mahrouss, Copyright (C) 2024-2025 Amlal EL Mahrouss, all rights reserved.\n");
 
 			return 0;
 		}

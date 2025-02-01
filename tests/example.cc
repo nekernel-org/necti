@@ -2,5 +2,7 @@
 
 AppMain()
 {
-	return 0;
+	int x = 0;
+	x = 50;
+	return x;
 }

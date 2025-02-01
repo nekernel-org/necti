@@ -23,10 +23,10 @@ int main(int argc, char const* argv[])
 	{
 		if (strstr(argv[index_arg], "--cl:h"))
 		{
-			std::printf("tqc++: Frontend C++ Compiler.\n");
-			std::printf("tqc++: Version: %s, Release: %s.\n", kDistVersion, kDistRelease);
-			std::printf("tqc++: Designed by Amlal EL Mahrouss., Copyright (C) 2024 Amlal EL Mahrouss, all rights reserved.\n");
-			std::printf("libCxxCompiler.dylib: Designed by Amlal EL Mahrouss., Copyright (C) 2024 Amlal EL Mahrouss, all rights reserved.\n");
+			std::printf("necc: Frontend C++ Compiler.\n");
+			std::printf("necc: Version: %s, Release: %s.\n", kDistVersion, kDistRelease);
+			std::printf("necc: Designed by Amlal EL Mahrouss., Copyright (C) 2024-2025 Amlal EL Mahrouss, all rights reserved.\n");
+			std::printf("libCxxCompiler.dylib: Designed by Amlal EL Mahrouss, Copyright (C) 2024-2025 Amlal EL Mahrouss, all rights reserved.\n");
 
 			return 0;
 		}
@@ -34,7 +34,7 @@ int main(int argc, char const* argv[])
 
 	if (auto code = CPlusPlusPreprocessorMain(argc, argv); code)
 	{
-		std::printf("tqc++: frontend exited with code %i.\n", code);
+		std::printf("necc: frontend exited with code %i.\n", code);
 		return 1;
 	}
 	else
@@ -71,9 +71,10 @@ int main(int argc, char const* argv[])
 		{
 			const char* arr_cli[] = {argv[0], cli.data()};
 
-			if (auto code = CompilerCPlusPlusX8664(2, arr_cli); code)
+			if (auto code = CompilerCPlusPlusX8664(2, arr_cli);
+          code > 0)
 			{
-				std::printf("tqc++: assembler exited with code %i.", code);
+				std::printf("nec++: compiler exited with code %i.", code);
 			}
 		}
 
@@ -81,9 +82,10 @@ int main(int argc, char const* argv[])
 		{
 			const char* arr_cli[] = {argv[0], cli.data()};
 
-			if (auto code = AssemblerMainAMD64(2, arr_cli); code)
+			if (auto code = AssemblerMainAMD64(2, arr_cli);
+          code > 0)
 			{
-				std::printf("tqc++: assembler exited with code %i.", code);
+				std::printf("nec++: assembler exited with code %i.", code);
 			}
 		}
 	}

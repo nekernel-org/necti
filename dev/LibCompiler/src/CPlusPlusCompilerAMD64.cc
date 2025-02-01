@@ -752,7 +752,7 @@ bool CompilerFrontendCPlusPlus::Compile(const std::string text,
 							if (pair != subText)
 								continue;
 
-							syntax_tree.fUserValue = "mov rax," + kRegisterList[indxReg - 1] + "\r\nret\n";
+							syntax_tree.fUserValue = "mov rax, " + kRegisterList[indxReg - 1] + "\nret\n";
 							break;
 						}
 
@@ -763,13 +763,13 @@ bool CompilerFrontendCPlusPlus::Compile(const std::string text,
 					}
 					else
 					{
-						syntax_tree.fUserValue = "mov rax, " + subText + "\r\nret\n";
+						syntax_tree.fUserValue = "mov rax, " + subText + "\nret\n";
 					}
 				}
 				else
 				{
 					syntax_tree.fUserValue = "__LIBCOMPILER_LOCAL_RETURN_STRING: db " + subText + ", 0\nmov rcx, __LIBCOMPILER_LOCAL_RETURN_STRING\n";
-					syntax_tree.fUserValue += "mov rax, rcx\r\nret\n";
+					syntax_tree.fUserValue += "mov rax, rcx\nret\n";
 				}
 
 				break;
