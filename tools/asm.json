@@ -4,7 +4,7 @@
   "headers_path": ["../dev/LibCompiler", "../dev/", "../dev/LibCompiler/src/Detail"],
   "sources_path": ["asm.cc"],
   "output_name": "asm",
-  "compiler_flags": ["-L/usr/lib", "-lCxxCompiler"],
+  "compiler_flags": ["-L/usr/lib", "-lCCDyn"],
   "cpp_macros": [
     "__ASM__=202401",
     "kDistReleaseBranch=$(git rev-parse --abbrev-ref HEAD)-$(uuidgen)"

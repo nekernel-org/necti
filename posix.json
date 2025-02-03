@@ -8,7 +8,7 @@
     "./dev/LibCompiler/src/Detail"
   ],
   "sources_path": ["dev/LibCompiler/src/*.cc"],
-  "output_name": "/usr/lib/libCxxCompiler.so",
+  "output_name": "/usr/lib/libCCDyn.so",
   "compiler_flags": ["-fPIC", "-shared"],
   "cpp_macros": [
     "__LIBCOMPILER_DLL__=202401",

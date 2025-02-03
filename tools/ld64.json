@@ -4,7 +4,7 @@
   "headers_path": ["../dev/LibCompiler", "../dev/", "../dev/LibCompiler/src/Detail"],
   "sources_path": ["ld64.cc"],
   "output_name": "ld64",
-  "compiler_flags": ["-L/usr/lib", "-lCxxCompiler"],
+  "compiler_flags": ["-L/usr/lib", "-lCCDyn"],
   "cpp_macros": [
     "__LINK__=202401",
     "kDistReleaseBranch=$(git rev-parse --abbrev-ref HEAD)-$(uuidgen)"
