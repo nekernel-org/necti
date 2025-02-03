@@ -373,7 +373,7 @@ bool CompilerFrontendCPlusPlus::Compile(const std::string text,
 						ch = '_';
 				}
 
-				syntax_tree.fUserValue += "jge __OFFSET_ON_TRUE_NDK\nsegment .code64 __OFFSET_ON_TRUE_NDK:\n";
+				syntax_tree.fUserValue += "jge __OFFSET_ON_TRUE_LC\nsegment .code64 __OFFSET_ON_TRUE_LC:\n";
 			}
 
 			break;
@@ -788,7 +788,7 @@ bool CompilerFrontendCPlusPlus::Compile(const std::string text,
 		kState.fSyntaxTree->fLeafList.push_back(syntax_tree);
 	}
 
-ndk_compile_ok:
+lc_compile_ok:
 	return true;
 }
 
