@@ -97,7 +97,7 @@ namespace LibCompiler
 		struct SyntaxLeaf final
 		{
 			Int32 fUserType;
-#ifdef TK_USE_STRUCTS
+#ifdef LC_USE_STRUCTS
 			CompilerKeyword fUserData;
 #else
 			std::string fUserData;

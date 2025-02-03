@@ -12,7 +12,7 @@
   "compiler_flags": ["-fPIC", "-shared"],
   "cpp_macros": [
     "__LIBCOMPILER_DLL__=202401",
-    "TK_USE_STRUCTS=1",
+    "LC_USE_STRUCTS=1",
     "kDistReleaseBranch=$(git rev-parse --abbrev-ref HEAD)-$(uuidgen)"
   ]
 }

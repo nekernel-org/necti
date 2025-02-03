@@ -13,9 +13,9 @@
 #include <cstring>
 #include <vector>
 
-TK_IMPORT_C int CPlusPlusPreprocessorMain(int argc, char const* argv[]);
-TK_IMPORT_C int CompilerCPlusPlusX8664(int argc, char const* argv[]);
-TK_IMPORT_C int AssemblerMainAMD64(int argc, char const* argv[]);
+LC_IMPORT_C int CPlusPlusPreprocessorMain(int argc, char const* argv[]);
+LC_IMPORT_C int CompilerCPlusPlusX8664(int argc, char const* argv[]);
+LC_IMPORT_C int AssemblerMainAMD64(int argc, char const* argv[]);
 
 int main(int argc, char const* argv[])
 {

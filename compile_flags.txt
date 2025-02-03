@@ -4,5 +4,5 @@
 -Idev/LibCompiler/Detail
 -Isdk/
 -I./
--DTK_USE_STRUCTS
+-DLC_USE_STRUCTS
 -xc++

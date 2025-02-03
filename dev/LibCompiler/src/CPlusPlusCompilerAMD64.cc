@@ -411,7 +411,7 @@ bool CompilerFrontendCPlusPlus::Compile(const std::string text,
 			fnName = text.substr(indexFnName);
 
 			if (text.ends_with(";"))
-				goto tk_write_assembly;
+				goto LC_write_assembly;
 			else if (text.size() <= indexFnName)
 				Detail::print_error("Invalid function name: " + fnName, file);
 
@@ -437,7 +437,7 @@ bool CompilerFrontendCPlusPlus::Compile(const std::string text,
 
 			break;
 
-		tk_write_assembly:
+		LC_write_assembly:
 			syntax_tree.fUserValue = "jmp __LIBCOMPILER_" + fnName + "\n";
 		}
 		case LibCompiler::KeywordKind::kKeywordKindFunctionEnd: {
