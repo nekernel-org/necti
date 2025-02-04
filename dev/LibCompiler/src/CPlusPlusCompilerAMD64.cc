@@ -25,7 +25,7 @@
 
 #include <cstdio>
 
-/* ZKA C++ Compiler */
+/* NE C++ Compiler */
 /* This is part of the LibCompiler. */
 /* (c) Amlal EL Mahrouss. */
 
@@ -156,7 +156,7 @@ static bool							kOnForLoop	 = false;
 static bool							kInBraces	 = false;
 static size_t						kBracesCount = 0UL;
 
-/* @brief C++ compiler backend for the ZKA C++ driver */
+/* @brief C++ compiler backend for the NE C++ driver */
 class CompilerFrontendCPlusPlus final : public LibCompiler::ICompilerFrontend
 {
 public:
@@ -210,7 +210,7 @@ static std::size_t kFunctionEmbedLevel = 0UL;
 
 const char* CompilerFrontendCPlusPlus::Language()
 {
-	return "ZKA C++";
+	return "NE C++";
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////

@@ -63,12 +63,12 @@ namespace Detail
 enum
 {
 	kABITypeStart	= 0x1010, /* Invalid ABI start of ABI list. */
-	kABITypeZKA		= 0x5046, /* PF (ZKA PEF ABI) */
+	kABITypeNE		= 0x5046, /* PF (NE PEF ABI) */
 	kABITypeInvalid = 0xFFFF,
 };
 
 static LibCompiler::String kOutput			 = "";
-static Int32			   kAbi				 = kABITypeZKA;
+static Int32			   kAbi				 = kABITypeNE;
 static Int32			   kSubArch			 = kPefNoSubCpu;
 static Int32			   kArch			 = LibCompiler::kPefArchInvalid;
 static Bool				   kFatBinaryEnable	 = false;
@@ -90,8 +90,8 @@ static uintptr_t kByteCount = 1024;
 #define kPrintF			printf
 #define kLinkerSplash() kPrintF(kWhite kLinkerVersionStr, kDistVersion)
 
-///	@brief ZKA 64-bit Linker.
-/// @note This linker is made for PEF executable, thus ZKA based OSes.
+///	@brief NE 64-bit Linker.
+/// @note This linker is made for PEF executable, thus NE based OSes.
 LIBCOMPILER_MODULE(DynamicLinker64PEF)
 {
 	bool is_executable = true;

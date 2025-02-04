@@ -4,8 +4,8 @@
 
 ------------------------------------------- */
 
-/// @file Linker.cxx
-/// @brief ZKA C++ frontend for ZKA OS.
+/// @file asm.cxx
+/// @brief Assembler frontend.
 
 #include <LibCompiler/Defines.h>
 #include <LibCompiler/Version.h>

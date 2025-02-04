@@ -11,7 +11,7 @@
 /// @file Math.h
 /// @brief Math functions.
 
-#ifdef __ZKA_USE_DOUBLE__
+#ifdef __NE_USE_DOUBLE__
 typedef double real_type;
 #else
 typedef float real_type;

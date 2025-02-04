@@ -5,7 +5,7 @@
 ------------------------------------------- */
 
 /// @file necc.cc
-/// @brief ZKA C++ frontend compiler.
+/// @brief NE C++ frontend compiler.
 
 #include <LibCompiler/Defines.h>
 #include <LibCompiler/Version.h>

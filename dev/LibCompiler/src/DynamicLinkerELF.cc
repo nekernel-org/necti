@@ -75,8 +75,8 @@ static uintptr_t kByteCount = 1024;
 #define kPrintF			printf
 #define kLinkerSplash() kPrintF(kWhite kLinkerVersionStr, kDistVersion)
 
-///	@brief ZKA 64-bit Linker.
-/// @note This linker is made for XCOFF executable, thus ZKA based OSes.
+///	@brief NE 64-bit Linker.
+/// @note This linker is made for XCOFF executable, thus NE based OSes.
 LIBCOMPILER_MODULE(DynamicLinker64XCOFF)
 {
 	return EXIT_SUCCESS;
