@@ -1513,7 +1513,7 @@ static void cc_print_help()
 
 #define kExt ".c"
 
-LIBCOMPILER_MODULE(ZkaOSCompilerCLangPowerPC)
+LIBCOMPILER_MODULE(NeOSCompilerCLangPowerPC)
 {
 	kCompilerTypes.push_back({.fName = "void", .fValue = "void"});
 	kCompilerTypes.push_back({.fName = "char", .fValue = "byte"});

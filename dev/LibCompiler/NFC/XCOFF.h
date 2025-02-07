@@ -3,7 +3,7 @@
 	Copyright (C) 2024 Amlal EL Mahrouss, all rights reserved
 
 	File: XCOFF.hpp
-	Purpose: XCOFF for ZkaOS.
+	Purpose: XCOFF for NeOS.
 
 	Revision History:
 

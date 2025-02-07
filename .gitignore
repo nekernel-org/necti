@@ -20,7 +20,7 @@ tools/dbg
 
 Examples/
 
-# ZkaOS/MP-UX executable
+# NeOS/MP-UX executable
 *.exec
 *.bin
 

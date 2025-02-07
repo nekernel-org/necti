@@ -2,7 +2,7 @@
 
 ## Brief:
 
-A dialect of C++ for ZkaOS.
+A dialect of C++ for NeOS.
 
 ## Installing:
 

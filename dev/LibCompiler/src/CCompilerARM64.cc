@@ -1491,7 +1491,7 @@ static void cc_print_help()
 
 #define kCExtension ".c"
 
-LIBCOMPILER_MODULE(ZkaOSCompilerCLangARM64)
+LIBCOMPILER_MODULE(NeOSCompilerCLangARM64)
 {
 	kCompilerTypes.push_back({.fName = "void", .fValue = "void"});
 	kCompilerTypes.push_back({.fName = "char", .fValue = "byte"});
