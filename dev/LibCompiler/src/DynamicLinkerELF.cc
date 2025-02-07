@@ -8,7 +8,7 @@
 ------------------------------------------- */
 
 /// @author EL Mahrouss Amlal (amlel)
-/// @brief TQ 64-bit PEF Linker.
+/// @brief NeOS 64-bit PEF Linker.
 /// Last Rev: Sat Feb 24 CET 2024
 /// @note Do not look up for anything with .code64/.data64/.zero64!
 /// It will be loaded when the program loader will start the image.
@@ -32,7 +32,7 @@
 #include <LibCompiler/NFC/AE.h>
 #include <cstdint>
 
-#define kLinkerVersionStr "TQ 64-Bit Linker (ELF) %s, (c) Amlal EL Mahrouss. 2024, all rights reserved.\n"
+#define kLinkerVersionStr "NeOS 64-Bit Linker (ELF) %s, (c) Amlal EL Mahrouss. 2024, all rights reserved.\n"
 
 #define MemoryCopy(DST, SRC, SZ) memcpy(DST, SRC, SZ)
 #define StringCompare(DST, SRC)	 strcmp(DST, SRC)

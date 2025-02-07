@@ -1,4 +1,4 @@
-# TQ C/C++
+# NeOS C/C++
 
 ## Brief:
 
