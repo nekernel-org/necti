@@ -1502,7 +1502,7 @@ public:
 
 #define kPrintF printf
 #define kSplashCxx() \
-	kPrintF(kWhite "cc, %s, (c) Amlal EL Mahrouss.\n", kDistVersion)
+	kPrintF(kWhite "cc, %s, (c) Amlal EL Mahrouss\n", kDistVersion)
 
 static void cc_print_help()
 {

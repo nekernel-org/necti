@@ -32,7 +32,7 @@
 #include <LibCompiler/NFC/AE.h>
 #include <cstdint>
 
-#define kLinkerVersionStr "NeOS 64-Bit Linker (ELF) %s, (c) Amlal EL Mahrouss. 2024, all rights reserved.\n"
+#define kLinkerVersionStr "NeOS 64-Bit Linker (ELF) %s, (c) Amlal EL Mahrouss 2024, all rights reserved.\n"
 
 #define MemoryCopy(DST, SRC, SZ) memcpy(DST, SRC, SZ)
 #define StringCompare(DST, SRC)	 strcmp(DST, SRC)

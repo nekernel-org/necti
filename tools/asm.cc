@@ -19,19 +19,22 @@ LC_IMPORT_C int AssemblerMainARM64(int argc, char const* argv[]);
 LC_IMPORT_C int AssemblerMain64x0(int argc, char const* argv[]);
 LC_IMPORT_C int AssemblerMainAMD64(int argc, char const* argv[]);
 
+enum AsmKind : Int32
+{
+	kX64Assembler,
+	k64X0Assembler,
+	kPOWER64Assembler,
+	kARM64Assembler,
+	kAssemblerCount,
+};
+
 int main(int argc, char const* argv[])
 {
 	std::vector<const char*> arg_vec_cstr;
 	arg_vec_cstr.push_back(argv[0]);
 
-	enum
-	{
-		kX64Assembler,
-		k64X0Assembler,
-		kPOWER64Assembler,
-		kARM64Assembler,
-		kInvalidAssembler
-	} asm_type = kInvalidAssembler;
+	const Int32 kInvalidAssembler = -1;
+	Int32		asm_type		  = kInvalidAssembler;
 
 	for (size_t index_arg = 1; index_arg < argc; ++index_arg)
 	{
@@ -39,7 +42,7 @@ int main(int argc, char const* argv[])
 		{
 			std::printf("asm.exe: Frontend Assembler (64x0, power64, arm64, x64).\n");
 			std::printf("asm.exe: Version: %s, Release: %s.\n", kDistVersion, kDistRelease);
-			std::printf("asm.exe: Designed by Amlal EL Mahrouss., Copyright (C) 2024-2025 Amlal EL Mahrouss, all rights reserved.\n");
+			std::printf("asm.exe: Designed by Amlal EL Mahrouss, Copyright (C) 2024-2025 Amlal EL Mahrouss, all rights reserved.\n");
 			std::printf("libCCDyn.dylib: Designed by Amlal EL Mahrouss, Copyright (C) 2024-2025 Amlal EL Mahrouss, all rights reserved.\n");
 
 			return 0;

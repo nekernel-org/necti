@@ -24,7 +24,7 @@
 
 /* C driver */
 /* This is part of the LibCompiler. */
-/* (c) Amlal EL Mahrouss. */
+/* (c) Amlal EL Mahrouss */
 
 /// @author EL Mahrouss Amlal (amlel)
 /// @file 64x0-cc.cxx
@@ -1482,7 +1482,7 @@ public:
 
 #define kPrintF printf
 #define kSplashCxx() \
-	kPrintF(kWhite "NE C Driver, %s, (c) Amlal EL Mahrouss.\n", kDistVersion)
+	kPrintF(kWhite "NE C Driver, %s, (c) Amlal EL Mahrouss\n", kDistVersion)
 
 static void cc_print_help()
 {

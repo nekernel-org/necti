@@ -10,7 +10,7 @@
 
 namespace LibCompiler
 {
-	inline auto kInvalidFrontend = "NoLang";
+	inline auto kInvalidFrontend = "NA";
 
 	/// @brief Compiler backend, implements a frontend, such as C, C++...
 	/// See Toolchain, for some examples.
@@ -38,7 +38,7 @@ namespace LibCompiler
 
 		virtual bool IsValid()
 		{
-			return strcmp(this->Language(), kInvalidFrontend);
+			return strcmp(this->Language(), kInvalidFrontend) > 0;
 		}
 	};
 
