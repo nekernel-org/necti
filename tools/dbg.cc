@@ -1,63 +1,22 @@
-/***
-	(C) 2025 Amlal El Mahrouss
- */
+/* -------------------------------------------
 
-#include <LibDebugger/IDebugger.h>
+	Copyright (C) 2024 Amlal EL Mahrouss, all rights reserved
 
-int main(int argc, char* argv[])
+------------------------------------------- */
+
+#include <LibCompiler/Defines.h>
+
+/// @file ld64.cxx
+/// @brief NE Linker for AE objects.
+
+LC_IMPORT_C int DebuggerPOSIX(int argc, char const* argv[]);
+
+int main(int argc, char const* argv[])
 {
-	LibDebugger::IDebugger debugger;
-	pid_t				   pid = 0L;
-
-	if (argc >= 3 && std::string(argv[1]) == "-p" &&
-		argv[2] != nullptr)
+	if (argc < 1)
 	{
-		pid = std::stoi(argv[2]);
-		debugger.Attach(pid);
+		return 1;
 	}
 
-	while (true)
-	{
-		std::string cmd;
-		std::getline(std::cin, cmd);
-
-		if (cmd == "c" ||
-			cmd == "cont")
-			debugger.ContinueExecution();
-
-		if (cmd == "d" ||
-			cmd == "detach")
-			debugger.Detach();
-
-		if (cmd == "attach")
-		{
-			std::cout << "[?] Enter a PID to attach on: ";
-
-			std::getline(std::cin, cmd);
-			pid = std::stoi(cmd.c_str());
-
-			debugger.Attach(pid);
-		}
-
-		if (cmd == "exit")
-		{
-			debugger.Detach();
-			break;
-		}
-
-		if (cmd == "break" ||
-			cmd == "bp")
-		{
-			std::cout << "[?] Enter an address to add a breakpoint on: ";
-
-			std::getline(std::cin, cmd);
-
-			LibDebugger::VmAddress breakpoint_addr = reinterpret_cast<LibDebugger::VmAddress>(std::stoul(cmd.c_str(), nullptr, 16));
-
-			if (breakpoint_addr)
-				debugger.SetBreakpoint(breakpoint_addr);
-		}
-	}
-
-	return 0;
+	return DebuggerPOSIX(argc, argv);
 }
