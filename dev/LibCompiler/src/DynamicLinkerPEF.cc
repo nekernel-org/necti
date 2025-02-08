@@ -191,6 +191,9 @@ LIBCOMPILER_MODULE(DynamicLinker64PEF)
 		}
 		else if (StringCompare(argv[linker_arg], "--ld64:output") == 0)
 		{
+			if ((linker_arg + 1) > argc)
+				continue;
+
 			kOutput = argv[linker_arg + 1];
 			++linker_arg;
 
@@ -224,12 +227,12 @@ LIBCOMPILER_MODULE(DynamicLinker64PEF)
 	}
 	else
 	{
-		namespace fs = std::filesystem;
+		namespace FS = std::filesystem;
 
 		// check for existing files, if they don't throw an error.
 		for (auto& obj : kObjectList)
 		{
-			if (!fs::exists(obj))
+			if (!FS::exists(obj))
 			{
 				// if filesystem doesn't find file
 				//          -> throw error.

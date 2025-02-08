@@ -102,7 +102,7 @@ namespace Detail
 		std::unique_ptr<std::ofstream>	 fOutputAssembly;
 		std::string						 fLastFile;
 		std::string						 fLastError;
-		bool							 fVerbose;
+		Boolean							 fVerbose;
 	};
 } // namespace Detail
 
@@ -150,10 +150,10 @@ static std::vector<LibCompiler::CompilerKeyword> kKeywords;
 
 static std::vector<std::string>		kFileList;
 static LibCompiler::AssemblyFactory kFactory;
-static bool							kInStruct	 = false;
-static bool							kOnWhileLoop = false;
-static bool							kOnForLoop	 = false;
-static bool							kInBraces	 = false;
+static Boolean							kInStruct	 = false;
+static Boolean							kOnWhileLoop = false;
+static Boolean							kOnForLoop	 = false;
+static Boolean							kInBraces	 = false;
 static size_t						kBracesCount = 0UL;
 
 /* @brief C++ compiler backend for the NE C++ driver */
@@ -165,7 +165,7 @@ public:
 
 	LIBCOMPILER_COPY_DEFAULT(CompilerFrontendCPlusPlus);
 
-	bool Compile(const std::string text, const std::string file) override;
+	Boolean Compile(const std::string text, const std::string file) override;
 
 	const char* Language() override;
 };
@@ -220,7 +220,7 @@ const char* CompilerFrontendCPlusPlus::Language()
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
-bool CompilerFrontendCPlusPlus::Compile(const std::string text,
+Boolean CompilerFrontendCPlusPlus::Compile(const std::string text,
 										const std::string file)
 {
 	if (text.empty())
@@ -229,8 +229,8 @@ bool CompilerFrontendCPlusPlus::Compile(const std::string text,
 	std::size_t														  index = 0UL;
 	std::vector<std::pair<LibCompiler::CompilerKeyword, std::size_t>> keywords_list;
 
-	bool		found		 = false;
-	static bool commentBlock = false;
+	Boolean		found		 = false;
+	static Boolean commentBlock = false;
 
 	for (auto& keyword : kKeywords)
 	{
@@ -503,7 +503,7 @@ bool CompilerFrontendCPlusPlus::Compile(const std::string text,
 				varName.erase(varName.find(";"));
 			}
 
-			static bool typeFound = false;
+			static Boolean typeFound = false;
 
 			for (auto& keyword : kKeywords)
 			{
@@ -926,7 +926,7 @@ static void cxx_print_help()
 
 LIBCOMPILER_MODULE(CompilerCPlusPlusX8664)
 {
-	bool skip = false;
+	Boolean skip = false;
 
 	kKeywords.push_back({.keyword_name = "if", .keyword_kind = LibCompiler::kKeywordKindIf});
 	kKeywords.push_back({.keyword_name = "else", .keyword_kind = LibCompiler::kKeywordKindElse});
@@ -941,7 +941,7 @@ LIBCOMPILER_MODULE(CompilerCPlusPlusX8664)
 	kKeywords.push_back({.keyword_name = "}", .keyword_kind = LibCompiler::kKeywordKindBodyEnd});
 	kKeywords.push_back({.keyword_name = "auto", .keyword_kind = LibCompiler::kKeywordKindVariable});
 	kKeywords.push_back({.keyword_name = "int", .keyword_kind = LibCompiler::kKeywordKindType});
-	kKeywords.push_back({.keyword_name = "bool", .keyword_kind = LibCompiler::kKeywordKindType});
+	kKeywords.push_back({.keyword_name = "Boolean", .keyword_kind = LibCompiler::kKeywordKindType});
 	kKeywords.push_back({.keyword_name = "unsigned", .keyword_kind = LibCompiler::kKeywordKindType});
 	kKeywords.push_back({.keyword_name = "short", .keyword_kind = LibCompiler::kKeywordKindType});
 	kKeywords.push_back({.keyword_name = "char", .keyword_kind = LibCompiler::kKeywordKindType});
@@ -952,7 +952,7 @@ LIBCOMPILER_MODULE(CompilerCPlusPlusX8664)
 
 	kKeywords.push_back({.keyword_name = "auto*", .keyword_kind = LibCompiler::kKeywordKindVariablePtr});
 	kKeywords.push_back({.keyword_name = "int*", .keyword_kind = LibCompiler::kKeywordKindTypePtr});
-	kKeywords.push_back({.keyword_name = "bool*", .keyword_kind = LibCompiler::kKeywordKindTypePtr});
+	kKeywords.push_back({.keyword_name = "Boolean*", .keyword_kind = LibCompiler::kKeywordKindTypePtr});
 	kKeywords.push_back({.keyword_name = "unsigned*", .keyword_kind = LibCompiler::kKeywordKindTypePtr});
 	kKeywords.push_back({.keyword_name = "short*", .keyword_kind = LibCompiler::kKeywordKindTypePtr});
 	kKeywords.push_back({.keyword_name = "char*", .keyword_kind = LibCompiler::kKeywordKindTypePtr});
@@ -1057,7 +1057,7 @@ LIBCOMPILER_MODULE(CompilerCPlusPlusX8664)
 		std::string argv_i = argv[index];
 
 		std::vector exts  = kExtListCxx;
-		bool		found = false;
+		Boolean		found = false;
 
 		for (std::string ext : exts)
 		{
