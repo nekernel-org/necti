@@ -13,7 +13,7 @@
 #include <stdint.h>
 
 #ifdef __APPLE__
-#define PTRACE_ATTACH	PT_ATTACH
+#define PTRACE_ATTACH	PT_ATTACHEXC
 #define PTRACE_DETACH	PT_DETACH
 #define PTRACE_POKETEXT PT_WRITE_I
 #define PTRACE_CONT		PT_CONTINUE
@@ -22,38 +22,43 @@
 
 namespace LibDebugger
 {
-	typedef char* VmAddress;
+#ifdef __APPLE__
+	typedef caddr_t CAddr;
+#else
+	typedef char* CAddr;
+#endif
 
-	/// \brief Debugger interface class in C++
+	/// \brief Debugger engine interface class in C++
 	/// \author Amlal El Mahrouss
-	class IDebugger final
+	class IDebuggerEngine final
 	{
 	public:
-		IDebugger()	 = default;
-		~IDebugger() = default;
+		explicit IDebuggerEngine()	 = default;
+		~IDebuggerEngine() = default;
 
-		IDebugger& operator=(const IDebugger&) = default;
-		IDebugger(const IDebugger&)			   = default;
+	public:
+		IDebuggerEngine& operator=(const IDebuggerEngine&) = default;
+		IDebuggerEngine(const IDebuggerEngine&)			   = default;
 
 	public:
 		void Attach(pid_t pid)
 		{
-			this->m_pid = pid;
-
-			if (ptrace(PTRACE_ATTACH, this->m_pid, nullptr, 0) == -1)
+			if (ptrace(PTRACE_ATTACH, pid, nullptr, 0) == -1)
 			{
 				perror("dbg: Attach");
 				return;
 			}
+
+			this->m_pid = pid;
 
 			waitpid(m_pid, nullptr, 0);
 
 			std::cout << "[+] Attached to process: " << m_pid << std::endl;
 		}
 
-		void SetBreakpoint(VmAddress addr)
+		void SetBreakpoint(CAddr addr)
 		{
-			long original_data = ptrace(PTRACE_PEEKTEXT, m_pid, addr, 0);
+			auto original_data = ptrace(PTRACE_PEEKTEXT, m_pid, addr, 0);
 
 			if (original_data == -1)
 			{
@@ -61,7 +66,8 @@ namespace LibDebugger
 				return;
 			}
 
-			long data_with_int3 = (original_data & ~0xFF) | 0xCC; // Insert INT3 (0xCC)
+			auto data_with_int3 = (original_data & ~0xFF) | 0xCC; // Insert INT3 (0xCC)
+
 			if (ptrace(PTRACE_POKETEXT, m_pid, addr, data_with_int3) == -1)
 			{
 				perror("dbg: Poke");

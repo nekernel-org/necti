@@ -2,13 +2,11 @@
   "compiler_path": "g++",
   "compiler_std": "c++20",
   "headers_path": [
-    "./dev/LibCompiler",
-    "./dev",
-    "./dev/LibCompiler/src",
-    "./dev/LibCompiler/src/Detail"
+    "./dev/LibDebugger",
+    "./dev"
   ],
-  "sources_path": ["dev/LibCompiler/src/*.cc"],
-  "output_name": "/usr/lib/libCompiler.so",
+  "sources_path": ["dev/LibDebugger/src/*.cc"],
+  "output_name": "/usr/local/lib/libDebugger.dylib",
   "compiler_flags": ["-fPIC", "-shared"],
   "cpp_macros": [
     "__LIBCOMPILER_DLL__=202401",

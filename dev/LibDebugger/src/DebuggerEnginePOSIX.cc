@@ -3,11 +3,13 @@
  */
 
 #include <LibCompiler/Defines.h>
-#include <LibDebugger/IDebugger.h>
+#include <LibDebugger/IDebuggerEngine.h>
+
+#ifndef _WIN32
 
 LIBCOMPILER_MODULE(DebuggerPOSIX)
 {
-	LibDebugger::IDebugger debugger;
+	LibDebugger::IDebuggerEngine debugger;
 	pid_t				   pid = 0L;
 
 	if (argc >= 3 && std::string(argv[1]) == "-p" &&
@@ -49,13 +51,13 @@ LIBCOMPILER_MODULE(DebuggerPOSIX)
 		}
 
 		if (cmd == "break" ||
-			cmd == "bp")
+			cmd == "b")
 		{
 			std::cout << "[?] Enter an address to add a breakpoint on: ";
 
 			std::getline(std::cin, cmd);
 
-			LibDebugger::VmAddress breakpoint_addr = reinterpret_cast<LibDebugger::VmAddress>(std::stoul(cmd.c_str(), nullptr, 16));
+			LibDebugger::CAddr breakpoint_addr = reinterpret_cast<LibDebugger::CAddr>(std::stoul(cmd.c_str(), nullptr, 16));
 
 			if (breakpoint_addr)
 				debugger.SetBreakpoint(breakpoint_addr);
@@ -64,3 +66,5 @@ LIBCOMPILER_MODULE(DebuggerPOSIX)
 
 	return 0;
 }
+
+#endif
