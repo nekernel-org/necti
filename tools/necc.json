@@ -4,7 +4,7 @@
   "headers_path": ["../dev/LibCompiler", "../dev/", "../dev/LibCompiler/src/Detail"],
   "sources_path": ["necc.cc"],
   "output_name": "necc",
-  "compiler_flags": ["-L/usr/local/lib", "-lCCDyn"],
+  "compiler_flags": ["-L/usr/local/lib", "-lCompiler"],
   "cpp_macros": [
     "__CL__=202401",
     "kDistReleaseBranch=$(git rev-parse --abbrev-ref HEAD)-$(uuidgen)"

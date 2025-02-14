@@ -16,3 +16,4 @@
 - Shall be written in C++
 - Shall support the assembler too.
 - Shall provide primitives for compilers, assemblers and linkers.
+- Shall support multiple architectures.

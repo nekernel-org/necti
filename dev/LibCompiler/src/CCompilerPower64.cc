@@ -1,7 +1,7 @@
 /*
  *	========================================================
  *
- *	CCompilerPower64
+ *	CompilerPower64
  * 	Copyright (C) 2024-2025 Amlal EL Mahrouss, all rights reserved.
  *
  * 	========================================================
