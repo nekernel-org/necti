@@ -49,7 +49,7 @@
 #define kLinkerAbiContainer	 "Container:ABI:"
 
 /// @brief PEF stack size symbol.
-#define kLinkerStackSizeSymbol "SizeOfReserveStack"
+#define kLinkerStackSizeSymbol "__PEFSizeOfReserveStack"
 
 namespace Detail
 {
