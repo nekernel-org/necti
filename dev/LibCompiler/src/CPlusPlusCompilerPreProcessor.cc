@@ -922,6 +922,13 @@ LIBCOMPILER_MODULE(CPlusPlusPreprocessorMain)
 
 		kMacros.push_back(macro_1);
 
+		Detail::bpp_macro macro_unreachable;
+
+		macro_unreachable.fName  = "__unreachable";
+		macro_unreachable.fValue = "__cxx_libcompiler_unreachable";
+
+		kMacros.push_back(macro_unreachable);
+
 		Detail::bpp_macro macro_0;
 
 		macro_0.fName  = "__false";
@@ -935,6 +942,13 @@ LIBCOMPILER_MODULE(CPlusPlusPreprocessorMain)
 		macro_zka.fValue = "1";
 
 		kMacros.push_back(macro_zka);
+
+		Detail::bpp_macro macro_cxx;
+
+		macro_cxx.fName	 = "__cplusplus";
+		macro_cxx.fValue = "202302L";
+
+		kMacros.push_back(macro_cxx);
 
 		Detail::bpp_macro macro_size_t;
 		macro_size_t.fName	= "__SIZE_TYPE__";
