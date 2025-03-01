@@ -34,6 +34,9 @@
 
 #define kLinkerVersionStr "NeOS 64-Bit Linker (ELF) %s, (c) Amlal EL Mahrouss 2024, all rights reserved.\n"
 
+#define kPrintF			printf
+#define kLinkerSplash() kPrintF(kWhite kLinkerVersionStr, kDistVersion)
+
 #define MemoryCopy(DST, SRC, SZ) memcpy(DST, SRC, SZ)
 #define StringCompare(DST, SRC)	 strcmp(DST, SRC)
 
@@ -42,21 +45,18 @@
 
 #define kWhite "\e[0;97m"
 
-#define kStdOut (std::cout << kWhite << "ld64: ")
+#define kStdOut (std::cout << kWhite << "ld64 (ELF): ")
 
 #define kLinkerDefaultOrigin kPefBaseOrigin
 #define kLinkerId			 (0x5046FF)
 #define kLinkerAbiContainer	 "Container:ABI:"
 
-/// @brief PEF stack size symbol.
-#define kLinkerStackSizeSymbol "SizeOfReserveStack"
-
 namespace Detail
 {
 	struct DynamicLinkerBlob final
 	{
-		std::vector<CharType> mBlob{};		   // PEF code/bss/data blob.
-		UIntPtr				  mObjOffset{0UL}; // the offset of the PEF container header..
+		std::vector<CharType> mBlob{};		   // ELF code/bss/data blob.
+		UIntPtr				  mOffset{0UL}; // the offset of the ELF container header...
 	};
 } // namespace Detail
 
@@ -71,9 +71,6 @@ static std::vector<Detail::DynamicLinkerBlob> kObjectBytes;
 
 static uintptr_t kMIBCount	= 8;
 static uintptr_t kByteCount = 1024;
-
-#define kPrintF			printf
-#define kLinkerSplash() kPrintF(kWhite kLinkerVersionStr, kDistVersion)
 
 ///	@brief NE 64-bit Linker.
 /// @note This linker is made for XCOFF executable, thus NE based OSes.

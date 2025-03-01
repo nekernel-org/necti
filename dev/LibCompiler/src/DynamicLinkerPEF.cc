@@ -42,11 +42,14 @@
 
 #define kWhite "\e[0;97m"
 
-#define kStdOut (std::cout << kWhite << "ld64: ")
+#define kStdOut (std::cout << kWhite << "ld64 (PEF): ")
 
 #define kLinkerDefaultOrigin kPefBaseOrigin
 #define kLinkerId			 (0x5046FF)
 #define kLinkerAbiContainer	 "Container:ABI:"
+
+#define kPrintF			printf
+#define kLinkerSplash() kPrintF(kWhite kLinkerVersionStr, kDistVersion)
 
 /// @brief PEF stack size symbol.
 #define kLinkerStackSizeSymbol "__PEFSizeOfReserveStack"
@@ -56,14 +59,14 @@ namespace Detail
 	struct DynamicLinkerBlob final
 	{
 		std::vector<CharType> mBlob{};		   // PEF code/bss/data blob.
-		UIntPtr				  mObjOffset{0UL}; // the offset of the PEF container header..
+		UIntPtr				  mOffset{0UL}; // the offset of the PEF container header...
 	};
 } // namespace Detail
 
 enum
 {
 	kABITypeStart	= 0x1010, /* Invalid ABI start of ABI list. */
-	kABITypeNE		= 0x5046, /* PF (NE PEF ABI) */
+	kABITypeNE		= 0x5046, /* PF (NeOS's PEF ABI) */
 	kABITypeInvalid = 0xFFFF,
 };
 
@@ -86,9 +89,6 @@ static std::vector<Detail::DynamicLinkerBlob> kObjectBytes;
 
 static uintptr_t kMIBCount	= 8;
 static uintptr_t kByteCount = 1024;
-
-#define kPrintF			printf
-#define kLinkerSplash() kPrintF(kWhite kLinkerVersionStr, kDistVersion)
 
 ///	@brief NE 64-bit Linker.
 /// @note This linker is made for PEF executable, thus NE based OSes.
@@ -415,7 +415,7 @@ LIBCOMPILER_MODULE(DynamicLinker64PEF)
 
 			for (auto& byte : bytes)
 			{
-				kObjectBytes.push_back({.mBlob = bytes, .mObjOffset = ae_header.fStartCode});
+				kObjectBytes.push_back({.mBlob = bytes, .mOffset = ae_header.fStartCode});
 			}
 
 			reader_protocol.FP.close();
