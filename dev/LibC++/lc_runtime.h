@@ -6,8 +6,8 @@
 
 #pragma once
 
-#ifdef __cplusplus
+#ifdef __LIBCOMPILER__
 
-extern "C" void __cxx_libcompiler_unreachable(void);
+extern "C" void __libcompiler_unreachable(void);
 
 #endif
