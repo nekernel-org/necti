@@ -209,7 +209,7 @@ bool CompilerFrontendPower64::Compile(std::string text_, const std::string file)
 	// start parsing
 	for (size_t text_index = 0; text_index < text.size(); ++text_index)
 	{
-		auto syntaxLeaf = LibCompiler::SyntaxLeafList::SyntaxLeaf();
+		auto syntax_leaf = LibCompiler::SyntaxLeafList::SyntaxLeaf();
 
 		auto		gen = uuids::uuid_random_generator{generator};
 		uuids::uuid out = gen();
@@ -248,9 +248,9 @@ bool CompilerFrontendPower64::Compile(std::string text_, const std::string file)
 
 							if (text.find('(') != std::string::npos)
 							{
-								syntaxLeaf.fUserValue = buf;
+								syntax_leaf.fUserValue = buf;
 
-								kState.fSyntaxTree->fLeafList.push_back(syntaxLeaf);
+								kState.fSyntaxTree->fLeafList.push_back(syntax_leaf);
 							}
 
 							typeFound = true;
@@ -275,7 +275,7 @@ bool CompilerFrontendPower64::Compile(std::string text_, const std::string file)
 			kInBraces = true;
 			++kBracesCount;
 
-			kState.fSyntaxTree->fLeafList.push_back(syntaxLeaf);
+			kState.fSyntaxTree->fLeafList.push_back(syntax_leaf);
 		}
 
 		// return keyword handler
@@ -328,7 +328,7 @@ bool CompilerFrontendPower64::Compile(std::string text_, const std::string file)
 						value += tmp;
 					}
 
-					syntaxLeaf.fUserValue = "\tmr r31, ";
+					syntax_leaf.fUserValue = "\tmr r31, ";
 
 					// make it pretty.
 					while (value.find('\t') != std::string::npos)
@@ -347,18 +347,18 @@ bool CompilerFrontendPower64::Compile(std::string text_, const std::string file)
 						if (value.find(reg.fName) != std::string::npos)
 						{
 							found = true;
-							syntaxLeaf.fUserValue += reg.fReg;
+							syntax_leaf.fUserValue += reg.fReg;
 							break;
 						}
 					}
 
 					if (!found)
-						syntaxLeaf.fUserValue += "r0";
+						syntax_leaf.fUserValue += "r0";
 				}
 
-				syntaxLeaf.fUserValue += "\n\tblr";
+				syntax_leaf.fUserValue += "\n\tblr";
 
-				kState.fSyntaxTree->fLeafList.push_back(syntaxLeaf);
+				kState.fSyntaxTree->fLeafList.push_back(syntax_leaf);
 
 				break;
 			}
@@ -383,14 +383,14 @@ bool CompilerFrontendPower64::Compile(std::string text_, const std::string file)
 			kIfFunction = "__LIBCOMPILER_IF_PROC_";
 			kIfFunction += std::to_string(time_off._Raw);
 
-			syntaxLeaf.fUserValue =
+			syntax_leaf.fUserValue =
 				"\tcmpw "
 				"r10, r11";
 
-			syntaxLeaf.fUserValue += "\n\tbeq extern_segment " + kIfFunction +
+			syntax_leaf.fUserValue += "\n\tbeq extern_segment " + kIfFunction +
 									 " \ndword public_segment .code64 " + kIfFunction + "\n";
 
-			kState.fSyntaxTree->fLeafList.push_back(syntaxLeaf);
+			kState.fSyntaxTree->fLeafList.push_back(syntax_leaf);
 
 			kIfFound = true;
 		}
@@ -607,9 +607,9 @@ bool CompilerFrontendPower64::Compile(std::string text_, const std::string file)
 
 			kState.kStackFrame.push_back({.fName = symbol, .fReg = reg});
 
-			syntaxLeaf.fUserValue +=
+			syntax_leaf.fUserValue +=
 				"\n\tli " + reg + substr.substr(substr.find(','));
-			kState.fSyntaxTree->fLeafList.push_back(syntaxLeaf);
+			kState.fSyntaxTree->fLeafList.push_back(syntax_leaf);
 		}
 
 		// function handler.
@@ -692,25 +692,25 @@ bool CompilerFrontendPower64::Compile(std::string text_, const std::string file)
 
 			if (kInBraces)
 			{
-				syntaxLeaf.fUserValue = args;
-				syntaxLeaf.fUserValue += substr;
+				syntax_leaf.fUserValue = args;
+				syntax_leaf.fUserValue += substr;
 
-				syntaxLeaf.fUserValue += "\n\tblr\n";
+				syntax_leaf.fUserValue += "\n\tblr\n";
 
-				kState.fSyntaxTree->fLeafList.push_back(syntaxLeaf);
+				kState.fSyntaxTree->fLeafList.push_back(syntax_leaf);
 
 				fnFound = true;
 			}
 			else
 			{
-				syntaxLeaf.fUserValue.clear();
+				syntax_leaf.fUserValue.clear();
 
-				syntaxLeaf.fUserValue += "public_segment .code64 ";
+				syntax_leaf.fUserValue += "public_segment .code64 ";
 
-				syntaxLeaf.fUserValue += substr;
-				syntaxLeaf.fUserValue += "\n";
+				syntax_leaf.fUserValue += substr;
+				syntax_leaf.fUserValue += "\n";
 
-				kState.fSyntaxTree->fLeafList.push_back(syntaxLeaf);
+				kState.fSyntaxTree->fLeafList.push_back(syntax_leaf);
 
 				fnFound = true;
 			}
@@ -728,10 +728,10 @@ bool CompilerFrontendPower64::Compile(std::string text_, const std::string file)
 					text.erase(_text_i, 1);
 			}
 
-			syntaxLeaf.fUserValue += "dec ";
-			syntaxLeaf.fUserValue += text;
+			syntax_leaf.fUserValue += "dec ";
+			syntax_leaf.fUserValue += text;
 
-			kState.fSyntaxTree->fLeafList.push_back(syntaxLeaf);
+			kState.fSyntaxTree->fLeafList.push_back(syntax_leaf);
 			break;
 		}
 
@@ -753,15 +753,15 @@ bool CompilerFrontendPower64::Compile(std::string text_, const std::string file)
 			if (kInStruct)
 				kInStruct = false;
 
-			kState.fSyntaxTree->fLeafList.push_back(syntaxLeaf);
+			kState.fSyntaxTree->fLeafList.push_back(syntax_leaf);
 		}
 
-		syntaxLeaf.fUserValue.clear();
+		syntax_leaf.fUserValue.clear();
 	}
 
-	auto syntaxLeaf		  = LibCompiler::SyntaxLeafList::SyntaxLeaf();
-	syntaxLeaf.fUserValue = "\n";
-	kState.fSyntaxTree->fLeafList.push_back(syntaxLeaf);
+	auto syntax_leaf		  = LibCompiler::SyntaxLeafList::SyntaxLeaf();
+	syntax_leaf.fUserValue = "\n";
+	kState.fSyntaxTree->fLeafList.push_back(syntax_leaf);
 
 	return true;
 }
