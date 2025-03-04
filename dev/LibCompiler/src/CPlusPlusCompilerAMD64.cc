@@ -109,6 +109,8 @@ namespace Detail
 static Detail::CompilerState kState;
 static SizeType				 kErrorLimit = 100;
 
+static Int32 kOnClassScope = 0;
+
 static Int32 kAcceptableErrors = 0;
 
 namespace Detail
@@ -150,10 +152,10 @@ static std::vector<LibCompiler::CompilerKeyword> kKeywords;
 
 static std::vector<std::string>		kFileList;
 static LibCompiler::AssemblyFactory kFactory;
-static Boolean							kInStruct	 = false;
-static Boolean							kOnWhileLoop = false;
-static Boolean							kOnForLoop	 = false;
-static Boolean							kInBraces	 = false;
+static Boolean						kInStruct	 = false;
+static Boolean						kOnWhileLoop = false;
+static Boolean						kOnForLoop	 = false;
+static Boolean						kInBraces	 = false;
 static size_t						kBracesCount = 0UL;
 
 /* @brief C++ compiler backend for the NE C++ driver */
@@ -210,8 +212,12 @@ static std::size_t kFunctionEmbedLevel = 0UL;
 
 const char* CompilerFrontendCPlusPlus::Language()
 {
-	return "NE C++";
+	return "NeOS C++";
 }
+
+static std::uintptr_t kOrigin = 0x1000000;
+
+std::vector<std::pair<std::string, std::uintptr_t>> kOriginMap;
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
@@ -220,8 +226,8 @@ const char* CompilerFrontendCPlusPlus::Language()
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
-Boolean CompilerFrontendCPlusPlus::Compile(const std::string text,
-										const std::string file)
+Boolean CompilerFrontendCPlusPlus::Compile(std::string		 text,
+										   const std::string file)
 {
 	if (text.empty())
 		return false;
@@ -229,7 +235,7 @@ Boolean CompilerFrontendCPlusPlus::Compile(const std::string text,
 	std::size_t														  index = 0UL;
 	std::vector<std::pair<LibCompiler::CompilerKeyword, std::size_t>> keywords_list;
 
-	Boolean		found		 = false;
+	Boolean		   found		= false;
 	static Boolean commentBlock = false;
 
 	for (auto& keyword : kKeywords)
@@ -290,6 +296,10 @@ Boolean CompilerFrontendCPlusPlus::Compile(const std::string text,
 
 		switch (keyword.first.keyword_kind)
 		{
+		case LibCompiler::KeywordKind::kKeywordKindClass: {
+			++kOnClassScope;
+			break;
+		}
 		case LibCompiler::KeywordKind::kKeywordKindIf: {
 			auto expr = text.substr(text.find(keyword.first.keyword_name) + keyword.first.keyword_name.size() + 1, text.find(")") - 1);
 
@@ -410,7 +420,13 @@ Boolean CompilerFrontendCPlusPlus::Compile(const std::string text,
 
 			fnName = text.substr(indexFnName);
 
-			if (text.ends_with(";"))
+			if (text.find("return ") != std::string::npos)
+			{
+				text.erase(0, text.find("return "));
+				break;
+			}
+
+			if (text.ends_with(";") && text.find("return") == std::string::npos)
 				goto LC_write_assembly;
 			else if (text.size() <= indexFnName)
 				Detail::print_error("Invalid function name: " + fnName, file);
@@ -435,12 +451,28 @@ Boolean CompilerFrontendCPlusPlus::Compile(const std::string text,
 			syntax_tree.fUserValue = "public_segment .code64 __LIBCOMPILER_" + fnName + "\n";
 			++kFunctionEmbedLevel;
 
+			kOriginMap.push_back({"__LIBCOMPILER_" + fnName, kOrigin});
+
 			break;
 
 		LC_write_assembly:
-			syntax_tree.fUserValue = "jmp __LIBCOMPILER_" + fnName + "\n";
+			auto it = std::find_if(kOriginMap.begin(), kOriginMap.end(), [&fnName](std::pair<std::string, std::uintptr_t> pair) -> bool {
+				return fnName == pair.first;
+			});
+
+			std::stringstream ss;
+			ss << std::hex << it->second;
+
+			if (it != kOriginMap.end())
+			{
+				syntax_tree.fUserValue = "jmp " + ss.str() + "\n";
+				kOrigin += 1UL;
+			}
 		}
 		case LibCompiler::KeywordKind::kKeywordKindFunctionEnd: {
+			if (kOnClassScope)
+				--kOnClassScope;
+
 			if (text.ends_with(";"))
 				break;
 
@@ -453,6 +485,7 @@ Boolean CompilerFrontendCPlusPlus::Compile(const std::string text,
 
 			if (kFunctionEmbedLevel < 1)
 				kRegisterMap.clear();
+
 			break;
 		}
 		case LibCompiler::KeywordKind::kKeywordKindEndInstr:
@@ -575,10 +608,12 @@ Boolean CompilerFrontendCPlusPlus::Compile(const std::string text,
 
 							syntax_tree.fUserValue = "segment .data64 __LIBCOMPILER_LOCAL_VAR_" + varName + ": db " + valueOfVar + ", 0\n\n";
 							syntax_tree.fUserValue += instr + kRegisterList[kRegisterMap.size() - 1] + ", " + "__LIBCOMPILER_LOCAL_VAR_" + varName + "\n";
+							kOrigin += 1UL;
 						}
 						else
 						{
 							syntax_tree.fUserValue = instr + kRegisterList[kRegisterMap.size() - 1] + ", " + valueOfVar + "\n";
+							kOrigin += 1UL;
 						}
 
 						goto done;
@@ -592,10 +627,12 @@ Boolean CompilerFrontendCPlusPlus::Compile(const std::string text,
 
 						syntax_tree.fUserValue = "segment .data64 __LIBCOMPILER_LOCAL_VAR_" + varName + ": db " + valueOfVar + ", 0\n";
 						syntax_tree.fUserValue += instr + kRegisterList[kRegisterMap.size()] + ", " + "__LIBCOMPILER_LOCAL_VAR_" + varName + "\n";
+						kOrigin += 1UL;
 					}
 					else
 					{
 						syntax_tree.fUserValue = instr + kRegisterList[kRegisterMap.size()] + ", " + valueOfVar + "\n";
+						kOrigin += 1UL;
 					}
 
 					goto done;
@@ -715,10 +752,12 @@ Boolean CompilerFrontendCPlusPlus::Compile(const std::string text,
 					if (pairRight != varName)
 					{
 						syntax_tree.fUserValue = instr + kRegisterList[kRegisterMap.size()] + ", " + valueOfVar + "\n";
+						kOrigin += 1UL;
 						continue;
 					}
 
 					syntax_tree.fUserValue = instr + kRegisterList[indexRight - 1] + ", " + valueOfVar + "\n";
+					kOrigin += 1UL;
 					break;
 				}
 
@@ -727,7 +766,7 @@ Boolean CompilerFrontendCPlusPlus::Compile(const std::string text,
 
 			if (syntax_tree.fUserValue.empty())
 			{
-				Detail::print_error("Variable not declared: " + varErrCpy, file);
+				Detail::print_error("Variable not declared: " + varName, file);
 			}
 
 			break;
@@ -753,23 +792,48 @@ Boolean CompilerFrontendCPlusPlus::Compile(const std::string text,
 								continue;
 
 							syntax_tree.fUserValue = "mov rax, " + kRegisterList[indxReg - 1] + "\nret\n";
-							break;
-						}
+							kOrigin += 1UL;
 
-						if (syntax_tree.fUserValue.empty())
-						{
-							Detail::print_error("Variable not declared: " + subText, file);
+							break;
 						}
 					}
 					else
 					{
 						syntax_tree.fUserValue = "mov rax, " + subText + "\nret\n";
+						kOrigin += 1UL;
+
+						break;
 					}
 				}
 				else
 				{
 					syntax_tree.fUserValue = "__LIBCOMPILER_LOCAL_RETURN_STRING: db " + subText + ", 0\nmov rcx, __LIBCOMPILER_LOCAL_RETURN_STRING\n";
 					syntax_tree.fUserValue += "mov rax, rcx\nret\n";
+					kOrigin += 1UL;
+					
+					break;
+				}
+
+				if (syntax_tree.fUserValue.empty())
+				{
+					if (subText.find("(") != std::string::npos)
+					{
+						subText.erase(subText.find("("));
+
+						auto it = std::find_if(kOriginMap.begin(), kOriginMap.end(), [&subText](std::pair<std::string, std::uintptr_t> pair) -> bool {
+							return pair.first.find(subText) != std::string::npos;
+						});
+
+						if (it == kOriginMap.end())
+							Detail::print_error("Invalid return value: " + subText, file);
+
+						std::stringstream ss;
+						ss << it->second;
+
+						syntax_tree.fUserValue = "mov rax, " + ss.str() + "\nret\n";
+						kOrigin += 1UL;
+						break;
+					}
 				}
 
 				break;
@@ -777,6 +841,7 @@ Boolean CompilerFrontendCPlusPlus::Compile(const std::string text,
 			catch (...)
 			{
 				syntax_tree.fUserValue = "ret\n";
+				kOrigin += 1UL;
 			}
 		}
 		default: {
@@ -871,10 +936,14 @@ public:
 			break;
 		}
 
+		std::stringstream stream;
+		stream << kOrigin;
+		std::string result(stream.str());
+
 		(*kState.fOutputAssembly)
 			<< "; Assembler Dialect: AMD64 LibCompiler Assembler. (Generated from C++)\n";
 		(*kState.fOutputAssembly) << "; Date: " << fmt << "\n";
-		(*kState.fOutputAssembly) << "#bits 64\n#org 0x1000000"
+		(*kState.fOutputAssembly) << "#bits 64\n#org " + result
 								  << "\n";
 
 		kState.fSyntaxTree = new LibCompiler::SyntaxLeafList();

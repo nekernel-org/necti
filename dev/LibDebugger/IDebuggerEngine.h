@@ -58,7 +58,7 @@ namespace LibDebugger
 
 		void SetBreakpoint(CAddr addr)
 		{
-			auto original_data = ptrace(PTRACE_PEEKTEXT, m_pid, addr, 0);
+			uintptr_t original_data = ptrace(PTRACE_PEEKTEXT, m_pid, addr, 0);
 
 			if (original_data == -1)
 			{
@@ -66,7 +66,7 @@ namespace LibDebugger
 				return;
 			}
 
-			auto data_with_int3 = (original_data & ~0xFF) | 0xCC; // Insert INT3 (0xCC)
+			uintptr_t data_with_int3 = (original_data & ~0xFF) | 0xCC; // Insert INT3 (0xCC)
 
 			if (ptrace(PTRACE_POKETEXT, m_pid, addr, data_with_int3) == -1)
 			{
@@ -107,13 +107,13 @@ namespace LibDebugger
 			std::cout << "[-] Detached from process: " << m_pid << std::endl;
 		}
 
-		std::unordered_map<uintptr_t, long>& Breakpoints()
+		std::unordered_map<uintptr_t, uintptr_t>& Breakpoints()
 		{
 			return m_breakpoints;
 		}
 
 	private:
 		pid_t								m_pid;
-		std::unordered_map<uintptr_t, long> m_breakpoints;
+		std::unordered_map<uintptr_t, uintptr_t> m_breakpoints;
 	};
 } // namespace LibDebugger

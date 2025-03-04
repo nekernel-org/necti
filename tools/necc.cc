@@ -74,7 +74,7 @@ int main(int argc, char const* argv[])
 			if (auto code = CompilerCPlusPlusX8664(2, arr_cli);
           code > 0)
 			{
-				std::printf("nec++: compiler exited with code %i.", code);
+				std::printf("necc: compiler exited with code %i.", code);
 			}
 		}
 
@@ -85,7 +85,7 @@ int main(int argc, char const* argv[])
 			if (auto code = AssemblerMainAMD64(2, arr_cli);
           code > 0)
 			{
-				std::printf("nec++: assembler exited with code %i.", code);
+				std::printf("necc: assembler exited with code %i.", code);
 			}
 		}
 	}

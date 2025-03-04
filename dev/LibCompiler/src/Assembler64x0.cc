@@ -79,11 +79,11 @@ namespace Detail
 		if (reason[0] == '\n')
 			reason.erase(0, 1);
 
-		kStdErr << kRed << "[ TQC++ ] " << kWhite
+		kStdErr << kRed << "[ asm ] " << kWhite
 				<< ((file == "LibCompiler") ? "InternalErrorException: "
 											: ("FileException{ " + file + " }: "))
 				<< kBlank << std::endl;
-		kStdErr << kRed << "[ TQC++ ] " << kWhite << reason << kBlank << std::endl;
+		kStdErr << kRed << "[ asm ] " << kWhite << reason << kBlank << std::endl;
 
 		if (kAcceptableErrors > kErrorLimit)
 			std::exit(3);
@@ -98,10 +98,10 @@ namespace Detail
 
 		if (!file.empty())
 		{
-			kStdOut << kYellow << "[ TQC++ ] " << kWhite << file << kBlank << std::endl;
+			kStdOut << kYellow << "[ asm ] " << kWhite << file << kBlank << std::endl;
 		}
 
-		kStdOut << kYellow << "[ TQC++ ] " << kWhite << reason << kBlank << std::endl;
+		kStdOut << kYellow << "[ asm ] " << kWhite << reason << kBlank << std::endl;
 	}
 } // namespace Detail
 
