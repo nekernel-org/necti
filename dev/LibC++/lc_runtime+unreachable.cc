@@ -8,5 +8,6 @@
 
 extern "C" void __libcompiler_unreachable(void)
 {
-    while (true);
+	while (true)
+		;
 }

@@ -388,7 +388,7 @@ bool CompilerFrontendPower64::Compile(std::string text_, const std::string file)
 				"r10, r11";
 
 			syntax_leaf.fUserValue += "\n\tbeq extern_segment " + kIfFunction +
-									 " \ndword public_segment .code64 " + kIfFunction + "\n";
+									  " \ndword public_segment .code64 " + kIfFunction + "\n";
 
 			kState.fSyntaxTree->fLeafList.push_back(syntax_leaf);
 
@@ -759,7 +759,7 @@ bool CompilerFrontendPower64::Compile(std::string text_, const std::string file)
 		syntax_leaf.fUserValue.clear();
 	}
 
-	auto syntax_leaf		  = LibCompiler::SyntaxLeafList::SyntaxLeaf();
+	auto syntax_leaf	   = LibCompiler::SyntaxLeafList::SyntaxLeaf();
 	syntax_leaf.fUserValue = "\n";
 	kState.fSyntaxTree->fLeafList.push_back(syntax_leaf);
 

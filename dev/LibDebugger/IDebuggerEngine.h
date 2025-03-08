@@ -33,8 +33,8 @@ namespace LibDebugger
 	class IDebuggerEngine final
 	{
 	public:
-		explicit IDebuggerEngine()	 = default;
-		~IDebuggerEngine() = default;
+		explicit IDebuggerEngine() = default;
+		~IDebuggerEngine()		   = default;
 
 	public:
 		IDebuggerEngine& operator=(const IDebuggerEngine&) = default;
@@ -113,7 +113,7 @@ namespace LibDebugger
 		}
 
 	private:
-		pid_t								m_pid;
+		pid_t									 m_pid;
 		std::unordered_map<uintptr_t, uintptr_t> m_breakpoints;
 	};
 } // namespace LibDebugger

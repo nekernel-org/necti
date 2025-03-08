@@ -55,7 +55,7 @@ namespace Detail
 {
 	struct DynamicLinkerBlob final
 	{
-		std::vector<CharType> mBlob{};		   // ELF code/bss/data blob.
+		std::vector<CharType> mBlob{};		// ELF code/bss/data blob.
 		UIntPtr				  mOffset{0UL}; // the offset of the ELF container header...
 	};
 } // namespace Detail

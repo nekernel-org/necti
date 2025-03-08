@@ -58,7 +58,7 @@ namespace Detail
 {
 	struct DynamicLinkerBlob final
 	{
-		std::vector<CharType> mBlob{};		   // PEF code/bss/data blob.
+		std::vector<CharType> mBlob{};		// PEF code/bss/data blob.
 		UIntPtr				  mOffset{0UL}; // the offset of the PEF container header...
 	};
 } // namespace Detail
@@ -218,9 +218,7 @@ LIBCOMPILER_MODULE(DynamicLinker64PEF)
 		kStdOut << "no output filename set." << std::endl;
 		return LIBCOMPILER_EXEC_ERROR;
 	}
-
-	// sanity check.
-	if (kObjectList.empty())
+	else if (kObjectList.empty())
 	{
 		kStdOut << "no input files." << std::endl;
 		return LIBCOMPILER_EXEC_ERROR;

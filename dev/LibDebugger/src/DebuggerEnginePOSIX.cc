@@ -10,7 +10,7 @@
 LIBCOMPILER_MODULE(DebuggerPOSIX)
 {
 	LibDebugger::IDebuggerEngine debugger;
-	pid_t				   pid = 0L;
+	pid_t						 pid = 0L;
 
 	if (argc >= 3 && std::string(argv[1]) == "-p" &&
 		argv[2] != nullptr)
