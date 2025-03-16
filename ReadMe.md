@@ -9,7 +9,7 @@ A dialect of C++ for NeOS.
 Start by cloning the repository:
 
 ```
-git clone git@github.com:mediaswirl/necc.git
+git clone git@github.com:devrije/cc.git
 ```
 
 And then follow the build instructions (Install.md)
