@@ -34,17 +34,17 @@ namespace LibDebugger::POSIX
 	typedef char* CAddr;
 #endif
 
-	/// \brief Debugger engine interface class in C++
+	/// \brief LocalDebuggerPOSIX engine interface class in C++
 	/// \author Amlal El Mahrouss
-	class Debugger final
+	class LocalDebuggerPOSIX final
 	{
 	public:
-		explicit Debugger() = default;
-		~Debugger()			= default;
+		explicit LocalDebuggerPOSIX() = default;
+		~LocalDebuggerPOSIX()		  = default;
 
 	public:
-		Debugger& operator=(const Debugger&) = default;
-		Debugger(const Debugger&)			 = default;
+		LocalDebuggerPOSIX& operator=(const LocalDebuggerPOSIX&) = default;
+		LocalDebuggerPOSIX(const LocalDebuggerPOSIX&)			 = default;
 
 	public:
 		bool Attach(pid_t pid)

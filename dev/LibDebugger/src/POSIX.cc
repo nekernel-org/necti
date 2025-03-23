@@ -10,11 +10,17 @@
 
 #ifndef _WIN32
 
-static bool					 kKeepRunning = false;
-LibDebugger::POSIX::Debugger kDebugger;
+static bool									  kKeepRunning = false;
+static LibDebugger::POSIX::LocalDebuggerPOSIX kDebugger;
+static pid_t								  kPID = 0L;
 
 static void DebuggerCtrlCHandler(std::int32_t _)
 {
+	if (!kPID)
+	{
+		return;
+	}
+
 	auto list = kDebugger.Get();
 
 	LibDebugger::POSIX::CAddr addr = (LibDebugger::POSIX::CAddr)list[list.size() - 1];
@@ -39,13 +45,11 @@ LIBCOMPILER_MODULE(DebuggerPOSIX)
 		return EXIT_FAILURE;
 	}
 
-	pid_t pid = 0L;
-
 	if (argc >= 3 && std::string(argv[1]) == "-p" &&
 		argv[2] != nullptr)
 	{
-		pid = std::stoi(argv[2]);
-		kDebugger.Attach(pid);
+		kPID = std::stoi(argv[2]);
+		kDebugger.Attach(kPID);
 	}
 
 	::signal(SIGINT, DebuggerCtrlCHandler);
@@ -76,16 +80,16 @@ LIBCOMPILER_MODULE(DebuggerPOSIX)
 			std::cout << "[?] Enter a PID to attach on: ";
 
 			std::getline(std::cin, cmd);
-			pid = std::stoi(cmd.c_str());
+			kPID = std::stoi(cmd.c_str());
 
-			pfd::notify("Debugger Event", "Attach process: " + std::to_string(pid));
+			pfd::notify("Debugger Event", "Attach process: " + std::to_string(kPID));
 
-			kDebugger.Attach(pid);
+			kDebugger.Attach(kPID);
 		}
 
 		if (cmd == "exit")
 		{
-			if (pid > 0)
+			if (kPID > 0)
 				kDebugger.Detach();
 
 			break;
