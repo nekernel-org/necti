@@ -4,6 +4,10 @@
 
 #pragma once
 
+#ifdef _WIN32
+#error Windows doesn't have a POSIX subsystem, please combine with windows instead.
+#endif
+
 #include <iostream>
 #include <unordered_map>
 

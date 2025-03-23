@@ -3,7 +3,7 @@
  */
 
 #include <LibCompiler/Defines.h>
-#include <LibDebugger/vendor/Dialogs.h>
+#include <Vendor/Dialogs.h>
 #include <LibDebugger/POSIX.h>
 #include <cstdint>
 #include <string>
