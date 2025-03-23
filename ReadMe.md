@@ -2,6 +2,10 @@
 
 Use the doxygen command to build documentation.
 
+## Notice for Contributors:
+
+- Always use `run_format.sh` before commiting and pushing your code!
+
 ## Requirements:
 
 - [CLang](https://clang.llvm.org/)
