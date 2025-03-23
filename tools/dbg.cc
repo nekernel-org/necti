@@ -13,10 +13,5 @@ LC_IMPORT_C int DebuggerPOSIX(int argc, char const* argv[]);
 
 int main(int argc, char const* argv[])
 {
-	if (argc < 1)
-	{
-		return 1;
-	}
-
 	return DebuggerPOSIX(argc, argv);
 }

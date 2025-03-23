@@ -3,13 +3,18 @@
  */
 
 #include <LibCompiler/Defines.h>
-#include <LibDebugger/IDebuggerEngine.h>
+#include <LibDebugger/POSIX.h>
 
 #ifndef _WIN32
 
 LIBCOMPILER_MODULE(DebuggerPOSIX)
 {
-	LibDebugger::IDebuggerEngine debugger;
+	if (argc < 1)
+	{
+		return EXIT_FAILURE;
+	}
+
+	LibDebugger::POSIX::Debugger debugger;
 	pid_t						 pid = 0L;
 
 	if (argc >= 3 && std::string(argv[1]) == "-p" &&
@@ -26,7 +31,7 @@ LIBCOMPILER_MODULE(DebuggerPOSIX)
 
 		if (cmd == "c" ||
 			cmd == "cont")
-			debugger.ContinueExecution();
+			debugger.Continue();
 
 		if (cmd == "d" ||
 			cmd == "detach")
@@ -57,14 +62,14 @@ LIBCOMPILER_MODULE(DebuggerPOSIX)
 
 			std::getline(std::cin, cmd);
 
-			LibDebugger::CAddr breakpoint_addr = reinterpret_cast<LibDebugger::CAddr>(std::stoul(cmd.c_str(), nullptr, 16));
+			LibDebugger::POSIX::CAddr breakpoint_addr = reinterpret_cast<LibDebugger::POSIX::CAddr>(std::stoul(cmd.c_str(), nullptr, 16));
 
 			if (breakpoint_addr)
-				debugger.SetBreakpoint(breakpoint_addr);
+				debugger.Break(breakpoint_addr);
 		}
 	}
 
-	return 0;
+	return EXIT_SUCCESS;
 }
 
 #endif

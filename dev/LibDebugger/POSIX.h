@@ -2,6 +2,8 @@
 	(C) 2025 Amlal El Mahrouss
  */
 
+#pragma once
+
 #include <iostream>
 #include <unordered_map>
 
@@ -20,7 +22,7 @@
 #define PTRACE_PEEKTEXT PT_READ_I
 #endif
 
-namespace LibDebugger
+namespace LibDebugger::POSIX
 {
 #ifdef __APPLE__
 	typedef caddr_t CAddr;
@@ -30,15 +32,15 @@ namespace LibDebugger
 
 	/// \brief Debugger engine interface class in C++
 	/// \author Amlal El Mahrouss
-	class IDebuggerEngine final
+	class Debugger final
 	{
 	public:
-		explicit IDebuggerEngine() = default;
-		~IDebuggerEngine()		   = default;
+		explicit Debugger() = default;
+		~Debugger()			= default;
 
 	public:
-		IDebuggerEngine& operator=(const IDebuggerEngine&) = default;
-		IDebuggerEngine(const IDebuggerEngine&)			   = default;
+		Debugger& operator=(const Debugger&) = default;
+		Debugger(const Debugger&)			 = default;
 
 	public:
 		void Attach(pid_t pid)
@@ -56,7 +58,7 @@ namespace LibDebugger
 			std::cout << "[+] Attached to process: " << m_pid << std::endl;
 		}
 
-		void SetBreakpoint(CAddr addr)
+		void Break(CAddr addr)
 		{
 			uintptr_t original_data = ptrace(PTRACE_PEEKTEXT, m_pid, addr, 0);
 
@@ -79,7 +81,7 @@ namespace LibDebugger
 			m_breakpoints[reinterpret_cast<uintptr_t>(addr)] = original_data; // Store original data
 		}
 
-		void ContinueExecution()
+		void Continue()
 		{
 			if (ptrace(PTRACE_CONT, m_pid, nullptr, 0) == -1)
 			{
@@ -116,4 +118,4 @@ namespace LibDebugger
 		pid_t									 m_pid;
 		std::unordered_map<uintptr_t, uintptr_t> m_breakpoints;
 	};
-} // namespace LibDebugger
+} // namespace LibDebugger::POSIX
