@@ -1,0 +1,11 @@
+====================
+DEBUGGER SPECS
+====================
+
+WHAT TO DO:
+	Provide a complete debugger:
+
+	- Debugging on Linux, OS X.
+	- Ctrl-C handler to stop program.
+	- Extensive C++ library for debugging.
+	

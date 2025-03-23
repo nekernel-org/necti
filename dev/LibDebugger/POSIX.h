@@ -43,50 +43,48 @@ namespace LibDebugger::POSIX
 		Debugger(const Debugger&)			 = default;
 
 	public:
-		void Attach(pid_t pid)
+		bool Attach(pid_t pid)
 		{
 			if (ptrace(PTRACE_ATTACH, pid, nullptr, 0) == -1)
 			{
-				perror("dbg: Attach");
-				return;
+				return false;
 			}
 
 			this->m_pid = pid;
 
 			waitpid(m_pid, nullptr, 0);
 
-			std::cout << "[+] Attached to process: " << m_pid << std::endl;
+			return true;
 		}
 
-		void Break(CAddr addr)
+		bool Break(CAddr addr)
 		{
 			uintptr_t original_data = ptrace(PTRACE_PEEKTEXT, m_pid, addr, 0);
 
 			if (original_data == -1)
 			{
-				perror("dbg: Peek");
-				return;
+				return false;
 			}
 
-			uintptr_t data_with_int3 = (original_data & ~0xFF) | 0xCC; // Insert INT3 (0xCC)
+			constexpr uint8_t kInt3x86 = 0xCC;
+
+			uintptr_t data_with_int3 = (original_data & ~0xFF) | kInt3x86; // Insert INT3 (0xCC)
 
 			if (ptrace(PTRACE_POKETEXT, m_pid, addr, data_with_int3) == -1)
 			{
-				perror("dbg: Poke");
-				return;
+				return false;
 			}
 
-			std::cout << "[+] Breakpoint set at: " << addr << std::endl;
-
 			m_breakpoints[reinterpret_cast<uintptr_t>(addr)] = original_data; // Store original data
+
+			return true;
 		}
 
-		void Continue()
+		bool Continue()
 		{
 			if (ptrace(PTRACE_CONT, m_pid, nullptr, 0) == -1)
 			{
-				perror("dbg: Cont");
-				return;
+				return false;
 			}
 
 			int status;
@@ -94,22 +92,23 @@ namespace LibDebugger::POSIX
 
 			if (WIFSTOPPED(status) && WSTOPSIG(status) == SIGTRAP)
 			{
-				std::cout << "[!] Breakpoint hit." << std::endl;
+				std::cout << "[!] Breakpoint has been hit!" << std::endl;
 			}
+
+			return true;
 		}
 
-		void Detach()
+		bool Detach()
 		{
 			if (ptrace(PTRACE_DETACH, m_pid, nullptr, 0) == -1)
 			{
-				perror("dbg: Detach");
-				return;
+				return false;
 			}
 
-			std::cout << "[-] Detached from process: " << m_pid << std::endl;
+			return true;
 		}
 
-		std::unordered_map<uintptr_t, uintptr_t>& Breakpoints()
+		std::unordered_map<uintptr_t, uintptr_t>& Get()
 		{
 			return m_breakpoints;
 		}

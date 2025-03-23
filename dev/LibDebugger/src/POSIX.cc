@@ -3,9 +3,34 @@
  */
 
 #include <LibCompiler/Defines.h>
+#include <LibDebugger/vendor/Dialogs.h>
 #include <LibDebugger/POSIX.h>
+#include <cstdint>
+#include <string>
 
 #ifndef _WIN32
+
+static bool					 kKeepRunning = false;
+LibDebugger::POSIX::Debugger kDebugger;
+
+static void DebuggerCtrlCHandler(std::int32_t _)
+{
+	auto list = kDebugger.Get();
+
+	LibDebugger::POSIX::CAddr addr = (LibDebugger::POSIX::CAddr)list[list.size() - 1];
+
+	if (!addr)
+	{
+		pfd::notify("Debugger Event", "Invalid breakpoint at: " + std::to_string(list[list.size() - 1]));
+		return;
+	}
+
+	kDebugger.Break(addr);
+
+	pfd::notify("Debugger Event", "Breakpoint at: " + std::to_string(list[list.size() - 1]));
+
+	kKeepRunning = false;
+}
 
 LIBCOMPILER_MODULE(DebuggerPOSIX)
 {
@@ -14,28 +39,37 @@ LIBCOMPILER_MODULE(DebuggerPOSIX)
 		return EXIT_FAILURE;
 	}
 
-	LibDebugger::POSIX::Debugger debugger;
-	pid_t						 pid = 0L;
+	pid_t pid = 0L;
 
 	if (argc >= 3 && std::string(argv[1]) == "-p" &&
 		argv[2] != nullptr)
 	{
 		pid = std::stoi(argv[2]);
-		debugger.Attach(pid);
+		kDebugger.Attach(pid);
 	}
+
+	::signal(SIGINT, DebuggerCtrlCHandler);
 
 	while (YES)
 	{
+		if (kKeepRunning)
+		{
+			continue;
+		}
+
 		std::string cmd;
 		std::getline(std::cin, cmd);
 
 		if (cmd == "c" ||
 			cmd == "cont")
-			debugger.Continue();
+		{
+			kDebugger.Continue();
+			kKeepRunning = true;
+		}
 
 		if (cmd == "d" ||
 			cmd == "detach")
-			debugger.Detach();
+			kDebugger.Detach();
 
 		if (cmd == "attach")
 		{
@@ -44,13 +78,15 @@ LIBCOMPILER_MODULE(DebuggerPOSIX)
 			std::getline(std::cin, cmd);
 			pid = std::stoi(cmd.c_str());
 
-			debugger.Attach(pid);
+			pfd::notify("Debugger Event", "Attach process: " + std::to_string(pid));
+
+			kDebugger.Attach(pid);
 		}
 
 		if (cmd == "exit")
 		{
 			if (pid > 0)
-				debugger.Detach();
+				kDebugger.Detach();
 
 			break;
 		}
@@ -58,14 +94,25 @@ LIBCOMPILER_MODULE(DebuggerPOSIX)
 		if (cmd == "break" ||
 			cmd == "b")
 		{
-			std::cout << "[?] Enter an address to add a breakpoint on: ";
+			std::cout << "[?] Enter an address/symbol to add a break on: ";
 
 			std::getline(std::cin, cmd);
 
-			LibDebugger::POSIX::CAddr breakpoint_addr = reinterpret_cast<LibDebugger::POSIX::CAddr>(std::stoul(cmd.c_str(), nullptr, 16));
+			auto addr = std::stoul(cmd.c_str(), nullptr, 16);
+
+			try
+			{
+				pfd::notify("Debugger Event", "Add Breakpoint at: " + std::to_string(addr));
+			}
+			catch (...)
+			{
+				pfd::notify("Debugger Event", "Add Breakpoint at: " + cmd);
+			}
+
+			LibDebugger::POSIX::CAddr breakpoint_addr = reinterpret_cast<LibDebugger::POSIX::CAddr>(addr);
 
 			if (breakpoint_addr)
-				debugger.Break(breakpoint_addr);
+				kDebugger.Break(breakpoint_addr);
 		}
 	}
 

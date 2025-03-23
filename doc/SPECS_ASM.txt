@@ -3,7 +3,7 @@ X86 ASSEMBLER SPECS
 ====================
 
 WHAT TO DO:
-	Provide a complete support of x86-64 with:
+	Provide complete support of x86-64 with:
 
 	- org directive.
 	- 64-bit and 32-bit registers.
