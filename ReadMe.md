@@ -1,13 +1,17 @@
-# NeOS C/C++
+# NeKernel C/C++
 
-## Installing:
+Use the doxygen command to build documentation.
 
-- Start by cloning the repository:
+## Requirements:
+
+- [CLang](https://clang.llvm.org/)
+- [GIT](https://git-scm.com/)
+- [BTB](https://github.com/amlel-el-mahrouss/btb)
+
+## Cloning:
 
 ```
-git clone git@github.com:ne-gh/cc.git
+git clone git@github.com:amlel-el-mahrouss-gh/cc.git
 ```
-
-- And then follow the build instructions (Install.md)
 
 ###### Copyright (C) 2024-2025 Amlal EL Mahrouss, all rights reserved.
