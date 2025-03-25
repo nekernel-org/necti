@@ -411,10 +411,9 @@ LIBCOMPILER_MODULE(DynamicLinker64PEF)
 			reader_protocol.FP.seekg(std::streamsize(ae_header.fStartCode));
 			reader_protocol.FP.read(bytes.data(), std::streamsize(ae_header.fCodeSize));
 
-			for (auto& byte : bytes)
-			{
-				kObjectBytes.push_back({.mBlob = bytes, .mOffset = ae_header.fStartCode});
-			}
+			kObjectBytes.push_back({.mBlob = bytes, .mOffset = ae_header.fStartCode});
+
+			// Blob was written, close fp.
 
 			reader_protocol.FP.close();
 

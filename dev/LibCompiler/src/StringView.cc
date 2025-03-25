@@ -18,7 +18,7 @@
  *
  */
 
-#include <LibCompiler/NFC/String.h>
+#include <LibCompiler/NFC/StringView.h>
 
 namespace LibCompiler
 {
