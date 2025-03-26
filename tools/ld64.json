@@ -6,7 +6,7 @@
   "output_name": "ld64",
   "compiler_flags": ["-L/usr/lib", "-lCompiler"],
   "cpp_macros": [
-    "__LINK__=202401",
+    "__LD64__=202401",
     "kDistReleaseBranch=$(git rev-parse --abbrev-ref HEAD)-$(uuidgen)"
   ]
 }
