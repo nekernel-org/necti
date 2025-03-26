@@ -4,19 +4,20 @@
 
 #include <LibCompiler/Defines.h>
 #include <Vendor/Dialogs.h>
-#include <LibDebugger/POSIXContract.h>
+#include <LibDebugger/POSIXMachContract.h>
 #include <cstdint>
 #include <string>
 
 #ifndef _WIN32
 
-static bool										 kKeepRunning = false;
-static LibDebugger::POSIX::POSIXDebuggerContract kDebugger;
-static pid_t									 kPID = 0L;
+static bool									 kKeepRunning = false;
+static LibDebugger::POSIX::POSIXMachContract kDebugger;
+static pid_t								 kPID			= 0L;
+static LibDebugger::CAddress				 kActiveAddress = nullptr;
 
 /// @internal
 /// @brief Handles CTRL-C signal on debugger.
-static void dbgl_ctrlc_handler(std::int32_t _)
+static void dbgi_ctrlc_handler(std::int32_t _)
 {
 	if (!kPID)
 	{
@@ -25,17 +26,9 @@ static void dbgl_ctrlc_handler(std::int32_t _)
 
 	auto list = kDebugger.Get();
 
-	LibDebugger::CAddress addr = (LibDebugger::CAddress)list[list.size() - 1];
+	kDebugger.Break(kActiveAddress);
 
-	if (!addr)
-	{
-		pfd::notify("Debugger Event", "Invalid breakpoint at: " + std::to_string(list[list.size() - 1]));
-		return;
-	}
-
-	kDebugger.Break(addr);
-
-	pfd::notify("Debugger Event", "Breakpoint at: " + std::to_string(list[list.size() - 1]));
+	pfd::notify("Debugger Event", "Breakpoint hit!");
 
 	kKeepRunning = false;
 }
@@ -51,7 +44,7 @@ LIBCOMPILER_MODULE(DebuggerPOSIX)
 		kDebugger.Attach(kPID);
 	}
 
-	::signal(SIGINT, dbgl_ctrlc_handler);
+	::signal(SIGINT, dbgi_ctrlc_handler);
 
 	while (YES)
 	{
@@ -64,7 +57,8 @@ LIBCOMPILER_MODULE(DebuggerPOSIX)
 		std::getline(std::cin, cmd);
 
 		if (cmd == "c" ||
-			cmd == "cont")
+			cmd == "cont" ||
+			cmd == "continue")
 		{
 			kDebugger.Continue();
 			kKeepRunning = true;
@@ -77,7 +71,9 @@ LIBCOMPILER_MODULE(DebuggerPOSIX)
 			cmd == "detach")
 			kDebugger.Detach();
 
-		if (cmd == "attach")
+		if (cmd == "attach" ||
+			cmd == "pid" ||
+			cmd == "a")
 		{
 			std::cout << "[?] Enter a PID to attach on: ";
 
@@ -97,6 +93,7 @@ LIBCOMPILER_MODULE(DebuggerPOSIX)
 			break;
 		}
 
+#ifndef __APPLE__
 		if (cmd == "break" ||
 			cmd == "b")
 		{
@@ -118,8 +115,12 @@ LIBCOMPILER_MODULE(DebuggerPOSIX)
 			LibDebugger::CAddress breakpoint_addr = reinterpret_cast<LibDebugger::CAddress>(addr);
 
 			if (breakpoint_addr)
-				kDebugger.Break(breakpoint_addr);
+			{
+				kActiveAddress = breakpoint_addr;
+				kDebugger.Break(kActiveAddress);
+			}
 		}
+#endif // ifndef __APPLE__
 	}
 
 	return EXIT_SUCCESS;

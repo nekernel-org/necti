@@ -5,8 +5,11 @@
 #pragma once
 
 #ifdef _WIN32
-#error Windows doesn't have a POSIX subsystem, please combine with windows instead.
+#error Windows doesn't have a POSIX/Mach subsystem, please combine with windows instead.
 #endif
+
+/// @file POSIXMachContract.h
+/// @brief POSIX/Mach debugger.
 
 #include <LibDebugger/DebuggerContract.h>
 
@@ -18,6 +21,9 @@
 #include <stdint.h>
 
 #ifdef __APPLE__
+#include <mach/mach.h>
+#include <mach/mach_error.h>
+
 #define PTRACE_ATTACH	PT_ATTACHEXC
 #define PTRACE_DETACH	PT_DETACH
 #define PTRACE_POKETEXT PT_WRITE_I
@@ -27,21 +33,29 @@
 
 namespace LibDebugger::POSIX
 {
-	/// \brief POSIXDebuggerContract engine interface class in C++
+	/// \brief POSIXMachContract engine interface class in C++
 	/// \author Amlal El Mahrouss
-	class POSIXDebuggerContract final : public DebuggerContract
+	class POSIXMachContract final : public DebuggerContract
 	{
 	public:
-		explicit POSIXDebuggerContract()  = default;
-		~POSIXDebuggerContract() override = default;
+		explicit POSIXMachContract()  = default;
+		~POSIXMachContract() override = default;
 
 	public:
-		POSIXDebuggerContract& operator=(const POSIXDebuggerContract&) = default;
-		POSIXDebuggerContract(const POSIXDebuggerContract&)			 = default;
+		POSIXMachContract& operator=(const POSIXMachContract&) = default;
+		POSIXMachContract(const POSIXMachContract&)			   = default;
 
 	public:
 		bool Attach(ProcessID pid) noexcept override
 		{
+#ifdef __APPLE__
+			if (pid == 0)
+				return false;
+
+			this->m_pid = pid;
+			return true;
+#else
+
 			if (ptrace(PTRACE_ATTACH, pid, nullptr, 0) == -1)
 			{
 				return false;
@@ -52,10 +66,18 @@ namespace LibDebugger::POSIX
 			waitpid(m_pid, nullptr, 0);
 
 			return true;
+#endif
 		}
 
 		bool Break(CAddress addr) noexcept override
 		{
+#ifdef __APPLE__
+			task_read_t task;
+			task_for_pid(mach_task_self(), m_pid, &task);
+			kern_return_t ret = task_suspend(task);
+
+			return ret == KERN_SUCCESS;
+#else
 			uintptr_t original_data = ptrace(PTRACE_PEEKTEXT, m_pid, addr, 0);
 
 			if (original_data == -1)
@@ -75,12 +97,21 @@ namespace LibDebugger::POSIX
 			m_breakpoints[reinterpret_cast<uintptr_t>(addr)] = original_data; // Store original data
 
 			return true;
+#endif
 		}
 
 		bool Continue() noexcept override
 		{
+#ifdef __APPLE__
+			task_read_t task;
+			task_for_pid(mach_task_self(), m_pid, &task);
+			kern_return_t ret = task_resume(task);
+
+			return ret == KERN_SUCCESS;
+#else
 			if (ptrace(PTRACE_CONT, m_pid, nullptr, 0) == -1)
 			{
+
 				return false;
 			}
 
@@ -88,19 +119,26 @@ namespace LibDebugger::POSIX
 			waitpid(m_pid, &status, 0);
 
 			return WIFSTOPPED(status) && WSTOPSIG(status) == SIGTRAP;
+#endif
 		}
 
 		bool Detach() noexcept override
 		{
-			if (ptrace(PTRACE_DETACH, m_pid, nullptr, 0) == -1)
-			{
-				return false;
-			}
+#ifdef __APPLE__
+			this->Continue();
 
-			return true;
+			task_read_t task;
+			task_for_pid(mach_task_self(), m_pid, &task);
+
+			kern_return_t kr = mach_port_deallocate(mach_task_self(), task);
+
+			return kr = KERN_SUCCESS;
+#else
+			return ptrace(PTRACE_DETACH, m_pid, nullptr, 0) == -1;
+#endif
 		}
 
 	private:
-		pid_t									 m_pid;
+		ProcessID m_pid{0};
 	};
 } // namespace LibDebugger::POSIX
