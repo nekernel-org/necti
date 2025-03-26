@@ -4,17 +4,19 @@
 
 #include <LibCompiler/Defines.h>
 #include <Vendor/Dialogs.h>
-#include <LibDebugger/POSIX.h>
+#include <LibDebugger/POSIXContract.h>
 #include <cstdint>
 #include <string>
 
 #ifndef _WIN32
 
-static bool									  kKeepRunning = false;
-static LibDebugger::POSIX::LocalDebuggerPOSIX kDebugger;
-static pid_t								  kPID = 0L;
+static bool										 kKeepRunning = false;
+static LibDebugger::POSIX::POSIXDebuggerContract kDebugger;
+static pid_t									 kPID = 0L;
 
-static void DebuggerCtrlCHandler(std::int32_t _)
+/// @internal
+/// @brief Handles CTRL-C signal on debugger.
+static void dbgl_ctrlc_handler(std::int32_t _)
 {
 	if (!kPID)
 	{
@@ -23,7 +25,7 @@ static void DebuggerCtrlCHandler(std::int32_t _)
 
 	auto list = kDebugger.Get();
 
-	LibDebugger::POSIX::CAddr addr = (LibDebugger::POSIX::CAddr)list[list.size() - 1];
+	LibDebugger::CAddress addr = (LibDebugger::CAddress)list[list.size() - 1];
 
 	if (!addr)
 	{
@@ -40,10 +42,7 @@ static void DebuggerCtrlCHandler(std::int32_t _)
 
 LIBCOMPILER_MODULE(DebuggerPOSIX)
 {
-	if (argc < 1)
-	{
-		return EXIT_FAILURE;
-	}
+	pfd::notify("Debugger Event", "NeKernel Debugger\n(C) 2025 Amlal El Mahrouss, all rights reserved.");
 
 	if (argc >= 3 && std::string(argv[1]) == "-p" &&
 		argv[2] != nullptr)
@@ -52,7 +51,7 @@ LIBCOMPILER_MODULE(DebuggerPOSIX)
 		kDebugger.Attach(kPID);
 	}
 
-	::signal(SIGINT, DebuggerCtrlCHandler);
+	::signal(SIGINT, dbgl_ctrlc_handler);
 
 	while (YES)
 	{
@@ -69,6 +68,9 @@ LIBCOMPILER_MODULE(DebuggerPOSIX)
 		{
 			kDebugger.Continue();
 			kKeepRunning = true;
+
+			std::cout << "[+] Continuing...\n";
+			pfd::notify("Debugger Event", "Continuing...");
 		}
 
 		if (cmd == "d" ||
@@ -113,7 +115,7 @@ LIBCOMPILER_MODULE(DebuggerPOSIX)
 				pfd::notify("Debugger Event", "Add Breakpoint at: " + cmd);
 			}
 
-			LibDebugger::POSIX::CAddr breakpoint_addr = reinterpret_cast<LibDebugger::POSIX::CAddr>(addr);
+			LibDebugger::CAddress breakpoint_addr = reinterpret_cast<LibDebugger::CAddress>(addr);
 
 			if (breakpoint_addr)
 				kDebugger.Break(breakpoint_addr);

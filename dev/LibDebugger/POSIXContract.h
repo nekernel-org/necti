@@ -8,8 +8,7 @@
 #error Windows doesn't have a POSIX subsystem, please combine with windows instead.
 #endif
 
-#include <iostream>
-#include <unordered_map>
+#include <LibDebugger/DebuggerContract.h>
 
 #include <sys/ptrace.h>
 #include <sys/types.h>
@@ -28,26 +27,20 @@
 
 namespace LibDebugger::POSIX
 {
-#ifdef __APPLE__
-	typedef caddr_t CAddr;
-#else
-	typedef char* CAddr;
-#endif
-
-	/// \brief LocalDebuggerPOSIX engine interface class in C++
+	/// \brief POSIXDebuggerContract engine interface class in C++
 	/// \author Amlal El Mahrouss
-	class LocalDebuggerPOSIX final
+	class POSIXDebuggerContract final : public DebuggerContract
 	{
 	public:
-		explicit LocalDebuggerPOSIX() = default;
-		~LocalDebuggerPOSIX()		  = default;
+		explicit POSIXDebuggerContract()  = default;
+		~POSIXDebuggerContract() override = default;
 
 	public:
-		LocalDebuggerPOSIX& operator=(const LocalDebuggerPOSIX&) = default;
-		LocalDebuggerPOSIX(const LocalDebuggerPOSIX&)			 = default;
+		POSIXDebuggerContract& operator=(const POSIXDebuggerContract&) = default;
+		POSIXDebuggerContract(const POSIXDebuggerContract&)			 = default;
 
 	public:
-		bool Attach(pid_t pid)
+		bool Attach(ProcessID pid) noexcept override
 		{
 			if (ptrace(PTRACE_ATTACH, pid, nullptr, 0) == -1)
 			{
@@ -61,7 +54,7 @@ namespace LibDebugger::POSIX
 			return true;
 		}
 
-		bool Break(CAddr addr)
+		bool Break(CAddress addr) noexcept override
 		{
 			uintptr_t original_data = ptrace(PTRACE_PEEKTEXT, m_pid, addr, 0);
 
@@ -84,7 +77,7 @@ namespace LibDebugger::POSIX
 			return true;
 		}
 
-		bool Continue()
+		bool Continue() noexcept override
 		{
 			if (ptrace(PTRACE_CONT, m_pid, nullptr, 0) == -1)
 			{
@@ -94,15 +87,10 @@ namespace LibDebugger::POSIX
 			int status;
 			waitpid(m_pid, &status, 0);
 
-			if (WIFSTOPPED(status) && WSTOPSIG(status) == SIGTRAP)
-			{
-				std::cout << "[!] Breakpoint has been hit!" << std::endl;
-			}
-
-			return true;
+			return WIFSTOPPED(status) && WSTOPSIG(status) == SIGTRAP;
 		}
 
-		bool Detach()
+		bool Detach() noexcept override
 		{
 			if (ptrace(PTRACE_DETACH, m_pid, nullptr, 0) == -1)
 			{
@@ -112,13 +100,7 @@ namespace LibDebugger::POSIX
 			return true;
 		}
 
-		std::unordered_map<uintptr_t, uintptr_t>& Get()
-		{
-			return m_breakpoints;
-		}
-
 	private:
 		pid_t									 m_pid;
-		std::unordered_map<uintptr_t, uintptr_t> m_breakpoints;
 	};
 } // namespace LibDebugger::POSIX
