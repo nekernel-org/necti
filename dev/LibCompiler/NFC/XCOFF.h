@@ -1,6 +1,6 @@
 /* -------------------------------------------
 
-	Copyright (C) 2024 Amlal EL Mahrouss, all rights reserved
+	Copyright (C) 2024-2025 Amlal EL Mahrous, all rights reserved
 
 	File: XCOFF.hpp
 	Purpose: XCOFF for NeOS.
