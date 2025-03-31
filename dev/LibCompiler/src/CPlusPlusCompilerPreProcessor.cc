@@ -2,7 +2,7 @@
  *	========================================================
  *
  *	bpp
- * 	Copyright (C) 2024-2025 Amlal EL Mahrouss, all rights reserved.
+ * 	Copyright (C) 2024-2025 Amlal El Mahrouss, all rights reserved.
  *
  * 	========================================================
  */
@@ -985,13 +985,13 @@ LIBCOMPILER_MODULE(CPlusPlusPreprocessorMain)
 			{
 				if (strcmp(argv[index], "--bpp:ver") == 0)
 				{
-					printf("%s\n", "bpp v1.11, (c) Amlal EL Mahrouss");
+					printf("%s\n", "bpp v1.11, (c) Amlal El Mahrouss");
 					return 0;
 				}
 
 				if (strcmp(argv[index], "--bpp:?") == 0)
 				{
-					printf("%s\n", "NE Preprocessor Driver v1.11, (c) Amlal EL Mahrouss");
+					printf("%s\n", "NE Preprocessor Driver v1.11, (c) Amlal El Mahrouss");
 					printf("%s\n", "--bpp:working-dir <path>: set directory to working path.");
 					printf("%s\n", "--bpp:include-dir <path>: add directory to include path.");
 					printf("%s\n", "--bpp:def <name> <value>: define a macro.");

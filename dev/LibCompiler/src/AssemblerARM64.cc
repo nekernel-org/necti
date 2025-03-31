@@ -91,13 +91,13 @@ LIBCOMPILER_MODULE(AssemblerMainARM64)
 			{
 				kStdOut << "AssemblerPower: AARCH64 Assembler Driver.\nAssemblerPower: " << kDistVersion << "\nAssemblerPower: "
 																											"Copyright (c) "
-																											"Amlal EL Mahrouss\n";
+																											"Amlal El Mahrouss\n";
 				return 0;
 			}
 			else if (strcmp(argv[i], "--h") == 0)
 			{
 				kStdOut << "AssemblerPower: AARCH64 Assembler Driver.\nAssemblerPower: Copyright (c) 2024 "
-						   "Amlal EL Mahrouss\n";
+						   "Amlal El Mahrouss\n";
 				kStdOut << "--version,/v: print program version.\n";
 				kStdOut << "--verbose: print verbose output.\n";
 				kStdOut << "--binary: output as flat binary.\n";

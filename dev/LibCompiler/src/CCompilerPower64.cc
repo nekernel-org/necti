@@ -2,7 +2,7 @@
  *	========================================================
  *
  *	CompilerPower64
- * 	Copyright (C) 2024-2025 Amlal EL Mahrouss, all rights reserved.
+ * 	Copyright (C) 2024-2025 Amlal El Mahrouss, all rights reserved.
  *
  * 	========================================================
  */
@@ -1502,7 +1502,7 @@ public:
 
 #define kPrintF printf
 #define kSplashCxx() \
-	kPrintF(kWhite "cc, %s, (c) Amlal EL Mahrouss\n", kDistVersion)
+	kPrintF(kWhite "cc, %s, (c) Amlal El Mahrouss\n", kDistVersion)
 
 static void cc_print_help()
 {

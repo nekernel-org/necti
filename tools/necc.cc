@@ -25,8 +25,8 @@ int main(int argc, char const* argv[])
 		{
 			std::printf("necc: Frontend C++ Compiler.\n");
 			std::printf("necc: Version: %s, Release: %s.\n", kDistVersion, kDistRelease);
-			std::printf("necc: Designed by Amlal EL Mahrouss, Copyright (C) 2024-2025 Amlal EL Mahrouss, all rights reserved.\n");
-			std::printf("libCompiler.dylib: Designed by Amlal EL Mahrouss, Copyright (C) 2024-2025 Amlal EL Mahrouss, all rights reserved.\n");
+			std::printf("necc: Designed by Amlal El Mahrouss, Copyright (C) 2024-2025 Amlal El Mahrouss, all rights reserved.\n");
+			std::printf("libCompiler.dylib: Designed by Amlal El Mahrouss, Copyright (C) 2024-2025 Amlal El Mahrouss, all rights reserved.\n");
 
 			return 0;
 		}

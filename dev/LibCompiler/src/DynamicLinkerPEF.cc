@@ -1,6 +1,6 @@
 /* -------------------------------------------
 
-	Copyright (C) 2024-2025 Amlal EL Mahrouss, all rights reserved
+	Copyright (C) 2024-2025 Amlal El Mahrouss, all rights reserved
 
 	@file DynamicLinker64PEF.cc
 	@brief: C++ 64-Bit PEF Linker.
@@ -32,7 +32,7 @@
 #include <LibCompiler/NFC/AE.h>
 #include <cstdint>
 
-#define kLinkerVersionStr "NeOS 64-Bit Linker (Preferred Executable) %s, (c) Amlal EL Mahrouss 2024, all rights reserved.\n"
+#define kLinkerVersionStr "NeOS 64-Bit Linker (Preferred Executable) %s, (c) Amlal El Mahrouss 2024, all rights reserved.\n"
 
 #define MemoryCopy(DST, SRC, SZ) memcpy(DST, SRC, SZ)
 #define StringCompare(DST, SRC)	 strcmp(DST, SRC)
@@ -254,7 +254,7 @@ LIBCOMPILER_MODULE(DynamicLinker64PEF)
 	pef_container.Count	   = 0UL;
 	pef_container.Kind	   = is_executable ? LibCompiler::kPefKindExec : LibCompiler::kPefKindDylib;
 	pef_container.SubCpu   = kSubArch;
-	pef_container.Linker   = kLinkerId; // Amlal EL Mahrouss Linker
+	pef_container.Linker   = kLinkerId; // Amlal El Mahrouss Linker
 	pef_container.Abi	   = kAbi;		// Multi-Processor UX ABI
 	pef_container.Magic[0] = kPefMagic[kFatBinaryEnable ? 2 : 0];
 	pef_container.Magic[1] = kPefMagic[1];

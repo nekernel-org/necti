@@ -2,7 +2,7 @@
  *	========================================================
  *
  *	c++-drv
- * 	Copyright (C) 2024-2025 Amlal EL Mahrouss, all rights reserved.
+ * 	Copyright (C) 2024-2025 Amlal El Mahrouss, all rights reserved.
  *
  * 	========================================================
  */
@@ -15,7 +15,7 @@
 #define kExitNO (EXIT_FAILURE)
 
 #define kSplashCxx() \
-	kPrintF(kWhite "%s\n", "NeOS C++ Compiler Driver, (c) 2024 Amlal EL Mahrouss, all rights reserved.")
+	kPrintF(kWhite "%s\n", "NeOS C++ Compiler Driver, (c) 2024 Amlal El Mahrouss, all rights reserved.")
 
 // extern_segment, @autodelete { ... }, fn foo() -> auto { ... }
 
@@ -27,7 +27,7 @@
 
 /* NE C++ Compiler */
 /* This is part of the LibCompiler. */
-/* (c) Amlal EL Mahrouss */
+/* (c) Amlal El Mahrouss */
 
 /// @author EL Mahrouss Amlal (amlel)
 /// @file CPlusPlusCompilerAMD64.cxx

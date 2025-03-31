@@ -2,7 +2,7 @@
  *	========================================================
  *
  *	LibCompiler
- * 	Copyright (C) 2024-2025 Amlal EL Mahrouss, all rights reserved.
+ * 	Copyright (C) 2024-2025 Amlal El Mahrouss, all rights reserved.
  *
  * 	========================================================
  */
@@ -14,7 +14,7 @@
  * @version 0.2
  * @date 2024-01-23
  *
- * @copyright Copyright (c) Amlal EL Mahrouss
+ * @copyright Copyright (c) Amlal El Mahrouss
  *
  */
 

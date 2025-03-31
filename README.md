@@ -23,4 +23,4 @@ Use the doxygen command to build documentation.
 git clone git@github.com:amlel-el-mahrouss-gh/cc.git
 ```
 
-###### Copyright (C) 2024-2025 Amlal EL Mahrouss, all rights reserved.
+###### Copyright (C) 2024-2025 Amlal El Mahrouss, all rights reserved.
