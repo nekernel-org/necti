@@ -31,7 +31,7 @@
 #include <LibCompiler/NFC/AE.h>
 #include <cstdint>
 
-#define kLinkerVersionStr "NeKernel 64-Bit Linker (Preferred Executable) %s, (c) Amlal El Mahrouss 2024-2025, all rights reserved.\n"
+#define kLinkerVersionStr "\e[0;97m NeKernel 64-Bit Linker (Preferred Executable) %s, (c) Amlal El Mahrouss 2024-2025, all rights reserved.\n"
 
 #define MemoryCopy(DST, SRC, SZ) memcpy(DST, SRC, SZ)
 #define StringCompare(DST, SRC)	 strcmp(DST, SRC)
@@ -39,16 +39,14 @@
 #define kPefNoCpu	 0U
 #define kPefNoSubCpu 0U
 
-#define kWhite "\e[0;97m"
-
-#define kStdOut (std::cout << kWhite << "ld64 (PEF): ")
+#define kStdOut (std::cout << "\e[0;31m" << "ld64: " << "\e[0;97m")
 
 #define kLinkerDefaultOrigin kPefBaseOrigin
 #define kLinkerId			 (0x5046FF)
 #define kLinkerAbiContainer	 "Container:ABI:"
 
 #define kPrintF			printf
-#define kLinkerSplash() kPrintF(kWhite kLinkerVersionStr, kDistVersion)
+#define kLinkerSplash() kPrintF(kLinkerVersionStr, kDistVersion)
 
 /// @brief PEF stack size symbol.
 #define kLinkerStackSizeSymbol "__PEFSizeOfReserveStack"
@@ -104,10 +102,10 @@ LIBCOMPILER_MODULE(DynamicLinker64PEF)
 		{
 			kLinkerSplash();
 
-			kStdOut << "--ld64:ver: Show linker version.\n";
-			kStdOut << "--ld64:?: Show linker help.\n";
+			kStdOut << "--ld64:version: Show linker version.\n";
+			kStdOut << "--ld64:help: Show linker help.\n";
 			kStdOut << "--ld64:verbose: Enable linker trace.\n";
-			kStdOut << "--ld64:dylib: Output as a Dylib PEF.\n";
+			kStdOut << "--ld64:dylib: Output as a Dyanmic PEF.\n";
 			kStdOut << "--ld64:fat: Output as a FAT PEF.\n";
 			kStdOut << "--ld64:32k: Output as a 32x0 PEF.\n";
 			kStdOut << "--ld64:64k: Output as a 64x0 PEF.\n";

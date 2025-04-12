@@ -15,7 +15,7 @@
 #define kExitNO (EXIT_FAILURE)
 
 #define kSplashCxx() \
-	kPrintF(kWhite "%s\n", "NeKernel C++ Compiler Driver, (c) 2024 Amlal El Mahrouss, all rights reserved.")
+	kPrintF(kWhite "%s\n", "NeKernel Optimized C++ Compiler Driver, (c) 2024-2025 Amlal El Mahrouss, All rights reserved.")
 
 // extern_segment, @autodelete { ... }, fn foo() -> auto { ... }
 
@@ -830,7 +830,7 @@ Boolean CompilerFrontendCPlusPlus::Compile(std::string		 text,
 						std::stringstream ss;
 						ss << it->second;
 
-						syntax_tree.fUserValue = "mov rax, " + ss.str() + "\nret\n";
+						syntax_tree.fUserValue = "jmp " + ss.str() + "\nret\n";
 						kOrigin += 1UL;
 						break;
 					}

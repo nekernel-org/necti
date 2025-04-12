@@ -3,12 +3,13 @@
 
 int bar()
 {
-	int yyy = 5050505055;
+	int yyy = 100;
 	return yyy;
 }
 
 int foo()
 {
+	int arg1 = 0;
 	return bar();
 }
 
