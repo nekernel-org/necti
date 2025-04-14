@@ -230,7 +230,17 @@ Boolean CompilerFrontendCPlusPlus::Compile(std::string		 text,
 										   const std::string file)
 {
 	if (text.empty())
-		return false;
+		return true;
+
+	// Clean whitespace and tabs
+	std::string cleanLine = text;
+	cleanLine.erase(std::remove(cleanLine.begin(), cleanLine.end(), '\t'), cleanLine.end());
+	cleanLine.erase(0, cleanLine.find_first_not_of(" \r\n"));
+	cleanLine.erase(cleanLine.find_last_not_of(" \r\n") + 1);
+
+	// Skip empty, doc, or block comment lines
+	if (cleanLine.empty() || cleanLine.starts_with("///") || cleanLine.starts_with("//") || cleanLine.starts_with("/*"))
+		return true;
 
 	std::size_t														  index = 0UL;
 	std::vector<std::pair<LibCompiler::CompilerKeyword, std::size_t>> keywords_list;
@@ -983,7 +993,7 @@ static void cxx_print_help()
 {
 	kSplashCxx();
 	kPrintF("%s", "No help available, see:\n");
-	kPrintF("%s", "www.zws.zka.com/help/c++lang\n");
+	kPrintF("%s", "nekernel.org/docs/cxxdrv\n");
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////

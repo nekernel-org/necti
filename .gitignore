@@ -10,7 +10,7 @@ local.properties
 
 tools/asm
 tools/ld64
-tools/necc
+tools/cxxdrv
 
 tools/dbg
 

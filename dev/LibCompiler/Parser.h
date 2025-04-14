@@ -103,6 +103,8 @@ namespace LibCompiler
 			std::string fUserData;
 #endif
 
+			SyntaxLeaf() = default;
+
 			std::string		   fUserValue;
 			struct SyntaxLeaf* fNext;
 		};

@@ -2,8 +2,8 @@
   "compiler_path": "g++",
   "compiler_std": "c++20",
   "headers_path": ["../dev/LibCompiler", "../dev/", "../dev/LibCompiler/src/Detail"],
-  "sources_path": ["necc.cc"],
-  "output_name": "necc",
+  "sources_path": ["cxxdrv.cc"],
+  "output_name": "cxxdrv",
   "compiler_flags": ["-L/usr/local/lib", "-lCompiler"],
   "cpp_macros": [
     "__CL__=202401",

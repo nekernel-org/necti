@@ -9,12 +9,12 @@
 
 /**
  * @file AssemblyFactory.cxx
- * @author amlal (amlal@zka.com)
+ * @author amlal (amlal@nekernel.org)
  * @brief Assembler Kit
  * @version 0.1
  * @date 2024-01-27
  *
- * @copyright Copyright (c) 2024 Amlal El Mahrouss
+ * @copyright Copyright (c) 2024-2025 Amlal El Mahrouss
  *
  */
 
