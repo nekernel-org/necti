@@ -8,6 +8,7 @@
 /// @brief NE C++ frontend compiler.
 
 #include <LibCompiler/Defines.h>
+#include <LibCompiler/NFC/ErrorID.h>
 #include <LibCompiler/Version.h>
 #include <iostream>
 #include <cstring>
@@ -32,6 +33,13 @@ int main(int argc, char const* argv[])
 		}
 	}
 
+	if (auto code = CPlusPlusPreprocessorMain(2, argv);
+		code > 0)
+	{
+		std::printf("cxxdrv: compiler exited with code %i.", code);
+
+		return LIBCOMPILER_EXEC_ERROR;
+	}
 	std::vector<std::string> args_list_cxx;
 	std::vector<std::string> args_list_asm;
 
@@ -45,10 +53,11 @@ int main(int argc, char const* argv[])
 		{
 			std::string arg = argv[index_arg];
 
-			arg += ".masm";
+			arg += ".pp.masm";
 			args_list_asm.push_back(arg);
 
 			arg = argv[index_arg];
+			arg += ".pp";
 
 			args_list_cxx.push_back(arg);
 		}
@@ -59,6 +68,7 @@ int main(int argc, char const* argv[])
 		}
 	}
 
+
 	for (auto& cli : args_list_cxx)
 	{
 		const char* arr_cli[] = {argv[0], cli.data()};
@@ -67,6 +77,8 @@ int main(int argc, char const* argv[])
 			code > 0)
 		{
 			std::printf("cxxdrv: compiler exited with code %i.", code);
+
+			return LIBCOMPILER_EXEC_ERROR;
 		}
 	}
 
@@ -81,5 +93,5 @@ int main(int argc, char const* argv[])
 		}
 	}
 
-	return 0;
+	return LIBCOMPILER_EXEC_ERROR;
 }
