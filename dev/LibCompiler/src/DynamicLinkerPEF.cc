@@ -39,7 +39,9 @@
 #define kPefNoCpu	 0U
 #define kPefNoSubCpu 0U
 
-#define kStdOut (std::cout << "\e[0;31m" << "ld64: " << "\e[0;97m")
+#define kStdOut (std::cout << "\e[0;31m" \
+						   << "ld64: "   \
+						   << "\e[0;97m")
 
 #define kLinkerDefaultOrigin kPefBaseOrigin
 #define kLinkerId			 (0x5046FF)
@@ -333,6 +335,12 @@ LIBCOMPILER_MODULE(DynamicLinker64PEF)
 			char_type* raw_ae_records =
 				new char_type[cnt * sizeof(LibCompiler::AERecordHeader)];
 
+			if (!raw_ae_records)
+			{
+				if (kVerbose)
+					kStdOut << "allocation failure for records of n: " << cnt << "\n";
+			}
+
 			memset(raw_ae_records, 0, cnt * sizeof(LibCompiler::AERecordHeader));
 
 			auto* ae_records = reader_protocol.Read(raw_ae_records, cnt);
@@ -399,6 +407,7 @@ LIBCOMPILER_MODULE(DynamicLinker64PEF)
 			}
 
 			delete[] raw_ae_records;
+			raw_ae_records = nullptr;
 
 			std::vector<char> bytes;
 			bytes.resize(ae_header.fCodeSize);
@@ -520,7 +529,7 @@ LIBCOMPILER_MODULE(DynamicLinker64PEF)
 	{
 		if (kVerbose)
 			kStdOut
-				<< "undefined entrypoint: " << kPefStart << ", you may have forget to ld64 "
+				<< "undefined entrypoint: " << kPefStart << ", you may have forget to link "
 															"against your compiler's runtime library.\n";
 
 		kStdOut << "undefined entrypoint " << kPefStart
@@ -717,7 +726,7 @@ LIBCOMPILER_MODULE(DynamicLinker64PEF)
 	{
 		for (auto& symbol : dupl_symbols)
 		{
-			kStdOut << "Multiple symbols of " << symbol << ".\n";
+			kStdOut << "Multiple symbols of: " << symbol << " detected, cannot continue.\n";
 		}
 
 		return LIBCOMPILER_EXEC_ERROR;
@@ -753,6 +762,8 @@ LIBCOMPILER_MODULE(DynamicLinker64PEF)
 		{
 			kStdOut << "undefined symbol " << unreferenced_symbol << "\n";
 		}
+
+		return LIBCOMPILER_EXEC_ERROR;
 	}
 
 	if (!kStartFound || kDuplicateSymbols && std::filesystem::exists(kOutput) ||
