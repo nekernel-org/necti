@@ -1003,7 +1003,7 @@ static void cxx_print_help()
 		".cpp", ".cxx", ".cc", ".c++", ".cp" \
 	}
 
-LIBCOMPILER_MODULE(CompilerCPlusPlusX8664)
+LIBCOMPILER_MODULE(CompilerCPlusPlusAMD64)
 {
 	Boolean skip = false;
 

@@ -15,7 +15,7 @@
 #include <vector>
 
 LC_IMPORT_C int CPlusPlusPreprocessorMain(int argc, char const* argv[]);
-LC_IMPORT_C int CompilerCPlusPlusX8664(int argc, char const* argv[]);
+LC_IMPORT_C int CompilerCPlusPlusAMD64(int argc, char const* argv[]);
 LC_IMPORT_C int AssemblerMainAMD64(int argc, char const* argv[]);
 
 int main(int argc, char const* argv[])
@@ -40,6 +40,7 @@ int main(int argc, char const* argv[])
 
 		return LIBCOMPILER_EXEC_ERROR;
 	}
+
 	std::vector<std::string> args_list_cxx;
 	std::vector<std::string> args_list_asm;
 
@@ -73,7 +74,7 @@ int main(int argc, char const* argv[])
 	{
 		const char* arr_cli[] = {argv[0], cli.data()};
 
-		if (auto code = CompilerCPlusPlusX8664(2, arr_cli);
+		if (auto code = CompilerCPlusPlusAMD64(2, arr_cli);
 			code > 0)
 		{
 			std::printf("cxxdrv: compiler exited with code %i.", code);
