@@ -19,10 +19,9 @@
 #define kAEMagLen	 (2)
 #define kAENullType	 (0x00)
 
-// Advanced Executable File Format for MetroLink.
+// Advanced Executable File Format for ld64.
 // Reloctable by offset is the default strategy.
-// You can also relocate at runtime but that's up to the operating system
-// loader.
+// You can also relocate at runtime but that's up to the operating system loader.
 
 namespace LibCompiler
 {

@@ -36,8 +36,8 @@
 #define MemoryCopy(DST, SRC, SZ) memcpy(DST, SRC, SZ)
 #define StringCompare(DST, SRC)	 strcmp(DST, SRC)
 
-#define kPefNoCpu	 0U
-#define kPefNoSubCpu 0U
+#define kPefNoCpu	 (0U)
+#define kPefNoSubCpu (0U)
 
 #define kStdOut (std::cout << "\e[0;31m" \
 						   << "ld64: "   \
@@ -69,7 +69,7 @@ enum
 	kABITypeInvalid = 0xFFFF,
 };
 
-static LibCompiler::String kOutput			 = "";
+static LibCompiler::String kOutput			 = "a.out";
 static Int32			   kAbi				 = kABITypeNE;
 static Int32			   kSubArch			 = kPefNoSubCpu;
 static Int32			   kArch			 = LibCompiler::kPefArchInvalid;
@@ -79,8 +79,8 @@ static Bool				   kDuplicateSymbols = false;
 static Bool				   kVerbose			 = false;
 
 /* ld64 is to be found, mld is to be found at runtime. */
-static const char* kLdDefineSymbol = ":UndefinedSymbol:";
-static const char* kLdDynamicSym   = ":RuntimeSymbol:";
+static const CharType* kLdDefineSymbol = ":UndefinedSymbol:";
+static const CharType* kLdDynamicSym   = ":RuntimeSymbol:";
 
 /* object code and list. */
 static std::vector<LibCompiler::String>		  kObjectList;
@@ -740,7 +740,9 @@ LIBCOMPILER_MODULE(DynamicLinker64PEF)
 	}
 
 	if (kVerbose)
+	{
 		kStdOut << "wrote contents of: " << kOutput << "\n";
+	}
 
 	// step 3: check if we have those symbols
 
@@ -770,13 +772,15 @@ LIBCOMPILER_MODULE(DynamicLinker64PEF)
 		!unreferenced_symbols.empty())
 	{
 		if (kVerbose)
+		{
 			kStdOut << "file: " << kOutput
 					<< ", is corrupt, removing file...\n";
+		}
 
 		return LIBCOMPILER_EXEC_ERROR;
 	}
 
-	return EXIT_SUCCESS;
+	return LIBCOMPILER_SUCCESSS;
 }
 
 // Last rev 13-1-24

@@ -86,7 +86,7 @@ namespace LibCompiler
 		UIntPtr	 Start;	 /* Origin of code */
 		SizeType HdrSz;	 /* Size of header */
 		SizeType Count;	 /* container header count */
-	} PACKED PEFContainer;
+	} PACKED PEFContainer, *PEFContainerPtr;
 
 	/* First PEFCommandHeader starts after PEFContainer */
 	/* Last container is __exec_end */
@@ -102,7 +102,7 @@ namespace LibCompiler
 		UInt16	 Kind;				/* container kind */
 		UIntPtr	 Offset;			/* file offset */
 		SizeType Size;				/* file size */
-	} PACKED PEFCommandHeader;
+	} PACKED PEFCommandHeader, *PEFCommandHeaderPtr;
 
 	enum
 	{

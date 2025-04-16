@@ -1,7 +1,7 @@
 /*
  *	========================================================
  *
- *	c++-drv
+ *	cxxdrv
  * 	Copyright (C) 2024-2025 Amlal El Mahrouss, all rights reserved.
  *
  * 	========================================================
@@ -1126,7 +1126,7 @@ LIBCOMPILER_MODULE(CompilerCPlusPlusAMD64)
 			std::string err = "Unknown option: ";
 			err += argv[index];
 
-			Detail::print_error(err, "c++-drv");
+			Detail::print_error(err, "cxxdrv");
 
 			continue;
 		}
@@ -1151,7 +1151,7 @@ LIBCOMPILER_MODULE(CompilerCPlusPlusAMD64)
 		{
 			if (kState.fVerbose)
 			{
-				Detail::print_error(argv_i + " is not a valid C++ source.\n", "c++-drv");
+				Detail::print_error(argv_i + " is not a valid C++ source.\n", "cxxdrv");
 			}
 
 			return 1;
