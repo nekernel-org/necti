@@ -19,10 +19,10 @@
 
 #define __ASM_NEED_64x0__ 1
 
-#include <LibCompiler/AAL/CPU/64x0.h>
+#include <LibCompiler/Backend/64x0.h>
 #include <LibCompiler/Parser.h>
-#include <LibCompiler/NFC/AE.h>
-#include <LibCompiler/NFC/PEF.h>
+#include <LibCompiler/AE.h>
+#include <LibCompiler/PEF.h>
 #include <algorithm>
 #include <filesystem>
 #include <fstream>

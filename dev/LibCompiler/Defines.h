@@ -23,6 +23,10 @@
 #define NO false
 #endif // ifndef NO
 
+#ifndef BOOL
+#define BOOL bool
+#endif // ifndef BOOL
+
 #define SizeType size_t
 
 #define VoidPtr void*

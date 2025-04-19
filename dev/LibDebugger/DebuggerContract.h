@@ -9,8 +9,8 @@
 
 namespace LibDebugger
 {
-    typedef uint64_t ProcessID;
-    typedef char* CAddress;
+	typedef uint64_t ProcessID;
+	typedef char*	 CAddress;
 
 	/// \brief Debugger contract class in C++, as per the design states.
 	/// \author Amlal El Mahrouss
@@ -18,7 +18,7 @@ namespace LibDebugger
 	{
 	public:
 		explicit DebuggerContract() = default;
-		virtual ~DebuggerContract()		  = default;
+		virtual ~DebuggerContract() = default;
 
 	public:
 		DebuggerContract& operator=(const DebuggerContract&) = default;
@@ -26,9 +26,9 @@ namespace LibDebugger
 
 	public:
 		virtual bool Attach(ProcessID pid) noexcept = 0;
-		virtual bool Break(CAddress addr) noexcept = 0;
-		virtual bool Continue() noexcept = 0;
-		virtual bool Detach() noexcept = 0;
+		virtual bool Break(CAddress addr) noexcept	= 0;
+		virtual bool Continue() noexcept			= 0;
+		virtual bool Detach() noexcept				= 0;
 
 		virtual std::unordered_map<uintptr_t, uintptr_t>& Get()
 		{
@@ -39,4 +39,4 @@ namespace LibDebugger
 		pid_t									 m_pid;
 		std::unordered_map<uintptr_t, uintptr_t> m_breakpoints;
 	};
-} // namespace LibDebugger::POSIX
+} // namespace LibDebugger

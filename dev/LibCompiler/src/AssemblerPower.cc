@@ -17,11 +17,11 @@
 
 #define __ASM_NEED_PPC__ 1
 
-#include <LibCompiler/NFC/ErrorID.h>
-#include <LibCompiler/AAL/CPU/power64.h>
-#include <LibCompiler/NFC/PEF.h>
+#include <LibCompiler/ErrorID.h>
+#include <LibCompiler/Backend/power64.h>
+#include <LibCompiler/PEF.h>
 #include <LibCompiler/Parser.h>
-#include <LibCompiler/NFC/AE.h>
+#include <LibCompiler/AE.h>
 #include <LibCompiler/Version.h>
 #include <filesystem>
 #include <algorithm>

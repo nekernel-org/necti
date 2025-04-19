@@ -10,7 +10,7 @@
 #pragma once
 
 #include <LibCompiler/Defines.h>
-#include <LibCompiler/NFC/Ref.h>
+#include <LibCompiler/Ref.h>
 
 namespace LibCompiler
 {

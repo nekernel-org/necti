@@ -13,6 +13,7 @@ tools/ld64
 tools/cxxdrv
 
 tools/dbg
+tools/cppdrv
 
 *.pp
 *.masm

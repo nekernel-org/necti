@@ -7,28 +7,28 @@
 
 ------------------------------------------- */
 
-/// @author EL Mahrouss Amlal (amlel)
+/// @author EL Mahrouss Amlal (amlal@nekernel.org)
 /// @brief NeKernel 64-bit PEF Linker.
-/// Last Rev: Sat Feb 24 CET 2024
+/// Last Rev: Sat Apr 19 CET 2025
 /// @note Do not look up for anything with .code64/.data64/.zero64!
 /// It will be loaded when the program loader will start the image.
 
 //! Toolchain Kit.
 #include <LibCompiler/Defines.h>
-#include <LibCompiler/NFC/ErrorID.h>
+#include <LibCompiler/ErrorID.h>
 
 //! Assembler Kit
-#include <LibCompiler/AAL/AssemblyInterface.h>
+#include <LibCompiler/AssemblyInterface.h>
 
 //! Preferred Executable Format
-#include <LibCompiler/NFC/PEF.h>
+#include <LibCompiler/PEF.h>
 #include <LibCompiler/UUID.h>
 
 //! Release macros.
 #include <LibCompiler/Version.h>
 
 //! Advanced Executable Object Format.
-#include <LibCompiler/NFC/AE.h>
+#include <LibCompiler/AE.h>
 #include <cstdint>
 
 #define kLinkerVersionStr "\e[0;97m NeKernel 64-Bit Linker (Preferred Executable) %s, (c) Amlal El Mahrouss 2024-2025, all rights reserved.\n"
@@ -100,79 +100,79 @@ LIBCOMPILER_MODULE(DynamicLinker64PEF)
 	 */
 	for (size_t linker_arg = 1; linker_arg < argc; ++linker_arg)
 	{
-		if (StringCompare(argv[linker_arg], "--ld64:help") == 0)
+		if (StringCompare(argv[linker_arg], "-help") == 0)
 		{
 			kLinkerSplash();
 
-			kStdOut << "--ld64:version: Show linker version.\n";
-			kStdOut << "--ld64:help: Show linker help.\n";
-			kStdOut << "--ld64:verbose: Enable linker trace.\n";
-			kStdOut << "--ld64:dylib: Output as a Dyanmic PEF.\n";
-			kStdOut << "--ld64:fat: Output as a FAT PEF.\n";
-			kStdOut << "--ld64:32k: Output as a 32x0 PEF.\n";
-			kStdOut << "--ld64:64k: Output as a 64x0 PEF.\n";
-			kStdOut << "--ld64:amd64: Output as a AMD64 PEF.\n";
-			kStdOut << "--ld64:rv64: Output as a RISC-V PEF.\n";
-			kStdOut << "--ld64:power64: Output as a POWER PEF.\n";
-			kStdOut << "--ld64:arm64: Output as a ARM64 PEF.\n";
-			kStdOut << "--ld64:output: Select the output file name.\n";
+			kStdOut << "-version: Show linker version.\n";
+			kStdOut << "-help: Show linker help.\n";
+			kStdOut << "-ld-verbose: Enable linker trace.\n";
+			kStdOut << "-dylib: Output as a Dyanmic PEF.\n";
+			kStdOut << "-fat: Output as a FAT PEF.\n";
+			kStdOut << "-32k: Output as a 32x0 PEF.\n";
+			kStdOut << "-64k: Output as a 64x0 PEF.\n";
+			kStdOut << "-amd64: Output as a AMD64 PEF.\n";
+			kStdOut << "-rv64: Output as a RISC-V PEF.\n";
+			kStdOut << "-power64: Output as a POWER PEF.\n";
+			kStdOut << "-arm64: Output as a ARM64 PEF.\n";
+			kStdOut << "-output: Select the output file name.\n";
 
 			return EXIT_SUCCESS;
 		}
-		else if (StringCompare(argv[linker_arg], "--ld64:version") == 0)
+		else if (StringCompare(argv[linker_arg], "-version") == 0)
 		{
 			kLinkerSplash();
 			return EXIT_SUCCESS;
 		}
-		else if (StringCompare(argv[linker_arg], "--ld64:fat-binary") == 0)
+		else if (StringCompare(argv[linker_arg], "-fat-binary") == 0)
 		{
 			kFatBinaryEnable = true;
 
 			continue;
 		}
-		else if (StringCompare(argv[linker_arg], "--ld64:64k") == 0)
+		else if (StringCompare(argv[linker_arg], "-64k") == 0)
 		{
 			kArch = LibCompiler::kPefArch64000;
 
 			continue;
 		}
-		else if (StringCompare(argv[linker_arg], "--ld64:amd64") == 0)
+		else if (StringCompare(argv[linker_arg], "-amd64") == 0)
 		{
 			kArch = LibCompiler::kPefArchAMD64;
 
 			continue;
 		}
-		else if (StringCompare(argv[linker_arg], "--ld64:32k") == 0)
+		else if (StringCompare(argv[linker_arg], "-32k") == 0)
 		{
 			kArch = LibCompiler::kPefArch32000;
 
 			continue;
 		}
-		else if (StringCompare(argv[linker_arg], "--ld64:power64") == 0)
+		else if (StringCompare(argv[linker_arg], "-power64") == 0)
 		{
 			kArch = LibCompiler::kPefArchPowerPC;
 
 			continue;
 		}
-		else if (StringCompare(argv[linker_arg], "--ld64:riscv64") == 0)
+		else if (StringCompare(argv[linker_arg], "-riscv64") == 0)
 		{
 			kArch = LibCompiler::kPefArchRISCV;
 
 			continue;
 		}
-		else if (StringCompare(argv[linker_arg], "--ld64:arm64") == 0)
+		else if (StringCompare(argv[linker_arg], "-arm64") == 0)
 		{
 			kArch = LibCompiler::kPefArchARM64;
 
 			continue;
 		}
-		else if (StringCompare(argv[linker_arg], "--ld64:verbose") == 0)
+		else if (StringCompare(argv[linker_arg], "-ld-verbose") == 0)
 		{
 			kVerbose = true;
 
 			continue;
 		}
-		else if (StringCompare(argv[linker_arg], "--ld64:dylib") == 0)
+		else if (StringCompare(argv[linker_arg], "-dylib") == 0)
 		{
 			if (kOutput.empty())
 			{
@@ -188,7 +188,7 @@ LIBCOMPILER_MODULE(DynamicLinker64PEF)
 
 			continue;
 		}
-		else if (StringCompare(argv[linker_arg], "--ld64:output") == 0)
+		else if (StringCompare(argv[linker_arg], "-output") == 0)
 		{
 			if ((linker_arg + 1) > argc)
 				continue;

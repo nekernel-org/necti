@@ -10,7 +10,7 @@ Copyright (C) 2024-2025 Amlal EL Mahrous, all rights reserved
 #include <LibCompiler/Defines.h>
 
 /// @brief ARM64 encoding support.
-/// @file CPU/arm64.hpp
+/// @file Backend/arm64.hpp
 
 struct CpuOpcodeArm64;
 

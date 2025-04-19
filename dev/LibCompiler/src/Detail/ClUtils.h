@@ -6,7 +6,7 @@
 
 #pragma once
 
-#include <LibCompiler/AAL/AssemblyInterface.h>
+#include <LibCompiler/AssemblyInterface.h>
 #include <LibCompiler/Parser.h>
 
 #define kZero64Section ".zero64"

@@ -19,7 +19,7 @@
 
 // extern_segment, @autodelete { ... }, fn foo() -> auto { ... }
 
-#include <LibCompiler/AAL/CPU/amd64.h>
+#include <LibCompiler/Backend/amd64.h>
 #include <LibCompiler/Parser.h>
 #include <LibCompiler/UUID.h>
 
@@ -1078,27 +1078,27 @@ LIBCOMPILER_MODULE(CompilerCPlusPlusAMD64)
 				continue;
 			}
 
-			if (strcmp(argv[index], "--cl:version") == 0)
+			if (strcmp(argv[index], "-version") == 0)
 			{
 				kSplashCxx();
 				return kExitOK;
 			}
 
-			if (strcmp(argv[index], "--cl:verbose") == 0)
+			if (strcmp(argv[index], "-cxx-verbose") == 0)
 			{
 				kState.fVerbose = true;
 
 				continue;
 			}
 
-			if (strcmp(argv[index], "--cl:h") == 0)
+			if (strcmp(argv[index], "-h") == 0)
 			{
 				cxx_print_help();
 
 				return kExitOK;
 			}
 
-			if (strcmp(argv[index], "--cl:c++-dialect") == 0)
+			if (strcmp(argv[index], "-cxx-dialect") == 0)
 			{
 				if (kCompilerFrontend)
 					std::cout << kCompilerFrontend->Language() << "\n";
@@ -1106,7 +1106,7 @@ LIBCOMPILER_MODULE(CompilerCPlusPlusAMD64)
 				return kExitOK;
 			}
 
-			if (strcmp(argv[index], "--cl:max-err") == 0)
+			if (strcmp(argv[index], "-max-err") == 0)
 			{
 				try
 				{

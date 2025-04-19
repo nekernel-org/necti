@@ -12,6 +12,7 @@
 /// @brief POSIX/Mach debugger.
 
 #include <LibDebugger/DebuggerContract.h>
+#include <LibCompiler/Defines.h>
 
 #include <sys/ptrace.h>
 #include <sys/types.h>
@@ -35,7 +36,7 @@ namespace LibDebugger::POSIX
 {
 	/// \brief POSIXMachContract engine interface class in C++
 	/// \author Amlal El Mahrouss
-	class POSIXMachContract final : public DebuggerContract
+	class POSIXMachContract : public DebuggerContract
 	{
 	public:
 		explicit POSIXMachContract()  = default;
@@ -46,7 +47,7 @@ namespace LibDebugger::POSIX
 		POSIXMachContract(const POSIXMachContract&)			   = default;
 
 	public:
-		bool Attach(ProcessID pid) noexcept override
+		BOOL Attach(ProcessID pid) noexcept override
 		{
 #ifdef __APPLE__
 			if (pid == 0)
@@ -69,7 +70,7 @@ namespace LibDebugger::POSIX
 #endif
 		}
 
-		bool Break(CAddress addr) noexcept override
+		BOOL Break(CAddress addr) noexcept override
 		{
 #ifdef __APPLE__
 			task_read_t task;
@@ -100,7 +101,7 @@ namespace LibDebugger::POSIX
 #endif
 		}
 
-		bool Continue() noexcept override
+		BOOL Continue() noexcept override
 		{
 #ifdef __APPLE__
 			task_read_t task;
@@ -122,7 +123,7 @@ namespace LibDebugger::POSIX
 #endif
 		}
 
-		bool Detach() noexcept override
+		BOOL Detach() noexcept override
 		{
 #ifdef __APPLE__
 			this->Continue();

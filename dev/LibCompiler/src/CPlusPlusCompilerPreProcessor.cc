@@ -10,7 +10,7 @@
 /// BUGS: 0
 
 #include <LibCompiler/Parser.h>
-#include <LibCompiler/NFC/ErrorID.h>
+#include <LibCompiler/ErrorID.h>
 #include <algorithm>
 #include <filesystem>
 #include <fstream>
@@ -419,7 +419,7 @@ void bpp_parse_file(std::ifstream& hdr_file, std::ofstream& pp_out)
 								}
 								else
 								{
-									throw std::runtime_error("internal: Internal C++ error. (Please report that bug.)");
+									throw std::runtime_error("bpp: Internal error.");
 								}
 							}
 

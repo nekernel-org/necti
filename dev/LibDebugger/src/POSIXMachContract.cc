@@ -10,9 +10,9 @@
 
 #ifndef _WIN32
 
-static bool									 kKeepRunning = false;
+static BOOL									 kKeepRunning = false;
 static LibDebugger::POSIX::POSIXMachContract kDebugger;
-static pid_t								 kPID			= 0L;
+static LibDebugger::ProcessID				 kPID			= 0L;
 static LibDebugger::CAddress				 kActiveAddress = nullptr;
 
 /// @internal
@@ -33,7 +33,7 @@ static void dbgi_ctrlc_handler(std::int32_t _)
 	kKeepRunning = false;
 }
 
-LIBCOMPILER_MODULE(DebuggerPOSIX)
+LIBCOMPILER_MODULE(DebuggerMachPOSIX)
 {
 	pfd::notify("Debugger Event", "NeKernel Debugger\n(C) 2025 Amlal El Mahrouss, all rights reserved.");
 

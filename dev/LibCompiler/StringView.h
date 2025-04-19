@@ -10,7 +10,7 @@
 #pragma once
 
 #include <LibCompiler/Defines.h>
-#include <LibCompiler/NFC/ErrorOr.h>
+#include <LibCompiler/ErrorOr.h>
 
 namespace LibCompiler
 {

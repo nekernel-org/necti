@@ -7,7 +7,7 @@
  * 	========================================================
  */
 
-#include <LibCompiler/AAL/CPU/power64.h>
+#include <LibCompiler/Backend/power64.h>
 #include <LibCompiler/Parser.h>
 #include <LibCompiler/UUID.h>
 #include <fstream>
@@ -21,7 +21,7 @@
 
 #define kExitOK 0
 
-/// @author EL Mahrouss Amlal (amlel)
+/// @author EL Mahrouss Amlal (amlal@nekernel.org)
 /// @file cc.cxx
 /// @brief POWER64 C Compiler.
 

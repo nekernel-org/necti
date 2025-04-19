@@ -8,39 +8,17 @@
 /// @brief NE C++ frontend compiler.
 
 #include <LibCompiler/Defines.h>
-#include <LibCompiler/NFC/ErrorID.h>
+#include <LibCompiler/ErrorID.h>
 #include <LibCompiler/Version.h>
 #include <iostream>
 #include <cstring>
 #include <vector>
 
-LC_IMPORT_C int CPlusPlusPreprocessorMain(int argc, char const* argv[]);
 LC_IMPORT_C int CompilerCPlusPlusAMD64(int argc, char const* argv[]);
 LC_IMPORT_C int AssemblerMainAMD64(int argc, char const* argv[]);
 
 int main(int argc, char const* argv[])
 {
-	for (size_t index_arg = 0; index_arg < argc; ++index_arg)
-	{
-		if (strstr(argv[index_arg], "--cxxdrv:h"))
-		{
-			std::printf("cxxdrv: C++ Compiler Driver.\n");
-			std::printf("cxxdrv: Version: %s, Release: %s.\n", kDistVersion, kDistRelease);
-			std::printf("cxxdrv: Designed by Amlal El Mahrouss, Copyright (C) 2024-2025 Amlal El Mahrouss, all rights reserved.\n");
-			std::printf("libCompiler.dylib: Designed by Amlal El Mahrouss, Copyright (C) 2024-2025 Amlal El Mahrouss, all rights reserved.\n");
-
-			return 0;
-		}
-	}
-
-	if (auto code = CPlusPlusPreprocessorMain(2, argv);
-		code > 0)
-	{
-		std::printf("cxxdrv: compiler exited with code %i.", code);
-
-		return LIBCOMPILER_EXEC_ERROR;
-	}
-
 	std::vector<std::string> args_list_cxx;
 	std::vector<std::string> args_list_asm;
 
@@ -69,7 +47,6 @@ int main(int argc, char const* argv[])
 		}
 	}
 
-
 	for (auto& cli : args_list_cxx)
 	{
 		const char* arr_cli[] = {argv[0], cli.data()};
@@ -77,7 +54,7 @@ int main(int argc, char const* argv[])
 		if (auto code = CompilerCPlusPlusAMD64(2, arr_cli);
 			code > 0)
 		{
-			std::printf("cxxdrv: compiler exited with code %i.", code);
+			std::printf("cxxdrv: compiler exited with code %i.\n", code);
 
 			return LIBCOMPILER_EXEC_ERROR;
 		}
@@ -90,7 +67,7 @@ int main(int argc, char const* argv[])
 		if (auto code = AssemblerMainAMD64(2, arr_cli);
 			code > 0)
 		{
-			std::printf("cxxdrv: assembler exited with code %i.", code);
+			std::printf("cxxdrv: assembler exited with code %i.\n", code);
 		}
 	}
 

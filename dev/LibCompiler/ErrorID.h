@@ -10,9 +10,9 @@
 #pragma once
 
 #include <LibCompiler/Defines.h>
-#include <LibCompiler/NFC/ErrorOr.h>
+#include <LibCompiler/ErrorOr.h>
 
-#define LIBCOMPILER_SUCCESSS        0
+#define LIBCOMPILER_SUCCESSS	   0
 #define LIBCOMPILER_EXEC_ERROR	   -30
 #define LIBCOMPILER_FILE_NOT_FOUND -31
 #define LIBCOMPILER_DIR_NOT_FOUND  -32

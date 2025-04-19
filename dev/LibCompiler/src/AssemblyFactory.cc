@@ -4,8 +4,8 @@
 
 ------------------------------------------- */
 
-#include <LibCompiler/AAL/AssemblyInterface.h>
-#include <LibCompiler/NFC/ErrorID.h>
+#include <LibCompiler/AssemblyInterface.h>
+#include <LibCompiler/ErrorID.h>
 
 /**
  * @file AssemblyFactory.cxx

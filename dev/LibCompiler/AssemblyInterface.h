@@ -8,7 +8,7 @@
 
 #include <LibCompiler/Macros.h>
 #include <LibCompiler/Defines.h>
-#include <LibCompiler/NFC/StringView.h>
+#include <LibCompiler/StringView.h>
 
 #define ASSEMBLY_INTERFACE : public LibCompiler::AssemblyInterface
 
