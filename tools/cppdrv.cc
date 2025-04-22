@@ -21,7 +21,7 @@ int main(int argc, char const* argv[])
 	if (auto code = CPlusPlusPreprocessorMain(2, argv);
 		code > 0)
 	{
-		std::printf("cxxdrv: compiler exited with code %i.\n", code);
+		std::printf("cppdrv: preprocessor exited with code %i.\n", code);
 
 		return LIBCOMPILER_EXEC_ERROR;
 	}
