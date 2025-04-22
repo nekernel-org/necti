@@ -5,7 +5,7 @@
 ------------------------------------------- */
 
 /// @file cxxdrv.cc
-/// @brief NE C++ frontend compiler.
+/// @brief NE frontend preprocessor.
 
 #include <LibCompiler/Defines.h>
 #include <LibCompiler/ErrorID.h>
