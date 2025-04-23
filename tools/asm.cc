@@ -40,10 +40,10 @@ int main(int argc, char const* argv[])
 	{
 		if (strstr(argv[index_arg], "--asm:h"))
 		{
-			std::printf("asm.exe: Frontend Assembler (64x0, power64, arm64, x64).\n");
-			std::printf("asm.exe: Version: %s, Release: %s.\n", kDistVersion, kDistRelease);
-			std::printf("asm.exe: Designed by Amlal El Mahrouss, Copyright (C) 2024-2025 Amlal El Mahrouss, all rights reserved.\n");
-			std::printf("libCompiler.dylib: Designed by Amlal El Mahrouss, Copyright (C) 2024-2025 Amlal El Mahrouss, all rights reserved.\n");
+			std::printf("asm: Frontend Assembler (64x0, power64, arm64, x64).\n");
+			std::printf("asm: Version: %s, Release: %s.\n", kDistVersion, kDistRelease);
+			std::printf("asm: Designed by Amlal El Mahrouss, Copyright (C) 2024-2025 Amlal El Mahrouss, all rights reserved.\n");
+			std::printf("LibCompiler: Designed by Amlal El Mahrouss, Copyright (C) 2024-2025 Amlal El Mahrouss, all rights reserved.\n");
 
 			return 0;
 		}
@@ -74,7 +74,7 @@ int main(int argc, char const* argv[])
 	case kPOWER64Assembler: {
 		if (int32_t code = AssemblerMainPower64(arg_vec_cstr.size(), arg_vec_cstr.data()); code)
 		{
-			std::printf("asm.exe: frontend exited with code %i.\n", code);
+			std::printf("asm: frontend exited with code %i.\n", code);
 			return code;
 		}
 		break;
@@ -82,7 +82,7 @@ int main(int argc, char const* argv[])
 	case k64X0Assembler: {
 		if (int32_t code = AssemblerMain64x0(arg_vec_cstr.size(), arg_vec_cstr.data()); code)
 		{
-			std::printf("asm.exe: frontend exited with code %i.\n", code);
+			std::printf("asm: frontend exited with code %i.\n", code);
 			return code;
 		}
 		break;
@@ -90,7 +90,7 @@ int main(int argc, char const* argv[])
 	case kARM64Assembler: {
 		if (int32_t code = AssemblerMainARM64(arg_vec_cstr.size(), arg_vec_cstr.data()); code)
 		{
-			std::printf("asm.exe: frontend exited with code %i.\n", code);
+			std::printf("asm: frontend exited with code %i.\n", code);
 			return code;
 		}
 		break;
@@ -98,15 +98,15 @@ int main(int argc, char const* argv[])
 	case kX64Assembler: {
 		if (int32_t code = AssemblerMainAMD64(arg_vec_cstr.size(), arg_vec_cstr.data()); code)
 		{
-			std::printf("asm.exe: frontend exited with code %i.\n", code);
+			std::printf("asm: frontend exited with code %i.\n", code);
 			return code;
 		}
 		break;
 	}
 	default: {
-		return 1;
+		return EXIT_FAILURE;
 	}
 	}
 
-	return 0;
+	return EXIT_SUCCESS;
 }
