@@ -48,7 +48,9 @@ LIBCOMPILER_MODULE(DebuggerMachPOSIX)
 		argv[2] != nullptr)
 	{
 		kPath = argv[2];
-		kDebugger.Attach(kPath, argv[3], kPID);
+		kDebugger.SetPath(kPath);
+		
+		kStdOut << "[+] Path set to: " << kPath << "\n";
 	}
 
 	::signal(SIGINT, dbgi_ctrlc_handler);

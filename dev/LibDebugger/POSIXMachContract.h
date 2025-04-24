@@ -25,7 +25,7 @@
 
 #include <mach/mach.h>
 #include <mach/mach_error.h>
-
+#include <signal.h>
 #include <mach-o/dyld.h>
 #include <dlfcn.h>
 
@@ -34,6 +34,8 @@ LC_IMPORT_C kern_return_t mach_vm_write(
 	mach_vm_address_t	   address,
 	vm_offset_t			   data,
 	mach_msg_type_number_t dataCnt);
+
+LC_IMPORT_C kern_return_t mach_vm_protect(vm_map_t target_task, mach_vm_address_t address, mach_vm_size_t size, boolean_t set_maximum, vm_prot_t new_protection);
 
 #define PTRACE_ATTACH	PT_ATTACHEXC
 #define PTRACE_DETACH	PT_DETACH
@@ -62,6 +64,12 @@ namespace LibDebugger::POSIX
 
 			if (pid == 0)
 			{
+				if (argv.empty())
+				{
+					ptrace(PT_TRACE_ME, 0, nullptr, 0);
+					kill(getpid(), SIGSTOP);
+				}
+
 				std::vector<char*> argv_arr;
 
 				argv_arr.push_back(const_cast<char*>(path.c_str()));
@@ -78,15 +86,22 @@ namespace LibDebugger::POSIX
 
 			pid = this->m_pid;
 
-			this->Break();
-
 			return true;
+		}
+
+		void SetPath(std::string path) noexcept
+		{
+			if (path.empty())
+			{
+				return;
+			}
+
+			m_path = path;
 		}
 
 		BOOL Breakpoint(std::string symbol) noexcept override
 		{
-
-			if (!m_path.empty() && std::filesystem::exists(m_path) && !std::filesystem::is_regular_file(m_path))
+			if (!m_path.empty() && std::filesystem::exists(m_path) && std::filesystem::is_regular_file(m_path))
 			{
 				auto handle = dlopen(m_path.c_str(), RTLD_LAZY);
 
@@ -107,6 +122,7 @@ namespace LibDebugger::POSIX
 
 				uint32_t brk_inst = 0xD43E0000;
 
+				mach_vm_protect(task, (mach_vm_address_t)addr, sizeof(uint32_t), false, VM_PROT_READ | VM_PROT_WRITE | VM_PROT_EXECUTE);
 				mach_vm_write(task, (mach_vm_address_t)addr, (vm_offset_t)&brk_inst, sizeof(addr));
 
 				return true;
