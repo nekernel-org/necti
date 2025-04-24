@@ -108,6 +108,8 @@ namespace LibDebugger::POSIX
 				uint32_t brk_inst = 0xD43E0000;
 
 				mach_vm_write(task, (mach_vm_address_t)addr, (vm_offset_t)&brk_inst, sizeof(addr));
+
+				return true;
 			}
 
 			return false;
