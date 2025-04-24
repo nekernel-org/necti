@@ -21,16 +21,25 @@
 #include <unistd.h>
 #include <stdint.h>
 
-#ifdef __APPLE__
+#include <filesystem>
+
 #include <mach/mach.h>
 #include <mach/mach_error.h>
+
+#include <mach-o/dyld.h>
+#include <dlfcn.h>
+
+LC_IMPORT_C kern_return_t mach_vm_write(
+	vm_map_t			   target_task,
+	mach_vm_address_t	   address,
+	vm_offset_t			   data,
+	mach_msg_type_number_t dataCnt);
 
 #define PTRACE_ATTACH	PT_ATTACHEXC
 #define PTRACE_DETACH	PT_DETACH
 #define PTRACE_POKETEXT PT_WRITE_I
 #define PTRACE_CONT		PT_CONTINUE
 #define PTRACE_PEEKTEXT PT_READ_I
-#endif
 
 namespace LibDebugger::POSIX
 {
@@ -47,85 +56,85 @@ namespace LibDebugger::POSIX
 		POSIXMachContract(const POSIXMachContract&)			   = default;
 
 	public:
-		BOOL Attach(ProcessID pid) noexcept override
+		BOOL Attach(std::string path, std::string argv, ProcessID& pid) noexcept override
 		{
-#ifdef __APPLE__
+			pid = fork();
+
 			if (pid == 0)
-				return false;
-
-			this->m_pid = pid;
-			return true;
-#else
-
-			if (ptrace(PTRACE_ATTACH, pid, nullptr, 0) == -1)
 			{
-				return false;
+				std::vector<char*> argv_arr;
+
+				argv_arr.push_back(const_cast<char*>(path.c_str()));
+				argv_arr.push_back(const_cast<char*>(argv.c_str()));
+				argv_arr.push_back(nullptr);
+
+				execv(path.c_str(), argv_arr.data());
+
+				_exit(1);
 			}
 
-			this->m_pid = pid;
+			m_path = path;
+			m_pid  = pid;
 
-			waitpid(m_pid, nullptr, 0);
+			pid = this->m_pid;
+
+			this->Break();
 
 			return true;
-#endif
 		}
 
-		BOOL Break(CAddress addr) noexcept override
+		BOOL Breakpoint(std::string symbol) noexcept override
 		{
-#ifdef __APPLE__
+
+			if (!m_path.empty() && std::filesystem::exists(m_path) && !std::filesystem::is_regular_file(m_path))
+			{
+				auto handle = dlopen(m_path.c_str(), RTLD_LAZY);
+
+				if (handle == nullptr)
+				{
+					return false;
+				}
+
+				auto addr = dlsym(handle, symbol.c_str());
+
+				if (addr == nullptr)
+				{
+					return false;
+				}
+
+				task_read_t task;
+				task_for_pid(mach_task_self(), m_pid, &task);
+
+				uint32_t brk_inst = 0xD43E0000;
+
+				mach_vm_write(task, (mach_vm_address_t)addr, (vm_offset_t)&brk_inst, sizeof(addr));
+			}
+
+			return false;
+		}
+
+		BOOL Break() noexcept override
+		{
 			task_read_t task;
 			task_for_pid(mach_task_self(), m_pid, &task);
+
 			kern_return_t ret = task_suspend(task);
 
 			return ret == KERN_SUCCESS;
-#else
-			uintptr_t original_data = ptrace(PTRACE_PEEKTEXT, m_pid, addr, 0);
-
-			if (original_data == -1)
-			{
-				return false;
-			}
-
-			constexpr uint8_t kInt3x86 = 0xCC;
-
-			uintptr_t data_with_int3 = (original_data & ~0xFF) | kInt3x86; // Insert INT3 (0xCC)
-
-			if (ptrace(PTRACE_POKETEXT, m_pid, addr, data_with_int3) == -1)
-			{
-				return false;
-			}
-
-			m_breakpoints[reinterpret_cast<uintptr_t>(addr)] = original_data; // Store original data
-
-			return true;
-#endif
 		}
 
 		BOOL Continue() noexcept override
 		{
-#ifdef __APPLE__
 			task_read_t task;
 			task_for_pid(mach_task_self(), m_pid, &task);
+
 			kern_return_t ret = task_resume(task);
 
 			return ret == KERN_SUCCESS;
-#else
-			if (ptrace(PTRACE_CONT, m_pid, nullptr, 0) == -1)
-			{
-
-				return false;
-			}
-
-			int status;
-			waitpid(m_pid, &status, 0);
-
-			return WIFSTOPPED(status) && WSTOPSIG(status) == SIGTRAP;
-#endif
 		}
 
 		BOOL Detach() noexcept override
 		{
-#ifdef __APPLE__
 			this->Continue();
 
 			task_read_t task;
@@ -134,12 +143,10 @@ namespace LibDebugger::POSIX
 			kern_return_t kr = mach_port_deallocate(mach_task_self(), task);
 
 			return kr = KERN_SUCCESS;
-#else
-			return ptrace(PTRACE_DETACH, m_pid, nullptr, 0) == -1;
-#endif
 		}
 
 	private:
-		ProcessID m_pid{0};
+		ProcessID	m_pid{0};
+		std::string m_path;
 	};
 } // namespace LibDebugger::POSIX

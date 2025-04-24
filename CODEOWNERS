@@ -2,5 +2,6 @@
 
 /dev/LibCompiler/ @amlel-el-mahrouss
 /dev/LibC++/ @amlel-el-mahrouss
+/dev/LibDebugger @amlel-el-mahrouss
 
-# LibC++ needs ownership.
+# LibC++, and LibDebugger needs ownership.
