@@ -9,7 +9,7 @@
 #include <LibCompiler/Defines.h>
 
 // @brief AMD64 support.
-// @file Backend/amd64.hpp
+// @file Backend/Amd64.h
 
 #define kAsmOpcodeDecl(__NAME, __OPCODE) {.fName = __NAME, .fOpcode = __OPCODE},
 

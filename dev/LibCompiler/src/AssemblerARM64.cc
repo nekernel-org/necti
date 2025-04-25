@@ -18,11 +18,12 @@
 #define __ASM_NEED_ARM64__ 1
 
 #include <LibCompiler/AE.h>
-#include <LibCompiler/Backend/arm64.h>
+#include <LibCompiler/Backend/Aarch64.h>
 #include <LibCompiler/ErrorID.h>
 #include <LibCompiler/PEF.h>
 #include <LibCompiler/Parser.h>
 #include <LibCompiler/Version.h>
+#include <LibCompiler/Detail/AsmUtils.h>
 #include <algorithm>
 #include <filesystem>
 #include <fstream>
@@ -43,20 +44,14 @@
 #define kStdOut (std::cout << kWhite)
 #define kStdErr (std::cout << kRed)
 
-constexpr auto cPowerIPAlignment = 0x4U;
+constexpr auto cPowerIPAlignment = 0x1U;
 
 static CharType kOutputArch     = LibCompiler::kPefArchARM64;
-static Boolean  kOutputAsBinary = false;
-
-static UInt32 kErrorLimit       = 10;
-static UInt32 kAcceptableErrors = 0;
 
 static std::size_t kCounter = 1UL;
 
 static std::uintptr_t                                      kOrigin = kPefBaseOrigin;
 static std::vector<std::pair<std::string, std::uintptr_t>> kOriginLabel;
-
-static bool kVerbose = false;
 
 static std::vector<uint8_t> kBytes;
 
@@ -71,9 +66,6 @@ static const std::string kRelocSymbol     = ":RuntimeSymbol:";
 
 // \brief forward decl.
 static bool asm_read_attributes(std::string& line);
-
-/// Do not move it on top! it uses the assembler detail namespace!
-#include <Detail/AsmUtils.h>
 
 /////////////////////////////////////////////////////////////////////////////////////////
 

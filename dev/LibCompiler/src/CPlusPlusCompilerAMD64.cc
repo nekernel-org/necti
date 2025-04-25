@@ -21,9 +21,11 @@
 
 // extern_segment, @autodelete { ... }, fn foo() -> auto { ... }
 
-#include <LibCompiler/Backend/amd64.h>
+#include <LibCompiler/Backend/Amd64.h>
 #include <LibCompiler/Parser.h>
 #include <LibCompiler/UUID.h>
+
+#include <LibCompiler/Detail/ClUtils.h>
 
 #include <cstdio>
 
@@ -99,11 +101,8 @@ struct CompilerState final {
 }  // namespace Detail
 
 static Detail::CompilerState kState;
-static SizeType              kErrorLimit = 100;
 
 static Int32 kOnClassScope = 0;
-
-static Int32 kAcceptableErrors = 0;
 
 namespace Detail {
 /// @brief prints an error into stdout.
@@ -938,6 +937,8 @@ LIBCOMPILER_MODULE(CompilerCPlusPlusAMD64) {
   kKeywords.push_back({.keyword_name = "!=", .keyword_kind = LibCompiler::kKeywordKindNotEq});
   kKeywords.push_back({.keyword_name = ">=", .keyword_kind = LibCompiler::kKeywordKindGreaterEq});
   kKeywords.push_back({.keyword_name = "<=", .keyword_kind = LibCompiler::kKeywordKindLessEq});
+
+  kErrorLimit = 100;
 
   kFactory.Mount(new AssemblyCPlusPlusInterface());
   kCompilerFrontend = new CompilerFrontendCPlusPlus();

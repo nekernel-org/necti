@@ -9,12 +9,9 @@
 #include <LibCompiler/AssemblyInterface.h>
 #include <LibCompiler/Parser.h>
 
-using namespace LibCompiler;
+#include <LibCompiler/Detail/ClUtils.h>
 
-namespace Detail {
-extern void print_error(std::string reason, std::string file) noexcept;
-extern void print_warning(std::string reason, std::string file) noexcept;
-}  // namespace Detail
+using namespace LibCompiler;
 
 /// @brief Get Number from lineBuffer.
 /// @param lineBuffer the lineBuffer to fetch from.

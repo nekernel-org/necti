@@ -18,7 +18,7 @@
 #define __ASM_NEED_PPC__ 1
 
 #include <LibCompiler/AE.h>
-#include <LibCompiler/Backend/power64.h>
+#include <LibCompiler/Backend/PowerPC.h>
 #include <LibCompiler/ErrorID.h>
 #include <LibCompiler/PEF.h>
 #include <LibCompiler/Parser.h>
@@ -28,6 +28,7 @@
 #include <fstream>
 #include <iostream>
 #include <vector>
+#include <LibCompiler/Detail/AsmUtils.h>
 
 /////////////////////
 
@@ -46,17 +47,11 @@
 constexpr auto cPowerIPAlignment = 0x4U;
 
 static CharType kOutputArch     = LibCompiler::kPefArchPowerPC;
-static Boolean  kOutputAsBinary = false;
-
-static UInt32 kErrorLimit       = 10;
-static UInt32 kAcceptableErrors = 0;
 
 static std::size_t kCounter = 1UL;
 
 static std::uintptr_t                                      kOrigin = kPefBaseOrigin;
 static std::vector<std::pair<std::string, std::uintptr_t>> kOriginLabel;
-
-static bool kVerbose = false;
 
 static std::vector<uint8_t> kBytes;
 
@@ -71,9 +66,6 @@ static const std::string kRelocSymbol     = ":RuntimeSymbol:";
 
 // \brief forward decl.
 static bool asm_read_attributes(std::string& line);
-
-/// Do not move it on top! it uses the assembler detail namespace!
-#include <AsmUtils.h>
 
 /////////////////////////////////////////////////////////////////////////////////////////
 

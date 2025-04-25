@@ -9,7 +9,7 @@
 #include <LibCompiler/Defines.h>
 
 // @brief 32x0 support.
-// @file Backend/32x0.hpp
+// @file Backend/32x0.h
 
 #define kAsmOpcodeDecl(__NAME, __OPCODE, __FUNCT3, __FUNCT7) \
   {.fName = __NAME, .fOpcode = __OPCODE, .fFunct3 = __FUNCT3, .fFunct7 = __FUNCT7},

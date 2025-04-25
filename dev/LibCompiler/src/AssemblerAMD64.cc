@@ -27,7 +27,7 @@
 #define kAssemblerPragmaSym '#'
 
 #include <LibCompiler/AE.h>
-#include <LibCompiler/Backend/amd64.h>
+#include <LibCompiler/Backend/Amd64.h>
 #include <LibCompiler/PEF.h>
 #include <LibCompiler/Parser.h>
 #include <algorithm>
@@ -52,12 +52,8 @@
 #define kStdErr (std::cout << kRed)
 
 static char    kOutputArch     = LibCompiler::kPefArchAMD64;
-static Boolean kOutputAsBinary = false;
 
-static UInt32 kErrorLimit       = 10;
-static UInt32 kAcceptableErrors = 0;
-
-constexpr auto kIPAlignement = 0x4U;
+constexpr auto kIPAlignement = 0x1U;
 
 static std::size_t kCounter = 1UL;
 
@@ -66,8 +62,6 @@ static std::vector<std::pair<std::string, std::uintptr_t>> kOriginLabel;
 
 /// @brief keep it simple by default.
 static std::int32_t kRegisterBitWidth = 16U;
-
-static bool kVerbose = false;
 
 static std::vector<i64_byte_t> kAppBytes;
 
@@ -83,7 +77,7 @@ static const std::string kUndefinedSymbol = ":UndefinedSymbol:";
 // \brief forward decl.
 static bool asm_read_attributes(std::string& line);
 
-#include <AsmUtils.h>
+#include <LibCompiler/Detail/AsmUtils.h>
 
 /////////////////////////////////////////////////////////////////////////////////////////
 

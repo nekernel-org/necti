@@ -7,7 +7,7 @@
  * 	========================================================
  */
 
-#include <LibCompiler/Backend/power64.h>
+#include <LibCompiler/Backend/PowerPC.h>
 #include <LibCompiler/Parser.h>
 #include <LibCompiler/UUID.h>
 #include <cstdio>

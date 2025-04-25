@@ -28,6 +28,7 @@
 #include <fstream>
 #include <iostream>
 #include <vector>
+#include <LibCompiler/Detail/ClUtils.h>
 
 /////////////////////
 
@@ -35,28 +36,15 @@
 
 /////////////////////
 
-#define kBlank "\e[0;30m"
-#define kRed "\e[0;31m"
-#define kWhite "\e[0;97m"
-#define kYellow "\e[0;33m"
-
-#define kStdOut (std::cout << kWhite)
-#define kStdErr (std::cout << kRed)
-
 static char    kOutputArch     = LibCompiler::kPefArch64000;
-static Boolean kOutputAsBinary = false;
 
-static UInt32 kErrorLimit       = 10;
-static UInt32 kAcceptableErrors = 0;
-
-constexpr auto c64x0IPAlignment = 0x4U;
+/// @note The 64x0 is VLSIW, so we need to jump to 4 bytes.
+constexpr auto k64x0IPAlignment = 0x4U;
 
 static std::size_t kCounter = 1UL;
 
 static std::uintptr_t                                      kOrigin = kPefBaseOrigin;
 static std::vector<std::pair<std::string, std::uintptr_t>> kOriginLabel;
-
-static bool kVerbose = false;
 
 static std::vector<e64k_num_t> kBytes;
 
@@ -71,32 +59,6 @@ static const std::string kRelocSymbol     = ":RuntimeSymbol:";
 
 // \brief forward decl.
 static bool asm_read_attributes(std::string& line);
-
-namespace Detail {
-void print_error(std::string reason, std::string file) noexcept {
-  if (reason[0] == '\n') reason.erase(0, 1);
-
-  kStdErr << kRed << "[ asm ] " << kWhite
-          << ((file == "LibCompiler") ? "InternalErrorException: "
-                                      : ("FileException{ " + file + " }: "))
-          << kBlank << std::endl;
-  kStdErr << kRed << "[ asm ] " << kWhite << reason << kBlank << std::endl;
-
-  if (kAcceptableErrors > kErrorLimit) std::exit(3);
-
-  ++kAcceptableErrors;
-}
-
-void print_warning(std::string reason, std::string file) noexcept {
-  if (reason[0] == '\n') reason.erase(0, 1);
-
-  if (!file.empty()) {
-    kStdOut << kYellow << "[ asm ] " << kWhite << file << kBlank << std::endl;
-  }
-
-  kStdOut << kYellow << "[ asm ] " << kWhite << reason << kBlank << std::endl;
-}
-}  // namespace Detail
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
@@ -897,7 +859,7 @@ bool LibCompiler::Encoder64x0::WriteLine(std::string& line, const std::string& f
       }
 
     asm_end_label_cpy:
-      kOrigin += c64x0IPAlignment;
+      kOrigin += k64x0IPAlignment;
 
       break;
     }
