@@ -4,12 +4,18 @@
 
 #pragma once
 
-#include <iostream>
+#include <cstdint>
 #include <unordered_map>
+#include <string>
 
 namespace LibDebugger
 {
+	class DebuggerContract;
+
+	/// \brief Process ID
 	typedef uint64_t ProcessID;
+
+	/// \brief Address type, a la BSD.
 	typedef char*	 CAddress;
 
 	/// \brief Debugger contract class in C++, as per the design states.
@@ -26,10 +32,10 @@ namespace LibDebugger
 
 	public:
 		virtual bool Attach(std::string path, std::string argv, ProcessID& pid) noexcept = 0;
-		virtual bool Breakpoint(std::string symbol) noexcept	= 0;
-		virtual bool Break() noexcept			= 0;
-		virtual bool Continue() noexcept			= 0;
-		virtual bool Detach() noexcept				= 0;
+		virtual bool Breakpoint(std::string symbol) noexcept							 = 0;
+		virtual bool Break() noexcept													 = 0;
+		virtual bool Continue() noexcept												 = 0;
+		virtual bool Detach() noexcept													 = 0;
 
 		virtual std::unordered_map<uintptr_t, uintptr_t>& Get()
 		{
@@ -37,7 +43,7 @@ namespace LibDebugger
 		}
 
 	protected:
-		pid_t									 m_pid;
+		ProcessID								 m_pid;
 		std::unordered_map<uintptr_t, uintptr_t> m_breakpoints;
 	};
 } // namespace LibDebugger

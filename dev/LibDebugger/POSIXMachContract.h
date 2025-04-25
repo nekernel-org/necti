@@ -4,12 +4,10 @@
 
 #pragma once
 
-#ifdef _WIN32
-#error Windows doesn't have a POSIX/Mach subsystem, please combine with windows instead.
-#endif
+#ifdef __APPLE__
 
 /// @file POSIXMachContract.h
-/// @brief POSIX/Mach debugger.
+/// @brief POSIX Mach debugger.
 
 #include <LibDebugger/DebuggerContract.h>
 #include <LibCompiler/Defines.h>
@@ -22,6 +20,7 @@
 #include <stdint.h>
 
 #include <filesystem>
+#include <iostream>
 
 #include <mach/mach.h>
 #include <mach/mach_error.h>
@@ -168,3 +167,5 @@ namespace LibDebugger::POSIX
 		std::string m_path;
 	};
 } // namespace LibDebugger::POSIX
+
+#endif

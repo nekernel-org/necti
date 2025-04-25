@@ -2,13 +2,14 @@
 	(C) 2025 Amlal El Mahrouss
  */
 
+ #ifdef __APPLE__
+
+#include <iostream>
 #include <LibCompiler/Defines.h>
 #include <Vendor/Dialogs.h>
 #include <LibDebugger/POSIXMachContract.h>
 #include <cstdint>
 #include <string>
-
-#ifndef _WIN32
 
 static BOOL									 kKeepRunning = false;
 static LibDebugger::POSIX::POSIXMachContract kDebugger;
@@ -42,7 +43,7 @@ static void dbgi_ctrlc_handler(std::int32_t _)
 
 LIBCOMPILER_MODULE(DebuggerMachPOSIX)
 {
-	pfd::notify("Debugger Event", "NeKernel Debugger\n(C) 2025 Amlal El Mahrouss, all rights reserved.");
+	pfd::notify("Debugger Event", "Userland Debugger\n(C) 2025 Amlal El Mahrouss, all rights reserved.");
 
 	if (argc >= 3 && std::string(argv[1]) == "-p" &&
 		argv[2] != nullptr)
