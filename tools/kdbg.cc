@@ -1,6 +1,6 @@
 /* -------------------------------------------
 
-	Copyright (C) 2024-2025 Amlal EL Mahrous, all rights reserved
+  Copyright (C) 2024-2025 Amlal EL Mahrous, all rights reserved
 
 ------------------------------------------- */
 
@@ -13,7 +13,6 @@ LC_IMPORT_C int DebuggerNeKernel(int argc, char const* argv[]);
 
 /// @brief Debugger entrypoint.
 /// @return Status code of debugger.
-int main(int argc, char const* argv[])
-{
-	return DebuggerNeKernel(argc, argv);
+int main(int argc, char const* argv[]) {
+  return DebuggerNeKernel(argc, argv);
 }

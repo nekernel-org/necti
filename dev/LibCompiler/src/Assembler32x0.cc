@@ -1,6 +1,6 @@
 /* -------------------------------------------
 
-	Copyright (C) 2024-2025 Amlal EL Mahrous, all rights reserved
+  Copyright (C) 2024-2025 Amlal EL Mahrous, all rights reserved
 
 ------------------------------------------- */
 
@@ -19,10 +19,10 @@
 
 #define __ASM_NEED_32x0__ 1
 
-#include <LibCompiler/Backend/32x0.h>
-#include <LibCompiler/Parser.h>
 #include <LibCompiler/AE.h>
+#include <LibCompiler/Backend/32x0.h>
 #include <LibCompiler/PEF.h>
+#include <LibCompiler/Parser.h>
 
 /////////////////////
 
@@ -30,9 +30,9 @@
 
 /////////////////////
 
-#define kBlank	"\e[0;30m"
-#define kRed	"\e[0;31m"
-#define kWhite	"\e[0;97m"
+#define kBlank "\e[0;30m"
+#define kRed "\e[0;31m"
+#define kWhite "\e[0;97m"
 #define kYellow "\e[0;33m"
 
 #define kStdOut (std::cout << kWhite)
@@ -44,7 +44,6 @@
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
-LIBCOMPILER_MODULE(NEAssemblerMain32000)
-{
-	return 0;
+LIBCOMPILER_MODULE(NEAssemblerMain32000) {
+  return 0;
 }

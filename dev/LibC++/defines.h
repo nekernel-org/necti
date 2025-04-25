@@ -1,16 +1,15 @@
 /* -------------------------------------------
 
-	Copyright (C) 2024-2025 Amlal El Mahrouss, all rights reserved.
+  Copyright (C) 2024-2025 Amlal El Mahrouss, all rights reserved.
 
 ------------------------------------------- */
 
 #ifndef __LIBCOMPILER_DEFINES_H__
 #define __LIBCOMPILER_DEFINES_H__
 
-extern "C"
-{
-#include <stdint.h>
+extern "C" {
 #include <stddef.h>
+#include <stdint.h>
 }
 
 #ifndef __GNUC__
@@ -21,9 +20,9 @@ typedef __SIZE_TYPE__ size_t;
 typedef long int ssize_t;
 #else
 typedef int ssize_t;
-#endif // __LP64__
+#endif  // __LP64__
 
-typedef void*		  ptr_type;
+typedef void*         ptr_type;
 typedef __SIZE_TYPE__ size_type;
 
 typedef size_t ptrdiff_t;
@@ -33,8 +32,8 @@ typedef void*  any_t;
 typedef char*  caddr_t;
 
 #ifndef NULL
-#define NULL ((voidptr_t)0)
-#endif // !null
+#define NULL ((voidptr_t) 0)
+#endif  // !null
 
 #ifdef __GNUC__
 #include <LibC++/alloca.h>
@@ -45,12 +44,10 @@ typedef char*  caddr_t;
 #define __deref(ptr) (*(ptr))
 
 #ifdef __cplusplus
-#define __init_decl() \
-	extern "C"        \
-	{
+#define __init_decl() extern "C" {
 #define __fini_decl() \
-	}                 \
-	;
+  }                   \
+  ;
 #else
 #define __init_decl()
 #define __fini_decl()
@@ -66,31 +63,29 @@ typedef char*  caddr_t;
 #warning ! alloca not detected !
 #endif
 
-typedef long long		   off_t;
+typedef long long          off_t;
 typedef unsigned long long uoff_t;
 
 typedef union float_cast {
-	struct
-	{
-		unsigned int mantissa : 23;
-		unsigned int exponent : 8;
-		unsigned int sign : 1;
-	};
+  struct {
+    unsigned int mantissa : 23;
+    unsigned int exponent : 8;
+    unsigned int sign : 1;
+  };
 
-	float f;
+  float f;
 } __attribute__((packed)) float_cast_t;
 
 typedef union double_cast {
-	struct
-	{
-		unsigned long long int mantissa : 52;
-		unsigned int		   exponent : 11;
-		unsigned int		   sign : 1;
-	};
+  struct {
+    unsigned long long int mantissa : 52;
+    unsigned int           exponent : 11;
+    unsigned int           sign : 1;
+  };
 
-	double f;
+  double f;
 } __attribute__((packed)) double_cast_t;
 
-#endif // ifndef __GNUC__
+#endif  // ifndef __GNUC__
 
 #endif /* __LIBCOMPILER_DEFINES_H__ */

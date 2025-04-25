@@ -1,6 +1,6 @@
 /* -------------------------------------------
 
-	Copyright (C) 2024-2025 Amlal EL Mahrous, all rights reserved
+  Copyright (C) 2024-2025 Amlal EL Mahrous, all rights reserved
 
 ------------------------------------------- */
 
@@ -23,37 +23,29 @@
 //! @file Asm.cpp
 //! @brief AssemblyKit source implementation.
 
-namespace LibCompiler
-{
-	///! @brief Compile for specific format (ELF, PEF, ZBIN)
-	Int32 AssemblyFactory::Compile(std::string& sourceFile,
-								   const Int32& arch) noexcept
-	{
-		if (sourceFile.length() < 1 || !fMounted)
-			return LIBCOMPILER_UNIMPLEMENTED;
+namespace LibCompiler {
+///! @brief Compile for specific format (ELF, PEF, ZBIN)
+Int32 AssemblyFactory::Compile(std::string& sourceFile, const Int32& arch) noexcept {
+  if (sourceFile.length() < 1 || !fMounted) return LIBCOMPILER_UNIMPLEMENTED;
 
-		return fMounted->CompileToFormat(sourceFile, arch);
-	}
+  return fMounted->CompileToFormat(sourceFile, arch);
+}
 
-	///! @brief mount assembly backend.
-	void AssemblyFactory::Mount(AssemblyInterface* mountPtr) noexcept
-	{
-		if (mountPtr)
-		{
-			fMounted = mountPtr;
-		}
-	}
+///! @brief mount assembly backend.
+void AssemblyFactory::Mount(AssemblyInterface* mountPtr) noexcept {
+  if (mountPtr) {
+    fMounted = mountPtr;
+  }
+}
 
-	///! @brief Unmount assembler.
-	AssemblyInterface* AssemblyFactory::Unmount() noexcept
-	{
-		auto mount_prev = fMounted;
+///! @brief Unmount assembler.
+AssemblyInterface* AssemblyFactory::Unmount() noexcept {
+  auto mount_prev = fMounted;
 
-		if (mount_prev)
-		{
-			fMounted = nullptr;
-		}
+  if (mount_prev) {
+    fMounted = nullptr;
+  }
 
-		return mount_prev;
-	}
-} // namespace LibCompiler
+  return mount_prev;
+}
+}  // namespace LibCompiler

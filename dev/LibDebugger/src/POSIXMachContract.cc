@@ -1,120 +1,102 @@
 /***
-	(C) 2025 Amlal El Mahrouss
+  (C) 2025 Amlal El Mahrouss
  */
 
- #ifdef __APPLE__
+#ifdef __APPLE__
 
-#include <iostream>
 #include <LibCompiler/Defines.h>
-#include <Vendor/Dialogs.h>
 #include <LibDebugger/POSIXMachContract.h>
+#include <Vendor/Dialogs.h>
 #include <cstdint>
+#include <iostream>
 #include <string>
 
-static BOOL									 kKeepRunning = false;
+static BOOL                                  kKeepRunning = false;
 static LibDebugger::POSIX::POSIXMachContract kDebugger;
-static LibDebugger::ProcessID				 kPID			= 0L;
-static LibDebugger::CAddress				 kActiveAddress = nullptr;
-static std::string							 kPath			= "";
+static LibDebugger::ProcessID                kPID           = 0L;
+static LibDebugger::CAddress                 kActiveAddress = nullptr;
+static std::string                           kPath          = "";
 
 #define kBlank "\e[0;30m"
-#define kRed   "\e[0;31m"
+#define kRed "\e[0;31m"
 #define kWhite "\e[0;97m"
 
 #define kStdOut (std::cout << kRed << "dbg: " << kWhite)
 
 /// @internal
 /// @brief Handles CTRL-C signal on debugger.
-static void dbgi_ctrlc_handler(std::int32_t _)
-{
-	if (!kPID)
-	{
-		return;
-	}
+static void dbgi_ctrlc_handler(std::int32_t _) {
+  if (!kPID) {
+    return;
+  }
 
-	auto list = kDebugger.Get();
+  auto list = kDebugger.Get();
 
-	kDebugger.Break();
+  kDebugger.Break();
 
-	pfd::notify("Debugger Event", "Breakpoint hit!");
+  pfd::notify("Debugger Event", "Breakpoint hit!");
 
-	kKeepRunning = false;
+  kKeepRunning = false;
 }
 
-LIBCOMPILER_MODULE(DebuggerMachPOSIX)
-{
-	pfd::notify("Debugger Event", "Userland Debugger\n(C) 2025 Amlal El Mahrouss, all rights reserved.");
+LIBCOMPILER_MODULE(DebuggerMachPOSIX) {
+  pfd::notify("Debugger Event",
+              "Userland Debugger\n(C) 2025 Amlal El Mahrouss, all rights reserved.");
 
-	if (argc >= 3 && std::string(argv[1]) == "-p" &&
-		argv[2] != nullptr)
-	{
-		kPath = argv[2];
-		kDebugger.SetPath(kPath);
-		
-		kStdOut << "[+] Path set to: " << kPath << "\n";
-	}
+  if (argc >= 3 && std::string(argv[1]) == "-p" && argv[2] != nullptr) {
+    kPath = argv[2];
+    kDebugger.SetPath(kPath);
 
-	::signal(SIGINT, dbgi_ctrlc_handler);
+    kStdOut << "[+] Path set to: " << kPath << "\n";
+  }
 
-	while (YES)
-	{
-		if (kKeepRunning)
-		{
-			continue;
-		}
+  ::signal(SIGINT, dbgi_ctrlc_handler);
 
-		std::string cmd;
-		std::getline(std::cin, cmd);
+  while (YES) {
+    if (kKeepRunning) {
+      continue;
+    }
 
-		if (cmd == "c" ||
-			cmd == "cont" ||
-			cmd == "continue")
-		{
-			if (kDebugger.Continue())
-			{
-				kKeepRunning = true;
+    std::string cmd;
+    std::getline(std::cin, cmd);
 
-				kStdOut << "[+] Continuing...\n";
+    if (cmd == "c" || cmd == "cont" || cmd == "continue") {
+      if (kDebugger.Continue()) {
+        kKeepRunning = true;
 
-				pfd::notify("Debugger Event", "Continuing...");
-			}
-		}
+        kStdOut << "[+] Continuing...\n";
 
-		if (cmd == "d" ||
-			cmd == "detach")
-			kDebugger.Detach();
+        pfd::notify("Debugger Event", "Continuing...");
+      }
+    }
 
-		if (cmd == "start")
-		{
-			kStdOut << "[?] Enter a argument to use: ";
-			std::getline(std::cin, cmd);
+    if (cmd == "d" || cmd == "detach") kDebugger.Detach();
 
-			kDebugger.Attach(kPath, cmd, kPID);
-		}
+    if (cmd == "start") {
+      kStdOut << "[?] Enter a argument to use: ";
+      std::getline(std::cin, cmd);
 
-		if (cmd == "exit")
-		{
-			if (kPID > 0)
-				kDebugger.Detach();
+      kDebugger.Attach(kPath, cmd, kPID);
+    }
 
-			break;
-		}
+    if (cmd == "exit") {
+      if (kPID > 0) kDebugger.Detach();
 
-		if (cmd == "break" ||
-			cmd == "b")
-		{
-			kStdOut << "[?] Enter a symbol to break on: ";
+      break;
+    }
 
-			std::getline(std::cin, cmd);
+    if (cmd == "break" || cmd == "b") {
+      kStdOut << "[?] Enter a symbol to break on: ";
 
-			if (kDebugger.Breakpoint(cmd))
-			{
-				pfd::notify("Debugger Event", "Add Breakpoint at: " + cmd);
-			}
-		}
-	}
+      std::getline(std::cin, cmd);
 
-	return EXIT_SUCCESS;
+      if (kDebugger.Breakpoint(cmd)) {
+        pfd::notify("Debugger Event", "Add Breakpoint at: " + cmd);
+      }
+    }
+  }
+
+  return EXIT_SUCCESS;
 }
 
 #endif
