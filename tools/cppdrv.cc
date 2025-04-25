@@ -23,5 +23,5 @@ int main(int argc, char const* argv[]) {
     return LIBCOMPILER_EXEC_ERROR;
   }
 
-  return LIBCOMPILER_SUCCESSS;
+  return LIBCOMPILER_SUCCESS;
 }

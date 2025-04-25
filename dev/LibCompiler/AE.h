@@ -106,7 +106,7 @@ class AEReadableProtocol final {
   AERecordHeaderPtr Read(char* raw, std::size_t sz) {
     if (!raw) return nullptr;
 
-    return this->_Read<AERecordHeader>(raw, sz * sizeof(AERecordHeader));
+    return this->Read_<AERecordHeader>(raw, sz * sizeof(AERecordHeader));
   }
 
  private:
@@ -119,7 +119,7 @@ class AEReadableProtocol final {
    * @return TypeClass* the returning class.
    */
   template <typename TypeClass>
-  TypeClass* _Read(char* raw, std::size_t sz) {
+  TypeClass* Read_(char* raw, std::size_t sz) {
     FP.read(raw, std::streamsize(sz));
     return reinterpret_cast<TypeClass*>(raw);
   }

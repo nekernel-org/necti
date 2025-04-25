@@ -19,6 +19,7 @@
 
 #include <LibCompiler/AE.h>
 #include <LibCompiler/Backend/PowerPC.h>
+#include <LibCompiler/Detail/AsmUtils.h>
 #include <LibCompiler/ErrorID.h>
 #include <LibCompiler/PEF.h>
 #include <LibCompiler/Parser.h>
@@ -28,7 +29,6 @@
 #include <fstream>
 #include <iostream>
 #include <vector>
-#include <LibCompiler/Detail/AsmUtils.h>
 
 /////////////////////
 
@@ -46,7 +46,7 @@
 
 constexpr auto cPowerIPAlignment = 0x4U;
 
-static CharType kOutputArch     = LibCompiler::kPefArchPowerPC;
+static CharType kOutputArch = LibCompiler::kPefArchPowerPC;
 
 static std::size_t kCounter = 1UL;
 

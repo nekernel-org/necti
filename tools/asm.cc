@@ -21,7 +21,7 @@ LC_IMPORT_C int AssemblerMainAMD64(int argc, char const* argv[]);
 
 enum AsmKind : Int32 {
   kInvalidAssembler = 0,
-  kX64Assembler = 100,
+  kX64Assembler     = 100,
   k64X0Assembler,
   kPOWER64Assembler,
   kARM64Assembler,

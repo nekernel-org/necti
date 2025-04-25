@@ -27,8 +27,8 @@
 
 inline static UInt32 kErrorLimit       = 10;
 inline static UInt32 kAcceptableErrors = 0;
-inline static bool kVerbose = false;
-inline static bool kOutputAsBinary = false;
+inline static bool   kVerbose          = false;
+inline static bool   kOutputAsBinary   = false;
 
 namespace Detail {
 inline void print_error(std::string reason, std::string file) noexcept {

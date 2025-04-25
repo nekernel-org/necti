@@ -29,10 +29,10 @@
 
 //! Advanced Executable Object Format.
 #include <LibCompiler/AE.h>
-#include <cstdint>
 
-#define kLinkerVersionStr                                                                        \
-  "\e[0;97m NeKernel 64-Bit Linker (Preferred Executable) %s, (c) Amlal El Mahrouss 2024-2025, " \
+#define kLinkerVersionStr                                                                    \
+  "\e[0;97m NeKernel 64-Bit Linker (Preferred Executable Format) %s, (c) Amlal El Mahrouss " \
+  "2024-2025, "                                                                              \
   "all rights reserved.\n"
 
 #define MemoryCopy(DST, SRC, SZ) memcpy(DST, SRC, SZ)
@@ -659,7 +659,7 @@ LIBCOMPILER_MODULE(DynamicLinker64PEF) {
     return LIBCOMPILER_EXEC_ERROR;
   }
 
-  return LIBCOMPILER_SUCCESSS;
+  return LIBCOMPILER_SUCCESS;
 }
 
 // Last rev 13-1-24

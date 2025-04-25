@@ -19,11 +19,11 @@
 
 #include <LibCompiler/AE.h>
 #include <LibCompiler/Backend/Aarch64.h>
+#include <LibCompiler/Detail/AsmUtils.h>
 #include <LibCompiler/ErrorID.h>
 #include <LibCompiler/PEF.h>
 #include <LibCompiler/Parser.h>
 #include <LibCompiler/Version.h>
-#include <LibCompiler/Detail/AsmUtils.h>
 #include <algorithm>
 #include <filesystem>
 #include <fstream>
@@ -46,7 +46,7 @@
 
 constexpr auto cPowerIPAlignment = 0x1U;
 
-static CharType kOutputArch     = LibCompiler::kPefArchARM64;
+static CharType kOutputArch = LibCompiler::kPefArchARM64;
 
 static std::size_t kCounter = 1UL;
 

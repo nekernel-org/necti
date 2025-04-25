@@ -51,7 +51,7 @@
 #define kStdOut (std::cout << kWhite)
 #define kStdErr (std::cout << kRed)
 
-static char    kOutputArch     = LibCompiler::kPefArchAMD64;
+static char kOutputArch = LibCompiler::kPefArchAMD64;
 
 constexpr auto kIPAlignement = 0x1U;
 

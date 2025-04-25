@@ -21,6 +21,7 @@
 
 #include <LibCompiler/AE.h>
 #include <LibCompiler/Backend/64x0.h>
+#include <LibCompiler/Detail/ClUtils.h>
 #include <LibCompiler/PEF.h>
 #include <LibCompiler/Parser.h>
 #include <algorithm>
@@ -28,7 +29,6 @@
 #include <fstream>
 #include <iostream>
 #include <vector>
-#include <LibCompiler/Detail/ClUtils.h>
 
 /////////////////////
 
@@ -36,7 +36,7 @@
 
 /////////////////////
 
-static char    kOutputArch     = LibCompiler::kPefArch64000;
+static char kOutputArch = LibCompiler::kPefArch64000;
 
 /// @note The 64x0 is VLSIW, so we need to jump to 4 bytes.
 constexpr auto k64x0IPAlignment = 0x4U;

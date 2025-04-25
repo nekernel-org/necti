@@ -38,26 +38,23 @@ inline std::vector<CpuOpcode64x0> kOpcodes64x0 = {
                    kAsmJump)  // jump to linked return register
     kAsmOpcodeDecl("jrl", 0b1110011, 0b0001111,
                    kAsmJump)  // jump from return register.
-    kAsmOpcodeDecl("mv", 0b0100011, 0b101, kAsmRegToReg)
-    kAsmOpcodeDecl(
-    "bg", 0b1100111, 0b111, kAsmRegToReg) 
-    kAsmOpcodeDecl("bl", 0b1100111, 0b011, kAsmRegToReg)
-    kAsmOpcodeDecl("beq", 0b1100111, 0b000, kAsmRegToReg)
-    kAsmOpcodeDecl("bne", 0b1100111, 0b001, kAsmRegToReg)
-    kAsmOpcodeDecl("bge", 0b1100111, 0b101, kAsmRegToReg)
-    kAsmOpcodeDecl("ble", 0b1100111, 0b100, kAsmRegToReg)
-    kAsmOpcodeDecl("stw", 0b0001111, 0b100, kAsmImmediate)
-    kAsmOpcodeDecl("ldw", 0b0001111, 0b100, kAsmImmediate)
-    kAsmOpcodeDecl("lda", 0b0001111, 0b101, kAsmImmediate)
-    kAsmOpcodeDecl("sta", 0b0001111, 0b001, kAsmImmediate)
+    kAsmOpcodeDecl("mv", 0b0100011, 0b101, kAsmRegToReg) kAsmOpcodeDecl(
+        "bg", 0b1100111, 0b111, kAsmRegToReg) kAsmOpcodeDecl("bl", 0b1100111, 0b011, kAsmRegToReg)
+        kAsmOpcodeDecl("beq", 0b1100111, 0b000, kAsmRegToReg)
+            kAsmOpcodeDecl("bne", 0b1100111, 0b001, kAsmRegToReg)
+                kAsmOpcodeDecl("bge", 0b1100111, 0b101, kAsmRegToReg)
+                    kAsmOpcodeDecl("ble", 0b1100111, 0b100, kAsmRegToReg)
+                        kAsmOpcodeDecl("stw", 0b0001111, 0b100, kAsmImmediate)
+                            kAsmOpcodeDecl("ldw", 0b0001111, 0b100, kAsmImmediate)
+                                kAsmOpcodeDecl("lda", 0b0001111, 0b101, kAsmImmediate)
+                                    kAsmOpcodeDecl("sta", 0b0001111, 0b001, kAsmImmediate)
     // add/sub without carry flag
     kAsmOpcodeDecl("add", 0b0101011, 0b100, kAsmImmediate)
-    kAsmOpcodeDecl("sub", 0b0101011, 0b101, kAsmImmediate)
+        kAsmOpcodeDecl("sub", 0b0101011, 0b101, kAsmImmediate)
     // add/sub with carry flag
     kAsmOpcodeDecl("addc", 0b0101011, 0b110, kAsmImmediate)
-    kAsmOpcodeDecl("subc", 0b0101011, 0b111, kAsmImmediate)
-    kAsmOpcodeDecl("sc", 0b1110011, 0b00, kAsmSyscall)
-};
+        kAsmOpcodeDecl("subc", 0b0101011, 0b111, kAsmImmediate)
+            kAsmOpcodeDecl("sc", 0b1110011, 0b00, kAsmSyscall)};
 
 // \brief 64x0 register prefix
 // example: r32, r0

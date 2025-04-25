@@ -256,7 +256,7 @@ Boolean CompilerFrontendCPlusPlus::Compile(std::string text, const std::string f
     for (size_t i = 0; i < text.size(); i++) {
       if (isalnum(text[i])) {
         Detail::print_error("syntax error: " + text, file);
-        return false;
+        return NO;
       }
     }
   }
@@ -371,7 +371,6 @@ Boolean CompilerFrontendCPlusPlus::Compile(std::string text, const std::string f
           ++indexFnName;
 
           if (ch == '\t') break;
-
           if (ch == ' ') break;
         }
 
@@ -383,7 +382,7 @@ Boolean CompilerFrontendCPlusPlus::Compile(std::string text, const std::string f
         }
 
         if (text.ends_with(";") && text.find("return") == std::string::npos)
-          goto LC_write_assembly;
+          goto lc_write_assembly;
         else if (text.size() <= indexFnName)
           Detail::print_error("Invalid function name: " + fnName, file);
 
@@ -408,7 +407,7 @@ Boolean CompilerFrontendCPlusPlus::Compile(std::string text, const std::string f
 
         break;
 
-      LC_write_assembly:
+      lc_write_assembly:
         auto it = std::find_if(kOriginMap.begin(), kOriginMap.end(),
                                [&fnName](std::pair<std::string, std::uintptr_t> pair) -> bool {
                                  return fnName == pair.first;
