@@ -1054,7 +1054,7 @@ class AssemblyCCInterface final ASSEMBLY_INTERFACE {
     return LibCompiler::AssemblyFactory::kArchAARCH64;
   }
 
-  Int32 CompileToFormat(std::string& src, Int32 arch) override {
+  Int32 CompileToFormat(std::string src, Int32 arch) override {
     if (arch != AssemblyCCInterface::Arch()) return 1;
 
     if (kCompilerFrontend == nullptr) return 1;

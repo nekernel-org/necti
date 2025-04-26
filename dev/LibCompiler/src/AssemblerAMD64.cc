@@ -75,7 +75,7 @@ static std::vector<std::string>                 kUndefinedSymbols;
 static const std::string kUndefinedSymbol = ":UndefinedSymbol:";
 
 // \brief forward decl.
-static bool asm_read_attributes(std::string& line);
+static bool asm_read_attributes(std::string line);
 
 #include <LibCompiler/Detail/AsmUtils.h>
 
@@ -334,7 +334,7 @@ asm_fail_exit:
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
-static bool asm_read_attributes(std::string& line) {
+static bool asm_read_attributes(std::string line) {
   // extern_segment is the opposite of public_segment, it signals to the ld
   // that we need this symbol.
   if (LibCompiler::find_word(line, "extern_segment")) {
@@ -479,7 +479,7 @@ static inline bool is_not_valid(char c) {
   return true;
 }
 
-bool is_valid_amd64(const std::string& str) {
+bool is_valid_amd64(std::string str) {
   return std::find_if(str.begin(), str.end(), is_not_valid) == str.end();
 }
 }  // namespace Detail::algorithm
@@ -490,7 +490,7 @@ bool is_valid_amd64(const std::string& str) {
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
-std::string LibCompiler::EncoderAMD64::CheckLine(std::string& line, const std::string& file) {
+std::string LibCompiler::EncoderAMD64::CheckLine(std::string line, std::string file) {
   std::string err_str;
 
   if (line.empty() || LibCompiler::find_word(line, "extern_segment") ||
@@ -950,7 +950,7 @@ bool LibCompiler::EncoderAMD64::WriteNumber8(const std::size_t& pos, std::string
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
-bool LibCompiler::EncoderAMD64::WriteLine(std::string& line, const std::string& file) {
+bool LibCompiler::EncoderAMD64::WriteLine(std::string line, std::string file) {
   if (LibCompiler::find_word(line, "public_segment ")) return true;
 
   struct RegMapAMD64 {
@@ -1135,7 +1135,7 @@ bool LibCompiler::EncoderAMD64::WriteLine(std::string& line, const std::string& 
 
   if (line[0] == kAssemblerPragmaSym) {
     if (foundInstruction) {
-      Detail::print_error("Syntax error: " + line, "LibCompiler");
+      Detail::print_error("Syntax error: " + line, file);
       throw std::runtime_error("syntax_err");
     }
 
@@ -1156,7 +1156,7 @@ bool LibCompiler::EncoderAMD64::WriteLine(std::string& line, const std::string& 
             continue;
           } else {
             if (kVerbose) {
-              kStdOut << "AssemblerAMD64: origin set: " << kOrigin << std::endl;
+              kStdOut << "AssemblerAMD64: Origin Set: " << kOrigin << std::endl;
             }
 
             break;

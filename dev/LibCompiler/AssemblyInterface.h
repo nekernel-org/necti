@@ -24,7 +24,7 @@ class AssemblyInterface {
 
   /// @brief compile to object file.
   /// @note Example C++ -> MASM -> AE object.
-  virtual Int32 CompileToFormat(std::string& src, Int32 arch) = 0;
+  virtual Int32 CompileToFormat(std::string src, Int32 arch) = 0;
 };
 
 /// @brief Simple assembly factory
@@ -46,7 +46,7 @@ class AssemblyFactory final {
     kArchUnknown,
   };
 
-  Int32 Compile(std::string& sourceFile, const Int32& arch) noexcept;
+  Int32 Compile(std::string sourceFile, const Int32& arch) noexcept;
 
   void               Mount(AssemblyInterface* mountPtr) noexcept;
   AssemblyInterface* Unmount() noexcept;
@@ -107,8 +107,8 @@ class EncoderInterface {
 
   LIBCOMPILER_COPY_DEFAULT(EncoderInterface);
 
-  virtual std::string CheckLine(std::string& line, const std::string& file)       = 0;
-  virtual bool        WriteLine(std::string& line, const std::string& file)       = 0;
+  virtual std::string CheckLine(std::string line, std::string file)               = 0;
+  virtual bool        WriteLine(std::string line, std::string file)               = 0;
   virtual bool        WriteNumber(const std::size_t& pos, std::string& from_what) = 0;
 };
 
@@ -121,8 +121,8 @@ class EncoderAMD64 final : public EncoderInterface {
 
   LIBCOMPILER_COPY_DEFAULT(EncoderAMD64);
 
-  virtual std::string CheckLine(std::string& line, const std::string& file) override;
-  virtual bool        WriteLine(std::string& line, const std::string& file) override;
+  virtual std::string CheckLine(std::string line, std::string file) override;
+  virtual bool        WriteLine(std::string line, std::string file) override;
   virtual bool        WriteNumber(const std::size_t& pos, std::string& from_what) override;
 
   virtual bool WriteNumber16(const std::size_t& pos, std::string& from_what);
@@ -141,8 +141,8 @@ class EncoderARM64 final : public EncoderInterface {
 
   LIBCOMPILER_COPY_DEFAULT(EncoderARM64);
 
-  virtual std::string CheckLine(std::string& line, const std::string& file) override;
-  virtual bool        WriteLine(std::string& line, const std::string& file) override;
+  virtual std::string CheckLine(std::string line, std::string file) override;
+  virtual bool        WriteLine(std::string line, std::string file) override;
   virtual bool        WriteNumber(const std::size_t& pos, std::string& from_what) override;
 };
 
@@ -157,8 +157,8 @@ class Encoder64x0 final : public EncoderInterface {
 
   LIBCOMPILER_COPY_DEFAULT(Encoder64x0);
 
-  virtual std::string CheckLine(std::string& line, const std::string& file) override;
-  virtual bool        WriteLine(std::string& line, const std::string& file) override;
+  virtual std::string CheckLine(std::string line, std::string file) override;
+  virtual bool        WriteLine(std::string line, std::string file) override;
   virtual bool        WriteNumber(const std::size_t& pos, std::string& from_what) override;
 };
 
@@ -173,8 +173,8 @@ class Encoder32x0 final : public EncoderInterface {
 
   LIBCOMPILER_COPY_DEFAULT(Encoder32x0);
 
-  virtual std::string CheckLine(std::string& line, const std::string& file) override;
-  virtual bool        WriteLine(std::string& line, const std::string& file) override;
+  virtual std::string CheckLine(std::string line, std::string file) override;
+  virtual bool        WriteLine(std::string line, std::string file) override;
   virtual bool        WriteNumber(const std::size_t& pos, std::string& from_what) override;
 };
 
@@ -189,8 +189,8 @@ class EncoderPowerPC final : public EncoderInterface {
 
   LIBCOMPILER_COPY_DEFAULT(EncoderPowerPC);
 
-  virtual std::string CheckLine(std::string& line, const std::string& file) override;
-  virtual bool        WriteLine(std::string& line, const std::string& file) override;
+  virtual std::string CheckLine(std::string line, std::string file) override;
+  virtual bool        WriteLine(std::string line, std::string file) override;
   virtual bool        WriteNumber(const std::size_t& pos, std::string& from_what) override;
 };
 

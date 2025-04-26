@@ -15,6 +15,8 @@
 
 //! Toolchain Kit.
 #include <LibCompiler/Defines.h>
+
+//! Error ID
 #include <LibCompiler/ErrorID.h>
 
 //! Assembler Kit
@@ -22,6 +24,8 @@
 
 //! Preferred Executable Format
 #include <LibCompiler/PEF.h>
+
+//! UUID header.
 #include <LibCompiler/UUID.h>
 
 //! Release macros.
@@ -30,9 +34,12 @@
 //! Advanced Executable Object Format.
 #include <LibCompiler/AE.h>
 
-#define kLinkerVersionStr                                                                    \
-  "\e[0;97m NeKernel 64-Bit Linker (Preferred Executable Format) %s, (c) Amlal El Mahrouss " \
-  "2024-2025, "                                                                              \
+//! Format header.
+#include <format>
+
+#define kLinkerVersionStr                                                           \
+  "NeKernel 64-Bit Linker (Preferred Executable Format) {}, (c) Amlal El Mahrouss " \
+  "2024-2025 "                                                                      \
   "all rights reserved.\n"
 
 #define MemoryCopy(DST, SRC, SZ) memcpy(DST, SRC, SZ)
@@ -45,10 +52,10 @@
 
 #define kLinkerDefaultOrigin kPefBaseOrigin
 #define kLinkerId (0x5046FF)
-#define kLinkerAbiContainer "Container:ABI:"
+#define kLinkerAbiContainer "__PEFContainer:ABI:"
 
 #define kPrintF printf
-#define kLinkerSplash() kPrintF(kLinkerVersionStr, kDistVersion)
+#define kLinkerSplash() kStdOut << std::format(kLinkerVersionStr, kDistVersion)
 
 /// @brief PEF stack size symbol.
 #define kLinkerStackSizeSymbol "__PEFSizeOfReserveStack"
@@ -101,7 +108,7 @@ LIBCOMPILER_MODULE(DynamicLinker64PEF) {
       kStdOut << "-version: Show linker version.\n";
       kStdOut << "-help: Show linker help.\n";
       kStdOut << "-ld-verbose: Enable linker trace.\n";
-      kStdOut << "-dylib: Output as a Dyanmic PEF.\n";
+      kStdOut << "-dylib: Output as a Dynamic PEF.\n";
       kStdOut << "-fat: Output as a FAT PEF.\n";
       kStdOut << "-32k: Output as a 32x0 PEF.\n";
       kStdOut << "-64k: Output as a 64x0 PEF.\n";

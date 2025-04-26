@@ -109,7 +109,7 @@ struct SyntaxLeafList final {
 /// \param haystack base string
 /// \param needle the string we search for.
 /// \return if we found it or not.
-inline bool find_word(const std::string& haystack, const std::string& needle) noexcept {
+inline bool find_word(std::string haystack, std::string needle) noexcept {
   auto index = haystack.find(needle);
 
   // check for needle validity.
@@ -131,8 +131,7 @@ inline bool find_word(const std::string& haystack, const std::string& needle) no
 /// \param haystack
 /// \param needle
 /// \return position of needle.
-inline std::size_t find_word_range(const std::string& haystack,
-                                   const std::string& needle) noexcept {
+inline std::size_t find_word_range(std::string haystack, std::string needle) noexcept {
   auto index = haystack.find(needle);
 
   // check for needle validity.

@@ -25,7 +25,7 @@
 
 namespace LibCompiler {
 ///! @brief Compile for specific format (ELF, PEF, ZBIN)
-Int32 AssemblyFactory::Compile(std::string& sourceFile, const Int32& arch) noexcept {
+Int32 AssemblyFactory::Compile(std::string sourceFile, const Int32& arch) noexcept {
   if (sourceFile.length() < 1 || !fMounted) return LIBCOMPILER_UNIMPLEMENTED;
 
   return fMounted->CompileToFormat(sourceFile, arch);

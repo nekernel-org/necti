@@ -65,7 +65,7 @@ static const std::string kUndefinedSymbol = ":UndefinedSymbol:";
 static const std::string kRelocSymbol     = ":RuntimeSymbol:";
 
 // \brief forward decl.
-static bool asm_read_attributes(std::string& line);
+static bool asm_read_attributes(std::string line);
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
@@ -267,7 +267,7 @@ asm_fail_exit:
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
-static bool asm_read_attributes(std::string& line) {
+static bool asm_read_attributes(std::string line) {
   // extern_segment is the opposite of public_segment, it signals to the li
   // that we need this symbol.
   if (LibCompiler::find_word(line, "extern_segment")) {
@@ -401,7 +401,7 @@ static inline bool is_not_alnum_space(char c) {
            (c == '_') || (c == ':') || (c == '@') || (c == '.'));
 }
 
-bool is_valid_arm64(const std::string& str) {
+bool is_valid_arm64(std::string str) {
   return std::find_if(str.begin(), str.end(), is_not_alnum_space) == str.end();
 }
 }  // namespace Detail::algorithm
@@ -412,7 +412,7 @@ bool is_valid_arm64(const std::string& str) {
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
-std::string LibCompiler::EncoderARM64::CheckLine(std::string& line, const std::string& file) {
+std::string LibCompiler::EncoderARM64::CheckLine(std::string line, std::string file) {
   std::string err_str;
 
   if (line.empty() || LibCompiler::find_word(line, "extern_segment") ||
@@ -575,7 +575,7 @@ bool LibCompiler::EncoderARM64::WriteNumber(const std::size_t& pos, std::string&
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
-bool LibCompiler::EncoderARM64::WriteLine(std::string& line, const std::string& file) {
+bool LibCompiler::EncoderARM64::WriteLine(std::string line, std::string file) {
   if (LibCompiler::find_word(line, "public_segment")) return false;
 
   if (!Detail::algorithm::is_valid_arm64(line)) return false;

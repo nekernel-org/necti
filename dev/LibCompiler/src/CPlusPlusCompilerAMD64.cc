@@ -14,11 +14,6 @@
 #define kExitOK (EXIT_SUCCESS)
 #define kExitNO (EXIT_FAILURE)
 
-#define kSplashCxx()                                                                             \
-  kPrintF(kWhite "%s\n",                                                                         \
-          "NeKernel Optimized C++ Compiler Driver, (c) 2024-2025 Amlal El Mahrouss, All rights " \
-          "reserved.")
-
 // extern_segment, @autodelete { ... }, fn foo() -> auto { ... }
 
 #include <LibCompiler/Backend/Amd64.h>
@@ -392,12 +387,13 @@ Boolean CompilerFrontendCPlusPlus::Compile(std::string text, const std::string f
           if (ch == ' ' || ch == '\t') {
             if (fnName[indexFnName - 1] != ')')
               Detail::print_error("Invalid function name: " + fnName, file);
-
-            if ((indexFnName + 1) != fnName.size())
-              Detail::print_error("Extra characters after function name: " + fnName, file);
           }
 
           ++indexFnName;
+        }
+
+        if (fnName.find("(") != LibCompiler::String::npos) {
+          fnName.erase(fnName.find("("));
         }
 
         syntax_tree.fUserValue = "public_segment .code64 __LIBCOMPILER_" + fnName + "\n";
@@ -760,7 +756,7 @@ class AssemblyCPlusPlusInterface final ASSEMBLY_INTERFACE {
 
   [[maybe_unused]] static Int32 Arch() noexcept { return LibCompiler::AssemblyFactory::kArchAMD64; }
 
-  Int32 CompileToFormat(std::string& src, Int32 arch) override {
+  Int32 CompileToFormat(std::string src, Int32 arch) override {
     if (arch != AssemblyCPlusPlusInterface::Arch()) return 1;
 
     if (kCompilerFrontend == nullptr) return 1;
@@ -849,12 +845,6 @@ class AssemblyCPlusPlusInterface final ASSEMBLY_INTERFACE {
 };
 
 /////////////////////////////////////////////////////////////////////////////////////////
-
-static void cxx_print_help() {
-  kSplashCxx();
-  kPrintF("%s", "No help available, see:\n");
-  kPrintF("%s", "nekernel.org/docs/cxxdrv\n");
-}
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
@@ -949,21 +939,10 @@ LIBCOMPILER_MODULE(CompilerCPlusPlusAMD64) {
         continue;
       }
 
-      if (strcmp(argv[index], "-version") == 0) {
-        kSplashCxx();
-        return kExitOK;
-      }
-
       if (strcmp(argv[index], "-cxx-verbose") == 0) {
         kState.fVerbose = true;
 
         continue;
-      }
-
-      if (strcmp(argv[index], "-h") == 0) {
-        cxx_print_help();
-
-        return kExitOK;
       }
 
       if (strcmp(argv[index], "-cxx-dialect") == 0) {
@@ -972,7 +951,7 @@ LIBCOMPILER_MODULE(CompilerCPlusPlusAMD64) {
         return kExitOK;
       }
 
-      if (strcmp(argv[index], "-max-err") == 0) {
+      if (strcmp(argv[index], "-cxx-max-err") == 0) {
         try {
           kErrorLimit = std::strtol(argv[index + 1], nullptr, 10);
         }
@@ -1016,9 +995,12 @@ LIBCOMPILER_MODULE(CompilerCPlusPlusAMD64) {
       return 1;
     }
 
-    std::cout << "CPlusPlusCompilerAMD64: Building: " << argv[index] << std::endl;
+    kStdOut << "CPlusPlusCompilerAMD64: Building: " << argv[index] << std::endl;
 
-    if (kFactory.Compile(argv_i, kMachine) != kExitOK) return 1;
+    if (kFactory.Compile(argv_i, kMachine) != kExitOK) {
+      kStdOut << "CPlusPlusCompilerAMD64: Failed to build: " << argv[index] << std::endl;
+      return kExitNO;
+    }
   }
 
   return kExitOK;

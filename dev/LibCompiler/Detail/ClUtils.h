@@ -7,6 +7,7 @@
 #pragma once
 
 #include <LibCompiler/AssemblyInterface.h>
+#include <LibCompiler/ErrorID.h>
 #include <LibCompiler/Parser.h>
 
 #define kZero64Section ".zero64"
@@ -34,13 +35,9 @@ namespace Detail {
 inline void print_error(std::string reason, std::string file) noexcept {
   if (reason[0] == '\n') reason.erase(0, 1);
 
-  kStdErr << kRed << "[ asm ] " << kWhite
-          << ((file == "LibCompiler") ? "InternalErrorException: "
-                                      : ("FileException{ " + file + " }: "))
-          << kBlank << std::endl;
-  kStdErr << kRed << "[ asm ] " << kWhite << reason << kBlank << std::endl;
+  kStdErr << kRed << "drv: " << kWhite << reason << kBlank << std::endl;
 
-  if (kAcceptableErrors > kErrorLimit) std::exit(3);
+  if (kAcceptableErrors > kErrorLimit) std::exit(LIBCOMPILER_EXEC_ERROR);
 
   ++kAcceptableErrors;
 }
@@ -48,10 +45,6 @@ inline void print_error(std::string reason, std::string file) noexcept {
 inline void print_warning(std::string reason, std::string file) noexcept {
   if (reason[0] == '\n') reason.erase(0, 1);
 
-  if (!file.empty()) {
-    kStdOut << kYellow << "[ asm ] " << kWhite << file << kBlank << std::endl;
-  }
-
-  kStdOut << kYellow << "[ asm ] " << kWhite << reason << kBlank << std::endl;
+  kStdOut << kYellow << "drv: " << kWhite << reason << kBlank << std::endl;
 }
 }  // namespace Detail
