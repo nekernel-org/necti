@@ -17,10 +17,10 @@
 // extern_segment, @autodelete { ... }, fn foo() -> auto { ... }
 
 #include <LibCompiler/Backend/Amd64.h>
+#include <LibCompiler/Detail/ClUtils.h>
 #include <LibCompiler/Parser.h>
 #include <LibCompiler/UUID.h>
 #include <Vendor/Dialogs.h>
-#include <LibCompiler/Detail/ClUtils.h>
 
 #include <cstdio>
 
@@ -52,7 +52,8 @@
 
 /// @internal
 static void cxxdrv_chaos_handler(std::int32_t _) {
-  pfd::notify("NeKernel C++ Compiler Driver", "CxxDrv just crashed, please report this to the developers.");
+  pfd::notify("NeKernel C++ Compiler Driver",
+              "CxxDrv just crashed, please report this to the developers.");
   std::exit(LIBCOMPILER_EXEC_ERROR);
 }
 
