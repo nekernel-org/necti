@@ -89,7 +89,7 @@ LIBCOMPILER_MODULE(AssemblerMainAMD64) {
   //////////////// CPU OPCODES BEGIN ////////////////
 
   ::signal(SIGSEGV, Detail::segfault_handler);
-  
+
   std::string opcodes_jump[kJumpLimit] = {"ja",  "jae",  "jb",  "jbe",  "jc",  "je",   "jg",  "jge",
                                           "jl",  "jle",  "jna", "jnae", "jnb", "jnbe", "jnc", "jne",
                                           "jng", "jnge", "jnl", "jnle", "jno", "jnp",  "jns", "jnz",

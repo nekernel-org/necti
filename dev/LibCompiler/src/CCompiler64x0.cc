@@ -11,9 +11,9 @@
 /// TODO: none
 
 #include <LibCompiler/Backend/64x0.h>
+#include <LibCompiler/Detail/ClUtils.h>
 #include <LibCompiler/Parser.h>
 #include <LibCompiler/UUID.h>
-#include <LibCompiler/Detail/ClUtils.h>
 #include <cstdio>
 #include <fstream>
 #include <iostream>
@@ -87,7 +87,7 @@ struct CompilerState final {
 }  // namespace Detail
 
 static Detail::CompilerState kState;
-static std::string           kIfFunction       = "";
+static std::string           kIfFunction = "";
 
 namespace Detail {
 /// @brief prints an error into stdout.

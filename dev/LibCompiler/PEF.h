@@ -77,10 +77,10 @@ typedef struct PEFContainer final {
   UInt32   Kind;
   UInt32   Abi;
   UInt32   Cpu;
-  UInt32   SubCpu; /* Cpu specific information */
-  UIntPtr  Start;  /* Origin of code */
-  SizeType HdrSz;  /* Size of header */
-  SizeType Count;  /* container header count */
+  UInt32   SubCpu;   /* Cpu specific information */
+  UIntPtr  Start;    /* Origin of code */
+  SizeType HdrSz;    /* Size of header */
+  SizeType Count;    /* container header count */
   UInt32   Checksum; /* Whole binary checksum */
 } PACKED PEFContainer, *PEFContainerPtr;
 

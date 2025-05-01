@@ -233,8 +233,8 @@ LIBCOMPILER_MODULE(DynamicLinker64PEF) {
   pef_container.Version  = kPefVersion;
 
   // specify the start address, can be 0x10000
-  pef_container.Start = kLinkerDefaultOrigin;
-  pef_container.HdrSz = sizeof(LibCompiler::PEFContainer);
+  pef_container.Start    = kLinkerDefaultOrigin;
+  pef_container.HdrSz    = sizeof(LibCompiler::PEFContainer);
   pef_container.Checksum = 0UL;
 
   std::ofstream output_fc(kOutput, std::ofstream::binary);
@@ -331,12 +331,12 @@ LIBCOMPILER_MODULE(DynamicLinker64PEF) {
         }
 
       ld_mark_header:
-        command_header.Offset = offset_of_obj;
-        command_header.Kind   = ae_records[ae_record_index].fKind;
-        command_header.Size   = ae_records[ae_record_index].fSize;
-        command_header.Cpu    = ae_header.fArch;
-        command_header.VMAddress = org; /// TODO:
-        command_header.SubCpu = ae_header.fSubArch;
+        command_header.Offset    = offset_of_obj;
+        command_header.Kind      = ae_records[ae_record_index].fKind;
+        command_header.Size      = ae_records[ae_record_index].fSize;
+        command_header.Cpu       = ae_header.fArch;
+        command_header.VMAddress = org;  /// TODO:
+        command_header.SubCpu    = ae_header.fSubArch;
 
         org += command_header.Size;
 
@@ -560,7 +560,7 @@ LIBCOMPILER_MODULE(DynamicLinker64PEF) {
 
   MemoryCopy(end_exec_hdr.Name, "Container:Exec:END", strlen("Container:Exec:END"));
 
-  end_exec_hdr.Size   = strlen(end_exec_hdr.Name);
+  end_exec_hdr.Size = strlen(end_exec_hdr.Name);
 
   command_headers.push_back(end_exec_hdr);
 
