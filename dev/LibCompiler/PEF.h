@@ -31,7 +31,7 @@
 
 #define kPefMagicLen (5)
 
-#define kPefVersion (3)
+#define kPefVersion (4)
 #define kPefNameLen (255)
 
 #define kPefBaseOrigin (0x40000000)
@@ -53,7 +53,7 @@ enum {
 };
 
 enum {
-  kPefSubArchAMD,
+  kPefSubArchAMD = 200,
   kPefSubArchIntel,
   kPefSubArchARM,
   kPefSubArchGeneric,
@@ -61,7 +61,7 @@ enum {
 };
 
 enum {
-  kPefKindExec   = 1, /* .o */
+  kPefKindExec   = 1, /* .exec */
   kPefKindDylib  = 2, /* .dylib */
   kPefKindObject = 4, /* .obj */
   kPefKindDebug  = 5, /* .dbg */
@@ -72,7 +72,7 @@ enum {
 /* PEF container */
 typedef struct PEFContainer final {
   CharType Magic[kPefMagicLen];
-  UInt32   Linker;
+  UInt32   Linker; /* Linker used to link executable */
   UInt32   Version;
   UInt32   Kind;
   UInt32   Abi;
@@ -81,6 +81,7 @@ typedef struct PEFContainer final {
   UIntPtr  Start;  /* Origin of code */
   SizeType HdrSz;  /* Size of header */
   SizeType Count;  /* container header count */
+  UInt32   Checksum; /* Whole binary checksum */
 } PACKED PEFContainer, *PEFContainerPtr;
 
 /* First PEFCommandHeader starts after PEFContainer */
@@ -95,6 +96,7 @@ typedef struct PEFCommandHeader final {
   UInt32   Flags;             /* container flags */
   UInt16   Kind;              /* container kind */
   UIntPtr  Offset;            /* file offset */
+  UIntPtr  VMAddress;         /* VM offset */
   SizeType Size;              /* file size */
 } PACKED PEFCommandHeader, *PEFCommandHeaderPtr;
 

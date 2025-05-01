@@ -20,7 +20,6 @@
 #include <LibCompiler/Detail/ClUtils.h>
 #include <LibCompiler/Parser.h>
 #include <LibCompiler/UUID.h>
-#include <Vendor/Dialogs.h>
 
 #include <cstdio>
 
@@ -49,13 +48,6 @@
 // INTERNALS OF THE C++ COMPILER
 
 /////////////////////////////////////
-
-/// @internal
-static void cxxdrv_chaos_handler(std::int32_t _) {
-  pfd::notify("NeKernel C++ Compiler Driver",
-              "CxxDrv just crashed, please report this to the developers.");
-  std::exit(LIBCOMPILER_EXEC_ERROR);
-}
 
 /// @internal
 namespace Detail {
@@ -939,7 +931,7 @@ LIBCOMPILER_MODULE(CompilerCPlusPlusAMD64) {
   kFactory.Mount(new AssemblyCPlusPlusInterface());
   kCompilerFrontend = new CompilerFrontendCPlusPlus();
 
-  ::signal(SIGSEGV, cxxdrv_chaos_handler);
+  ::signal(SIGSEGV, Detail::segfault_handler);
 
   for (auto index = 1UL; index < argc; ++index) {
     if (argv[index][0] == '-') {

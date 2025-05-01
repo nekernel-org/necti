@@ -751,6 +751,13 @@ LIBCOMPILER_MODULE(CPlusPlusPreprocessorMain) {
 
     kMacros.push_back(macro_unreachable);
 
+    Detail::bpp_macro macro_unused;
+
+    macro_unreachable.fName  = "__unused";
+    macro_unreachable.fValue = "__libcompiler_unused";
+
+    kMacros.push_back(macro_unused);
+
     Detail::bpp_macro macro_0;
 
     macro_0.fName  = "__false";
@@ -784,7 +791,7 @@ LIBCOMPILER_MODULE(CPlusPlusPreprocessorMain) {
     kMacros.push_back(macro_size_t);
 
     macro_size_t.fName  = "__UINTPTR_TYPE__";
-    macro_size_t.fValue = "unsigned int";
+    macro_size_t.fValue = "unsigned long long int";
 
     kMacros.push_back(macro_size_t);
 

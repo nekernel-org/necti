@@ -13,6 +13,7 @@
 #include <LibCompiler/Backend/Aarch64.h>
 #include <LibCompiler/Parser.h>
 #include <LibCompiler/UUID.h>
+#include <LibCompiler/Detail/ClUtils.h>
 #include <cstdio>
 #include <fstream>
 #include <iostream>
@@ -86,9 +87,7 @@ struct CompilerState final {
 }  // namespace Detail
 
 static Detail::CompilerState kState;
-static SizeType              kErrorLimit       = 100;
 static std::string           kIfFunction       = "";
-static Int32                 kAcceptableErrors = 0;
 
 namespace Detail {
 /// @brief prints an error into stdout.
@@ -1201,6 +1200,8 @@ static void cc_print_help() {
 #define kCExtension ".c"
 
 LIBCOMPILER_MODULE(NeOSCompilerCLangARM64) {
+  ::signal(SIGSEGV, Detail::segfault_handler);
+
   kCompilerTypes.push_back({.fName = "void", .fValue = "void"});
   kCompilerTypes.push_back({.fName = "char", .fValue = "byte"});
   kCompilerTypes.push_back({.fName = "short", .fValue = "hword"});

@@ -9,6 +9,7 @@
 #include <LibCompiler/AssemblyInterface.h>
 #include <LibCompiler/ErrorID.h>
 #include <LibCompiler/Parser.h>
+#include <Vendor/Dialogs.h>
 
 #define kZero64Section ".zero64"
 #define kCode64Section ".code64"
@@ -46,5 +47,12 @@ inline void print_warning(std::string reason, std::string file) noexcept {
   if (reason[0] == '\n') reason.erase(0, 1);
 
   kStdOut << kYellow << "drv: " << kWhite << reason << kBlank << std::endl;
+}
+
+/// @internal
+inline void segfault_handler(std::int32_t _) {
+  pfd::notify("NeKernel Compiler Driver System",
+              "Driver just crashed, please report this to the developers.");
+  std::exit(LIBCOMPILER_EXEC_ERROR);
 }
 }  // namespace Detail
