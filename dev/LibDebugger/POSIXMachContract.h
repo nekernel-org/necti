@@ -1,144 +1,158 @@
 /***
-	(C) 2025 Amlal El Mahrouss
+  (C) 2025 Amlal El Mahrouss
  */
 
 #pragma once
 
-#ifdef _WIN32
-#error Windows doesn't have a POSIX/Mach subsystem, please combine with windows instead.
-#endif
+#ifdef __APPLE__
 
 /// @file POSIXMachContract.h
-/// @brief POSIX/Mach debugger.
+/// @brief POSIX Mach debugger.
 
+#include <LibCompiler/Defines.h>
 #include <LibDebugger/DebuggerContract.h>
 
+#include <stdint.h>
 #include <sys/ptrace.h>
 #include <sys/types.h>
-#include <sys/wait.h>
 #include <sys/user.h>
+#include <sys/wait.h>
 #include <unistd.h>
-#include <stdint.h>
 
-#ifdef __APPLE__
+#include <filesystem>
+#include <iostream>
+
+#include <dlfcn.h>
+#include <mach-o/dyld.h>
 #include <mach/mach.h>
 #include <mach/mach_error.h>
+#include <signal.h>
 
-#define PTRACE_ATTACH	PT_ATTACHEXC
-#define PTRACE_DETACH	PT_DETACH
+LC_IMPORT_C kern_return_t mach_vm_write(vm_map_t target_task, mach_vm_address_t address,
+                                        vm_offset_t data, mach_msg_type_number_t dataCnt);
+
+LC_IMPORT_C kern_return_t mach_vm_protect(vm_map_t target_task, mach_vm_address_t address,
+                                          mach_vm_size_t size, boolean_t set_maximum,
+                                          vm_prot_t new_protection);
+
+#define PTRACE_ATTACH PT_ATTACHEXC
+#define PTRACE_DETACH PT_DETACH
 #define PTRACE_POKETEXT PT_WRITE_I
-#define PTRACE_CONT		PT_CONTINUE
+#define PTRACE_CONT PT_CONTINUE
 #define PTRACE_PEEKTEXT PT_READ_I
+
+namespace LibDebugger::POSIX {
+/// \brief POSIXMachContract engine interface class in C++
+/// \author Amlal El Mahrouss
+class POSIXMachContract : public DebuggerContract {
+ public:
+  explicit POSIXMachContract()  = default;
+  ~POSIXMachContract() override = default;
+
+ public:
+  POSIXMachContract& operator=(const POSIXMachContract&) = default;
+  POSIXMachContract(const POSIXMachContract&)            = default;
+
+ public:
+  BOOL Attach(std::string path, std::string argv, ProcessID& pid) noexcept override {
+    pid = fork();
+
+    if (pid == 0) {
+      if (argv.empty()) {
+        ptrace(PT_TRACE_ME, 0, nullptr, 0);
+        kill(getpid(), SIGSTOP);
+      }
+
+      std::vector<char*> argv_arr;
+
+      argv_arr.push_back(const_cast<char*>(path.c_str()));
+      argv_arr.push_back(const_cast<char*>(argv.c_str()));
+      argv_arr.push_back(nullptr);
+
+      execv(path.c_str(), argv_arr.data());
+
+      _exit(1);
+    }
+
+    m_path = path;
+    m_pid  = pid;
+
+    pid = this->m_pid;
+
+    return true;
+  }
+
+  void SetPath(std::string path) noexcept {
+    if (path.empty()) {
+      return;
+    }
+
+    m_path = path;
+  }
+
+  BOOL Breakpoint(std::string symbol) noexcept override {
+    if (!m_path.empty() && std::filesystem::exists(m_path) &&
+        std::filesystem::is_regular_file(m_path)) {
+      auto handle = dlopen(m_path.c_str(), RTLD_LAZY);
+
+      if (handle == nullptr) {
+        return false;
+      }
+
+      auto addr = dlsym(handle, symbol.c_str());
+
+      if (addr == nullptr) {
+        return false;
+      }
+
+      task_read_t task;
+      task_for_pid(mach_task_self(), m_pid, &task);
+
+      uint32_t brk_inst = 0xD43E0000;
+
+      mach_vm_protect(task, (mach_vm_address_t) addr, sizeof(uint32_t), false,
+                      VM_PROT_READ | VM_PROT_WRITE | VM_PROT_EXECUTE);
+      mach_vm_write(task, (mach_vm_address_t) addr, (vm_offset_t) &brk_inst, sizeof(addr));
+
+      return true;
+    }
+
+    return false;
+  }
+
+  BOOL Break() noexcept override {
+    task_read_t task;
+    task_for_pid(mach_task_self(), m_pid, &task);
+
+    kern_return_t ret = task_suspend(task);
+
+    return ret == KERN_SUCCESS;
+  }
+
+  BOOL Continue() noexcept override {
+    task_read_t task;
+    task_for_pid(mach_task_self(), m_pid, &task);
+
+    kern_return_t ret = task_resume(task);
+
+    return ret == KERN_SUCCESS;
+  }
+
+  BOOL Detach() noexcept override {
+    this->Continue();
+
+    task_read_t task;
+    task_for_pid(mach_task_self(), m_pid, &task);
+
+    kern_return_t kr = mach_port_deallocate(mach_task_self(), task);
+
+    return kr = KERN_SUCCESS;
+  }
+
+ private:
+  ProcessID   m_pid{0};
+  std::string m_path;
+};
+}  // namespace LibDebugger::POSIX
+
 #endif
-
-namespace LibDebugger::POSIX
-{
-	/// \brief POSIXMachContract engine interface class in C++
-	/// \author Amlal El Mahrouss
-	class POSIXMachContract final : public DebuggerContract
-	{
-	public:
-		explicit POSIXMachContract()  = default;
-		~POSIXMachContract() override = default;
-
-	public:
-		POSIXMachContract& operator=(const POSIXMachContract&) = default;
-		POSIXMachContract(const POSIXMachContract&)			   = default;
-
-	public:
-		bool Attach(ProcessID pid) noexcept override
-		{
-#ifdef __APPLE__
-			if (pid == 0)
-				return false;
-
-			this->m_pid = pid;
-			return true;
-#else
-
-			if (ptrace(PTRACE_ATTACH, pid, nullptr, 0) == -1)
-			{
-				return false;
-			}
-
-			this->m_pid = pid;
-
-			waitpid(m_pid, nullptr, 0);
-
-			return true;
-#endif
-		}
-
-		bool Break(CAddress addr) noexcept override
-		{
-#ifdef __APPLE__
-			task_read_t task;
-			task_for_pid(mach_task_self(), m_pid, &task);
-			kern_return_t ret = task_suspend(task);
-
-			return ret == KERN_SUCCESS;
-#else
-			uintptr_t original_data = ptrace(PTRACE_PEEKTEXT, m_pid, addr, 0);
-
-			if (original_data == -1)
-			{
-				return false;
-			}
-
-			constexpr uint8_t kInt3x86 = 0xCC;
-
-			uintptr_t data_with_int3 = (original_data & ~0xFF) | kInt3x86; // Insert INT3 (0xCC)
-
-			if (ptrace(PTRACE_POKETEXT, m_pid, addr, data_with_int3) == -1)
-			{
-				return false;
-			}
-
-			m_breakpoints[reinterpret_cast<uintptr_t>(addr)] = original_data; // Store original data
-
-			return true;
-#endif
-		}
-
-		bool Continue() noexcept override
-		{
-#ifdef __APPLE__
-			task_read_t task;
-			task_for_pid(mach_task_self(), m_pid, &task);
-			kern_return_t ret = task_resume(task);
-
-			return ret == KERN_SUCCESS;
-#else
-			if (ptrace(PTRACE_CONT, m_pid, nullptr, 0) == -1)
-			{
-
-				return false;
-			}
-
-			int status;
-			waitpid(m_pid, &status, 0);
-
-			return WIFSTOPPED(status) && WSTOPSIG(status) == SIGTRAP;
-#endif
-		}
-
-		bool Detach() noexcept override
-		{
-#ifdef __APPLE__
-			this->Continue();
-
-			task_read_t task;
-			task_for_pid(mach_task_self(), m_pid, &task);
-
-			kern_return_t kr = mach_port_deallocate(mach_task_self(), task);
-
-			return kr = KERN_SUCCESS;
-#else
-			return ptrace(PTRACE_DETACH, m_pid, nullptr, 0) == -1;
-#endif
-		}
-
-	private:
-		ProcessID m_pid{0};
-	};
-} // namespace LibDebugger::POSIX

@@ -5,7 +5,7 @@
 
 ## Notice for Documentation:
 
-Use the doxygen command to build documentation.
+- Use the doxygen command to build documentation.
 
 ## Notice for Contributors:
 
@@ -15,12 +15,12 @@ Use the doxygen command to build documentation.
 
 - [CLang](https://clang.llvm.org/)
 - [GIT](https://git-scm.com/)
-- [BTB](https://github.com/amlel-el-mahrouss/btb)
+- [BTB](https://github.com/nekernel-org/btb)
 
 ## Cloning:
 
 ```
-git clone git@github.com:amlel-el-mahrouss-gh/cc.git
+git clone git@github.com:nekernel-org/cc.git
 ```
 
 ###### Copyright (C) 2024-2025 Amlal El Mahrouss, all rights reserved.

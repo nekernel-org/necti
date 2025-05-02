@@ -4,50 +4,21 @@
 \- PEF binary format linker for NeKernel
 
 .SH SYNOPSIS
-.B ld64
-[␌IOPTIONS␌R] [␌IINPUT_FILES␌R] -o ␌IOUTPUT_FILE␌R
+.B ld64 %OPTIONS% %INPUT_FILES% -output %OUTPUT_FILE%
 
 .SH DESCRIPTION
 .B ld64
 is the dedicated linker for the Preferred Executable Format (PEF) used by NeKernel.
-It links object files into a PEF executable suitable for execution within the NeKernel environment.
 
 .SH OPTIONS
 .TP
-.B -o <file>
+.B -output <file>
 Specify the output file.
-.TP
-.B -L <path>
-Add a library search path.
-.TP
-.B -l <lib>
-Link against the specified library.
-.TP
-.B -T <script>
-Specify a linker script.
-.TP
-.B -e <symbol>
-Set the entry point symbol.
-.TP
-.B -M
-Display the memory layout of the linked binary.
-.TP
-.B -v
-Enable verbose output.
-.TP
-.B -h
-Show help information.
 
 .SH USAGE EXAMPLES
 .TP
-.B Link object files into a PEF binary:
-.B ld64 main.o utils.o -o app.exe
-.TP
-.B Link with a custom entry point:
-.B ld64 -e _start main.o -o app.exe
-.TP
 .B Generate a memory layout report:
-.B ld64 -M main.o -o app.exe
+.B ld64 main.o -output app.exec
 
 .SH EXIT STATUS
 .TP

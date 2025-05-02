@@ -1,129 +1,102 @@
 /***
-	(C) 2025 Amlal El Mahrouss
+  (C) 2025 Amlal El Mahrouss
  */
 
+#ifdef __APPLE__
+
 #include <LibCompiler/Defines.h>
-#include <Vendor/Dialogs.h>
 #include <LibDebugger/POSIXMachContract.h>
+#include <Vendor/Dialogs.h>
 #include <cstdint>
+#include <iostream>
 #include <string>
 
-#ifndef _WIN32
-
-static bool									 kKeepRunning = false;
+static BOOL                                  kKeepRunning = false;
 static LibDebugger::POSIX::POSIXMachContract kDebugger;
-static pid_t								 kPID			= 0L;
-static LibDebugger::CAddress				 kActiveAddress = nullptr;
+static LibDebugger::ProcessID                kPID           = 0L;
+static LibDebugger::CAddress                 kActiveAddress = nullptr;
+static std::string                           kPath          = "";
+
+#define kBlank "\e[0;30m"
+#define kRed "\e[0;31m"
+#define kWhite "\e[0;97m"
+
+#define kStdOut (std::cout << kRed << "dbg: " << kWhite)
 
 /// @internal
 /// @brief Handles CTRL-C signal on debugger.
-static void dbgi_ctrlc_handler(std::int32_t _)
-{
-	if (!kPID)
-	{
-		return;
-	}
+static void dbgi_ctrlc_handler(std::int32_t _) {
+  if (!kPID) {
+    return;
+  }
 
-	auto list = kDebugger.Get();
+  auto list = kDebugger.Get();
 
-	kDebugger.Break(kActiveAddress);
+  kDebugger.Break();
 
-	pfd::notify("Debugger Event", "Breakpoint hit!");
+  pfd::notify("Debugger Event", "Breakpoint hit!");
 
-	kKeepRunning = false;
+  kKeepRunning = false;
 }
 
-LIBCOMPILER_MODULE(DebuggerPOSIX)
-{
-	pfd::notify("Debugger Event", "NeKernel Debugger\n(C) 2025 Amlal El Mahrouss, all rights reserved.");
+LIBCOMPILER_MODULE(DebuggerMachPOSIX) {
+  pfd::notify("Debugger Event",
+              "Userland Debugger\n(C) 2025 Amlal El Mahrouss, all rights reserved.");
 
-	if (argc >= 3 && std::string(argv[1]) == "-p" &&
-		argv[2] != nullptr)
-	{
-		kPID = std::stoi(argv[2]);
-		kDebugger.Attach(kPID);
-	}
+  if (argc >= 3 && std::string(argv[1]) == "-p" && argv[2] != nullptr) {
+    kPath = argv[2];
+    kDebugger.SetPath(kPath);
 
-	::signal(SIGINT, dbgi_ctrlc_handler);
+    kStdOut << "[+] Path set to: " << kPath << "\n";
+  }
 
-	while (YES)
-	{
-		if (kKeepRunning)
-		{
-			continue;
-		}
+  ::signal(SIGINT, dbgi_ctrlc_handler);
 
-		std::string cmd;
-		std::getline(std::cin, cmd);
+  while (YES) {
+    if (kKeepRunning) {
+      continue;
+    }
 
-		if (cmd == "c" ||
-			cmd == "cont" ||
-			cmd == "continue")
-		{
-			kDebugger.Continue();
-			kKeepRunning = true;
+    std::string cmd;
+    std::getline(std::cin, cmd);
 
-			std::cout << "[+] Continuing...\n";
-			pfd::notify("Debugger Event", "Continuing...");
-		}
+    if (cmd == "c" || cmd == "cont" || cmd == "continue") {
+      if (kDebugger.Continue()) {
+        kKeepRunning = true;
 
-		if (cmd == "d" ||
-			cmd == "detach")
-			kDebugger.Detach();
+        kStdOut << "[+] Continuing...\n";
 
-		if (cmd == "attach" ||
-			cmd == "pid" ||
-			cmd == "a")
-		{
-			std::cout << "[?] Enter a PID to attach on: ";
+        pfd::notify("Debugger Event", "Continuing...");
+      }
+    }
 
-			std::getline(std::cin, cmd);
-			kPID = std::stoi(cmd.c_str());
+    if (cmd == "d" || cmd == "detach") kDebugger.Detach();
 
-			pfd::notify("Debugger Event", "Attach process: " + std::to_string(kPID));
+    if (cmd == "start") {
+      kStdOut << "[?] Enter a argument to use: ";
+      std::getline(std::cin, cmd);
 
-			kDebugger.Attach(kPID);
-		}
+      kDebugger.Attach(kPath, cmd, kPID);
+    }
 
-		if (cmd == "exit")
-		{
-			if (kPID > 0)
-				kDebugger.Detach();
+    if (cmd == "exit") {
+      if (kPID > 0) kDebugger.Detach();
 
-			break;
-		}
+      break;
+    }
 
-#ifndef __APPLE__
-		if (cmd == "break" ||
-			cmd == "b")
-		{
-			std::cout << "[?] Enter an address/symbol to add a break on: ";
+    if (cmd == "break" || cmd == "b") {
+      kStdOut << "[?] Enter a symbol to break on: ";
 
-			std::getline(std::cin, cmd);
+      std::getline(std::cin, cmd);
 
-			auto addr = std::stoul(cmd.c_str(), nullptr, 16);
+      if (kDebugger.Breakpoint(cmd)) {
+        pfd::notify("Debugger Event", "Add Breakpoint at: " + cmd);
+      }
+    }
+  }
 
-			try
-			{
-				pfd::notify("Debugger Event", "Add Breakpoint at: " + std::to_string(addr));
-			}
-			catch (...)
-			{
-				pfd::notify("Debugger Event", "Add Breakpoint at: " + cmd);
-			}
-
-			LibDebugger::CAddress breakpoint_addr = reinterpret_cast<LibDebugger::CAddress>(addr);
-
-			if (breakpoint_addr)
-			{
-				kActiveAddress = breakpoint_addr;
-				kDebugger.Break(kActiveAddress);
-			}
-		}
-#endif // ifndef __APPLE__
-	}
-
-	return EXIT_SUCCESS;
+  return EXIT_SUCCESS;
 }
 
 #endif

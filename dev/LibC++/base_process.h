@@ -1,6 +1,6 @@
 /* -------------------------------------------
 
-	Copyright (C) 2024-2025 Amlal El Mahrouss, all rights reserved.
+  Copyright (C) 2024-2025 Amlal El Mahrouss, all rights reserved.
 
 ------------------------------------------- */
 
@@ -12,11 +12,9 @@
 extern "C" int exit(int code);
 
 /// @brief Standard C++ namespace
-namespace std::base_process
-{
-	inline int exit(int code)
-	{
-		exit(code);
-		return -1;
-	}
-} // namespace std::base_process
+namespace std::base_process {
+inline int exit(int code) {
+  exit(code);
+  return -1;
+}
+}  // namespace std::base_process
