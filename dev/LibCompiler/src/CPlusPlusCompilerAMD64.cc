@@ -27,7 +27,7 @@
 /* This is part of the LibCompiler. */
 /* (c) Amlal El Mahrouss */
 
-/// @author EL Mahrouss Amlal (amlel)
+/// @author EL Mahrouss Amlal (amlal@nekernel.org)
 /// @file CPlusPlusCompilerAMD64.cxx
 /// @brief Optimized C++ Compiler Driver.
 /// @todo Throw error for scoped inside scoped variables when they get referenced outside.
@@ -86,8 +86,7 @@ struct CompilerStructMap final {
 struct CompilerState final {
   std::vector<CompilerRegisterMap> fStackMapVector;
   std::vector<CompilerStructMap>   fStructMapVector;
-  LibCompiler::SyntaxLeafList*     fSyntaxTree{nullptr};
-  std::unique_ptr<std::ofstream>   fOutputAssembly;
+  std::ofstream                    fOutputAssembly;
   std::string                      fLastFile;
   std::string                      fLastError;
   Boolean                          fVerbose;
@@ -178,9 +177,8 @@ const char* CompilerFrontendCPlusPlus::Language() {
   return "NeKernel C++";
 }
 
-static std::uintptr_t kOrigin = 0x1000000;
-
-std::vector<std::pair<std::string, std::uintptr_t>> kOriginMap;
+static std::uintptr_t                                      kOrigin = 0x1000000;
+static std::vector<std::pair<std::string, std::uintptr_t>> kOriginMap;
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
@@ -190,7 +188,7 @@ std::vector<std::pair<std::string, std::uintptr_t>> kOriginMap;
 /////////////////////////////////////////////////////////////////////////////////////////
 
 Boolean CompilerFrontendCPlusPlus::Compile(std::string text, const std::string file) {
-  if (text.empty()) return true;
+  if (text.empty()) return false;
 
   // Clean whitespace and tabs
   std::string cleanLine = text;
@@ -201,7 +199,7 @@ Boolean CompilerFrontendCPlusPlus::Compile(std::string text, const std::string f
   // Skip empty, doc, or block comment lines
   if (cleanLine.empty() || cleanLine.starts_with("///") || cleanLine.starts_with("//") ||
       cleanLine.starts_with("/*"))
-    return true;
+    return false;
 
   std::size_t                                                       index = 0UL;
   std::vector<std::pair<LibCompiler::CompilerKeyword, std::size_t>> keywords_list;
@@ -275,6 +273,8 @@ Boolean CompilerFrontendCPlusPlus::Compile(std::string text, const std::string f
           auto right = text.substr(expr.find(">=") + strlen(">="), text.find(")") - 1);
 
           size_t i = right.size() - 1;
+
+          if (i < 1) break;
 
           try {
             while (!std::isalnum(right[i])) {
@@ -731,7 +731,8 @@ Boolean CompilerFrontendCPlusPlus::Compile(std::string text, const std::string f
     }
 
     syntax_tree.fUserData = keyword.first;
-    kState.fSyntaxTree->fLeafList.push_back(syntax_tree);
+
+    kState.fOutputAssembly << syntax_tree.fUserValue;
   }
 
 lc_compile_ok:
@@ -769,53 +770,21 @@ class AssemblyCPlusPlusInterface final ASSEMBLY_INTERFACE {
     std::string dest = src_file;
     dest += cExts[2];
 
-    if (dest.empty()) {
-      dest = "CXX-LibCompiler-";
+    kState.fOutputAssembly.open(dest);
 
-      std::random_device rd;
-      auto               seed_data = std::array<int, std::mt19937::state_size>{};
-
-      std::generate(std::begin(seed_data), std::end(seed_data), std::ref(rd));
-
-      std::seed_seq seq(std::begin(seed_data), std::end(seed_data));
-      std::mt19937  generator(seq);
-
-      auto gen = uuids::uuid_random_generator(generator);
-
-      auto id = gen();
-      dest += uuids::to_string(id);
-    }
-
-    kState.fOutputAssembly = std::make_unique<std::ofstream>(dest);
+    if (!kState.fOutputAssembly.good()) return kExitNO;
 
     auto fmt = LibCompiler::current_date();
 
-    (*kState.fOutputAssembly) << "; Repository Path: /" << src_file << "\n";
-
-    std::filesystem::path path = std::filesystem::path("./");
-
-    while (path != Detail::expand_home(std::filesystem::path("~"))) {
-      for (auto const& dir_entry : std::filesystem::recursive_directory_iterator{path}) {
-        if (dir_entry.is_directory() && dir_entry.path().string().find(".git") != std::string::npos)
-          goto break_loop;
-      }
-
-      path = path.parent_path();
-    break_loop:
-      (*kState.fOutputAssembly) << "; Repository Style: Git\n";
-      break;
-    }
-
     std::stringstream stream;
     stream << kOrigin;
+
     std::string result(stream.str());
 
-    (*kState.fOutputAssembly)
+    kState.fOutputAssembly
         << "; Assembler Dialect: AMD64 LibCompiler Assembler. (Generated from C++)\n";
-    (*kState.fOutputAssembly) << "; Date: " << fmt << "\n";
-    (*kState.fOutputAssembly) << "#bits 64\n#org " + result << "\n";
-
-    kState.fSyntaxTree = new LibCompiler::SyntaxLeafList();
+    kState.fOutputAssembly << "; Date: " << fmt << "\n"
+                           << "#bits 64\n#org " + result << "\n";
 
     // ===================================
     // Parse source file.
@@ -824,18 +793,12 @@ class AssemblyCPlusPlusInterface final ASSEMBLY_INTERFACE {
     std::string line_source;
 
     while (std::getline(src_fp, line_source)) {
+      kStdOut << line_source;
       kCompilerFrontend->Compile(line_source, src);
     }
 
-    for (auto& ast_generated : kState.fSyntaxTree->fLeafList) {
-      (*kState.fOutputAssembly) << ast_generated.fUserValue;
-    }
-
-    kState.fOutputAssembly->flush();
-    kState.fOutputAssembly->close();
-
-    delete kState.fSyntaxTree;
-    kState.fSyntaxTree = nullptr;
+    kState.fOutputAssembly.flush();
+    kState.fOutputAssembly.close();
 
     if (kAcceptableErrors > 0) return kExitNO;
 
@@ -993,7 +956,7 @@ LIBCOMPILER_MODULE(CompilerCPlusPlusAMD64) {
         Detail::print_error(argv_i + " is not a valid C++ source.\n", "cxxdrv");
       }
 
-      return 1;
+      return kExitNO;
     }
 
     kStdOut << "CPlusPlusCompilerAMD64: Building: " << argv[index] << std::endl;
