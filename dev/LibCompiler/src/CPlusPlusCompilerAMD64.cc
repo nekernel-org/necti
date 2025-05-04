@@ -774,17 +774,10 @@ class AssemblyCPlusPlusInterface final ASSEMBLY_INTERFACE {
 
     if (!kState.fOutputAssembly.good()) return kExitNO;
 
-    auto fmt = LibCompiler::current_date();
-
-    std::stringstream stream;
-    stream << kOrigin;
-
-    std::string result(stream.str());
-
     kState.fOutputAssembly
         << "; Assembler Dialect: AMD64 LibCompiler Assembler. (Generated from C++)\n";
-    kState.fOutputAssembly << "; Date: " << fmt << "\n"
-                           << "#bits 64\n#org " + result << "\n";
+    kState.fOutputAssembly << "; Date: " << LibCompiler::current_date() << "\n"
+                           << "#bits 64\n#org " << kOrigin << "\n";
 
     // ===================================
     // Parse source file.
@@ -793,7 +786,6 @@ class AssemblyCPlusPlusInterface final ASSEMBLY_INTERFACE {
     std::string line_source;
 
     while (std::getline(src_fp, line_source)) {
-      kStdOut << line_source;
       kCompilerFrontend->Compile(line_source, src);
     }
 
