@@ -75,7 +75,7 @@ struct DynamicLinkerBlob final {
 
 enum {
   kABITypeNull    = 0,
-  kABITypeStart   = 0x1010, /* Invalid ABI start of ABI list. */
+  kABITypeStart   = 0x1010, /* The start of ABI list. */
   kABITypeNE      = 0x5046, /* PF (NeKernel's PEF ABI) */
   kABITypeInvalid = 0xFFFF,
 };

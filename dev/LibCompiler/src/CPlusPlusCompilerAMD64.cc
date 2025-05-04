@@ -837,7 +837,7 @@ class AssemblyCPlusPlusInterface final ASSEMBLY_INTERFACE {
     delete kState.fSyntaxTree;
     kState.fSyntaxTree = nullptr;
 
-    if (kAcceptableErrors > 0) return 1;
+    if (kAcceptableErrors > 0) return kExitNO;
 
     return kExitOK;
   }
@@ -928,8 +928,8 @@ LIBCOMPILER_MODULE(CompilerCPlusPlusAMD64) {
 
   kErrorLimit = 100;
 
-  kFactory.Mount(new AssemblyCPlusPlusInterface());
   kCompilerFrontend = new CompilerFrontendCPlusPlus();
+  kFactory.Mount(new AssemblyCPlusPlusInterface());
 
   ::signal(SIGSEGV, Detail::segfault_handler);
 
