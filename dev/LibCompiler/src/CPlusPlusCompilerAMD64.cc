@@ -220,11 +220,9 @@ Boolean CompilerFrontendCPlusPlus::Compile(std::string text, std::string file) {
     }
   }
 
-  auto syntax_tree = LibCompiler::SyntaxLeafList::SyntaxLeaf();
+  static LibCompiler::SyntaxLeafList::SyntaxLeaf syntax_tree;
 
   for (auto& keyword : keywords_list) {
-    kStdOut << keyword.second;
-
     switch (keyword.first.keyword_kind) {
       case LibCompiler::KeywordKind::kKeywordKindClass: {
         ++kOnClassScope;
