@@ -54,9 +54,11 @@ namespace Detail {
 std::filesystem::path expand_home(const std::filesystem::path& p) {
   if (!p.empty() && p.string()[0] == '~') {
     const char* home = std::getenv("HOME");  // For Unix-like systems
+
     if (!home) {
       home = std::getenv("USERPROFILE");  // For Windows
     }
+
     if (home) {
       return std::filesystem::path(home) / p.relative_path().string().substr(1);
     } else {
@@ -86,7 +88,7 @@ struct CompilerStructMap final {
 struct CompilerState final {
   std::vector<CompilerRegisterMap> fStackMapVector;
   std::vector<CompilerStructMap>   fStructMapVector;
-  std::ofstream                    fOutputAssembly;
+  std::string                      fOutputValue;
   std::string                      fLastFile;
   std::string                      fLastError;
   Boolean                          fVerbose;
@@ -132,7 +134,6 @@ static std::vector<LibCompiler::CompilerKeyword> kKeywords;
 
 /////////////////////////////////////////
 
-static std::vector<std::string>     kFileList;
 static LibCompiler::AssemblyFactory kFactory;
 static Boolean                      kInStruct    = false;
 static Boolean                      kOnWhileLoop = false;
@@ -220,7 +221,7 @@ Boolean CompilerFrontendCPlusPlus::Compile(std::string text, std::string file) {
     }
   }
 
-  static LibCompiler::SyntaxLeafList::SyntaxLeaf syntax_tree;
+  LibCompiler::SyntaxLeafList::SyntaxLeaf syntax_tree;
 
   for (auto& keyword : keywords_list) {
     switch (keyword.first.keyword_kind) {
@@ -696,12 +697,9 @@ Boolean CompilerFrontendCPlusPlus::Compile(std::string text, std::string file) {
         continue;
       }
     }
-
-    break;
   }
 
-lc_compile_ok:
-  kState.fOutputAssembly << syntax_tree.fUserValue;
+  kState.fOutputValue = syntax_tree.fUserValue;
   return true;
 }
 
@@ -735,14 +733,14 @@ class AssemblyCPlusPlusInterface final ASSEMBLY_INTERFACE {
 
     std::string line_source;
 
-    kState.fOutputAssembly.open(dest);
+    std::ofstream out(dest);
 
     while (std::getline(src_fp, line_source)) {
       kCompilerFrontend->Compile(line_source, src);
+      out << kState.fOutputValue;
     }
 
-    kState.fOutputAssembly.flush();
-    kState.fOutputAssembly.close();
+    out.flush();
 
     if (kAcceptableErrors > 0) return kExitNO;
 
@@ -881,8 +879,6 @@ LIBCOMPILER_MODULE(CompilerCPlusPlusAMD64) {
       continue;
     }
 
-    kFileList.emplace_back(argv[index]);
-
     std::string argv_i = argv[index];
 
     std::vector exts  = kExtListCxx;
@@ -903,10 +899,11 @@ LIBCOMPILER_MODULE(CompilerCPlusPlusAMD64) {
       return kExitNO;
     }
 
-    kFactory.Compile(argv_i, kMachine);
+    auto ret = kFactory.Compile(argv_i, kMachine);
+    return ret;
   }
 
-  return kExitOK;
+  return kExitNO;
 }
 
 // Last rev 8-1-24

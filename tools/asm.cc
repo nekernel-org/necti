@@ -36,7 +36,7 @@ int main(int argc, char const* argv[]) {
   Int32       asm_type          = kInvalidAssembler;
 
   for (size_t index_arg = 1; index_arg < argc; ++index_arg) {
-    if (strstr(argv[index_arg], "--asm:h")) {
+    if (strstr(argv[index_arg], "-asm:h")) {
       std::printf("asm: Frontend Assembler (64x0, power64, arm64, x64).\n");
       std::printf("asm: Version: %s, Release: %s.\n", kDistVersion, kDistRelease);
       std::printf(
@@ -47,13 +47,13 @@ int main(int argc, char const* argv[]) {
           "all rights reserved.\n");
 
       return 0;
-    } else if (strstr(argv[index_arg], "--asm:x64")) {
+    } else if (strstr(argv[index_arg], "-asm:x64")) {
       asm_type = kX64Assembler;
-    } else if (strstr(argv[index_arg], "--asm:aarch64")) {
+    } else if (strstr(argv[index_arg], "-asm:aarch64")) {
       asm_type = kARM64Assembler;
-    } else if (strstr(argv[index_arg], "--asm:64x0")) {
+    } else if (strstr(argv[index_arg], "-asm:64x0")) {
       asm_type = k64X0Assembler;
-    } else if (strstr(argv[index_arg], "--asm:power64")) {
+    } else if (strstr(argv[index_arg], "-asm:power64")) {
       asm_type = kPOWER64Assembler;
     } else {
       arg_vec_cstr.push_back(argv[index_arg]);

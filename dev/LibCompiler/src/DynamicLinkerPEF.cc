@@ -64,7 +64,10 @@
 /// @brief PEF stack size symbol.
 #define kLinkerStackSizeSymbol "__PEFSizeOfReserveStack"
 
-#define kOutCon (std::cout << "\e[0;31m" << "ld64: " << "\e[0;97m")
+#define kOutCon            \
+  (std::cout << "\e[0;31m" \
+             << "ld64: "   \
+             << "\e[0;97m")
 
 namespace Detail {
 struct DynamicLinkerBlob final {
