@@ -899,8 +899,7 @@ LIBCOMPILER_MODULE(CompilerCPlusPlusAMD64) {
       return kExitNO;
     }
 
-    auto ret = kFactory.Compile(argv_i, kMachine);
-    return ret;
+    kFactory.Compile(argv_i, kMachine);
   }
 
   return kExitNO;
