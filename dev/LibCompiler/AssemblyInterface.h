@@ -13,19 +13,8 @@
 #define ASSEMBLY_INTERFACE : public LibCompiler::AssemblyInterface
 
 namespace LibCompiler {
-///	@brief Assembly to binary generator class.
-/// @note This interface creates according to the CPU target of the child class.
-class AssemblyInterface {
- public:
-  explicit AssemblyInterface() = default;
-  virtual ~AssemblyInterface() = default;
-
-  LIBCOMPILER_COPY_DEFAULT(AssemblyInterface);
-
-  /// @brief compile to object file.
-  /// @note Example C++ -> MASM -> AE object.
-  virtual Int32 CompileToFormat(std::string src, Int32 arch) = 0;
-};
+class AssemblyFactory;
+class AssemblyInterface;
 
 /// @brief Simple assembly factory
 class AssemblyFactory final {
@@ -37,7 +26,8 @@ class AssemblyFactory final {
 
  public:
   enum {
-    kArchAMD64,
+    kArchInvalid = 0,
+    kArchAMD64   = 100,
     kArch32x0,
     kArch64x0,
     kArchRISCV,
@@ -53,6 +43,22 @@ class AssemblyFactory final {
 
  private:
   AssemblyInterface* fMounted{nullptr};
+};
+
+///	@brief Assembly to binary generator class.
+/// @note This interface creates according to the CPU target of the child class.
+class AssemblyInterface {
+ public:
+  explicit AssemblyInterface() = default;
+  virtual ~AssemblyInterface() = default;
+
+  LIBCOMPILER_COPY_DEFAULT(AssemblyInterface);
+
+  [[maybe_unused]] virtual Int32 Arch() noexcept { return AssemblyFactory::kArchAMD64; }
+
+  /// @brief compile to object file.
+  /// @note Example C++ -> MASM -> AE object.
+  virtual Int32 CompileToFormat(std::string src, Int32 arch) = 0;
 };
 
 union NumberCastBase {

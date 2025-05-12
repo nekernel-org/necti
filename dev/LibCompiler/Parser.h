@@ -26,7 +26,7 @@ class ICompilerFrontend {
   //! @brief Compile a syntax tree ouf of the text.
   //! Also takes the source file name for metadata.
 
-  virtual bool Compile(std::string text, const std::string file) = 0;
+  virtual bool Compile(std::string text, std::string file) = 0;
 
   //! @brief What language are we dealing with?
   virtual const char* Language() { return kInvalidFrontend; }

@@ -27,7 +27,7 @@
 /* This is part of the LibCompiler. */
 /* (c) Amlal El Mahrouss */
 
-/// @author EL Mahrouss Amlal (amlel)
+/// @author EL Mahrouss Amlal (amlal@nekernel.org)
 /// @file CPlusPlusCompilerAMD64.cxx
 /// @brief Optimized C++ Compiler Driver.
 /// @todo Throw error for scoped inside scoped variables when they get referenced outside.
@@ -54,9 +54,11 @@ namespace Detail {
 std::filesystem::path expand_home(const std::filesystem::path& p) {
   if (!p.empty() && p.string()[0] == '~') {
     const char* home = std::getenv("HOME");  // For Unix-like systems
+
     if (!home) {
       home = std::getenv("USERPROFILE");  // For Windows
     }
+
     if (home) {
       return std::filesystem::path(home) / p.relative_path().string().substr(1);
     } else {
@@ -86,8 +88,7 @@ struct CompilerStructMap final {
 struct CompilerState final {
   std::vector<CompilerRegisterMap> fStackMapVector;
   std::vector<CompilerStructMap>   fStructMapVector;
-  LibCompiler::SyntaxLeafList*     fSyntaxTree{nullptr};
-  std::unique_ptr<std::ofstream>   fOutputAssembly;
+  std::string                      fOutputValue;
   std::string                      fLastFile;
   std::string                      fLastError;
   Boolean                          fVerbose;
@@ -133,7 +134,6 @@ static std::vector<LibCompiler::CompilerKeyword> kKeywords;
 
 /////////////////////////////////////////
 
-static std::vector<std::string>     kFileList;
 static LibCompiler::AssemblyFactory kFactory;
 static Boolean                      kInStruct    = false;
 static Boolean                      kOnWhileLoop = false;
@@ -149,7 +149,7 @@ class CompilerFrontendCPlusPlus final : public LibCompiler::ICompilerFrontend {
 
   LIBCOMPILER_COPY_DEFAULT(CompilerFrontendCPlusPlus);
 
-  Boolean Compile(const std::string text, const std::string file) override;
+  Boolean Compile(const std::string text, std::string file) override;
 
   const char* Language() override;
 };
@@ -175,12 +175,11 @@ static std::size_t kFunctionEmbedLevel = 0UL;
 /// detail namespaces
 
 const char* CompilerFrontendCPlusPlus::Language() {
-  return "NeKernel C++";
+  return "AMD64 C++";
 }
 
-static std::uintptr_t kOrigin = 0x1000000;
-
-std::vector<std::pair<std::string, std::uintptr_t>> kOriginMap;
+static std::uintptr_t                                      kOrigin = 0x1000000;
+static std::vector<std::pair<std::string, std::uintptr_t>> kOriginMap;
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
@@ -189,37 +188,15 @@ std::vector<std::pair<std::string, std::uintptr_t>> kOriginMap;
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
-Boolean CompilerFrontendCPlusPlus::Compile(std::string text, const std::string file) {
-  if (text.empty()) return true;
-
-  // Clean whitespace and tabs
-  std::string cleanLine = text;
-  cleanLine.erase(std::remove(cleanLine.begin(), cleanLine.end(), '\t'), cleanLine.end());
-  cleanLine.erase(0, cleanLine.find_first_not_of(" \r\n"));
-  cleanLine.erase(cleanLine.find_last_not_of(" \r\n") + 1);
-
-  // Skip empty, doc, or block comment lines
-  if (cleanLine.empty() || cleanLine.starts_with("///") || cleanLine.starts_with("//") ||
-      cleanLine.starts_with("/*"))
-    return true;
+Boolean CompilerFrontendCPlusPlus::Compile(std::string text, std::string file) {
+  if (text.empty()) return false;
 
   std::size_t                                                       index = 0UL;
   std::vector<std::pair<LibCompiler::CompilerKeyword, std::size_t>> keywords_list;
 
-  Boolean        found        = false;
-  static Boolean commentBlock = false;
-
   for (auto& keyword : kKeywords) {
     if (text.find(keyword.keyword_name) != std::string::npos) {
       switch (keyword.keyword_kind) {
-        case LibCompiler::kKeywordKindCommentMultiLineStart: {
-          commentBlock = true;
-          return true;
-        }
-        case LibCompiler::kKeywordKindCommentMultiLineEnd: {
-          commentBlock = false;
-          break;
-        }
         case LibCompiler::kKeywordKindCommentInline: {
           break;
         }
@@ -241,23 +218,12 @@ Boolean CompilerFrontendCPlusPlus::Compile(std::string text, const std::string f
 
       keywords_list.emplace_back(std::make_pair(keyword, index));
       ++index;
-
-      found = true;
     }
   }
 
-  if (!found && !commentBlock) {
-    for (size_t i = 0; i < text.size(); i++) {
-      if (isalnum(text[i])) {
-        Detail::print_error("syntax error: " + text, file);
-        return NO;
-      }
-    }
-  }
+  LibCompiler::SyntaxLeafList::SyntaxLeaf syntax_tree;
 
   for (auto& keyword : keywords_list) {
-    auto syntax_tree = LibCompiler::SyntaxLeafList::SyntaxLeaf();
-
     switch (keyword.first.keyword_kind) {
       case LibCompiler::KeywordKind::kKeywordKindClass: {
         ++kOnClassScope;
@@ -275,6 +241,8 @@ Boolean CompilerFrontendCPlusPlus::Compile(std::string text, const std::string f
           auto right = text.substr(expr.find(">=") + strlen(">="), text.find(")") - 1);
 
           size_t i = right.size() - 1;
+
+          if (i < 1) break;
 
           try {
             while (!std::isalnum(right[i])) {
@@ -408,10 +376,10 @@ Boolean CompilerFrontendCPlusPlus::Compile(std::string text, const std::string f
                                  return fnName == pair.first;
                                });
 
-        std::stringstream ss;
-        ss << std::hex << it->second;
-
         if (it != kOriginMap.end()) {
+          std::stringstream ss;
+          ss << std::hex << it->second;
+
           syntax_tree.fUserValue = "jmp " + ss.str() + "\n";
           kOrigin += 1UL;
         }
@@ -506,12 +474,12 @@ Boolean CompilerFrontendCPlusPlus::Compile(std::string text, const std::string f
             valueOfVar.erase(i, 1);
           }
 
-          constexpr auto cTrueVal  = "true";
-          constexpr auto cFalseVal = "false";
+          constexpr auto kTrueVal  = "true";
+          constexpr auto kFalseVal = "false";
 
-          if (valueOfVar == cTrueVal) {
+          if (valueOfVar == kTrueVal) {
             valueOfVar = "1";
-          } else if (valueOfVar == cFalseVal) {
+          } else if (valueOfVar == kFalseVal) {
             valueOfVar = "0";
           }
 
@@ -620,14 +588,14 @@ Boolean CompilerFrontendCPlusPlus::Compile(std::string text, const std::string f
           valueOfVar.erase(valueOfVar.find("\t"), 1);
         }
 
-        constexpr auto cTrueVal  = "true";
-        constexpr auto cFalseVal = "false";
+        constexpr auto kTrueVal  = "true";
+        constexpr auto kFalseVal = "false";
 
         /// interpet boolean values, since we're on C++
 
-        if (valueOfVar == cTrueVal) {
+        if (valueOfVar == kTrueVal) {
           valueOfVar = "1";
-        } else if (valueOfVar == cFalseVal) {
+        } else if (valueOfVar == kFalseVal) {
           valueOfVar = "0";
         }
 
@@ -726,15 +694,12 @@ Boolean CompilerFrontendCPlusPlus::Compile(std::string text, const std::string f
         }
       }
       default: {
-        break;
+        continue;
       }
     }
-
-    syntax_tree.fUserData = keyword.first;
-    kState.fSyntaxTree->fLeafList.push_back(syntax_tree);
   }
 
-lc_compile_ok:
+  kState.fOutputValue = syntax_tree.fUserValue;
   return true;
 }
 
@@ -753,91 +718,31 @@ class AssemblyCPlusPlusInterface final ASSEMBLY_INTERFACE {
 
   LIBCOMPILER_COPY_DEFAULT(AssemblyCPlusPlusInterface);
 
-  [[maybe_unused]] static Int32 Arch() noexcept { return LibCompiler::AssemblyFactory::kArchAMD64; }
+  [[maybe_unused]] Int32 Arch() noexcept override {
+    return LibCompiler::AssemblyFactory::kArchAMD64;
+  }
 
   Int32 CompileToFormat(std::string src, Int32 arch) override {
-    if (arch != AssemblyCPlusPlusInterface::Arch()) return 1;
-
-    if (kCompilerFrontend == nullptr) return 1;
+    if (kCompilerFrontend == nullptr) return kExitNO;
 
     /* @brief copy contents wihtout extension */
-    std::string   src_file = src;
-    std::ifstream src_fp   = std::ifstream(src_file, std::ios::in);
+    std::ifstream src_fp = std::ifstream(src, std::ios::in);
 
-    const char* cExts[] = kAsmFileExts;
-
-    std::string dest = src_file;
-    dest += cExts[2];
-
-    if (dest.empty()) {
-      dest = "CXX-LibCompiler-";
-
-      std::random_device rd;
-      auto               seed_data = std::array<int, std::mt19937::state_size>{};
-
-      std::generate(std::begin(seed_data), std::end(seed_data), std::ref(rd));
-
-      std::seed_seq seq(std::begin(seed_data), std::end(seed_data));
-      std::mt19937  generator(seq);
-
-      auto gen = uuids::uuid_random_generator(generator);
-
-      auto id = gen();
-      dest += uuids::to_string(id);
-    }
-
-    kState.fOutputAssembly = std::make_unique<std::ofstream>(dest);
-
-    auto fmt = LibCompiler::current_date();
-
-    (*kState.fOutputAssembly) << "; Repository Path: /" << src_file << "\n";
-
-    std::filesystem::path path = std::filesystem::path("./");
-
-    while (path != Detail::expand_home(std::filesystem::path("~"))) {
-      for (auto const& dir_entry : std::filesystem::recursive_directory_iterator{path}) {
-        if (dir_entry.is_directory() && dir_entry.path().string().find(".git") != std::string::npos)
-          goto break_loop;
-      }
-
-      path = path.parent_path();
-    break_loop:
-      (*kState.fOutputAssembly) << "; Repository Style: Git\n";
-      break;
-    }
-
-    std::stringstream stream;
-    stream << kOrigin;
-    std::string result(stream.str());
-
-    (*kState.fOutputAssembly)
-        << "; Assembler Dialect: AMD64 LibCompiler Assembler. (Generated from C++)\n";
-    (*kState.fOutputAssembly) << "; Date: " << fmt << "\n";
-    (*kState.fOutputAssembly) << "#bits 64\n#org " + result << "\n";
-
-    kState.fSyntaxTree = new LibCompiler::SyntaxLeafList();
-
-    // ===================================
-    // Parse source file.
-    // ===================================
+    std::string dest = src;
+    dest += ".masm";
 
     std::string line_source;
 
+    std::ofstream out(dest);
+
     while (std::getline(src_fp, line_source)) {
       kCompilerFrontend->Compile(line_source, src);
+      out << kState.fOutputValue;
     }
 
-    for (auto& ast_generated : kState.fSyntaxTree->fLeafList) {
-      (*kState.fOutputAssembly) << ast_generated.fUserValue;
-    }
+    out.flush();
 
-    kState.fOutputAssembly->flush();
-    kState.fOutputAssembly->close();
-
-    delete kState.fSyntaxTree;
-    kState.fSyntaxTree = nullptr;
-
-    if (kAcceptableErrors > 0) return 1;
+    if (kAcceptableErrors > 0) return kExitNO;
 
     return kExitOK;
   }
@@ -928,8 +833,8 @@ LIBCOMPILER_MODULE(CompilerCPlusPlusAMD64) {
 
   kErrorLimit = 100;
 
-  kFactory.Mount(new AssemblyCPlusPlusInterface());
   kCompilerFrontend = new CompilerFrontendCPlusPlus();
+  kFactory.Mount(new AssemblyCPlusPlusInterface());
 
   ::signal(SIGSEGV, Detail::segfault_handler);
 
@@ -974,8 +879,6 @@ LIBCOMPILER_MODULE(CompilerCPlusPlusAMD64) {
       continue;
     }
 
-    kFileList.emplace_back(argv[index]);
-
     std::string argv_i = argv[index];
 
     std::vector exts  = kExtListCxx;
@@ -993,18 +896,13 @@ LIBCOMPILER_MODULE(CompilerCPlusPlusAMD64) {
         Detail::print_error(argv_i + " is not a valid C++ source.\n", "cxxdrv");
       }
 
-      return 1;
-    }
-
-    kStdOut << "CPlusPlusCompilerAMD64: Building: " << argv[index] << std::endl;
-
-    if (kFactory.Compile(argv_i, kMachine) != kExitOK) {
-      kStdOut << "CPlusPlusCompilerAMD64: Failed to build: " << argv[index] << std::endl;
       return kExitNO;
     }
+
+    kFactory.Compile(argv_i, kMachine);
   }
 
-  return kExitOK;
+  return kExitNO;
 }
 
 // Last rev 8-1-24

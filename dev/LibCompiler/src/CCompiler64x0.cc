@@ -142,7 +142,7 @@ class CompilerFrontend64x0 final : public LibCompiler::ICompilerFrontend {
   LIBCOMPILER_COPY_DEFAULT(CompilerFrontend64x0);
 
   std::string Check(const char* text, const char* file);
-  bool        Compile(std::string text, const std::string file) override;
+  bool        Compile(std::string text, std::string file) override;
 
   const char* Language() override { return "64k C"; }
 };
@@ -182,7 +182,7 @@ union double_cast final {
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
-bool CompilerFrontend64x0::Compile(std::string text_, const std::string file) {
+bool CompilerFrontend64x0::Compile(std::string text_, std::string file) {
   std::string text = text_;
 
   bool typeFound = false;
@@ -1051,11 +1051,11 @@ class AssemblyCCInterface final ASSEMBLY_INTERFACE {
 
   LIBCOMPILER_COPY_DEFAULT(AssemblyCCInterface);
 
-  [[maybe_unused]] static Int32 Arch() noexcept { return LibCompiler::AssemblyFactory::kArch64x0; }
+  [[maybe_unused]] Int32 Arch() noexcept override {
+    return LibCompiler::AssemblyFactory::kArch64x0;
+  }
 
   Int32 CompileToFormat(std::string src, Int32 arch) override {
-    if (arch != AssemblyCCInterface::Arch()) return 1;
-
     if (kCompilerFrontend == nullptr) return 1;
 
     /* @brief copy contents wihtout extension */

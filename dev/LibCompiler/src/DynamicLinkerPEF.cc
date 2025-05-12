@@ -64,7 +64,10 @@
 /// @brief PEF stack size symbol.
 #define kLinkerStackSizeSymbol "__PEFSizeOfReserveStack"
 
-#define kOutCon (std::cout << "\e[0;31m" << "ld64: " << "\e[0;97m")
+#define kOutCon            \
+  (std::cout << "\e[0;31m" \
+             << "ld64: "   \
+             << "\e[0;97m")
 
 namespace Detail {
 struct DynamicLinkerBlob final {
@@ -75,7 +78,7 @@ struct DynamicLinkerBlob final {
 
 enum {
   kABITypeNull    = 0,
-  kABITypeStart   = 0x1010, /* Invalid ABI start of ABI list. */
+  kABITypeStart   = 0x1010, /* The start of ABI list. */
   kABITypeNE      = 0x5046, /* PF (NeKernel's PEF ABI) */
   kABITypeInvalid = 0xFFFF,
 };

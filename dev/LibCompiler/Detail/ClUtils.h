@@ -51,8 +51,7 @@ inline void print_warning(std::string reason, std::string file) noexcept {
 
 /// @internal
 inline void segfault_handler(std::int32_t _) {
-  pfd::notify("NeKernel Compiler Driver System",
-              "Driver just crashed, please report this to the developers.");
+  pfd::notify("LibCompiler", "Driver just crashed, please report this on the GitHub issues page.");
   std::exit(LIBCOMPILER_EXEC_ERROR);
 }
 }  // namespace Detail

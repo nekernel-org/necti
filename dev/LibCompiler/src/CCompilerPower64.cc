@@ -133,7 +133,7 @@ class CompilerFrontendPower64 final : public LibCompiler::ICompilerFrontend {
   LIBCOMPILER_COPY_DEFAULT(CompilerFrontendPower64);
 
   std::string Check(const char* text, const char* file);
-  bool        Compile(std::string text, const std::string file) override;
+  bool        Compile(std::string text, std::string file) override;
 
   const char* Language() override { return "POWER C"; }
 };
@@ -173,7 +173,7 @@ union double_cast final {
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
-bool CompilerFrontendPower64::Compile(std::string text_, const std::string file) {
+bool CompilerFrontendPower64::Compile(std::string text_, std::string file) {
   std::string text = text_;
 
   bool typeFound = false;
@@ -1069,13 +1069,11 @@ class AssemblyMountpointCLang final ASSEMBLY_INTERFACE {
 
   LIBCOMPILER_COPY_DEFAULT(AssemblyMountpointCLang);
 
-  [[maybe_unused]] static Int32 Arch() noexcept {
+  [[maybe_unused]] Int32 Arch() noexcept override {
     return LibCompiler::AssemblyFactory::kArchPowerPC;
   }
 
   Int32 CompileToFormat(std::string src, Int32 arch) override {
-    if (arch != AssemblyMountpointCLang::Arch()) return 1;
-
     if (kCompilerFrontend == nullptr) return 1;
 
     /* @brief copy contents wihtout extension */

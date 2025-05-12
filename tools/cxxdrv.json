@@ -4,7 +4,7 @@
   "headers_path": ["../dev/LibCompiler", "../dev/", "../dev/LibCompiler/src/Detail"],
   "sources_path": ["cxxdrv.cc"],
   "output_name": "cxxdrv",
-  "compiler_flags": ["-L/usr/local/lib", "-lCompiler"],
+  "compiler_flags": ["-L/usr/local/lib", "-lCompiler", "-Wl,-e,_CompilerCPlusPlusAMD64"],
   "cpp_macros": [
     "__CXXDRV__=202504",
     "kDistReleaseBranch=$(git rev-parse --abbrev-ref HEAD)-$(uuidgen)"
