@@ -1,4 +1,4 @@
-#define AppMain int __ImageStart
+#define AppMain __ImageStart
 #warning TestCase #1
 
 int bar() {
@@ -11,6 +11,6 @@ int foo() {
   return bar();
 }
 
-AppMain() {
+int AppMain() {
   return foo();
 }
