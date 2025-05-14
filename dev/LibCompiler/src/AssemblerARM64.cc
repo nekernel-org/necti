@@ -19,10 +19,10 @@
 
 #include <LibCompiler/AE.h>
 #include <LibCompiler/Backend/Aarch64.h>
+#include <LibCompiler/CompilerFrontend.h>
 #include <LibCompiler/Detail/AsmUtils.h>
 #include <LibCompiler/ErrorID.h>
 #include <LibCompiler/PEF.h>
-#include <LibCompiler/Parser.h>
 #include <LibCompiler/Version.h>
 #include <algorithm>
 #include <filesystem>

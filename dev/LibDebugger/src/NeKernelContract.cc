@@ -21,14 +21,24 @@ NeKernelContract::NeKernelContract() = default;
 
 NeKernelContract::~NeKernelContract() = default;
 
-bool NeKernelContract::Attach(std::string path, std::string argv, ProcessID& pid) noexcept { return false; }
+bool NeKernelContract::Attach(std::string path, std::string argv, ProcessID& pid) noexcept {
+  return false;
+}
 
-bool NeKernelContract::Breakpoint(std::string symbol) noexcept { return false; }
+bool NeKernelContract::Breakpoint(std::string symbol) noexcept {
+  return false;
+}
 
-bool NeKernelContract::Break() noexcept { return false; }
+bool NeKernelContract::Break() noexcept {
+  return false;
+}
 
-bool NeKernelContract::Continue() noexcept { return false; }
+bool NeKernelContract::Continue() noexcept {
+  return false;
+}
 
-bool NeKernelContract::Detach() noexcept { return false; }
+bool NeKernelContract::Detach() noexcept {
+  return false;
+}
 
-#endif // LD_NEKERNEL_DEBUGGER
+#endif  // LD_NEKERNEL_DEBUGGER

@@ -28,8 +28,8 @@
 
 #include <LibCompiler/AE.h>
 #include <LibCompiler/Backend/Amd64.h>
+#include <LibCompiler/CompilerFrontend.h>
 #include <LibCompiler/PEF.h>
-#include <LibCompiler/Parser.h>
 #include <algorithm>
 #include <cstdlib>
 #include <filesystem>

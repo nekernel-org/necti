@@ -9,8 +9,8 @@
 
 /// BUGS: 0
 
+#include <LibCompiler/CompilerFrontend.h>
 #include <LibCompiler/ErrorID.h>
-#include <LibCompiler/Parser.h>
 #include <algorithm>
 #include <filesystem>
 #include <fstream>

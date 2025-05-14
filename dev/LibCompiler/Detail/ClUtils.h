@@ -7,8 +7,8 @@
 #pragma once
 
 #include <LibCompiler/AssemblyInterface.h>
+#include <LibCompiler/CompilerFrontend.h>
 #include <LibCompiler/ErrorID.h>
-#include <LibCompiler/Parser.h>
 #include <Vendor/Dialogs.h>
 
 #define kZero64Section ".zero64"

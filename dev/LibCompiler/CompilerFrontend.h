@@ -144,6 +144,6 @@ inline std::size_t find_word_range(std::string haystack, std::string needle) noe
     return index;
   }
 
-  return false;
+  return std::string::npos;
 }
 }  // namespace LibCompiler

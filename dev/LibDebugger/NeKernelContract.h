@@ -68,6 +68,6 @@ class NeKernelContract : public DebuggerContract {
 };
 }  // namespace LibDebugger::NeKernel
 
-#endif // ifdef LD_NEKERNEL_DEBUGGER
+#endif  // ifdef LD_NEKERNEL_DEBUGGER
 
 #endif  // LD_NEKERNEL_CONTRACT_H

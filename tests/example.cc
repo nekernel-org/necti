@@ -1,5 +1,5 @@
-#define AppMain __ImageStart
-#warning TestCase #1
+#define main __ImageStart
+#warning test macro warning #1
 
 int bar() {
   int yyy = 100;
@@ -11,6 +11,6 @@ int foo() {
   return bar();
 }
 
-int AppMain() {
+int main() {
   return foo();
 }

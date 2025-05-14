@@ -21,9 +21,9 @@
 
 #include <LibCompiler/AE.h>
 #include <LibCompiler/Backend/64x0.h>
+#include <LibCompiler/CompilerFrontend.h>
 #include <LibCompiler/Detail/ClUtils.h>
 #include <LibCompiler/PEF.h>
-#include <LibCompiler/Parser.h>
 #include <algorithm>
 #include <filesystem>
 #include <fstream>

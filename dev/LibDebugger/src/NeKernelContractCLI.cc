@@ -20,16 +20,15 @@
 using namespace LibDebugger::NeKernel;
 
 LIBCOMPILER_MODULE(DebuggerNeKernel) {
-    pfd::notify("Debugger Event",
-                "Kernel Debugger\n(C) 2025 Amlal El Mahrouss, all rights reserved.");
-  
-    if (argc >= 3 && std::string(argv[1]) == "-p" && argv[2] != nullptr) {
-      kPath = argv[2];
-      kStdOut << "[+] Kernel image set to: " << kPath << "\n";
-    }
+  pfd::notify("Debugger Event",
+              "Kernel Debugger\n(C) 2025 Amlal El Mahrouss, all rights reserved.");
 
-    
-    return EXIT_SUCCESS;
+  if (argc >= 3 && std::string(argv[1]) == "-p" && argv[2] != nullptr) {
+    kPath = argv[2];
+    kStdOut << "[+] Kernel image set to: " << kPath << "\n";
+  }
+
+  return EXIT_SUCCESS;
 }
 
-#endif // LD_NEKERNEL_DEBUGGER
+#endif  // LD_NEKERNEL_DEBUGGER

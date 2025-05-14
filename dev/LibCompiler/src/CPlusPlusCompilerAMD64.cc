@@ -17,8 +17,8 @@
 // extern_segment, @autodelete { ... }, fn foo() -> auto { ... }
 
 #include <LibCompiler/Backend/Amd64.h>
+#include <LibCompiler/CompilerFrontend.h>
 #include <LibCompiler/Detail/ClUtils.h>
-#include <LibCompiler/Parser.h>
 #include <LibCompiler/UUID.h>
 
 #include <cstdio>

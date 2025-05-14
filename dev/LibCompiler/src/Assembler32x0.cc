@@ -21,8 +21,8 @@
 
 #include <LibCompiler/AE.h>
 #include <LibCompiler/Backend/32x0.h>
+#include <LibCompiler/CompilerFrontend.h>
 #include <LibCompiler/PEF.h>
-#include <LibCompiler/Parser.h>
 
 /////////////////////
 

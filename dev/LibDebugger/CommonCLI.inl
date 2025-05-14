@@ -1,5 +1,5 @@
 
-static BOOL                                  kKeepRunning = false;
+static BOOL kKeepRunning = false;
 
 #ifdef LD_NEKERNEL_DEBUGGER
 static LibDebugger::NeKernel::NeKernelContract kKernelDebugger;
@@ -7,9 +7,9 @@ static LibDebugger::NeKernel::NeKernelContract kKernelDebugger;
 static LibDebugger::POSIX::POSIXMachContract kDebugger;
 #endif
 
-static LibDebugger::ProcessID                kPID           = 0L;
-static LibDebugger::CAddress                 kActiveAddress = nullptr;
-static std::string                           kPath          = "";
+static LibDebugger::ProcessID kPID           = 0L;
+static LibDebugger::CAddress  kActiveAddress = nullptr;
+static std::string            kPath          = "";
 
 #define kBlank "\e[0;30m"
 #define kRed "\e[0;31m"

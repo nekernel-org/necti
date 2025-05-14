@@ -7,7 +7,7 @@
 #pragma once
 
 #include <LibCompiler/AssemblyInterface.h>
-#include <LibCompiler/Parser.h>
+#include <LibCompiler/CompilerFrontend.h>
 
 #include <LibCompiler/Detail/ClUtils.h>
 
