@@ -899,7 +899,9 @@ LIBCOMPILER_MODULE(CompilerCPlusPlusAMD64) {
       return kExitNO;
     }
 
-    kFactory.Compile(argv_i, kMachine);
+    if (kFactory.Compile(argv_i, kMachine) != kExitOK) {
+      Detail::print_error("Compiler error, see log for details.\n", "cxxdrv");
+    }
   }
 
   return kExitNO;

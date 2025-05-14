@@ -1,7 +1,7 @@
 .TH LD64 1 "LibCompiler" "January 2025" "NeKernel Manual"
 .SH NAME
 .B ld64
-\- PEF binary format linker for NeKernel
+\- PEF 64-bit linker for NeKernel
 
 .SH SYNOPSIS
 .B ld64 %OPTIONS% %INPUT_FILES% -output %OUTPUT_FILE%
@@ -17,8 +17,8 @@ Specify the output file.
 
 .SH USAGE EXAMPLES
 .TP
-.B Generate a memory layout report:
-.B ld64 main.o -output app.exec
+.B Generate an executable file from an AE object.
+.B ld64 main.obj -output app.exec
 
 .SH EXIT STATUS
 .TP
@@ -27,7 +27,7 @@ Specify the output file.
 1  Error encountered during linking.
 
 .SH SEE ALSO
-.BR nekernel (7), asm (1)
+.BR cxxdrv (7), asm (1)
 
 .SH AUTHOR
 Amlal El Mahrouss

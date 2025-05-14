@@ -1,8 +1,11 @@
 /***
+  LibDebugger
   (C) 2025 Amlal El Mahrouss
- */
+  File: POSIXMachContract.cc
+  Purpose: OS X/Darwin Debugger
+*/
 
-#ifdef __APPLE__
+#ifdef LD_MACH_DEBUGGER
 
 #include <LibCompiler/Defines.h>
 #include <LibDebugger/POSIXMachContract.h>
@@ -11,17 +14,7 @@
 #include <iostream>
 #include <string>
 
-static BOOL                                  kKeepRunning = false;
-static LibDebugger::POSIX::POSIXMachContract kDebugger;
-static LibDebugger::ProcessID                kPID           = 0L;
-static LibDebugger::CAddress                 kActiveAddress = nullptr;
-static std::string                           kPath          = "";
-
-#define kBlank "\e[0;30m"
-#define kRed "\e[0;31m"
-#define kWhite "\e[0;97m"
-
-#define kStdOut (std::cout << kRed << "dbg: " << kWhite)
+#include <LibDebugger/CommonCLI.inl>
 
 /// @internal
 /// @brief Handles CTRL-C signal on debugger.
@@ -47,7 +40,7 @@ LIBCOMPILER_MODULE(DebuggerMachPOSIX) {
     kPath = argv[2];
     kDebugger.SetPath(kPath);
 
-    kStdOut << "[+] Path set to: " << kPath << "\n";
+    kStdOut << "[+] Image set to: " << kPath << "\n";
   }
 
   ::signal(SIGINT, dbgi_ctrlc_handler);

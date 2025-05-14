@@ -4,7 +4,7 @@
 
 #pragma once
 
-#ifdef __APPLE__
+#ifdef LD_MACH_DEBUGGER
 
 /// @file POSIXMachContract.h
 /// @brief POSIX Mach debugger.
