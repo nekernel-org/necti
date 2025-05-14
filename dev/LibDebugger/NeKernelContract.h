@@ -62,6 +62,7 @@ class NeKernelContract : public DebuggerContract {
  private:
   std::string m_ip_address;
   std::string m_port;
+  int64_t     m_socket{0};
 };
 }  // namespace LibDebugger::NeKernel
 
