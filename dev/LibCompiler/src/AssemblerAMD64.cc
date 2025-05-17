@@ -965,13 +965,9 @@ bool LibCompiler::EncoderAMD64::WriteLine(std::string line, std::string file) {
       {.fName = "dx", .fModRM = 0x2}, {.fName = "bx", .fModRM = 3},
       {.fName = "sp", .fModRM = 0x4}, {.fName = "bp", .fModRM = 5},
       {.fName = "si", .fModRM = 0x6}, {.fName = "di", .fModRM = 7},
-      {.fName = "r8", .fModRM = 8},   {.fName = "r13", .fModRM = 9},
-      {.fName = "r9", .fModRM = 10},  {.fName = "r14", .fModRM = 11},
-      {.fName = "r10", .fModRM = 12}, {.fName = "r15", .fModRM = 13},
-      {.fName = "r11", .fModRM = 14},
   };
 
-  bool foundInstruction = false;
+  BOOL foundInstruction = false;
 
   for (auto& opcodeAMD64 : kOpcodesAMD64) {
     // strict check here
@@ -981,140 +977,157 @@ bool LibCompiler::EncoderAMD64::WriteLine(std::string line, std::string file) {
       std::string name(opcodeAMD64.fName);
 
       /// Move instruction handler.
-      if (line.find(name) != std::string::npos && name == "mov") {
-        std::string substr = line.substr(line.find(name) + name.size());
+      if (line.find(name) != std::string::npos) {
+        if (name == "mov" || name == "xor") {
+          std::string substr = line.substr(line.find(name) + name.size());
 
-        uint64_t bits = kRegisterBitWidth;
+          uint64_t bits = kRegisterBitWidth;
 
-        if (substr.find(",") == std::string::npos) {
-          Detail::print_error("Syntax error: missing right operand.", "LibCompiler");
-          throw std::runtime_error("syntax_err");
-        }
+          if (substr.find(",") == std::string::npos) {
+            Detail::print_error("Syntax error: missing right operand.", "LibCompiler");
+            throw std::runtime_error("syntax_err");
+          }
 
-        bool onlyOneReg = true;
+          bool onlyOneReg = true;
 
-        std::vector<RegMapAMD64> currentRegList;
+          std::vector<RegMapAMD64> currentRegList;
 
-        for (auto& reg : kRegisterList) {
-          std::vector<char> regExt = {'e', 'r'};
+          for (auto& reg : kRegisterList) {
+            std::vector<char> regExt = {'e', 'r'};
 
-          for (auto& ext : regExt) {
-            std::string registerName;
+            for (auto& ext : regExt) {
+              std::string registerName;
 
-            if (bits > 16) registerName.push_back(ext);
+              if (bits > 16) registerName.push_back(ext);
 
-            registerName += reg.fName;
+              registerName += reg.fName;
 
-            while (line.find(registerName) != std::string::npos) {
-              line.erase(line.find(registerName), registerName.size());
+              while (line.find(registerName) != std::string::npos) {
+                line.erase(line.find(registerName), registerName.size());
 
-              if (bits == 16) {
-                if (registerName[0] == 'r') {
-                  Detail::print_error("invalid size for register, current bit width is: " +
-                                          std::to_string(kRegisterBitWidth),
-                                      file);
-                  throw std::runtime_error("invalid_reg_size");
+                if (bits == 16) {
+                  if (registerName[0] == 'r') {
+                    Detail::print_error("invalid size for register, current bit width is: " +
+                                            std::to_string(kRegisterBitWidth),
+                                        file);
+                    throw std::runtime_error("invalid_reg_size");
+                  }
                 }
+
+                currentRegList.push_back({.fName = registerName, .fModRM = reg.fModRM});
+              }
+            }
+          }
+
+          if (currentRegList.size() > 1) onlyOneReg = false;
+
+          bool hasRBasedRegs = false;
+
+          if (!onlyOneReg) {
+            /// very tricky to understand.
+            /// but this checks for a r8 through r15 register.
+            if (currentRegList[0].fName[0] == 'r' || currentRegList[1].fName[0] == 'r') {
+              if (isdigit(currentRegList[0].fName[1]) && isdigit(currentRegList[1].fName[1])) {
+                kAppBytes.emplace_back(0x4d);
+                hasRBasedRegs = true;
+              } else if (isdigit(currentRegList[0].fName[1]) ||
+                         isdigit(currentRegList[1].fName[1])) {
+                kAppBytes.emplace_back(0x4c);
+                hasRBasedRegs = true;
+              }
+            }
+          }
+
+          if (name == "mov") {
+            if (bits == 64 || bits == 32) {
+              if (!hasRBasedRegs && bits >= 32) {
+                kAppBytes.emplace_back(opcodeAMD64.fOpcode);
               }
 
-              currentRegList.push_back({.fName = registerName, .fModRM = reg.fModRM});
+              if (!onlyOneReg) kAppBytes.emplace_back(0x89);
+            } else if (bits == 16) {
+              if (hasRBasedRegs) {
+                Detail::print_error("Invalid combination of operands and registers.",
+                                    "LibCompiler");
+                throw std::runtime_error("comb_op_reg");
+              } else {
+                kAppBytes.emplace_back(0x66);
+                kAppBytes.emplace_back(0x89);
+              }
             }
-          }
-        }
-
-        if (currentRegList.size() > 1) onlyOneReg = false;
-
-        bool hasRBasedRegs = false;
-
-        if (!onlyOneReg) {
-          /// very tricky to understand.
-          /// but this checks for a r8 through r15 register.
-          if (currentRegList[0].fName[0] == 'r' || currentRegList[1].fName[0] == 'r') {
-            if (isdigit(currentRegList[0].fName[1]) && isdigit(currentRegList[1].fName[1])) {
-              kAppBytes.emplace_back(0x4d);
-              hasRBasedRegs = true;
-            } else if (isdigit(currentRegList[0].fName[1]) || isdigit(currentRegList[1].fName[1])) {
-              kAppBytes.emplace_back(0x4c);
-              hasRBasedRegs = true;
+          } else {
+            if (!hasRBasedRegs && bits >= 32) {
+              kAppBytes.emplace_back(opcodeAMD64.fOpcode);
             }
-          }
-        }
 
-        if (bits == 64 || bits == 32) {
-          if (!hasRBasedRegs && bits >= 32) {
-            kAppBytes.emplace_back(opcodeAMD64.fOpcode);
+            kAppBytes.emplace_back(0x31);
           }
 
-          if (!onlyOneReg) kAppBytes.emplace_back(0x89);
-        } else if (bits == 16) {
-          if (hasRBasedRegs) {
+          if (onlyOneReg) {
+            auto num = GetNumber32(line, ",");
+
+            for (auto& num_idx : num.number) {
+              if (num_idx == 0) num_idx = 0xFF;
+            }
+
+            auto modrm = (0x3 << 6 | currentRegList[0].fModRM);
+
+            kAppBytes.emplace_back(0xC7);  // prefixed before placing the modrm and then the number.
+            kAppBytes.emplace_back(modrm);
+
+            if (name != "xor") {
+              kAppBytes.emplace_back(num.number[0]);
+              kAppBytes.emplace_back(num.number[1]);
+              kAppBytes.emplace_back(num.number[2]);
+              kAppBytes.emplace_back(num.number[3]);
+            }
+
+            break;
+          }
+
+          if (currentRegList[1].fName[0] == 'r' && currentRegList[0].fName[0] == 'e') {
             Detail::print_error("Invalid combination of operands and registers.", "LibCompiler");
             throw std::runtime_error("comb_op_reg");
+          }
+
+          if (currentRegList[0].fName[0] == 'r' && currentRegList[1].fName[0] == 'e') {
+            Detail::print_error("Invalid combination of operands and registers.", "LibCompiler");
+            throw std::runtime_error("comb_op_reg");
+          }
+
+          if (bits == 16) {
+            if (currentRegList[0].fName[0] == 'r' || currentRegList[0].fName[0] == 'e') {
+              Detail::print_error("Invalid combination of operands and registers.", "LibCompiler");
+              throw std::runtime_error("comb_op_reg");
+            }
+
+            if (currentRegList[1].fName[0] == 'r' || currentRegList[1].fName[0] == 'e') {
+              Detail::print_error("Invalid combination of operands and registers.", "LibCompiler");
+              throw std::runtime_error("comb_op_reg");
+            }
           } else {
-            kAppBytes.emplace_back(0x66);
-            kAppBytes.emplace_back(0x89);
+            if (currentRegList[0].fName[0] != 'r' || currentRegList[0].fName[0] == 'e') {
+              Detail::print_error("Invalid combination of operands and registers.", "LibCompiler");
+              throw std::runtime_error("comb_op_reg");
+            }
+
+            if (currentRegList[1].fName[0] != 'r' || currentRegList[1].fName[0] == 'e') {
+              Detail::print_error("Invalid combination of operands and registers.", "LibCompiler");
+              throw std::runtime_error("comb_op_reg");
+            }
           }
-        }
 
-        if (onlyOneReg) {
-          auto num = GetNumber32(line, ",");
+          /// encode register using the modrm encoding.
 
-          for (auto& num_idx : num.number) {
-            if (num_idx == 0) num_idx = 0xFF;
-          }
+          auto modrm = (0x3 << 6 | currentRegList[1].fModRM << 3 | currentRegList[0].fModRM);
 
-          auto modrm = (0x3 << 6 | currentRegList[0].fModRM);
-
-          kAppBytes.emplace_back(0xC7);  // prefixed before placing the modrm and then the number.
           kAppBytes.emplace_back(modrm);
-          kAppBytes.emplace_back(num.number[0]);
-          kAppBytes.emplace_back(num.number[1]);
-          kAppBytes.emplace_back(num.number[2]);
-          kAppBytes.emplace_back(num.number[3]);
 
           break;
         }
+      }
 
-        if (currentRegList[1].fName[0] == 'r' && currentRegList[0].fName[0] == 'e') {
-          Detail::print_error("Invalid combination of operands and registers.", "LibCompiler");
-          throw std::runtime_error("comb_op_reg");
-        }
-
-        if (currentRegList[0].fName[0] == 'r' && currentRegList[1].fName[0] == 'e') {
-          Detail::print_error("Invalid combination of operands and registers.", "LibCompiler");
-          throw std::runtime_error("comb_op_reg");
-        }
-
-        if (bits == 16) {
-          if (currentRegList[0].fName[0] == 'r' || currentRegList[0].fName[0] == 'e') {
-            Detail::print_error("Invalid combination of operands and registers.", "LibCompiler");
-            throw std::runtime_error("comb_op_reg");
-          }
-
-          if (currentRegList[1].fName[0] == 'r' || currentRegList[1].fName[0] == 'e') {
-            Detail::print_error("Invalid combination of operands and registers.", "LibCompiler");
-            throw std::runtime_error("comb_op_reg");
-          }
-        } else {
-          if (currentRegList[0].fName[0] != 'r' || currentRegList[0].fName[0] == 'e') {
-            Detail::print_error("Invalid combination of operands and registers.", "LibCompiler");
-            throw std::runtime_error("comb_op_reg");
-          }
-
-          if (currentRegList[1].fName[0] != 'r' || currentRegList[1].fName[0] == 'e') {
-            Detail::print_error("Invalid combination of operands and registers.", "LibCompiler");
-            throw std::runtime_error("comb_op_reg");
-          }
-        }
-
-        /// encode register using the modrm encoding.
-
-        auto modrm = (0x3 << 6 | currentRegList[1].fModRM << 3 | currentRegList[0].fModRM);
-
-        kAppBytes.emplace_back(modrm);
-
-        break;
-      } else if (name == "int" || name == "into" || name == "intd") {
+      if (name == "int" || name == "into" || name == "intd") {
         kAppBytes.emplace_back(opcodeAMD64.fOpcode);
         this->WriteNumber8(line.find(name) + name.size() + 1, line);
 
@@ -1125,6 +1138,11 @@ bool LibCompiler::EncoderAMD64::WriteLine(std::string line, std::string file) {
         if (!this->WriteNumber32(line.find(name) + name.size() + 1, line)) {
           throw std::runtime_error("BUG: WriteNumber32");
         }
+
+        break;
+      } else if (name == "syscall") {
+        kAppBytes.emplace_back(opcodeAMD64.fOpcode);
+        kAppBytes.emplace_back(0x05);
 
         break;
       } else {
