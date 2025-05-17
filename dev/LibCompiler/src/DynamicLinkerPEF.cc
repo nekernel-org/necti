@@ -263,11 +263,9 @@ LIBCOMPILER_MODULE(DynamicLinker64PEF) {
     reader_protocol.FP = std::ifstream(objectFile, std::ifstream::binary);
     reader_protocol.FP >> hdr;
 
-    auto ae_header = hdr;
-
-    if (ae_header.fMagic[0] == kAEMag0 && ae_header.fMagic[1] == kAEMag1 &&
-        ae_header.fSize == sizeof(LibCompiler::AEHeader)) {
-      if (ae_header.fArch != kArch) {
+    if (hdr.fMagic[0] == kAEMag0 && hdr.fMagic[1] == kAEMag1 &&
+        hdr.fSize == sizeof(LibCompiler::AEHeader)) {
+      if (hdr.fArch != kArch) {
         if (kVerbose) kOutCon << "Info: is this a FAT binary? : ";
 
         if (!kFatBinaryEnable) {
@@ -287,8 +285,8 @@ LIBCOMPILER_MODULE(DynamicLinker64PEF) {
       }
 
       // append arch type to archs varaible.
-      archs |= ae_header.fArch;
-      std::size_t cnt = ae_header.fCount;
+      archs |= hdr.fArch;
+      std::size_t cnt = hdr.fCount;
 
       if (kVerbose) kOutCon << "Object header found, record count: " << cnt << "\n";
 
@@ -337,9 +335,9 @@ LIBCOMPILER_MODULE(DynamicLinker64PEF) {
         command_header.Offset    = offset_of_obj;
         command_header.Kind      = ae_records[ae_record_index].fKind;
         command_header.Size      = ae_records[ae_record_index].fSize;
-        command_header.Cpu       = ae_header.fArch;
+        command_header.Cpu       = hdr.fArch;
         command_header.VMAddress = org;  /// TODO:
-        command_header.SubCpu    = ae_header.fSubArch;
+        command_header.SubCpu    = hdr.fSubArch;
 
         org += command_header.Size;
 
@@ -356,12 +354,12 @@ LIBCOMPILER_MODULE(DynamicLinker64PEF) {
       raw_ae_records = nullptr;
 
       std::vector<char> bytes;
-      bytes.resize(ae_header.fCodeSize);
+      bytes.resize(hdr.fCodeSize);
 
-      reader_protocol.FP.seekg(std::streamsize(ae_header.fStartCode));
-      reader_protocol.FP.read(bytes.data(), std::streamsize(ae_header.fCodeSize));
+      reader_protocol.FP.seekg(std::streamsize(hdr.fStartCode));
+      reader_protocol.FP.read(bytes.data(), std::streamsize(hdr.fCodeSize));
 
-      kObjectBytes.push_back({.mBlob = bytes, .mOffset = ae_header.fStartCode});
+      kObjectBytes.push_back({.mBlob = bytes, .mOffset = hdr.fStartCode});
 
       // Blob was written, close fp.
 
