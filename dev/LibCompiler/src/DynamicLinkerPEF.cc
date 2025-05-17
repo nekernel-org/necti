@@ -34,9 +34,6 @@
 //! Advanced Executable Object Format.
 #include <LibCompiler/AE.h>
 
-//! Format header.
-#include <format>
-
 //! LibCompiler utils.
 #include <LibCompiler/Detail/ClUtils.h>
 
@@ -44,7 +41,7 @@
 #include <iostream>
 
 #define kLinkerVersionStr                                                           \
-  "NeKernel 64-Bit Linker (Preferred Executable Format) {}, (c) Amlal El Mahrouss " \
+  "NeKernel 64-Bit Linker (Preferred Executable Format) %s, (c) Amlal El Mahrouss " \
   "2024-2025 "                                                                      \
   "all rights reserved.\n"
 
@@ -59,12 +56,12 @@
 #define kLinkerAbiContainer "__PEFContainer:ABI:"
 
 #define kPrintF printf
-#define kLinkerSplash() kOutCon << std::format(kLinkerVersionStr, kDistVersion)
+#define kLinkerSplash() kConsoleOut << std::printf(kLinkerVersionStr, kDistVersion)
 
 /// @brief PEF stack size symbol.
 #define kLinkerStackSizeSymbol "__PEFSizeOfReserveStack"
 
-#define kOutCon            \
+#define kConsoleOut            \
   (std::cout << "\e[0;31m" \
              << "ld64: "   \
              << "\e[0;97m")
@@ -113,23 +110,24 @@ LIBCOMPILER_MODULE(DynamicLinker64PEF) {
     if (StringCompare(argv[linker_arg], "-help") == 0) {
       kLinkerSplash();
 
-      kOutCon << "-version: Show linker version.\n";
-      kOutCon << "-help: Show linker help.\n";
-      kOutCon << "-ld-verbose: Enable linker trace.\n";
-      kOutCon << "-dylib: Output as a Dynamic PEF.\n";
-      kOutCon << "-fat: Output as a FAT PEF.\n";
-      kOutCon << "-32k: Output as a 32x0 PEF.\n";
-      kOutCon << "-64k: Output as a 64x0 PEF.\n";
-      kOutCon << "-amd64: Output as a AMD64 PEF.\n";
-      kOutCon << "-rv64: Output as a RISC-V PEF.\n";
-      kOutCon << "-power64: Output as a POWER PEF.\n";
-      kOutCon << "-arm64: Output as a ARM64 PEF.\n";
-      kOutCon << "-output: Select the output file name.\n";
+      kConsoleOut << "-version: Show linker version.\n";
+      kConsoleOut << "-help: Show linker help.\n";
+      kConsoleOut << "-ld-verbose: Enable linker trace.\n";
+      kConsoleOut << "-dylib: Output as a Dynamic PEF.\n";
+      kConsoleOut << "-fat: Output as a FAT PEF.\n";
+      kConsoleOut << "-32k: Output as a 32x0 PEF.\n";
+      kConsoleOut << "-64k: Output as a 64x0 PEF.\n";
+      kConsoleOut << "-amd64: Output as a AMD64 PEF.\n";
+      kConsoleOut << "-rv64: Output as a RISC-V PEF.\n";
+      kConsoleOut << "-power64: Output as a POWER PEF.\n";
+      kConsoleOut << "-arm64: Output as a ARM64 PEF.\n";
+      kConsoleOut << "-output: Select the output file name.\n";
 
-      return EXIT_SUCCESS;
+      return LIBCOMPILER_SUCCESS;
     } else if (StringCompare(argv[linker_arg], "-version") == 0) {
       kLinkerSplash();
-      return EXIT_SUCCESS;
+
+      return LIBCOMPILER_SUCCESS;
     } else if (StringCompare(argv[linker_arg], "-fat-binary") == 0) {
       kFatBinaryEnable = true;
 
@@ -184,7 +182,7 @@ LIBCOMPILER_MODULE(DynamicLinker64PEF) {
       continue;
     } else {
       if (argv[linker_arg][0] == '-') {
-        kOutCon << "unknown flag: " << argv[linker_arg] << "\n";
+        kConsoleOut << "unknown flag: " << argv[linker_arg] << "\n";
         return EXIT_FAILURE;
       }
 
@@ -195,10 +193,10 @@ LIBCOMPILER_MODULE(DynamicLinker64PEF) {
   }
 
   if (kOutput.empty()) {
-    kOutCon << "no output filename set." << std::endl;
+    kConsoleOut << "no output filename set." << std::endl;
     return LIBCOMPILER_EXEC_ERROR;
   } else if (kObjectList.empty()) {
-    kOutCon << "no input files." << std::endl;
+    kConsoleOut << "no input files." << std::endl;
     return LIBCOMPILER_EXEC_ERROR;
   } else {
     namespace FS = std::filesystem;
@@ -208,15 +206,15 @@ LIBCOMPILER_MODULE(DynamicLinker64PEF) {
       if (!FS::exists(obj)) {
         // if filesystem doesn't find file
         //          -> throw error.
-        kOutCon << "no such file: " << obj << std::endl;
+        kConsoleOut << "no such file: " << obj << std::endl;
         return LIBCOMPILER_EXEC_ERROR;
       }
     }
   }
 
   // PEF expects a valid target architecture when outputing a binary.
-  if (kArch == 0) {
-    kOutCon << "no target architecture set, can't continue." << std::endl;
+  if (kArch == LibCompiler::kPefArchInvalid) {
+    kConsoleOut << "no target architecture set, can't continue." << std::endl;
     return LIBCOMPILER_EXEC_ERROR;
   }
 
@@ -244,7 +242,7 @@ LIBCOMPILER_MODULE(DynamicLinker64PEF) {
 
   if (output_fc.bad()) {
     if (kVerbose) {
-      kOutCon << "error: " << strerror(errno) << "\n";
+      kConsoleOut << "error: " << strerror(errno) << "\n";
     }
 
     return LIBCOMPILER_FILE_NOT_FOUND;
@@ -266,12 +264,12 @@ LIBCOMPILER_MODULE(DynamicLinker64PEF) {
     if (hdr.fMagic[0] == kAEMag0 && hdr.fMagic[1] == kAEMag1 &&
         hdr.fSize == sizeof(LibCompiler::AEHeader)) {
       if (hdr.fArch != kArch) {
-        if (kVerbose) kOutCon << "Info: is this a FAT binary? : ";
+        if (kVerbose) kConsoleOut << "is this a FAT binary? : ";
 
         if (!kFatBinaryEnable) {
-          if (kVerbose) kOutCon << "No.\n";
+          if (kVerbose) kConsoleOut << "not a FAT binary.\n";
 
-          kOutCon << "Error: object " << objectFile
+          kConsoleOut << "object " << objectFile
                   << " is a different kind of architecture and output isn't "
                      "treated as a FAT binary."
                   << std::endl;
@@ -279,7 +277,7 @@ LIBCOMPILER_MODULE(DynamicLinker64PEF) {
           return LIBCOMPILER_FAT_ERROR;
         } else {
           if (kVerbose) {
-            kOutCon << "Architecture matches what we expect.\n";
+            kConsoleOut << "Architecture matches what we expect.\n";
           }
         }
       }
@@ -288,14 +286,14 @@ LIBCOMPILER_MODULE(DynamicLinker64PEF) {
       archs |= hdr.fArch;
       std::size_t cnt = hdr.fCount;
 
-      if (kVerbose) kOutCon << "Object header found, record count: " << cnt << "\n";
+      if (kVerbose) kConsoleOut << "Object header found, record count: " << cnt << "\n";
 
       pef_container.Count = cnt;
 
       char_type* raw_ae_records = new char_type[cnt * sizeof(LibCompiler::AERecordHeader)];
 
       if (!raw_ae_records) {
-        if (kVerbose) kOutCon << "Allocation failure for records of count: " << cnt << "\n";
+        if (kVerbose) kConsoleOut << "Allocation failure for records of count: " << cnt << "\n";
       }
 
       memset(raw_ae_records, 0, cnt * sizeof(LibCompiler::AERecordHeader));
@@ -342,9 +340,9 @@ LIBCOMPILER_MODULE(DynamicLinker64PEF) {
         org += command_header.Size;
 
         if (kVerbose) {
-          kOutCon << "Record: " << ae_records[ae_record_index].fName << " is marked.\n";
+          kConsoleOut << "Record: " << ae_records[ae_record_index].fName << " is marked.\n";
 
-          kOutCon << "Offset: " << command_header.Offset << "\n";
+          kConsoleOut << "Offset: " << command_header.Offset << "\n";
         }
 
         command_headers.emplace_back(command_header);
@@ -368,7 +366,7 @@ LIBCOMPILER_MODULE(DynamicLinker64PEF) {
       continue;
     }
 
-    kOutCon << "Not an container: " << objectFile << std::endl;
+    kConsoleOut << "Not an AE container: " << objectFile << std::endl;
     // don't continue, it is a fatal error.
     return LIBCOMPILER_EXEC_ERROR;
   }
@@ -378,7 +376,7 @@ LIBCOMPILER_MODULE(DynamicLinker64PEF) {
   output_fc << pef_container;
 
   if (kVerbose) {
-    kOutCon << "Wrote container to: " << output_fc.tellp() << ".\n";
+    kConsoleOut << "Wrote container to: " << output_fc.tellp() << ".\n";
   }
 
   output_fc.seekp(std::streamsize(pef_container.HdrSz));
@@ -392,7 +390,7 @@ LIBCOMPILER_MODULE(DynamicLinker64PEF) {
     // check if this symbol needs to be resolved.
     if (LibCompiler::String(command_hdr.Name).find(kLdDefineSymbol) != LibCompiler::String::npos &&
         LibCompiler::String(command_hdr.Name).find(kLdDynamicSym) == LibCompiler::String::npos) {
-      if (kVerbose) kOutCon << "Found undefined symbol: " << command_hdr.Name << "\n";
+      if (kVerbose) kConsoleOut << "Found undefined symbol: " << command_hdr.Name << "\n";
 
       if (auto it =
               std::find(not_found.begin(), not_found.end(), LibCompiler::String(command_hdr.Name));
@@ -436,7 +434,7 @@ LIBCOMPILER_MODULE(DynamicLinker64PEF) {
 
           not_found.erase(it);
 
-          if (kVerbose) kOutCon << "Found symbol: " << command_hdr.Name << "\n";
+          if (kVerbose) kConsoleOut << "Found symbol: " << command_hdr.Name << "\n";
 
           break;
         }
@@ -451,11 +449,11 @@ LIBCOMPILER_MODULE(DynamicLinker64PEF) {
 
   if (!kStartFound && is_executable) {
     if (kVerbose)
-      kOutCon << "Undefined entrypoint: " << kPefStart
+      kConsoleOut << "Undefined entrypoint: " << kPefStart
               << ", you may have forget to link "
                  "against the C++ runtime library.\n";
 
-    kOutCon << "Undefined entrypoint " << kPefStart << " for executable: " << kOutput << "\n";
+    kConsoleOut << "Undefined entrypoint " << kPefStart << " for executable: " << kOutput << "\n";
   }
 
   // step 4: write all PEF commands.
@@ -603,8 +601,8 @@ LIBCOMPILER_MODULE(DynamicLinker64PEF) {
     }
 
     if (kVerbose) {
-      kOutCon << "Command name: " << name << "\n";
-      kOutCon << "VMAddress of command content: " << command_headers[commandHeaderIndex].Offset
+      kConsoleOut << "Command name: " << name << "\n";
+      kConsoleOut << "VMAddress of command content: " << command_headers[commandHeaderIndex].Offset
               << "\n";
     }
 
@@ -619,7 +617,7 @@ LIBCOMPILER_MODULE(DynamicLinker64PEF) {
           LibCompiler::String(command_headers[sub_command_header_index].Name).find(kLdDynamicSym) ==
               LibCompiler::String::npos) {
         if (kVerbose) {
-          kOutCon << "Ignoring :UndefinedSymbol: headers...\n";
+          kConsoleOut << "Ignoring :UndefinedSymbol: headers...\n";
         }
 
         // ignore :UndefinedSymbol: headers, they do not contain code.
@@ -634,7 +632,7 @@ LIBCOMPILER_MODULE(DynamicLinker64PEF) {
           dupl_symbols.emplace_back(command_hdr.Name);
         }
 
-        if (kVerbose) kOutCon << "Found duplicate symbols of: " << command_hdr.Name << "\n";
+        if (kVerbose) kConsoleOut << "Found duplicate symbols of: " << command_hdr.Name << "\n";
 
         kDuplicateSymbols = true;
       }
@@ -643,7 +641,7 @@ LIBCOMPILER_MODULE(DynamicLinker64PEF) {
 
   if (!dupl_symbols.empty()) {
     for (auto& symbol : dupl_symbols) {
-      kOutCon << "Multiple symbols of: " << symbol << " detected, cannot continue.\n";
+      kConsoleOut << "Multiple symbols of: " << symbol << " detected, cannot continue.\n";
     }
 
     return LIBCOMPILER_EXEC_ERROR;
@@ -656,7 +654,7 @@ LIBCOMPILER_MODULE(DynamicLinker64PEF) {
   }
 
   if (kVerbose) {
-    kOutCon << "Wrote contents of: " << kOutput << "\n";
+    kConsoleOut << "Wrote contents of: " << kOutput << "\n";
   }
 
   // step 3: check if we have those symbols
@@ -673,7 +671,7 @@ LIBCOMPILER_MODULE(DynamicLinker64PEF) {
 
   if (!unreferenced_symbols.empty()) {
     for (auto& unreferenced_symbol : unreferenced_symbols) {
-      kOutCon << "Undefined symbol " << unreferenced_symbol << "\n";
+      kConsoleOut << "Undefined symbol " << unreferenced_symbol << "\n";
     }
 
     return LIBCOMPILER_EXEC_ERROR;
@@ -682,7 +680,7 @@ LIBCOMPILER_MODULE(DynamicLinker64PEF) {
   if ((!kStartFound || kDuplicateSymbols) &&
       (std::filesystem::exists(kOutput) || !unreferenced_symbols.empty())) {
     if (kVerbose) {
-      kOutCon << "File: " << kOutput << ", is corrupt, removing file...\n";
+      kConsoleOut << "File: " << kOutput << ", is corrupt, removing file...\n";
     }
 
     return LIBCOMPILER_EXEC_ERROR;
