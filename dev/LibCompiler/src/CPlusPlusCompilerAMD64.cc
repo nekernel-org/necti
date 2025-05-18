@@ -773,7 +773,7 @@ LIBCOMPILER_MODULE(CompilerCPlusPlusAMD64) {
   kKeywords.push_back({.keyword_name = "}", .keyword_kind = LibCompiler::kKeywordKindBodyEnd});
   kKeywords.push_back({.keyword_name = "auto", .keyword_kind = LibCompiler::kKeywordKindVariable});
   kKeywords.push_back({.keyword_name = "int", .keyword_kind = LibCompiler::kKeywordKindType});
-  kKeywords.push_back({.keyword_name = "Boolean", .keyword_kind = LibCompiler::kKeywordKindType});
+  kKeywords.push_back({.keyword_name = "bool", .keyword_kind = LibCompiler::kKeywordKindType});
   kKeywords.push_back({.keyword_name = "unsigned", .keyword_kind = LibCompiler::kKeywordKindType});
   kKeywords.push_back({.keyword_name = "short", .keyword_kind = LibCompiler::kKeywordKindType});
   kKeywords.push_back({.keyword_name = "char", .keyword_kind = LibCompiler::kKeywordKindType});
@@ -786,7 +786,7 @@ LIBCOMPILER_MODULE(CompilerCPlusPlusAMD64) {
       {.keyword_name = "auto*", .keyword_kind = LibCompiler::kKeywordKindVariablePtr});
   kKeywords.push_back({.keyword_name = "int*", .keyword_kind = LibCompiler::kKeywordKindTypePtr});
   kKeywords.push_back(
-      {.keyword_name = "Boolean*", .keyword_kind = LibCompiler::kKeywordKindTypePtr});
+      {.keyword_name = "bool*", .keyword_kind = LibCompiler::kKeywordKindTypePtr});
   kKeywords.push_back(
       {.keyword_name = "unsigned*", .keyword_kind = LibCompiler::kKeywordKindTypePtr});
   kKeywords.push_back({.keyword_name = "short*", .keyword_kind = LibCompiler::kKeywordKindTypePtr});
