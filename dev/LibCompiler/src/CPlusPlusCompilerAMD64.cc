@@ -821,11 +821,11 @@ LIBCOMPILER_MODULE(CompilerCPlusPlusAMD64) {
       {.keyword_name = "final", .keyword_kind = LibCompiler::kKeywordKindSpecifier});
   kKeywords.push_back({.keyword_name = "return", .keyword_kind = LibCompiler::kKeywordKindReturn});
   kKeywords.push_back(
-      {.keyword_name = "--*", .keyword_kind = LibCompiler::kKeywordKindCommentMultiLineStart});
+      {.keyword_name = "/*", .keyword_kind = LibCompiler::kKeywordKindCommentMultiLineStart});
   kKeywords.push_back(
-      {.keyword_name = "*/", .keyword_kind = LibCompiler::kKeywordKindCommentMultiLineStart});
+      {.keyword_name = "*/", .keyword_kind = LibCompiler::kKeywordKindCommentMultiLineEnd});
   kKeywords.push_back(
-      {.keyword_name = "--/", .keyword_kind = LibCompiler::kKeywordKindCommentInline});
+      {.keyword_name = "//", .keyword_kind = LibCompiler::kKeywordKindCommentInline});
   kKeywords.push_back({.keyword_name = "==", .keyword_kind = LibCompiler::kKeywordKindEq});
   kKeywords.push_back({.keyword_name = "!=", .keyword_kind = LibCompiler::kKeywordKindNotEq});
   kKeywords.push_back({.keyword_name = ">=", .keyword_kind = LibCompiler::kKeywordKindGreaterEq});
