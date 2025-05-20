@@ -12,6 +12,8 @@
 #include <LibCompiler/Version.h>
 #include <cstring>
 
+LC_IMPORT_C int CompilerCPlusPlusAMD64(int argc, char const* argv[]);
+
 int main(int argc, char const* argv[]) {
-  return EXIT_FAILURE;
+  return CompilerCPlusPlusAMD64(argc, argv);
 }

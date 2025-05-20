@@ -50,8 +50,22 @@ inline void print_warning(std::string reason, std::string file) noexcept {
 }
 
 /// @internal
-inline void segfault_handler(std::int32_t _) {
-  pfd::notify("LibCompiler", "Driver just crashed, please report this on the GitHub issues page.");
+/// @brief Handler for SIGSEGV signal.
+inline void drv_segfault_handler(std::int32_t id) {
+  switch (id) {
+    case SIGSEGV: {
+      kStdErr << kRed << "drv: " << kWhite
+              << "Segmentation fault. Please report this on the GitHub issues page." << kBlank
+              << std::endl;
+      break;
+    }
+    case SIGABRT: {
+      kStdErr << kRed << "drv: " << kWhite
+              << "Aborted. Please report this on the GitHub issues page." << kBlank << std::endl;
+      break;
+    }
+  }
+
   std::exit(LIBCOMPILER_EXEC_ERROR);
 }
 }  // namespace Detail

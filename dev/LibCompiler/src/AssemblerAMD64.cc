@@ -88,7 +88,7 @@ static bool asm_read_attributes(std::string line);
 LIBCOMPILER_MODULE(AssemblerMainAMD64) {
   //////////////// CPU OPCODES BEGIN ////////////////
 
-  ::signal(SIGSEGV, Detail::segfault_handler);
+  ::signal(SIGSEGV, Detail::drv_segfault_handler);
 
   std::string opcodes_jump[kJumpLimit] = {"ja",  "jae",  "jb",  "jbe",  "jc",  "je",   "jg",  "jge",
                                           "jl",  "jle",  "jna", "jnae", "jnb", "jnbe", "jnc", "jne",

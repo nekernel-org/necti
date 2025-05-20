@@ -7,9 +7,14 @@
     "./dev/LibCompiler/src",
     "./dev/LibCompiler/src/Detail"
   ],
-  "sources_path": ["dev/LibCompiler/src/*.cc"],
+  "sources_path": [
+    "dev/LibCompiler/src/*.cc"
+  ],
   "output_name": "/usr/lib/libCompiler.so",
-  "compiler_flags": ["-fPIC", "-shared"],
+  "compiler_flags": [
+    "-fPIC",
+    "-shared"
+  ],
   "cpp_macros": [
     "__LIBCOMPILER__=202401",
     "LC_USE_STRUCTS=1",

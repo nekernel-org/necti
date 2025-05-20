@@ -9,6 +9,7 @@
 
 /// BUGS: 1
 
+#include "Vendor/Dialogs.h"
 #define kPrintF printf
 
 #define kExitOK (EXIT_SUCCESS)
@@ -23,7 +24,7 @@
 
 #include <cstdio>
 
-/* NE C++ Compiler */
+/* NeKernel C++ Compiler Driver */
 /* This is part of the LibCompiler. */
 /* (c) Amlal El Mahrouss */
 
@@ -91,7 +92,6 @@ struct CompilerState final {
   std::string                      fOutputValue;
   std::string                      fLastFile;
   std::string                      fLastError;
-  Boolean                          fVerbose;
 };
 }  // namespace Detail
 
@@ -141,7 +141,7 @@ static Boolean                      kOnForLoop   = false;
 static Boolean                      kInBraces    = false;
 static size_t                       kBracesCount = 0UL;
 
-/* @brief C++ compiler backend for the NE C++ driver */
+/* @brief C++ compiler backend for the NeKernel C++ driver */
 class CompilerFrontendCPlusPlus final : public LibCompiler::ICompilerFrontend {
  public:
   explicit CompilerFrontendCPlusPlus()  = default;
@@ -725,24 +725,23 @@ class AssemblyCPlusPlusInterface final ASSEMBLY_INTERFACE {
   Int32 CompileToFormat(std::string src, Int32 arch) override {
     if (kCompilerFrontend == nullptr) return kExitNO;
 
-    /* @brief copy contents wihtout extension */
-    std::ifstream src_fp = std::ifstream(src, std::ios::in);
-
     std::string dest = src;
     dest += ".masm";
 
     std::string line_source;
 
-    std::ofstream out(dest);
+    std::ofstream out_fp(dest);
+
+    std::ifstream src_fp = std::ifstream(src);
 
     while (std::getline(src_fp, line_source)) {
+      if (kVerbose) {
+        std::cout << kWhite << line_source << std::endl;
+      }
+
       kCompilerFrontend->Compile(line_source, src);
-      out << kState.fOutputValue;
+      out_fp << kState.fOutputValue;
     }
-
-    out.flush();
-
-    if (kAcceptableErrors > 0) return kExitNO;
 
     return kExitOK;
   }
@@ -785,8 +784,7 @@ LIBCOMPILER_MODULE(CompilerCPlusPlusAMD64) {
   kKeywords.push_back(
       {.keyword_name = "auto*", .keyword_kind = LibCompiler::kKeywordKindVariablePtr});
   kKeywords.push_back({.keyword_name = "int*", .keyword_kind = LibCompiler::kKeywordKindTypePtr});
-  kKeywords.push_back(
-      {.keyword_name = "bool*", .keyword_kind = LibCompiler::kKeywordKindTypePtr});
+  kKeywords.push_back({.keyword_name = "bool*", .keyword_kind = LibCompiler::kKeywordKindTypePtr});
   kKeywords.push_back(
       {.keyword_name = "unsigned*", .keyword_kind = LibCompiler::kKeywordKindTypePtr});
   kKeywords.push_back({.keyword_name = "short*", .keyword_kind = LibCompiler::kKeywordKindTypePtr});
@@ -836,7 +834,7 @@ LIBCOMPILER_MODULE(CompilerCPlusPlusAMD64) {
   kCompilerFrontend = new CompilerFrontendCPlusPlus();
   kFactory.Mount(new AssemblyCPlusPlusInterface());
 
-  ::signal(SIGSEGV, Detail::segfault_handler);
+  ::signal(SIGSEGV, Detail::drv_segfault_handler);
 
   for (auto index = 1UL; index < argc; ++index) {
     if (argv[index][0] == '-') {
@@ -846,7 +844,7 @@ LIBCOMPILER_MODULE(CompilerCPlusPlusAMD64) {
       }
 
       if (strcmp(argv[index], "-cxx-verbose") == 0) {
-        kState.fVerbose = true;
+        kVerbose = true;
 
         continue;
       }
@@ -892,7 +890,7 @@ LIBCOMPILER_MODULE(CompilerCPlusPlusAMD64) {
     }
 
     if (!found) {
-      if (kState.fVerbose) {
+      if (kVerbose) {
         Detail::print_error(argv_i + " is not a valid C++ source.\n", "cxxdrv");
       }
 
@@ -900,11 +898,13 @@ LIBCOMPILER_MODULE(CompilerCPlusPlusAMD64) {
     }
 
     if (kFactory.Compile(argv_i, kMachine) != kExitOK) {
-      Detail::print_error("Compiler error, see log for details.\n", "cxxdrv");
+      return kExitNO;
     }
   }
 
-  return kExitNO;
+  kFactory.Unmount();
+
+  return kExitOK;
 }
 
 // Last rev 8-1-24

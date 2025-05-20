@@ -61,7 +61,7 @@
 /// @brief PEF stack size symbol.
 #define kLinkerStackSizeSymbol "__PEFSizeOfReserveStack"
 
-#define kConsoleOut            \
+#define kConsoleOut        \
   (std::cout << "\e[0;31m" \
              << "ld64: "   \
              << "\e[0;97m")
@@ -101,7 +101,7 @@ static std::vector<Detail::DynamicLinkerBlob> kObjectBytes;
 LIBCOMPILER_MODULE(DynamicLinker64PEF) {
   bool is_executable = true;
 
-  ::signal(SIGSEGV, Detail::segfault_handler);
+  ::signal(SIGSEGV, Detail::drv_segfault_handler);
 
   /**
    * @brief parse flags and trigger options.
@@ -270,9 +270,9 @@ LIBCOMPILER_MODULE(DynamicLinker64PEF) {
           if (kVerbose) kConsoleOut << "not a FAT binary.\n";
 
           kConsoleOut << "object " << objectFile
-                  << " is a different kind of architecture and output isn't "
-                     "treated as a FAT binary."
-                  << std::endl;
+                      << " is a different kind of architecture and output isn't "
+                         "treated as a FAT binary."
+                      << std::endl;
 
           return LIBCOMPILER_FAT_ERROR;
         } else {
@@ -450,8 +450,8 @@ LIBCOMPILER_MODULE(DynamicLinker64PEF) {
   if (!kStartFound && is_executable) {
     if (kVerbose)
       kConsoleOut << "Undefined entrypoint: " << kPefStart
-              << ", you may have forget to link "
-                 "against the C++ runtime library.\n";
+                  << ", you may have forget to link "
+                     "against the C++ runtime library.\n";
 
     kConsoleOut << "Undefined entrypoint " << kPefStart << " for executable: " << kOutput << "\n";
   }
@@ -603,7 +603,7 @@ LIBCOMPILER_MODULE(DynamicLinker64PEF) {
     if (kVerbose) {
       kConsoleOut << "Command name: " << name << "\n";
       kConsoleOut << "VMAddress of command content: " << command_headers[commandHeaderIndex].Offset
-              << "\n";
+                  << "\n";
     }
 
     output_fc << command_headers[commandHeaderIndex];

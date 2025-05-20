@@ -28,7 +28,11 @@ Int32 AssemblyFactory::Compile(std::string sourceFile, const Int32& arch) noexce
 
   if (arch != fMounted->Arch()) return LIBCOMPILER_INVALID_ARCH;
 
-  return fMounted->CompileToFormat(sourceFile, arch);
+  try {
+    return fMounted->CompileToFormat(sourceFile, arch);
+  } catch (std::exception& e) {
+    return LIBCOMPILER_EXEC_ERROR;
+  }
 }
 
 ///! @brief mount assembly backend.
