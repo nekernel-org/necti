@@ -884,7 +884,10 @@ LIBCOMPILER_MODULE(CompilerCPlusPlusAMD64) {
     for (std::string ext : exts) {
       if (argv_i.find(ext) != std::string::npos) {
         found = true;
-        break;
+
+        if (kFactory.Compile(argv_i, kMachine) != kExitOK) {
+          return kExitNO;
+        }
       }
     }
 
@@ -893,10 +896,6 @@ LIBCOMPILER_MODULE(CompilerCPlusPlusAMD64) {
         Detail::print_error(argv_i + " is not a valid C++ source.\n", "cxxdrv");
       }
 
-      return kExitNO;
-    }
-
-    if (kFactory.Compile(argv_i, kMachine) != kExitOK) {
       return kExitNO;
     }
   }
