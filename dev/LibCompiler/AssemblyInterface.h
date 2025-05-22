@@ -54,7 +54,7 @@ class AssemblyInterface {
 
   LIBCOMPILER_COPY_DEFAULT(AssemblyInterface);
 
-  [[maybe_unused]] virtual Int32 Arch() noexcept { return AssemblyFactory::kArchAMD64; }
+  virtual UInt32 Arch() noexcept { return AssemblyFactory::kArchAMD64; }
 
   /// @brief compile to object file.
   /// @note Example C++ -> MASM -> AE object.

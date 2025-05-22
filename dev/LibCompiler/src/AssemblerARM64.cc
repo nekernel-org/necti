@@ -41,9 +41,6 @@
 #define kWhite "\e[0;97m"
 #define kYellow "\e[0;33m"
 
-#define kStdOut (std::cout << kWhite)
-#define kStdErr (std::cout << kRed)
-
 constexpr auto cPowerIPAlignment = 0x1U;
 
 static CharType kOutputArch = LibCompiler::kPefArchARM64;

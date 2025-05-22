@@ -21,8 +21,6 @@
 #include <LibCompiler/Detail/ClUtils.h>
 #include <LibCompiler/UUID.h>
 
-#include <cstdio>
-
 /* NeKernel C++ Compiler Driver */
 /* This is part of the LibCompiler. */
 /* (c) Amlal El Mahrouss */
@@ -188,7 +186,7 @@ static std::vector<std::pair<std::string, std::uintptr_t>> kOriginMap;
 /////////////////////////////////////////////////////////////////////////////////////////
 
 Boolean CompilerFrontendCPlusPlus::Compile(std::string text, std::string file) {
-  if (text.empty()) return false;
+  if (text.length() < 1) return false;
 
   std::size_t                                                       index = 0UL;
   std::vector<std::pair<LibCompiler::CompilerKeyword, std::size_t>> keywords_list;
@@ -717,9 +715,7 @@ class AssemblyCPlusPlusInterface final ASSEMBLY_INTERFACE {
 
   LIBCOMPILER_COPY_DEFAULT(AssemblyCPlusPlusInterface);
 
-  [[maybe_unused]] Int32 Arch() noexcept override {
-    return LibCompiler::AssemblyFactory::kArchAMD64;
-  }
+  UInt32 Arch() noexcept override { return LibCompiler::AssemblyFactory::kArchAMD64; }
 
   Int32 CompileToFormat(std::string src, Int32 arch) override {
     if (kCompilerFrontend == nullptr) return kExitNO;
@@ -727,19 +723,24 @@ class AssemblyCPlusPlusInterface final ASSEMBLY_INTERFACE {
     std::string dest = src;
     dest += ".masm";
 
-    std::string line_source;
-
     std::ofstream out_fp(dest);
 
     std::ifstream src_fp = std::ifstream(src);
 
+    std::string line_source;
+
     while (std::getline(src_fp, line_source)) {
       if (kVerbose) {
-        std::cout << kWhite << line_source << std::endl;
+        kStdOut << line_source << std::endl;
+        kStdOut << line_source.length() << " bytes\n";
       }
 
       kCompilerFrontend->Compile(line_source, src);
       out_fp << kState.fOutputValue;
+    }
+
+    if (kVerbose) {
+      kStdOut << "Done compiling " << src << " to " << dest << "\n";
     }
 
     return kExitOK;
@@ -851,7 +852,7 @@ LIBCOMPILER_MODULE(CompilerCPlusPlusAMD64) {
       if (strcmp(argv[index], "-cxx-dialect") == 0) {
         if (kCompilerFrontend) std::cout << kCompilerFrontend->Language() << "\n";
 
-        return kExitOK;
+        return LIBCOMPILER_SUCCESS;
       }
 
       if (strcmp(argv[index], "-cxx-max-err") == 0) {
@@ -879,14 +880,14 @@ LIBCOMPILER_MODULE(CompilerCPlusPlusAMD64) {
     std::string argv_i = argv[index];
 
     std::vector exts  = kExtListCxx;
-    Boolean     found = false;
+    BOOL        found = false;
 
     for (std::string ext : exts) {
       if (argv_i.find(ext) != std::string::npos) {
         found = true;
 
         if (kFactory.Compile(argv_i, kMachine) != kExitOK) {
-          return kExitNO;
+          return LIBCOMPILER_INVALID_DATA;
         }
       }
     }
@@ -896,13 +897,13 @@ LIBCOMPILER_MODULE(CompilerCPlusPlusAMD64) {
         Detail::print_error(argv_i + " is not a valid C++ source.\n", "cxxdrv");
       }
 
-      return kExitNO;
+      return LIBCOMPILER_INVALID_DATA;
     }
   }
 
   kFactory.Unmount();
 
-  return kExitOK;
+  return LIBCOMPILER_SUCCESS;
 }
 
 // Last rev 8-1-24
