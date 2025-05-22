@@ -16,6 +16,6 @@ LC_IMPORT_C Int32 CompilerCPlusPlusAMD64(Int32 argc, CharType const* argv[]);
 
 Int32 main(Int32 argc, CharType const* argv[]) {
   auto ret = CompilerCPlusPlusAMD64(argc, argv);
-  
+
   return (ret == LIBCOMPILER_SUCCESS) ? EXIT_SUCCESS : EXIT_FAILURE;
 }

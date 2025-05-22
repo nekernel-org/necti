@@ -80,7 +80,7 @@ struct CompilerStructMap final {
   std::size_t fOffsetsCnt;
 
   // offset array
-  std::vector<std::pair<Int32, std::string>> fOffsets;
+  std::vector<std::pair<UInt32, std::string>> fOffsets;
 };
 
 struct CompilerState final {
@@ -96,18 +96,6 @@ static Detail::CompilerState kState;
 
 static Int32 kOnClassScope = 0;
 
-namespace Detail {
-/// @brief prints an error into stdout.
-/// @param reason the reason of the error.
-/// @param file where does it originate from?
-void print_error(std::string reason, std::string file) noexcept;
-
-struct CompilerType final {
-  std::string fName;
-  std::string fValue;
-};
-}  // namespace Detail
-
 /////////////////////////////////////////////////////////////////////////////////////////
 
 // Target architecture.
@@ -119,10 +107,6 @@ static int kMachine = LibCompiler::AssemblyFactory::kArchAMD64;
 
 /////////////////////////////////////////
 
-static size_t                                    kRegisterCnt     = kAsmRegisterLimit;
-static size_t                                    kStartUsable     = 8;
-static size_t                                    kUsableLimit     = 15;
-static size_t                                    kRegisterCounter = kStartUsable;
 static std::vector<LibCompiler::CompilerKeyword> kKeywords;
 
 /////////////////////////////////////////
@@ -201,16 +185,22 @@ Boolean CompilerFrontendCPlusPlus::Compile(std::string text, std::string file) {
           break;
       }
 
-      if (text[text.find(keyword.keyword_name) - 1] == '+' &&
-          keyword.keyword_kind == LibCompiler::KeywordKind::kKeywordKindVariableAssign)
+      std::size_t pos = text.find(keyword.keyword_name);
+      if (pos == std::string::npos) continue;
+
+      // Safe guard: can't go before start of string
+      if (pos > 0 && text[pos - 1] == '+' &&
+          keyword.keyword_kind == LibCompiler::kKeywordKindVariableAssign)
         continue;
 
-      if (text[text.find(keyword.keyword_name) - 1] == '-' &&
-          keyword.keyword_kind == LibCompiler::KeywordKind::kKeywordKindVariableAssign)
+      if (pos > 0 && text[pos - 1] == '-' &&
+          keyword.keyword_kind == LibCompiler::kKeywordKindVariableAssign)
         continue;
 
-      if (text[text.find(keyword.keyword_name) + 1] == '=' &&
-          keyword.keyword_kind == LibCompiler::KeywordKind::kKeywordKindVariableAssign)
+      // Safe guard: don't go out of range
+      if ((pos + keyword.keyword_name.size()) < text.size() &&
+          text[pos + keyword.keyword_name.size()] == '=' &&
+          keyword.keyword_kind == LibCompiler::kKeywordKindVariableAssign)
         continue;
 
       keywords_list.emplace_back(std::make_pair(keyword, index));
@@ -221,15 +211,25 @@ Boolean CompilerFrontendCPlusPlus::Compile(std::string text, std::string file) {
   LibCompiler::SyntaxLeafList::SyntaxLeaf syntax_tree;
 
   for (auto& keyword : keywords_list) {
+    if (text.find(keyword.first.keyword_name) == std::string::npos) continue;
+
     switch (keyword.first.keyword_kind) {
       case LibCompiler::KeywordKind::kKeywordKindClass: {
         ++kOnClassScope;
         break;
       }
       case LibCompiler::KeywordKind::kKeywordKindIf: {
-        auto expr = text.substr(
-            text.find(keyword.first.keyword_name) + keyword.first.keyword_name.size() + 1,
-            text.find(")") - 1);
+        std::size_t keywordPos = text.find(keyword.first.keyword_name);
+        std::size_t openParen  = text.find("(", keywordPos);
+        std::size_t closeParen = text.find(")", openParen);
+
+        if (keywordPos == std::string::npos || openParen == std::string::npos ||
+            closeParen == std::string::npos || closeParen <= openParen) {
+          Detail::print_error("Malformed if expression: " + text, file);
+          return false;
+        }
+
+        auto expr = text.substr(openParen + 1, closeParen - openParen - 1);
 
         if (expr.find(">=") != std::string::npos) {
           auto left = text.substr(
@@ -269,28 +269,30 @@ Boolean CompilerFrontendCPlusPlus::Compile(std::string text, std::string file) {
 
             auto& valueOfVar = !isdigit(left[0]) ? left : right;
 
-            for (auto pairRight : kRegisterMap) {
-              ++indexRight;
+            if (!valueOfVar.empty()) {
+              for (auto pairRight : kRegisterMap) {
+                ++indexRight;
 
-              if (pairRight != valueOfVar) {
+                if (pairRight != valueOfVar) {
+                  auto& valueOfVarOpposite = isdigit(left[0]) ? left : right;
+
+                  syntax_tree.fUserValue +=
+                      "mov " + kRegisterList[indexRight + 1] + ", " + valueOfVarOpposite + "\n";
+                  syntax_tree.fUserValue += "cmp " + kRegisterList[kRegisterMap.size() - 1] + "," +
+                                            kRegisterList[indexRight + 1] + "\n";
+
+                  goto done_iterarting_on_if;
+                }
+
                 auto& valueOfVarOpposite = isdigit(left[0]) ? left : right;
 
                 syntax_tree.fUserValue +=
                     "mov " + kRegisterList[indexRight + 1] + ", " + valueOfVarOpposite + "\n";
-                syntax_tree.fUserValue += "cmp " + kRegisterList[kRegisterMap.size() - 1] + "," +
+                syntax_tree.fUserValue += "cmp " + kRegisterList[kRegisterMap.size() - 1] + ", " +
                                           kRegisterList[indexRight + 1] + "\n";
 
-                goto done_iterarting_on_if;
+                break;
               }
-
-              auto& valueOfVarOpposite = isdigit(left[0]) ? left : right;
-
-              syntax_tree.fUserValue +=
-                  "mov " + kRegisterList[indexRight + 1] + ", " + valueOfVarOpposite + "\n";
-              syntax_tree.fUserValue += "cmp " + kRegisterList[kRegisterMap.size() - 1] + ", " +
-                                        kRegisterList[indexRight + 1] + "\n";
-
-              break;
             }
           }
 
@@ -736,7 +738,9 @@ class AssemblyCPlusPlusInterface final ASSEMBLY_INTERFACE {
       }
 
       kCompilerFrontend->Compile(line_source, src);
+
       out_fp << kState.fOutputValue;
+      kState.fOutputValue.clear();
     }
 
     if (kVerbose) {
@@ -902,6 +906,12 @@ LIBCOMPILER_MODULE(CompilerCPlusPlusAMD64) {
   }
 
   kFactory.Unmount();
+
+  delete kCompilerFrontend;
+  kCompilerFrontend = nullptr;
+  
+  kRegisterMap.clear();
+  kOriginMap.clear();
 
   return LIBCOMPILER_SUCCESS;
 }

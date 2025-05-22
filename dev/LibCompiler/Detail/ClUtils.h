@@ -36,7 +36,7 @@ namespace Detail {
 inline void print_error(std::string reason, std::string file) noexcept {
   if (reason[0] == '\n') reason.erase(0, 1);
 
-  kStdErr << kRed  << reason << kBlank << std::endl;
+  kStdErr << kRed << reason << kBlank << std::endl;
 
   if (kAcceptableErrors > kErrorLimit) std::exit(LIBCOMPILER_EXEC_ERROR);
 
@@ -46,7 +46,7 @@ inline void print_error(std::string reason, std::string file) noexcept {
 inline void print_warning(std::string reason, std::string file) noexcept {
   if (reason[0] == '\n') reason.erase(0, 1);
 
-  kStdOut << kYellow  << reason << kBlank << std::endl;
+  kStdOut << kYellow << reason << kBlank << std::endl;
 }
 
 /// @internal
@@ -54,8 +54,7 @@ inline void print_warning(std::string reason, std::string file) noexcept {
 inline void drv_segfault_handler(std::int32_t id) {
   switch (id) {
     case SIGSEGV: {
-      kStdErr << "SIGSEGV: Please report this on the GitHub issues page." << kBlank
-              << std::endl;
+      kStdErr << "SIGSEGV: Please report this on the GitHub issues page." << kBlank << std::endl;
       break;
     }
     case SIGABRT: {
