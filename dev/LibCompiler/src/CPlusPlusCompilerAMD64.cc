@@ -123,7 +123,7 @@ static Boolean                      kInBraces    = false;
 static size_t                       kBracesCount = 0UL;
 
 /* @brief C++ compiler backend for the NeKernel C++ driver */
-class CompilerFrontendCPlusPlus final : public LibCompiler::ICompilerFrontend {
+class CompilerFrontendCPlusPlus final : public LibCompiler::CompilerFrontendInterface {
  public:
   explicit CompilerFrontendCPlusPlus()  = default;
   ~CompilerFrontendCPlusPlus() override = default;
@@ -710,7 +710,7 @@ Boolean CompilerFrontendCPlusPlus::Compile(std::string text, std::string file) {
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
-class AssemblyCPlusPlusInterface final ASSEMBLY_INTERFACE {
+class AssemblyCPlusPlusInterface final LC_ASSEMBLY_INTERFACE {
  public:
   explicit AssemblyCPlusPlusInterface()  = default;
   ~AssemblyCPlusPlusInterface() override = default;
@@ -723,7 +723,7 @@ class AssemblyCPlusPlusInterface final ASSEMBLY_INTERFACE {
     if (kCompilerFrontend == nullptr) return kExitNO;
 
     std::string dest = src;
-    dest += ".masm";
+    dest += ".pp.masm";
 
     std::ofstream out_fp(dest);
 
@@ -883,11 +883,11 @@ LIBCOMPILER_MODULE(CompilerCPlusPlusAMD64) {
 
     std::string argv_i = argv[index];
 
-    std::vector exts  = kExtListCxx;
+    std::vector<std::string> exts  = kExtListCxx;
     BOOL        found = false;
 
     for (std::string ext : exts) {
-      if (argv_i.find(ext) != std::string::npos) {
+      if (argv_i.ends_with(ext)) {
         found = true;
 
         if (kFactory.Compile(argv_i, kMachine) != kExitOK) {
@@ -898,7 +898,7 @@ LIBCOMPILER_MODULE(CompilerCPlusPlusAMD64) {
 
     if (!found) {
       if (kVerbose) {
-        Detail::print_error(argv_i + " is not a valid C++ source.\n", "cxxdrv");
+        Detail::print_error(argv_i + " is not a valid C++ source.", "cxxdrv");
       }
 
       return LIBCOMPILER_INVALID_DATA;
@@ -909,12 +909,13 @@ LIBCOMPILER_MODULE(CompilerCPlusPlusAMD64) {
 
   delete kCompilerFrontend;
   kCompilerFrontend = nullptr;
-  
+
   kRegisterMap.clear();
   kOriginMap.clear();
 
   return LIBCOMPILER_SUCCESS;
 }
 
+//
 // Last rev 8-1-24
 //

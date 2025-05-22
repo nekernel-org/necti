@@ -125,7 +125,7 @@ static bool                         kIfFound     = false;
 static size_t                       kBracesCount = 0UL;
 
 /* @brief C compiler backend for C */
-class CompilerFrontendPower64 final : public LibCompiler::ICompilerFrontend {
+class CompilerFrontendPower64 final : public LibCompiler::CompilerFrontendInterface {
  public:
   explicit CompilerFrontendPower64()  = default;
   ~CompilerFrontendPower64() override = default;
@@ -1062,7 +1062,7 @@ skip_braces_check:
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
-class AssemblyMountpointCLang final ASSEMBLY_INTERFACE {
+class AssemblyMountpointCLang final LC_ASSEMBLY_INTERFACE {
  public:
   explicit AssemblyMountpointCLang()  = default;
   ~AssemblyMountpointCLang() override = default;

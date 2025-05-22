@@ -36,7 +36,7 @@ namespace Detail {
 inline void print_error(std::string reason, std::string file) noexcept {
   if (reason[0] == '\n') reason.erase(0, 1);
 
-  kStdErr << kRed << reason << kBlank << std::endl;
+  kStdErr << reason << kBlank << std::endl;
 
   if (kAcceptableErrors > kErrorLimit) std::exit(LIBCOMPILER_EXEC_ERROR);
 

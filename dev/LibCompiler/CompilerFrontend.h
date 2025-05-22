@@ -8,17 +8,19 @@
 
 #include <LibCompiler/AssemblyInterface.h>
 
+#define LC_COMPILER_FRONTEND : public LibCompiler::CompilerFrontendInterface
+
 namespace LibCompiler {
-inline auto kInvalidFrontend = "NA";
+inline static auto kInvalidFrontend = "?";
 
 /// @brief Compiler backend, implements a frontend, such as C, C++...
 /// See Toolchain, for some examples.
-class ICompilerFrontend {
+class CompilerFrontendInterface {
  public:
-  explicit ICompilerFrontend() = default;
-  virtual ~ICompilerFrontend() = default;
+  explicit CompilerFrontendInterface() = default;
+  virtual ~CompilerFrontendInterface() = default;
 
-  LIBCOMPILER_COPY_DEFAULT(ICompilerFrontend);
+  LIBCOMPILER_COPY_DEFAULT(CompilerFrontendInterface);
 
   // NOTE: cast this to your user defined ast.
   typedef void* AstType;

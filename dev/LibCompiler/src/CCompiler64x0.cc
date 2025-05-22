@@ -134,7 +134,7 @@ static bool                         kIfFound     = false;
 static size_t                       kBracesCount = 0UL;
 
 /* @brief C compiler backend for C */
-class CompilerFrontend64x0 final : public LibCompiler::ICompilerFrontend {
+class CompilerFrontend64x0 final : public LibCompiler::CompilerFrontendInterface {
  public:
   explicit CompilerFrontend64x0()  = default;
   ~CompilerFrontend64x0() override = default;
@@ -1044,7 +1044,7 @@ skip_braces_check:
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
-class AssemblyCCInterface final ASSEMBLY_INTERFACE {
+class AssemblyCCInterface final LC_ASSEMBLY_INTERFACE {
  public:
   explicit AssemblyCCInterface()  = default;
   ~AssemblyCCInterface() override = default;

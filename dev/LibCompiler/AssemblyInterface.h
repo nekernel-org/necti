@@ -10,7 +10,8 @@
 #include <LibCompiler/Macros.h>
 #include <LibCompiler/StringView.h>
 
-#define ASSEMBLY_INTERFACE : public LibCompiler::AssemblyInterface
+#define LC_ASSEMBLY_INTERFACE : public LibCompiler::AssemblyInterface
+#define LC_ENCODER : public LibCompiler::EncoderInterface
 
 namespace LibCompiler {
 class AssemblyFactory;
