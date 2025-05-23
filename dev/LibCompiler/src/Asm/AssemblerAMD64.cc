@@ -1,6 +1,6 @@
 /* -------------------------------------------
 
-  Copyright (C) 2024-2025 Amlal EL Mahrous, all rights reserved
+  Copyright (C) 2024-2025 Amlal EL Mahrouss, all rights reserved
 
 ------------------------------------------- */
 
@@ -27,8 +27,8 @@
 #define kAssemblerPragmaSym '#'
 
 #include <LibCompiler/AE.h>
-#include <LibCompiler/Backend/Amd64.h>
-#include <LibCompiler/CompilerFrontend.h>
+#include <LibCompiler/Backend/X64.h>
+#include <LibCompiler/Frontend.h>
 #include <LibCompiler/PEF.h>
 #include <algorithm>
 #include <cstdlib>
@@ -74,7 +74,7 @@ static const std::string kUndefinedSymbol = ":UndefinedSymbol:";
 // \brief forward decl.
 static bool asm_read_attributes(std::string line);
 
-#include <LibCompiler/Detail/AsmUtils.h>
+#include <LibCompiler/Util/LCAsmUtils.h>
 
 /////////////////////////////////////////////////////////////////////////////////////////
 

@@ -8,8 +8,8 @@
  */
 
 #include <LibCompiler/Backend/PowerPC.h>
-#include <LibCompiler/CompilerFrontend.h>
-#include <LibCompiler/Detail/ClUtils.h>
+#include <LibCompiler/Util/LCClUtils.h>
+#include <LibCompiler/Frontend.h>
 #include <LibCompiler/UUID.h>
 #include <cstdio>
 #include <fstream>

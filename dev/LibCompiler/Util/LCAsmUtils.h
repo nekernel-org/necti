@@ -1,15 +1,15 @@
 /* -------------------------------------------
 
-  Copyright (C) 2024-2025 Amlal EL Mahrous, all rights reserved
+  Copyright (C) 2024-2025 Amlal EL Mahrouss, all rights reserved
 
 ------------------------------------------- */
 
 #pragma once
 
-#include <LibCompiler/AssemblyInterface.h>
-#include <LibCompiler/CompilerFrontend.h>
+#include <LibCompiler/CodeGen.h>
+#include <LibCompiler/Frontend.h>
 
-#include <LibCompiler/Detail/ClUtils.h>
+#include <LibCompiler/Util/LCClUtils.h>
 
 using namespace LibCompiler;
 

@@ -11,8 +11,8 @@
 /// TODO: none
 
 #include <LibCompiler/Backend/64x0.h>
-#include <LibCompiler/CompilerFrontend.h>
-#include <LibCompiler/Detail/ClUtils.h>
+#include <LibCompiler/Util/LCClUtils.h>
+#include <LibCompiler/Frontend.h>
 #include <LibCompiler/UUID.h>
 #include <cstdio>
 #include <fstream>

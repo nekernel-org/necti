@@ -1,6 +1,6 @@
 /* -------------------------------------------
 
-  Copyright (C) 2024-2025 Amlal EL Mahrous, all rights reserved
+  Copyright (C) 2024-2025 Amlal EL Mahrouss, all rights reserved
 
 ------------------------------------------- */
 
@@ -11,7 +11,7 @@
 // @brief 32x0 support.
 // @file Backend/32x0.h
 
-#define kAsmOpcodeDecl(__NAME, __OPCODE, __FUNCT3, __FUNCT7) \
+#define LC_ASM_OPCODE(__NAME, __OPCODE, __FUNCT3, __FUNCT7) \
   {.fName = __NAME, .fOpcode = __OPCODE, .fFunct3 = __FUNCT3, .fFunct7 = __FUNCT7},
 
 #define kAsmImmediate 0x01
@@ -37,18 +37,18 @@ struct CpuCode32x0 {
 #define kAsmByteStr ".byte"   /* 8-bit */
 
 inline std::vector<CpuCode32x0> kOpcodes32x0 = {
-    kAsmOpcodeDecl("nop", 0b0100011, 0b000, kAsmNoArgs)     // nothing to do. (1C)
-    kAsmOpcodeDecl("jmp", 0b1110011, 0b001, kAsmJump)       // jump to branch (2C)
-    kAsmOpcodeDecl("mov", 0b0100011, 0b101, kAsmImmediate)  // move registers (3C)
-    kAsmOpcodeDecl("psh", 0b0111011, 0b000, kAsmImmediate)  // push to sp (2C)
-    kAsmOpcodeDecl("pop", 0b0111011, 0b001, kAsmImmediate)  // pop from sp. (1C)
-    kAsmOpcodeDecl("lea", 0b0111011, 0b010,
+    LC_ASM_OPCODE("nop", 0b0100011, 0b000, kAsmNoArgs)     // nothing to do. (1C)
+    LC_ASM_OPCODE("jmp", 0b1110011, 0b001, kAsmJump)       // jump to branch (2C)
+    LC_ASM_OPCODE("mov", 0b0100011, 0b101, kAsmImmediate)  // move registers (3C)
+    LC_ASM_OPCODE("psh", 0b0111011, 0b000, kAsmImmediate)  // push to sp (2C)
+    LC_ASM_OPCODE("pop", 0b0111011, 0b001, kAsmImmediate)  // pop from sp. (1C)
+    LC_ASM_OPCODE("lea", 0b0111011, 0b010,
                    kAsmImmediate)  // setup stack and call, store address to CR (1C).
-    kAsmOpcodeDecl("ret", 0b0111011, 0b110,
+    LC_ASM_OPCODE("ret", 0b0111011, 0b110,
                    kAsmImmediate)                         // return from procedure (2C).
-    kAsmOpcodeDecl("uc", 0b0111111, 0b000, kAsmSyscall)   // user call (1C)
-    kAsmOpcodeDecl("kc", 0b0111111, 0b001, kAsmSyscall)   // kernel call (1C)
-    kAsmOpcodeDecl("int", 0b0111111, 0b010, kAsmSyscall)  // raise interrupt (1C)
+    LC_ASM_OPCODE("uc", 0b0111111, 0b000, kAsmSyscall)   // user call (1C)
+    LC_ASM_OPCODE("kc", 0b0111111, 0b001, kAsmSyscall)   // kernel call (1C)
+    LC_ASM_OPCODE("int", 0b0111111, 0b010, kAsmSyscall)  // raise interrupt (1C)
 };
 
 // \brief 64x0 register prefix

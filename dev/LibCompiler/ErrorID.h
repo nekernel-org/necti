@@ -10,7 +10,6 @@
 #pragma once
 
 #include <LibCompiler/Defines.h>
-#include <LibCompiler/ErrorOr.h>
 
 #define LIBCOMPILER_SUCCESS 0
 #define LIBCOMPILER_EXEC_ERROR -30

@@ -22,14 +22,15 @@ class Ref final {
 
   ~Ref() {
     if (m_Strong) {
-      (*m_Class).~T();
+      delete m_Class;
+      m_Class = nullptr;
     }
   }
 
   LIBCOMPILER_COPY_DEFAULT(Ref);
 
  public:
-  explicit Ref(T cls, const Bool& strong = false) : m_Class(&cls), m_Strong(strong) {}
+  explicit Ref(T* cls, const Bool& strong = false) : m_Class(cls), m_Strong(strong) {}
 
   Ref& operator=(T ref) {
     *m_Class = ref;

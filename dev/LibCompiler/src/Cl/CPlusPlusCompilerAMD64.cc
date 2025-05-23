@@ -16,9 +16,9 @@
 
 // extern_segment, @autodelete { ... }, fn foo() -> auto { ... }
 
-#include <LibCompiler/Backend/Amd64.h>
-#include <LibCompiler/CompilerFrontend.h>
-#include <LibCompiler/Detail/ClUtils.h>
+#include <LibCompiler/Backend/X64.h>
+#include <LibCompiler/Util/LCClUtils.h>
+#include <LibCompiler/Frontend.h>
 #include <LibCompiler/UUID.h>
 
 /* NeKernel C++ Compiler Driver */
@@ -358,7 +358,7 @@ Boolean CompilerFrontendCPlusPlus::Compile(std::string text, std::string file) {
           ++indexFnName;
         }
 
-        if (fnName.find("(") != LibCompiler::String::npos) {
+        if (fnName.find("(") != LibCompiler::STLString::npos) {
           fnName.erase(fnName.find("("));
         }
 
@@ -884,7 +884,7 @@ LIBCOMPILER_MODULE(CompilerCPlusPlusAMD64) {
     std::string argv_i = argv[index];
 
     std::vector<std::string> exts  = kExtListCxx;
-    BOOL        found = false;
+    BOOL                     found = false;
 
     for (std::string ext : exts) {
       if (argv_i.ends_with(ext)) {

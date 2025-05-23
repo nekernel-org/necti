@@ -8,7 +8,8 @@
     "./dev/LibCompiler/src/Detail"
   ],
   "sources_path": [
-    "dev/LibCompiler/src/*.cc"
+    "dev/LibCompiler/src/*.cc",
+    "dev/LibCompiler/src/*/*.cc"
   ],
   "output_name": "/usr/lib/libCompiler.so",
   "compiler_flags": [

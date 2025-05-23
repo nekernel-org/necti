@@ -1,10 +1,10 @@
 /* -------------------------------------------
 
-  Copyright (C) 2024-2025 Amlal EL Mahrous, all rights reserved
+  Copyright (C) 2024-2025 Amlal EL Mahrouss, all rights reserved
 
 ------------------------------------------- */
 
-#include <LibCompiler/AssemblyInterface.h>
+#include <LibCompiler/CodeGen.h>
 #include <LibCompiler/ErrorID.h>
 
 /**
@@ -23,13 +23,15 @@
 
 namespace LibCompiler {
 ///! @brief Compile for specific format (ELF, PEF, ZBIN)
-Int32 AssemblyFactory::Compile(std::string sourceFile, const Int32& arch) noexcept {
+Int32 AssemblyFactory::Compile(STLString sourceFile, const Int32& arch) noexcept {
   if (sourceFile.length() < 1 || !fMounted) return LIBCOMPILER_UNIMPLEMENTED;
+
+  if (!fMounted) return LIBCOMPILER_UNIMPLEMENTED;
 
   if (arch != fMounted->Arch()) return LIBCOMPILER_INVALID_ARCH;
 
   try {
-    return fMounted->CompileToFormat(sourceFile, arch);
+    return this->fMounted->CompileToFormat(sourceFile, arch);
   } catch (std::exception& e) {
     return LIBCOMPILER_EXEC_ERROR;
   }

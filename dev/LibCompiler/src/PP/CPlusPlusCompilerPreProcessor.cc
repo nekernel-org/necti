@@ -9,8 +9,8 @@
 
 /// BUGS: 0
 
-#include <LibCompiler/CompilerFrontend.h>
 #include <LibCompiler/ErrorID.h>
+#include <LibCompiler/Frontend.h>
 #include <algorithm>
 #include <filesystem>
 #include <fstream>
@@ -24,7 +24,7 @@
 /// @file bpp.cxx
 /// @brief Preprocessor.
 
-typedef Int32 (*bpp_parser_fn_t)(LibCompiler::String& line, std::ifstream& hdr_file,
+typedef Int32 (*bpp_parser_fn_t)(LibCompiler::STLString& line, std::ifstream& hdr_file,
                                  std::ofstream& pp_out);
 
 /////////////////////////////////////////////////////////////////////////////////////////
@@ -46,8 +46,8 @@ enum {
 };
 
 struct bpp_macro_condition final {
-  int32_t             fType;
-  LibCompiler::String fTypeName;
+  int32_t                fType;
+  LibCompiler::STLString fTypeName;
 
   void Print() {
     std::cout << "type: " << fType << "\n";
@@ -56,9 +56,9 @@ struct bpp_macro_condition final {
 };
 
 struct bpp_macro final {
-  std::vector<LibCompiler::String> fArgs;
-  LibCompiler::String              fName;
-  LibCompiler::String              fValue;
+  std::vector<LibCompiler::STLString> fArgs;
+  LibCompiler::STLString              fName;
+  LibCompiler::STLString              fValue;
 
   void Print() {
     std::cout << "name: " << fName << "\n";
@@ -71,11 +71,11 @@ struct bpp_macro final {
 };
 }  // namespace Detail
 
-static std::vector<LibCompiler::String> kFiles;
-static std::vector<Detail::bpp_macro>   kMacros;
-static std::vector<LibCompiler::String> kIncludes;
+static std::vector<LibCompiler::STLString> kFiles;
+static std::vector<Detail::bpp_macro>      kMacros;
+static std::vector<LibCompiler::STLString> kIncludes;
 
-static LibCompiler::String kWorkingDir = "";
+static LibCompiler::STLString kWorkingDir = "";
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
@@ -85,11 +85,12 @@ static LibCompiler::String kWorkingDir = "";
 /////////////////////////////////////////////////////////////////////////////////////////
 
 int32_t bpp_parse_if_condition(Detail::bpp_macro_condition& cond, Detail::bpp_macro& macro,
-                               bool& inactive_code, bool& defined, LibCompiler::String& macro_str) {
+                               bool& inactive_code, bool& defined,
+                               LibCompiler::STLString& macro_str) {
   if (cond.fType == Detail::kEqual) {
     auto substr_macro = macro_str.substr(macro_str.find(macro.fName) + macro.fName.size());
 
-    if (substr_macro.find(macro.fValue) != LibCompiler::String::npos) {
+    if (substr_macro.find(macro.fValue) != LibCompiler::STLString::npos) {
       if (macro.fValue == "0") {
         defined       = false;
         inactive_code = true;
@@ -105,8 +106,8 @@ int32_t bpp_parse_if_condition(Detail::bpp_macro_condition& cond, Detail::bpp_ma
   } else if (cond.fType == Detail::kNotEqual) {
     auto substr_macro = macro_str.substr(macro_str.find(macro.fName) + macro.fName.size());
 
-    if (substr_macro.find(macro.fName) != LibCompiler::String::npos) {
-      if (substr_macro.find(macro.fValue) != LibCompiler::String::npos) {
+    if (substr_macro.find(macro.fName) != LibCompiler::STLString::npos) {
+      if (substr_macro.find(macro.fValue) != LibCompiler::STLString::npos) {
         defined       = false;
         inactive_code = true;
 
@@ -124,10 +125,10 @@ int32_t bpp_parse_if_condition(Detail::bpp_macro_condition& cond, Detail::bpp_ma
 
   auto substr_macro = macro_str.substr(macro_str.find(macro.fName) + macro.fName.size());
 
-  LibCompiler::String number;
+  LibCompiler::STLString number;
 
   for (auto& macro_num : kMacros) {
-    if (substr_macro.find(macro_num.fName) != LibCompiler::String::npos) {
+    if (substr_macro.find(macro_num.fName) != LibCompiler::STLString::npos) {
       for (size_t i = 0; i < macro_num.fName.size(); ++i) {
         if (isdigit(macro_num.fValue[i])) {
           number += macro_num.fValue[i];
@@ -231,7 +232,7 @@ int32_t bpp_parse_if_condition(Detail::bpp_macro_condition& cond, Detail::bpp_ma
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
-std::vector<LibCompiler::String> kAllIncludes;
+std::vector<LibCompiler::STLString> kAllIncludes;
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
@@ -241,8 +242,8 @@ std::vector<LibCompiler::String> kAllIncludes;
 /////////////////////////////////////////////////////////////////////////////////////////
 
 void bpp_parse_file(std::ifstream& hdr_file, std::ofstream& pp_out) {
-  LibCompiler::String hdr_line;
-  LibCompiler::String line_after_include;
+  LibCompiler::STLString hdr_line;
+  LibCompiler::STLString line_after_include;
 
   bool inactive_code = false;
   bool defined       = false;
@@ -250,36 +251,36 @@ void bpp_parse_file(std::ifstream& hdr_file, std::ofstream& pp_out) {
   try {
     while (std::getline(hdr_file, hdr_line)) {
       if (inactive_code) {
-        if (hdr_line.find("#endif") == LibCompiler::String::npos) {
+        if (hdr_line.find("#endif") == LibCompiler::STLString::npos) {
           continue;
         } else if (hdr_line[0] == kMacroPrefix &&
-                   hdr_line.find("#endif") != LibCompiler::String::npos) {
+                   hdr_line.find("#endif") != LibCompiler::STLString::npos) {
           inactive_code = false;
         }
 
-        if (hdr_line.find("*/") != LibCompiler::String::npos) {
+        if (hdr_line.find("*/") != LibCompiler::STLString::npos) {
           continue;
         }
       }
 
-      if (hdr_line.find("--/") != LibCompiler::String::npos) {
+      if (hdr_line.find("--/") != LibCompiler::STLString::npos) {
         hdr_line.erase(hdr_line.find("--/"));
       }
 
-      if (hdr_line.find("--*") != LibCompiler::String::npos) {
+      if (hdr_line.find("--*") != LibCompiler::STLString::npos) {
         inactive_code = true;
         // get rid of comment.
         hdr_line.erase(hdr_line.find("--*"));
       }
 
       /// BPP 'brief' documentation.
-      if (hdr_line.find("@brief") != LibCompiler::String::npos) {
+      if (hdr_line.find("@brief") != LibCompiler::STLString::npos) {
         hdr_line.erase(hdr_line.find("@brief"));
 
         // TODO: Write an <file_name>.html or append to it.
       }
 
-      if (hdr_line[0] == kMacroPrefix && hdr_line.find("endif") != LibCompiler::String::npos) {
+      if (hdr_line[0] == kMacroPrefix && hdr_line.find("endif") != LibCompiler::STLString::npos) {
         if (!defined && inactive_code) {
           inactive_code = false;
           defined       = false;
@@ -301,17 +302,17 @@ void bpp_parse_file(std::ifstream& hdr_file, std::ofstream& pp_out) {
       for (auto macro : kMacros) {
         if (LibCompiler::find_word(hdr_line, macro.fName)) {
           if (hdr_line.substr(hdr_line.find(macro.fName)).find(macro.fName + '(') !=
-              LibCompiler::String::npos) {
+              LibCompiler::STLString::npos) {
             if (!macro.fArgs.empty()) {
-              LibCompiler::String              symbol_val = macro.fValue;
-              std::vector<LibCompiler::String> args;
+              LibCompiler::STLString              symbol_val = macro.fValue;
+              std::vector<LibCompiler::STLString> args;
 
               size_t x_arg_indx = 0;
 
-              LibCompiler::String line_after_define = hdr_line;
-              LibCompiler::String str_arg;
+              LibCompiler::STLString line_after_define = hdr_line;
+              LibCompiler::STLString str_arg;
 
-              if (line_after_define.find("(") != LibCompiler::String::npos) {
+              if (line_after_define.find("(") != LibCompiler::STLString::npos) {
                 line_after_define.erase(0, line_after_define.find("(") + 1);
 
                 for (auto& subc : line_after_define) {
@@ -332,7 +333,7 @@ void bpp_parse_file(std::ifstream& hdr_file, std::ofstream& pp_out) {
               }
 
               for (auto arg : macro.fArgs) {
-                if (symbol_val.find(macro.fArgs[x_arg_indx]) != LibCompiler::String::npos) {
+                if (symbol_val.find(macro.fArgs[x_arg_indx]) != LibCompiler::STLString::npos) {
                   symbol_val.replace(symbol_val.find(macro.fArgs[x_arg_indx]),
                                      macro.fArgs[x_arg_indx].size(), args[x_arg_indx]);
                   ++x_arg_indx;
@@ -358,16 +359,16 @@ void bpp_parse_file(std::ifstream& hdr_file, std::ofstream& pp_out) {
         }
       }
 
-      if (hdr_line[0] == kMacroPrefix && hdr_line.find("define ") != LibCompiler::String::npos) {
+      if (hdr_line[0] == kMacroPrefix && hdr_line.find("define ") != LibCompiler::STLString::npos) {
         auto line_after_define = hdr_line.substr(hdr_line.find("define ") + strlen("define "));
 
-        LibCompiler::String macro_value;
-        LibCompiler::String macro_key;
+        LibCompiler::STLString macro_value;
+        LibCompiler::STLString macro_key;
 
         std::size_t pos = 0UL;
 
-        std::vector<LibCompiler::String> args;
-        bool                             on_args = false;
+        std::vector<LibCompiler::STLString> args;
+        bool                                on_args = false;
 
         for (auto& ch : line_after_define) {
           ++pos;
@@ -397,9 +398,9 @@ void bpp_parse_file(std::ifstream& hdr_file, std::ofstream& pp_out) {
           macro_key += ch;
         }
 
-        LibCompiler::String str;
+        LibCompiler::STLString str;
 
-        if (line_after_define.find("(") != LibCompiler::String::npos) {
+        if (line_after_define.find("(") != LibCompiler::STLString::npos) {
           line_after_define.erase(0, line_after_define.find("(") + 1);
 
           for (auto& subc : line_after_define) {
@@ -438,9 +439,9 @@ void bpp_parse_file(std::ifstream& hdr_file, std::ofstream& pp_out) {
         continue;
       }
 
-      if (hdr_line[0] == kMacroPrefix && hdr_line.find("ifndef") != LibCompiler::String::npos) {
+      if (hdr_line[0] == kMacroPrefix && hdr_line.find("ifndef") != LibCompiler::STLString::npos) {
         auto line_after_ifndef = hdr_line.substr(hdr_line.find("ifndef") + strlen("ifndef") + 1);
-        LibCompiler::String macro;
+        LibCompiler::STLString macro;
 
         for (auto& ch : line_after_ifndef) {
           if (ch == ' ') {
@@ -469,7 +470,7 @@ void bpp_parse_file(std::ifstream& hdr_file, std::ofstream& pp_out) {
         inactive_code = false;
 
         for (auto& macro_ref : kMacros) {
-          if (hdr_line.find(macro_ref.fName) != LibCompiler::String::npos) {
+          if (hdr_line.find(macro_ref.fName) != LibCompiler::STLString::npos) {
             found = true;
             break;
           }
@@ -482,7 +483,7 @@ void bpp_parse_file(std::ifstream& hdr_file, std::ofstream& pp_out) {
           continue;
         }
       } else if (hdr_line[0] == kMacroPrefix &&
-                 hdr_line.find("else") != LibCompiler::String::npos) {
+                 hdr_line.find("else") != LibCompiler::STLString::npos) {
         if (!defined && inactive_code) {
           inactive_code = false;
           defined       = true;
@@ -495,9 +496,9 @@ void bpp_parse_file(std::ifstream& hdr_file, std::ofstream& pp_out) {
           continue;
         }
       } else if (hdr_line[0] == kMacroPrefix &&
-                 hdr_line.find("ifdef") != LibCompiler::String::npos) {
+                 hdr_line.find("ifdef") != LibCompiler::STLString::npos) {
         auto line_after_ifdef = hdr_line.substr(hdr_line.find("ifdef") + strlen("ifdef") + 1);
-        LibCompiler::String macro;
+        LibCompiler::STLString macro;
 
         for (auto& ch : line_after_ifdef) {
           if (ch == ' ') {
@@ -525,14 +526,15 @@ void bpp_parse_file(std::ifstream& hdr_file, std::ofstream& pp_out) {
         inactive_code = true;
 
         for (auto& macro_ref : kMacros) {
-          if (hdr_line.find(macro_ref.fName) != LibCompiler::String::npos) {
+          if (hdr_line.find(macro_ref.fName) != LibCompiler::STLString::npos) {
             defined       = true;
             inactive_code = false;
 
             break;
           }
         }
-      } else if (hdr_line[0] == kMacroPrefix && hdr_line.find("if") != LibCompiler::String::npos) {
+      } else if (hdr_line[0] == kMacroPrefix &&
+                 hdr_line.find("if") != LibCompiler::STLString::npos) {
         inactive_code = true;
 
         std::vector<Detail::bpp_macro_condition> bpp_macro_condition_list = {
@@ -565,9 +567,9 @@ void bpp_parse_file(std::ifstream& hdr_file, std::ofstream& pp_out) {
         int32_t good_to_go = 0;
 
         for (auto& macro_condition : bpp_macro_condition_list) {
-          if (hdr_line.find(macro_condition.fTypeName) != LibCompiler::String::npos) {
+          if (hdr_line.find(macro_condition.fTypeName) != LibCompiler::STLString::npos) {
             for (auto& found_macro : kMacros) {
-              if (hdr_line.find(found_macro.fName) != LibCompiler::String::npos) {
+              if (hdr_line.find(found_macro.fName) != LibCompiler::STLString::npos) {
                 good_to_go = bpp_parse_if_condition(macro_condition, found_macro, inactive_code,
                                                     defined, hdr_line);
 
@@ -579,8 +581,8 @@ void bpp_parse_file(std::ifstream& hdr_file, std::ofstream& pp_out) {
 
         if (good_to_go) continue;
 
-        auto                line_after_if = hdr_line.substr(hdr_line.find("if") + strlen("if") + 1);
-        LibCompiler::String macro;
+        auto line_after_if = hdr_line.substr(hdr_line.find("if") + strlen("if") + 1);
+        LibCompiler::STLString macro;
 
         for (auto& ch : line_after_if) {
           if (ch == ' ') {
@@ -605,7 +607,8 @@ void bpp_parse_file(std::ifstream& hdr_file, std::ofstream& pp_out) {
 
         // last try, is it defined to be one?
         for (auto& macro_ref : kMacros) {
-          if (macro_ref.fName.find(macro) != LibCompiler::String::npos && macro_ref.fValue == "1") {
+          if (macro_ref.fName.find(macro) != LibCompiler::STLString::npos &&
+              macro_ref.fValue == "1") {
             inactive_code = false;
             defined       = true;
 
@@ -613,9 +616,9 @@ void bpp_parse_file(std::ifstream& hdr_file, std::ofstream& pp_out) {
           }
         }
       } else if (hdr_line[0] == kMacroPrefix &&
-                 hdr_line.find("warning") != LibCompiler::String::npos) {
+                 hdr_line.find("warning") != LibCompiler::STLString::npos) {
         auto line_after_warning = hdr_line.substr(hdr_line.find("warning") + strlen("warning") + 1);
-        LibCompiler::String message;
+        LibCompiler::STLString message;
 
         for (auto& ch : line_after_warning) {
           if (ch == '\r' || ch == '\n') {
@@ -627,9 +630,9 @@ void bpp_parse_file(std::ifstream& hdr_file, std::ofstream& pp_out) {
 
         std::cout << "warn: " << message << std::endl;
       } else if (hdr_line[0] == kMacroPrefix &&
-                 hdr_line.find("error") != LibCompiler::String::npos) {
+                 hdr_line.find("error") != LibCompiler::STLString::npos) {
         auto line_after_warning = hdr_line.substr(hdr_line.find("error") + strlen("error") + 1);
-        LibCompiler::String message;
+        LibCompiler::STLString message;
 
         for (auto& ch : line_after_warning) {
           if (ch == '\r' || ch == '\n') {
@@ -641,7 +644,7 @@ void bpp_parse_file(std::ifstream& hdr_file, std::ofstream& pp_out) {
 
         throw std::runtime_error("error: " + message);
       } else if (hdr_line[0] == kMacroPrefix &&
-                 hdr_line.find("include ") != LibCompiler::String::npos) {
+                 hdr_line.find("include ") != LibCompiler::STLString::npos) {
         line_after_include = hdr_line.substr(hdr_line.find("include ") + strlen("include "));
 
       kIncludeFile:
@@ -651,7 +654,7 @@ void bpp_parse_file(std::ifstream& hdr_file, std::ofstream& pp_out) {
           continue;
         }
 
-        LibCompiler::String path;
+        LibCompiler::STLString path;
 
         kAllIncludes.push_back(line_after_include);
 
@@ -691,7 +694,7 @@ void bpp_parse_file(std::ifstream& hdr_file, std::ofstream& pp_out) {
           }
 
           for (auto& include : kIncludes) {
-            LibCompiler::String header_path = include;
+            LibCompiler::STLString header_path = include;
             header_path.push_back('/');
             header_path += path;
 
@@ -830,7 +833,7 @@ LIBCOMPILER_MODULE(CPlusPlusPreprocessorMain) {
         }
 
         if (strcmp(argv[index], "--cppdrv:include-dir") == 0) {
-          LibCompiler::String inc = argv[index + 1];
+          LibCompiler::STLString inc = argv[index + 1];
 
           skip = true;
 
@@ -838,17 +841,17 @@ LIBCOMPILER_MODULE(CPlusPlusPreprocessorMain) {
         }
 
         if (strcmp(argv[index], "--cppdrv:working-dir") == 0) {
-          LibCompiler::String inc = argv[index + 1];
-          skip                    = true;
-          kWorkingDir             = inc;
+          LibCompiler::STLString inc = argv[index + 1];
+          skip                       = true;
+          kWorkingDir                = inc;
         }
 
         if (strcmp(argv[index], "--cppdrv:def") == 0 && argv[index + 1] != nullptr &&
             argv[index + 2] != nullptr) {
-          LibCompiler::String macro_key = argv[index + 1];
+          LibCompiler::STLString macro_key = argv[index + 1];
 
-          LibCompiler::String macro_value;
-          bool                is_string = false;
+          LibCompiler::STLString macro_value;
+          bool                   is_string = false;
 
           for (int argv_find_len = 0; argv_find_len < strlen(argv[index]); ++argv_find_len) {
             if (!isdigit(argv[index][argv_find_len])) {

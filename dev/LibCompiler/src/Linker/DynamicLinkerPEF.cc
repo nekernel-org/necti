@@ -20,7 +20,7 @@
 #include <LibCompiler/ErrorID.h>
 
 //! Assembler Kit
-#include <LibCompiler/AssemblyInterface.h>
+#include <LibCompiler/CodeGen.h>
 
 //! Preferred Executable Format
 #include <LibCompiler/PEF.h>
@@ -35,7 +35,7 @@
 #include <LibCompiler/AE.h>
 
 //! LibCompiler utils.
-#include <LibCompiler/Detail/ClUtils.h>
+#include <LibCompiler/Util/LCClUtils.h>
 
 //! I/O stream from std c++
 #include <iostream>
@@ -80,20 +80,20 @@ enum {
   kABITypeInvalid = 0xFFFF,
 };
 
-static LibCompiler::String kOutput           = "a" kPefExt;
-static Int32               kAbi              = kABITypeNE;
-static Int32               kSubArch          = kPefNoSubCpu;
-static Int32               kArch             = LibCompiler::kPefArchInvalid;
-static Bool                kFatBinaryEnable  = false;
-static Bool                kStartFound       = false;
-static Bool                kDuplicateSymbols = false;
+static LibCompiler::STLString kOutput           = "a" kPefExt;
+static Int32                  kAbi              = kABITypeNE;
+static Int32                  kSubArch          = kPefNoSubCpu;
+static Int32                  kArch             = LibCompiler::kPefArchInvalid;
+static Bool                   kFatBinaryEnable  = false;
+static Bool                   kStartFound       = false;
+static Bool                   kDuplicateSymbols = false;
 
 /* ld64 is to be found, mld is to be found at runtime. */
 static const CharType* kLdDefineSymbol = ":UndefinedSymbol:";
 static const CharType* kLdDynamicSym   = ":RuntimeSymbol:";
 
 /* object code and list. */
-static std::vector<LibCompiler::String>       kObjectList;
+static std::vector<LibCompiler::STLString>    kObjectList;
 static std::vector<Detail::DynamicLinkerBlob> kObjectBytes;
 
 ///	@brief NE 64-bit Linker.
@@ -165,7 +165,7 @@ LIBCOMPILER_MODULE(DynamicLinker64PEF) {
         continue;
       }
 
-      if (kOutput.find(kPefExt) != LibCompiler::String::npos)
+      if (kOutput.find(kPefExt) != LibCompiler::STLString::npos)
         kOutput.erase(kOutput.find(kPefExt), strlen(kPefExt));
 
       kOutput += kPefDylibExt;
@@ -308,15 +308,15 @@ LIBCOMPILER_MODULE(DynamicLinker64PEF) {
 
         MemoryCopy(command_header.Name, ae_records[ae_record_index].fName, kPefNameLen);
 
-        LibCompiler::String cmd_hdr_name(command_header.Name);
+        LibCompiler::STLString cmd_hdr_name(command_header.Name);
 
         // check this header if it's any valid.
-        if (cmd_hdr_name.find(kPefCode64) == LibCompiler::String::npos &&
-            cmd_hdr_name.find(kPefData64) == LibCompiler::String::npos &&
-            cmd_hdr_name.find(kPefZero64) == LibCompiler::String::npos) {
-          if (cmd_hdr_name.find(kPefStart) == LibCompiler::String::npos &&
+        if (cmd_hdr_name.find(kPefCode64) == LibCompiler::STLString::npos &&
+            cmd_hdr_name.find(kPefData64) == LibCompiler::STLString::npos &&
+            cmd_hdr_name.find(kPefZero64) == LibCompiler::STLString::npos) {
+          if (cmd_hdr_name.find(kPefStart) == LibCompiler::STLString::npos &&
               *command_header.Name == 0) {
-            if (cmd_hdr_name.find(kLdDefineSymbol) != LibCompiler::String::npos) {
+            if (cmd_hdr_name.find(kLdDefineSymbol) != LibCompiler::STLString::npos) {
               goto ld_mark_header;
             } else {
               continue;
@@ -324,8 +324,8 @@ LIBCOMPILER_MODULE(DynamicLinker64PEF) {
           }
         }
 
-        if (cmd_hdr_name.find(kPefStart) != LibCompiler::String::npos &&
-            cmd_hdr_name.find(kPefCode64) != LibCompiler::String::npos) {
+        if (cmd_hdr_name.find(kPefStart) != LibCompiler::STLString::npos &&
+            cmd_hdr_name.find(kPefCode64) != LibCompiler::STLString::npos) {
           kStartFound = true;
         }
 
@@ -381,19 +381,21 @@ LIBCOMPILER_MODULE(DynamicLinker64PEF) {
 
   output_fc.seekp(std::streamsize(pef_container.HdrSz));
 
-  std::vector<LibCompiler::String> not_found;
-  std::vector<LibCompiler::String> symbols;
+  std::vector<LibCompiler::STLString> not_found;
+  std::vector<LibCompiler::STLString> symbols;
 
   // step 2: check for errors (multiple symbols, undefined ones)
 
   for (auto& command_hdr : command_headers) {
     // check if this symbol needs to be resolved.
-    if (LibCompiler::String(command_hdr.Name).find(kLdDefineSymbol) != LibCompiler::String::npos &&
-        LibCompiler::String(command_hdr.Name).find(kLdDynamicSym) == LibCompiler::String::npos) {
+    if (LibCompiler::STLString(command_hdr.Name).find(kLdDefineSymbol) !=
+            LibCompiler::STLString::npos &&
+        LibCompiler::STLString(command_hdr.Name).find(kLdDynamicSym) ==
+            LibCompiler::STLString::npos) {
       if (kVerbose) kConsoleOut << "Found undefined symbol: " << command_hdr.Name << "\n";
 
-      if (auto it =
-              std::find(not_found.begin(), not_found.end(), LibCompiler::String(command_hdr.Name));
+      if (auto it = std::find(not_found.begin(), not_found.end(),
+                              LibCompiler::STLString(command_hdr.Name));
           it == not_found.end()) {
         not_found.emplace_back(command_hdr.Name);
       }
@@ -406,26 +408,27 @@ LIBCOMPILER_MODULE(DynamicLinker64PEF) {
 
   for (size_t not_found_idx = 0; not_found_idx < command_headers.size(); ++not_found_idx) {
     if (const auto it = std::find(not_found.begin(), not_found.end(),
-                                  LibCompiler::String(command_headers[not_found_idx].Name));
+                                  LibCompiler::STLString(command_headers[not_found_idx].Name));
         it != not_found.end()) {
-      LibCompiler::String symbol_imp = *it;
+      LibCompiler::STLString symbol_imp = *it;
 
-      if (symbol_imp.find(kLdDefineSymbol) == LibCompiler::String::npos) continue;
+      if (symbol_imp.find(kLdDefineSymbol) == LibCompiler::STLString::npos) continue;
 
       // erase the lookup prefix.
       symbol_imp.erase(0, symbol_imp.find(kLdDefineSymbol) + strlen(kLdDefineSymbol));
 
       // demangle everything.
-      while (symbol_imp.find('$') != LibCompiler::String::npos)
+      while (symbol_imp.find('$') != LibCompiler::STLString::npos)
         symbol_imp.erase(symbol_imp.find('$'), 1);
 
       // the reason we do is because, this may not match the symbol, and we need
       // to look for other matching symbols.
       for (auto& command_hdr : command_headers) {
-        if (LibCompiler::String(command_hdr.Name).find(symbol_imp) != LibCompiler::String::npos &&
-            LibCompiler::String(command_hdr.Name).find(kLdDefineSymbol) ==
-                LibCompiler::String::npos) {
-          LibCompiler::String undefined_symbol = command_hdr.Name;
+        if (LibCompiler::STLString(command_hdr.Name).find(symbol_imp) !=
+                LibCompiler::STLString::npos &&
+            LibCompiler::STLString(command_hdr.Name).find(kLdDefineSymbol) ==
+                LibCompiler::STLString::npos) {
+          LibCompiler::STLString undefined_symbol = command_hdr.Name;
           auto result_of_sym = undefined_symbol.substr(undefined_symbol.find(symbol_imp));
 
           for (int i = 0; result_of_sym[i] != 0; ++i) {
@@ -462,7 +465,7 @@ LIBCOMPILER_MODULE(DynamicLinker64PEF) {
 
   time_t timestamp = time(nullptr);
 
-  LibCompiler::String timeStampStr = "Container:BuildEpoch:";
+  LibCompiler::STLString timeStampStr = "Container:BuildEpoch:";
   timeStampStr += std::to_string(timestamp);
 
   strncpy(date_cmd_hdr.Name, timeStampStr.c_str(), timeStampStr.size());
@@ -476,7 +479,7 @@ LIBCOMPILER_MODULE(DynamicLinker64PEF) {
 
   LibCompiler::PEFCommandHeader abi_cmd_hdr{};
 
-  LibCompiler::String abi = kLinkerAbiContainer;
+  LibCompiler::STLString abi = kLinkerAbiContainer;
 
   switch (kArch) {
     case LibCompiler::kPefArchAMD64: {
@@ -542,9 +545,9 @@ LIBCOMPILER_MODULE(DynamicLinker64PEF) {
   command_headers.push_back(uuid_cmd_hdr);
 
   // prepare a symbol vector.
-  std::vector<LibCompiler::String> undef_symbols;
-  std::vector<LibCompiler::String> dupl_symbols;
-  std::vector<LibCompiler::String> resolve_symbols;
+  std::vector<LibCompiler::STLString> undef_symbols;
+  std::vector<LibCompiler::STLString> dupl_symbols;
+  std::vector<LibCompiler::STLString> resolve_symbols;
 
   constexpr Int32 kPaddingOffset = 16;
 
@@ -567,15 +570,15 @@ LIBCOMPILER_MODULE(DynamicLinker64PEF) {
   // And check for any duplications
   for (size_t commandHeaderIndex = 0UL; commandHeaderIndex < command_headers.size();
        ++commandHeaderIndex) {
-    if (LibCompiler::String(command_headers[commandHeaderIndex].Name).find(kLdDefineSymbol) !=
-            LibCompiler::String::npos &&
-        LibCompiler::String(command_headers[commandHeaderIndex].Name).find(kLdDynamicSym) ==
-            LibCompiler::String::npos) {
+    if (LibCompiler::STLString(command_headers[commandHeaderIndex].Name).find(kLdDefineSymbol) !=
+            LibCompiler::STLString::npos &&
+        LibCompiler::STLString(command_headers[commandHeaderIndex].Name).find(kLdDynamicSym) ==
+            LibCompiler::STLString::npos) {
       // ignore :UndefinedSymbol: headers, they do not contain code.
       continue;
     }
 
-    LibCompiler::String symbol_name = command_headers[commandHeaderIndex].Name;
+    LibCompiler::STLString symbol_name = command_headers[commandHeaderIndex].Name;
 
     if (!symbol_name.empty()) {
       undef_symbols.emplace_back(symbol_name);
@@ -584,13 +587,13 @@ LIBCOMPILER_MODULE(DynamicLinker64PEF) {
     command_headers[commandHeaderIndex].Offset += previous_offset;
     previous_offset += command_headers[commandHeaderIndex].Size;
 
-    LibCompiler::String name = command_headers[commandHeaderIndex].Name;
+    LibCompiler::STLString name = command_headers[commandHeaderIndex].Name;
 
     /// so this is valid when we get to the entrypoint.
     /// it is always a code64 container. And should equal to kPefStart as well.
     /// this chunk of code updates the pef_container.Start with the updated offset.
-    if (name.find(kPefStart) != LibCompiler::String::npos &&
-        name.find(kPefCode64) != LibCompiler::String::npos) {
+    if (name.find(kPefStart) != LibCompiler::STLString::npos &&
+        name.find(kPefCode64) != LibCompiler::STLString::npos) {
       pef_container.Start = command_headers[commandHeaderIndex].Offset;
       auto tellCurPos     = output_fc.tellp();
 
@@ -612,10 +615,10 @@ LIBCOMPILER_MODULE(DynamicLinker64PEF) {
          ++sub_command_header_index) {
       if (sub_command_header_index == commandHeaderIndex) continue;
 
-      if (LibCompiler::String(command_headers[sub_command_header_index].Name)
-                  .find(kLdDefineSymbol) != LibCompiler::String::npos &&
-          LibCompiler::String(command_headers[sub_command_header_index].Name).find(kLdDynamicSym) ==
-              LibCompiler::String::npos) {
+      if (LibCompiler::STLString(command_headers[sub_command_header_index].Name)
+                  .find(kLdDefineSymbol) != LibCompiler::STLString::npos &&
+          LibCompiler::STLString(command_headers[sub_command_header_index].Name)
+                  .find(kLdDynamicSym) == LibCompiler::STLString::npos) {
         if (kVerbose) {
           kConsoleOut << "Ignoring :UndefinedSymbol: headers...\n";
         }
@@ -626,7 +629,7 @@ LIBCOMPILER_MODULE(DynamicLinker64PEF) {
 
       auto& command_hdr = command_headers[sub_command_header_index];
 
-      if (command_hdr.Name == LibCompiler::String(command_headers[commandHeaderIndex].Name)) {
+      if (command_hdr.Name == LibCompiler::STLString(command_headers[commandHeaderIndex].Name)) {
         if (std::find(dupl_symbols.cbegin(), dupl_symbols.cend(), command_hdr.Name) ==
             dupl_symbols.cend()) {
           dupl_symbols.emplace_back(command_hdr.Name);
@@ -659,11 +662,11 @@ LIBCOMPILER_MODULE(DynamicLinker64PEF) {
 
   // step 3: check if we have those symbols
 
-  std::vector<LibCompiler::String> unreferenced_symbols;
+  std::vector<LibCompiler::STLString> unreferenced_symbols;
 
   for (auto& command_hdr : command_headers) {
     if (auto it =
-            std::find(not_found.begin(), not_found.end(), LibCompiler::String(command_hdr.Name));
+            std::find(not_found.begin(), not_found.end(), LibCompiler::STLString(command_hdr.Name));
         it != not_found.end()) {
       unreferenced_symbols.emplace_back(command_hdr.Name);
     }

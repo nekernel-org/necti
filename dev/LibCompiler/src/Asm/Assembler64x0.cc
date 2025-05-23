@@ -1,6 +1,6 @@
 /* -------------------------------------------
 
-  Copyright (C) 2024-2025 Amlal EL Mahrous, all rights reserved
+  Copyright (C) 2024-2025 Amlal EL Mahrouss, all rights reserved
 
 ------------------------------------------- */
 
@@ -21,8 +21,8 @@
 
 #include <LibCompiler/AE.h>
 #include <LibCompiler/Backend/64x0.h>
-#include <LibCompiler/CompilerFrontend.h>
-#include <LibCompiler/Detail/ClUtils.h>
+#include <LibCompiler/Util/LCClUtils.h>
+#include <LibCompiler/Frontend.h>
 #include <LibCompiler/PEF.h>
 #include <algorithm>
 #include <filesystem>

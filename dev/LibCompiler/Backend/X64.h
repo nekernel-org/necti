@@ -1,6 +1,6 @@
 /* -------------------------------------------
 
-  Copyright (C) 2024-2025 Amlal EL Mahrous, all rights reserved
+  Copyright (C) 2024-2025 Amlal EL Mahrouss, all rights reserved
 
 ------------------------------------------- */
 
@@ -9,9 +9,9 @@
 #include <LibCompiler/Defines.h>
 
 // @brief AMD64 support.
-// @file Backend/Amd64.h
+// @file Backend/X64.h
 
-#define kAsmOpcodeDecl(__NAME, __OPCODE) {.fName = __NAME, .fOpcode = __OPCODE},
+#define LC_ASM_OPCODE(__NAME, __OPCODE) {.fName = __NAME, .fOpcode = __OPCODE},
 
 typedef char     i64_character_t;
 typedef uint8_t  i64_byte_t;
@@ -39,11 +39,11 @@ struct CpuOpcodeAMD64 {
 #define kJumpLimitStandardLimit 0xEB
 
 inline std::vector<CpuOpcodeAMD64> kOpcodesAMD64 = {
-    kAsmOpcodeDecl("int", 0xCD) kAsmOpcodeDecl("into", 0xCE) kAsmOpcodeDecl("intd", 0xF1)
-        kAsmOpcodeDecl("int3", 0xC3) kAsmOpcodeDecl("iret", 0xCF) kAsmOpcodeDecl("retf", 0xCB)
-            kAsmOpcodeDecl("retn", 0xC3) kAsmOpcodeDecl("ret", 0xC3) kAsmOpcodeDecl("sti", 0xfb)
-                kAsmOpcodeDecl("cli", 0xfa) kAsmOpcodeDecl("hlt", 0xf4) kAsmOpcodeDecl("nop", 0x90)
-                    kAsmOpcodeDecl("mov", 0x48) kAsmOpcodeDecl("call", 0xFF)
-                        kAsmOpcodeDecl("syscall", 0x0F) kAsmOpcodeDecl("xor", 0x48)};
+    LC_ASM_OPCODE("int", 0xCD) LC_ASM_OPCODE("into", 0xCE) LC_ASM_OPCODE("intd", 0xF1)
+        LC_ASM_OPCODE("int3", 0xC3) LC_ASM_OPCODE("iret", 0xCF) LC_ASM_OPCODE("retf", 0xCB)
+            LC_ASM_OPCODE("retn", 0xC3) LC_ASM_OPCODE("ret", 0xC3) LC_ASM_OPCODE("sti", 0xfb)
+                LC_ASM_OPCODE("cli", 0xfa) LC_ASM_OPCODE("hlt", 0xf4) LC_ASM_OPCODE("nop", 0x90)
+                    LC_ASM_OPCODE("mov", 0x48) LC_ASM_OPCODE("call", 0xFF)
+                        LC_ASM_OPCODE("syscall", 0x0F) LC_ASM_OPCODE("xor", 0x48)};
 
 #define kAsmRegisterLimit 16

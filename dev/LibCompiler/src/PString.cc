@@ -8,7 +8,7 @@
  */
 
 /**
- * @file String.cxx
+ * @file PString.cxx
  * @author Amlal (amlal@el-mahrouss-logic.com)
  * @brief C++ string manipulation API.
  * @version 0.2
@@ -18,22 +18,22 @@
  *
  */
 
-#include <LibCompiler/StringView.h>
+#include <LibCompiler/PString.h>
 
 namespace LibCompiler {
-CharType* StringView::Data() {
+CharType* PString::Data() {
   return m_Data;
 }
 
-const CharType* StringView::CData() const {
+const CharType* PString::CData() const {
   return m_Data;
 }
 
-SizeType StringView::Length() const {
+SizeType PString::Length() const {
   return strlen(m_Data);
 }
 
-bool StringView::operator==(const StringView& rhs) const {
+bool PString::operator==(const PString& rhs) const {
   if (rhs.Length() != Length()) return false;
 
   for (SizeType index = 0; index < Length(); ++index) {
@@ -43,7 +43,7 @@ bool StringView::operator==(const StringView& rhs) const {
   return true;
 }
 
-bool StringView::operator==(const CharType* rhs) const {
+bool PString::operator==(const CharType* rhs) const {
   if (string_length(rhs) != Length()) return false;
 
   for (SizeType index = 0; index < string_length(rhs); ++index) {
@@ -53,7 +53,7 @@ bool StringView::operator==(const CharType* rhs) const {
   return true;
 }
 
-bool StringView::operator!=(const StringView& rhs) const {
+bool PString::operator!=(const PString& rhs) const {
   if (rhs.Length() != Length()) return false;
 
   for (SizeType index = 0; index < rhs.Length(); ++index) {
@@ -63,7 +63,7 @@ bool StringView::operator!=(const StringView& rhs) const {
   return true;
 }
 
-bool StringView::operator!=(const CharType* rhs) const {
+bool PString::operator!=(const CharType* rhs) const {
   if (string_length(rhs) != Length()) return false;
 
   for (SizeType index = 0; index < string_length(rhs); ++index) {
@@ -73,10 +73,10 @@ bool StringView::operator!=(const CharType* rhs) const {
   return true;
 }
 
-StringView StringBuilder::Construct(const CharType* data) {
-  if (!data || *data == 0) return StringView(0);
+PString StringBuilder::Construct(const CharType* data) {
+  if (!data || *data == 0) return PString(0);
 
-  StringView view(strlen(data));
+  PString view(strlen(data));
   view += data;
 
   return view;
@@ -183,9 +183,9 @@ const char* StringBuilder::Format(const char* fmt, const char* fmtRight) {
   return ret;
 }
 
-StringView& StringView::operator+=(const CharType* rhs) {
+PString& PString::operator+=(const CharType* rhs) {
   if (strlen(rhs) > this->m_Sz) {
-    throw std::runtime_error("out_of_bounds: StringView");
+    throw std::runtime_error("out_of_bounds: PString");
   }
 
   memcpy(this->m_Data + this->m_Cur, rhs, strlen(rhs));
@@ -194,9 +194,9 @@ StringView& StringView::operator+=(const CharType* rhs) {
   return *this;
 }
 
-StringView& StringView::operator+=(const StringView& rhs) {
+PString& PString::operator+=(const PString& rhs) {
   if (rhs.m_Cur > this->m_Sz) {
-    throw std::runtime_error("out_of_bounds: StringView");
+    throw std::runtime_error("out_of_bounds: PString");
   }
 
   memcpy(this->m_Data + this->m_Cur, rhs.CData(), strlen(rhs.CData()));

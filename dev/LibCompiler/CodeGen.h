@@ -1,6 +1,6 @@
 /* -------------------------------------------
 
-  Copyright (C) 2024-2025 Amlal EL Mahrous, all rights reserved
+  Copyright (C) 2024-2025 Amlal EL Mahrouss, all rights reserved
 
 ------------------------------------------- */
 
@@ -8,7 +8,7 @@
 
 #include <LibCompiler/Defines.h>
 #include <LibCompiler/Macros.h>
-#include <LibCompiler/StringView.h>
+#include <LibCompiler/PString.h>
 
 #define LC_ASSEMBLY_INTERFACE : public LibCompiler::AssemblyInterface
 #define LC_ENCODER : public LibCompiler::EncoderInterface
@@ -35,6 +35,7 @@ class AssemblyFactory final {
     kArchPowerPC,
     kArchAARCH64,
     kArchUnknown,
+    kArchCount = kArchUnknown - kArchAMD64,
   };
 
   Int32 Compile(std::string sourceFile, const Int32& arch) noexcept;
