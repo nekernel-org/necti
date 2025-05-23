@@ -17,9 +17,9 @@
 // extern_segment, @autodelete { ... }, fn foo() -> auto { ... }
 
 #include <LibCompiler/Backend/X64.h>
-#include <LibCompiler/Util/LCClUtils.h>
 #include <LibCompiler/Frontend.h>
 #include <LibCompiler/UUID.h>
+#include <LibCompiler/Util/LCClUtils.h>
 
 /* NeKernel C++ Compiler Driver */
 /* This is part of the LibCompiler. */
@@ -452,6 +452,8 @@ Boolean CompilerFrontendCPlusPlus::Compile(std::string text, std::string file) {
 
         std::string instr = "mov ";
 
+        std::vector<std::string> newVars;
+
         if (typeFound &&
             keyword.first.keyword_kind != LibCompiler::KeywordKind::kKeywordKindVariableInc &&
             keyword.first.keyword_kind != LibCompiler::KeywordKind::kKeywordKindVariableDec) {
@@ -538,12 +540,15 @@ Boolean CompilerFrontendCPlusPlus::Compile(std::string text, std::string file) {
             }
           }
 
-          kRegisterMap.push_back(varName);
+          newVars.push_back(varName);
 
           break;
         }
 
-        if (kKeywords[keyword.second - 1].keyword_kind == LibCompiler::kKeywordKindType ||
+        kRegisterMap.insert(kRegisterMap.end(), newVars.begin(), newVars.end());
+
+        if (keyword.second > 0 &&
+                kKeywords[keyword.second - 1].keyword_kind == LibCompiler::kKeywordKindType ||
             kKeywords[keyword.second - 1].keyword_kind == LibCompiler::kKeywordKindTypePtr) {
           syntax_tree.fUserValue = "\n";
           continue;
@@ -621,12 +626,15 @@ Boolean CompilerFrontendCPlusPlus::Compile(std::string text, std::string file) {
             break;
           }
 
+          newVars.push_back(varName);
           break;
         }
 
         if (syntax_tree.fUserValue.empty()) {
           Detail::print_error("Variable not declared: " + varName, file);
         }
+
+        kRegisterMap.insert(kRegisterMap.end(), newVars.begin(), newVars.end());
 
         break;
       }
@@ -727,7 +735,7 @@ class AssemblyCPlusPlusInterface final LC_ASSEMBLY_INTERFACE {
 
     std::ofstream out_fp(dest);
 
-    std::ifstream src_fp = std::ifstream(src);
+    std::ifstream src_fp = std::ifstream(src + ".pp");
 
     std::string line_source;
 
@@ -761,79 +769,65 @@ class AssemblyCPlusPlusInterface final LC_ASSEMBLY_INTERFACE {
 LIBCOMPILER_MODULE(CompilerCPlusPlusAMD64) {
   Boolean skip = false;
 
-  kKeywords.push_back({.keyword_name = "if", .keyword_kind = LibCompiler::kKeywordKindIf});
-  kKeywords.push_back({.keyword_name = "else", .keyword_kind = LibCompiler::kKeywordKindElse});
-  kKeywords.push_back({.keyword_name = "else if", .keyword_kind = LibCompiler::kKeywordKindElseIf});
+  kKeywords.emplace_back("if", LibCompiler::kKeywordKindIf);
+  kKeywords.emplace_back("else", LibCompiler::kKeywordKindElse);
+  kKeywords.emplace_back("else if", LibCompiler::kKeywordKindElseIf);
 
-  kKeywords.push_back({.keyword_name = "class", .keyword_kind = LibCompiler::kKeywordKindClass});
-  kKeywords.push_back({.keyword_name = "struct", .keyword_kind = LibCompiler::kKeywordKindClass});
-  kKeywords.push_back(
-      {.keyword_name = "namespace", .keyword_kind = LibCompiler::kKeywordKindNamespace});
-  kKeywords.push_back(
-      {.keyword_name = "typedef", .keyword_kind = LibCompiler::kKeywordKindTypedef});
-  kKeywords.push_back({.keyword_name = "using", .keyword_kind = LibCompiler::kKeywordKindTypedef});
-  kKeywords.push_back({.keyword_name = "{", .keyword_kind = LibCompiler::kKeywordKindBodyStart});
-  kKeywords.push_back({.keyword_name = "}", .keyword_kind = LibCompiler::kKeywordKindBodyEnd});
-  kKeywords.push_back({.keyword_name = "auto", .keyword_kind = LibCompiler::kKeywordKindVariable});
-  kKeywords.push_back({.keyword_name = "int", .keyword_kind = LibCompiler::kKeywordKindType});
-  kKeywords.push_back({.keyword_name = "bool", .keyword_kind = LibCompiler::kKeywordKindType});
-  kKeywords.push_back({.keyword_name = "unsigned", .keyword_kind = LibCompiler::kKeywordKindType});
-  kKeywords.push_back({.keyword_name = "short", .keyword_kind = LibCompiler::kKeywordKindType});
-  kKeywords.push_back({.keyword_name = "char", .keyword_kind = LibCompiler::kKeywordKindType});
-  kKeywords.push_back({.keyword_name = "long", .keyword_kind = LibCompiler::kKeywordKindType});
-  kKeywords.push_back({.keyword_name = "float", .keyword_kind = LibCompiler::kKeywordKindType});
-  kKeywords.push_back({.keyword_name = "double", .keyword_kind = LibCompiler::kKeywordKindType});
-  kKeywords.push_back({.keyword_name = "void", .keyword_kind = LibCompiler::kKeywordKindType});
+  kKeywords.emplace_back("class", LibCompiler::kKeywordKindClass);
+  kKeywords.emplace_back("struct", LibCompiler::kKeywordKindClass);
+  kKeywords.emplace_back("namespace", LibCompiler::kKeywordKindNamespace);
+  kKeywords.emplace_back("typedef", LibCompiler::kKeywordKindTypedef);
+  kKeywords.emplace_back("using", LibCompiler::kKeywordKindTypedef);
+  kKeywords.emplace_back("{", LibCompiler::kKeywordKindBodyStart);
+  kKeywords.emplace_back("}", LibCompiler::kKeywordKindBodyEnd);
+  kKeywords.emplace_back("auto", LibCompiler::kKeywordKindVariable);
+  kKeywords.emplace_back("int", LibCompiler::kKeywordKindType);
+  kKeywords.emplace_back("bool", LibCompiler::kKeywordKindType);
+  kKeywords.emplace_back("unsigned", LibCompiler::kKeywordKindType);
+  kKeywords.emplace_back("short", LibCompiler::kKeywordKindType);
+  kKeywords.emplace_back("char", LibCompiler::kKeywordKindType);
+  kKeywords.emplace_back("long", LibCompiler::kKeywordKindType);
+  kKeywords.emplace_back("float", LibCompiler::kKeywordKindType);
+  kKeywords.emplace_back("double", LibCompiler::kKeywordKindType);
+  kKeywords.emplace_back("void", LibCompiler::kKeywordKindType);
 
-  kKeywords.push_back(
-      {.keyword_name = "auto*", .keyword_kind = LibCompiler::kKeywordKindVariablePtr});
-  kKeywords.push_back({.keyword_name = "int*", .keyword_kind = LibCompiler::kKeywordKindTypePtr});
-  kKeywords.push_back({.keyword_name = "bool*", .keyword_kind = LibCompiler::kKeywordKindTypePtr});
-  kKeywords.push_back(
-      {.keyword_name = "unsigned*", .keyword_kind = LibCompiler::kKeywordKindTypePtr});
-  kKeywords.push_back({.keyword_name = "short*", .keyword_kind = LibCompiler::kKeywordKindTypePtr});
-  kKeywords.push_back({.keyword_name = "char*", .keyword_kind = LibCompiler::kKeywordKindTypePtr});
-  kKeywords.push_back({.keyword_name = "long*", .keyword_kind = LibCompiler::kKeywordKindTypePtr});
-  kKeywords.push_back({.keyword_name = "float*", .keyword_kind = LibCompiler::kKeywordKindTypePtr});
-  kKeywords.push_back(
-      {.keyword_name = "double*", .keyword_kind = LibCompiler::kKeywordKindTypePtr});
-  kKeywords.push_back({.keyword_name = "void*", .keyword_kind = LibCompiler::kKeywordKindTypePtr});
+  kKeywords.emplace_back("auto*", LibCompiler::kKeywordKindVariablePtr);
+  kKeywords.emplace_back("int*", LibCompiler::kKeywordKindTypePtr);
+  kKeywords.emplace_back("bool*", LibCompiler::kKeywordKindTypePtr);
+  kKeywords.emplace_back("unsigned*", LibCompiler::kKeywordKindTypePtr);
+  kKeywords.emplace_back("short*", LibCompiler::kKeywordKindTypePtr);
+  kKeywords.emplace_back("char*", LibCompiler::kKeywordKindTypePtr);
+  kKeywords.emplace_back("long*", LibCompiler::kKeywordKindTypePtr);
+  kKeywords.emplace_back("float*", LibCompiler::kKeywordKindTypePtr);
+  kKeywords.emplace_back("double*", LibCompiler::kKeywordKindTypePtr);
+  kKeywords.emplace_back("void*", LibCompiler::kKeywordKindTypePtr);
 
-  kKeywords.push_back(
-      {.keyword_name = "(", .keyword_kind = LibCompiler::kKeywordKindFunctionStart});
-  kKeywords.push_back({.keyword_name = ")", .keyword_kind = LibCompiler::kKeywordKindFunctionEnd});
-  kKeywords.push_back(
-      {.keyword_name = "=", .keyword_kind = LibCompiler::kKeywordKindVariableAssign});
-  kKeywords.push_back({.keyword_name = "+=", .keyword_kind = LibCompiler::kKeywordKindVariableInc});
-  kKeywords.push_back({.keyword_name = "-=", .keyword_kind = LibCompiler::kKeywordKindVariableDec});
-  kKeywords.push_back({.keyword_name = "const", .keyword_kind = LibCompiler::kKeywordKindConstant});
-  kKeywords.push_back({.keyword_name = "*", .keyword_kind = LibCompiler::kKeywordKindPtr});
-  kKeywords.push_back({.keyword_name = "->", .keyword_kind = LibCompiler::kKeywordKindPtrAccess});
-  kKeywords.push_back({.keyword_name = ".", .keyword_kind = LibCompiler::kKeywordKindAccess});
-  kKeywords.push_back({.keyword_name = ",", .keyword_kind = LibCompiler::kKeywordKindArgSeparator});
-  kKeywords.push_back({.keyword_name = ";", .keyword_kind = LibCompiler::kKeywordKindEndInstr});
-  kKeywords.push_back({.keyword_name = ":", .keyword_kind = LibCompiler::kKeywordKindSpecifier});
-  kKeywords.push_back(
-      {.keyword_name = "public:", .keyword_kind = LibCompiler::kKeywordKindSpecifier});
-  kKeywords.push_back(
-      {.keyword_name = "private:", .keyword_kind = LibCompiler::kKeywordKindSpecifier});
-  kKeywords.push_back(
-      {.keyword_name = "protected:", .keyword_kind = LibCompiler::kKeywordKindSpecifier});
-  kKeywords.push_back(
-      {.keyword_name = "final", .keyword_kind = LibCompiler::kKeywordKindSpecifier});
-  kKeywords.push_back({.keyword_name = "return", .keyword_kind = LibCompiler::kKeywordKindReturn});
-  kKeywords.push_back(
-      {.keyword_name = "/*", .keyword_kind = LibCompiler::kKeywordKindCommentMultiLineStart});
-  kKeywords.push_back(
-      {.keyword_name = "*/", .keyword_kind = LibCompiler::kKeywordKindCommentMultiLineEnd});
-  kKeywords.push_back(
-      {.keyword_name = "//", .keyword_kind = LibCompiler::kKeywordKindCommentInline});
-  kKeywords.push_back({.keyword_name = "==", .keyword_kind = LibCompiler::kKeywordKindEq});
-  kKeywords.push_back({.keyword_name = "!=", .keyword_kind = LibCompiler::kKeywordKindNotEq});
-  kKeywords.push_back({.keyword_name = ">=", .keyword_kind = LibCompiler::kKeywordKindGreaterEq});
-  kKeywords.push_back({.keyword_name = "<=", .keyword_kind = LibCompiler::kKeywordKindLessEq});
+  kKeywords.emplace_back("(", LibCompiler::kKeywordKindFunctionStart);
+  kKeywords.emplace_back(")", LibCompiler::kKeywordKindFunctionEnd);
+  kKeywords.emplace_back("=", LibCompiler::kKeywordKindVariableAssign);
+  kKeywords.emplace_back("+=", LibCompiler::kKeywordKindVariableInc);
+  kKeywords.emplace_back("-=", LibCompiler::kKeywordKindVariableDec);
+  kKeywords.emplace_back("const", LibCompiler::kKeywordKindConstant);
+  kKeywords.emplace_back("*", LibCompiler::kKeywordKindPtr);
+  kKeywords.emplace_back("->", LibCompiler::kKeywordKindPtrAccess);
+  kKeywords.emplace_back(".", LibCompiler::kKeywordKindAccess);
+  kKeywords.emplace_back(",", LibCompiler::kKeywordKindArgSeparator);
+  kKeywords.emplace_back(";", LibCompiler::kKeywordKindEndInstr);
+  kKeywords.emplace_back(":", LibCompiler::kKeywordKindSpecifier);
+  kKeywords.emplace_back("public:", LibCompiler::kKeywordKindSpecifier);
+  kKeywords.emplace_back("private:", LibCompiler::kKeywordKindSpecifier);
+  kKeywords.emplace_back("protected:", LibCompiler::kKeywordKindSpecifier);
+  kKeywords.emplace_back("final", LibCompiler::kKeywordKindSpecifier);
+  kKeywords.emplace_back("return", LibCompiler::kKeywordKindReturn);
+  kKeywords.emplace_back("/*", LibCompiler::kKeywordKindCommentMultiLineStart);
+  kKeywords.emplace_back("*/", LibCompiler::kKeywordKindCommentMultiLineEnd);
+  kKeywords.emplace_back("//", LibCompiler::kKeywordKindCommentInline);
+  kKeywords.emplace_back("==", LibCompiler::kKeywordKindEq);
+  kKeywords.emplace_back("!=", LibCompiler::kKeywordKindNotEq);
+  kKeywords.emplace_back(">=", LibCompiler::kKeywordKindGreaterEq);
+  kKeywords.emplace_back("<=", LibCompiler::kKeywordKindLessEq);
 
-  kErrorLimit = 100;
+  kErrorLimit = 0;
 
   kCompilerFrontend = new CompilerFrontendCPlusPlus();
   kFactory.Mount(new AssemblyCPlusPlusInterface());
@@ -910,12 +904,13 @@ LIBCOMPILER_MODULE(CompilerCPlusPlusAMD64) {
   delete kCompilerFrontend;
   kCompilerFrontend = nullptr;
 
-  kRegisterMap.clear();
-  kOriginMap.clear();
+  kRegisterMap.shrink_to_fit();
+  kKeywords.shrink_to_fit();
+  kOriginMap.shrink_to_fit();
 
   return LIBCOMPILER_SUCCESS;
 }
 
 //
-// Last rev 8-1-24
+// Last rev 23-5-25
 //

@@ -43,9 +43,9 @@ inline std::vector<CpuCode32x0> kOpcodes32x0 = {
     LC_ASM_OPCODE("psh", 0b0111011, 0b000, kAsmImmediate)  // push to sp (2C)
     LC_ASM_OPCODE("pop", 0b0111011, 0b001, kAsmImmediate)  // pop from sp. (1C)
     LC_ASM_OPCODE("lea", 0b0111011, 0b010,
-                   kAsmImmediate)  // setup stack and call, store address to CR (1C).
+                  kAsmImmediate)  // setup stack and call, store address to CR (1C).
     LC_ASM_OPCODE("ret", 0b0111011, 0b110,
-                   kAsmImmediate)                         // return from procedure (2C).
+                  kAsmImmediate)                         // return from procedure (2C).
     LC_ASM_OPCODE("uc", 0b0111111, 0b000, kAsmSyscall)   // user call (1C)
     LC_ASM_OPCODE("kc", 0b0111111, 0b001, kAsmSyscall)   // kernel call (1C)
     LC_ASM_OPCODE("int", 0b0111111, 0b010, kAsmSyscall)  // raise interrupt (1C)

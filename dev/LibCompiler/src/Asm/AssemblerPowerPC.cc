@@ -19,10 +19,10 @@
 
 #include <LibCompiler/AE.h>
 #include <LibCompiler/Backend/PowerPC.h>
-#include <LibCompiler/Util/LCAsmUtils.h>
 #include <LibCompiler/ErrorID.h>
 #include <LibCompiler/Frontend.h>
 #include <LibCompiler/PEF.h>
+#include <LibCompiler/Util/LCAsmUtils.h>
 #include <LibCompiler/Version.h>
 #include <algorithm>
 #include <filesystem>

@@ -35,9 +35,9 @@ inline std::vector<CpuOpcode64x0> kOpcodes64x0 = {
     LC_ASM_OPCODE("nop", 0b0000000, 0b0000000, kAsmNoArgs)  // no-operation.
     LC_ASM_OPCODE("np", 0b0000000, 0b0000000, kAsmNoArgs)   // no-operation.
     LC_ASM_OPCODE("jlr", 0b1110011, 0b0000111,
-                   kAsmJump)  // jump to linked return register
+                  kAsmJump)  // jump to linked return register
     LC_ASM_OPCODE("jrl", 0b1110011, 0b0001111,
-                   kAsmJump)  // jump from return register.
+                  kAsmJump)  // jump from return register.
     LC_ASM_OPCODE("mv", 0b0100011, 0b101, kAsmRegToReg) LC_ASM_OPCODE(
         "bg", 0b1100111, 0b111, kAsmRegToReg) LC_ASM_OPCODE("bl", 0b1100111, 0b011, kAsmRegToReg)
         LC_ASM_OPCODE("beq", 0b1100111, 0b000, kAsmRegToReg)
@@ -52,9 +52,8 @@ inline std::vector<CpuOpcode64x0> kOpcodes64x0 = {
     LC_ASM_OPCODE("add", 0b0101011, 0b100, kAsmImmediate)
         LC_ASM_OPCODE("sub", 0b0101011, 0b101, kAsmImmediate)
     // add/sub with carry flag
-    LC_ASM_OPCODE("addc", 0b0101011, 0b110, kAsmImmediate)
-        LC_ASM_OPCODE("subc", 0b0101011, 0b111, kAsmImmediate)
-            LC_ASM_OPCODE("sc", 0b1110011, 0b00, kAsmSyscall)};
+    LC_ASM_OPCODE("addc", 0b0101011, 0b110, kAsmImmediate) LC_ASM_OPCODE(
+        "subc", 0b0101011, 0b111, kAsmImmediate) LC_ASM_OPCODE("sc", 0b1110011, 0b00, kAsmSyscall)};
 
 // \brief 64x0 register prefix
 // example: r32, r0

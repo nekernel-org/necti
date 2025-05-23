@@ -81,22 +81,22 @@ enum KeywordKind {
 
 /// \brief Compiler keyword information struct.
 struct CompilerKeyword {
-  std::string keyword_name;
-  KeywordKind keyword_kind = kKeywordKindInvalid;
+  std::string keyword_name{""};
+  KeywordKind keyword_kind{kKeywordKindInvalid};
 };
+
 struct SyntaxLeafList final {
   struct SyntaxLeaf final {
     Int32 fUserType;
+
 #ifdef LC_USE_STRUCTS
     CompilerKeyword fUserData;
 #else
     std::string fUserData;
 #endif
 
-    SyntaxLeaf() = default;
-
-    std::string        fUserValue;
-    struct SyntaxLeaf* fNext;
+    std::string        fUserValue{""};
+    struct SyntaxLeaf* fNext{nullptr};
   };
 
   std::vector<SyntaxLeaf> fLeafList;
@@ -111,7 +111,7 @@ struct SyntaxLeafList final {
 /// \param haystack base string
 /// \param needle the string we search for.
 /// \return if we found it or not.
-bool find_word(std::string haystack, std::string needle) noexcept;
+BOOL find_word(std::string haystack, std::string needle) noexcept;
 
 /// find a word within strict conditions and returns a range of it.
 /// \param haystack
