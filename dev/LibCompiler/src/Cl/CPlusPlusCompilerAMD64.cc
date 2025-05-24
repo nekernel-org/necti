@@ -904,10 +904,6 @@ LIBCOMPILER_MODULE(CompilerCPlusPlusAMD64) {
   delete kCompilerFrontend;
   kCompilerFrontend = nullptr;
 
-  kRegisterMap.shrink_to_fit();
-  kKeywords.shrink_to_fit();
-  kOriginMap.shrink_to_fit();
-
   return LIBCOMPILER_SUCCESS;
 }
 
