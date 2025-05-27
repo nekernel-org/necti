@@ -11,7 +11,7 @@
     "dev/LibCompiler/src/*.cc",
     "dev/LibCompiler/src/*/*.cc"
   ],
-  "output_name": "/usr/lib/libCompiler.so",
+  "output_name": "/usr/local/lib/libCompiler.so",
   "compiler_flags": [
     "-fPIC",
     "-shared"

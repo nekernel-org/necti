@@ -24,10 +24,9 @@
 namespace LibCompiler {
 ///! @brief Compile for specific format (ELF, PEF, ZBIN)
 Int32 AssemblyFactory::Compile(STLString sourceFile, const Int32& arch) noexcept {
-  if (sourceFile.length() < 1 || !fMounted) return LIBCOMPILER_UNIMPLEMENTED;
+  if (sourceFile.length() < 1) return LIBCOMPILER_UNIMPLEMENTED;
 
   if (!fMounted) return LIBCOMPILER_UNIMPLEMENTED;
-
   if (arch != fMounted->Arch()) return LIBCOMPILER_INVALID_ARCH;
 
   try {
@@ -48,7 +47,7 @@ void AssemblyFactory::Mount(AssemblyInterface* mountPtr) noexcept {
 AssemblyInterface* AssemblyFactory::Unmount() noexcept {
   auto mount_prev = fMounted;
 
-  if (mount_prev) {
+  if (fMounted) {
     fMounted = nullptr;
   }
 

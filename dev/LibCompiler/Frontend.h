@@ -8,33 +8,10 @@
 
 #include <LibCompiler/CodeGen.h>
 
-#define LC_COMPILER_FRONTEND : public LibCompiler::CompilerFrontendInterface
+#define LC_COMPILER_FRONTEND : public ::LibCompiler::CompilerFrontendInterface
 
 namespace LibCompiler {
 inline static auto kInvalidFrontend = "?";
-
-/// @brief Compiler backend, implements a frontend, such as C, C++...
-/// See Toolchain, for some examples.
-class CompilerFrontendInterface {
- public:
-  explicit CompilerFrontendInterface() = default;
-  virtual ~CompilerFrontendInterface() = default;
-
-  LIBCOMPILER_COPY_DEFAULT(CompilerFrontendInterface);
-
-  // NOTE: cast this to your user defined ast.
-  typedef void* AstType;
-
-  //! @brief Compile a syntax tree ouf of the text.
-  //! Also takes the source file name for metadata.
-
-  virtual bool Compile(std::string text, std::string file) = 0;
-
-  //! @brief What language are we dealing with?
-  virtual const char* Language() { return kInvalidFrontend; }
-
-  virtual bool IsValid() { return strcmp(this->Language(), kInvalidFrontend) > 0; }
-};
 
 struct SyntaxLeafList;
 struct SyntaxLeafList;
@@ -81,7 +58,7 @@ enum KeywordKind {
 
 /// \brief Compiler keyword information struct.
 struct CompilerKeyword {
-  STLString keyword_name{""};
+  STLString   keyword_name{""};
   KeywordKind keyword_kind{kKeywordKindInvalid};
 };
 
@@ -118,4 +95,27 @@ BOOL find_word(std::string haystack, std::string needle) noexcept;
 /// \param needle
 /// \return position of needle.
 std::size_t find_word_range(std::string haystack, std::string needle) noexcept;
+
+/// @brief Compiler backend, implements a frontend, such as C, C++...
+/// See Toolchain, for some examples.
+class CompilerFrontendInterface {
+ public:
+  explicit CompilerFrontendInterface() = default;
+  virtual ~CompilerFrontendInterface() = default;
+
+  LIBCOMPILER_COPY_DEFAULT(CompilerFrontendInterface);
+
+  // NOTE: cast this to your user defined ast.
+  typedef void* AstType;
+
+  //! @brief Compile a syntax tree ouf of the text.
+  //! Also takes the source file name for metadata.
+
+  virtual LibCompiler::SyntaxLeafList::SyntaxLeaf Compile(std::string text, std::string file) = 0;
+
+  //! @brief What language are we dealing with?
+  virtual const char* Language() { return kInvalidFrontend; }
+
+  virtual bool IsValid() { return strcmp(this->Language(), kInvalidFrontend) > 0; }
+};
 }  // namespace LibCompiler

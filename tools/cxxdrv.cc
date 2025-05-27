@@ -11,11 +11,7 @@
 #include <LibCompiler/ErrorID.h>
 #include <LibCompiler/Version.h>
 #include <LibCompiler/Util/LCClUtils.h>
-#include <dlfcn.h>
-
-typedef Int32(*LibCompilerEntrypoint)(Int32 argc, CharType const* argv[]);
-
-typedef VoidPtr DylibHandle;
+#include <LibCompiler/Util/DylibHelpers.h>
 
 static auto kPath = "/usr/local/lib/libCompiler.dylib";
 

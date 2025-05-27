@@ -8,7 +8,7 @@
  */
 
 /**
- * @file PString.cxx
+ * @file BasicString.cxx
  * @author Amlal (amlal@el-mahrouss-logic.com)
  * @brief C++ string manipulation API.
  * @version 0.2
@@ -18,22 +18,22 @@
  *
  */
 
-#include <LibCompiler/PString.h>
+#include <LibCompiler/BasicString.h>
 
 namespace LibCompiler {
-CharType* PString::Data() {
+CharType* BasicString::Data() {
   return m_Data;
 }
 
-const CharType* PString::CData() const {
+const CharType* BasicString::CData() const {
   return m_Data;
 }
 
-SizeType PString::Length() const {
+SizeType BasicString::Length() const {
   return strlen(m_Data);
 }
 
-bool PString::operator==(const PString& rhs) const {
+bool BasicString::operator==(const BasicString& rhs) const {
   if (rhs.Length() != Length()) return false;
 
   for (SizeType index = 0; index < Length(); ++index) {
@@ -43,7 +43,7 @@ bool PString::operator==(const PString& rhs) const {
   return true;
 }
 
-bool PString::operator==(const CharType* rhs) const {
+bool BasicString::operator==(const CharType* rhs) const {
   if (string_length(rhs) != Length()) return false;
 
   for (SizeType index = 0; index < string_length(rhs); ++index) {
@@ -53,7 +53,7 @@ bool PString::operator==(const CharType* rhs) const {
   return true;
 }
 
-bool PString::operator!=(const PString& rhs) const {
+bool BasicString::operator!=(const BasicString& rhs) const {
   if (rhs.Length() != Length()) return false;
 
   for (SizeType index = 0; index < rhs.Length(); ++index) {
@@ -63,7 +63,7 @@ bool PString::operator!=(const PString& rhs) const {
   return true;
 }
 
-bool PString::operator!=(const CharType* rhs) const {
+bool BasicString::operator!=(const CharType* rhs) const {
   if (string_length(rhs) != Length()) return false;
 
   for (SizeType index = 0; index < string_length(rhs); ++index) {
@@ -73,10 +73,10 @@ bool PString::operator!=(const CharType* rhs) const {
   return true;
 }
 
-PString StringBuilder::Construct(const CharType* data) {
-  if (!data || *data == 0) return PString(0);
+BasicString StringBuilder::Construct(const CharType* data) {
+  if (!data || *data == 0) return BasicString(0);
 
-  PString view(strlen(data));
+  BasicString view(strlen(data));
   view += data;
 
   return view;
@@ -183,9 +183,9 @@ const char* StringBuilder::Format(const char* fmt, const char* fmtRight) {
   return ret;
 }
 
-PString& PString::operator+=(const CharType* rhs) {
+BasicString& BasicString::operator+=(const CharType* rhs) {
   if (strlen(rhs) > this->m_Sz) {
-    throw std::runtime_error("out_of_bounds: PString");
+    throw std::runtime_error("out_of_bounds: BasicString");
   }
 
   memcpy(this->m_Data + this->m_Cur, rhs, strlen(rhs));
@@ -194,9 +194,9 @@ PString& PString::operator+=(const CharType* rhs) {
   return *this;
 }
 
-PString& PString::operator+=(const PString& rhs) {
+BasicString& BasicString::operator+=(const BasicString& rhs) {
   if (rhs.m_Cur > this->m_Sz) {
-    throw std::runtime_error("out_of_bounds: PString");
+    throw std::runtime_error("out_of_bounds: BasicString");
   }
 
   memcpy(this->m_Data + this->m_Cur, rhs.CData(), strlen(rhs.CData()));

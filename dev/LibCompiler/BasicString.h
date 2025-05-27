@@ -14,23 +14,23 @@
 
 namespace LibCompiler {
 class StringBuilder;
-class PString;
+class BasicString;
 
 /**
- * @brief PString class, contains a C string and manages it.
+ * @brief BasicString class, contains a C string and manages it.
  * @note No need to manage it it's getting deleted by default.
  */
 
-class PString final {
+class BasicString final {
  public:
-  explicit PString() = delete;
+  explicit BasicString() = delete;
 
-  explicit PString(SizeType Sz) noexcept : m_Sz(Sz) {
+  explicit BasicString(SizeType Sz) noexcept : m_Sz(Sz) {
     m_Data = new CharType[Sz];
     assert(m_Data);
   }
 
-  ~PString() noexcept {
+  ~BasicString() noexcept {
     if (m_Data) {
       memset(m_Data, 0, m_Sz);
       delete[] m_Data;
@@ -39,7 +39,7 @@ class PString final {
     }
   }
 
-  LIBCOMPILER_COPY_DEFAULT(PString);
+  LIBCOMPILER_COPY_DEFAULT(BasicString);
 
   CharType*       Data();
   const CharType* CData() const;
@@ -48,11 +48,11 @@ class PString final {
   bool operator==(const CharType* rhs) const;
   bool operator!=(const CharType* rhs) const;
 
-  bool operator==(const PString& rhs) const;
-  bool operator!=(const PString& rhs) const;
+  bool operator==(const BasicString& rhs) const;
+  bool operator!=(const BasicString& rhs) const;
 
-  PString& operator+=(const CharType* rhs);
-  PString& operator+=(const PString& rhs);
+  BasicString& operator+=(const CharType* rhs);
+  BasicString& operator+=(const BasicString& rhs);
 
   operator bool() { return m_Data && m_Data[0] != 0; }
 
@@ -71,12 +71,12 @@ class PString final {
  * @note These results shall call be delete[] after they're used.
  */
 struct StringBuilder final {
-  static PString     Construct(const CharType* data);
+  static BasicString     Construct(const CharType* data);
   static const char* FromInt(const char* fmt, int n);
   static const char* FromBool(const char* fmt, bool n);
   static const char* Format(const char* fmt, const char* from);
   static bool        Equals(const char* lhs, const char* rhs);
 };
 
-using PStringOr = ErrorOr<PString>;
+using PStringOr = ErrorOr<BasicString>;
 }  // namespace LibCompiler
