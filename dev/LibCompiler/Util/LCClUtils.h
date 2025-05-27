@@ -80,11 +80,11 @@ inline void drvi_crash_handler(std::int32_t id) {
 
   switch (id) {
     case SIGSEGV: {
-      kStdOut << "SIGSEGV: Segmentation Fault." << kBlank << std::endl;
+      kStdOut << "SIGNAL: Segmentation Fault." << kBlank << std::endl;
       break;
     }
     case SIGABRT: {
-      kStdOut << "SIGABRT: Aborted." << kBlank << std::endl;
+      kStdOut << "SIGNAL: Aborted." << kBlank << std::endl;
       break;
     }
   }
