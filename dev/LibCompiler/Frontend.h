@@ -81,7 +81,7 @@ enum KeywordKind {
 
 /// \brief Compiler keyword information struct.
 struct CompilerKeyword {
-  std::string keyword_name{""};
+  STLString keyword_name{""};
   KeywordKind keyword_kind{kKeywordKindInvalid};
 };
 

@@ -1215,7 +1215,7 @@ static void cc_print_help() {
 #define kExt ".c"
 
 LIBCOMPILER_MODULE(NeOSCompilerCLangPowerPC) {
-  ::signal(SIGSEGV, Detail::drv_segfault_handler);
+  ::signal(SIGSEGV, Detail::drvi_crash_handler);
 
   kCompilerTypes.push_back({.fName = "void", .fValue = "void"});
   kCompilerTypes.push_back({.fName = "char", .fValue = "byte"});

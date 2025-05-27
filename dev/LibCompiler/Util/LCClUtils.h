@@ -9,6 +9,7 @@
 #include <LibCompiler/CodeGen.h>
 #include <LibCompiler/ErrorID.h>
 #include <LibCompiler/Frontend.h>
+#include <LibCompiler/Version.h>
 #include <Vendor/Dialogs.h>
 
 #define kZero64Section ".zero64"
@@ -51,17 +52,58 @@ inline void print_warning(std::string reason, std::string file) noexcept {
 
 /// @internal
 /// @brief Handler for SIGSEGV signal.
-inline void drv_segfault_handler(std::int32_t id) {
+inline void drvi_crash_handler(std::int32_t id) {
+  LibCompiler::STLString verbose_header = "LIBCOMPILER CRASH REPORT - ";
+  verbose_header += kDistVersion;
+  verbose_header += " - ";
+  verbose_header += LibCompiler::current_date();
+
+  for (auto& ch : verbose_header) {
+    std::cout << '=';
+  }
+
+  std::cout << std::endl;
+
+  std::cout << verbose_header << std::endl;
+
+  for (auto& ch : verbose_header) {
+    std::cout << '=';
+  }
+
+  std::cout << std::endl;
+
+  kStdOut << "DATE: " << LibCompiler::current_date() << std::endl;
+  kStdOut << "VERSION: " << kDistVersion << std::endl;
+  kStdOut << "ERRNO: " << errno << std::endl;
+  kStdOut << "ERRNO(STRING): " << strerror(errno) << std::endl;
+
+
   switch (id) {
     case SIGSEGV: {
-      kStdErr << "SIGSEGV: Please report this on the GitHub issues page." << kBlank << std::endl;
+      kStdOut << "SIGSEGV: Segmentation Fault." << kBlank << std::endl;
       break;
     }
     case SIGABRT: {
-      kStdErr << "SIGABRT: Please report this on the GitHub issues page." << kBlank << std::endl;
+      kStdOut << "SIGABRT: Aborted." << kBlank << std::endl;
       break;
     }
   }
+
+  std::cout << kWhite;
+
+  for (auto& ch : verbose_header) {
+    std::cout << '=';
+  }
+
+  std::cout << std::endl;
+
+  std::cout << verbose_header << std::endl;
+
+  for (auto& ch : verbose_header) {
+    std::cout << '=';
+  }
+
+  std::cout << std::endl;
 
   std::exit(LIBCOMPILER_EXEC_ERROR);
 }

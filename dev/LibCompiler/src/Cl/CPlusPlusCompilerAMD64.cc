@@ -9,6 +9,7 @@
 
 /// BUGS: 1
 
+#include "LibCompiler/Defines.h"
 #define kPrintF printf
 
 #define kExitOK (EXIT_SUCCESS)
@@ -71,18 +72,14 @@ struct CompilerRegisterMap final {
   std::string fReg;
 };
 
-// \brief Offset based struct/class
+/// \brief Offset based struct/class
 struct CompilerStructMap final {
-  std::string fName;
-  std::string fReg;
-
-  // offset counter
-  std::size_t fOffsetsCnt;
-
-  // offset array
+  std::string                                 fName;
+  std::string                                 fReg;
   std::vector<std::pair<UInt32, std::string>> fOffsets;
 };
 
+/// \brief Compiler state structure.
 struct CompilerState final {
   std::vector<CompilerRegisterMap> fStackMapVector;
   std::vector<CompilerStructMap>   fStructMapVector;
@@ -99,7 +96,7 @@ static Int32 kOnClassScope = 0;
 /////////////////////////////////////////////////////////////////////////////////////////
 
 // Target architecture.
-static int kMachine = LibCompiler::AssemblyFactory::kArchAMD64;
+static Int32 kMachine = LibCompiler::AssemblyFactory::kArchAMD64;
 
 /////////////////////////////////////////
 
@@ -740,19 +737,10 @@ class AssemblyCPlusPlusInterface final LC_ASSEMBLY_INTERFACE {
     std::string line_source;
 
     while (std::getline(src_fp, line_source)) {
-      if (kVerbose) {
-        kStdOut << line_source << std::endl;
-        kStdOut << line_source.length() << " bytes\n";
-      }
-
       kCompilerFrontend->Compile(line_source, src);
 
       out_fp << kState.fOutputValue;
       kState.fOutputValue.clear();
-    }
-
-    if (kVerbose) {
-      kStdOut << "Done compiling " << src << " to " << dest << "\n";
     }
 
     return kExitOK;
@@ -832,7 +820,7 @@ LIBCOMPILER_MODULE(CompilerCPlusPlusAMD64) {
   kCompilerFrontend = new CompilerFrontendCPlusPlus();
   kFactory.Mount(new AssemblyCPlusPlusInterface());
 
-  ::signal(SIGSEGV, Detail::drv_segfault_handler);
+  ::signal(SIGSEGV, Detail::drvi_crash_handler);
 
   for (auto index = 1UL; index < argc; ++index) {
     if (argv[index][0] == '-') {

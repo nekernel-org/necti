@@ -101,7 +101,7 @@ static std::vector<Detail::DynamicLinkerBlob> kObjectBytes;
 LIBCOMPILER_MODULE(DynamicLinker64PEF) {
   bool is_executable = true;
 
-  ::signal(SIGSEGV, Detail::drv_segfault_handler);
+  ::signal(SIGSEGV, Detail::drvi_crash_handler);
 
   /**
    * @brief parse flags and trigger options.

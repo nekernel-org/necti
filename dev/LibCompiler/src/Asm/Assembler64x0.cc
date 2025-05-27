@@ -67,7 +67,7 @@ static bool asm_read_attributes(std::string line);
 /////////////////////////////////////////////////////////////////////////////////////////
 
 LIBCOMPILER_MODULE(AssemblerMain64x0) {
-  ::signal(SIGSEGV, Detail::drv_segfault_handler);
+  ::signal(SIGSEGV, Detail::drvi_crash_handler);
 
   for (size_t i = 1; i < argc; ++i) {
     if (argv[i][0] == '-') {

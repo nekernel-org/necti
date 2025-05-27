@@ -11,8 +11,6 @@
   ],
   "output_name": "cxxdrv",
   "compiler_flags": [
-    "-L/usr/local/lib",
-    "-lCompiler"
   ],
   "cpp_macros": [
     "__CXXDRV__=202504",
