@@ -45,7 +45,7 @@
 
 constexpr auto cPowerIPAlignment = 0x1U;
 
-static CharType kOutputArch = LibCompiler::kPefArchARM64;
+static Char kOutputArch = LibCompiler::kPefArchARM64;
 
 static std::size_t kCounter = 1UL;
 

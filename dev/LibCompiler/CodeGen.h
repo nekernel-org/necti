@@ -74,7 +74,7 @@ union NumberCast64 final {
 
   ~NumberCast64() { raw = 0; }
 
-  CharType number[8];
+  Char number[8];
   UInt64   raw;
 };
 
@@ -84,7 +84,7 @@ union NumberCast32 final {
 
   ~NumberCast32() { raw = 0; }
 
-  CharType number[4];
+  Char number[4];
   UInt32   raw;
 };
 
@@ -94,7 +94,7 @@ union NumberCast16 final {
 
   ~NumberCast16() { raw = 0; }
 
-  CharType number[2];
+  Char number[2];
   UInt16   raw;
 };
 
@@ -104,7 +104,7 @@ union NumberCast8 final {
 
   ~NumberCast8() { raw = 0; }
 
-  CharType number;
+  Char number;
   UInt8    raw;
 };
 

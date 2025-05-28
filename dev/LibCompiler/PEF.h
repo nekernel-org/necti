@@ -71,7 +71,7 @@ enum {
 
 /* PEF container */
 typedef struct PEFContainer final {
-  CharType Magic[kPefMagicLen];
+  Char Magic[kPefMagicLen];
   UInt32   Linker; /* Linker used to link executable */
   UInt32   Version;
   UInt32   Kind;
@@ -90,7 +90,7 @@ typedef struct PEFContainer final {
 /* PEF executable section and commands. */
 
 typedef struct PEFCommandHeader final {
-  CharType Name[kPefNameLen]; /* container name */
+  Char Name[kPefNameLen]; /* container name */
   UInt32   Cpu;               /* container cpu */
   UInt32   SubCpu;            /* container sub-cpu */
   UInt32   Flags;             /* container flags */

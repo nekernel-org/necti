@@ -26,7 +26,7 @@ class BasicString final {
   explicit BasicString() = delete;
 
   explicit BasicString(SizeType Sz) noexcept : m_Sz(Sz) {
-    m_Data = new CharType[Sz];
+    m_Data = new Char[Sz];
     assert(m_Data);
   }
 
@@ -41,17 +41,17 @@ class BasicString final {
 
   LIBCOMPILER_COPY_DEFAULT(BasicString);
 
-  CharType*       Data();
-  const CharType* CData() const;
+  Char*       Data();
+  const Char* CData() const;
   SizeType        Length() const;
 
-  bool operator==(const CharType* rhs) const;
-  bool operator!=(const CharType* rhs) const;
+  bool operator==(const Char* rhs) const;
+  bool operator!=(const Char* rhs) const;
 
   bool operator==(const BasicString& rhs) const;
   bool operator!=(const BasicString& rhs) const;
 
-  BasicString& operator+=(const CharType* rhs);
+  BasicString& operator+=(const Char* rhs);
   BasicString& operator+=(const BasicString& rhs);
 
   operator bool() { return m_Data && m_Data[0] != 0; }
@@ -59,7 +59,7 @@ class BasicString final {
   bool operator!() { return !m_Data || m_Data[0] == 0; }
 
  private:
-  CharType* m_Data{nullptr};
+  Char* m_Data{nullptr};
   SizeType  m_Sz{0};
   SizeType  m_Cur{0};
 
@@ -71,7 +71,7 @@ class BasicString final {
  * @note These results shall call be delete[] after they're used.
  */
 struct StringBuilder final {
-  static BasicString Construct(const CharType* data);
+  static BasicString Construct(const Char* data);
   static const char* FromInt(const char* fmt, int n);
   static const char* FromBool(const char* fmt, bool n);
   static const char* Format(const char* fmt, const char* from);

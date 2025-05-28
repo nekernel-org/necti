@@ -48,7 +48,7 @@
 #define Int8 int8_t
 #define UInt8 uint8_t
 
-#define CharType char
+#define Char char
 #define Boolean bool
 
 #include <cassert>
@@ -118,7 +118,7 @@ inline STLString current_date() noexcept {
   return fmt;
 }
 
-inline bool to_str(CharType* str, Int32 limit, Int32 base) noexcept {
+inline bool to_str(Char* str, Int32 limit, Int32 base) noexcept {
   if (limit == 0) return false;
 
   Int32 copy_limit = limit;

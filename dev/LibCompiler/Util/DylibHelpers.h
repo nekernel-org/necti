@@ -9,5 +9,5 @@
 #include <LibCompiler/Defines.h>
 #include <dlfcn.h>
 
-typedef Int32 (*LibCompilerEntrypoint)(Int32 argc, CharType const* argv[]);
+typedef Int32 (*LibCompilerEntrypoint)(Int32 argc, Char const* argv[]);
 typedef VoidPtr DylibHandle;

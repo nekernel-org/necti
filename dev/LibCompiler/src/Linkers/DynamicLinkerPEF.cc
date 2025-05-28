@@ -68,7 +68,7 @@
 
 namespace Detail {
 struct DynamicLinkerBlob final {
-  std::vector<CharType> mBlob{};       // PEF code/bss/data blob.
+  std::vector<Char> mBlob{};       // PEF code/bss/data blob.
   UIntPtr               mOffset{0UL};  // the offset of the PEF container header...
 };
 }  // namespace Detail
@@ -89,8 +89,8 @@ static Bool                   kStartFound       = false;
 static Bool                   kDuplicateSymbols = false;
 
 /* ld64 is to be found, mld is to be found at runtime. */
-static const CharType* kLdDefineSymbol = ":UndefinedSymbol:";
-static const CharType* kLdDynamicSym   = ":RuntimeSymbol:";
+static const Char* kLdDefineSymbol = ":UndefinedSymbol:";
+static const Char* kLdDynamicSym   = ":RuntimeSymbol:";
 
 /* object code and list. */
 static std::vector<LibCompiler::STLString>    kObjectList;

@@ -21,11 +21,11 @@
 #include <LibCompiler/BasicString.h>
 
 namespace LibCompiler {
-CharType* BasicString::Data() {
+Char* BasicString::Data() {
   return m_Data;
 }
 
-const CharType* BasicString::CData() const {
+const Char* BasicString::CData() const {
   return m_Data;
 }
 
@@ -43,7 +43,7 @@ bool BasicString::operator==(const BasicString& rhs) const {
   return true;
 }
 
-bool BasicString::operator==(const CharType* rhs) const {
+bool BasicString::operator==(const Char* rhs) const {
   if (string_length(rhs) != Length()) return false;
 
   for (SizeType index = 0; index < string_length(rhs); ++index) {
@@ -63,7 +63,7 @@ bool BasicString::operator!=(const BasicString& rhs) const {
   return true;
 }
 
-bool BasicString::operator!=(const CharType* rhs) const {
+bool BasicString::operator!=(const Char* rhs) const {
   if (string_length(rhs) != Length()) return false;
 
   for (SizeType index = 0; index < string_length(rhs); ++index) {
@@ -73,7 +73,7 @@ bool BasicString::operator!=(const CharType* rhs) const {
   return true;
 }
 
-BasicString StringBuilder::Construct(const CharType* data) {
+BasicString StringBuilder::Construct(const Char* data) {
   if (!data || *data == 0) return BasicString(0);
 
   BasicString view(strlen(data));
@@ -92,7 +92,7 @@ const char* StringBuilder::FromInt(const char* fmt, int i) {
 
   memset(ret, 0, ret_len);
 
-  CharType result[sizeof(int64_t)];
+  Char result[sizeof(int64_t)];
 
   if (!to_str(result, sizeof(int64_t), i)) {
     delete[] ret;
@@ -183,7 +183,7 @@ const char* StringBuilder::Format(const char* fmt, const char* fmtRight) {
   return ret;
 }
 
-BasicString& BasicString::operator+=(const CharType* rhs) {
+BasicString& BasicString::operator+=(const Char* rhs) {
   if (strlen(rhs) > this->m_Sz) {
     throw std::runtime_error("out_of_bounds: BasicString");
   }
