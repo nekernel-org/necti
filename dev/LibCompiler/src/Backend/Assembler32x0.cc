@@ -17,26 +17,15 @@
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
+#ifndef __ASM_NEED_32x0__
 #define __ASM_NEED_32x0__ 1
+#endif
 
 #include <LibCompiler/AE.h>
 #include <LibCompiler/Backend/32x0.h>
 #include <LibCompiler/Frontend.h>
 #include <LibCompiler/PEF.h>
-
-/////////////////////
-
-// ANSI ESCAPE CODES
-
-/////////////////////
-
-#define kBlank "\e[0;30m"
-#define kRed "\e[0;31m"
-#define kWhite "\e[0;97m"
-#define kYellow "\e[0;33m"
-
-#define kStdOut (std::cout << kWhite)
-#define kStdErr (std::cout << kRed)
+#include <LibCompiler/Util/CompilerUtils.h>
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
@@ -45,5 +34,6 @@
 /////////////////////////////////////////////////////////////////////////////////////////
 
 LIBCOMPILER_MODULE(NEAssemblerMain32000) {
-  return 0;
+  LibCompiler::install_signal(SIGSEGV, Detail::drvi_crash_handler);
+  return EXIT_SUCCESS;
 }

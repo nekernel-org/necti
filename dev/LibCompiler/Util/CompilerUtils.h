@@ -77,7 +77,6 @@ inline void drvi_crash_handler(std::int32_t id) {
   kStdOut << "ERRNO: " << errno << std::endl;
   kStdOut << "ERRNO(STRING): " << strerror(errno) << std::endl;
 
-
   switch (id) {
     case SIGSEGV: {
       kStdOut << "SIGNAL: Segmentation Fault." << kBlank << std::endl;

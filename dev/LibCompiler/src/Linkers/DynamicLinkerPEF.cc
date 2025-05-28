@@ -35,7 +35,7 @@
 #include <LibCompiler/AE.h>
 
 //! LibCompiler utils.
-#include <LibCompiler/Util/LCClUtils.h>
+#include <LibCompiler/Util/CompilerUtils.h>
 
 //! I/O stream from std c++
 #include <iostream>

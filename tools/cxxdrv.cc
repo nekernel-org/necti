@@ -9,9 +9,9 @@
 
 #include <LibCompiler/Defines.h>
 #include <LibCompiler/ErrorID.h>
-#include <LibCompiler/Version.h>
-#include <LibCompiler/Util/LCClUtils.h>
+#include <LibCompiler/Util/CompilerUtils.h>
 #include <LibCompiler/Util/DylibHelpers.h>
+#include <LibCompiler/Version.h>
 
 static auto kPath = "/usr/local/lib/libCompiler.dylib";
 
@@ -21,11 +21,12 @@ Int32 main(Int32 argc, CharType const* argv[]) {
   if (!handler) {
     kStdOut;
     std::printf("error: Could not load dylib in %s: %s\n", kPath, dlerror());
-    
+
     return EXIT_FAILURE;
   }
 
-  LibCompilerEntrypoint entrypoint_cxx = (LibCompilerEntrypoint)dlsym(handler, "CompilerCPlusPlusAMD64");
+  LibCompilerEntrypoint entrypoint_cxx =
+      (LibCompilerEntrypoint) dlsym(handler, "CompilerCPlusPlusAMD64");
 
   if (!entrypoint_cxx) {
     kStdOut;

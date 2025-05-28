@@ -17,13 +17,15 @@
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
+#ifndef __ASM_NEED_64x0__
 #define __ASM_NEED_64x0__ 1
+#endif
 
 #include <LibCompiler/AE.h>
 #include <LibCompiler/Backend/64x0.h>
 #include <LibCompiler/Frontend.h>
 #include <LibCompiler/PEF.h>
-#include <LibCompiler/Util/LCClUtils.h>
+#include <LibCompiler/Util/CompilerUtils.h>
 #include <algorithm>
 #include <filesystem>
 #include <fstream>
@@ -38,8 +40,7 @@
 
 static char kOutputArch = LibCompiler::kPefArch64000;
 
-/// @note The 64x0 is VLSIW, so we need to jump to 4 bytes.
-constexpr auto k64x0IPAlignment = 0x4U;
+constexpr auto k64x0IPAlignment = 0x1U;
 
 static std::size_t kCounter = 1UL;
 
@@ -67,7 +68,7 @@ static bool asm_read_attributes(std::string line);
 /////////////////////////////////////////////////////////////////////////////////////////
 
 LIBCOMPILER_MODULE(AssemblerMain64x0) {
-  ::signal(SIGSEGV, Detail::drvi_crash_handler);
+  LibCompiler::install_signal(SIGSEGV, Detail::drvi_crash_handler);
 
   for (size_t i = 1; i < argc; ++i) {
     if (argv[i][0] == '-') {

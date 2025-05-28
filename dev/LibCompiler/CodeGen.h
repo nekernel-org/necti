@@ -6,9 +6,9 @@
 
 #pragma once
 
+#include <LibCompiler/BasicString.h>
 #include <LibCompiler/Defines.h>
 #include <LibCompiler/Macros.h>
-#include <LibCompiler/BasicString.h>
 
 #define LC_ASSEMBLY_INTERFACE : public ::LibCompiler::AssemblyInterface
 #define LC_ENCODER : public ::LibCompiler::EncoderInterface

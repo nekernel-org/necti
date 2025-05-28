@@ -9,7 +9,6 @@
 
 /// BUGS: 1
 
-#include "LibCompiler/Defines.h"
 #define kPrintF printf
 
 #define kExitOK (EXIT_SUCCESS)
@@ -20,7 +19,7 @@
 #include <LibCompiler/Backend/X64.h>
 #include <LibCompiler/Frontend.h>
 #include <LibCompiler/UUID.h>
-#include <LibCompiler/Util/LCClUtils.h>
+#include <LibCompiler/Util/CompilerUtils.h>
 
 /* NeKernel C++ Compiler Driver */
 /* This is part of the LibCompiler. */
@@ -126,7 +125,8 @@ class CompilerFrontendCPlusPlus final LC_COMPILER_FRONTEND {
 
   LIBCOMPILER_COPY_DEFAULT(CompilerFrontendCPlusPlus);
 
-  LibCompiler::SyntaxLeafList::SyntaxLeaf Compile(const LibCompiler::STLString text, LibCompiler::STLString file) override;
+  LibCompiler::SyntaxLeafList::SyntaxLeaf Compile(const LibCompiler::STLString text,
+                                                  LibCompiler::STLString       file) override;
 
   const char* Language() override;
 };
@@ -736,6 +736,9 @@ class AssemblyCPlusPlusInterface final LC_ASSEMBLY_INTERFACE {
 
     LibCompiler::STLString line_source;
 
+    out_fp << "#bits 64\n";
+    out_fp << "#org " << kOrigin << "\n\n";
+
     while (std::getline(src_fp, line_source)) {
       out_fp << kCompilerFrontend->Compile(line_source, src).fUserValue;
     }
@@ -817,7 +820,7 @@ LIBCOMPILER_MODULE(CompilerCPlusPlusAMD64) {
   kCompilerFrontend = new CompilerFrontendCPlusPlus();
   kFactory.Mount(new AssemblyCPlusPlusInterface());
 
-  ::signal(SIGSEGV, Detail::drvi_crash_handler);
+  LibCompiler::install_signal(SIGSEGV, Detail::drvi_crash_handler);
 
   for (auto index = 1UL; index < argc; ++index) {
     if (!argv[index]) break;

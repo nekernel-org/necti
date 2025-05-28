@@ -9,7 +9,7 @@
 #include <LibCompiler/CodeGen.h>
 #include <LibCompiler/Frontend.h>
 
-#include <LibCompiler/Util/LCClUtils.h>
+#include <LibCompiler/Util/CompilerUtils.h>
 
 using namespace LibCompiler;
 

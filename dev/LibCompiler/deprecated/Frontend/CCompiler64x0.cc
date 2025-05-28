@@ -13,7 +13,7 @@
 #include <LibCompiler/Backend/64x0.h>
 #include <LibCompiler/Frontend.h>
 #include <LibCompiler/UUID.h>
-#include <LibCompiler/Util/LCClUtils.h>
+#include <LibCompiler/Util/CompilerUtils.h>
 #include <cstdio>
 #include <fstream>
 #include <iostream>

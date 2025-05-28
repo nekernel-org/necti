@@ -71,7 +71,7 @@ class BasicString final {
  * @note These results shall call be delete[] after they're used.
  */
 struct StringBuilder final {
-  static BasicString     Construct(const CharType* data);
+  static BasicString Construct(const CharType* data);
   static const char* FromInt(const char* fmt, int n);
   static const char* FromBool(const char* fmt, bool n);
   static const char* Format(const char* fmt, const char* from);

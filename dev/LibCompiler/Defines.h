@@ -138,6 +138,15 @@ inline bool to_str(CharType* str, Int32 limit, Int32 base) noexcept {
   return true;
 }
 
+inline bool install_signal(Int32 signal, void (*handler)(int)) noexcept {
+  if (handler == nullptr) return false;
+
+  if (::signal(signal, handler) == SIG_ERR) {
+    return false;
+  }
+
+  return true;
+}
 }  // namespace LibCompiler
 
 #define PACKED __attribute__((packed))

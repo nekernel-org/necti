@@ -15,14 +15,16 @@
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
+#ifndef __ASM_NEED_ARM64__
 #define __ASM_NEED_ARM64__ 1
+#endif
 
 #include <LibCompiler/AE.h>
 #include <LibCompiler/Backend/Aarch64.h>
 #include <LibCompiler/ErrorID.h>
 #include <LibCompiler/Frontend.h>
 #include <LibCompiler/PEF.h>
-#include <LibCompiler/Util/LCAsmUtils.h>
+#include <LibCompiler/Util/AsmUtils.h>
 #include <LibCompiler/Version.h>
 #include <algorithm>
 #include <filesystem>
@@ -71,7 +73,7 @@ static bool asm_read_attributes(std::string line);
 /////////////////////////////////////////////////////////////////////////////////////////
 
 LIBCOMPILER_MODULE(AssemblerMainARM64) {
-  ::signal(SIGSEGV, Detail::drvi_crash_handler);
+  LibCompiler::install_signal(SIGSEGV, Detail::drvi_crash_handler);
 
   for (size_t i = 1; i < argc; ++i) {
     if (argv[i][0] == '-') {
