@@ -22,7 +22,7 @@ class Ref final {
 
   ~Ref() {
     if (m_Strong) {
-      delete m_Class;
+      if (m_Class) delete m_Class;
       m_Class = nullptr;
     }
   }
