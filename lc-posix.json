@@ -7,11 +7,17 @@
     "./dev/LibCompiler/src",
     "./dev/LibCompiler/src/Detail"
   ],
-  "sources_path": ["dev/LibCompiler/src/*.cc"],
-  "output_name": "/usr/lib/libCompiler.so",
-  "compiler_flags": ["-fPIC", "-shared"],
+  "sources_path": [
+    "dev/LibCompiler/src/*.cc",
+    "dev/LibCompiler/src/*/*.cc"
+  ],
+  "output_name": "/usr/local/lib/libCompiler.so",
+  "compiler_flags": [
+    "-fPIC",
+    "-shared"
+  ],
   "cpp_macros": [
-    "__LIBCOMPILER__=202401",
+    "__LIBCOMPILER__=202505",
     "LC_USE_STRUCTS=1",
     "kDistReleaseBranch=$(git rev-parse --abbrev-ref HEAD)-$(uuidgen)"
   ]

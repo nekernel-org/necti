@@ -1,0 +1,34 @@
+.TH LD64 1 "LibCompiler" "January 2025" "NeKernel Manual"
+.SH NAME
+.B ld64
+\- PEF 64-bit linker for NeKernel
+
+.SH SYNOPSIS
+.B ld64 %OPTIONS% %INPUT_FILES% -output %OUTPUT_FILE%
+
+.SH DESCRIPTION
+.B ld64
+is the dedicated linker for the Preferred Executable Format (PEF) used by NeKernel.
+
+.SH OPTIONS
+.TP
+.B -output <file>
+Specify the output file.
+
+.SH USAGE EXAMPLES
+.TP
+.B Generate an executable file from an AE object.
+.B ld64 main.obj -output app.exec
+
+.SH EXIT STATUS
+.TP
+0  Successful linking.
+.TP
+1  Error encountered during linking.
+
+.SH SEE ALSO
+.BR cxxdrv (7), asm (1)
+
+.SH AUTHOR
+Amlal El Mahrouss
+

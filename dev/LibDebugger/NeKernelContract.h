@@ -6,6 +6,8 @@
 #ifndef LD_NEKERNEL_CONTRACT_H
 #define LD_NEKERNEL_CONTRACT_H
 
+#ifdef LD_NEKERNEL_DEBUGGER
+
 #include <LibDebugger/DebuggerContract.h>
 
 #include <sys/socket.h>
@@ -29,35 +31,43 @@ namespace LibDebugger::NeKernel {
 class NeKernelContract;
 
 namespace Detail {
-  class NeKernelPortHeader;
+  class NeKernelDebugHeader;
 
   inline constexpr size_t kDebugTypeLen = 256U;
 
   typedef char rt_debug_type[kDebugTypeLen];
 
-  class NeKernelPortHeader final {
+  class NeKernelDebugHeader final {
    public:
-    int16_t fPort;
-    int16_t fPortBsy;
+    int16_t       fPort;
+    int16_t       fPortKind;
+    rt_debug_type fPortBlob;
   };
 }  // namespace Detail
 
 class NeKernelContract : public DebuggerContract {
  public:
   NeKernelContract();
-  virtual ~NeKernelContract();
+  ~NeKernelContract() override;
+
+ public:
+  NeKernelContract& operator=(const NeKernelContract&) = default;
+  NeKernelContract(const NeKernelContract&)            = default;
 
   // Override additional methods from DebuggerContract
-  virtual bool Attach(std::string path, std::string argv, ProcessID& pid) noexcept override;
-  virtual bool Breakpoint(std::string symbol) noexcept override;
-  virtual bool Break() noexcept override;
-  virtual bool Continue() noexcept override;
-  virtual bool Detach() noexcept override;
+  bool Attach(std::string path, std::string argv, ProcessID& pid) noexcept override;
+  bool Breakpoint(std::string symbol) noexcept override;
+  bool Break() noexcept override;
+  bool Continue() noexcept override;
+  bool Detach() noexcept override;
 
  private:
   std::string m_ip_address;
   std::string m_port;
+  int64_t     m_socket{0};
 };
 }  // namespace LibDebugger::NeKernel
+
+#endif  // ifdef LD_NEKERNEL_DEBUGGER
 
 #endif  // LD_NEKERNEL_CONTRACT_H

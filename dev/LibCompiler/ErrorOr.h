@@ -10,6 +10,7 @@
 #pragma once
 
 #include <LibCompiler/Defines.h>
+#include <LibCompiler/ErrorID.h>
 #include <LibCompiler/Ref.h>
 
 namespace LibCompiler {
@@ -32,6 +33,10 @@ class ErrorOr final {
   ErrorOr(const ErrorOr&)            = default;
 
   Ref<T> Leak() { return mRef; }
+
+  Int32 Error() { return mId; }
+
+  BOOL HasError() { return mId != LIBCOMPILER_SUCCESS; }
 
   operator bool() { return mRef; }
 

@@ -14,6 +14,7 @@ tools/cxxdrv
 
 tools/dbg
 tools/cppdrv
+tools/kdbg
 
 *.pp
 *.masm
