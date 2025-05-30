@@ -21,6 +21,7 @@
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
+#include "LibCompiler/Defines.h"
 #ifndef __ASM_NEED_AMD64__
 #define __ASM_NEED_AMD64__ 1
 #endif
@@ -955,7 +956,7 @@ bool LibCompiler::EncoderAMD64::WriteLine(std::string line, std::string file) {
   if (LibCompiler::find_word(line, "public_segment ")) return true;
 
   struct RegMapAMD64 {
-    std::string fName;
+    LibCompiler::STLString fName;
     i64_byte_t  fModRM;
   };
 
