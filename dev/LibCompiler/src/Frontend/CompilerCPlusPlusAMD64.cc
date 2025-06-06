@@ -14,8 +14,6 @@
 #define kExitOK (EXIT_SUCCESS)
 #define kExitNO (EXIT_FAILURE)
 
-// extern_segment, @autodelete { ... }, fn foo() -> auto { ... }
-
 #include <LibCompiler/Backend/X64.h>
 #include <LibCompiler/Frontend.h>
 #include <LibCompiler/UUID.h>
@@ -23,7 +21,7 @@
 
 /* NeKernel C++ Compiler Driver */
 /* This is part of the LibCompiler. */
-/* (c) Amlal El Mahrouss */
+/* (c) Amlal El Mahrouss 2024-2025 */
 
 /// @author EL Mahrouss Amlal (amlal@nekernel.org)
 /// @file CPlusPlusCompilerAMD64.cxx
@@ -118,12 +116,12 @@ static Boolean                      kInBraces    = false;
 static size_t                       kBracesCount = 0UL;
 
 /* @brief C++ compiler backend for the NeKernel C++ driver */
-class CompilerFrontendCPlusPlus final LC_COMPILER_FRONTEND {
+class CompilerFrontendCPlusPlusAMD64 final LC_COMPILER_FRONTEND {
  public:
-  explicit CompilerFrontendCPlusPlus()  = default;
-  ~CompilerFrontendCPlusPlus() override = default;
+  explicit CompilerFrontendCPlusPlusAMD64()  = default;
+  ~CompilerFrontendCPlusPlusAMD64() override = default;
 
-  LIBCOMPILER_COPY_DEFAULT(CompilerFrontendCPlusPlus);
+  LIBCOMPILER_COPY_DEFAULT(CompilerFrontendCPlusPlusAMD64);
 
   LibCompiler::SyntaxLeafList::SyntaxLeaf Compile(const LibCompiler::STLString text,
                                                   LibCompiler::STLString       file) override;
@@ -133,7 +131,7 @@ class CompilerFrontendCPlusPlus final LC_COMPILER_FRONTEND {
 
 /// @internal compiler variables
 
-static CompilerFrontendCPlusPlus* kCompilerFrontend = nullptr;
+static CompilerFrontendCPlusPlusAMD64* kCompilerFrontend = nullptr;
 
 static std::vector<LibCompiler::STLString> kRegisterMap;
 
@@ -151,7 +149,7 @@ static std::size_t kFunctionEmbedLevel = 0UL;
 
 /// detail namespaces
 
-const char* CompilerFrontendCPlusPlus::Language() {
+const char* CompilerFrontendCPlusPlusAMD64::Language() {
   return "AMD64 C++";
 }
 
@@ -165,7 +163,7 @@ static std::vector<std::pair<LibCompiler::STLString, std::uintptr_t>> kOriginMap
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
-LibCompiler::SyntaxLeafList::SyntaxLeaf CompilerFrontendCPlusPlus::Compile(
+LibCompiler::SyntaxLeafList::SyntaxLeaf CompilerFrontendCPlusPlusAMD64::Compile(
     LibCompiler::STLString text, LibCompiler::STLString file) {
   LibCompiler::SyntaxLeafList::SyntaxLeaf syntax_tree;
 
@@ -817,7 +815,7 @@ LIBCOMPILER_MODULE(CompilerCPlusPlusAMD64) {
 
   kErrorLimit = 0;
 
-  kCompilerFrontend = new CompilerFrontendCPlusPlus();
+  kCompilerFrontend = new CompilerFrontendCPlusPlusAMD64();
   kFactory.Mount(new AssemblyCPlusPlusInterface());
 
   LibCompiler::install_signal(SIGSEGV, Detail::drvi_crash_handler);
