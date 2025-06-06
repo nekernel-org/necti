@@ -12,7 +12,7 @@ tools/asm
 tools/ld64
 tools/cxxdrv
 
-tools/dbg
+tools/ddbg
 tools/cppdrv
 tools/kdbg
 

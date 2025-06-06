@@ -714,12 +714,12 @@ LibCompiler::SyntaxLeafList::SyntaxLeaf CompilerFrontendCPlusPlusAMD64::Compile(
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
-class AssemblyCPlusPlusInterface final LC_ASSEMBLY_INTERFACE {
+class AssemblyCPlusPlusInterfaceAMD64 final LC_ASSEMBLY_INTERFACE {
  public:
-  explicit AssemblyCPlusPlusInterface()  = default;
-  ~AssemblyCPlusPlusInterface() override = default;
+  explicit AssemblyCPlusPlusInterfaceAMD64()  = default;
+  ~AssemblyCPlusPlusInterfaceAMD64() override = default;
 
-  LIBCOMPILER_COPY_DEFAULT(AssemblyCPlusPlusInterface);
+  LIBCOMPILER_COPY_DEFAULT(AssemblyCPlusPlusInterfaceAMD64);
 
   UInt32 Arch() noexcept override { return LibCompiler::AssemblyFactory::kArchAMD64; }
 
@@ -816,7 +816,7 @@ LIBCOMPILER_MODULE(CompilerCPlusPlusAMD64) {
   kErrorLimit = 0;
 
   kCompilerFrontend = new CompilerFrontendCPlusPlusAMD64();
-  kFactory.Mount(new AssemblyCPlusPlusInterface());
+  kFactory.Mount(new AssemblyCPlusPlusInterfaceAMD64());
 
   LibCompiler::install_signal(SIGSEGV, Detail::drvi_crash_handler);
 
