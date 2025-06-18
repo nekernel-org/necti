@@ -1,7 +1,7 @@
 /*
  *	========================================================
  *
- *	cxxdrv
+ *	CompilerCPlusPlusAMD64 CPlusPlus Compiler Driver
  * 	Copyright (C) 2024-2025 Amlal El Mahrouss, all rights reserved.
  *
  * 	========================================================

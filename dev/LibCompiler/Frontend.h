@@ -79,22 +79,22 @@ struct SyntaxLeafList final {
   std::vector<SyntaxLeaf> fLeafList;
   SizeType                fNumLeafs;
 
-  size_t                   SizeOf() { return fNumLeafs; }
+  SizeType                 SizeOf() { return fNumLeafs; }
   std::vector<SyntaxLeaf>& Get() { return fLeafList; }
-  SyntaxLeaf&              At(size_t index) { return fLeafList[index]; }
+  SyntaxLeaf&              At(SizeType index) { return fLeafList[index]; }
 };
 
 /// find the perfect matching word in a haystack.
 /// \param haystack base string
 /// \param needle the string we search for.
 /// \return if we found it or not.
-BOOL find_word(std::string haystack, std::string needle) noexcept;
+BOOL find_word(STLString haystack, STLString needle) noexcept;
 
 /// find a word within strict conditions and returns a range of it.
 /// \param haystack
 /// \param needle
 /// \return position of needle.
-std::size_t find_word_range(std::string haystack, std::string needle) noexcept;
+SizeType find_word_range(STLString haystack, STLString needle) noexcept;
 
 /// @brief Compiler backend, implements a frontend, such as C, C++...
 /// See Toolchain, for some examples.

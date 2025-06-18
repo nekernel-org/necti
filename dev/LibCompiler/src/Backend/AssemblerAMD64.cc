@@ -957,7 +957,7 @@ bool LibCompiler::EncoderAMD64::WriteLine(std::string line, std::string file) {
 
   struct RegMapAMD64 {
     LibCompiler::STLString fName;
-    i64_byte_t  fModRM;
+    i64_byte_t             fModRM;
   };
 
   std::vector<RegMapAMD64> kRegisterList{

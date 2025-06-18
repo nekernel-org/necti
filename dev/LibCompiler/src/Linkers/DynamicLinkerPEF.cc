@@ -69,7 +69,7 @@
 namespace Detail {
 struct DynamicLinkerBlob final {
   std::vector<Char> mBlob{};       // PEF code/bss/data blob.
-  UIntPtr               mOffset{0UL};  // the offset of the PEF container header...
+  UIntPtr           mOffset{0UL};  // the offset of the PEF container header...
 };
 }  // namespace Detail
 
@@ -367,6 +367,7 @@ LIBCOMPILER_MODULE(DynamicLinker64PEF) {
     }
 
     kConsoleOut << "Not an AE container: " << objectFile << std::endl;
+    
     // don't continue, it is a fatal error.
     return LIBCOMPILER_EXEC_ERROR;
   }

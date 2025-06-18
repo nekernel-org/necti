@@ -8,11 +8,11 @@
 
 #include <LibCompiler/Defines.h>
 
-// @file PEF.hpp
+// @file PEF.h
 // @brief Preferred Executable Format
 
-#define kPefMagic "Joy!"
-#define kPefMagicFat "yoJ!"
+#define kPefMagic "Open"
+#define kPefMagicFat "nepO"
 
 #define kPefExt ".exec"
 #define kPefDylibExt ".dylib"
@@ -31,7 +31,7 @@
 
 #define kPefMagicLen (5)
 
-#define kPefVersion (4)
+#define kPefVersion (0x0500)
 #define kPefNameLen (255)
 
 #define kPefBaseOrigin (0x40000000)
@@ -53,10 +53,10 @@ enum {
 };
 
 enum {
+  kPefSubArchGeneric,
   kPefSubArchAMD = 200,
   kPefSubArchIntel,
   kPefSubArchARM,
-  kPefSubArchGeneric,
   kPefSubArchIBM,
 };
 
@@ -71,7 +71,7 @@ enum {
 
 /* PEF container */
 typedef struct PEFContainer final {
-  Char Magic[kPefMagicLen];
+  Char     Magic[kPefMagicLen];
   UInt32   Linker; /* Linker used to link executable */
   UInt32   Version;
   UInt32   Kind;
@@ -90,23 +90,23 @@ typedef struct PEFContainer final {
 /* PEF executable section and commands. */
 
 typedef struct PEFCommandHeader final {
-  Char Name[kPefNameLen]; /* container name */
+  Char     Name[kPefNameLen]; /* container name */
   UInt32   Cpu;               /* container cpu */
   UInt32   SubCpu;            /* container sub-cpu */
   UInt32   Flags;             /* container flags */
   UInt16   Kind;              /* container kind */
-  UIntPtr  Offset;            /* file offset */
-  UIntPtr  VMAddress;         /* VM offset */
-  SizeType Size;              /* file size */
+  UIntPtr  Offset;            /* File offset */
+  UIntPtr  VMAddress;         /* Virtual Address */
+  SizeType Size;              /* Virtual Size */
 } PACKED PEFCommandHeader, *PEFCommandHeaderPtr;
 
 enum {
+  kPefInvalid  = 0x0,
   kPefCode     = 0xC,
   kPefData     = 0xD,
   kPefZero     = 0xE,
   kPefLinkerID = 0x1,
   kPefCount    = 4,
-  kPefInvalid  = 0xFF,
 };
 }  // namespace LibCompiler
 

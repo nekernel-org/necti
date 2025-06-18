@@ -11,11 +11,11 @@ namespace LibCompiler {
 /// \param haystack base string
 /// \param needle the string we search for.
 /// \return if we found it or not.
-bool find_word(std::string haystack, std::string needle) noexcept {
+BOOL find_word(STLString haystack, STLString needle) noexcept {
   auto index = haystack.find(needle);
 
   // check for needle validity.
-  if (index == std::string::npos) return false;
+  if (index == STLString::npos) return false;
 
   // declare lambda
   auto not_part_of_word = [&](int index) {
@@ -33,11 +33,11 @@ bool find_word(std::string haystack, std::string needle) noexcept {
 /// \param haystack
 /// \param needle
 /// \return position of needle.
-std::size_t find_word_range(std::string haystack, std::string needle) noexcept {
+SizeType find_word_range(STLString haystack, STLString needle) noexcept {
   auto index = haystack.find(needle);
 
   // check for needle validity.
-  if (index == std::string::npos) return false;
+  if (index == STLString::npos) return false;
 
   if (!isalnum((haystack[index + needle.size() + 1])) &&
       !isdigit(haystack[index + needle.size() + 1]) &&
@@ -46,6 +46,6 @@ std::size_t find_word_range(std::string haystack, std::string needle) noexcept {
     return index;
   }
 
-  return std::string::npos;
+  return STLString::npos;
 }
 }  // namespace LibCompiler

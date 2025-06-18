@@ -43,7 +43,7 @@ class BasicString final {
 
   Char*       Data();
   const Char* CData() const;
-  SizeType        Length() const;
+  SizeType    Length() const;
 
   bool operator==(const Char* rhs) const;
   bool operator!=(const Char* rhs) const;
@@ -59,9 +59,9 @@ class BasicString final {
   bool operator!() { return !m_Data || m_Data[0] == 0; }
 
  private:
-  Char* m_Data{nullptr};
-  SizeType  m_Sz{0};
-  SizeType  m_Cur{0};
+  Char*    m_Data{nullptr};
+  SizeType m_Sz{0};
+  SizeType m_Cur{0};
 
   friend class StringBuilder;
 };

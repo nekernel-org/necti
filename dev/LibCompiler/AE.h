@@ -28,14 +28,14 @@ namespace LibCompiler {
 // One thing to keep in mind.
 // This object format, is reloctable.
 typedef struct AEHeader final {
-  Char fMagic[kAEMagLen];
-  Char fArch;
-  Char fSubArch;
+  Char     fMagic[kAEMagLen];
+  Char     fArch;
+  Char     fSubArch;
   SizeType fCount;
-  Char fSize;
+  Char     fSize;
   SizeType fStartCode;
   SizeType fCodeSize;
-  Char fPad[kAEPad];
+  Char     fPad[kAEPad];
 } PACKED AEHeader, *AEHeaderPtr;
 
 // @brief Advanced Executable Record.
@@ -43,12 +43,12 @@ typedef struct AEHeader final {
 // fKind must be filled with PEF fields.
 
 typedef struct AERecordHeader final {
-  Char fName[kAESymbolLen];
+  Char     fName[kAESymbolLen];
   SizeType fKind;
   SizeType fSize;
   SizeType fFlags;
   UIntPtr  fOffset;
-  Char fPad[kAEPad];
+  Char     fPad[kAEPad];
 } PACKED AERecordHeader, *AERecordHeaderPtr;
 
 enum {

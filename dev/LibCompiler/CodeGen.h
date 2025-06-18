@@ -74,8 +74,8 @@ union NumberCast64 final {
 
   ~NumberCast64() { raw = 0; }
 
-  Char number[8];
-  UInt64   raw;
+  Char   number[8];
+  UInt64 raw;
 };
 
 union NumberCast32 final {
@@ -84,8 +84,8 @@ union NumberCast32 final {
 
   ~NumberCast32() { raw = 0; }
 
-  Char number[4];
-  UInt32   raw;
+  Char   number[4];
+  UInt32 raw;
 };
 
 union NumberCast16 final {
@@ -94,8 +94,8 @@ union NumberCast16 final {
 
   ~NumberCast16() { raw = 0; }
 
-  Char number[2];
-  UInt16   raw;
+  Char   number[2];
+  UInt16 raw;
 };
 
 union NumberCast8 final {
@@ -104,8 +104,8 @@ union NumberCast8 final {
 
   ~NumberCast8() { raw = 0; }
 
-  Char number;
-  UInt8    raw;
+  Char  number;
+  UInt8 raw;
 };
 
 class EncoderInterface {

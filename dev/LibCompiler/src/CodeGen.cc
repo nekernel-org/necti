@@ -8,7 +8,7 @@
 #include <LibCompiler/ErrorID.h>
 
 /**
- * @file AssemblyFactory.cxx
+ * @file CodeGen.cc
  * @author amlal (amlal@nekernel.org)
  * @brief Assembler Kit
  * @version 0.1

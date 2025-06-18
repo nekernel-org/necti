@@ -8,7 +8,7 @@
  */
 
 /**
- * @file BasicString.cxx
+ * @file BasicString.cc
  * @author Amlal (amlal@el-mahrouss-logic.com)
  * @brief C++ string manipulation API.
  * @version 0.2
