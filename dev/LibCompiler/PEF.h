@@ -40,15 +40,14 @@
 
 namespace LibCompiler {
 enum {
-  kPefArchStart    = 99,
-  kPefArchIntel86S = 100,
+  kPefArchIntel86S,
   kPefArchAMD64,
   kPefArchRISCV,
   kPefArch64000, /* 64x0 RISC architecture. */
   kPefArch32000,
   kPefArchPowerPC, /* 64-bit POWER architecture. */
   kPefArchARM64,
-  kPefArchCount   = (kPefArchPowerPC - kPefArchIntel86S) + 1,
+  kPefArchCount   = (kPefArchARM64 - kPefArchIntel86S) + 1,
   kPefArchInvalid = 0xFF,
 };
 
