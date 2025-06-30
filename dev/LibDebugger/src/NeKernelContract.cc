@@ -10,9 +10,6 @@
 #include <LibCompiler/Defines.h>
 #include <LibDebugger/NeKernelContract.h>
 #include <Vendor/Dialogs.h>
-
-#include <cstdint>
-#include <iostream>
 #include <string>
 
 using namespace LibDebugger::NeKernel;
