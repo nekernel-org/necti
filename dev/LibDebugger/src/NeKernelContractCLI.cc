@@ -27,7 +27,7 @@ LIBCOMPILER_MODULE(DebuggerNeKernel) {
     kPath = argv[2];
     kStdOut << "[+] Kernel (ne_kernel) set to: " << kPath << "\n";
 
-    kKernelDebugger.Attach(kPath, nullptr, kPID);
+    kKernelDebugger.Attach(kPath, "", kPID);
     kKernelDebugger.Breakpoint("$HANDOVER_START");
 
     return EXIT_SUCCESS;
