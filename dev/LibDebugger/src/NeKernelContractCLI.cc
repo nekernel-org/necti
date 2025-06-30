@@ -16,22 +16,84 @@
 
 using namespace LibDebugger::NeKernel;
 
+static void dbgi_ctrlc_handler(std::int32_t _) {
+  if (!kPID || kPath.empty()) {
+    return;
+  }
+
+  kKernelDebugger.Break();
+
+  pfd::notify("Debugger Event", "Breakpoint hit!");
+
+  kKeepRunning = false;
+}
+
 LIBCOMPILER_MODULE(DebuggerNeKernel) {
   pfd::notify("Debugger Event",
               "Kernel Debugger\n(C) 2025 Amlal El Mahrouss, all rights reserved.");
 
-  if (argc >= 3 && std::string(argv[1]) == "-k" && argv[2] != nullptr) {
+  if (argc >= 5 && std::string(argv[1]) == "-k" && argv[2] != nullptr &&
+      std::string(argv[3]) == "-ip" && argv[4] != nullptr) {
     kPath = argv[2];
-    kStdOut << "[+] Kernel (ne_kernel) set to: " << kPath << "\n";
+    kPath += ":";
+    kPath += argv[4];
+
+    kStdOut << "[+] KIP (Kernel:IP) set to: " << kPath << "\n";
+
+    LibCompiler::install_signal(SIGINT, dbgi_ctrlc_handler);
 
     kKernelDebugger.Attach(kPath, "", kPID);
     kKernelDebugger.Breakpoint("$HANDOVER_START");
 
+    while (YES) {
+      if (kKeepRunning) {
+        continue;
+      }
+
+      std::string cmd;
+      if (!std::getline(std::cin, cmd)) break;
+
+      if (cmd == "c" || cmd == "cont" || cmd == "continue") {
+        if (kKernelDebugger.Continue()) {
+          kKeepRunning = true;
+
+          kStdOut << "[+] Continuing...\n";
+
+          pfd::notify("Debugger Event", "Continuing...");
+        }
+      }
+
+      if (cmd == "d" || cmd == "detach") kKernelDebugger.Detach();
+
+      if (cmd == "start") {
+        kStdOut << "[?] Enter a argument to use: ";
+        std::getline(std::cin, cmd);
+
+        kKernelDebugger.Attach(kPath, cmd, kPID);
+      }
+
+      if (cmd == "exit") {
+        if (kPID > 0) kKernelDebugger.Detach();
+
+        break;
+      }
+
+      if (cmd == "break" || cmd == "b") {
+        kStdOut << "[?] Enter a symbol to break on: ";
+
+        std::getline(std::cin, cmd);
+
+        if (kKernelDebugger.Breakpoint(cmd)) {
+          pfd::notify("Debugger Event", "Add Breakpoint at: " + cmd);
+        }
+      }
+    }
+
     return EXIT_SUCCESS;
   }
 
-  kStdOut << "Usage: " << argv[0] << " -k <kernel_path>\n";
-  kStdOut << "Example: " << argv[0] << " -k /path/to/ne_kernel\n";
+  kStdOut << "Usage: " << argv[0] << " -k <kernel_path> -ip <ip4>\n";
+  kStdOut << "Example: " << argv[0] << " -k /path/to/ne_kernel -ip 127.0.0.1\n";
 
   return EXIT_FAILURE;
 }

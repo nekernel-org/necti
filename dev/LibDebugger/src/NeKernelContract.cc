@@ -12,6 +12,8 @@
 #include <Vendor/Dialogs.h>
 #include <string>
 
+constexpr static UInt16 kDebugPort = 51820;
+
 using namespace LibDebugger::NeKernel;
 
 NeKernelContract::NeKernelContract() = default;
