@@ -49,7 +49,7 @@ LIBCOMPILER_MODULE(DebuggerMachPOSIX) {
     }
 
     std::string cmd;
-    std::getline(std::cin, cmd);
+    if (!std::getline(std::cin, cmd)) break;
 
     if (cmd == "c" || cmd == "cont" || cmd == "continue") {
       if (kDebugger.Continue()) {
