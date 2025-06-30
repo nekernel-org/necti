@@ -23,8 +23,6 @@ static void dbgi_ctrlc_handler(std::int32_t _) {
     return;
   }
 
-  auto list = kDebugger.Get();
-
   kDebugger.Break();
 
   pfd::notify("Debugger Event", "Breakpoint hit!");
