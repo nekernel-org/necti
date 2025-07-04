@@ -10,7 +10,6 @@
 #include <LibCompiler/Defines.h>
 #include <LibDebugger/NeKernelContract.h>
 #include <Vendor/Dialogs.h>
-#include <string>
 
 constexpr static UInt16 kDebugPort = 51820;
 
@@ -20,11 +19,11 @@ NeKernelContract::NeKernelContract() = default;
 
 NeKernelContract::~NeKernelContract() = default;
 
-bool NeKernelContract::Attach(std::string path, std::string argv, ProcessID& pid) noexcept {
+bool NeKernelContract::Attach(LibCompiler::STLString path, LibCompiler::STLString argv, ProcessID& pid) noexcept {
   return false;
 }
 
-bool NeKernelContract::Breakpoint(std::string symbol) noexcept {
+bool NeKernelContract::Breakpoint(LibCompiler::STLString symbol) noexcept {
   return false;
 }
 
