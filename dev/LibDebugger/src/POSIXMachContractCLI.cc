@@ -25,7 +25,7 @@ static void dbgi_ctrlc_handler(std::int32_t _) {
 
   kDebugger.Break();
 
-  pfd::notify("Debugger Event", "Breakpoint hit!");
+  pfd::notify("Debugger Event", "BreakAt hit!");
 
   kKeepRunning = false;
 }
@@ -81,8 +81,8 @@ LIBCOMPILER_MODULE(DebuggerMachPOSIX) {
 
       std::getline(std::cin, cmd);
 
-      if (kDebugger.Breakpoint(cmd)) {
-        pfd::notify("Debugger Event", "Add Breakpoint at: " + cmd);
+      if (kDebugger.BreakAt(cmd)) {
+        pfd::notify("Debugger Event", "Add BreakAt at: " + cmd);
       }
     }
   }

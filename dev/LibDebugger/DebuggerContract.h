@@ -30,7 +30,7 @@ class DebuggerContract {
 
  public:
   virtual bool Attach(std::string path, std::string argv, ProcessID& pid) noexcept = 0;
-  virtual bool Breakpoint(std::string symbol) noexcept                             = 0;
+  virtual bool BreakAt(std::string symbol) noexcept                                = 0;
   virtual bool Break() noexcept                                                    = 0;
   virtual bool Continue() noexcept                                                 = 0;
   virtual bool Detach() noexcept                                                   = 0;

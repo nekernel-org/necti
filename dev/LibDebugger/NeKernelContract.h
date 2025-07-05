@@ -31,18 +31,8 @@ namespace LibDebugger::NeKernel {
 class NeKernelContract;
 
 namespace Detail {
-  class NeKernelDebugHeader;
-
   inline constexpr size_t kDebugTypeLen = 256U;
-
-  typedef char rt_debug_type[kDebugTypeLen];
-
-  class NeKernelDebugHeader final {
-   public:
-    int16_t       fPort;
-    int16_t       fPortKind;
-    rt_debug_type fPortBlob;
-  };
+  typedef char            rt_debug_type[kDebugTypeLen];
 }  // namespace Detail
 
 class NeKernelContract : public DebuggerContract {
@@ -55,15 +45,16 @@ class NeKernelContract : public DebuggerContract {
   NeKernelContract(const NeKernelContract&)            = default;
 
   // Override additional methods from DebuggerContract
+
+ public:
   bool Attach(std::string path, std::string argv, ProcessID& pid) noexcept override;
-  bool Breakpoint(std::string symbol) noexcept override;
+  bool BreakAt(std::string symbol) noexcept override;
   bool Break() noexcept override;
   bool Continue() noexcept override;
   bool Detach() noexcept override;
 
  private:
-  std::string m_ip_address;
-  std::string m_port;
+  std::string m_kernel_path;
   int64_t     m_socket{0};
 };
 }  // namespace LibDebugger::NeKernel

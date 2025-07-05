@@ -367,7 +367,7 @@ LIBCOMPILER_MODULE(DynamicLinker64PEF) {
     }
 
     kConsoleOut << "Not an AE container: " << objectFile << std::endl;
-    
+
     // don't continue, it is a fatal error.
     return LIBCOMPILER_EXEC_ERROR;
   }

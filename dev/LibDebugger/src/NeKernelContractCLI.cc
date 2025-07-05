@@ -23,7 +23,7 @@ static void dbgi_ctrlc_handler(std::int32_t _) {
 
   kKernelDebugger.Break();
 
-  pfd::notify("Debugger Event", "Breakpoint hit!");
+  pfd::notify("Debugger Event", "BreakAt hit!");
 
   kKeepRunning = false;
 }
@@ -43,7 +43,7 @@ LIBCOMPILER_MODULE(DebuggerNeKernel) {
     LibCompiler::install_signal(SIGINT, dbgi_ctrlc_handler);
 
     kKernelDebugger.Attach(kPath, "", kPID);
-    kKernelDebugger.Breakpoint("$HANDOVER_START");
+    kKernelDebugger.BreakAt("$HANDOVER_START");
 
     while (YES) {
       if (kKeepRunning) {
@@ -83,8 +83,8 @@ LIBCOMPILER_MODULE(DebuggerNeKernel) {
 
         std::getline(std::cin, cmd);
 
-        if (kKernelDebugger.Breakpoint(cmd)) {
-          pfd::notify("Debugger Event", "Add Breakpoint at: " + cmd);
+        if (kKernelDebugger.BreakAt(cmd)) {
+          pfd::notify("Debugger Event", "Add BreakAt at: " + cmd);
         }
       }
     }

@@ -1,3 +1,9 @@
+/***
+  LibDebugger
+  (C) 2025 Amlal El Mahrouss
+  File: CommonCLI.inl
+  Purpose: Common Debugger symbols.
+*/
 
 static BOOL kKeepRunning = false;
 

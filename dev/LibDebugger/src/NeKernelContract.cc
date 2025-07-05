@@ -19,11 +19,12 @@ NeKernelContract::NeKernelContract() = default;
 
 NeKernelContract::~NeKernelContract() = default;
 
-bool NeKernelContract::Attach(LibCompiler::STLString path, LibCompiler::STLString argv, ProcessID& pid) noexcept {
+bool NeKernelContract::Attach(LibCompiler::STLString path, LibCompiler::STLString argv,
+                              ProcessID& pid) noexcept {
   return false;
 }
 
-bool NeKernelContract::Breakpoint(LibCompiler::STLString symbol) noexcept {
+bool NeKernelContract::BreakAt(LibCompiler::STLString symbol) noexcept {
   return false;
 }
 
