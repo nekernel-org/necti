@@ -18,9 +18,6 @@
  *
  */
 
-//! @file Asm.cpp
-//! @brief AssemblyKit source implementation.
-
 namespace LibCompiler {
 ///! @brief Compile for specific format (ELF, PEF, ZBIN)
 Int32 AssemblyFactory::Compile(STLString sourceFile, const Int32& arch) noexcept {
