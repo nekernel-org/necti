@@ -112,7 +112,7 @@ LIBCOMPILER_MODULE(DynamicLinker64PEF) {
 
       kConsoleOut << "-version: Show linker version.\n";
       kConsoleOut << "-help: Show linker help.\n";
-      kConsoleOut << "-ld-verbose: Enable linker trace.\n";
+      kConsoleOut << "-verbose: Enable linker trace.\n";
       kConsoleOut << "-dylib: Output as a Dynamic PEF.\n";
       kConsoleOut << "-fat: Output as a FAT PEF.\n";
       kConsoleOut << "-32k: Output as a 32x0 PEF.\n";
@@ -156,7 +156,7 @@ LIBCOMPILER_MODULE(DynamicLinker64PEF) {
       kArch = LibCompiler::kPefArchARM64;
 
       continue;
-    } else if (StringCompare(argv[linker_arg], "-ld-verbose") == 0) {
+    } else if (StringCompare(argv[linker_arg], "-verbose") == 0) {
       kVerbose = true;
 
       continue;
