@@ -128,7 +128,7 @@ LIBCOMPILER_MODULE(DynamicLinker64PEF) {
       kLinkerSplash();
 
       return LIBCOMPILER_SUCCESS;
-    } else if (StringCompare(argv[linker_arg], "-fat-binary") == 0) {
+    } else if (StringCompare(argv[linker_arg], "-fat") == 0) {
       kFatBinaryEnable = true;
 
       continue;
