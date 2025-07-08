@@ -7,11 +7,11 @@
 #pragma once
 
 #include <LibC++/defines.h>
-#include <LibC++/process_base.h>
+#include <LibC++/base_process.h>
 
 namespace std::base_exception {
 inline void __throw_general(void) {
-  exit(33);
+  base_process::exit(33);
 }
 
 inline void __throw_domain_error(const char* error) {
