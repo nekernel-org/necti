@@ -16,7 +16,7 @@
 static auto kPath = "/usr/local/lib/libCompiler.dylib";
 
 Int32 main(Int32 argc, Char const* argv[]) {
-  DylibHandle handler = dlopen(kPath, RTLD_LAZY | RTLD_GLOBAL);
+  LibCompilerDylib handler = dlopen(kPath, RTLD_LAZY | RTLD_GLOBAL);
 
   if (!handler) {
     kStdOut;

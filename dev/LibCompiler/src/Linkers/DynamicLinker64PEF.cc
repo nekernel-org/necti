@@ -8,7 +8,7 @@
 ------------------------------------------- */
 
 /// @author EL Mahrouss Amlal (amlal@nekernel.org)
-/// @brief NeKernel 64-bit PEF Linker.
+/// @brief NeKernel.org 64-bit PEF Linker.
 /// Last Rev: Sat Apr 19 CET 2025
 /// @note Do not look up for anything with .code64/.data64/.zero64!
 /// It will be loaded when the program loader will start the image.
@@ -41,7 +41,7 @@
 #include <iostream>
 
 #define kLinkerVersionStr                                                           \
-  "NeKernel 64-Bit Linker (Preferred Executable Format) %s, (c) Amlal El Mahrouss " \
+  "NeKernel.org 64-Bit Linker (Preferred Executable Format) %s, (c) Amlal El Mahrouss " \
   "2024-2025 "                                                                      \
   "all rights reserved.\n"
 
@@ -76,7 +76,7 @@ struct DynamicLinkerBlob final {
 enum {
   kABITypeNull    = 0,
   kABITypeStart   = 0x1010, /* The start of ABI list. */
-  kABITypeNE      = 0x5046, /* PF (NeKernel's PEF ABI) */
+  kABITypeNE      = 0x5046, /* PF (NeKernel.org's PEF ABI) */
   kABITypeInvalid = 0xFFFF,
 };
 
@@ -258,8 +258,8 @@ LIBCOMPILER_MODULE(DynamicLinker64PEF) {
 
     LibCompiler::AEHeader hdr{};
 
-    reader_protocol.FP = std::ifstream(objectFile, std::ifstream::binary);
-    reader_protocol.FP >> hdr;
+    reader_protocol._Fp = std::ifstream(objectFile, std::ifstream::binary);
+    reader_protocol._Fp >> hdr;
 
     if (hdr.fMagic[0] == kAEMag0 && hdr.fMagic[1] == kAEMag1 &&
         hdr.fSize == sizeof(LibCompiler::AEHeader)) {
@@ -354,14 +354,14 @@ LIBCOMPILER_MODULE(DynamicLinker64PEF) {
       std::vector<char> bytes;
       bytes.resize(hdr.fCodeSize);
 
-      reader_protocol.FP.seekg(std::streamsize(hdr.fStartCode));
-      reader_protocol.FP.read(bytes.data(), std::streamsize(hdr.fCodeSize));
+      reader_protocol._Fp.seekg(std::streamsize(hdr.fStartCode));
+      reader_protocol._Fp.read(bytes.data(), std::streamsize(hdr.fCodeSize));
 
       kObjectBytes.push_back({.mBlob = bytes, .mOffset = hdr.fStartCode});
 
       // Blob was written, close fp.
 
-      reader_protocol.FP.close();
+      reader_protocol._Fp.close();
 
       continue;
     }

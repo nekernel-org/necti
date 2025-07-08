@@ -60,7 +60,7 @@ typedef char*  caddr_t;
 #endif
 #define __alloca alloca
 #else
-#warning ! alloca not detected !
+#warning !! alloca not detected !!
 #endif
 
 typedef long long          off_t;

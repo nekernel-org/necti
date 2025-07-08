@@ -10,4 +10,4 @@
 #include <dlfcn.h>
 
 typedef Int32 (*LibCompilerEntrypoint)(Int32 argc, Char const* argv[]);
-typedef VoidPtr DylibHandle;
+typedef VoidPtr LibCompilerDylib;

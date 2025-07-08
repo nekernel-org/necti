@@ -88,7 +88,7 @@ namespace LibCompiler::Utils {
  */
 class AEReadableProtocol final {
  public:
-  std::ifstream FP;
+  std::ifstream _Fp;
 
  public:
   explicit AEReadableProtocol() = default;
@@ -120,7 +120,7 @@ class AEReadableProtocol final {
    */
   template <typename TypeClass>
   TypeClass* Read_(char* raw, std::size_t sz) {
-    FP.read(raw, std::streamsize(sz));
+    _Fp.read(raw, std::streamsize(sz));
     return reinterpret_cast<TypeClass*>(raw);
   }
 };
