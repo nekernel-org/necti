@@ -26,9 +26,9 @@
 ## Getting Started:
 
 ```sh
-git clone git@github.com:nekernel-org/cc.git
+git clone git@github.com:nekernel-org/toolchain.git
 cd cc
 # Either build debugger or compiler using btb
 ```
 
-###### Copyright (C) 2024-2025 Amlal El Mahrouss, all rights reserved.
+###### Copyright (C) 2024-2025 Amlal El Mahrouss & NeKernel.org Authors, all rights reserved.
