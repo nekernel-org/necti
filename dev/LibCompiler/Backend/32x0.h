@@ -8,7 +8,7 @@
 
 #include <LibCompiler/Defines.h>
 
-// @brief 32x0 support.
+// @brief Open32x0 support.
 // @file Backend/32x0.h
 
 #define LC_ASM_OPCODE(__NAME, __OPCODE, __FUNCT3, __FUNCT7) \

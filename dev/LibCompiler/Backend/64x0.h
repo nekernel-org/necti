@@ -9,7 +9,7 @@
 #include <LibCompiler/Defines.h>
 #include <vector>
 
-// @brief 64x0 support.
+// @brief Open64x0 support.
 // @file Backend/64x0.h
 
 #define LC_ASM_OPCODE(__NAME, __OPCODE, __FUNCT3, __FUNCT7) \
