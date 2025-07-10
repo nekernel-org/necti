@@ -149,7 +149,8 @@ inline bool install_signal(Int32 signal, void (*handler)(int)) noexcept {
 }
 }  // namespace LibCompiler
 
-#define PACKED __attribute__((packed))
+#define ATTRIBUTE(X) __attribute__((X))
+#define PACKED ATTRIBUTE(packed)
 
 typedef char char_type;
 
@@ -159,7 +160,7 @@ typedef char char_type;
 #define kAsmFileExts \
   { ".64x", ".32x", ".masm", ".s", ".S", ".asm", ".x64" }
 
-#define kAsmFileExtsMax 7
+#define kAsmFileExtsMax (7U)
 
 #define LIBCOMPILER_MODULE(name) extern "C" int name(int argc, char** argv)
 

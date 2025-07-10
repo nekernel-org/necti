@@ -12,6 +12,9 @@ extern "C" {
 #include <stdint.h>
 }
 
+
+#define __ATTRIBUTE(X) __attribute__((X))
+
 #ifndef __GNUC__
 
 typedef __SIZE_TYPE__ size_t;
@@ -74,7 +77,7 @@ typedef union float_cast {
   };
 
   float f;
-} __attribute__((packed)) float_cast_t;
+} __ATTRIBUTE(packed) float_cast_t;
 
 typedef union double_cast {
   struct {
@@ -84,7 +87,7 @@ typedef union double_cast {
   };
 
   double f;
-} __attribute__((packed)) double_cast_t;
+} __ATTRIBUTE(packed) double_cast_t;
 
 #endif  // ifndef __GNUC__
 
