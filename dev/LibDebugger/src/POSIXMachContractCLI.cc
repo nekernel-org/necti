@@ -41,7 +41,7 @@ LIBCOMPILER_MODULE(DebuggerMachPOSIX) {
     kStdOut << "[+] Image set to: " << kPath << "\n";
   }
 
-  LibCompiler::(SIGINT, dbgi_ctrlc_handler);
+  LibCompiler::install_signal(SIGINT, dbgi_ctrlc_handler);
 
   while (YES) {
     if (kKeepRunning) {
