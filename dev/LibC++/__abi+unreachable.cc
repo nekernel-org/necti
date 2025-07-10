@@ -4,9 +4,14 @@
                      \
 ------------------------------------------- */
 
-#include <LibC++/lc_runtime.h>
+#include <LibC++/__abi.h>
+#include <LibC++/base_process.h>
+
+static const int32_t __unreachable_code = 34;
 
 extern "C" void __libcompiler_unreachable(void) {
-  while (true)
+  std::base_process::signal(__unreachable_code)
+
+  while (1)
     ;
 }

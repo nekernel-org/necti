@@ -1,4 +1,4 @@
-# Path: LibC++/power.inc
+# Path: LibC++/__power64.inc
 # Language: LibCompiler POWER Assembly support for GNU.
 # Build Date: 2024-6-4
 

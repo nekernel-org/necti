@@ -12,18 +12,12 @@ extern "C" {
 #include <stdint.h>
 }
 
-
 #define __ATTRIBUTE(X) __attribute__((X))
 
 #ifndef __GNUC__
 
 typedef __SIZE_TYPE__ size_t;
-
-#ifdef __LP64__
-typedef long int ssize_t;
-#else
-typedef int ssize_t;
-#endif  // __LP64__
+typedef __SSIZE_TYPE__ ssize_t;
 
 typedef void*         ptr_type;
 typedef __SIZE_TYPE__ size_type;

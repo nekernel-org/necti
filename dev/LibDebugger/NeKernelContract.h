@@ -31,8 +31,8 @@ namespace LibDebugger::NeKernel {
 class NeKernelContract;
 
 namespace Detail {
-  inline constexpr size_t kDebugTypeLen = 256U;
-  typedef char            rt_debug_type[kDebugTypeLen];
+  inline constexpr size_t kDebugCmdLen = 256U;
+  typedef char            rt_debug_cmd[kDebugCmdLen];
 }  // namespace Detail
 
 class NeKernelContract : public DebuggerContract {
@@ -47,7 +47,7 @@ class NeKernelContract : public DebuggerContract {
   // Override additional methods from DebuggerContract
 
  public:
-  bool Attach(std::string path, std::string argv, ProcessID& pid) noexcept override;
+  bool Attach(std::string path, std::string arg_v, ProcessID& pid) noexcept override;
   bool BreakAt(std::string symbol) noexcept override;
   bool Break() noexcept override;
   bool Continue() noexcept override;
