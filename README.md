@@ -1,4 +1,4 @@
-<!-- Read Me of NeKernel C++ -->
+<!-- Read Me of NeKernel C++ Toolchain -->
 
 <div align="center">
   <img src="meta/png/nekernel.png" alt="Logo" width="256"/>
@@ -27,7 +27,7 @@
 
 ```sh
 git clone git@github.com:nekernel-org/toolchain.git
-cd cc
+cd toolchain
 # Either build debugger or compiler using btb
 ```
 
