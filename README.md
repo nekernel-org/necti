@@ -26,9 +26,9 @@
 ## Getting Started:
 
 ```sh
-git clone git@github.com:nekernel-org/toolchain.git
-cd toolchain
-# Either build debugger or compiler using btb
+git clone git@github.com:nekernel-org/ncti.git
+cd ncti
+# Either build debugger or compiler libraries/tools using nebuild.
 ```
 
 ###### Copyright (C) 2024-2025 Amlal El Mahrouss & NeKernel.org Authors, all rights reserved.
