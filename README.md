@@ -11,9 +11,9 @@
 
 ## Requirements:
 
-- [CLang](https://clang.llvm.org/)
+- [Clang](https://clang.llvm.org/)
 - [GIT](https://git-scm.com/)
-- [BTB](https://github.com/nekernel-org/nebuild)
+- [NeBuild](https://github.com/nekernel-org/nebuild)
 
 ## Notice for Doxygen:
 
