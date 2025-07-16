@@ -31,4 +31,4 @@ cd ncti
 # Either build debugger or compiler libraries/tools using nebuild.
 ```
 
-###### Copyright (C) 2024-2025 Amlal El Mahrouss & NeKernel.org Authors, all rights reserved.
+###### Copyright (C) 2024-2025 Amlal El Mahrouss & NeKernel.org Contributors, all rights reserved.
