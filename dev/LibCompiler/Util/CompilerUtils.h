@@ -11,6 +11,7 @@
 #include <LibCompiler/Frontend.h>
 #include <LibCompiler/Version.h>
 #include <Vendor/Dialogs.h>
+#include <iostream>
 
 #define kZero64Section ".zero64"
 #define kCode64Section ".code64"
@@ -34,6 +35,12 @@ inline static bool   kVerbose          = false;
 inline static bool   kOutputAsBinary   = false;
 
 namespace Detail {
+/// @brief Linker specific blob metadata structure
+struct DynamicLinkerBlob final {
+  std::vector<Char> mBlob{};       // PEF code/bss/data blob.
+  UIntPtr           mOffset{0UL};  // the offset of the PEF container header...
+};
+
 inline void print_error(std::string reason, std::string file) noexcept {
   if (reason[0] == '\n') reason.erase(0, 1);
 

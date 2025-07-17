@@ -58,21 +58,21 @@ enum KeywordKind {
 
 /// \brief Compiler keyword information struct.
 struct CompilerKeyword {
+  CompilerKeyword(STLString name, KeywordKind kind) : keyword_name(name), keyword_kind(kind) {}
+  
   STLString   keyword_name{""};
   KeywordKind keyword_kind{kKeywordKindInvalid};
 };
 
 struct SyntaxLeafList final {
   struct SyntaxLeaf final {
-    Int32 fUserType;
+    Int32 fUserType{0U};
+    CompilerKeyword fUserData{
+      "",
+      kKeywordKindInvalid
+    };
 
-#ifdef LC_USE_STRUCTS
-    CompilerKeyword fUserData;
-#else
-    std::string fUserData;
-#endif
-
-    std::string        fUserValue{""};
+    STLString        fUserValue{""};
     struct SyntaxLeaf* fNext{nullptr};
   };
 

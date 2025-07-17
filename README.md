@@ -1,4 +1,4 @@
-<!-- Read Me of NeKernel C++ Toolchain -->
+<!-- Read Me of NCTI -->
 
 <div align="center">
   <img src="meta/png/nekernel.png" alt="Logo" width="256"/>

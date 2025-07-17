@@ -10,7 +10,7 @@
 /**
  * @file CodeGen.cc
  * @author amlal (amlal@nekernel.org)
- * @brief Assembler Kit
+ * @brief Assembler Kit (Code generation kit)
  * @version 0.1
  * @date 2024-01-27
  *

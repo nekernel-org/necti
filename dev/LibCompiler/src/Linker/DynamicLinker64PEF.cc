@@ -3,7 +3,7 @@
   Copyright (C) 2024-2025 Amlal El Mahrouss, all rights reserved
 
   @file DynamicLinker64PEF.cc
-  @brief: C++ 64-Bit PEF Linker.
+  @brief: C++ 64-Bit PEF Linker for NeKernel.org
 
 ------------------------------------------- */
 
@@ -13,32 +13,15 @@
 /// @note Do not look up for anything with .code64/.data64/.zero64!
 /// It will be loaded when the program loader will start the image.
 
-//! Toolchain Kit.
+
 #include <LibCompiler/Defines.h>
-
-//! Error ID
 #include <LibCompiler/ErrorID.h>
-
-//! Assembler Kit
 #include <LibCompiler/CodeGen.h>
-
-//! Preferred Executable Format
 #include <LibCompiler/PEF.h>
-
-//! UUID header.
 #include <LibCompiler/UUID.h>
-
-//! Release macros.
 #include <LibCompiler/Version.h>
-
-//! Advanced Executable Object Format.
 #include <LibCompiler/AE.h>
-
-//! LibCompiler utils.
 #include <LibCompiler/Util/CompilerUtils.h>
-
-//! I/O stream from std c++
-#include <iostream>
 
 #define kLinkerVersionStr                                                           \
   "NeKernel.org 64-Bit Linker (Preferred Executable Format) %s, (c) Amlal El Mahrouss " \
@@ -65,13 +48,6 @@
   (std::cout << "\e[0;31m" \
              << "ld64: "   \
              << "\e[0;97m")
-
-namespace Detail {
-struct DynamicLinkerBlob final {
-  std::vector<Char> mBlob{};       // PEF code/bss/data blob.
-  UIntPtr           mOffset{0UL};  // the offset of the PEF container header...
-};
-}  // namespace Detail
 
 enum {
   kABITypeNull    = 0,
