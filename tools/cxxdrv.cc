@@ -14,6 +14,7 @@
 #include <LibCompiler/Version.h>
 
 static auto kPath = "/usr/local/lib/libCompiler.dylib";
+static auto kSymbol = "CompilerCPlusPlusAMD64";
 
 Int32 main(Int32 argc, Char const* argv[]) {
   LibCompilerDylib handler = dlopen(kPath, RTLD_LAZY | RTLD_GLOBAL);
@@ -26,7 +27,7 @@ Int32 main(Int32 argc, Char const* argv[]) {
   }
 
   LibCompilerEntrypoint entrypoint_cxx =
-      (LibCompilerEntrypoint) dlsym(handler, "CompilerCPlusPlusAMD64");
+      (LibCompilerEntrypoint) dlsym(handler, kSymbol);
 
   if (!entrypoint_cxx) {
     kStdOut;
