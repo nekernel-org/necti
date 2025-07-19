@@ -7,9 +7,9 @@
     "../dev/LibCompiler/src/Detail"
   ],
   "sources_path": [
-    "cxxdrv.cc"
+    "pef-amd64-cxxdrv.cc"
   ],
-  "output_name": "cxxdrv",
+  "output_name": "pef-amd64-cxxdrv",
   "compiler_flags": [
   ],
   "cpp_macros": [
