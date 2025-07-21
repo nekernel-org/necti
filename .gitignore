@@ -12,7 +12,7 @@ tools/asm
 tools/ld64
 tools/cxxdrv
 
-tools/ddbg
+tools/dbg
 tools/cppdrv
 tools/kdbg
 tools/pef-amd64-cxxdrv

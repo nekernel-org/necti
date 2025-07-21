@@ -10,7 +10,7 @@
 /// BUGS: 0
 /// TODO: none
 
-#include <LibCompiler/Backend/64x0.h>
+#include <LibCompiler/Backend/Aarch64.h>
 #include <LibCompiler/Frontend.h>
 #include <LibCompiler/UUID.h>
 #include <LibCompiler/Util/CompilerUtils.h>
@@ -28,8 +28,8 @@
 /* (c) Amlal El Mahrouss */
 
 /// @author EL Mahrouss Amlal (amlel)
-/// @file 64x0-cc.cxx
-/// @brief 64x0 C Compiler.
+/// @file ARM64-cc.cxx
+/// @brief ARM64 C Compiler.
 
 /// TODO: support structures, else if, else, . and  ->
 
@@ -113,7 +113,7 @@ static int kMachine = 0;
 /////////////////////////////////////////
 
 static size_t      kRegisterCnt     = kAsmRegisterLimit;
-static size_t      kStartUsable     = 2;
+static size_t      kStartUsable     = 8;
 static size_t      kUsableLimit     = 15;
 static size_t      kRegisterCounter = kStartUsable;
 static std::string kRegisterPrefix  = kAsmRegisterPrefix;
@@ -134,20 +134,20 @@ static bool                         kIfFound     = false;
 static size_t                       kBracesCount = 0UL;
 
 /* @brief C compiler backend for C */
-class CompilerFrontend64x0 final : public LibCompiler::CompilerFrontendInterface {
+class CompilerFrontendARM64 final : public LibCompiler::CompilerFrontendInterface {
  public:
-  explicit CompilerFrontend64x0()  = default;
-  ~CompilerFrontend64x0() override = default;
+  explicit CompilerFrontendARM64()  = default;
+  ~CompilerFrontendARM64() override = default;
 
-  LIBCOMPILER_COPY_DEFAULT(CompilerFrontend64x0);
+  LIBCOMPILER_COPY_DEFAULT(CompilerFrontendARM64);
 
   std::string Check(const char* text, const char* file);
-  bool        Compile(std::string text, std::string file) override;
+  LibCompiler::SyntaxLeafList::SyntaxLeaf        Compile(std::string text, std::string file) override;
 
   const char* Language() override { return "64k C"; }
 };
 
-static CompilerFrontend64x0*             kCompilerFrontend = nullptr;
+static CompilerFrontendARM64*            kCompilerFrontend = nullptr;
 static std::vector<Detail::CompilerType> kCompilerVariables;
 static std::vector<std::string>          kCompilerFunctions;
 static std::vector<Detail::CompilerType> kCompilerTypes;
@@ -182,9 +182,7 @@ union double_cast final {
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
-bool CompilerFrontend64x0::Compile(std::string text_, std::string file) {
-  std::string text = text_;
-
+LibCompiler::SyntaxLeafList::SyntaxLeaf CompilerFrontendARM64::Compile(std::string text, std::string file) {
   bool typeFound = false;
   bool fnFound   = false;
 
@@ -618,13 +616,13 @@ bool CompilerFrontend64x0::Compile(std::string text_, std::string file) {
   syntaxLeaf.fUserValue = "\n";
   kState.fSyntaxTree->fLeafList.push_back(syntaxLeaf);
 
-  return true;
+  return syntaxLeaf;
 }
 
 static bool        kShouldHaveBraces = false;
 static std::string kFnName;
 
-std::string CompilerFrontend64x0::Check(const char* text, const char* file) {
+std::string CompilerFrontendARM64::Check(const char* text, const char* file) {
   std::string err_str;
   std::string ln = text;
 
@@ -1051,7 +1049,7 @@ class AssemblyCCInterface final LC_ASSEMBLY_INTERFACE {
 
   LIBCOMPILER_COPY_DEFAULT(AssemblyCCInterface);
 
-  UInt32 Arch() noexcept override { return LibCompiler::AssemblyFactory::kArch64x0; }
+  UInt32 Arch() noexcept override { return LibCompiler::AssemblyFactory::kArchAARCH64; }
 
   Int32 CompileToFormat(std::string src, Int32 arch) override {
     if (kCompilerFrontend == nullptr) return 1;
@@ -1078,7 +1076,7 @@ class AssemblyCCInterface final LC_ASSEMBLY_INTERFACE {
     auto fmt = LibCompiler::current_date();
 
     (*kState.fOutputAssembly) << "# Path: " << src_file << "\n";
-    (*kState.fOutputAssembly) << "# Language: 64x0 Assembly (Generated from ANSI C)\n";
+    (*kState.fOutputAssembly) << "# Language: ARM64 Assembly (Generated from ANSI C)\n";
     (*kState.fOutputAssembly) << "# Date: " << fmt << "\n\n";
 
     LibCompiler::SyntaxLeafList syntax;
@@ -1195,9 +1193,9 @@ static void cc_print_help() {
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
-#define kExt ".c"
+#define kCExtension ".c"
 
-LIBCOMPILER_MODULE(NeOSCompilerCLang64x0) {
+LIBCOMPILER_MODULE(CompilerCLangARM64) {
   ::signal(SIGSEGV, Detail::drvi_crash_handler);
 
   kCompilerTypes.push_back({.fName = "void", .fValue = "void"});
@@ -1210,8 +1208,8 @@ LIBCOMPILER_MODULE(NeOSCompilerCLang64x0) {
   bool skip = false;
 
   kFactory.Mount(new AssemblyCCInterface());
-  kMachine          = LibCompiler::AssemblyFactory::kArch64x0;
-  kCompilerFrontend = new CompilerFrontend64x0();
+  kMachine          = LibCompiler::AssemblyFactory::kArchAARCH64;
+  kCompilerFrontend = new CompilerFrontendARM64();
 
   for (auto index = 1UL; index < argc; ++index) {
     if (skip) {
@@ -1269,7 +1267,7 @@ LIBCOMPILER_MODULE(NeOSCompilerCLang64x0) {
 
     std::string srcFile = argv[index];
 
-    if (strstr(argv[index], kExt) == nullptr) {
+    if (strstr(argv[index], kCExtension) == nullptr) {
       if (kState.fVerbose) {
         Detail::print_error(srcFile + " is not a valid C source.\n", "cc");
       }

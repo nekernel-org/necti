@@ -11,6 +11,11 @@
 #include <LibDebugger/NeKernelContract.h>
 #include <Vendor/Dialogs.h>
 
+#include <sys/socket.h>
+#include <sys/types.h>
+#include <sys/un.h>
+#include <unistd.h>
+
 constexpr static UInt16 kDebugPort = 51820;
 
 using namespace LibDebugger::NeKernel;
@@ -19,25 +24,25 @@ NeKernelContract::NeKernelContract() = default;
 
 NeKernelContract::~NeKernelContract() = default;
 
-bool NeKernelContract::Attach(LibCompiler::STLString path, LibCompiler::STLString argv,
+BOOL NeKernelContract::Attach(LibCompiler::STLString path, LibCompiler::STLString argv,
                               ProcessID& pid) noexcept {
-  return false;
+  return NO;
 }
 
-bool NeKernelContract::BreakAt(LibCompiler::STLString symbol) noexcept {
-  return false;
+BOOL NeKernelContract::BreakAt(LibCompiler::STLString symbol) noexcept {
+  return NO;
 }
 
-bool NeKernelContract::Break() noexcept {
-  return false;
+BOOL NeKernelContract::Break() noexcept {
+  return NO;
 }
 
-bool NeKernelContract::Continue() noexcept {
-  return false;
+BOOL NeKernelContract::Continue() noexcept {
+  return NO;
 }
 
-bool NeKernelContract::Detach() noexcept {
-  return false;
+BOOL NeKernelContract::Detach() noexcept {
+  return NO;
 }
 
 #endif  // LD_NEKERNEL_DEBUGGER
