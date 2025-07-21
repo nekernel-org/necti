@@ -11,7 +11,7 @@
 
 ## Overview:
 
-NeCTI is a modern, multi-platform compiler instractucture designed for modularity, and performance. It features a custom debugger engine, advanced linker, and flexible backend/frontend system. NeCTI is built for research, education, and next-generation OS development.
+NeCTI is a modern, multi-platform compiler instractucture designed for modularity, and performance. It features a custom debugger engine, advanced linker, and flexible backend/frontend system. NeCTI is built for research, education, and next-generation toolchain development.
 
 ## Structure:
 
