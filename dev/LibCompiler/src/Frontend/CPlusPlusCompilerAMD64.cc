@@ -7,7 +7,7 @@
  * 	========================================================
  */
 
-/// BUGS: 1
+/// BUGS: 0
 
 #define kPrintF printf
 
@@ -17,6 +17,7 @@
 #include <LibCompiler/Backend/X64.h>
 #include <LibCompiler/Frontend.h>
 #include <LibCompiler/UUID.h>
+#include <LibCompiler/PEF.h>
 #include <LibCompiler/Util/CompilerUtils.h>
 
 /* NeKernel C++ Compiler Driver */
@@ -153,7 +154,7 @@ const char* CompilerFrontendCPlusPlusAMD64::Language() {
   return "AMD64 C++";
 }
 
-static std::uintptr_t                                                 kOrigin = 0x1000000;
+static std::uintptr_t                                                 kOrigin = kPefBaseOrigin;
 static std::vector<std::pair<LibCompiler::STLString, std::uintptr_t>> kOriginMap;
 
 /////////////////////////////////////////////////////////////////////////////////////////
