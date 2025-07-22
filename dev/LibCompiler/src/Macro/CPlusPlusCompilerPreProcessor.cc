@@ -257,27 +257,17 @@ void bpp_parse_file(std::ifstream& hdr_file, std::ofstream& pp_out) {
                    hdr_line.find("#endif") != LibCompiler::STLString::npos) {
           inactive_code = false;
         }
-
-        if (hdr_line.find("*/") != LibCompiler::STLString::npos) {
-          continue;
-        }
       }
 
-      if (hdr_line.find("--/") != LibCompiler::STLString::npos) {
-        hdr_line.erase(hdr_line.find("--/"));
+      if (hdr_line.find("*/") != LibCompiler::STLString::npos) {
+        hdr_line.erase(hdr_line.find("*/"), strlen("*/"));
       }
 
-      if (hdr_line.find("--*") != LibCompiler::STLString::npos) {
+      if (hdr_line.find("/*") != LibCompiler::STLString::npos) {
         inactive_code = true;
+
         // get rid of comment.
-        hdr_line.erase(hdr_line.find("--*"));
-      }
-
-      /// BPP 'brief' documentation.
-      if (hdr_line.find("@brief") != LibCompiler::STLString::npos) {
-        hdr_line.erase(hdr_line.find("@brief"));
-
-        // TODO: Write an <file_name>.html or append to it.
+        hdr_line.erase(hdr_line.find("/*"));
       }
 
       if (hdr_line[0] == kMacroPrefix && hdr_line.find("endif") != LibCompiler::STLString::npos) {
@@ -811,7 +801,7 @@ LIBCOMPILER_MODULE(CPlusPlusPreprocessorMain) {
       }
 
       if (argv[index][0] == '-') {
-        if (strcmp(argv[index], "--cppdrv:ver") == 0) {
+        if (strcmp(argv[index], "-cpp-ver") == 0) {
           printf("%s\n",
                  "NeKernel Preprocessor Driver v1.11, (c) Amlal El Mahrouss 2024-2025 all rights "
                  "reserved.");
@@ -819,20 +809,20 @@ LIBCOMPILER_MODULE(CPlusPlusPreprocessorMain) {
           return LIBCOMPILER_SUCCESS;
         }
 
-        if (strcmp(argv[index], "--cppdrv:?") == 0) {
+        if (strcmp(argv[index], "-cpp-help") == 0) {
           printf("%s\n",
                  "NeKernel Preprocessor Driver v1.11, (c) Amlal El Mahrouss 2024-2025 all rights "
                  "reserved.");
-          printf("%s\n", "--cppdrv:working-dir <path>: set directory to working path.");
-          printf("%s\n", "--cppdrv:include-dir <path>: add directory to include path.");
-          printf("%s\n", "--cppdrv:def <name> <value>: define a macro.");
-          printf("%s\n", "--cppdrv:ver: print the version.");
-          printf("%s\n", "--cppdrv:?: show help (this current command).");
+          printf("%s\n", "-cpp-working-dir <path>: set directory to working path.");
+          printf("%s\n", "-cpp-include-dir <path>: add directory to include path.");
+          printf("%s\n", "-cpp-def <name> <value>: define a macro.");
+          printf("%s\n", "-cpp-ver: print the version.");
+          printf("%s\n", "-cpp-help: show help (this current command).");
 
           return LIBCOMPILER_SUCCESS;
         }
 
-        if (strcmp(argv[index], "--cppdrv:include-dir") == 0) {
+        if (strcmp(argv[index], "-cpp-include-dir") == 0) {
           LibCompiler::STLString inc = argv[index + 1];
 
           skip = true;
@@ -840,13 +830,13 @@ LIBCOMPILER_MODULE(CPlusPlusPreprocessorMain) {
           kIncludes.push_back(inc);
         }
 
-        if (strcmp(argv[index], "--cppdrv:working-dir") == 0) {
+        if (strcmp(argv[index], "-cpp-working-dir") == 0) {
           LibCompiler::STLString inc = argv[index + 1];
           skip                       = true;
           kWorkingDir                = inc;
         }
 
-        if (strcmp(argv[index], "--cppdrv:def") == 0 && argv[index + 1] != nullptr &&
+        if (strcmp(argv[index], "-cpp-def") == 0 && argv[index + 1] != nullptr &&
             argv[index + 2] != nullptr) {
           LibCompiler::STLString macro_key = argv[index + 1];
 
