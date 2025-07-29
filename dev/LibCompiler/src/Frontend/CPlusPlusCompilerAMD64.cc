@@ -16,8 +16,8 @@
 
 #include <LibCompiler/Backend/X64.h>
 #include <LibCompiler/Frontend.h>
-#include <LibCompiler/UUID.h>
 #include <LibCompiler/PEF.h>
+#include <LibCompiler/UUID.h>
 #include <LibCompiler/Util/CompilerUtils.h>
 
 /* NeKernel C++ Compiler Driver */
@@ -270,21 +270,23 @@ LibCompiler::SyntaxLeafList::SyntaxLeaf CompilerFrontendCPlusPlusAMD64::Compile(
               for (auto pairRight : kRegisterMap) {
                 ++indexRight;
 
+                LibCompiler::STLString instr = "mov ";
+
                 if (pairRight != valueOfVar) {
                   auto& valueOfVarOpposite = isdigit(left[0]) ? left : right;
 
                   syntax_tree.fUserValue +=
-                      "mov " + kRegisterList[indexRight + 1] + ", " + valueOfVarOpposite + "\n";
+                      instr + kRegisterList[indexRight + 1] + ", " + valueOfVarOpposite + "\n";
                   syntax_tree.fUserValue += "cmp " + kRegisterList[kRegisterMap.size() - 1] + "," +
                                             kRegisterList[indexRight + 1] + "\n";
 
-                  goto done_iterarting_on_if;
+                  goto lc_done_iterarting_on_if;
                 }
 
                 auto& valueOfVarOpposite = isdigit(left[0]) ? left : right;
 
                 syntax_tree.fUserValue +=
-                    "mov " + kRegisterList[indexRight + 1] + ", " + valueOfVarOpposite + "\n";
+                    instr + kRegisterList[indexRight + 1] + ", " + valueOfVarOpposite + "\n";
                 syntax_tree.fUserValue += "cmp " + kRegisterList[kRegisterMap.size() - 1] + ", " +
                                           kRegisterList[indexRight + 1] + "\n";
 
@@ -293,12 +295,13 @@ LibCompiler::SyntaxLeafList::SyntaxLeaf CompilerFrontendCPlusPlusAMD64::Compile(
             }
           }
 
-        done_iterarting_on_if:
+        lc_done_iterarting_on_if:
 
-          LibCompiler::STLString fnName = text;
-          fnName.erase(fnName.find(keyword.first.keyword_name));
+          LibCompiler::STLString symbol_name_fn = text;
 
-          for (auto& ch : fnName) {
+          symbol_name_fn.erase(symbol_name_fn.find(keyword.first.keyword_name));
+
+          for (auto& ch : symbol_name_fn) {
             if (ch == ' ') ch = '_';
           }
 
@@ -321,7 +324,7 @@ LibCompiler::SyntaxLeafList::SyntaxLeaf CompilerFrontendCPlusPlusAMD64::Compile(
         break;
 
       accept:
-        LibCompiler::STLString fnName      = text;
+        LibCompiler::STLString symbol_name_fn      = text;
         size_t                 indexFnName = 0;
 
         // this one is for the type.
@@ -332,7 +335,7 @@ LibCompiler::SyntaxLeafList::SyntaxLeaf CompilerFrontendCPlusPlusAMD64::Compile(
           if (ch == ' ') break;
         }
 
-        fnName = text.substr(indexFnName);
+        symbol_name_fn = text.substr(indexFnName);
 
         if (text.find("return ") != LibCompiler::STLString::npos) {
           text.erase(0, text.find("return "));
@@ -342,35 +345,35 @@ LibCompiler::SyntaxLeafList::SyntaxLeaf CompilerFrontendCPlusPlusAMD64::Compile(
         if (text.ends_with(";") && text.find("return") == LibCompiler::STLString::npos)
           goto lc_write_assembly;
         else if (text.size() <= indexFnName)
-          Detail::print_error("Invalid function name: " + fnName, file);
+          Detail::print_error("Invalid function name: " + symbol_name_fn, file);
 
         indexFnName = 0;
 
-        for (auto& ch : fnName) {
+        for (auto& ch : symbol_name_fn) {
           if (ch == ' ' || ch == '\t') {
-            if (fnName[indexFnName - 1] != ')')
-              Detail::print_error("Invalid function name: " + fnName, file);
+            if (symbol_name_fn[indexFnName - 1] != ')')
+              Detail::print_error("Invalid function name: " + symbol_name_fn, file);
           }
 
           ++indexFnName;
         }
 
-        if (fnName.find("(") != LibCompiler::STLString::npos) {
-          fnName.erase(fnName.find("("));
+        if (symbol_name_fn.find("(") != LibCompiler::STLString::npos) {
+          symbol_name_fn.erase(symbol_name_fn.find("("));
         }
 
-        syntax_tree.fUserValue = "public_segment .code64 __LIBCOMPILER_" + fnName + "\n";
+        syntax_tree.fUserValue = "public_segment .code64 __LIBCOMPILER_" + symbol_name_fn + "\n";
         ++kFunctionEmbedLevel;
 
-        kOriginMap.push_back({"__LIBCOMPILER_" + fnName, kOrigin});
+        kOriginMap.push_back({"__LIBCOMPILER_" + symbol_name_fn, kOrigin});
 
         break;
 
       lc_write_assembly:
         auto it =
             std::find_if(kOriginMap.begin(), kOriginMap.end(),
-                         [&fnName](std::pair<LibCompiler::STLString, std::uintptr_t> pair) -> bool {
-                           return fnName == pair.first;
+                         [&symbol_name_fn](std::pair<LibCompiler::STLString, std::uintptr_t> pair) -> bool {
+                           return symbol_name_fn == pair.first;
                          });
 
         if (it != kOriginMap.end()) {

@@ -262,21 +262,21 @@ LIBCOMPILER_MODULE(DynamicLinker64PEF) {
       archs |= hdr.fArch;
       std::size_t cnt = hdr.fCount;
 
-      if (kVerbose) kConsoleOut << "Object header found, record count: " << cnt << "\n";
+      if (kVerbose) kConsoleOut << "header found, record count: " << cnt << "\n";
 
       pef_container.Count = cnt;
 
       char_type* raw_ae_records = new char_type[cnt * sizeof(LibCompiler::AERecordHeader)];
 
       if (!raw_ae_records) {
-        if (kVerbose) kConsoleOut << "Allocation failure for records of count: " << cnt << "\n";
+        if (kVerbose) kConsoleOut << "allocation failed for records of count: " << cnt << "\n";
       }
 
-      memset(raw_ae_records, 0, cnt * sizeof(LibCompiler::AERecordHeader));
+      std::memset(raw_ae_records, 0, cnt * sizeof(LibCompiler::AERecordHeader));
 
       auto* ae_records = reader_protocol.Read(raw_ae_records, cnt);
 
-      auto org = kLinkerDefaultOrigin;
+      size_t org = kLinkerDefaultOrigin;
 
       for (size_t ae_record_index = 0; ae_record_index < cnt; ++ae_record_index) {
         LibCompiler::PEFCommandHeader command_header{0};
@@ -342,7 +342,7 @@ LIBCOMPILER_MODULE(DynamicLinker64PEF) {
       continue;
     }
 
-    kConsoleOut << "Not an AE container: " << objectFile << std::endl;
+    kConsoleOut << "not an object container: " << objectFile << std::endl;
 
     // don't continue, it is a fatal error.
     return LIBCOMPILER_EXEC_ERROR;
@@ -353,7 +353,7 @@ LIBCOMPILER_MODULE(DynamicLinker64PEF) {
   output_fc << pef_container;
 
   if (kVerbose) {
-    kConsoleOut << "Wrote container to: " << output_fc.tellp() << ".\n";
+    kConsoleOut << "wrote container to: " << output_fc.tellp() << ".\n";
   }
 
   output_fc.seekp(std::streamsize(pef_container.HdrSz));
