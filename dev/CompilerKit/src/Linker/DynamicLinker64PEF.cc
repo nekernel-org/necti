@@ -3,7 +3,7 @@
   Copyright (C) 2024-2025 Amlal El Mahrouss, all rights reserved
 
   @file DynamicLinker64PEF.cc
-  @brief: C++ 64-Bit PEF Linker for NeKernel.org
+  @brief: C++ 64-Bit PEF Linker for NeKernel.org's NeKernel
 
 ------------------------------------------- */
 
@@ -24,7 +24,7 @@
 #include <CompilerKit/utils/CompilerUtils.h>
 
 #define kLinkerVersionStr                                                           \
-  "NeKernel.org 64-Bit Linker (Preferred Executable Format) %s, (c) Amlal El Mahrouss " \
+  "NeKernel.org 64-Bit Linker (Preferred Executable Format) %s, (c) Amlal El Mahrouss, and NeKernel Contributors " \
   "2024-2025 "                                                                      \
   "all rights reserved.\n"
 
@@ -234,8 +234,8 @@ LIBCOMPILER_MODULE(DynamicLinker64PEF) {
 
     CompilerKit::AEHeader hdr{};
 
-    reader_protocol._Fp = std::ifstream(objectFile, std::ifstream::binary);
-    reader_protocol._Fp >> hdr;
+    reader_protocol.file_pointer_ = std::ifstream(objectFile, std::ifstream::binary);
+    reader_protocol.file_pointer_ >> hdr;
 
     if (hdr.fMagic[0] == kAEMag0 && hdr.fMagic[1] == kAEMag1 &&
         hdr.fSize == sizeof(CompilerKit::AEHeader)) {
@@ -330,14 +330,14 @@ LIBCOMPILER_MODULE(DynamicLinker64PEF) {
       std::vector<char> bytes;
       bytes.resize(hdr.fCodeSize);
 
-      reader_protocol._Fp.seekg(std::streamsize(hdr.fStartCode));
-      reader_protocol._Fp.read(bytes.data(), std::streamsize(hdr.fCodeSize));
+      reader_protocol.file_pointer_.seekg(std::streamsize(hdr.fStartCode));
+      reader_protocol.file_pointer_.read(bytes.data(), std::streamsize(hdr.fCodeSize));
 
       kObjectBytes.push_back({.mBlob = bytes, .mOffset = hdr.fStartCode});
 
       // Blob was written, close fp.
 
-      reader_protocol._Fp.close();
+      reader_protocol.file_pointer_.close();
 
       continue;
     }

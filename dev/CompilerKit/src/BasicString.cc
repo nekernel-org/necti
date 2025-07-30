@@ -9,7 +9,7 @@
 
 /**
  * @file BasicString.cc
- * @author Amlal (amlal@el-mahrouss-logic.com)
+ * @author Amlal (amlal@nekernel.org)
  * @brief C++ string manipulation API.
  * @version 0.2
  * @date 2024-01-23

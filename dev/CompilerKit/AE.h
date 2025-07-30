@@ -91,7 +91,7 @@ namespace CompilerKit::Utils {
  */
 class AEReadableProtocol final {
  public:
-  std::ifstream _Fp;
+  std::ifstream file_pointer_;
 
  public:
   explicit AEReadableProtocol() = default;
@@ -123,7 +123,7 @@ class AEReadableProtocol final {
    */
   template <typename TypeClass>
   TypeClass* Read_(char* raw, std::size_t sz) {
-    _Fp.read(raw, std::streamsize(sz));
+    file_pointer_.read(raw, std::streamsize(sz));
     return reinterpret_cast<TypeClass*>(raw);
   }
 };
