@@ -17,6 +17,7 @@ tools/cppdrv
 tools/kdbg
 tools/pef-amd64-cxxdrv
 tools/pef-aarch64-cxxdrv
+tools/pef-aarch64-cdrv
 
 *.pp
 *.masm
