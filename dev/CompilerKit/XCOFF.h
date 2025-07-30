@@ -2,7 +2,7 @@
 
   Copyright (C) 2024-2025 Amlal EL Mahrouss, all rights reserved
 
-  File: XCOFF.hpp
+  File: XCOFF.h
   Purpose: XCOFF for NeKernel.
 
   Revision History:

@@ -4,7 +4,7 @@
 
 ------------------------------------------- */
 
-/// @brief provide support for Macros.hpp header.
+/// @brief provide support for Macros.h header.
 
 #ifndef _MACROS_H_
 #define _MACROS_H_
