@@ -7,9 +7,9 @@
 /// @file cxxdrv.cc
 /// @brief NE frontend preprocessor.
 
-#include <LibCompiler/Defines.h>
-#include <LibCompiler/ErrorID.h>
-#include <LibCompiler/Version.h>
+#include <CompilerKit/Defines.h>
+#include <CompilerKit/ErrorID.h>
+#include <CompilerKit/Version.h>
 #include <cstring>
 #include <iostream>
 #include <vector>

@@ -1,5 +1,5 @@
 # Path: LibC++/__power64.inc
-# Language: LibCompiler POWER Assembly support for GNU.
+# Language: CompilerKit POWER Assembly support for GNU.
 # Build Date: 2024-6-4
 
 #ifdef __LIBCOMPILER__

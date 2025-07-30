@@ -52,10 +52,10 @@
                 <mxCell id="18" style="edgeStyle=none;html=1;exitX=0.5;exitY=0;exitDx=0;exitDy=0;entryX=0.898;entryY=1.05;entryDx=0;entryDy=0;entryPerimeter=0;" parent="1" source="11" target="15" edge="1">
                     <mxGeometry relative="1" as="geometry"/>
                 </mxCell>
-                <mxCell id="19" value="LibCompiler Architecture" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" parent="1" vertex="1">
+                <mxCell id="19" value="CompilerKit Architecture" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" parent="1" vertex="1">
                     <mxGeometry x="338" y="210" width="175" height="30" as="geometry"/>
                 </mxCell>
-                <mxCell id="20" value="LibCompiler.so" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" parent="1" vertex="1">
+                <mxCell id="20" value="CompilerKit.so" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" parent="1" vertex="1">
                     <mxGeometry x="338" y="510" width="175" height="30" as="geometry"/>
                 </mxCell>
             </root>

@@ -4,7 +4,7 @@
 
 ------------------------------------------- */
 
-#include <LibCompiler/Defines.h>
+#include <CompilerKit/Defines.h>
 
 /// @file dbg.cxx
 /// @brief NE debugger.

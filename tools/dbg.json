@@ -1,10 +1,10 @@
 {
   "compiler_path": "g++",
   "compiler_std": "c++20",
-  "headers_path": ["../dev/LibCompiler", "../dev/", "../dev/LibCompiler/src/Detail"],
+  "headers_path": ["../dev/CompilerKit", "../dev/", "../dev/CompilerKit/src/Detail"],
   "sources_path": ["dbg.cc"],
   "output_name": "dbg",
-  "compiler_flags": ["-L/usr/lib", "-lDebugger"],
+  "compiler_flags": ["-L/usr/lib", "-lDebuggerKit"],
   "cpp_macros": [
     "__DBG__=202401",
     "kDistReleaseBranch=$(git rev-parse --abbrev-ref HEAD)-$(uuidgen)"

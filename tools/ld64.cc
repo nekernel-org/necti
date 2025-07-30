@@ -4,7 +4,7 @@
 
 ------------------------------------------- */
 
-#include <LibCompiler/Defines.h>
+#include <CompilerKit/Defines.h>
 
 /// @file ld64.cxx
 /// @brief NE Linker for AE objects.

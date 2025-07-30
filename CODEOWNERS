@@ -1,7 +1,7 @@
-# LibCompiler is managed by Amlal, this can be owned by someone else though.
+# CompilerKit is managed by Amlal, this can be owned by someone else though.
 
-/dev/LibCompiler/ @amlel-el-mahrouss
+/dev/CompilerKit/ @amlel-el-mahrouss
 /dev/LibC++/ @amlel-el-mahrouss
-/dev/LibDebugger @amlel-el-mahrouss
+/dev/DebuggerKit @amlel-el-mahrouss
 
-# LibC++, and LibDebugger needs ownership.
+# LibC++, and DebuggerKit needs ownership.

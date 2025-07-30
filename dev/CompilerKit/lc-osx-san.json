@@ -1,0 +1,29 @@
+{
+  "compiler_path": "clang++",
+  "compiler_std": "c++20",
+  "headers_path": [
+    "../CompilerKit",
+    "../",
+    "../CompilerKit/src/",
+    "../CompilerKit/src/impl"
+  ],
+  "sources_path": [
+    "src/*.cc",
+    "src/*/*.cc"
+  ],
+  "output_name": "/usr/local/lib/libCompilerKit.dylib",
+  "compiler_flags": [
+    "-fPIC",
+    "-shared",
+    "-fstack-protector-all",
+    "-fno-omit-frame-pointer",
+    "-g",
+    "-fsanitize=address",
+    "-fsanitize=undefined"
+  ],
+  "cpp_macros": [
+    "__LIBCOMPILER__=202505",
+    "LC_USE_STRUCTS=1",
+    "kDistReleaseBranch=$(git rev-parse --abbrev-ref HEAD)-$(uuidgen)"
+  ]
+}

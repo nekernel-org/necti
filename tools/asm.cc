@@ -7,8 +7,8 @@
 /// @file asm.cxx
 /// @brief Assembler frontend.
 
-#include <LibCompiler/Defines.h>
-#include <LibCompiler/Version.h>
+#include <CompilerKit/Defines.h>
+#include <CompilerKit/Version.h>
 #include <cstring>
 #include <iostream>
 #include <string>
@@ -43,7 +43,7 @@ int main(int argc, char const* argv[]) {
           "asm: Designed by Amlal El Mahrouss, Copyright (C) 2024-2025 Amlal El Mahrouss, all "
           "rights reserved.\n");
       std::printf(
-          "LibCompiler: Designed by Amlal El Mahrouss, Copyright (C) 2024-2025 Amlal El Mahrouss, "
+          "CompilerKit: Designed by Amlal El Mahrouss, Copyright (C) 2024-2025 Amlal El Mahrouss, "
           "all rights reserved.\n");
 
       return 0;

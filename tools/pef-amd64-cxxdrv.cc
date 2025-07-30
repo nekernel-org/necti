@@ -7,17 +7,17 @@
 /// @file cxxdrv.cc
 /// @brief NE C++ frontend compiler.
 
-#include <LibCompiler/Defines.h>
-#include <LibCompiler/ErrorID.h>
-#include <LibCompiler/Util/CompilerUtils.h>
-#include <LibCompiler/Util/DylibHelpers.h>
-#include <LibCompiler/Version.h>
+#include <CompilerKit/Defines.h>
+#include <CompilerKit/ErrorID.h>
+#include <CompilerKit/utils/CompilerUtils.h>
+#include <CompilerKit/utils/DylibHelpers.h>
+#include <CompilerKit/Version.h>
 
-static auto kPath = "/usr/local/lib/libCompiler.dylib";
+static auto kPath = "/usr/local/lib/libCompilerKit.dylib";
 static auto kSymbol = "CompilerCPlusPlusAMD64";
 
 Int32 main(Int32 argc, Char const* argv[]) {
-  LibCompilerDylib handler = dlopen(kPath, RTLD_LAZY | RTLD_GLOBAL);
+  CompilerKitDylib handler = dlopen(kPath, RTLD_LAZY | RTLD_GLOBAL);
 
   if (!handler) {
     kStdOut;
@@ -26,8 +26,8 @@ Int32 main(Int32 argc, Char const* argv[]) {
     return EXIT_FAILURE;
   }
 
-  LibCompilerEntrypoint entrypoint_cxx =
-      (LibCompilerEntrypoint) dlsym(handler, kSymbol);
+  CompilerKitEntrypoint entrypoint_cxx =
+      (CompilerKitEntrypoint) dlsym(handler, kSymbol);
 
   if (!entrypoint_cxx) {
     kStdOut;
