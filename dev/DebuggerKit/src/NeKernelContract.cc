@@ -7,14 +7,14 @@
 
 #ifdef LD_NEKERNEL_DEBUGGER
 
+/// @author Amlal El Mahrouss
+/// @brief Kernel Debugger Protocol
+
 #include <CompilerKit/Defines.h>
 #include <DebuggerKit/NeKernelContract.h>
 #include <ThirdParty/Dialogs.h>
 
-#include <sys/socket.h>
-#include <sys/types.h>
-#include <sys/un.h>
-#include <unistd.h>
+#include <DebuggerKit/Platform.h>
 
 constexpr static UInt16 kDebugPort = 51820;
 

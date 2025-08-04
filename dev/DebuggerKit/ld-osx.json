@@ -11,6 +11,7 @@
   "cpp_macros": [
     "__LIBCOMPILER__=202505",
     "LC_USE_STRUCTS=1",
+    "DEBUGGERKIT_POSIX",
     "LD_MACH_DEBUGGER",
     "kDistReleaseBranch=$(git rev-parse --abbrev-ref HEAD)-$(uuidgen)"
   ]
