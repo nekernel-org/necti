@@ -97,7 +97,7 @@ class AEReadableProtocol final {
   explicit AEReadableProtocol() = default;
   ~AEReadableProtocol()         = default;
 
-  LIBCOMPILER_COPY_DELETE(AEReadableProtocol);
+  NECTI_COPY_DELETE(AEReadableProtocol);
 
   /**
    * @brief Read AE Record headers.

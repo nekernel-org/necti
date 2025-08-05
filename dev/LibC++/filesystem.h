@@ -4,8 +4,8 @@
 
 ------------------------------------------- */
 
-#ifndef __LIBCOMPILER_FS_H__
-#define __LIBCOMPILER_FS_H__
+#ifndef __NECTI_FS_H__
+#define __NECTI_FS_H__
 
 namespace std {
 class path;
@@ -14,4 +14,4 @@ class directory_entry;
 class directory_iterator;
 }  // namespace std
 
-#endif  // __LIBCOMPILER_FS_H__
+#endif  // __NECTI_FS_H__

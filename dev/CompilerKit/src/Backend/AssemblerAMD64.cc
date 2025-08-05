@@ -84,7 +84,7 @@ static bool asm_read_attributes(std::string line);
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
-LIBCOMPILER_MODULE(AssemblerMainAMD64) {
+NECTI_MODULE(AssemblerMainAMD64) {
   //////////////// CPU OPCODES BEGIN ////////////////
 
   CompilerKit::install_signal(SIGSEGV, Detail::drvi_crash_handler);

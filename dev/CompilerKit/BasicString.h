@@ -39,7 +39,7 @@ class BasicString final {
     }
   }
 
-  LIBCOMPILER_COPY_DEFAULT(BasicString);
+  NECTI_COPY_DEFAULT(BasicString);
 
   Char*       Data();
   const Char* CData() const;

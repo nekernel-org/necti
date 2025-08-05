@@ -46,7 +46,7 @@ inline void print_error(std::string reason, std::string file) noexcept {
 
   kStdErr << reason << kBlank << std::endl;
 
-  if (kAcceptableErrors > kErrorLimit) std::exit(LIBCOMPILER_EXEC_ERROR);
+  if (kAcceptableErrors > kErrorLimit) std::exit(NECTI_EXEC_ERROR);
 
   ++kAcceptableErrors;
 }
@@ -111,6 +111,6 @@ inline void drvi_crash_handler(std::int32_t id) {
 
   std::cout << std::endl;
 
-  std::exit(LIBCOMPILER_EXEC_ERROR);
+  std::exit(NECTI_EXEC_ERROR);
 }
 }  // namespace Detail

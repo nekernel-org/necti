@@ -4,8 +4,8 @@
 
 ------------------------------------------- */
 
-#ifndef __LIBCOMPILER_DEFINES_H__
-#define __LIBCOMPILER_DEFINES_H__
+#ifndef __NECTI_DEFINES_H__
+#define __NECTI_DEFINES_H__
 
 #ifndef Yes
 #define Yes true
@@ -81,19 +81,19 @@
 #define rt_copy_memory(dst, src, len) memcpy(dst, src, len)
 #endif
 
-#define LIBCOMPILER_COPY_DELETE(KLASS)     \
+#define NECTI_COPY_DELETE(KLASS)     \
   KLASS& operator=(const KLASS&) = delete; \
   KLASS(const KLASS&)            = delete;
 
-#define LIBCOMPILER_COPY_DEFAULT(KLASS)     \
+#define NECTI_COPY_DEFAULT(KLASS)     \
   KLASS& operator=(const KLASS&) = default; \
   KLASS(const KLASS&)            = default;
 
-#define LIBCOMPILER_MOVE_DELETE(KLASS) \
+#define NECTI_MOVE_DELETE(KLASS) \
   KLASS& operator=(KLASS&&) = delete;  \
   KLASS(KLASS&&)            = delete;
 
-#define LIBCOMPILER_MOVE_DEFAULT(KLASS) \
+#define NECTI_MOVE_DEFAULT(KLASS) \
   KLASS& operator=(KLASS&&) = default;  \
   KLASS(KLASS&&)            = default;
 
@@ -162,10 +162,10 @@ typedef char char_type;
 
 #define kAsmFileExtsMax (7U)
 
-#define LIBCOMPILER_MODULE(name) extern "C" int name(int argc, char** argv)
+#define NECTI_MODULE(name) extern "C" int name(int argc, char** argv)
 
 #ifdef MSVC
 #pragma scalar_storage_order big - endian
 #endif  // ifdef MSVC
 
-#endif /* ifndef __LIBCOMPILER_DEFINES_H__ */
+#endif /* ifndef __NECTI_DEFINES_H__ */

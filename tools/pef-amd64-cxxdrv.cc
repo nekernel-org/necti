@@ -37,7 +37,7 @@ Int32 main(Int32 argc, Char const* argv[]) {
     return EXIT_FAILURE;
   }
 
-  auto ret = (entrypoint_cxx(argc, argv) == LIBCOMPILER_SUCCESS) ? EXIT_SUCCESS : EXIT_FAILURE;
+  auto ret = (entrypoint_cxx(argc, argv) == NECTI_SUCCESS) ? EXIT_SUCCESS : EXIT_FAILURE;
 
   dlclose(handler);
 

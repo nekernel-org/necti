@@ -33,7 +33,7 @@
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
-LIBCOMPILER_MODULE(NEAssemblerMain32000) {
+NECTI_MODULE(NEAssemblerMain32000) {
   CompilerKit::install_signal(SIGSEGV, Detail::drvi_crash_handler);
   return EXIT_SUCCESS;
 }

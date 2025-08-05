@@ -20,15 +20,15 @@
 namespace CompilerKit {
 ///! @brief Compile for specific format (ELF, PEF, ZBIN)
 Int32 AssemblyFactory::Compile(STLString sourceFile, const Int32& arch) noexcept {
-  if (sourceFile.length() < 1) return LIBCOMPILER_UNIMPLEMENTED;
+  if (sourceFile.length() < 1) return NECTI_UNIMPLEMENTED;
 
-  if (!fMounted) return LIBCOMPILER_UNIMPLEMENTED;
-  if (arch != fMounted->Arch()) return LIBCOMPILER_INVALID_ARCH;
+  if (!fMounted) return NECTI_UNIMPLEMENTED;
+  if (arch != fMounted->Arch()) return NECTI_INVALID_ARCH;
 
   try {
     return this->fMounted->CompileToFormat(sourceFile, arch);
   } catch (std::exception& e) {
-    return LIBCOMPILER_EXEC_ERROR;
+    return NECTI_EXEC_ERROR;
   }
 }
 

@@ -72,7 +72,7 @@ static bool asm_read_attributes(std::string line);
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
-LIBCOMPILER_MODULE(AssemblerMainPower64) {
+NECTI_MODULE(AssemblerMainPower64) {
   CompilerKit::install_signal(SIGSEGV, Detail::drvi_crash_handler);
 
   for (size_t i = 1; i < argc; ++i) {
@@ -258,7 +258,7 @@ asm_fail_exit:
 
   if (kVerbose) kStdOut << "AssemblerPower: Exit failed.\n";
 
-  return LIBCOMPILER_EXEC_ERROR;
+  return NECTI_EXEC_ERROR;
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////

@@ -26,7 +26,7 @@ static void dbgi_ctrlc_handler(std::int32_t _) {
   kKeepRunning = false;
 }
 
-LIBCOMPILER_MODULE(DebuggerMachPOSIX) {
+NECTI_MODULE(DebuggerMachPOSIX) {
   pfd::notify("Debugger Event",
               "Userland Debugger\n(C) 2025 Amlal El Mahrouss, all rights reserved.");
 

@@ -67,7 +67,7 @@ static bool asm_read_attributes(std::string line);
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
-LIBCOMPILER_MODULE(AssemblerMain64x0) {
+NECTI_MODULE(AssemblerMain64x0) {
   CompilerKit::install_signal(SIGSEGV, Detail::drvi_crash_handler);
 
   for (size_t i = 1; i < argc; ++i) {

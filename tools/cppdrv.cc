@@ -20,8 +20,8 @@ int main(int argc, char const* argv[]) {
   if (auto code = CPlusPlusPreprocessorMain(2, argv); code > 0) {
     std::printf("cppdrv: preprocessor exited with code %i.\n", code);
 
-    return LIBCOMPILER_EXEC_ERROR;
+    return NECTI_EXEC_ERROR;
   }
 
-  return LIBCOMPILER_SUCCESS;
+  return NECTI_SUCCESS;
 }

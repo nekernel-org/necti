@@ -130,7 +130,7 @@ class CompilerFrontendPower64 final : public CompilerKit::CompilerFrontendInterf
   explicit CompilerFrontendPower64()  = default;
   ~CompilerFrontendPower64() override = default;
 
-  LIBCOMPILER_COPY_DEFAULT(CompilerFrontendPower64);
+  NECTI_COPY_DEFAULT(CompilerFrontendPower64);
 
   std::string Check(const char* text, const char* file);
   CompilerKit::SyntaxLeafList::SyntaxLeaf        Compile(std::string text, std::string file) override;
@@ -330,7 +330,7 @@ CompilerKit::SyntaxLeafList::SyntaxLeaf CompilerFrontendPower64::Compile(std::st
 
       if (expr.find(")") != std::string::npos) expr.erase(expr.find(")"));
 
-      kIfFunction = "__LIBCOMPILER_IF_PROC_";
+      kIfFunction = "__NECTI_IF_PROC_";
       kIfFunction += std::to_string(time_off._Raw);
 
       syntax_leaf.fUserValue =
@@ -1067,7 +1067,7 @@ class AssemblyMountpointCLang final LC_ASSEMBLY_INTERFACE {
   explicit AssemblyMountpointCLang()  = default;
   ~AssemblyMountpointCLang() override = default;
 
-  LIBCOMPILER_COPY_DEFAULT(AssemblyMountpointCLang);
+  NECTI_COPY_DEFAULT(AssemblyMountpointCLang);
 
   UInt32 Arch() noexcept override { return CompilerKit::AssemblyFactory::kArchPowerPC; }
 
@@ -1214,7 +1214,7 @@ static void cc_print_help() {
 
 #define kExt ".c"
 
-LIBCOMPILER_MODULE(CompilerCLangPowerPC) {
+NECTI_MODULE(CompilerCLangPowerPC) {
   ::signal(SIGSEGV, Detail::drvi_crash_handler);
 
   kCompilerTypes.push_back({.fName = "void", .fValue = "void"});

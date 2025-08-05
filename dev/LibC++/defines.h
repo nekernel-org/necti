@@ -4,8 +4,8 @@
 
 ------------------------------------------- */
 
-#ifndef __LIBCOMPILER_DEFINES_H__
-#define __LIBCOMPILER_DEFINES_H__
+#ifndef __NECTI_DEFINES_H__
+#define __NECTI_DEFINES_H__
 
 extern "C" {
 #include <stddef.h>
@@ -34,7 +34,7 @@ typedef char*  caddr_t;
 
 #ifdef __GNUC__
 #include <LibC++/alloca.h>
-#elif defined(__LIBCOMPILER__)
+#elif defined(__NECTI__)
 #define __alloca(sz) __lc_alloca(sz)
 #endif
 
@@ -85,4 +85,4 @@ typedef union double_cast {
 
 #endif  // ifndef __GNUC__
 
-#endif /* __LIBCOMPILER_DEFINES_H__ */
+#endif /* __NECTI_DEFINES_H__ */

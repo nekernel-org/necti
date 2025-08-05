@@ -103,7 +103,7 @@ class CompilerFrontendInterface {
   explicit CompilerFrontendInterface() = default;
   virtual ~CompilerFrontendInterface() = default;
 
-  LIBCOMPILER_COPY_DEFAULT(CompilerFrontendInterface);
+  NECTI_COPY_DEFAULT(CompilerFrontendInterface);
 
   // NOTE: cast this to your user defined ast.
   typedef void* AstType;

@@ -122,7 +122,7 @@ class CompilerFrontendCPlusPlusAMD64 final LC_COMPILER_FRONTEND {
   explicit CompilerFrontendCPlusPlusAMD64()  = default;
   ~CompilerFrontendCPlusPlusAMD64() override = default;
 
-  LIBCOMPILER_COPY_DEFAULT(CompilerFrontendCPlusPlusAMD64);
+  NECTI_COPY_DEFAULT(CompilerFrontendCPlusPlusAMD64);
 
   CompilerKit::SyntaxLeafList::SyntaxLeaf Compile(const CompilerKit::STLString text,
                                                   CompilerKit::STLString       file) override;
@@ -362,10 +362,10 @@ CompilerKit::SyntaxLeafList::SyntaxLeaf CompilerFrontendCPlusPlusAMD64::Compile(
           symbol_name_fn.erase(symbol_name_fn.find("("));
         }
 
-        syntax_tree.fUserValue = "public_segment .code64 __LIBCOMPILER_" + symbol_name_fn + "\n";
+        syntax_tree.fUserValue = "public_segment .code64 __NECTI_" + symbol_name_fn + "\n";
         ++kFunctionEmbedLevel;
 
-        kOriginMap.push_back({"__LIBCOMPILER_" + symbol_name_fn, kOrigin});
+        kOriginMap.push_back({"__NECTI_" + symbol_name_fn, kOrigin});
 
         break;
 
@@ -492,10 +492,10 @@ CompilerKit::SyntaxLeafList::SyntaxLeaf CompilerFrontendCPlusPlusAMD64::Compile(
 
             if (pairRight != valueOfVar) {
               if (valueOfVar[0] == '\"') {
-                syntax_tree.fUserValue = "segment .data64 __LIBCOMPILER_LOCAL_VAR_" + varName +
+                syntax_tree.fUserValue = "segment .data64 __NECTI_LOCAL_VAR_" + varName +
                                          ": db " + valueOfVar + ", 0\n\n";
                 syntax_tree.fUserValue += instr + kRegisterList[kRegisterMap.size() - 1] + ", " +
-                                          "__LIBCOMPILER_LOCAL_VAR_" + varName + "\n";
+                                          "__NECTI_LOCAL_VAR_" + varName + "\n";
                 kOrigin += 1UL;
               } else {
                 syntax_tree.fUserValue =
@@ -509,10 +509,10 @@ CompilerKit::SyntaxLeafList::SyntaxLeaf CompilerFrontendCPlusPlusAMD64::Compile(
 
           if (((int) indexRight - 1) < 0) {
             if (valueOfVar[0] == '\"') {
-              syntax_tree.fUserValue = "segment .data64 __LIBCOMPILER_LOCAL_VAR_" + varName +
+              syntax_tree.fUserValue = "segment .data64 __NECTI_LOCAL_VAR_" + varName +
                                        ": db " + valueOfVar + ", 0\n";
               syntax_tree.fUserValue += instr + kRegisterList[kRegisterMap.size()] + ", " +
-                                        "__LIBCOMPILER_LOCAL_VAR_" + varName + "\n";
+                                        "__NECTI_LOCAL_VAR_" + varName + "\n";
               kOrigin += 1UL;
             } else {
               syntax_tree.fUserValue =
@@ -665,8 +665,8 @@ CompilerKit::SyntaxLeafList::SyntaxLeaf CompilerFrontendCPlusPlusAMD64::Compile(
               break;
             }
           } else {
-            syntax_tree.fUserValue = "__LIBCOMPILER_LOCAL_RETURN_STRING: db " + subText +
-                                     ", 0\nmov rcx, __LIBCOMPILER_LOCAL_RETURN_STRING\n";
+            syntax_tree.fUserValue = "__NECTI_LOCAL_RETURN_STRING: db " + subText +
+                                     ", 0\nmov rcx, __NECTI_LOCAL_RETURN_STRING\n";
             syntax_tree.fUserValue += "mov rax, rcx\nret\n";
             kOrigin += 1UL;
 
@@ -723,7 +723,7 @@ class AssemblyCPlusPlusInterfaceAMD64 final LC_ASSEMBLY_INTERFACE {
   explicit AssemblyCPlusPlusInterfaceAMD64()  = default;
   ~AssemblyCPlusPlusInterfaceAMD64() override = default;
 
-  LIBCOMPILER_COPY_DEFAULT(AssemblyCPlusPlusInterfaceAMD64);
+  NECTI_COPY_DEFAULT(AssemblyCPlusPlusInterfaceAMD64);
 
   UInt32 Arch() noexcept override { return CompilerKit::AssemblyFactory::kArchAMD64; }
 
@@ -756,7 +756,7 @@ class AssemblyCPlusPlusInterfaceAMD64 final LC_ASSEMBLY_INTERFACE {
 #define kExtListCxx \
   { ".cpp", ".cxx", ".cc", ".c++", ".cp" }
 
-LIBCOMPILER_MODULE(CompilerCPlusPlusAMD64) {
+NECTI_MODULE(CompilerCPlusPlusAMD64) {
   Boolean skip = false;
 
   kKeywords.emplace_back("if", CompilerKit::kKeywordKindIf);
@@ -842,7 +842,7 @@ LIBCOMPILER_MODULE(CompilerCPlusPlusAMD64) {
       if (strcmp(argv[index], "-cxx-dialect") == 0) {
         if (kCompilerFrontend) std::cout << kCompilerFrontend->Language() << "\n";
 
-        return LIBCOMPILER_SUCCESS;
+        return NECTI_SUCCESS;
       }
 
       if (strcmp(argv[index], "-cxx-max-err") == 0) {
@@ -874,7 +874,7 @@ LIBCOMPILER_MODULE(CompilerCPlusPlusAMD64) {
     for (CompilerKit::STLString ext : exts) {
       if (argv_i.ends_with(ext)) {
         if (kFactory.Compile(argv_i, kMachine) != kExitOK) {
-          return LIBCOMPILER_INVALID_DATA;
+          return NECTI_INVALID_DATA;
         }
 
         break;
@@ -884,7 +884,7 @@ LIBCOMPILER_MODULE(CompilerCPlusPlusAMD64) {
 
   kFactory.Unmount();
 
-  return LIBCOMPILER_SUCCESS;
+  return NECTI_SUCCESS;
 }
 
 //

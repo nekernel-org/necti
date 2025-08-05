@@ -23,7 +23,7 @@ class AssemblyFactory final {
   explicit AssemblyFactory() = default;
   ~AssemblyFactory()         = default;
 
-  LIBCOMPILER_COPY_DEFAULT(AssemblyFactory);
+  NECTI_COPY_DEFAULT(AssemblyFactory);
 
  public:
   enum {
@@ -54,7 +54,7 @@ class AssemblyInterface {
   explicit AssemblyInterface() = default;
   virtual ~AssemblyInterface() = default;
 
-  LIBCOMPILER_COPY_DEFAULT(AssemblyInterface);
+  NECTI_COPY_DEFAULT(AssemblyInterface);
 
   virtual UInt32 Arch() noexcept { return AssemblyFactory::kArchAMD64; }
 
@@ -113,7 +113,7 @@ class EncoderInterface {
   explicit EncoderInterface() = default;
   virtual ~EncoderInterface() = default;
 
-  LIBCOMPILER_COPY_DEFAULT(EncoderInterface);
+  NECTI_COPY_DEFAULT(EncoderInterface);
 
   virtual std::string CheckLine(std::string line, std::string file)               = 0;
   virtual bool        WriteLine(std::string line, std::string file)               = 0;
@@ -127,7 +127,7 @@ class EncoderAMD64 final : public EncoderInterface {
   explicit EncoderAMD64()  = default;
   ~EncoderAMD64() override = default;
 
-  LIBCOMPILER_COPY_DEFAULT(EncoderAMD64);
+  NECTI_COPY_DEFAULT(EncoderAMD64);
 
   virtual std::string CheckLine(std::string line, std::string file) override;
   virtual bool        WriteLine(std::string line, std::string file) override;
@@ -147,7 +147,7 @@ class EncoderARM64 final : public EncoderInterface {
   explicit EncoderARM64()  = default;
   ~EncoderARM64() override = default;
 
-  LIBCOMPILER_COPY_DEFAULT(EncoderARM64);
+  NECTI_COPY_DEFAULT(EncoderARM64);
 
   virtual std::string CheckLine(std::string line, std::string file) override;
   virtual bool        WriteLine(std::string line, std::string file) override;
@@ -163,7 +163,7 @@ class Encoder64x0 final : public EncoderInterface {
   explicit Encoder64x0()  = default;
   ~Encoder64x0() override = default;
 
-  LIBCOMPILER_COPY_DEFAULT(Encoder64x0);
+  NECTI_COPY_DEFAULT(Encoder64x0);
 
   virtual std::string CheckLine(std::string line, std::string file) override;
   virtual bool        WriteLine(std::string line, std::string file) override;
@@ -179,7 +179,7 @@ class Encoder32x0 final : public EncoderInterface {
   explicit Encoder32x0()  = default;
   ~Encoder32x0() override = default;
 
-  LIBCOMPILER_COPY_DEFAULT(Encoder32x0);
+  NECTI_COPY_DEFAULT(Encoder32x0);
 
   virtual std::string CheckLine(std::string line, std::string file) override;
   virtual bool        WriteLine(std::string line, std::string file) override;
@@ -195,7 +195,7 @@ class EncoderPowerPC final : public EncoderInterface {
   explicit EncoderPowerPC()  = default;
   ~EncoderPowerPC() override = default;
 
-  LIBCOMPILER_COPY_DEFAULT(EncoderPowerPC);
+  NECTI_COPY_DEFAULT(EncoderPowerPC);
 
   virtual std::string CheckLine(std::string line, std::string file) override;
   virtual bool        WriteLine(std::string line, std::string file) override;

@@ -22,7 +22,7 @@
     "-fsanitize=undefined"
   ],
   "cpp_macros": [
-    "__LIBCOMPILER__=202505",
+    "__NECTI__=202505",
     "LC_USE_STRUCTS=1",
     "kDistReleaseBranch=$(git rev-parse --abbrev-ref HEAD)-$(uuidgen)"
   ]

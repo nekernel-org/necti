@@ -139,7 +139,7 @@ class CompilerFrontend64x0 final : public CompilerKit::CompilerFrontendInterface
   explicit CompilerFrontend64x0()  = default;
   ~CompilerFrontend64x0() override = default;
 
-  LIBCOMPILER_COPY_DEFAULT(CompilerFrontend64x0);
+  NECTI_COPY_DEFAULT(CompilerFrontend64x0);
 
   std::string Check(const char* text, const char* file);
   CompilerKit::SyntaxLeafList::SyntaxLeaf        Compile(std::string text, std::string file) override;
@@ -324,7 +324,7 @@ CompilerKit::SyntaxLeafList::SyntaxLeaf CompilerFrontend64x0::Compile(std::strin
 
       if (expr.find(")") != std::string::npos) expr.erase(expr.find(")"));
 
-      kIfFunction = "__LIBCOMPILER_IF_PROC_";
+      kIfFunction = "__NECTI_IF_PROC_";
       kIfFunction += std::to_string(time_off._Raw);
 
       syntaxLeaf.fUserValue = "\tlda r12, extern_segment ";
@@ -1049,7 +1049,7 @@ class AssemblyCCInterface final LC_ASSEMBLY_INTERFACE {
   explicit AssemblyCCInterface()  = default;
   ~AssemblyCCInterface() override = default;
 
-  LIBCOMPILER_COPY_DEFAULT(AssemblyCCInterface);
+  NECTI_COPY_DEFAULT(AssemblyCCInterface);
 
   UInt32 Arch() noexcept override { return CompilerKit::AssemblyFactory::kArch64x0; }
 
@@ -1197,7 +1197,7 @@ static void cc_print_help() {
 
 #define kExt ".c"
 
-LIBCOMPILER_MODULE(CompilerCLang64x0) {
+NECTI_MODULE(CompilerCLang64x0) {
   ::signal(SIGSEGV, Detail::drvi_crash_handler);
 
   kCompilerTypes.push_back({.fName = "void", .fValue = "void"});

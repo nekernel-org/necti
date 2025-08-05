@@ -74,7 +74,7 @@ static std::vector<Detail::DynamicLinkerBlob> kObjectBytes;
 
 ///	@brief NE 64-bit Linker.
 /// @note This linker is made for PEF executable, thus NE based OSes.
-LIBCOMPILER_MODULE(DynamicLinker64PEF) {
+NECTI_MODULE(DynamicLinker64PEF) {
   bool is_executable = true;
 
   ::signal(SIGSEGV, Detail::drvi_crash_handler);
@@ -99,11 +99,11 @@ LIBCOMPILER_MODULE(DynamicLinker64PEF) {
       kConsoleOut << "-arm64: Output as a ARM64 PEF.\n";
       kConsoleOut << "-output: Select the output file name.\n";
 
-      return LIBCOMPILER_SUCCESS;
+      return NECTI_SUCCESS;
     } else if (StringCompare(argv[linker_arg], "-version") == 0) {
       kLinkerSplash();
 
-      return LIBCOMPILER_SUCCESS;
+      return NECTI_SUCCESS;
     } else if (StringCompare(argv[linker_arg], "-fat") == 0) {
       kFatBinaryEnable = true;
 
@@ -170,10 +170,10 @@ LIBCOMPILER_MODULE(DynamicLinker64PEF) {
 
   if (kOutput.empty()) {
     kConsoleOut << "no output filename set." << std::endl;
-    return LIBCOMPILER_EXEC_ERROR;
+    return NECTI_EXEC_ERROR;
   } else if (kObjectList.empty()) {
     kConsoleOut << "no input files." << std::endl;
-    return LIBCOMPILER_EXEC_ERROR;
+    return NECTI_EXEC_ERROR;
   } else {
     namespace FS = std::filesystem;
 
@@ -183,7 +183,7 @@ LIBCOMPILER_MODULE(DynamicLinker64PEF) {
         // if filesystem doesn't find file
         //          -> throw error.
         kConsoleOut << "no such file: " << obj << std::endl;
-        return LIBCOMPILER_EXEC_ERROR;
+        return NECTI_EXEC_ERROR;
       }
     }
   }
@@ -191,7 +191,7 @@ LIBCOMPILER_MODULE(DynamicLinker64PEF) {
   // PEF expects a valid target architecture when outputing a binary.
   if (kArch == CompilerKit::kPefArchInvalid) {
     kConsoleOut << "no target architecture set, can't continue." << std::endl;
-    return LIBCOMPILER_EXEC_ERROR;
+    return NECTI_EXEC_ERROR;
   }
 
   CompilerKit::PEFContainer pef_container{};
@@ -221,7 +221,7 @@ LIBCOMPILER_MODULE(DynamicLinker64PEF) {
       kConsoleOut << "error: " << strerror(errno) << "\n";
     }
 
-    return LIBCOMPILER_FILE_NOT_FOUND;
+    return NECTI_FILE_NOT_FOUND;
   }
 
   //! Read AE to convert as PEF.
@@ -250,7 +250,7 @@ LIBCOMPILER_MODULE(DynamicLinker64PEF) {
                          "treated as a FAT binary."
                       << std::endl;
 
-          return LIBCOMPILER_FAT_ERROR;
+          return NECTI_FAT_ERROR;
         } else {
           if (kVerbose) {
             kConsoleOut << "Architecture matches what we expect.\n";
@@ -345,7 +345,7 @@ LIBCOMPILER_MODULE(DynamicLinker64PEF) {
     kConsoleOut << "not an object container: " << objectFile << std::endl;
 
     // don't continue, it is a fatal error.
-    return LIBCOMPILER_EXEC_ERROR;
+    return NECTI_EXEC_ERROR;
   }
 
   pef_container.Cpu = archs;
@@ -624,7 +624,7 @@ LIBCOMPILER_MODULE(DynamicLinker64PEF) {
       kConsoleOut << "Multiple symbols of: " << symbol << " detected, cannot continue.\n";
     }
 
-    return LIBCOMPILER_EXEC_ERROR;
+    return NECTI_EXEC_ERROR;
   }
 
   // step 2.5: write program bytes.
@@ -654,7 +654,7 @@ LIBCOMPILER_MODULE(DynamicLinker64PEF) {
       kConsoleOut << "Undefined symbol " << unreferenced_symbol << "\n";
     }
 
-    return LIBCOMPILER_EXEC_ERROR;
+    return NECTI_EXEC_ERROR;
   }
 
   if ((!kStartFound || kDuplicateSymbols) &&
@@ -663,10 +663,10 @@ LIBCOMPILER_MODULE(DynamicLinker64PEF) {
       kConsoleOut << "File: " << kOutput << ", is corrupt, removing file...\n";
     }
 
-    return LIBCOMPILER_EXEC_ERROR;
+    return NECTI_EXEC_ERROR;
   }
 
-  return LIBCOMPILER_SUCCESS;
+  return NECTI_SUCCESS;
 }
 
 // Last rev 13-1-24
