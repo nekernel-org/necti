@@ -12,7 +12,7 @@
 // @brief Open64x0 support.
 // @file detail/64x0.h
 
-#define LC_ASM_OPCODE(__NAME, __OPCODE, __FUNCT3, __FUNCT7) \
+#define CK_ASM_OPCODE(__NAME, __OPCODE, __FUNCT3, __FUNCT7) \
   {.fName = __NAME, .fOpcode = __OPCODE, .fFunct3 = __FUNCT3, .fFunct7 = __FUNCT7},
 
 #define kAsmImmediate 0x01
@@ -32,28 +32,28 @@ struct CpuOpcode64x0 {
 };
 
 inline std::vector<CpuOpcode64x0> kOpcodes64x0 = {
-    LC_ASM_OPCODE("nop", 0b0000000, 0b0000000, kAsmNoArgs)  // no-operation.
-    LC_ASM_OPCODE("np", 0b0000000, 0b0000000, kAsmNoArgs)   // no-operation.
-    LC_ASM_OPCODE("jlr", 0b1110011, 0b0000111,
+    CK_ASM_OPCODE("nop", 0b0000000, 0b0000000, kAsmNoArgs)  // no-operation.
+    CK_ASM_OPCODE("np", 0b0000000, 0b0000000, kAsmNoArgs)   // no-operation.
+    CK_ASM_OPCODE("jlr", 0b1110011, 0b0000111,
                   kAsmJump)  // jump to linked return register
-    LC_ASM_OPCODE("jrl", 0b1110011, 0b0001111,
+    CK_ASM_OPCODE("jrl", 0b1110011, 0b0001111,
                   kAsmJump)  // jump from return register.
-    LC_ASM_OPCODE("mv", 0b0100011, 0b101, kAsmRegToReg) LC_ASM_OPCODE(
-        "bg", 0b1100111, 0b111, kAsmRegToReg) LC_ASM_OPCODE("bl", 0b1100111, 0b011, kAsmRegToReg)
-        LC_ASM_OPCODE("beq", 0b1100111, 0b000, kAsmRegToReg)
-            LC_ASM_OPCODE("bne", 0b1100111, 0b001, kAsmRegToReg)
-                LC_ASM_OPCODE("bge", 0b1100111, 0b101, kAsmRegToReg)
-                    LC_ASM_OPCODE("ble", 0b1100111, 0b100, kAsmRegToReg)
-                        LC_ASM_OPCODE("stw", 0b0001111, 0b100, kAsmImmediate)
-                            LC_ASM_OPCODE("ldw", 0b0001111, 0b100, kAsmImmediate)
-                                LC_ASM_OPCODE("lda", 0b0001111, 0b101, kAsmImmediate)
-                                    LC_ASM_OPCODE("sta", 0b0001111, 0b001, kAsmImmediate)
+    CK_ASM_OPCODE("mv", 0b0100011, 0b101, kAsmRegToReg) CK_ASM_OPCODE(
+        "bg", 0b1100111, 0b111, kAsmRegToReg) CK_ASM_OPCODE("bl", 0b1100111, 0b011, kAsmRegToReg)
+        CK_ASM_OPCODE("beq", 0b1100111, 0b000, kAsmRegToReg)
+            CK_ASM_OPCODE("bne", 0b1100111, 0b001, kAsmRegToReg)
+                CK_ASM_OPCODE("bge", 0b1100111, 0b101, kAsmRegToReg)
+                    CK_ASM_OPCODE("ble", 0b1100111, 0b100, kAsmRegToReg)
+                        CK_ASM_OPCODE("stw", 0b0001111, 0b100, kAsmImmediate)
+                            CK_ASM_OPCODE("ldw", 0b0001111, 0b100, kAsmImmediate)
+                                CK_ASM_OPCODE("lda", 0b0001111, 0b101, kAsmImmediate)
+                                    CK_ASM_OPCODE("sta", 0b0001111, 0b001, kAsmImmediate)
     // add/sub without carry flag
-    LC_ASM_OPCODE("add", 0b0101011, 0b100, kAsmImmediate)
-        LC_ASM_OPCODE("sub", 0b0101011, 0b101, kAsmImmediate)
+    CK_ASM_OPCODE("add", 0b0101011, 0b100, kAsmImmediate)
+        CK_ASM_OPCODE("sub", 0b0101011, 0b101, kAsmImmediate)
     // add/sub with carry flag
-    LC_ASM_OPCODE("addc", 0b0101011, 0b110, kAsmImmediate) LC_ASM_OPCODE(
-        "subc", 0b0101011, 0b111, kAsmImmediate) LC_ASM_OPCODE("sc", 0b1110011, 0b00, kAsmSyscall)};
+    CK_ASM_OPCODE("addc", 0b0101011, 0b110, kAsmImmediate) CK_ASM_OPCODE(
+        "subc", 0b0101011, 0b111, kAsmImmediate) CK_ASM_OPCODE("sc", 0b1110011, 0b00, kAsmSyscall)};
 
 // \brief 64x0 register prefix
 // example: r32, r0

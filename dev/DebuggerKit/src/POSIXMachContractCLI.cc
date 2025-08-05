@@ -5,7 +5,7 @@
   Purpose: OS X/Darwin Debugger
 */
 
-#ifdef LD_MACH_DEBUGGER
+#ifdef DK_MACH_DEBUGGER
 
 #include <CompilerKit/Defines.h>
 #include <DebuggerKit/POSIXMachContract.h>

@@ -5,7 +5,7 @@
   Purpose: NeKernel Debugger CLI.
 */
 
-#ifdef LD_NEKERNEL_DEBUGGER
+#ifdef DK_NEKERNEL_DEBUGGER
 
 #include <CompilerKit/Defines.h>
 #include <DebuggerKit/NeKernelContract.h>
@@ -98,4 +98,4 @@ NECTI_MODULE(DebuggerNeKernel) {
   return EXIT_FAILURE;
 }
 
-#endif  // LD_NEKERNEL_DEBUGGER
+#endif  // DK_NEKERNEL_DEBUGGER

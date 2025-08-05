@@ -3,10 +3,10 @@
   (C) 2025 Amlal El Mahrouss
  */
 
-#ifndef LD_NEKERNEL_CONTRACT_H
-#define LD_NEKERNEL_CONTRACT_H
+#ifndef DK_NEKERNEL_CONTRACT_H
+#define DK_NEKERNEL_CONTRACT_H
 
-#ifdef LD_NEKERNEL_DEBUGGER
+#ifdef DK_NEKERNEL_DEBUGGER
 
 #include <DebuggerKit/DebuggerContract.h>
 
@@ -14,8 +14,11 @@ namespace DebuggerKit::NeKernel {
 class NeKernelContract;
 
 namespace Detail {
-  inline constexpr size_t kDebugCmdLen = 256U;
-  typedef char            rt_debug_cmd[kDebugCmdLen];
+  inline constexpr auto kDebugCmdLen = 256U;
+  inline constexpr auto kDebugPort   = 51820;
+  inline constexpr auto kDebugMagic   = "VMK1.0.0;";
+  inline constexpr auto kDebugVersion = 0x0100;
+  typedef char          rt_debug_cmd[kDebugCmdLen];
 }  // namespace Detail
 
 class NeKernelContract : public DebuggerContract {
@@ -42,6 +45,6 @@ class NeKernelContract : public DebuggerContract {
 };
 }  // namespace DebuggerKit::NeKernel
 
-#endif  // ifdef LD_NEKERNEL_DEBUGGER
+#endif  // ifdef DK_NEKERNEL_DEBUGGER
 
-#endif  // LD_NEKERNEL_CONTRACT_H
+#endif  // DK_NEKERNEL_CONTRACT_H

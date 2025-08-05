@@ -17,7 +17,7 @@ static auto kPath = "/usr/local/lib/libCompilerKit.dylib";
 static auto kSymbol = "CompilerCLangARM64";
 
 Int32 main(Int32 argc, Char const* argv[]) {
-  CompilerKitDylib handler = dlopen(kPath, RTLD_LAZY | RTLD_GLOBAL);
+  CompilerKitDylib handler = dlopen(kPath, RTDK_LAZY | RTDK_GLOBAL);
 
   if (!handler) {
     kStdOut;

@@ -1062,7 +1062,7 @@ skip_braces_check:
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
-class AssemblyMountpointCLang final LC_ASSEMBLY_INTERFACE {
+class AssemblyMountpointCLang final CK_ASSEMBLY_INTERFACE {
  public:
   explicit AssemblyMountpointCLang()  = default;
   ~AssemblyMountpointCLang() override = default;

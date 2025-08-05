@@ -17,7 +17,7 @@
 
 static BOOL kKeepRunning = false;
 
-#ifdef LD_NEKERNEL_DEBUGGER
+#ifdef DK_NEKERNEL_DEBUGGER
 static DebuggerKit::NeKernel::NeKernelContract kKernelDebugger;
 #else
 static DebuggerKit::POSIX::POSIXMachContract kDebugger;

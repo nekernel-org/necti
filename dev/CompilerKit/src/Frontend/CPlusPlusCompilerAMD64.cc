@@ -117,7 +117,7 @@ static Boolean                      kInBraces    = false;
 static size_t                       kBracesCount = 0UL;
 
 /* @brief C++ compiler backend for the NeKernel C++ driver */
-class CompilerFrontendCPlusPlusAMD64 final LC_COMPILER_FRONTEND {
+class CompilerFrontendCPlusPlusAMD64 final CK_COMPILER_FRONTEND {
  public:
   explicit CompilerFrontendCPlusPlusAMD64()  = default;
   ~CompilerFrontendCPlusPlusAMD64() override = default;
@@ -718,7 +718,7 @@ CompilerKit::SyntaxLeafList::SyntaxLeaf CompilerFrontendCPlusPlusAMD64::Compile(
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
-class AssemblyCPlusPlusInterfaceAMD64 final LC_ASSEMBLY_INTERFACE {
+class AssemblyCPlusPlusInterfaceAMD64 final CK_ASSEMBLY_INTERFACE {
  public:
   explicit AssemblyCPlusPlusInterfaceAMD64()  = default;
   ~AssemblyCPlusPlusInterfaceAMD64() override = default;

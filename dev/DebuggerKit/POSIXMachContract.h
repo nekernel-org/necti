@@ -4,7 +4,7 @@
 
 #pragma once
 
-#ifdef LD_MACH_DEBUGGER
+#ifdef DK_MACH_DEBUGGER
 
 /// @file POSIXMachContract.h
 /// @brief POSIX Mach debugger.
@@ -28,10 +28,10 @@
 #include <mach/mach_error.h>
 #include <signal.h>
 
-LC_IMPORT_C kern_return_t mach_vm_write(vm_map_t target_task, mach_vm_address_t address,
+CK_IMPORT_C kern_return_t mach_vm_write(vm_map_t target_task, mach_vm_address_t address,
                                         vm_offset_t data, mach_msg_type_number_t dataCnt);
 
-LC_IMPORT_C kern_return_t mach_vm_protect(vm_map_t target_task, mach_vm_address_t address,
+CK_IMPORT_C kern_return_t mach_vm_protect(vm_map_t target_task, mach_vm_address_t address,
                                           mach_vm_size_t size, boolean_t set_maximum,
                                           vm_prot_t new_protection);
 
@@ -93,7 +93,7 @@ class POSIXMachContract : public DebuggerContract {
   BOOL BreakAt(std::string symbol) noexcept override {
     if (!m_path.empty() && std::filesystem::exists(m_path) &&
         std::filesystem::is_regular_file(m_path)) {
-      auto handle = dlopen(m_path.c_str(), RTLD_LAZY);
+      auto handle = dlopen(m_path.c_str(), RTDK_LAZY);
 
       if (handle == nullptr) {
         return false;

@@ -14,10 +14,10 @@
 #include <string>
 #include <vector>
 
-LC_IMPORT_C int AssemblerMainPower64(int argc, char const* argv[]);
-LC_IMPORT_C int AssemblerMainARM64(int argc, char const* argv[]);
-LC_IMPORT_C int AssemblerMain64x0(int argc, char const* argv[]);
-LC_IMPORT_C int AssemblerMainAMD64(int argc, char const* argv[]);
+CK_IMPORT_C int AssemblerMainPower64(int argc, char const* argv[]);
+CK_IMPORT_C int AssemblerMainARM64(int argc, char const* argv[]);
+CK_IMPORT_C int AssemblerMain64x0(int argc, char const* argv[]);
+CK_IMPORT_C int AssemblerMainAMD64(int argc, char const* argv[]);
 
 enum AsmKind : Int32 {
   kInvalidAssembler = 0,

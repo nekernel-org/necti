@@ -5,7 +5,7 @@
   Purpose: NeKernel Debugger
 */
 
-#ifdef LD_NEKERNEL_DEBUGGER
+#ifdef DK_NEKERNEL_DEBUGGER
 
 /// @author Amlal El Mahrouss
 /// @brief Kernel Debugger Protocol
@@ -16,8 +16,6 @@
 
 #include <DebuggerKit/Platform.h>
 
-constexpr static UInt16 kDebugPort = 51820;
-
 using namespace DebuggerKit::NeKernel;
 
 NeKernelContract::NeKernelContract() = default;
@@ -26,6 +24,7 @@ NeKernelContract::~NeKernelContract() = default;
 
 BOOL NeKernelContract::Attach(CompilerKit::STLString path, CompilerKit::STLString argv,
                               ProcessID& pid) noexcept {
+  if (path.empty() || argv.empty()) return NO;
   return NO;
 }
 
@@ -45,4 +44,4 @@ BOOL NeKernelContract::Detach() noexcept {
   return NO;
 }
 
-#endif  // LD_NEKERNEL_DEBUGGER
+#endif  // DK_NEKERNEL_DEBUGGER

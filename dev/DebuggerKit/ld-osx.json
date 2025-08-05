@@ -10,9 +10,9 @@
   "compiler_flags": ["-fPIC", "-shared"],
   "cpp_macros": [
     "__NECTI__=202505",
-    "LC_USE_STRUCTS=1",
+    "CK_USE_STRUCTS=1",
     "DEBUGGERKIT_POSIX",
-    "LD_MACH_DEBUGGER",
+    "DK_MACH_DEBUGGER",
     "kDistReleaseBranch=$(git rev-parse --abbrev-ref HEAD)-$(uuidgen)"
   ]
 }

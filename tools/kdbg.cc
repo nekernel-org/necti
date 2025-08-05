@@ -9,7 +9,7 @@
 /// @file kdbg.cxx
 /// @brief NeKernel debugger.
 
-LC_IMPORT_C Int32 DebuggerNeKernel(Int32 argc, Char const* argv[]);
+CK_IMPORT_C Int32 DebuggerNeKernel(Int32 argc, Char const* argv[]);
 
 /// @brief Debugger entrypoint.
 /// @return Status code of debugger.

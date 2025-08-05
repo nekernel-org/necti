@@ -10,8 +10,8 @@
 #include <CompilerKit/Defines.h>
 #include <CompilerKit/Macros.h>
 
-#define LC_ASSEMBLY_INTERFACE : public ::CompilerKit::AssemblyInterface
-#define LC_ENCODER : public ::CompilerKit::EncoderInterface
+#define CK_ASSEMBLY_INTERFACE : public ::CompilerKit::AssemblyInterface
+#define CK_ENCODER : public ::CompilerKit::EncoderInterface
 
 namespace CompilerKit {
 class AssemblyFactory;

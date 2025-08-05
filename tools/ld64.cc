@@ -9,7 +9,7 @@
 /// @file ld64.cxx
 /// @brief NE Linker for AE objects.
 
-LC_IMPORT_C int DynamicLinker64PEF(int argc, char const* argv[]);
+CK_IMPORT_C int DynamicLinker64PEF(int argc, char const* argv[]);
 
 int main(int argc, char const* argv[]) {
   return DynamicLinker64PEF(argc, argv);

@@ -8,7 +8,7 @@
 
 #include <CompilerKit/CodeGen.h>
 
-#define LC_COMPILER_FRONTEND : public ::CompilerKit::CompilerFrontendInterface
+#define CK_COMPILER_FRONTEND : public ::CompilerKit::CompilerFrontendInterface
 
 namespace CompilerKit {
 inline static auto kInvalidFrontend = "?";

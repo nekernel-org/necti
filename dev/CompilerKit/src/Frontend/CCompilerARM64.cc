@@ -1043,7 +1043,7 @@ skip_braces_check:
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
-class AssemblyCCInterface final LC_ASSEMBLY_INTERFACE {
+class AssemblyCCInterface final CK_ASSEMBLY_INTERFACE {
  public:
   explicit AssemblyCCInterface()  = default;
   ~AssemblyCCInterface() override = default;

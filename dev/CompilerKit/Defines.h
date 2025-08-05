@@ -97,8 +97,8 @@
   KLASS& operator=(KLASS&&) = default;  \
   KLASS(KLASS&&)            = default;
 
-#define LC_IMPORT_C extern "C"
-#define LC_IMPORT extern
+#define CK_IMPORT_C extern "C"
+#define CK_IMPORT extern
 namespace CompilerKit {
 inline constexpr int kBaseYear = 1900;
 
