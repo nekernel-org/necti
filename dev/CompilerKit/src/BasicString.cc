@@ -166,7 +166,7 @@ BasicString& BasicString::operator+=(const BasicString& rhs) {
 
 BasicString& BasicString::operator+=(Char ch) {
   if (this->m_Cur + 1 >= this->m_Sz) {
-    // 
+    throw std::runtime_error("out_of_bounds..");
   }
 
   this->m_Data[this->m_Cur++] = ch;
