@@ -28,7 +28,7 @@
 /* (c) Amlal El Mahrouss */
 
 /// @author EL Mahrouss Amlal (amlel)
-/// @file 64x0-cc.cxx
+/// @file 64x0-cc.cc
 /// @brief 64x0 C Compiler.
 
 /// TODO: support structures, else if, else, . and  ->

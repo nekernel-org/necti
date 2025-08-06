@@ -4,13 +4,13 @@
 
 ------------------------------------------- */
 
-#include <CompilerKit/CodeGen.h>
+#include <CompilerKit/Compiler.h>
 #include <CompilerKit/ErrorID.h>
 
 /**
- * @file CodeGen.cc
+ * @file AssemblyFactory.cc
  * @author Amlal El Mahrouss (amlal@nekernel.org)
- * @brief CodeGen API of NeCTI
+ * @brief Compiler API of NeCTI
  * @version 0.0.2
  *
  * @copyright Copyright (c) 2024-2025 Amlal El Mahrouss

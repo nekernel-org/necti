@@ -6,9 +6,8 @@
 
 #pragma once
 
-#include <CompilerKit/CodeGen.h>
+#include <CompilerKit/Compiler.h>
 #include <CompilerKit/Frontend.h>
-
 #include <CompilerKit/utils/CompilerUtils.h>
 
 using namespace CompilerKit;

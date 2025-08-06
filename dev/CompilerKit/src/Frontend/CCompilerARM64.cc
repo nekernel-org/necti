@@ -29,7 +29,7 @@
 /* (c) Amlal El Mahrouss */
 
 /// @author EL Mahrouss Amlal (amlel)
-/// @file ARM64-cc.cxx
+/// @file ARM64-cc.cc
 /// @brief ARM64 C Compiler.
 
 /// TODO: support structures, else if, else, . and  ->

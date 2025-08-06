@@ -6,7 +6,7 @@
 
 #include <CompilerKit/Defines.h>
 
-/// @file kdbg.cxx
+/// @file kdbg.cc
 /// @brief NeKernel debugger.
 
 CK_IMPORT_C Int32 DebuggerNeKernel(Int32 argc, Char const* argv[]);

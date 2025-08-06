@@ -6,7 +6,7 @@
 
 #pragma once
 
-#include <CompilerKit/CodeGen.h>
+#include <CompilerKit/Compiler.h>
 
 #define CK_COMPILER_FRONTEND : public ::CompilerKit::CompilerFrontendInterface
 

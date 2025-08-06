@@ -6,7 +6,7 @@
 
 #pragma once
 
-#include <CompilerKit/BasicString.h>
+#include <CompilerKit/StringKit.h>
 #include <CompilerKit/Defines.h>
 #include <CompilerKit/Macros.h>
 

@@ -13,13 +13,13 @@
                 <mxCell id="6" style="edgeStyle=none;html=1;" parent="1" source="3" target="5" edge="1">
                     <mxGeometry relative="1" as="geometry"/>
                 </mxCell>
-                <mxCell id="3" value="CodeGen Stage 1&lt;div&gt;(Assembler)&lt;/div&gt;" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+                <mxCell id="3" value="Compiler Stage 1&lt;div&gt;(Assembler)&lt;/div&gt;" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
                     <mxGeometry x="285" y="580" width="120" height="60" as="geometry"/>
                 </mxCell>
                 <mxCell id="8" style="edgeStyle=none;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;" parent="1" source="5" target="7" edge="1">
                     <mxGeometry relative="1" as="geometry"/>
                 </mxCell>
-                <mxCell id="5" value="CodeGen Stage 2&lt;div&gt;(AE encoding)&lt;/div&gt;" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+                <mxCell id="5" value="Compiler Stage 2&lt;div&gt;(AE encoding)&lt;/div&gt;" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
                     <mxGeometry x="440" y="580" width="120" height="60" as="geometry"/>
                 </mxCell>
                 <mxCell id="7" value="64-bit Linker Driver" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">

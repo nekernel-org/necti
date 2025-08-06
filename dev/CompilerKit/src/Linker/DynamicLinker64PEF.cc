@@ -16,7 +16,7 @@
 
 #include <CompilerKit/Defines.h>
 #include <CompilerKit/ErrorID.h>
-#include <CompilerKit/CodeGen.h>
+#include <CompilerKit/Compiler.h>
 #include <CompilerKit/PEF.h>
 #include <CompilerKit/UUID.h>
 #include <CompilerKit/Version.h>
@@ -317,7 +317,6 @@ NECTI_MODULE(DynamicLinker64PEF) {
 
         if (kVerbose) {
           kConsoleOut << "Record: " << ae_records[ae_record_index].fName << " is marked.\n";
-
           kConsoleOut << "Offset: " << command_header.Offset << "\n";
         }
 
@@ -660,7 +659,7 @@ NECTI_MODULE(DynamicLinker64PEF) {
   if ((!kStartFound || kDuplicateSymbols) &&
       (std::filesystem::exists(kOutput) || !unreferenced_symbols.empty())) {
     if (kVerbose) {
-      kConsoleOut << "File: " << kOutput << ", is corrupt, removing file...\n";
+      kConsoleOut << "File: " << kOutput << " is corrupt now...\n";
     }
 
     return NECTI_EXEC_ERROR;

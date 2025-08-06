@@ -6,7 +6,7 @@
 
 #pragma once
 
-#include <CompilerKit/CodeGen.h>
+#include <CompilerKit/Compiler.h>
 #include <CompilerKit/ErrorID.h>
 #include <CompilerKit/Frontend.h>
 #include <CompilerKit/Version.h>

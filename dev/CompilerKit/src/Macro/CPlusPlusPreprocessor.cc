@@ -21,7 +21,7 @@
 #define kMacroPrefix '#'
 
 /// @author EL Mahrouss Amlal (amlel)
-/// @file bpp.cxx
+/// @file CPlusPlusPreprocessor.cc
 /// @brief Preprocessor.
 
 typedef Int32 (*bpp_parser_fn_t)(CompilerKit::STLString& line, std::ifstream& hdr_file,

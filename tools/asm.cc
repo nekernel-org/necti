@@ -4,7 +4,7 @@
 
 ------------------------------------------- */
 
-/// @file asm.cxx
+/// @file asm.cc
 /// @brief Assembler frontend.
 
 #include <CompilerKit/Defines.h>

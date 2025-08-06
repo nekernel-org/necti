@@ -6,7 +6,7 @@
 
 #include <CompilerKit/Defines.h>
 
-/// @file dbg.cxx
+/// @file dbg.cc
 /// @brief NE debugger.
 
 CK_IMPORT_C Int32 DebuggerMachPOSIX(Int32 argc, Char const* argv[]);

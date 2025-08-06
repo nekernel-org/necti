@@ -52,6 +52,7 @@ class BasicString final {
   bool operator!=(const BasicString& rhs) const;
 
   BasicString& operator+=(const Char* rhs);
+  BasicString& operator+=(const Char rhs);
   BasicString& operator+=(const BasicString& rhs);
 
   operator bool() { return m_Data && m_Data[0] != 0; }
@@ -72,11 +73,11 @@ class BasicString final {
  */
 struct StringBuilder final {
   static BasicString Construct(const Char* data);
-  static const char* FromInt(const char* fmt, int n);
-  static const char* FromBool(const char* fmt, bool n);
-  static const char* Format(const char* fmt, const char* from);
-  static bool        Equals(const char* lhs, const char* rhs);
+  static BasicString FromInt(const char* fmt, int n);
+  static BasicString FromBool(const char* fmt, bool n);
+  static BasicString Format(const char* fmt, const char* from);
+  static BOOL        Equals(const char* lhs, const char* rhs);
 };
 
-using PStringOr = ErrorOr<BasicString>;
+using BasicStringOr = ErrorOr<BasicString>;
 }  // namespace CompilerKit

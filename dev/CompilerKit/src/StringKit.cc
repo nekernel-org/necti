@@ -18,7 +18,7 @@
  *
  */
 
-#include <CompilerKit/BasicString.h>
+#include <CompilerKit/StringKit.h>
 
 namespace CompilerKit {
 
@@ -146,6 +146,7 @@ BasicString& BasicString::operator+=(const Char* rhs) {
   }
 
   memcpy(this->m_Data + this->m_Cur, rhs, rhs_len);
+  
   this->m_Cur += rhs_len;
   this->m_Data[this->m_Cur] = '\0';
 
@@ -164,7 +165,7 @@ BasicString& BasicString::operator+=(const BasicString& rhs) {
   return *this;
 }
 
-BasicString& BasicString::operator+=(Char ch) {
+BasicString& BasicString::operator+=(const Char ch) {
   if (this->m_Cur + 1 >= this->m_Sz) {
     throw std::runtime_error("out_of_bounds..");
   }
