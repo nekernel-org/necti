@@ -19,6 +19,8 @@
 #include <CompilerKit/PEF.h>
 #include <CompilerKit/UUID.h>
 #include <CompilerKit/utils/CompilerUtils.h>
+#include <csignal>
+#include <cstdlib>
 
 /* NeKernel C++ Compiler Driver */
 /* This is part of the CompilerKit. */
@@ -27,8 +29,6 @@
 /// @author EL Mahrouss Amlal (amlal@nekernel.org)
 /// @file CPlusPlusCompilerAMD64.cxx
 /// @brief Optimized C++ Compiler Driver.
-/// @todo Throw error for scoped inside scoped variables when they get referenced outside.
-/// @todo Add class/struct/enum support.
 
 ///////////////////////
 
@@ -84,11 +84,29 @@ struct CompilerState final {
   CompilerKit::STLString           fLastFile;
   CompilerKit::STLString           fLastError;
 };
+
+/// @brief prints an error into stdout.
+/// @param reason the reason of the error.
+/// @param file where does it originate from?
+void p_error(const CompilerKit::STLString& reason, const CompilerKit::STLString& file) noexcept {
+  std::cerr << kRed << "Error in " << file << ": " << reason << kWhite << std::endl;
+}
+
+/// @brief crash handler for segmentation faults
+/// @param signal the signal number
+void drvi_crash_handler(int signal) noexcept {
+  std::cerr << kRed << "Compiler crashed with signal: " << signal << kWhite << std::endl;
+  std::cerr << "Last file: " << kState.fLastFile << std::endl;
+  std::cerr << "Last error: " << kState.fLastError << std::endl;
+  std::exit(EXIT_FAILURE);
+}
 }  // namespace Detail
 
 static Detail::CompilerState kState;
 
 static Int32 kOnClassScope = 0;
+static Boolean kVerbose = false;
+static Int32 kErrorLimit = 0;
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
@@ -222,7 +240,7 @@ CompilerKit::SyntaxLeafList::SyntaxLeaf CompilerFrontendCPlusPlusAMD64::Compile(
         if (keywordPos == CompilerKit::STLString::npos ||
             openParen == CompilerKit::STLString::npos ||
             closeParen == CompilerKit::STLString::npos || closeParen <= openParen) {
-          Detail::print_error("Malformed if expression: " + text, file);
+          Detail::p_error("Malformed if expression: " + text, file);
           break;
         }
 
@@ -234,37 +252,26 @@ CompilerKit::SyntaxLeafList::SyntaxLeaf CompilerFrontendCPlusPlusAMD64::Compile(
               expr.find("<=") + strlen("<="));
           auto right = text.substr(expr.find(">=") + strlen(">="), text.find(")") - 1);
 
-          size_t i = right.size() - 1;
-
-          if (i < 1) break;
-
-          try {
-            while (!std::isalnum(right[i])) {
-              right.erase(i, 1);
-              --i;
-            }
-
-            right.erase(0, i);
-          } catch (...) {
-            right.erase(0, i);
+          // trim non-alphanumeric characters from right
+          while (!right.empty() && !std::isalnum(right.back())) {
+            right.pop_back();
+          }
+          while (!right.empty() && !std::isalnum(right.front())) {
+            right.erase(0, 1);
           }
 
-          i = left.size() - 1;
-          try {
-            while (!std::isalnum(left[i])) {
-              left.erase(i, 1);
-              --i;
-            }
-
-            left.erase(0, i);
-          } catch (...) {
-            left.erase(0, i);
+          // trim non-alphanumeric characters from left
+          while (!left.empty() && !std::isalnum(left.back())) {
+            left.pop_back();
+          }
+          while (!left.empty() && !std::isalnum(left.front())) {
+            left.erase(0, 1);
           }
 
-          if (!isdigit(left[0]) || !isdigit(right[0])) {
+          if ((!left.empty() && !isdigit(left[0])) || (!right.empty() && !isdigit(right[0]))) {
             auto indexRight = 0UL;
 
-            auto& valueOfVar = !isdigit(left[0]) ? left : right;
+            auto& valueOfVar = (!left.empty() && !isdigit(left[0])) ? left : right;
 
             if (!valueOfVar.empty()) {
               for (auto pairRight : kRegisterMap) {
@@ -273,7 +280,7 @@ CompilerKit::SyntaxLeafList::SyntaxLeaf CompilerFrontendCPlusPlusAMD64::Compile(
                 CompilerKit::STLString instr = "mov ";
 
                 if (pairRight != valueOfVar) {
-                  auto& valueOfVarOpposite = isdigit(left[0]) ? left : right;
+                  auto& valueOfVarOpposite = (!left.empty() && isdigit(left[0])) ? left : right;
 
                   syntax_tree.fUserValue +=
                       instr + kRegisterList[indexRight + 1] + ", " + valueOfVarOpposite + "\n";
@@ -283,7 +290,7 @@ CompilerKit::SyntaxLeafList::SyntaxLeaf CompilerFrontendCPlusPlusAMD64::Compile(
                   goto lc_done_iterarting_on_if;
                 }
 
-                auto& valueOfVarOpposite = isdigit(left[0]) ? left : right;
+                auto& valueOfVarOpposite = (!left.empty() && isdigit(left[0])) ? left : right;
 
                 syntax_tree.fUserValue +=
                     instr + kRegisterList[indexRight + 1] + ", " + valueOfVarOpposite + "\n";
@@ -345,14 +352,14 @@ CompilerKit::SyntaxLeafList::SyntaxLeaf CompilerFrontendCPlusPlusAMD64::Compile(
         if (text.ends_with(";") && text.find("return") == CompilerKit::STLString::npos)
           goto lc_write_assembly;
         else if (text.size() <= indexFnName)
-          Detail::print_error("Invalid function name: " + symbol_name_fn, file);
+          Detail::p_error("Invalid function name: " + symbol_name_fn, file);
 
         indexFnName = 0;
 
         for (auto& ch : symbol_name_fn) {
           if (ch == ' ' || ch == '\t') {
             if (symbol_name_fn[indexFnName - 1] != ')')
-              Detail::print_error("Invalid function name: " + symbol_name_fn, file);
+              Detail::p_error("Invalid function name: " + symbol_name_fn, file);
           }
 
           ++indexFnName;
@@ -470,10 +477,8 @@ CompilerKit::SyntaxLeafList::SyntaxLeaf CompilerFrontendCPlusPlusAMD64::Compile(
             varName.erase(varName.find("\t"), 1);
           }
 
-          for (size_t i = 0; !isalnum(valueOfVar[i]); i++) {
-            if (i > valueOfVar.size()) break;
-
-            valueOfVar.erase(i, 1);
+          // Remove leading non-alphanumeric characters           while (!valueOfVar.empty() && !isalnum(valueOfVar[0])) {
+            valueOfVar.erase(0, 1);
           }
 
           constexpr auto kTrueVal  = "true";
@@ -523,12 +528,12 @@ CompilerKit::SyntaxLeafList::SyntaxLeaf CompilerFrontendCPlusPlusAMD64::Compile(
             goto done;
           }
 
-          if (valueOfVar[0] != '\"' && valueOfVar[0] != '\'' && !isdigit(valueOfVar[0])) {
+          if (!valueOfVar.empty() && valueOfVar[0] != '\"' && valueOfVar[0] != '\'' && !isdigit(valueOfVar[0])) {
             for (auto pair : kRegisterMap) {
               if (pair == valueOfVar) goto done;
             }
 
-            Detail::print_error("Variable not declared: " + varName, file);
+            Detail::p_error("Variable not declared: " + varName, file);
             break;
           }
 
@@ -579,10 +584,8 @@ CompilerKit::SyntaxLeafList::SyntaxLeaf CompilerFrontendCPlusPlusAMD64::Compile(
 
         std::size_t indxReg = 0UL;
 
-        for (size_t i = 0; !isalnum(valueOfVar[i]); i++) {
-          if (i > valueOfVar.size()) break;
-
-          valueOfVar.erase(i, 1);
+        // Remove leading non-alphanumeric characters         while (!valueOfVar.empty() && !isalnum(valueOfVar[0])) {
+          valueOfVar.erase(0, 1);
         }
 
         while (valueOfVar.find(" ") != CompilerKit::STLString::npos) {
@@ -632,7 +635,7 @@ CompilerKit::SyntaxLeafList::SyntaxLeaf CompilerFrontendCPlusPlusAMD64::Compile(
         }
 
         if (syntax_tree.fUserValue.empty()) {
-          Detail::print_error("Variable not declared: " + varName, file);
+          Detail::p_error("Variable not declared: " + varName, file);
         }
 
         kRegisterMap.insert(kRegisterMap.end(), newVars.begin(), newVars.end());
@@ -646,7 +649,7 @@ CompilerKit::SyntaxLeafList::SyntaxLeaf CompilerFrontendCPlusPlusAMD64::Compile(
           subText                        = subText.erase(subText.find(";"));
           size_t indxReg                 = 0UL;
 
-          if (subText[0] != '\"' && subText[0] != '\'') {
+          if (!subText.empty() && subText[0] != '\"' && subText[0] != '\'') {
             if (!isdigit(subText[0])) {
               for (auto pair : kRegisterMap) {
                 ++indxReg;
@@ -684,7 +687,7 @@ CompilerKit::SyntaxLeafList::SyntaxLeaf CompilerFrontendCPlusPlusAMD64::Compile(
                   });
 
               if (it == kOriginMap.end())
-                Detail::print_error("Invalid return value: " + subText, file);
+                Detail::p_error("Invalid return value: " + subText, file);
 
               std::stringstream ss;
               ss << it->second;
@@ -821,6 +824,12 @@ NECTI_MODULE(CompilerCPlusPlusAMD64) {
 
   kCompilerFrontend = new CompilerFrontendCPlusPlusAMD64();
   kFactory.Mount(new AssemblyCPlusPlusInterfaceAMD64());
+  
+  // Ensure cleanup on exit
+  std::atexit([]() {
+    delete kCompilerFrontend;
+    kCompilerFrontend = nullptr;
+  });
 
   CompilerKit::install_signal(SIGSEGV, Detail::drvi_crash_handler);
 
@@ -862,7 +871,7 @@ NECTI_MODULE(CompilerCPlusPlusAMD64) {
       CompilerKit::STLString err = "Unknown option: ";
       err += argv[index];
 
-      Detail::print_error(err, "cxxdrv");
+      Detail::p_error(err, "cxxdrv");
 
       continue;
     }
@@ -888,5 +897,5 @@ NECTI_MODULE(CompilerCPlusPlusAMD64) {
 }
 
 //
-// Last rev 23-5-25
+// Last rev 25-8-7
 //
