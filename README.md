@@ -15,11 +15,11 @@ NeCTI is a modern, multi-platform compiler instractucture designed for modularit
 
 ## Structure:
 
-- `dev/CompilerKit` – Compiler Infrastructure Framework written in modern C++
+- `dev/CompilerKit` – Compiler Kit written in modern C++
 - `dev/LibC++` – C++ ABI Library
 - `dev/LibStdC++` – Standard C++ Library
 - `tools/` – Frontend Tools
-- `dev/DebuggerKit` – Debugging Library written in modern C++
+- `dev/DebuggerKit` – Debugging Kit written in modern C++
 
 
 ## Requirements:
