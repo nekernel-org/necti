@@ -10,6 +10,7 @@
 /// BUGS: 0
 
 #define kPrintF printf
+#define kStdErr std::cerr
 
 #define kExitOK (EXIT_SUCCESS)
 #define kExitNO (EXIT_FAILURE)
@@ -48,21 +49,22 @@
 
 /// @internal
 namespace Detail {
-std::filesystem::path expand_home(const std::filesystem::path& p) {
-  if (!p.empty() && p.string()[0] == '~') {
-    const char* home = std::getenv("HOME");  // For Unix-like systems
+// Avoids relative_path which could discard parts of the original.
+std::filesystem::path expand_home(const std::filesystem::path& input) {
+  const std::string& raw = input.string();
 
-    if (!home) {
-      home = std::getenv("USERPROFILE");  // For Windows
-    }
+  if (!raw.empty() && raw[0] == '~') {
+    const char* home = std::getenv("HOME");
+    if (!home) home = std::getenv("USERPROFILE");
 
-    if (home) {
-      return std::filesystem::path(home) / p.relative_path().string().substr(1);
-    } else {
+    if (!home)
       throw std::runtime_error("Home directory not found in environment variables");
-    }
+
+    return std::filesystem::path(home) / raw.substr(1);
   }
-  return p;
+
+  return input;
+  }
 }
 
 struct CompilerRegisterMap final {
@@ -88,16 +90,16 @@ struct CompilerState final {
 /// @brief prints an error into stdout.
 /// @param reason the reason of the error.
 /// @param file where does it originate from?
-void p_error(const CompilerKit::STLString& reason, const CompilerKit::STLString& file) noexcept {
-  std::cerr << kRed << "Error in " << file << ": " << reason << kWhite << std::endl;
+void print_error(const CompilerKit::STLString& reason, const CompilerKit::STLString& file) noexcept {
+  kStdErr << kRed << "Error in " << file << ": " << reason << kWhite << std::endl;
 }
 
 /// @brief crash handler for segmentation faults
 /// @param signal the signal number
 void drvi_crash_handler(int signal) noexcept {
-  std::cerr << kRed << "Compiler crashed with signal: " << signal << kWhite << std::endl;
-  std::cerr << "Last file: " << kState.fLastFile << std::endl;
-  std::cerr << "Last error: " << kState.fLastError << std::endl;
+  kStdErr << kRed << "Compiler crashed with signal: " << signal << kWhite << std::endl;
+  kStdErr << "Last file: " << kState.fLastFile << std::endl;
+  kStdErr << "Last error: " << kState.fLastError << std::endl;
   std::exit(EXIT_FAILURE);
 }
 }  // namespace Detail
@@ -204,7 +206,7 @@ CompilerKit::SyntaxLeafList::SyntaxLeaf CompilerFrontendCPlusPlusAMD64::Compile(
       std::size_t pos = text.find(keyword.keyword_name);
       if (pos == std::string::npos) continue;
 
-      // Safe guard: can't go before start of string
+      // can't go before start of string
       if (pos > 0 && text[pos - 1] == '+' &&
           keyword.keyword_kind == CompilerKit::kKeywordKindVariableAssign)
         continue;
@@ -213,7 +215,7 @@ CompilerKit::SyntaxLeafList::SyntaxLeaf CompilerFrontendCPlusPlusAMD64::Compile(
           keyword.keyword_kind == CompilerKit::kKeywordKindVariableAssign)
         continue;
 
-      // Safe guard: don't go out of range
+      // don't go out of range
       if ((pos + keyword.keyword_name.size()) < text.size() &&
           text[pos + keyword.keyword_name.size()] == '=' &&
           keyword.keyword_kind == CompilerKit::kKeywordKindVariableAssign)
@@ -240,7 +242,7 @@ CompilerKit::SyntaxLeafList::SyntaxLeaf CompilerFrontendCPlusPlusAMD64::Compile(
         if (keywordPos == CompilerKit::STLString::npos ||
             openParen == CompilerKit::STLString::npos ||
             closeParen == CompilerKit::STLString::npos || closeParen <= openParen) {
-          Detail::p_error("Malformed if expression: " + text, file);
+          Detail::print_error("Malformed if expression: " + text, file);
           break;
         }
 
@@ -252,19 +254,18 @@ CompilerKit::SyntaxLeafList::SyntaxLeaf CompilerFrontendCPlusPlusAMD64::Compile(
               expr.find("<=") + strlen("<="));
           auto right = text.substr(expr.find(">=") + strlen(">="), text.find(")") - 1);
 
-          // trim non-alphanumeric characters from right
-          while (!right.empty() && !std::isalnum(right.back())) {
+          // Trim whitespace 
+          while (!right.empty() && (right.back() == ' ' || right.back() == '\t')) {
             right.pop_back();
           }
-          while (!right.empty() && !std::isalnum(right.front())) {
+          while (!right.empty() && (right.front() == ' ' || right.front() == '\t')) {
             right.erase(0, 1);
           }
 
-          // trim non-alphanumeric characters from left
-          while (!left.empty() && !std::isalnum(left.back())) {
+          while (!left.empty() && (left.back() == ' ' || left.back() == '\t')) {
             left.pop_back();
           }
-          while (!left.empty() && !std::isalnum(left.front())) {
+          while (!left.empty() && (left.front() == ' ' || left.front() == '\t')) {
             left.erase(0, 1);
           }
 
@@ -352,14 +353,14 @@ CompilerKit::SyntaxLeafList::SyntaxLeaf CompilerFrontendCPlusPlusAMD64::Compile(
         if (text.ends_with(";") && text.find("return") == CompilerKit::STLString::npos)
           goto lc_write_assembly;
         else if (text.size() <= indexFnName)
-          Detail::p_error("Invalid function name: " + symbol_name_fn, file);
+          Detail::print_error("Invalid function name: " + symbol_name_fn, file);
 
         indexFnName = 0;
 
         for (auto& ch : symbol_name_fn) {
           if (ch == ' ' || ch == '\t') {
             if (symbol_name_fn[indexFnName - 1] != ')')
-              Detail::p_error("Invalid function name: " + symbol_name_fn, file);
+              Detail::print_error("Invalid function name: " + symbol_name_fn, file);
           }
 
           ++indexFnName;
@@ -477,7 +478,8 @@ CompilerKit::SyntaxLeafList::SyntaxLeaf CompilerFrontendCPlusPlusAMD64::Compile(
             varName.erase(varName.find("\t"), 1);
           }
 
-          // Remove leading non-alphanumeric characters           while (!valueOfVar.empty() && !isalnum(valueOfVar[0])) {
+          // Remove whitespace only (keep operators and quotes)
+          while (!valueOfVar.empty() && (valueOfVar[0] == ' ' || valueOfVar[0] == '\t')) {
             valueOfVar.erase(0, 1);
           }
 
@@ -533,7 +535,7 @@ CompilerKit::SyntaxLeafList::SyntaxLeaf CompilerFrontendCPlusPlusAMD64::Compile(
               if (pair == valueOfVar) goto done;
             }
 
-            Detail::p_error("Variable not declared: " + varName, file);
+            Detail::print_error("Variable not declared: " + varName, file);
             break;
           }
 
@@ -584,7 +586,7 @@ CompilerKit::SyntaxLeafList::SyntaxLeaf CompilerFrontendCPlusPlusAMD64::Compile(
 
         std::size_t indxReg = 0UL;
 
-        // Remove leading non-alphanumeric characters         while (!valueOfVar.empty() && !isalnum(valueOfVar[0])) {
+        while (!valueOfVar.empty() && (valueOfVar[0] == ' ' || valueOfVar[0] == '\t')) {
           valueOfVar.erase(0, 1);
         }
 
@@ -635,7 +637,7 @@ CompilerKit::SyntaxLeafList::SyntaxLeaf CompilerFrontendCPlusPlusAMD64::Compile(
         }
 
         if (syntax_tree.fUserValue.empty()) {
-          Detail::p_error("Variable not declared: " + varName, file);
+          Detail::print_error("Variable not declared: " + varName, file);
         }
 
         kRegisterMap.insert(kRegisterMap.end(), newVars.begin(), newVars.end());
@@ -687,7 +689,7 @@ CompilerKit::SyntaxLeafList::SyntaxLeaf CompilerFrontendCPlusPlusAMD64::Compile(
                   });
 
               if (it == kOriginMap.end())
-                Detail::p_error("Invalid return value: " + subText, file);
+                Detail::print_error("Invalid return value: " + subText, file);
 
               std::stringstream ss;
               ss << it->second;
@@ -871,7 +873,7 @@ NECTI_MODULE(CompilerCPlusPlusAMD64) {
       CompilerKit::STLString err = "Unknown option: ";
       err += argv[index];
 
-      Detail::p_error(err, "cxxdrv");
+      Detail::print_error(err, "cxxdrv");
 
       continue;
     }
