@@ -817,13 +817,14 @@ NECTI_MODULE(CompilerCPlusPlusAMD64) {
 
   kCompilerFrontend = new CompilerFrontendCPlusPlusAMD64();
   kFactory.Mount(new AssemblyCPlusPlusInterfaceAMD64());
+
+  CompilerKit::install_signal(SIGSEGV, Detail::drvi_crash_handler);
   
   // Ensure cleanup on exit
   std::atexit([]() {
     delete kCompilerFrontend;
     kCompilerFrontend = nullptr;
   });
-
 
 
   for (auto index = 1UL; index < argc; ++index) {
@@ -834,6 +835,7 @@ NECTI_MODULE(CompilerCPlusPlusAMD64) {
         skip = false;
         continue;
       }
+      
 
       if (strcmp(argv[index], "-cxx-verbose") == 0) {
         kVerbose = true;
