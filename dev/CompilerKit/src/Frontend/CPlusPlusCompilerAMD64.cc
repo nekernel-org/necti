@@ -10,6 +10,7 @@
 /// BUGS: 0
 
 #define kPrintF printf
+#define kPrintErr std::cerr
 
 #define kExitOK (EXIT_SUCCESS)
 #define kExitNO (EXIT_FAILURE)
@@ -19,6 +20,8 @@
 #include <CompilerKit/PEF.h>
 #include <CompilerKit/UUID.h>
 #include <CompilerKit/utils/CompilerUtils.h>
+#include <csignal>
+#include <cstdlib>
 
 /* NeKernel C++ Compiler Driver */
 /* This is part of the CompilerKit. */
@@ -27,8 +30,6 @@
 /// @author EL Mahrouss Amlal (amlal@nekernel.org)
 /// @file CPlusPlusCompilerAMD64.cxx
 /// @brief Optimized C++ Compiler Driver.
-/// @todo Throw error for scoped inside scoped variables when they get referenced outside.
-/// @todo Add class/struct/enum support.
 
 ///////////////////////
 
@@ -48,21 +49,22 @@
 
 /// @internal
 namespace Detail {
-std::filesystem::path expand_home(const std::filesystem::path& p) {
-  if (!p.empty() && p.string()[0] == '~') {
-    const char* home = std::getenv("HOME");  // For Unix-like systems
+// Avoids relative_path which could discard parts of the original.
+std::filesystem::path expand_home(const std::filesystem::path& input) {
+  const std::string& raw = input.string();
 
-    if (!home) {
-      home = std::getenv("USERPROFILE");  // For Windows
-    }
+  if (!raw.empty() && raw[0] == '~') {
+    const char* home = std::getenv("HOME");
+    if (!home) home = std::getenv("USERPROFILE");
 
-    if (home) {
-      return std::filesystem::path(home) / p.relative_path().string().substr(1);
-    } else {
+    if (!home)
       throw std::runtime_error("Home directory not found in environment variables");
-    }
+
+    return std::filesystem::path(home) / raw.substr(1);
   }
-  return p;
+
+  return input;
+  }
 }
 
 struct CompilerRegisterMap final {
@@ -84,11 +86,20 @@ struct CompilerState final {
   CompilerKit::STLString           fLastFile;
   CompilerKit::STLString           fLastError;
 };
+
+/// @brief prints an error into stdout.
+/// @param reason the reason of the error.
+/// @param file where does it originate from?
+void print_error(const CompilerKit::STLString& reason, const CompilerKit::STLString& file) noexcept {
+  kPrintErr << kRed << "Error in " << file << ": " << reason << kWhite << std::endl;
+}
 }  // namespace Detail
 
 static Detail::CompilerState kState;
 
 static Int32 kOnClassScope = 0;
+static Boolean kVerbose = false;
+static Int32 kErrorLimit = 0;
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
@@ -186,7 +197,7 @@ CompilerKit::SyntaxLeafList::SyntaxLeaf CompilerFrontendCPlusPlusAMD64::Compile(
       std::size_t pos = text.find(keyword.keyword_name);
       if (pos == std::string::npos) continue;
 
-      // Safe guard: can't go before start of string
+      // can't go before start of string
       if (pos > 0 && text[pos - 1] == '+' &&
           keyword.keyword_kind == CompilerKit::kKeywordKindVariableAssign)
         continue;
@@ -195,7 +206,7 @@ CompilerKit::SyntaxLeafList::SyntaxLeaf CompilerFrontendCPlusPlusAMD64::Compile(
           keyword.keyword_kind == CompilerKit::kKeywordKindVariableAssign)
         continue;
 
-      // Safe guard: don't go out of range
+      // don't go out of range
       if ((pos + keyword.keyword_name.size()) < text.size() &&
           text[pos + keyword.keyword_name.size()] == '=' &&
           keyword.keyword_kind == CompilerKit::kKeywordKindVariableAssign)
@@ -234,37 +245,25 @@ CompilerKit::SyntaxLeafList::SyntaxLeaf CompilerFrontendCPlusPlusAMD64::Compile(
               expr.find("<=") + strlen("<="));
           auto right = text.substr(expr.find(">=") + strlen(">="), text.find(")") - 1);
 
-          size_t i = right.size() - 1;
-
-          if (i < 1) break;
-
-          try {
-            while (!std::isalnum(right[i])) {
-              right.erase(i, 1);
-              --i;
-            }
-
-            right.erase(0, i);
-          } catch (...) {
-            right.erase(0, i);
+          // Trim whitespace 
+          while (!right.empty() && (right.back() == ' ' || right.back() == '\t')) {
+            right.pop_back();
+          }
+          while (!right.empty() && (right.front() == ' ' || right.front() == '\t')) {
+            right.erase(0, 1);
           }
 
-          i = left.size() - 1;
-          try {
-            while (!std::isalnum(left[i])) {
-              left.erase(i, 1);
-              --i;
-            }
-
-            left.erase(0, i);
-          } catch (...) {
-            left.erase(0, i);
+          while (!left.empty() && (left.back() == ' ' || left.back() == '\t')) {
+            left.pop_back();
+          }
+          while (!left.empty() && (left.front() == ' ' || left.front() == '\t')) {
+            left.erase(0, 1);
           }
 
-          if (!isdigit(left[0]) || !isdigit(right[0])) {
+          if ((!left.empty() && !isdigit(left[0])) || (!right.empty() && !isdigit(right[0]))) {
             auto indexRight = 0UL;
 
-            auto& valueOfVar = !isdigit(left[0]) ? left : right;
+            auto& valueOfVar = (!left.empty() && !isdigit(left[0])) ? left : right;
 
             if (!valueOfVar.empty()) {
               for (auto pairRight : kRegisterMap) {
@@ -273,7 +272,7 @@ CompilerKit::SyntaxLeafList::SyntaxLeaf CompilerFrontendCPlusPlusAMD64::Compile(
                 CompilerKit::STLString instr = "mov ";
 
                 if (pairRight != valueOfVar) {
-                  auto& valueOfVarOpposite = isdigit(left[0]) ? left : right;
+                  auto& valueOfVarOpposite = (!left.empty() && isdigit(left[0])) ? left : right;
 
                   syntax_tree.fUserValue +=
                       instr + kRegisterList[indexRight + 1] + ", " + valueOfVarOpposite + "\n";
@@ -283,7 +282,7 @@ CompilerKit::SyntaxLeafList::SyntaxLeaf CompilerFrontendCPlusPlusAMD64::Compile(
                   goto lc_done_iterarting_on_if;
                 }
 
-                auto& valueOfVarOpposite = isdigit(left[0]) ? left : right;
+                auto& valueOfVarOpposite = (!left.empty() && isdigit(left[0])) ? left : right;
 
                 syntax_tree.fUserValue +=
                     instr + kRegisterList[indexRight + 1] + ", " + valueOfVarOpposite + "\n";
@@ -470,10 +469,9 @@ CompilerKit::SyntaxLeafList::SyntaxLeaf CompilerFrontendCPlusPlusAMD64::Compile(
             varName.erase(varName.find("\t"), 1);
           }
 
-          for (size_t i = 0; !isalnum(valueOfVar[i]); i++) {
-            if (i > valueOfVar.size()) break;
-
-            valueOfVar.erase(i, 1);
+          // Remove whitespace only (keep operators and quotes)
+          while (!valueOfVar.empty() && (valueOfVar[0] == ' ' || valueOfVar[0] == '\t')) {
+            valueOfVar.erase(0, 1);
           }
 
           constexpr auto kTrueVal  = "true";
@@ -523,7 +521,7 @@ CompilerKit::SyntaxLeafList::SyntaxLeaf CompilerFrontendCPlusPlusAMD64::Compile(
             goto done;
           }
 
-          if (valueOfVar[0] != '\"' && valueOfVar[0] != '\'' && !isdigit(valueOfVar[0])) {
+          if (!valueOfVar.empty() && valueOfVar[0] != '\"' && valueOfVar[0] != '\'' && !isdigit(valueOfVar[0])) {
             for (auto pair : kRegisterMap) {
               if (pair == valueOfVar) goto done;
             }
@@ -579,10 +577,8 @@ CompilerKit::SyntaxLeafList::SyntaxLeaf CompilerFrontendCPlusPlusAMD64::Compile(
 
         std::size_t indxReg = 0UL;
 
-        for (size_t i = 0; !isalnum(valueOfVar[i]); i++) {
-          if (i > valueOfVar.size()) break;
-
-          valueOfVar.erase(i, 1);
+        while (!valueOfVar.empty() && (valueOfVar[0] == ' ' || valueOfVar[0] == '\t')) {
+          valueOfVar.erase(0, 1);
         }
 
         while (valueOfVar.find(" ") != CompilerKit::STLString::npos) {
@@ -646,7 +642,7 @@ CompilerKit::SyntaxLeafList::SyntaxLeaf CompilerFrontendCPlusPlusAMD64::Compile(
           subText                        = subText.erase(subText.find(";"));
           size_t indxReg                 = 0UL;
 
-          if (subText[0] != '\"' && subText[0] != '\'') {
+          if (!subText.empty() && subText[0] != '\"' && subText[0] != '\'') {
             if (!isdigit(subText[0])) {
               for (auto pair : kRegisterMap) {
                 ++indxReg;
@@ -823,6 +819,13 @@ NECTI_MODULE(CompilerCPlusPlusAMD64) {
   kFactory.Mount(new AssemblyCPlusPlusInterfaceAMD64());
 
   CompilerKit::install_signal(SIGSEGV, Detail::drvi_crash_handler);
+  
+  // Ensure cleanup on exit
+  std::atexit([]() {
+    delete kCompilerFrontend;
+    kCompilerFrontend = nullptr;
+  });
+
 
   for (auto index = 1UL; index < argc; ++index) {
     if (!argv[index]) break;
@@ -832,6 +835,7 @@ NECTI_MODULE(CompilerCPlusPlusAMD64) {
         skip = false;
         continue;
       }
+      
 
       if (strcmp(argv[index], "-cxx-verbose") == 0) {
         kVerbose = true;
@@ -888,5 +892,5 @@ NECTI_MODULE(CompilerCPlusPlusAMD64) {
 }
 
 //
-// Last rev 23-5-25
+// Last rev 25-8-7
 //
