@@ -10,7 +10,7 @@
 /// BUGS: 0
 
 #define kPrintF printf
-#define kStdErr std::cerr
+#define kPrintErr std::cerr
 
 #define kExitOK (EXIT_SUCCESS)
 #define kExitNO (EXIT_FAILURE)
@@ -91,16 +91,7 @@ struct CompilerState final {
 /// @param reason the reason of the error.
 /// @param file where does it originate from?
 void print_error(const CompilerKit::STLString& reason, const CompilerKit::STLString& file) noexcept {
-  kStdErr << kRed << "Error in " << file << ": " << reason << kWhite << std::endl;
-}
-
-/// @brief crash handler for segmentation faults
-/// @param signal the signal number
-void drvi_crash_handler(int signal) noexcept {
-  kStdErr << kRed << "Compiler crashed with signal: " << signal << kWhite << std::endl;
-  kStdErr << "Last file: " << kState.fLastFile << std::endl;
-  kStdErr << "Last error: " << kState.fLastError << std::endl;
-  std::exit(EXIT_FAILURE);
+  kPrintErr << kRed << "Error in " << file << ": " << reason << kWhite << std::endl;
 }
 }  // namespace Detail
 
@@ -833,7 +824,7 @@ NECTI_MODULE(CompilerCPlusPlusAMD64) {
     kCompilerFrontend = nullptr;
   });
 
-  CompilerKit::install_signal(SIGSEGV, Detail::drvi_crash_handler);
+
 
   for (auto index = 1UL; index < argc; ++index) {
     if (!argv[index]) break;
