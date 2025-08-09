@@ -9,11 +9,11 @@
 
 #include <CompilerKit/Defines.h>
 #include <CompilerKit/ErrorID.h>
+#include <CompilerKit/Version.h>
 #include <CompilerKit/utils/CompilerUtils.h>
 #include <CompilerKit/utils/DylibHelpers.h>
-#include <CompilerKit/Version.h>
 
-static auto kPath = "/usr/local/lib/libCompilerKit.dylib";
+static auto kPath   = "/usr/local/lib/libCompilerKit.dylib";
 static auto kSymbol = "CompilerCLangARM64";
 
 Int32 main(Int32 argc, Char const* argv[]) {
@@ -26,8 +26,7 @@ Int32 main(Int32 argc, Char const* argv[]) {
     return EXIT_FAILURE;
   }
 
-  CompilerKitEntrypoint entrypoint_cxx =
-      (CompilerKitEntrypoint) dlsym(handler, kSymbol);
+  CompilerKitEntrypoint entrypoint_cxx = (CompilerKitEntrypoint) dlsym(handler, kSymbol);
 
   if (!entrypoint_cxx) {
     kStdOut;

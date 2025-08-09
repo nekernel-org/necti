@@ -16,7 +16,7 @@ extern "C" {
 
 #ifndef __GNUC__
 
-typedef __SIZE_TYPE__ size_t;
+typedef __SIZE_TYPE__  size_t;
 typedef __SSIZE_TYPE__ ssize_t;
 
 typedef void*         ptr_type;

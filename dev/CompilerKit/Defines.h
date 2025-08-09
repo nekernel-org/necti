@@ -51,6 +51,8 @@
 #define Char char
 #define Boolean bool
 
+#include <signal.h>
+#include <unistd.h>
 #include <cassert>
 #include <cctype>
 #include <cstdint>
@@ -81,20 +83,39 @@
 #define rt_copy_memory(dst, src, len) memcpy(dst, src, len)
 #endif
 
-#define NECTI_COPY_DELETE(KLASS)     \
+#define ATTRIBUTE(X) __attribute__((X))
+#define PACKED ATTRIBUTE(packed)
+
+typedef char char_type;
+
+#define kObjectFileExt ".obj"
+#define kBinaryFileExt ".bin"
+
+#define kAsmFileExts \
+  { ".64x", ".32x", ".masm", ".s", ".S", ".asm", ".x64" }
+
+#define kAsmFileExtsMax (7U)
+
+#define NECTI_MODULE(name) extern "C" int name(int argc, char** argv)
+
+#ifdef MSVC
+#pragma scalar_storage_order big - endian
+#endif  // ifdef MSVC
+
+#define NECTI_COPY_DELETE(KLASS)           \
   KLASS& operator=(const KLASS&) = delete; \
   KLASS(const KLASS&)            = delete;
 
-#define NECTI_COPY_DEFAULT(KLASS)     \
+#define NECTI_COPY_DEFAULT(KLASS)           \
   KLASS& operator=(const KLASS&) = default; \
   KLASS(const KLASS&)            = default;
 
-#define NECTI_MOVE_DELETE(KLASS) \
-  KLASS& operator=(KLASS&&) = delete;  \
+#define NECTI_MOVE_DELETE(KLASS)      \
+  KLASS& operator=(KLASS&&) = delete; \
   KLASS(KLASS&&)            = delete;
 
-#define NECTI_MOVE_DEFAULT(KLASS) \
-  KLASS& operator=(KLASS&&) = default;  \
+#define NECTI_MOVE_DEFAULT(KLASS)      \
+  KLASS& operator=(KLASS&&) = default; \
   KLASS(KLASS&&)            = default;
 
 #define CK_IMPORT_C extern "C"
@@ -148,24 +169,5 @@ inline bool install_signal(Int32 signal, void (*handler)(int)) noexcept {
   return true;
 }
 }  // namespace CompilerKit
-
-#define ATTRIBUTE(X) __attribute__((X))
-#define PACKED ATTRIBUTE(packed)
-
-typedef char char_type;
-
-#define kObjectFileExt ".obj"
-#define kBinaryFileExt ".bin"
-
-#define kAsmFileExts \
-  { ".64x", ".32x", ".masm", ".s", ".S", ".asm", ".x64" }
-
-#define kAsmFileExtsMax (7U)
-
-#define NECTI_MODULE(name) extern "C" int name(int argc, char** argv)
-
-#ifdef MSVC
-#pragma scalar_storage_order big - endian
-#endif  // ifdef MSVC
 
 #endif /* ifndef __NECTI_DEFINES_H__ */

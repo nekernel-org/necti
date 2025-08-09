@@ -7,9 +7,9 @@
  * 	========================================================
  */
 
-#include <CompilerKit/detail/PowerPC.h>
 #include <CompilerKit/Frontend.h>
 #include <CompilerKit/UUID.h>
+#include <CompilerKit/detail/PowerPC.h>
 #include <CompilerKit/utils/CompilerUtils.h>
 #include <cstdio>
 #include <fstream>
@@ -132,8 +132,8 @@ class CompilerFrontendPower64 final : public CompilerKit::CompilerFrontendInterf
 
   NECTI_COPY_DEFAULT(CompilerFrontendPower64);
 
-  std::string Check(const char* text, const char* file);
-  CompilerKit::SyntaxLeafList::SyntaxLeaf        Compile(std::string text, std::string file) override;
+  std::string                             Check(const char* text, const char* file);
+  CompilerKit::SyntaxLeafList::SyntaxLeaf Compile(std::string text, std::string file) override;
 
   const char* Language() override { return "POWER C"; }
 };
@@ -173,7 +173,8 @@ union double_cast final {
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
-CompilerKit::SyntaxLeafList::SyntaxLeaf CompilerFrontendPower64::Compile(std::string text_, std::string file) {
+CompilerKit::SyntaxLeafList::SyntaxLeaf CompilerFrontendPower64::Compile(std::string text_,
+                                                                         std::string file) {
   std::string text = text_;
 
   bool typeFound = false;

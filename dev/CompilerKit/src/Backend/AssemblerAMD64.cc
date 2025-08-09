@@ -29,9 +29,9 @@
 #define kAssemblerPragmaSym '#'
 
 #include <CompilerKit/AE.h>
-#include <CompilerKit/detail/X64.h>
 #include <CompilerKit/Frontend.h>
 #include <CompilerKit/PEF.h>
+#include <CompilerKit/detail/X64.h>
 #include <algorithm>
 #include <cstdlib>
 #include <filesystem>

@@ -6,9 +6,9 @@
 
 #pragma once
 
-#include <CompilerKit/StringKit.h>
 #include <CompilerKit/Defines.h>
 #include <CompilerKit/Macros.h>
+#include <CompilerKit/StringKit.h>
 
 #define CK_ASSEMBLY_INTERFACE : public ::CompilerKit::AssemblyInterface
 #define CK_ENCODER : public ::CompilerKit::EncoderInterface

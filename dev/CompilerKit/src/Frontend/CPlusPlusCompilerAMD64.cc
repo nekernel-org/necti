@@ -15,10 +15,10 @@
 #define kExitOK (EXIT_SUCCESS)
 #define kExitNO (EXIT_FAILURE)
 
-#include <CompilerKit/detail/X64.h>
 #include <CompilerKit/Frontend.h>
 #include <CompilerKit/PEF.h>
 #include <CompilerKit/UUID.h>
+#include <CompilerKit/detail/X64.h>
 #include <CompilerKit/utils/CompilerUtils.h>
 #include <csignal>
 #include <cstdlib>
@@ -48,7 +48,6 @@
 /////////////////////////////////////
 
 /// @internal
-namespace Detail {
 // Avoids relative_path which could discard parts of the original.
 std::filesystem::path expand_home(const std::filesystem::path& input) {
   const std::string& raw = input.string();
@@ -57,14 +56,12 @@ std::filesystem::path expand_home(const std::filesystem::path& input) {
     const char* home = std::getenv("HOME");
     if (!home) home = std::getenv("USERPROFILE");
 
-    if (!home)
-      throw std::runtime_error("Home directory not found in environment variables");
+    if (!home) throw std::runtime_error("Home directory not found in environment variables");
 
     return std::filesystem::path(home) / raw.substr(1);
   }
 
   return input;
-  }
 }
 
 struct CompilerRegisterMap final {
@@ -90,16 +87,14 @@ struct CompilerState final {
 /// @brief prints an error into stdout.
 /// @param reason the reason of the error.
 /// @param file where does it originate from?
-void print_error(const CompilerKit::STLString& reason, const CompilerKit::STLString& file) noexcept {
+void print_error(const CompilerKit::STLString& reason,
+                 const CompilerKit::STLString& file) noexcept {
   kPrintErr << kRed << "Error in " << file << ": " << reason << kWhite << std::endl;
 }
-}  // namespace Detail
 
-static Detail::CompilerState kState;
+static CompilerState kState;
 
 static Int32 kOnClassScope = 0;
-static Boolean kVerbose = false;
-static Int32 kErrorLimit = 0;
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
@@ -245,7 +240,7 @@ CompilerKit::SyntaxLeafList::SyntaxLeaf CompilerFrontendCPlusPlusAMD64::Compile(
               expr.find("<=") + strlen("<="));
           auto right = text.substr(expr.find(">=") + strlen(">="), text.find(")") - 1);
 
-          // Trim whitespace 
+          // Trim whitespace
           while (!right.empty() && (right.back() == ' ' || right.back() == '\t')) {
             right.pop_back();
           }
@@ -323,8 +318,8 @@ CompilerKit::SyntaxLeafList::SyntaxLeaf CompilerFrontendCPlusPlusAMD64::Compile(
         break;
 
       accept:
-        CompilerKit::STLString symbol_name_fn      = text;
-        size_t                 indexFnName = 0;
+        CompilerKit::STLString symbol_name_fn = text;
+        size_t                 indexFnName    = 0;
 
         // this one is for the type.
         for (auto& ch : text) {
@@ -369,11 +364,11 @@ CompilerKit::SyntaxLeafList::SyntaxLeaf CompilerFrontendCPlusPlusAMD64::Compile(
         break;
 
       lc_write_assembly:
-        auto it =
-            std::find_if(kOriginMap.begin(), kOriginMap.end(),
-                         [&symbol_name_fn](std::pair<CompilerKit::STLString, std::uintptr_t> pair) -> bool {
-                           return symbol_name_fn == pair.first;
-                         });
+        auto it = std::find_if(
+            kOriginMap.begin(), kOriginMap.end(),
+            [&symbol_name_fn](std::pair<CompilerKit::STLString, std::uintptr_t> pair) -> bool {
+              return symbol_name_fn == pair.first;
+            });
 
         if (it != kOriginMap.end()) {
           std::stringstream ss;
@@ -490,8 +485,8 @@ CompilerKit::SyntaxLeafList::SyntaxLeaf CompilerFrontendCPlusPlusAMD64::Compile(
 
             if (pairRight != valueOfVar) {
               if (valueOfVar[0] == '\"') {
-                syntax_tree.fUserValue = "segment .data64 __NECTI_LOCAL_VAR_" + varName +
-                                         ": db " + valueOfVar + ", 0\n\n";
+                syntax_tree.fUserValue = "segment .data64 __NECTI_LOCAL_VAR_" + varName + ": db " +
+                                         valueOfVar + ", 0\n\n";
                 syntax_tree.fUserValue += instr + kRegisterList[kRegisterMap.size() - 1] + ", " +
                                           "__NECTI_LOCAL_VAR_" + varName + "\n";
                 kOrigin += 1UL;
@@ -507,8 +502,8 @@ CompilerKit::SyntaxLeafList::SyntaxLeaf CompilerFrontendCPlusPlusAMD64::Compile(
 
           if (((int) indexRight - 1) < 0) {
             if (valueOfVar[0] == '\"') {
-              syntax_tree.fUserValue = "segment .data64 __NECTI_LOCAL_VAR_" + varName +
-                                       ": db " + valueOfVar + ", 0\n";
+              syntax_tree.fUserValue =
+                  "segment .data64 __NECTI_LOCAL_VAR_" + varName + ": db " + valueOfVar + ", 0\n";
               syntax_tree.fUserValue += instr + kRegisterList[kRegisterMap.size()] + ", " +
                                         "__NECTI_LOCAL_VAR_" + varName + "\n";
               kOrigin += 1UL;
@@ -521,7 +516,8 @@ CompilerKit::SyntaxLeafList::SyntaxLeaf CompilerFrontendCPlusPlusAMD64::Compile(
             goto done;
           }
 
-          if (!valueOfVar.empty() && valueOfVar[0] != '\"' && valueOfVar[0] != '\'' && !isdigit(valueOfVar[0])) {
+          if (!valueOfVar.empty() && valueOfVar[0] != '\"' && valueOfVar[0] != '\'' &&
+              !isdigit(valueOfVar[0])) {
             for (auto pair : kRegisterMap) {
               if (pair == valueOfVar) goto done;
             }
@@ -819,13 +815,12 @@ NECTI_MODULE(CompilerCPlusPlusAMD64) {
   kFactory.Mount(new AssemblyCPlusPlusInterfaceAMD64());
 
   CompilerKit::install_signal(SIGSEGV, Detail::drvi_crash_handler);
-  
+
   // Ensure cleanup on exit
   std::atexit([]() {
     delete kCompilerFrontend;
     kCompilerFrontend = nullptr;
   });
-
 
   for (auto index = 1UL; index < argc; ++index) {
     if (!argv[index]) break;
@@ -835,7 +830,6 @@ NECTI_MODULE(CompilerCPlusPlusAMD64) {
         skip = false;
         continue;
       }
-      
 
       if (strcmp(argv[index], "-cxx-verbose") == 0) {
         kVerbose = true;

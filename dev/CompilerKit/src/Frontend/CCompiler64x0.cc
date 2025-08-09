@@ -10,9 +10,9 @@
 /// BUGS: 0
 /// TODO: none
 
-#include <CompilerKit/detail/64x0.h>
 #include <CompilerKit/Frontend.h>
 #include <CompilerKit/UUID.h>
+#include <CompilerKit/detail/64x0.h>
 #include <CompilerKit/utils/CompilerUtils.h>
 #include <cstdio>
 #include <fstream>
@@ -141,8 +141,8 @@ class CompilerFrontend64x0 final : public CompilerKit::CompilerFrontendInterface
 
   NECTI_COPY_DEFAULT(CompilerFrontend64x0);
 
-  std::string Check(const char* text, const char* file);
-  CompilerKit::SyntaxLeafList::SyntaxLeaf        Compile(std::string text, std::string file) override;
+  std::string                             Check(const char* text, const char* file);
+  CompilerKit::SyntaxLeafList::SyntaxLeaf Compile(std::string text, std::string file) override;
 
   const char* Language() override { return "64k C"; }
 };
@@ -182,7 +182,8 @@ union double_cast final {
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
-CompilerKit::SyntaxLeafList::SyntaxLeaf CompilerFrontend64x0::Compile(std::string text_, std::string file) {
+CompilerKit::SyntaxLeafList::SyntaxLeaf CompilerFrontend64x0::Compile(std::string text_,
+                                                                      std::string file) {
   std::string text = text_;
 
   bool typeFound = false;

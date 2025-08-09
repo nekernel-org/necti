@@ -42,7 +42,7 @@ bool BasicString::operator==(const BasicString& rhs) const {
 
 bool BasicString::operator==(const Char* rhs) const {
   const SizeType rhs_len = string_length(rhs);
-  const SizeType len = Length();
+  const SizeType len     = Length();
   if (rhs_len != len) return false;
   return memcmp(m_Data, rhs, len) == 0;
 }
@@ -74,7 +74,7 @@ BasicString StringBuilder::FromInt(const char* fmt, int i) {
   const SizeType res_len = string_length(result);
 
   BasicString output(fmt_len + res_len);
-  bool inserted = false;
+  bool        inserted = false;
 
   for (SizeType idx = 0; idx < fmt_len; ++idx) {
     if (!inserted && fmt[idx] == '%') {
@@ -91,12 +91,12 @@ BasicString StringBuilder::FromInt(const char* fmt, int i) {
 BasicString StringBuilder::FromBool(const char* fmt, bool val) {
   if (!fmt) return BasicString(0);
 
-  const Char* boolean_expr = val ? "true" : "false";
-  const SizeType fmt_len = string_length(fmt);
-  const SizeType res_len = string_length(boolean_expr);
+  const Char*    boolean_expr = val ? "true" : "false";
+  const SizeType fmt_len      = string_length(fmt);
+  const SizeType res_len      = string_length(boolean_expr);
 
   BasicString output(fmt_len + res_len);
-  bool inserted = false;
+  bool        inserted = false;
 
   for (SizeType idx = 0; idx < fmt_len; ++idx) {
     if (!inserted && fmt[idx] == '%') {
@@ -125,7 +125,7 @@ BasicString StringBuilder::Format(const char* fmt, const char* fmtRight) {
   const SizeType rhs_len = string_length(fmtRight);
 
   BasicString output(fmt_len + rhs_len);
-  bool inserted = false;
+  bool        inserted = false;
 
   for (SizeType idx = 0; idx < fmt_len; ++idx) {
     if (!inserted && fmt[idx] == '%') {
@@ -146,7 +146,7 @@ BasicString& BasicString::operator+=(const Char* rhs) {
   }
 
   memcpy(this->m_Data + this->m_Cur, rhs, rhs_len);
-  
+
   this->m_Cur += rhs_len;
   this->m_Data[this->m_Cur] = '\0';
 
@@ -171,9 +171,9 @@ BasicString& BasicString::operator+=(const Char ch) {
   }
 
   this->m_Data[this->m_Cur++] = ch;
-  this->m_Data[this->m_Cur] = '\0';
+  this->m_Data[this->m_Cur]   = '\0';
 
   return *this;
 }
 
-} // namespace CompilerKit
+}  // namespace CompilerKit

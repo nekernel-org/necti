@@ -13,5 +13,5 @@
 #include <sys/un.h>
 #include <unistd.h>
 #else
-#error  !!! DebuggerKit needs a networking backend !!!
+#error !!! DebuggerKit needs a networking backend !!!
 #endif

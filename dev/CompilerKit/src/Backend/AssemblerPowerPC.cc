@@ -20,12 +20,12 @@
 #endif
 
 #include <CompilerKit/AE.h>
-#include <CompilerKit/detail/PowerPC.h>
 #include <CompilerKit/ErrorID.h>
 #include <CompilerKit/Frontend.h>
 #include <CompilerKit/PEF.h>
-#include <CompilerKit/utils/AsmUtils.h>
 #include <CompilerKit/Version.h>
+#include <CompilerKit/detail/PowerPC.h>
+#include <CompilerKit/utils/AsmUtils.h>
 #include <algorithm>
 #include <filesystem>
 #include <fstream>

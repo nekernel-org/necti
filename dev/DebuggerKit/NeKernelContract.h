@@ -14,8 +14,8 @@ namespace DebuggerKit::NeKernel {
 class NeKernelContract;
 
 namespace Detail {
-  inline constexpr auto kDebugCmdLen = 256U;
-  inline constexpr auto kDebugPort   = 51820;
+  inline constexpr auto kDebugCmdLen  = 256U;
+  inline constexpr auto kDebugPort    = 51820;
   inline constexpr auto kDebugMagic   = "VMK1.0.0;";
   inline constexpr auto kDebugVersion = 0x0100;
   typedef char          rt_debug_cmd[kDebugCmdLen];

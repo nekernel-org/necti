@@ -13,19 +13,19 @@
 /// @note Do not look up for anything with .code64/.data64/.zero64!
 /// It will be loaded when the program loader will start the image.
 
-
+#include <CompilerKit/AE.h>
+#include <CompilerKit/Compiler.h>
 #include <CompilerKit/Defines.h>
 #include <CompilerKit/ErrorID.h>
-#include <CompilerKit/Compiler.h>
 #include <CompilerKit/PEF.h>
 #include <CompilerKit/UUID.h>
 #include <CompilerKit/Version.h>
-#include <CompilerKit/AE.h>
 #include <CompilerKit/utils/CompilerUtils.h>
 
-#define kLinkerVersionStr                                                           \
-  "NeKernel.org 64-Bit Linker (Preferred Executable Format) %s, (c) Amlal El Mahrouss, and NeKernel Contributors " \
-  "2024-2025 "                                                                      \
+#define kLinkerVersionStr                                                                    \
+  "NeKernel.org 64-Bit Linker (Preferred Executable Format) %s, (c) Amlal El Mahrouss, and " \
+  "NeKernel Contributors "                                                                   \
+  "2024-2025 "                                                                               \
   "all rights reserved.\n"
 
 #define MemoryCopy(DST, SRC, SZ) memcpy(DST, SRC, SZ)
@@ -44,10 +44,7 @@
 /// @brief PEF stack size symbol.
 #define kLinkerStackSizeSymbol "__PEFSizeOfReserveStack"
 
-#define kConsoleOut        \
-  (std::cout << "\e[0;31m" \
-             << "ld64: "   \
-             << "\e[0;97m")
+#define kConsoleOut (std::cout << "\e[0;31m" << "ld64: " << "\e[0;97m")
 
 enum {
   kABITypeNull    = 0,

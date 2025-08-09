@@ -10,9 +10,9 @@
 /// BUGS: 0
 /// TODO: none
 
-#include <CompilerKit/detail/Aarch64.h>
 #include <CompilerKit/Frontend.h>
 #include <CompilerKit/UUID.h>
+#include <CompilerKit/detail/Aarch64.h>
 #include <CompilerKit/utils/CompilerUtils.h>
 
 #include <cstdio>
@@ -142,8 +142,8 @@ class CompilerFrontendARM64 final : public CompilerKit::CompilerFrontendInterfac
 
   NECTI_COPY_DEFAULT(CompilerFrontendARM64);
 
-  std::string Check(const char* text, const char* file);
-  CompilerKit::SyntaxLeafList::SyntaxLeaf        Compile(std::string text, std::string file) override;
+  std::string                             Check(const char* text, const char* file);
+  CompilerKit::SyntaxLeafList::SyntaxLeaf Compile(std::string text, std::string file) override;
 
   const char* Language() override { return "64k C"; }
 };
@@ -183,7 +183,8 @@ union double_cast final {
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
-CompilerKit::SyntaxLeafList::SyntaxLeaf CompilerFrontendARM64::Compile(std::string text, std::string file) {
+CompilerKit::SyntaxLeafList::SyntaxLeaf CompilerFrontendARM64::Compile(std::string text,
+                                                                       std::string file) {
   bool typeFound = false;
   bool fnFound   = false;
 
