@@ -263,7 +263,7 @@ NECTI_MODULE(DynamicLinker64PEF) {
 
       pef_container.Count = cnt;
 
-      char_type* raw_ae_records = new char_type[cnt * sizeof(CompilerKit::AERecordHeader)];
+      Char* raw_ae_records = new Char[cnt * sizeof(CompilerKit::AERecordHeader)];
 
       if (!raw_ae_records) {
         if (kVerbose) kConsoleOut << "allocation failed for records of count: " << cnt << "\n";

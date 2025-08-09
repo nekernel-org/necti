@@ -86,8 +86,6 @@
 #define ATTRIBUTE(X) __attribute__((X))
 #define PACKED ATTRIBUTE(packed)
 
-typedef char char_type;
-
 #define kObjectFileExt ".obj"
 #define kBinaryFileExt ".bin"
 
