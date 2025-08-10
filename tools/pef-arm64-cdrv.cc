@@ -13,7 +13,12 @@
 #include <CompilerKit/utils/CompilerUtils.h>
 #include <CompilerKit/utils/DylibHelpers.h>
 
-static auto kPath   = "/usr/local/lib/libCompilerKit.dylib";
+#ifdef __APPLE__
+static auto kPath = "/usr/local/lib/libCompilerKit.dylib";
+#else
+static auto kPath = "/usr/local/lib/libCompilerKit.so";
+#endif
+
 static auto kSymbol = "CompilerCLangARM64";
 
 Int32 main(Int32 argc, Char const* argv[]) {

@@ -17,7 +17,7 @@
 CK_IMPORT_C int CPlusPlusPreprocessorMain(int argc, char const* argv[]);
 
 int main(int argc, char const* argv[]) {
-  if (auto code = CPlusPlusPreprocessorMain(2, argv); code > 0) {
+  if (auto code = CPlusPlusPreprocessorMain(argc, argv); code > 0) {
     std::printf("cppdrv: preprocessor exited with code %i.\n", code);
 
     return NECTI_EXEC_ERROR;
