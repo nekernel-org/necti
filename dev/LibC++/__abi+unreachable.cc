@@ -9,7 +9,7 @@
 
 static const int32_t __unreachable_code = 34;
 
-extern "C" void __libcompiler_unreachable(void) {
+extern "C" void __compilerkit_unreachable(void) {
   std::base_process::signal(__unreachable_code);
 
   while (1);

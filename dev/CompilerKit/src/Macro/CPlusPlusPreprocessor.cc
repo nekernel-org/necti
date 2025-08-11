@@ -740,14 +740,14 @@ NECTI_MODULE(CPlusPlusPreprocessorMain) {
     Detail::bpp_macro macro_unreachable;
 
     macro_unreachable.fName  = "__unreachable";
-    macro_unreachable.fValue = "__libcompiler_unreachable";
+    macro_unreachable.fValue = "__compilerkit_unreachable";
 
     kMacros.push_back(macro_unreachable);
 
     Detail::bpp_macro macro_unused;
 
     macro_unreachable.fName  = "__unused";
-    macro_unreachable.fValue = "__libcompiler_unused";
+    macro_unreachable.fValue = "__compilerkit_unused";
 
     kMacros.push_back(macro_unused);
 

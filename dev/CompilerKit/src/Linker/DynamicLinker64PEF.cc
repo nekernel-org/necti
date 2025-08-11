@@ -28,9 +28,6 @@
   "2024-2025 "                                                                               \
   "all rights reserved.\n"
 
-#define MemoryCopy(DST, SRC, SZ) memcpy(DST, SRC, SZ)
-#define StringCompare(DST, SRC) strcmp(DST, SRC)
-
 #define kPefNoCpu (0U)
 #define kPefNoSubCpu (0U)
 
@@ -80,7 +77,7 @@ NECTI_MODULE(DynamicLinker64PEF) {
    * @brief parse flags and trigger options.
    */
   for (size_t linker_arg = 1; linker_arg < argc; ++linker_arg) {
-    if (StringCompare(argv[linker_arg], "-help") == 0) {
+    if (std::strcmp(argv[linker_arg], "-help") == 0) {
       kLinkerSplash();
 
       kConsoleOut << "-version: Show linker version.\n";
@@ -97,43 +94,43 @@ NECTI_MODULE(DynamicLinker64PEF) {
       kConsoleOut << "-output: Select the output file name.\n";
 
       return NECTI_SUCCESS;
-    } else if (StringCompare(argv[linker_arg], "-version") == 0) {
+    } else if (std::strcmp(argv[linker_arg], "-version") == 0) {
       kLinkerSplash();
 
       return NECTI_SUCCESS;
-    } else if (StringCompare(argv[linker_arg], "-fat") == 0) {
+    } else if (std::strcmp(argv[linker_arg], "-fat") == 0) {
       kFatBinaryEnable = true;
 
       continue;
-    } else if (StringCompare(argv[linker_arg], "-64k") == 0) {
+    } else if (std::strcmp(argv[linker_arg], "-64k") == 0) {
       kArch = CompilerKit::kPefArch64000;
 
       continue;
-    } else if (StringCompare(argv[linker_arg], "-amd64") == 0) {
+    } else if (std::strcmp(argv[linker_arg], "-amd64") == 0) {
       kArch = CompilerKit::kPefArchAMD64;
 
       continue;
-    } else if (StringCompare(argv[linker_arg], "-32k") == 0) {
+    } else if (std::strcmp(argv[linker_arg], "-32k") == 0) {
       kArch = CompilerKit::kPefArch32000;
 
       continue;
-    } else if (StringCompare(argv[linker_arg], "-power64") == 0) {
+    } else if (std::strcmp(argv[linker_arg], "-power64") == 0) {
       kArch = CompilerKit::kPefArchPowerPC;
 
       continue;
-    } else if (StringCompare(argv[linker_arg], "-riscv64") == 0) {
+    } else if (std::strcmp(argv[linker_arg], "-riscv64") == 0) {
       kArch = CompilerKit::kPefArchRISCV;
 
       continue;
-    } else if (StringCompare(argv[linker_arg], "-arm64") == 0) {
+    } else if (std::strcmp(argv[linker_arg], "-arm64") == 0) {
       kArch = CompilerKit::kPefArchARM64;
 
       continue;
-    } else if (StringCompare(argv[linker_arg], "-verbose") == 0) {
+    } else if (std::strcmp(argv[linker_arg], "-verbose") == 0) {
       kVerbose = true;
 
       continue;
-    } else if (StringCompare(argv[linker_arg], "-dylib") == 0) {
+    } else if (std::strcmp(argv[linker_arg], "-dylib") == 0) {
       if (kOutput.empty()) {
         continue;
       }
@@ -146,7 +143,7 @@ NECTI_MODULE(DynamicLinker64PEF) {
       is_executable = false;
 
       continue;
-    } else if (StringCompare(argv[linker_arg], "-output") == 0) {
+    } else if (std::strcmp(argv[linker_arg], "-output") == 0) {
       if ((linker_arg + 1) > argc) continue;
 
       kOutput = argv[linker_arg + 1];
@@ -279,7 +276,7 @@ NECTI_MODULE(DynamicLinker64PEF) {
         CompilerKit::PEFCommandHeader command_header{0};
         std::size_t                   offset_of_obj = ae_records[ae_record_index].fOffset;
 
-        MemoryCopy(command_header.Name, ae_records[ae_record_index].fName, kPefNameLen);
+        std::memcpy(command_header.Name, ae_records[ae_record_index].fName, kPefNameLen);
 
         CompilerKit::STLString cmd_hdr_name(command_header.Name);
 
@@ -474,7 +471,7 @@ NECTI_MODULE(DynamicLinker64PEF) {
     }
   }
 
-  MemoryCopy(abi_cmd_hdr.Name, abi.c_str(), abi.size());
+  std::memcpy(abi_cmd_hdr.Name, abi.c_str(), abi.size());
 
   abi_cmd_hdr.Size   = abi.size();
   abi_cmd_hdr.Offset = output_fc.tellp();
@@ -490,7 +487,7 @@ NECTI_MODULE(DynamicLinker64PEF) {
   stack_cmd_hdr.Size   = sizeof(uintptr_t);
   stack_cmd_hdr.Offset = 0;
 
-  MemoryCopy(stack_cmd_hdr.Name, kLinkerStackSizeSymbol, strlen(kLinkerStackSizeSymbol));
+  std::memcpy(stack_cmd_hdr.Name, kLinkerStackSizeSymbol, strlen(kLinkerStackSizeSymbol));
 
   command_headers.push_back(stack_cmd_hdr);
 
@@ -507,8 +504,8 @@ NECTI_MODULE(DynamicLinker64PEF) {
   uuids::uuid id      = gen();
   auto        uuidStr = uuids::to_string(id);
 
-  MemoryCopy(uuid_cmd_hdr.Name, "Container:GUID:4:", strlen("Container:GUID:4:"));
-  MemoryCopy(uuid_cmd_hdr.Name + strlen("Container:GUID:4:"), uuidStr.c_str(), uuidStr.size());
+  std::memcpy(uuid_cmd_hdr.Name, "Container:GUID:4:", strlen("Container:GUID:4:"));
+  std::memcpy(uuid_cmd_hdr.Name + strlen("Container:GUID:4:"), uuidStr.c_str(), uuidStr.size());
 
   uuid_cmd_hdr.Size   = strlen(uuid_cmd_hdr.Name);
   uuid_cmd_hdr.Offset = output_fc.tellp();
@@ -533,7 +530,7 @@ NECTI_MODULE(DynamicLinker64PEF) {
   end_exec_hdr.Flags  = CompilerKit::kPefLinkerID;
   end_exec_hdr.Kind   = CompilerKit::kPefZero;
 
-  MemoryCopy(end_exec_hdr.Name, "Container:Exec:END", strlen("Container:Exec:END"));
+  std::memcpy(end_exec_hdr.Name, "Container:Exec:END", strlen("Container:Exec:END"));
 
   end_exec_hdr.Size = strlen(end_exec_hdr.Name);
 

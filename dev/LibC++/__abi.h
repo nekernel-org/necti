@@ -6,4 +6,4 @@
 
 #pragma once
 
-extern "C" void __libcompiler_unreachable(void);
+extern "C" void __compilerkit_unreachable(void);
