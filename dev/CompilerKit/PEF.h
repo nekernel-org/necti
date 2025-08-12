@@ -95,6 +95,7 @@ typedef struct PEFCommandHeader final {
   UInt32   Flags;             /* container flags */
   UInt16   Kind;              /* container kind */
   UIntPtr  Offset;            /* File offset */
+  SizeType OffsetSize;
   UIntPtr  VMAddress;         /* Virtual Address */
   SizeType Size;              /* Virtual Size */
 } PACKED PEFCommandHeader, *PEFCommandHeaderPtr;

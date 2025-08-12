@@ -313,8 +313,9 @@ NECTI_MODULE(DynamicLinker64PEF) {
         command_header.Kind      = ae_records[ae_record_index].fKind;
         command_header.Size      = ae_records[ae_record_index].fSize;
         command_header.Cpu       = hdr.fArch;
-        command_header.VMAddress = org;  /// TODO:
+        command_header.VMAddress = org;
         command_header.SubCpu    = hdr.fSubArch;
+        command_header.OffsetSize = ae_records[ae_record_index].fSize;
 
         org += command_header.Size;
 
