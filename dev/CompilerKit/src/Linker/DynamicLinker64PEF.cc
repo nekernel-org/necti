@@ -62,6 +62,8 @@ static Bool                   kDuplicateSymbols = false;
 static const Char* kLdDefineSymbol = ":UndefinedSymbol:";
 static const Char* kLdDynamicSym   = ":RuntimeSymbol:";
 
+static CompilerKit::STLString kLinkerStart = kPefStart;
+
 /* object code and list. */
 static std::vector<CompilerKit::STLString>    kObjectList;
 static std::vector<Detail::DynamicLinkerBlob> kObjectBytes;
@@ -71,7 +73,7 @@ static std::vector<Detail::DynamicLinkerBlob> kObjectBytes;
 NECTI_MODULE(DynamicLinker64PEF) {
   bool is_executable = true;
 
-  ::signal(SIGSEGV, Detail::drvi_crash_handler);
+  CompilerKit::install_signal(SIGSEGV, Detail::drvi_crash_handler);
 
   /**
    * @brief parse flags and trigger options.
@@ -108,6 +110,13 @@ NECTI_MODULE(DynamicLinker64PEF) {
       continue;
     } else if (std::strcmp(argv[linker_arg], "-amd64") == 0) {
       kArch = CompilerKit::kPefArchAMD64;
+
+      continue;
+    } else if (std::strcmp(argv[linker_arg], "-start") == 0) {
+      if (argv[linker_arg + 1] == nullptr || argv[linker_arg][0] == '-') continue;
+
+      kLinkerStart = argv[linker_arg + 1];
+      linker_arg += 2;
 
       continue;
     } else if (std::strcmp(argv[linker_arg], "-32k") == 0) {
@@ -284,7 +293,7 @@ NECTI_MODULE(DynamicLinker64PEF) {
         if (cmd_hdr_name.find(kPefCode64) == CompilerKit::STLString::npos &&
             cmd_hdr_name.find(kPefData64) == CompilerKit::STLString::npos &&
             cmd_hdr_name.find(kPefZero64) == CompilerKit::STLString::npos) {
-          if (cmd_hdr_name.find(kPefStart) == CompilerKit::STLString::npos &&
+          if (cmd_hdr_name.find(kLinkerStart) == CompilerKit::STLString::npos &&
               *command_header.Name == 0) {
             if (cmd_hdr_name.find(kLdDefineSymbol) != CompilerKit::STLString::npos) {
               goto ld_mark_header;
@@ -294,7 +303,7 @@ NECTI_MODULE(DynamicLinker64PEF) {
           }
         }
 
-        if (cmd_hdr_name.find(kPefStart) != CompilerKit::STLString::npos &&
+        if (cmd_hdr_name.find(kLinkerStart) != CompilerKit::STLString::npos &&
             cmd_hdr_name.find(kPefCode64) != CompilerKit::STLString::npos) {
           kStartFound = true;
         }
@@ -422,11 +431,11 @@ NECTI_MODULE(DynamicLinker64PEF) {
 
   if (!kStartFound && is_executable) {
     if (kVerbose)
-      kConsoleOut << "Undefined entrypoint: " << kPefStart
+      kConsoleOut << "Undefined entrypoint: " << kLinkerStart
                   << ", you may have forget to link "
                      "against the C++ runtime library.\n";
 
-    kConsoleOut << "Undefined entrypoint " << kPefStart << " for executable: " << kOutput << "\n";
+    kConsoleOut << "Undefined entrypoint " << kLinkerStart << " for executable: " << kOutput << "\n";
   }
 
   // step 4: write all PEF commands.
@@ -560,9 +569,9 @@ NECTI_MODULE(DynamicLinker64PEF) {
     CompilerKit::STLString name = command_headers[commandHeaderIndex].Name;
 
     /// so this is valid when we get to the entrypoint.
-    /// it is always a code64 container. And should equal to kPefStart as well.
+    /// it is always a code64 container. And should equal to kLinkerStart as well.
     /// this chunk of code updates the pef_container.Start with the updated offset.
-    if (name.find(kPefStart) != CompilerKit::STLString::npos &&
+    if (name.find(kLinkerStart) != CompilerKit::STLString::npos &&
         name.find(kPefCode64) != CompilerKit::STLString::npos) {
       pef_container.Start = command_headers[commandHeaderIndex].Offset;
       auto tellCurPos     = output_fc.tellp();
