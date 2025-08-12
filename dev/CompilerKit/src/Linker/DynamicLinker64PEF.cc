@@ -113,10 +113,10 @@ NECTI_MODULE(DynamicLinker64PEF) {
 
       continue;
     } else if (std::strcmp(argv[linker_arg], "-start") == 0) {
-      if (argv[linker_arg + 1] == nullptr || argv[linker_arg][0] == '-') continue;
+      if (argv[linker_arg + 1] == nullptr || argv[linker_arg + 1][0] == '-') continue;
 
       kLinkerStart = argv[linker_arg + 1];
-      linker_arg += 2;
+      linker_arg += 1;
 
       continue;
     } else if (std::strcmp(argv[linker_arg], "-32k") == 0) {

@@ -19,6 +19,6 @@ TEST(LinkerTest, BasicLinkTest)
   expr = std::system("asm -asm:x64 sample/sample.cc.pp.masm");
   EXPECT_TRUE(expr == 0) << "Assembler did not assemble the easy asm unit.";
 
-  expr = std::system("ld64 -fat-binary sample/sample.cc.pp.obj -start __NECTI_main -output main.exec");
+  expr = std::system("ld64 -amd64 sample/sample.cc.pp.obj -start __NECTI_main -output main.exec");
   EXPECT_TRUE(expr == 0) << "Linker did not link the easy object.";
 }
