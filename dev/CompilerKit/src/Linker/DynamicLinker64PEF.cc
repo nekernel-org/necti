@@ -374,10 +374,12 @@ NECTI_MODULE(DynamicLinker64PEF) {
             CompilerKit::STLString::npos) {
       if (kVerbose) kConsoleOut << "Found undefined symbol: " << command_hdr.Name << "\n";
 
+      CompilerKit::STLString cmd_hdr_name = command_hdr.Name;
+
       if (auto it = std::find(not_found.begin(), not_found.end(),
-                              CompilerKit::STLString(command_hdr.Name));
+                              cmd_hdr_name);
           it == not_found.end()) {
-        not_found.emplace_back(command_hdr.Name);
+        not_found.emplace_back(cmd_hdr_name);
       }
     }
 
