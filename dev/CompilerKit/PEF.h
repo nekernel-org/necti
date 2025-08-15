@@ -29,6 +29,7 @@
 #define kPefCode64 ".code64"
 #define kPefData64 ".data64"
 
+/* @note counting the \0 at the end */
 #define kPefMagicLen (5)
 
 #define kPefVersion (0x0500)
@@ -36,9 +37,11 @@
 
 #define kPefBaseOrigin (0x40000000)
 
+/* @note this doesn't have to be __ImageStart only, any C initialization stub will do. */
 #define kPefStart "__ImageStart"
 
 namespace CompilerKit {
+  /* @brief Architecture type.  */
 enum {
   kPefArchIntel86S,
   kPefArchAMD64,
@@ -51,8 +54,9 @@ enum {
   kPefArchInvalid = 0xFF,
 };
 
+  /* @brief Architecture vendor. */
 enum {
-  kPefSubArchGeneric,
+  kPefSubArchGeneric = 0,
   kPefSubArchAMD = 200,
   kPefSubArchIntel,
   kPefSubArchARM,
@@ -60,6 +64,7 @@ enum {
 };
 
 enum {
+  kPefKindInvalid = 0,
   kPefKindExec   = 1, /* .exec */
   kPefKindDylib  = 2, /* .dylib */
   kPefKindObject = 4, /* .obj */
@@ -68,7 +73,7 @@ enum {
   kPefKindCount,
 };
 
-/* PEF container */
+/* PEF container information  */
 typedef struct PEFContainer final {
   Char     Magic[kPefMagicLen];
   UInt32   Linker; /* Linker used to link executable */
@@ -88,6 +93,7 @@ typedef struct PEFContainer final {
 
 /* PEF executable section and commands. */
 
+  /* @brief Command Header, a la Mach-O, designed with FAT binaries and virtual memory in mind.  */
 typedef struct PEFCommandHeader final {
   Char     Name[kPefNameLen]; /* container name */
   UInt32   Cpu;               /* container cpu */
@@ -96,8 +102,8 @@ typedef struct PEFCommandHeader final {
   UInt16   Kind;              /* container kind */
   UIntPtr  Offset;            /* File offset */
   SizeType OffsetSize;
-  UIntPtr  VMAddress;         /* Virtual Address */
-  SizeType Size;              /* Virtual Size */
+  UIntPtr  VirtualAddress;         /* Virtual Address */
+  SizeType VirtualSize;              /* Virtual Size */
 } PACKED PEFCommandHeader, *PEFCommandHeaderPtr;
 
 enum {

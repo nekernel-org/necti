@@ -311,13 +311,13 @@ NECTI_MODULE(DynamicLinker64PEF) {
       ld_mark_header:
         command_header.Offset    = offset_of_obj;
         command_header.Kind      = ae_records[ae_record_index].fKind;
-        command_header.Size      = ae_records[ae_record_index].fSize;
+        command_header.VirtualSize      = ae_records[ae_record_index].fSize;
         command_header.Cpu       = hdr.fArch;
-        command_header.VMAddress = org;
+        command_header.VirtualAddress = org;
         command_header.SubCpu    = hdr.fSubArch;
         command_header.OffsetSize = ae_records[ae_record_index].fSize;
 
-        org += command_header.Size;
+        org += command_header.VirtualSize;
 
         if (kVerbose) {
           kConsoleOut << "Record: " << ae_records[ae_record_index].fName << " is marked.\n";
@@ -457,7 +457,7 @@ NECTI_MODULE(DynamicLinker64PEF) {
   date_cmd_hdr.Flags  = 0;
   date_cmd_hdr.Kind   = CompilerKit::kPefZero;
   date_cmd_hdr.Offset = output_fc.tellp();
-  date_cmd_hdr.Size   = timeStampStr.size();
+  date_cmd_hdr.VirtualSize   = timeStampStr.size();
 
   command_headers.push_back(date_cmd_hdr);
 
@@ -487,7 +487,7 @@ NECTI_MODULE(DynamicLinker64PEF) {
 
   std::memcpy(abi_cmd_hdr.Name, abi.c_str(), abi.size());
 
-  abi_cmd_hdr.Size   = abi.size();
+  abi_cmd_hdr.VirtualSize   = abi.size();
   abi_cmd_hdr.Offset = output_fc.tellp();
   abi_cmd_hdr.Flags  = 0;
   abi_cmd_hdr.Kind   = CompilerKit::kPefLinkerID;
@@ -498,7 +498,7 @@ NECTI_MODULE(DynamicLinker64PEF) {
 
   stack_cmd_hdr.Cpu    = kArch;
   stack_cmd_hdr.Flags  = 0;
-  stack_cmd_hdr.Size   = sizeof(uintptr_t);
+  stack_cmd_hdr.VirtualSize   = sizeof(uintptr_t);
   stack_cmd_hdr.Offset = 0;
 
   std::memcpy(stack_cmd_hdr.Name, kLinkerStackSizeSymbol, strlen(kLinkerStackSizeSymbol));
@@ -521,7 +521,7 @@ NECTI_MODULE(DynamicLinker64PEF) {
   std::memcpy(uuid_cmd_hdr.Name, "Container:GUID:4:", strlen("Container:GUID:4:"));
   std::memcpy(uuid_cmd_hdr.Name + strlen("Container:GUID:4:"), uuidStr.c_str(), uuidStr.size());
 
-  uuid_cmd_hdr.Size   = strlen(uuid_cmd_hdr.Name);
+  uuid_cmd_hdr.VirtualSize   = strlen(uuid_cmd_hdr.Name);
   uuid_cmd_hdr.Offset = output_fc.tellp();
   uuid_cmd_hdr.Flags  = CompilerKit::kPefLinkerID;
   uuid_cmd_hdr.Kind   = CompilerKit::kPefZero;
@@ -546,7 +546,7 @@ NECTI_MODULE(DynamicLinker64PEF) {
 
   std::memcpy(end_exec_hdr.Name, "Container:Exec:END", strlen("Container:Exec:END"));
 
-  end_exec_hdr.Size = strlen(end_exec_hdr.Name);
+  end_exec_hdr.VirtualSize = strlen(end_exec_hdr.Name);
 
   command_headers.push_back(end_exec_hdr);
 
@@ -569,7 +569,7 @@ NECTI_MODULE(DynamicLinker64PEF) {
     }
 
     command_headers[commandHeaderIndex].Offset += previous_offset;
-    previous_offset += command_headers[commandHeaderIndex].Size;
+    previous_offset += command_headers[commandHeaderIndex].VirtualSize;
 
     CompilerKit::STLString name = command_headers[commandHeaderIndex].Name;
 
@@ -589,7 +589,7 @@ NECTI_MODULE(DynamicLinker64PEF) {
 
     if (kVerbose) {
       kConsoleOut << "Command name: " << name << "\n";
-      kConsoleOut << "VMAddress of command content: " << command_headers[commandHeaderIndex].Offset
+      kConsoleOut << "VirtualAddress of command content: " << command_headers[commandHeaderIndex].Offset
                   << "\n";
     }
 
