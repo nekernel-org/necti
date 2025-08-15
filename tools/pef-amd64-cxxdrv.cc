@@ -16,7 +16,7 @@
 #ifdef __APPLE__
 static auto kPath   = "/usr/local/lib/libCompilerKit.dylib";
 #else
-static auto kPath   = "/usr/local/lib/libCompilerKit.so";
+static auto kPath   = "/usr/lib/libCompilerKit.so";
 #endif
 
 static auto kSymbol = "CompilerCPlusPlusAMD64";
