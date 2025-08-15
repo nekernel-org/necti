@@ -366,6 +366,8 @@ NECTI_MODULE(DynamicLinker64PEF) {
 
   // step 2: check for errors (multiple symbols, undefined ones)
 
+  CompilerKit::STLString cmd_hdr_name;
+
   for (auto& command_hdr : command_headers) {
     // check if this symbol needs to be resolved.
     if (CompilerKit::STLString(command_hdr.Name).find(kLdDefineSymbol) !=
@@ -374,7 +376,7 @@ NECTI_MODULE(DynamicLinker64PEF) {
             CompilerKit::STLString::npos) {
       if (kVerbose) kConsoleOut << "Found undefined symbol: " << command_hdr.Name << "\n";
 
-      CompilerKit::STLString cmd_hdr_name = command_hdr.Name;
+      cmd_hdr_name = command_hdr.Name;
 
       if (auto it = std::find(not_found.begin(), not_found.end(),
                               cmd_hdr_name);
