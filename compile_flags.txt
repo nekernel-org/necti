@@ -1,9 +1,11 @@
 -std=c++20
 -Idev/
 -Idev/src/
--Idev/LibCompiler/Detail
+-Idev/CompilerKit/Detail
 -Isdk/
 -I./
--DLC_USE_STRUCTS
+-DCK_USE_STRUCTS
 -xc++
--DLD_NEKERNEL_DEBUGGER
+-DDK_NEKERNEL_DEBUGGER
+-DDK_MACH_DEBUGGER
+-DDEBUGGERKIT_POSIX

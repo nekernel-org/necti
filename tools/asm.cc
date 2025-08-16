@@ -4,20 +4,20 @@
 
 ------------------------------------------- */
 
-/// @file asm.cxx
+/// @file asm.cc
 /// @brief Assembler frontend.
 
-#include <LibCompiler/Defines.h>
-#include <LibCompiler/Version.h>
+#include <CompilerKit/Defines.h>
+#include <CompilerKit/Version.h>
 #include <cstring>
 #include <iostream>
 #include <string>
 #include <vector>
 
-LC_IMPORT_C int AssemblerMainPower64(int argc, char const* argv[]);
-LC_IMPORT_C int AssemblerMainARM64(int argc, char const* argv[]);
-LC_IMPORT_C int AssemblerMain64x0(int argc, char const* argv[]);
-LC_IMPORT_C int AssemblerMainAMD64(int argc, char const* argv[]);
+CK_IMPORT_C int AssemblerMainPower64(int argc, char const* argv[]);
+CK_IMPORT_C int AssemblerMainARM64(int argc, char const* argv[]);
+CK_IMPORT_C int AssemblerMain64x0(int argc, char const* argv[]);
+CK_IMPORT_C int AssemblerMainAMD64(int argc, char const* argv[]);
 
 enum AsmKind : Int32 {
   kInvalidAssembler = 0,
@@ -43,7 +43,7 @@ int main(int argc, char const* argv[]) {
           "asm: Designed by Amlal El Mahrouss, Copyright (C) 2024-2025 Amlal El Mahrouss, all "
           "rights reserved.\n");
       std::printf(
-          "LibCompiler: Designed by Amlal El Mahrouss, Copyright (C) 2024-2025 Amlal El Mahrouss, "
+          "CompilerKit: Designed by Amlal El Mahrouss, Copyright (C) 2024-2025 Amlal El Mahrouss, "
           "all rights reserved.\n");
 
       return 0;

@@ -1,10 +1,10 @@
 {
   "compiler_path": "g++",
   "compiler_std": "c++20",
-  "headers_path": ["../dev/LibCompiler", "../dev/", "../dev/LibCompiler/src/Detail"],
+  "headers_path": ["../dev/CompilerKit", "../dev/", "../dev/CompilerKit/src/Detail"],
   "sources_path": ["cppdrv.cc"],
   "output_name": "cppdrv",
-  "compiler_flags": ["-L/usr/local/lib", "-lCompiler"],
+  "compiler_flags": ["-L/usr/local/lib", "-lCompilerKit"],
   "cpp_macros": [
     "__CXXDRV__=202504",
     "kDistReleaseBranch=$(git rev-parse --abbrev-ref HEAD)-$(uuidgen)"

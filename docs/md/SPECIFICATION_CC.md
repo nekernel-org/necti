@@ -1,4 +1,4 @@
-# Specification of LibCompiler
+# Specification of CompilerKit
 
 ===================================
 
@@ -11,7 +11,7 @@
 
 ===================================
 
-# 1: LibCompiler
+# 1: CompilerKit
 
 ===================================
 

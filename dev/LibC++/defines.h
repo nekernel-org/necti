@@ -4,23 +4,20 @@
 
 ------------------------------------------- */
 
-#ifndef __LIBCOMPILER_DEFINES_H__
-#define __LIBCOMPILER_DEFINES_H__
+#ifndef __NECTI_DEFINES_H__
+#define __NECTI_DEFINES_H__
 
 extern "C" {
 #include <stddef.h>
 #include <stdint.h>
 }
 
+#define __ATTRIBUTE(X) __attribute__((X))
+
 #ifndef __GNUC__
 
-typedef __SIZE_TYPE__ size_t;
-
-#ifdef __LP64__
-typedef long int ssize_t;
-#else
-typedef int ssize_t;
-#endif  // __LP64__
+typedef __SIZE_TYPE__  size_t;
+typedef __SSIZE_TYPE__ ssize_t;
 
 typedef void*         ptr_type;
 typedef __SIZE_TYPE__ size_type;
@@ -37,7 +34,7 @@ typedef char*  caddr_t;
 
 #ifdef __GNUC__
 #include <LibC++/alloca.h>
-#elif defined(__LIBCOMPILER__)
+#elif defined(__NECTI__)
 #define __alloca(sz) __lc_alloca(sz)
 #endif
 
@@ -60,7 +57,7 @@ typedef char*  caddr_t;
 #endif
 #define __alloca alloca
 #else
-#warning ! alloca not detected !
+#warning !! alloca not detected !!
 #endif
 
 typedef long long          off_t;
@@ -74,7 +71,7 @@ typedef union float_cast {
   };
 
   float f;
-} __attribute__((packed)) float_cast_t;
+} __ATTRIBUTE(packed) float_cast_t;
 
 typedef union double_cast {
   struct {
@@ -84,8 +81,8 @@ typedef union double_cast {
   };
 
   double f;
-} __attribute__((packed)) double_cast_t;
+} __ATTRIBUTE(packed) double_cast_t;
 
 #endif  // ifndef __GNUC__
 
-#endif /* __LIBCOMPILER_DEFINES_H__ */
+#endif /* __NECTI_DEFINES_H__ */

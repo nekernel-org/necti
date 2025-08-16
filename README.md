@@ -1,4 +1,4 @@
-<!-- Read Me of NeKernel C++ -->
+<!-- Read Me of NCTI -->
 
 <div align="center">
   <img src="meta/png/nekernel.png" alt="Logo" width="256"/>
@@ -9,15 +9,29 @@
 ![CI](https://github.com/amlel-el-mahrouss/cc/actions/workflows/c-cpp.yml/badge.svg)
 [![License: GPL-3.0](https://img.shields.io/badge/license-GPL--3.0-blue.svg)](LICENSE)
 
+## Overview:
+
+NeCTI is a modern, multi-platform compiler instractucture designed for modularity, and performance. It features a custom debugger engine, advanced linker, and flexible backend/frontend system. NeCTI is built for research, education, and next-generation toolchain development.
+
+## Structure:
+
+- `dev/CompilerKit` – Compiler Kit written in modern C++
+- `dev/LibC++` – C++ ABI Library
+- `dev/LibStdC++` – Standard C++ Library
+- `tools/` – Frontend Tools
+- `dev/DebuggerKit` – Debugging Kit written in modern C++
+
+
 ## Requirements:
 
-- [CLang](https://clang.llvm.org/)
-- [GIT](https://git-scm.com/)
-- [BTB](https://github.com/nekernel-org/btb)
+- [Clang](https://clang.llvm.org/)
+- [Git](https://git-scm.com/)
+- [NeBuild](https://github.com/nekernel-org/nebuild)
 
 ## Notice for Doxygen:
 
-- Use the doxygen command to build documentation.
+- Use doxygen to build documentation.
+- You need it installed in order to generate offline documentation!
 
 ## Notice for Contributors:
 
@@ -26,9 +40,9 @@
 ## Getting Started:
 
 ```sh
-git clone git@github.com:nekernel-org/cc.git
-cd cc
-# Either build debugger or compiler using btb
+git clone git@github.com:nekernel-org/necti.git
+cd necti
+# Either build debugger or compiler libraries/tools using nebuild.
 ```
 
-###### Copyright (C) 2024-2025 Amlal El Mahrouss, all rights reserved.
+###### Copyright (C) 2024-2025 Amlal El Mahrouss & NeKernel.org Contributors, all rights reserved.

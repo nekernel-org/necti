@@ -1,0 +1,19 @@
+{
+  "compiler_path": "g++",
+  "compiler_std": "c++20",
+  "headers_path": [
+    "../dev/CompilerKit",
+    "../dev/",
+    "../dev/CompilerKit/src/Detail"
+  ],
+  "sources_path": [
+    "pef-amd64-cxxdrv.cc"
+  ],
+  "output_name": "pef-amd64-cxxdrv",
+  "compiler_flags": [
+  ],
+  "cpp_macros": [
+    "__CXXDRV__=202504",
+    "kDistReleaseBranch=$(git rev-parse --abbrev-ref HEAD)-$(uuidgen)"
+  ]
+}

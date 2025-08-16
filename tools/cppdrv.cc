@@ -7,21 +7,21 @@
 /// @file cxxdrv.cc
 /// @brief NE frontend preprocessor.
 
-#include <LibCompiler/Defines.h>
-#include <LibCompiler/ErrorID.h>
-#include <LibCompiler/Version.h>
+#include <CompilerKit/Defines.h>
+#include <CompilerKit/ErrorID.h>
+#include <CompilerKit/Version.h>
 #include <cstring>
 #include <iostream>
 #include <vector>
 
-LC_IMPORT_C int CPlusPlusPreprocessorMain(int argc, char const* argv[]);
+CK_IMPORT_C int CPlusPlusPreprocessorMain(int argc, char const* argv[]);
 
 int main(int argc, char const* argv[]) {
-  if (auto code = CPlusPlusPreprocessorMain(2, argv); code > 0) {
+  if (auto code = CPlusPlusPreprocessorMain(argc, argv); code > 0) {
     std::printf("cppdrv: preprocessor exited with code %i.\n", code);
 
-    return LIBCOMPILER_EXEC_ERROR;
+    return NECTI_EXEC_ERROR;
   }
 
-  return LIBCOMPILER_SUCCESS;
+  return NECTI_SUCCESS;
 }
