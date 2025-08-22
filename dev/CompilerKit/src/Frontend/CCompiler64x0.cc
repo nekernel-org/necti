@@ -12,7 +12,7 @@
 
 #include <CompilerKit/Frontend.h>
 #include <CompilerKit/UUID.h>
-#include <CompilerKit/detail/64x0.h>
+#include <CompilerKit/impl/64x0.h>
 #include <CompilerKit/utils/CompilerUtils.h>
 #include <cstdio>
 #include <fstream>

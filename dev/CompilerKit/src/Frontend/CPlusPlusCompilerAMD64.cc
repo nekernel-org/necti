@@ -18,7 +18,7 @@
 #include <CompilerKit/Frontend.h>
 #include <CompilerKit/PEF.h>
 #include <CompilerKit/UUID.h>
-#include <CompilerKit/detail/X64.h>
+#include <CompilerKit/impl/X64.h>
 #include <CompilerKit/utils/CompilerUtils.h>
 #include <csignal>
 #include <cstdlib>

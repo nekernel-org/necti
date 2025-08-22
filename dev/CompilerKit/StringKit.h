@@ -80,7 +80,7 @@ struct StringBuilder final {
   static BOOL        Equals(const char* lhs, const char* rhs);
 };
 
-using BasicStringOr = ErrorOr<BasicString>;
+using BasicStringOr  = ErrorOr<BasicString>;
 using BasicStringPtr = BasicString*;
 using BasicStringRef = Ref<BasicString>;
 }  // namespace CompilerKit

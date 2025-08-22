@@ -41,7 +41,10 @@
 /// @brief PEF stack size symbol.
 #define kLinkerStackSizeSymbol "__PEFSizeOfReserveStack"
 
-#define kConsoleOut (std::cout << "\e[0;31m" << "ld64: " << "\e[0;97m")
+#define kConsoleOut        \
+  (std::cout << "\e[0;31m" \
+             << "ld64: "   \
+             << "\e[0;97m")
 
 enum {
   kABITypeNull    = 0,
@@ -309,13 +312,13 @@ NECTI_MODULE(DynamicLinker64PEF) {
         }
 
       ld_mark_header:
-        command_header.Offset    = offset_of_obj;
-        command_header.Kind      = ae_records[ae_record_index].fKind;
-        command_header.VirtualSize      = ae_records[ae_record_index].fSize;
-        command_header.Cpu       = hdr.fArch;
+        command_header.Offset         = offset_of_obj;
+        command_header.Kind           = ae_records[ae_record_index].fKind;
+        command_header.VirtualSize    = ae_records[ae_record_index].fSize;
+        command_header.Cpu            = hdr.fArch;
         command_header.VirtualAddress = org;
-        command_header.SubCpu    = hdr.fSubArch;
-        command_header.OffsetSize = ae_records[ae_record_index].fSize;
+        command_header.SubCpu         = hdr.fSubArch;
+        command_header.OffsetSize     = ae_records[ae_record_index].fSize;
 
         org += command_header.VirtualSize;
 
@@ -378,8 +381,7 @@ NECTI_MODULE(DynamicLinker64PEF) {
 
       cmd_hdr_name = command_hdr.Name;
 
-      if (auto it = std::find(not_found.begin(), not_found.end(),
-                              cmd_hdr_name);
+      if (auto it = std::find(not_found.begin(), not_found.end(), cmd_hdr_name);
           it == not_found.end()) {
         not_found.emplace_back(cmd_hdr_name);
       }
@@ -440,7 +442,8 @@ NECTI_MODULE(DynamicLinker64PEF) {
                   << ", you may have forget to link "
                      "against the C++ runtime library.\n";
 
-    kConsoleOut << "Undefined entrypoint " << kLinkerStart << " for executable: " << kOutput << "\n";
+    kConsoleOut << "Undefined entrypoint " << kLinkerStart << " for executable: " << kOutput
+                << "\n";
   }
 
   // step 4: write all PEF commands.
@@ -454,10 +457,10 @@ NECTI_MODULE(DynamicLinker64PEF) {
 
   strncpy(date_cmd_hdr.Name, timeStampStr.c_str(), timeStampStr.size());
 
-  date_cmd_hdr.Flags  = 0;
-  date_cmd_hdr.Kind   = CompilerKit::kPefZero;
-  date_cmd_hdr.Offset = output_fc.tellp();
-  date_cmd_hdr.VirtualSize   = timeStampStr.size();
+  date_cmd_hdr.Flags       = 0;
+  date_cmd_hdr.Kind        = CompilerKit::kPefZero;
+  date_cmd_hdr.Offset      = output_fc.tellp();
+  date_cmd_hdr.VirtualSize = timeStampStr.size();
 
   command_headers.push_back(date_cmd_hdr);
 
@@ -487,19 +490,19 @@ NECTI_MODULE(DynamicLinker64PEF) {
 
   std::memcpy(abi_cmd_hdr.Name, abi.c_str(), abi.size());
 
-  abi_cmd_hdr.VirtualSize   = abi.size();
-  abi_cmd_hdr.Offset = output_fc.tellp();
-  abi_cmd_hdr.Flags  = 0;
-  abi_cmd_hdr.Kind   = CompilerKit::kPefLinkerID;
+  abi_cmd_hdr.VirtualSize = abi.size();
+  abi_cmd_hdr.Offset      = output_fc.tellp();
+  abi_cmd_hdr.Flags       = 0;
+  abi_cmd_hdr.Kind        = CompilerKit::kPefLinkerID;
 
   command_headers.push_back(abi_cmd_hdr);
 
   CompilerKit::PEFCommandHeader stack_cmd_hdr{0};
 
-  stack_cmd_hdr.Cpu    = kArch;
-  stack_cmd_hdr.Flags  = 0;
-  stack_cmd_hdr.VirtualSize   = sizeof(uintptr_t);
-  stack_cmd_hdr.Offset = 0;
+  stack_cmd_hdr.Cpu         = kArch;
+  stack_cmd_hdr.Flags       = 0;
+  stack_cmd_hdr.VirtualSize = sizeof(uintptr_t);
+  stack_cmd_hdr.Offset      = 0;
 
   std::memcpy(stack_cmd_hdr.Name, kLinkerStackSizeSymbol, strlen(kLinkerStackSizeSymbol));
 
@@ -521,10 +524,10 @@ NECTI_MODULE(DynamicLinker64PEF) {
   std::memcpy(uuid_cmd_hdr.Name, "Container:GUID:4:", strlen("Container:GUID:4:"));
   std::memcpy(uuid_cmd_hdr.Name + strlen("Container:GUID:4:"), uuidStr.c_str(), uuidStr.size());
 
-  uuid_cmd_hdr.VirtualSize   = strlen(uuid_cmd_hdr.Name);
-  uuid_cmd_hdr.Offset = output_fc.tellp();
-  uuid_cmd_hdr.Flags  = CompilerKit::kPefLinkerID;
-  uuid_cmd_hdr.Kind   = CompilerKit::kPefZero;
+  uuid_cmd_hdr.VirtualSize = strlen(uuid_cmd_hdr.Name);
+  uuid_cmd_hdr.Offset      = output_fc.tellp();
+  uuid_cmd_hdr.Flags       = CompilerKit::kPefLinkerID;
+  uuid_cmd_hdr.Kind        = CompilerKit::kPefZero;
 
   command_headers.push_back(uuid_cmd_hdr);
 
@@ -589,8 +592,8 @@ NECTI_MODULE(DynamicLinker64PEF) {
 
     if (kVerbose) {
       kConsoleOut << "Command name: " << name << "\n";
-      kConsoleOut << "VirtualAddress of command content: " << command_headers[commandHeaderIndex].Offset
-                  << "\n";
+      kConsoleOut << "VirtualAddress of command content: "
+                  << command_headers[commandHeaderIndex].Offset << "\n";
     }
 
     output_fc << command_headers[commandHeaderIndex];

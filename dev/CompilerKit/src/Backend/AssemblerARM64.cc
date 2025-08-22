@@ -24,7 +24,7 @@
 #include <CompilerKit/Frontend.h>
 #include <CompilerKit/PEF.h>
 #include <CompilerKit/Version.h>
-#include <CompilerKit/detail/Aarch64.h>
+#include <CompilerKit/impl/Aarch64.h>
 #include <CompilerKit/utils/AsmUtils.h>
 #include <algorithm>
 #include <filesystem>

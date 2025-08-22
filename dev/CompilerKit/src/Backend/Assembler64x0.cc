@@ -24,7 +24,7 @@
 #include <CompilerKit/AE.h>
 #include <CompilerKit/Frontend.h>
 #include <CompilerKit/PEF.h>
-#include <CompilerKit/detail/64x0.h>
+#include <CompilerKit/impl/64x0.h>
 #include <CompilerKit/utils/CompilerUtils.h>
 #include <algorithm>
 #include <filesystem>

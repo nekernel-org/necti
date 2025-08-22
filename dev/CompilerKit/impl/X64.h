@@ -9,7 +9,7 @@
 #include <CompilerKit/Defines.h>
 
 // @brief AMD64 support.
-// @file detail/X64.h
+// @file impl/X64.h
 
 #define CK_ASM_OPCODE(__NAME, __OPCODE) {.fName = __NAME, .fOpcode = __OPCODE},
 
