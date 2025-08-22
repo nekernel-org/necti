@@ -24,12 +24,12 @@ inline int signal(int code) {
   return -1;
 }
 
-extern "C" void (*__atexit_lst_ptr)(void);
+extern "C" void (**__atexit_lst_ptr)(void);
 extern "C" size_t __atexit_lst_cnt;
 
 inline int exit(int code) {
   for (auto i = 0UL; i < __atexit_lst_cnt; ++i) {
-    __atexit_lst_ptr();
+    __atexit_lst_ptr[i]();
   }
 
   exit_(code);
