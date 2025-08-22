@@ -25,7 +25,7 @@ Int32 main(Int32 argc, Char const* argv[]) {
   CompilerKitDylibTraits dylib;
   dylib(kPath, kSymbol);
 
-  CompilerKitEntrypoint entrypoint_cxx = (CompilerKitEntrypoint)dylib.fEntrypoint;
+  CompilerKitEntrypoint entrypoint_cxx = (CompilerKitEntrypoint) dylib.fEntrypoint;
 
   if (!entrypoint_cxx) {
     kStdOut;
