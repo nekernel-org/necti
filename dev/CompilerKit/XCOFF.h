@@ -7,12 +7,12 @@
 
   Revision History:
 
-  04/07/24: Added file (amlel)
+  04/07/24: Added file (Amlal EL Mahrouss)
 
 ------------------------------------------- */
 
-#ifndef __XCOFF__
-#define __XCOFF__
+#ifndef _NECTI_XCOFF_H_
+#define _NECTI_XCOFF_H_
 
 #include <CompilerKit/Defines.h>
 
@@ -40,4 +40,4 @@ typedef struct XCoffFileHeader {
 typedef struct XCoffFileHeader* XCoffFileHeaderPtr;
 }  // namespace CompilerKit
 
-#endif  // ifndef __XCOFF__
+#endif  // ifndef _NECTI_XCOFF_H_

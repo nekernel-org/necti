@@ -6,8 +6,8 @@
 
 /// @brief provide support for Macros.h header.
 
-#ifndef _MACROS_H_
-#define _MACROS_H_
+#ifndef _NECTI_MACROS_H_
+#define _NECTI_MACROS_H_
 
 #define NECTI_COPY_DELETE(KLASS)           \
   KLASS& operator=(const KLASS&) = delete; \
@@ -30,4 +30,4 @@
 #define NECTI_ERROR_PREFIX_CL "CLxxxx"
 #define NECTI_ERROR_PREFIX_ASM "ASMxxxx"
 
-#endif /* ifndef _MACROS_H_ */
+#endif /* ifndef _NECTI_MACROS_H_ */
