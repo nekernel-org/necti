@@ -12,9 +12,8 @@
 
 #include <CompilerKit/Defines.h>
 #include <DebuggerKit/NeKernelContract.h>
-#include <ThirdParty/Dialogs.h>
-
 #include <DebuggerKit/Platform.h>
+#include <ThirdParty/Dialogs.h>
 
 using namespace DebuggerKit::NeKernel;
 

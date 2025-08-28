@@ -1,7 +1,7 @@
 /* -------------------------------------------
-                     \
- Copyright (C) 2024-2025 Amlal El Mahrouss, all rights reserved.               \
-                     \
+
+ Copyright (C) 2024-2025 Amlal El Mahrouss, all rights reserved.
+
 ------------------------------------------- */
 
 #ifndef LIBCXX_UTILITY_H
@@ -13,8 +13,8 @@ namespace std {
 /// @param arg the object.
 /// @return object's rvalue
 template <typename Args>
-inline Args&& forward(Args& arg) {
-  return static_cast<Args&&>(arg);
+inline auto forward(Args& arg) -> Args&& {
+  return static_cast<const Args&&>(arg);
 }
 
 /// @brief Move object.
@@ -22,7 +22,7 @@ inline Args&& forward(Args& arg) {
 /// @param arg the object.
 /// @return object's rvalue
 template <typename Args>
-inline Args&& move(Args&& arg) {
+inline auto move(Args&& arg) -> Args&& {
   return static_cast<Args&&>(arg);
 }
 }  // namespace std

@@ -93,7 +93,7 @@ class POSIXMachContract : public DebuggerContract {
   BOOL BreakAt(std::string symbol) noexcept override {
     if (!m_path.empty() && std::filesystem::exists(m_path) &&
         std::filesystem::is_regular_file(m_path)) {
-      auto handle = dlopen(m_path.c_str(), RTDK_LAZY);
+      auto handle = dlopen(m_path.c_str(), RTLD_LAZY);
 
       if (handle == nullptr) {
         return false;
