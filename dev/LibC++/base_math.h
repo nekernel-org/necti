@@ -37,7 +37,7 @@ inline real_type pow(real_type in) {
 /// @brief Square of function, with Base template argument.
 /// @param of Base argument to find sqquare of
 template <size_t Base>
-inline real_type sqr(real_type in) {
+inline real_type surd(real_type in) {
   if (in == 0) return 0;
 
   return pow<1 / Base>(in);
