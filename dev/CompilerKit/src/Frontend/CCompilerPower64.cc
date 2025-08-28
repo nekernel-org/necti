@@ -9,7 +9,7 @@
 
 #include <CompilerKit/Frontend.h>
 #include <CompilerKit/UUID.h>
-#include <CompilerKit/detail/PowerPC.h>
+#include <CompilerKit/impl/PowerPC.h>
 #include <CompilerKit/utils/CompilerUtils.h>
 #include <cstdio>
 #include <fstream>

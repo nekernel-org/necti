@@ -24,7 +24,7 @@
 #include <CompilerKit/Frontend.h>
 #include <CompilerKit/PEF.h>
 #include <CompilerKit/Version.h>
-#include <CompilerKit/detail/PowerPC.h>
+#include <CompilerKit/impl/PowerPC.h>
 #include <CompilerKit/utils/AsmUtils.h>
 #include <algorithm>
 #include <filesystem>

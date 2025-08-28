@@ -7,7 +7,8 @@
  * ========================================================
  */
 
-#pragma once
+#ifndef _NECTI_AE_H_
+#define _NECTI_AE_H_
 
 #include <CompilerKit/Defines.h>
 
@@ -131,3 +132,5 @@ class AEReadableProtocol final {
   }
 };
 }  // namespace CompilerKit::Utils
+
+#endif /* ifndef _NECTI_AE_H_ */

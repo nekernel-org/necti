@@ -10,7 +10,7 @@ Copyright (C) 2024-2025 Amlal EL Mahrouss, all rights reserved
 #include <stdint.h>
 
 /// @brief ARM64 encoding support.
-/// @file detail/Aarch64.h
+/// @file impl/Aarch64.h
 
 struct CpuOpcodeArm64;
 

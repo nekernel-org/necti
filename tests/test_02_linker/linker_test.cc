@@ -4,14 +4,12 @@
 
    ------------------------------------------- */
 
-
 /// @brief Linker Unit test, from the C++ unit to the final executable.
 /// @author Amlal El Mahrouss
 
 #include <gtest/gtest.h>
 
-TEST(LinkerTest, BasicLinkTest)
-{
+TEST(LinkerTest, BasicLinkTest) {
   /// @note this is the driver, it will look for a .cc.pp (.pp stands for pre-processed)
   auto expr = std::system("pef-amd64-cxxdrv sample/sample.cc");
   EXPECT_TRUE(expr == 0) << "C++ Driver did not compile the easy C++ unit.";

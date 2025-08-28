@@ -6,6 +6,9 @@
 #ifndef DK_NEKERNEL_CONTRACT_H
 #define DK_NEKERNEL_CONTRACT_H
 
+/// @brief NeKernel Debugging Protocol
+/// @author Amlal El Mahrouss
+
 #ifdef DK_NEKERNEL_DEBUGGER
 
 #include <DebuggerKit/DebuggerContract.h>
@@ -24,7 +27,7 @@ namespace Detail {
 class NeKernelContract : public DebuggerContract {
  public:
   NeKernelContract();
-  ~NeKernelContract() override;
+  virtual ~NeKernelContract() override;
 
  public:
   NeKernelContract& operator=(const NeKernelContract&) = default;
@@ -40,7 +43,7 @@ class NeKernelContract : public DebuggerContract {
   bool Detach() noexcept override;
 
  private:
-  std::string m_kernel_path;
+  std::string m_kernel_path{};
   int64_t     m_socket{0};
 };
 }  // namespace DebuggerKit::NeKernel

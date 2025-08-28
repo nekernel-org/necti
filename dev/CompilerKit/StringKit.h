@@ -7,7 +7,8 @@
  * 	========================================================
  */
 
-#pragma once
+#ifndef __NECTI_STRINGKIT__
+#define __NECTI_STRINGKIT__
 
 #include <CompilerKit/Defines.h>
 #include <CompilerKit/ErrorOr.h>
@@ -79,5 +80,9 @@ struct StringBuilder final {
   static BOOL        Equals(const char* lhs, const char* rhs);
 };
 
-using BasicStringOr = ErrorOr<BasicString>;
+using BasicStringOr  = ErrorOr<BasicString>;
+using BasicStringPtr = BasicString*;
+using BasicStringRef = Ref<BasicString>;
 }  // namespace CompilerKit
+
+#endif /* ifndef __NECTI_STRINGKIT__ */
