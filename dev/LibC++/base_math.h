@@ -18,6 +18,8 @@ typedef float real_type;
 #endif
 
 namespace std::base_math {
+inline constexpr static auto not_a_number = NAN;
+
 /// @brief Power function, with Repeat argument.
 template <size_t Exponent>
 inline real_type pow(real_type in) {
@@ -39,8 +41,14 @@ inline real_type pow(real_type in) {
 template <size_t Base>
 inline real_type surd(real_type in) {
   if (in == 0) return 0;
+  if (in == 1) return 1;
+  if (Base == 1) return in;
 
-  return pow<1 / Base>(in);
+  auto x = in / Base;
+
+  if (Base == 2) return (x + in / x) / 2;
+
+  return not_a_number;
 }
 
 /// @brief Linear interpolation equation solver.
