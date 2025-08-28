@@ -36,17 +36,30 @@ inline real_type pow(real_type in) {
   return result;
 }
 
+inline real_type sqrt(real_type in) {
+  if (in == 0) return 0;
+  if (in == not_a_number) return not_a_number;
+
+  auto constexpr const static Base = 2;
+
+  auto x = in / Base;
+
+  for (int i = 0; i < 10; ++i) {
+    x = (x + in / x) / Base;
+  }
+
+  return x;
+}
+
 /// @brief Square of function, with Base template argument.
 /// @param of Base argument to find sqquare of
 template <size_t Base>
 inline real_type surd(real_type in) {
   if (in == 0) return 0;
   if (in == 1) return 1;
+  
   if (Base == 1) return in;
-
-  auto x = in / Base;
-
-  if (Base == 2) return (x + in / x) / 2;
+  if (Base == 2) return sqrt(in);
 
   return not_a_number;
 }
