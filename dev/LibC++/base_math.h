@@ -57,7 +57,7 @@ template <size_t Base>
 inline real_type surd(real_type in) {
   if (in == 0) return 0;
   if (in == 1) return 1;
-  
+
   if (Base == 1) return in;
   if (Base == 2) return sqrt(in);
 

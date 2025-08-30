@@ -8,6 +8,8 @@
 #include <string>
 #include <unordered_map>
 
+#define DK_DEBUGGER_CONTRACT : public ::DebuggerKit::DebuggerContract
+
 namespace DebuggerKit {
 class DebuggerContract;
 
