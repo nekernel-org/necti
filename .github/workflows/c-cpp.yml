@@ -1,4 +1,4 @@
-name: C/C++ CI
+name: C/C++ CI (CompilerKit)
 
 on:
   push:
@@ -14,4 +14,6 @@ jobs:
     steps:
     - uses: actions/checkout@v4
     - name: Install Packages
-      run: sudo apt update && sudo apt install build-essential
+      run: sudo apt update && sudo apt install build-essential && git clone https://github.com/nekernel-org/necti.git && cd necti && make && cd .. && cd dev/CompilerKit && nebuild ck-posix.json
+
+
