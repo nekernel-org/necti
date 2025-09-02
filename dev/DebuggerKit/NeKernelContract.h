@@ -21,10 +21,11 @@ namespace Detail {
   inline constexpr auto kDebugPort    = 51820;
   inline constexpr auto kDebugMagic   = "VMK1.0.0;";
   inline constexpr auto kDebugVersion = 0x0100;
-  typedef char          rt_debug_cmd[kDebugCmdLen];
+  typedef char          dk_debug_cmd_type[kDebugCmdLen];
+  typedef int64_t       dk_socket_type;
 }  // namespace Detail
 
-class NeKernelContract : public DebuggerContract {
+class NeKernelContract DK_DEBUGGER_CONTRACT {
  public:
   NeKernelContract();
   virtual ~NeKernelContract() override;
@@ -32,8 +33,6 @@ class NeKernelContract : public DebuggerContract {
  public:
   NeKernelContract& operator=(const NeKernelContract&) = default;
   NeKernelContract(const NeKernelContract&)            = default;
-
-  // Override additional methods from DebuggerContract
 
  public:
   bool Attach(std::string path, std::string arg_v, ProcessID& pid) noexcept override;
@@ -43,8 +42,9 @@ class NeKernelContract : public DebuggerContract {
   bool Detach() noexcept override;
 
  private:
-  std::string m_kernel_path{};
-  int64_t     m_socket{0};
+  dk_debug_cmd_type m_buffer;
+  std::string       m_kernel_path{};
+  dk_socket_type    m_socket{0};
 };
 }  // namespace DebuggerKit::NeKernel
 
