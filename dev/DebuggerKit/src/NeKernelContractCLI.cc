@@ -43,8 +43,7 @@ NECTI_MODULE(DebuggerNeKernel) {
 
     CompilerKit::install_signal(SIGINT, dbgi_ctrlc_handler);
 
-    kKernelDebugger.Attach(kPath, "", kPID);
-    kKernelDebugger.BreakAt("$HANDOVER_START");
+    kKernelDebugger.Attach(kPath, argv[4], kPID);
 
     while (YES) {
       if (kKeepRunning) {

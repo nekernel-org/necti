@@ -17,12 +17,13 @@ namespace DebuggerKit::NeKernel {
 class NeKernelContract;
 
 namespace Detail {
-  inline constexpr auto kDebugCmdLen  = 256U;
-  inline constexpr auto kDebugPort    = 51820;
-  inline constexpr auto kDebugMagic   = "VMK1.0.0;";
-  inline constexpr auto kDebugVersion = 0x0100;
-  typedef char          dk_debug_cmd_type[kDebugCmdLen];
-  typedef int64_t       dk_socket_type;
+  inline constexpr auto     kDebugCmdLen  = 256U;
+  inline constexpr auto     kDebugPort    = 51820;
+  inline constexpr auto     kDebugMagic   = "VMK1.0.0;";
+  inline constexpr uint16_t kDebugVersion = 0x0100;
+  inline constexpr auto     kDebugDelim   = ';';
+  inline constexpr auto     kDebugEnd     = '\r';
+  typedef int64_t           dk_socket_type;
 }  // namespace Detail
 
 class NeKernelContract DK_DEBUGGER_CONTRACT {
@@ -42,9 +43,8 @@ class NeKernelContract DK_DEBUGGER_CONTRACT {
   bool Detach() noexcept override;
 
  private:
-  dk_debug_cmd_type m_buffer;
-  std::string       m_kernel_path{};
-  dk_socket_type    m_socket{0};
+  CompilerKit::STLString m_kernel_path{};
+  Detail::dk_socket_type m_socket{0};
 };
 }  // namespace DebuggerKit::NeKernel
 
