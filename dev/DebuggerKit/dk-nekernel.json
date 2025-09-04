@@ -1,5 +1,5 @@
 {
-  "compiler_path": "g++",
+  "compiler_path": "clang++",
   "compiler_std": "c++20",
   "headers_path": [
     "../DebuggerKit",
@@ -10,7 +10,7 @@
   "compiler_flags": ["-fPIC", "-shared"],
   "cpp_macros": [
     "__NECTI__=202505",
-    "CK_USE_STRUCTS=1",
+    "DK_USE_STRUCTS=1",
     "DK_NEKERNEL_DEBUGGER",
     "kDistReleaseBranch=$(git rev-parse --abbrev-ref HEAD)-$(uuidgen)"
   ]
