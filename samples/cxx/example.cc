@@ -2,13 +2,13 @@
 #warning test macro warning #1
 
 int bar() {
-  int yyy = 100;
+  auto yyy = 17800;
   return yyy;
 }
 
 int foo() {
-  int arg1 = 0;
-  return bar();
+  int arg1 = bar();
+  return arg1;
 }
 
 int main() {

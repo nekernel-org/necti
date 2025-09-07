@@ -6,7 +6,7 @@
   "output_name": "cppdrv",
   "compiler_flags": ["-L/usr/local/lib", "-lCompilerKit"],
   "cpp_macros": [
-    "__CXXDRV__=202504",
+    "__CPPDRV__=202504",
     "kDistReleaseBranch=$(git rev-parse --abbrev-ref HEAD)-$(uuidgen)"
   ]
 }

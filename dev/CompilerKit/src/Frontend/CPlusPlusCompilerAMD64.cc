@@ -508,8 +508,22 @@ CompilerKit::SyntaxLeafList::SyntaxLeaf CompilerFrontendCPlusPlusAMD64::Compile(
                                         "__NECTI_LOCAL_VAR_" + varName + "\n";
               kOrigin += 1UL;
             } else {
+              auto mangled = valueOfVar;
+
+              if (mangled.find("(") != std::string::npos) {
+                auto ret = mangled.erase(mangled.find("("));
+                mangled  = "__NECTI_";
+                mangled += ret;
+
+                syntax_tree.fUserValue = "jmp " + mangled + "\n";
+                syntax_tree.fUserValue +=
+                    instr + " rax, " + kRegisterList[kRegisterMap.size()] + "\n";
+
+                goto done;
+              }
+
               syntax_tree.fUserValue =
-                  instr + kRegisterList[kRegisterMap.size()] + ", " + valueOfVar + "\n";
+                  instr + kRegisterList[kRegisterMap.size()] + ", " + mangled + "\n";
               kOrigin += 1UL;
             }
 
@@ -635,15 +649,15 @@ CompilerKit::SyntaxLeafList::SyntaxLeaf CompilerFrontendCPlusPlusAMD64::Compile(
         try {
           auto                   pos     = text.find("return") + strlen("return") + 1;
           CompilerKit::STLString subText = text.substr(pos);
-          subText                        = subText.erase(subText.find(";"));
-          size_t indxReg                 = 0UL;
+          if (subText.find(";") == CompilerKit::STLString::npos) break;
+
+          subText        = subText.erase(subText.find(";"));
+          size_t indxReg = 0UL;
 
           if (!subText.empty() && subText[0] != '\"' && subText[0] != '\'') {
             if (!isdigit(subText[0])) {
               for (auto pair : kRegisterMap) {
                 ++indxReg;
-
-                if (pair != subText) continue;
 
                 syntax_tree.fUserValue = "mov rax, " + kRegisterList[indxReg - 1] + "\nret\n";
                 kOrigin += 1UL;
@@ -687,10 +701,15 @@ CompilerKit::SyntaxLeafList::SyntaxLeaf CompilerFrontendCPlusPlusAMD64::Compile(
             }
           }
 
+          syntax_tree.fUserValue = "ret\n";
+          kOrigin += 1UL;
+
           break;
         } catch (...) {
           syntax_tree.fUserValue = "ret\n";
           kOrigin += 1UL;
+
+          break;
         }
       }
       default: {
@@ -762,7 +781,7 @@ NECTI_MODULE(CompilerCPlusPlusAMD64) {
   kKeywords.emplace_back("using", CompilerKit::kKeywordKindTypedef);
   kKeywords.emplace_back("{", CompilerKit::kKeywordKindBodyStart);
   kKeywords.emplace_back("}", CompilerKit::kKeywordKindBodyEnd);
-  kKeywords.emplace_back("auto", CompilerKit::kKeywordKindVariable);
+  kKeywords.emplace_back("auto", CompilerKit::kKeywordKindType);
   kKeywords.emplace_back("int", CompilerKit::kKeywordKindType);
   kKeywords.emplace_back("bool", CompilerKit::kKeywordKindType);
   kKeywords.emplace_back("unsigned", CompilerKit::kKeywordKindType);
@@ -773,7 +792,7 @@ NECTI_MODULE(CompilerCPlusPlusAMD64) {
   kKeywords.emplace_back("double", CompilerKit::kKeywordKindType);
   kKeywords.emplace_back("void", CompilerKit::kKeywordKindType);
 
-  kKeywords.emplace_back("auto*", CompilerKit::kKeywordKindVariablePtr);
+  kKeywords.emplace_back("auto*", CompilerKit::kKeywordKindTypePtr);
   kKeywords.emplace_back("int*", CompilerKit::kKeywordKindTypePtr);
   kKeywords.emplace_back("bool*", CompilerKit::kKeywordKindTypePtr);
   kKeywords.emplace_back("unsigned*", CompilerKit::kKeywordKindTypePtr);
