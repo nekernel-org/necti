@@ -52,9 +52,8 @@
 
 static char kOutputArch = CompilerKit::kPefArchAMD64;
 
-constexpr auto kIPAlignement = 0x1U;
-
-static std::size_t kCounter = 1UL;
+static constexpr auto kIPAlignement = 0x1U;
+static auto kCounter = 0x1UL;
 
 static std::uintptr_t                                      kOrigin = kPefBaseOrigin;
 static std::vector<std::pair<std::string, std::uintptr_t>> kOriginLabel;
