@@ -47,7 +47,7 @@ class Ref final {
 
   Bool IsStrong() const { return m_Strong; }
 
-  operator bool() { return *m_Class; }
+  explicit operator bool() { return *m_Class; }
 
  private:
   T*   m_Class{nullptr};

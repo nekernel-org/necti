@@ -36,9 +36,9 @@ class ErrorOr final {
 
   Int32 Error() { return mId; }
 
-  BOOL HasError() { return mId != NECTI_SUCCESS; }
+  Bool HasError() { return mId != NECTI_SUCCESS; }
 
-  operator bool() { return mRef; }
+  explicit operator bool() { return mRef; }
 
  private:
   Ref<T> mRef;

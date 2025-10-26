@@ -10,14 +10,12 @@
 #include <CompilerKit/Defines.h>
 #include <CompilerKit/Version.h>
 #include <cstring>
-#include <iostream>
-#include <string>
 #include <vector>
 
-CK_IMPORT_C int AssemblerMainPower64(int argc, char const* argv[]);
-CK_IMPORT_C int AssemblerMainARM64(int argc, char const* argv[]);
-CK_IMPORT_C int AssemblerMain64x0(int argc, char const* argv[]);
-CK_IMPORT_C int AssemblerMainAMD64(int argc, char const* argv[]);
+CK_IMPORT_C Int32 AssemblerMainPower64(Int32 argc, Char const* argv[]);
+CK_IMPORT_C Int32 AssemblerMainARM64(Int32 argc, Char const* argv[]);
+CK_IMPORT_C Int32 AssemblerMain64x0(Int32 argc, Char const* argv[]);
+CK_IMPORT_C Int32 AssemblerMainAMD64(Int32 argc, Char const* argv[]);
 
 enum AsmKind : Int32 {
   kInvalidAssembler = 0,
@@ -28,8 +26,8 @@ enum AsmKind : Int32 {
   kAssemblerCount,
 };
 
-int main(int argc, char const* argv[]) {
-  std::vector<const char*> arg_vec_cstr;
+Int32 main(Int32 argc, Char const* argv[]) {
+  std::vector<const Char*> arg_vec_cstr;
   arg_vec_cstr.push_back(argv[0]);
 
   const Int32 kInvalidAssembler = -1;
