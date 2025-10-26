@@ -15,7 +15,7 @@
 #include <CompilerKit/Ref.h>
 
 namespace CompilerKit {
-using ErrorT = UInt32;
+using ErrorT = Int32;
 
 template <typename T>
 class ErrorOr final {
