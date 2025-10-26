@@ -56,7 +56,7 @@ class BasicString final {
   BasicString& operator+=(const Char rhs);
   BasicString& operator+=(const BasicString& rhs);
 
-  operator bool() { return m_Data && m_Data[0] != 0; }
+  explicit operator bool() { return m_Data && m_Data[0] != 0; }
 
   bool operator!() { return !m_Data || m_Data[0] == 0; }
 
@@ -77,7 +77,7 @@ struct StringBuilder final {
   static BasicString FromInt(const char* fmt, int n);
   static BasicString FromBool(const char* fmt, bool n);
   static BasicString Format(const char* fmt, const char* from);
-  static BOOL        Equals(const char* lhs, const char* rhs);
+  static Bool        Equals(const char* lhs, const char* rhs);
 };
 
 using BasicStringOr  = ErrorOr<BasicString>;

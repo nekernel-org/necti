@@ -1,5 +1,4 @@
-//
-//  Portable File Dialogs
+////  Portable File Dialogs
 //
 //  Copyright © 2018–2022 Sam Hocevar <sam@hocevar.net>
 //
@@ -217,7 +216,7 @@ namespace internal {
         proc(dll const& lib, std::string const& sym)
             : m_proc(reinterpret_cast<T*>((void*) ::GetProcAddress(lib.handle, sym.c_str()))) {}
 
-        operator bool() const { return m_proc != nullptr; }
+        explicit operator bool() const { return m_proc != nullptr; }
         operator T*() const { return m_proc; }
 
        private:
