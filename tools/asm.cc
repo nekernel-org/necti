@@ -23,7 +23,7 @@ enum AsmKind : Int32 {
   k64X0Assembler,
   kPOWER64Assembler,
   kARM64Assembler,
-  kAssemblerCount,
+  kAssemblerCount = kARM64Assembler - kX64Assembler + 1,
 };
 
 Int32 main(Int32 argc, Char const* argv[]) {

@@ -9,6 +9,7 @@
 
 #pragma once
 
+#include <CompilerKit/StringKit.h>
 #include <CompilerKit/Defines.h>
 #include <CompilerKit/ErrorID.h>
 #include <CompilerKit/Ref.h>
@@ -24,17 +25,15 @@ class ErrorOr final {
 
  public:
   explicit ErrorOr(Int32 err) : mId(err) {}
-
-  explicit ErrorOr(nullPtr Null) {}
-
-  explicit ErrorOr(T Class) : mRef(Class) {}
+  explicit ErrorOr(nullPtr null) {}
+  explicit ErrorOr(T klass) : mRef(klass) {}
 
   ErrorOr& operator=(const ErrorOr&) = default;
   ErrorOr(const ErrorOr&)            = default;
 
   Ref<T> Leak() { return mRef; }
 
-  Int32 Error() { return mId; }
+  ErrorT Error() { return mId; }
 
   Bool HasError() { return mId != NECTI_SUCCESS; }
 
@@ -42,9 +41,9 @@ class ErrorOr final {
 
  private:
   Ref<T> mRef;
-  Int32  mId{0};
+  ErrorT  mId{0};
 };
 
 using ErrorOrAny = ErrorOr<voidPtr>;
-
+using ErrorOrString = ErrorOr<STLString>;
 }  // namespace CompilerKit

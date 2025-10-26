@@ -15,7 +15,7 @@
 
 #define kStdOut (std::cout << kRed << "dbg: " << kWhite)
 
-static BOOL kKeepRunning = false;
+static Bool kKeepRunning = false;
 
 #ifdef DK_NEKERNEL_DEBUGGER
 static DebuggerKit::NeKernel::NeKernelContract kKernelDebugger;
