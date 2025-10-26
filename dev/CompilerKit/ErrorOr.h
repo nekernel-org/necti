@@ -24,7 +24,7 @@ class ErrorOr final {
   ~ErrorOr() = default;
 
  public:
-  explicit ErrorOr(Int32 err) : mId(err) {}
+  explicit ErrorOr(ErrorT err) : mId(err) {}
   explicit ErrorOr(nullPtr null) {}
   explicit ErrorOr(T klass) : mRef(klass) {}
 
