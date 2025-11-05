@@ -3,6 +3,7 @@
 
 #include <array>
 #include <atomic>
+#include <cctype>
 #include <chrono>
 #include <cstring>
 #include <functional>
@@ -85,16 +86,8 @@ namespace Detail {
   }
 
   template <typename TChar>
-  [[nodiscard]] constexpr inline bool is_hex(TChar const ch) noexcept {
-    return (ch >= static_cast<TChar>('0') && ch <= static_cast<TChar>('9')) ||
-           (ch >= static_cast<TChar>('a') && ch <= static_cast<TChar>('f')) ||
-           (ch >= static_cast<TChar>('A') && ch <= static_cast<TChar>('F'));
-  }
-
-  template <typename TChar>
   [[nodiscard]] constexpr std::basic_string_view<TChar> to_string_view(TChar const* str) noexcept {
-    if (str) return str;
-    return {};
+    return str;
   }
 
   template <typename StringType>
@@ -437,7 +430,7 @@ class uuid {
     for (size_t i = hasBraces; i < str.size() - hasBraces; ++i) {
       if (str[i] == '-') continue;
 
-      if (index >= 16 || !Detail::is_hex(str[i])) {
+      if (index >= 16 || !std::isxdigit(static_cast<unsigned char>(str[i]))) {
         return false;
       }
 
@@ -474,7 +467,7 @@ class uuid {
     for (size_t i = hasBraces; i < str.size() - hasBraces; ++i) {
       if (str[i] == '-') continue;
 
-      if (index >= 16 || !Detail::is_hex(str[i])) {
+      if (index >= 16 || !std::isxdigit(static_cast<unsigned char>(str[i]))) {
         return {};
       }
 
@@ -600,11 +593,10 @@ class uuid_system_generator {
          static_cast<unsigned char>((newId.Data1 >> 16) & 0xFF),
          static_cast<unsigned char>((newId.Data1 >> 8) & 0xFF),
          static_cast<unsigned char>((newId.Data1) & 0xFF),
-
-         (unsigned char) ((newId.Data2 >> 8) & 0xFF), (unsigned char) ((newId.Data2) & 0xFF),
-
-         (unsigned char) ((newId.Data3 >> 8) & 0xFF), (unsigned char) ((newId.Data3) & 0xFF),
-
+         static_cast<unsigned char>((newId.Data2 >> 8) & 0xFF),
+         static_cast<unsigned char>((newId.Data2) & 0xFF),
+         static_cast<unsigned char>((newId.Data3 >> 8) & 0xFF),
+         static_cast<unsigned char>((newId.Data3) & 0xFF),
          newId.Data4[0], newId.Data4[1], newId.Data4[2], newId.Data4[3], newId.Data4[4],
          newId.Data4[5], newId.Data4[6], newId.Data4[7]}};
 
