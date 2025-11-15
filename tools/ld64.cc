@@ -7,7 +7,7 @@
 #include <CompilerKit/Defines.h>
 
 /// @file ld64.cc
-/// @brief NE Linker for AE objects.
+/// @brief NeCTI linker for AE objects.
 
 CK_IMPORT_C Int32 DynamicLinker64PEF(Int32 argc, Char const* argv[]);
 
