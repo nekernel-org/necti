@@ -11,7 +11,7 @@
 #define CK_COMPILER_FRONTEND : public ::CompilerKit::CompilerFrontendInterface
 
 namespace CompilerKit {
-inline static auto kInvalidFrontend = "?";
+inline static auto kInvalidFrontend = "(null)";
 
 struct SyntaxLeafList;
 struct SyntaxLeafList;
@@ -113,6 +113,7 @@ class CompilerFrontendInterface {
   //! @brief What language are we dealing with?
   virtual const char* Language() { return kInvalidFrontend; }
 
+  /// @brief Checks if language is a valid frontend.
   virtual bool IsValid() { return strcmp(this->Language(), kInvalidFrontend) > 0; }
 };
 }  // namespace CompilerKit

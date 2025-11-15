@@ -6,6 +6,16 @@
 
 #include <CompilerKit/Frontend.h>
 
+/**
+ * @file Frontend.cc
+ * @author Amlal El Mahrouss (amlal@nekernel.org)
+ * @brief Frontend API of NeCTI
+ * @version 0.0.2
+ *
+ * @copyright Copyright (c) 2025 Amlal El Mahrouss and NeKernel.org Contributors
+ *
+ */
+
 namespace CompilerKit {
 /// find the perfect matching word in a haystack.
 /// \param haystack base string

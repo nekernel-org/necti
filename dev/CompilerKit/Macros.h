@@ -25,9 +25,5 @@
   KLASS& operator=(KLASS&&) = default; \
   KLASS(KLASS&&)            = default;
 
-/// @note xxxx is the error placeholder, in hexadecimal.
-#define NECTI_ERROR_PREFIX_CXX "CXXxxxx"
-#define NECTI_ERROR_PREFIX_CL "CLxxxx"
-#define NECTI_ERROR_PREFIX_ASM "ASMxxxx"
 
 #endif /* ifndef _NECTI_MACROS_H_ */

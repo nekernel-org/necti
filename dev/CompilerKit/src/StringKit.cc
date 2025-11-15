@@ -8,7 +8,7 @@
  */
 
 /**
- * @file BasicString.cc
+ * @file StringKit.cc
  * @author Amlal (amlal@nekernel.org)
  * @brief C++ string manipulation API.
  * @version 0.2

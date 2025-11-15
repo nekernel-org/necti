@@ -7,7 +7,7 @@
 /////////////////////////////////////////////////////////////////////////////////////////
 
 /// @file AssemblerAMD64.cc
-/// @author EL Mahrouss Amlal
+/// @author El Mahrouss Amlal
 /// @brief AMD64 Assembler.
 /// REMINDER: when dealing with an undefined symbol use (string
 /// size):LinkerFindSymbol:(string) so that ld will look for it.
