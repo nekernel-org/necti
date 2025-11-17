@@ -1,6 +1,6 @@
 /* -------------------------------------------
 
-  Copyright (C) 2024-2025 Amlal El Mahrouss, all rights reserved
+  Copyright (C) 2024-2025 Amlal El Mahrouss, Licensed under Apache 2.0
 
   @file DynamicLinker64PEF.cc
   @brief: C++ 64-Bit PEF Linker for NeKernel.org's NeKernel
@@ -26,7 +26,7 @@
   "NeKernel.org 64-Bit Linker (Preferred Executable Format) %s, (c) Amlal El Mahrouss, and " \
   "NeKernel Contributors "                                                                   \
   "2024-2025 "                                                                               \
-  "all rights reserved.\n"
+  "Licensed under Apache 2.0.\n"
 
 #define kPefNoCpu (0U)
 #define kPefNoSubCpu (0U)
