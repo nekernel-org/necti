@@ -1,6 +1,6 @@
 
 /***
-  (C) 2025 Amlal El Mahrouss
+  (C) 2025 Amlal El Mahrouss, licensed under Apache-2.0.
  */
 
 #ifndef DK_NEKERNEL_CONTRACT_H
