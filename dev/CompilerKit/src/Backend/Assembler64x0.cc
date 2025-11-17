@@ -1,6 +1,6 @@
 /* -------------------------------------------
 
-  Copyright (C) 2024-2025 Amlal EL Mahrouss, all rights reserved
+  Copyright (C) 2024-2025 Amlal EL Mahrouss, Licensed under Apache 2.0
 
 ------------------------------------------- */
 
@@ -9,7 +9,7 @@
 /////////////////////////////////////////////////////////////////////////////////////////
 
 // @file Assembler64x0.cc
-// @author EL Mahrouss Amlal
+// @author El Mahrouss Amlal
 // @brief 64x000 Assembler.
 
 // REMINDER: when dealing with an undefined symbol use (string

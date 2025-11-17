@@ -1,13 +1,13 @@
 /* -------------------------------------------
 
-  Copyright (C) 2024-2025 Amlal EL Mahrouss, all rights reserved
+  Copyright (C) 2024-2025 Amlal EL Mahrouss, Licensed under Apache 2.0
 
 ------------------------------------------- */
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
 /// @file AssemblerAMD64.cc
-/// @author EL Mahrouss Amlal
+/// @author El Mahrouss Amlal
 /// @brief AMD64 Assembler.
 /// REMINDER: when dealing with an undefined symbol use (string
 /// size):LinkerFindSymbol:(string) so that ld will look for it.
@@ -965,7 +965,7 @@ bool CompilerKit::EncoderAMD64::WriteLine(std::string line, std::string file) {
       {.fName = "si", .fModRM = 0x6}, {.fName = "di", .fModRM = 7},
   };
 
-  BOOL foundInstruction = false;
+  Bool foundInstruction = false;
 
   for (auto& opcodeAMD64 : kOpcodesAMD64) {
     // strict check here

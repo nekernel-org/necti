@@ -1,6 +1,6 @@
 /* -------------------------------------------
 
-  Copyright (C) 2024-2025 Amlal EL Mahrouss, all rights reserved
+  Copyright (C) 2024-2025 Amlal EL Mahrouss, Licensed under Apache 2.0
 
 ------------------------------------------- */
 
@@ -10,7 +10,7 @@
 /**
  * @file AssemblyFactory.cc
  * @author Amlal El Mahrouss (amlal@nekernel.org)
- * @brief Compiler API of NeCTI
+ * @brief Assembly API of NeCTI
  * @version 0.0.2
  *
  * @copyright Copyright (c) 2024-2025 Amlal El Mahrouss

@@ -1,6 +1,6 @@
 /* -------------------------------------------
 
-  Copyright (C) 2025 Amlal EL Mahrouss, all rights reserved
+  Copyright (C) 2025 Amlal EL Mahrouss, Licensed under Apache 2.0
 
 ------------------------------------------- */
 

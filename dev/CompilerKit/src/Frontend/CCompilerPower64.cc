@@ -2,7 +2,7 @@
  *	========================================================
  *
  *	CompilerPower64
- * 	Copyright (C) 2024-2025 Amlal El Mahrouss, all rights reserved.
+ * 	Copyright (C) 2024-2025 Amlal El Mahrouss, Licensed under Apache 2.0.
  *
  * 	========================================================
  */
@@ -22,7 +22,7 @@
 
 #define kExitOK 0
 
-/// @author EL Mahrouss Amlal (amlal@nekernel.org)
+/// @author El Mahrouss Amlal (amlal@nekernel.org)
 /// @file cc.cc
 /// @brief POWER64 C Compiler.
 

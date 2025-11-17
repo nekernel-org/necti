@@ -54,7 +54,7 @@ class POSIXMachContract : public DebuggerContract {
   POSIXMachContract(const POSIXMachContract&)            = default;
 
  public:
-  BOOL Attach(std::string path, std::string argv, ProcessID& pid) noexcept override {
+  Bool Attach(std::string path, std::string argv, ProcessID& pid) noexcept override {
     pid = fork();
 
     if (pid == 0) {
@@ -90,7 +90,7 @@ class POSIXMachContract : public DebuggerContract {
     m_path = path;
   }
 
-  BOOL BreakAt(std::string symbol) noexcept override {
+  Bool BreakAt(std::string symbol) noexcept override {
     if (!m_path.empty() && std::filesystem::exists(m_path) &&
         std::filesystem::is_regular_file(m_path)) {
       auto handle = dlopen(m_path.c_str(), RTLD_LAZY);
@@ -120,7 +120,7 @@ class POSIXMachContract : public DebuggerContract {
     return false;
   }
 
-  BOOL Break() noexcept override {
+  Bool Break() noexcept override {
     task_read_t task;
     task_for_pid(mach_task_self(), m_pid, &task);
 
@@ -129,7 +129,7 @@ class POSIXMachContract : public DebuggerContract {
     return ret == KERN_SUCCESS;
   }
 
-  BOOL Continue() noexcept override {
+  Bool Continue() noexcept override {
     task_read_t task;
     task_for_pid(mach_task_self(), m_pid, &task);
 
@@ -138,7 +138,7 @@ class POSIXMachContract : public DebuggerContract {
     return ret == KERN_SUCCESS;
   }
 
-  BOOL Detach() noexcept override {
+  Bool Detach() noexcept override {
     this->Continue();
 
     task_read_t task;

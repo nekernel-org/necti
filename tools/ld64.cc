@@ -1,13 +1,13 @@
 /* -------------------------------------------
 
-  Copyright (C) 2024-2025 Amlal EL Mahrouss, all rights reserved
+  Copyright (C) 2024-2025 Amlal EL Mahrouss, Licensed under Apache 2.0
 
 ------------------------------------------- */
 
 #include <CompilerKit/Defines.h>
 
 /// @file ld64.cc
-/// @brief NE Linker for AE objects.
+/// @brief NeCTI linker for AE objects.
 
 CK_IMPORT_C Int32 DynamicLinker64PEF(Int32 argc, Char const* argv[]);
 

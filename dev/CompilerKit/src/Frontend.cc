@@ -1,17 +1,27 @@
 /* -------------------------------------------
 
-  Copyright (C) 2025 Amlal EL Mahrouss, all rights reserved
+  Copyright (C) 2025 Amlal EL Mahrouss, Licensed under Apache 2.0
 
 ------------------------------------------- */
 
 #include <CompilerKit/Frontend.h>
+
+/**
+ * @file Frontend.cc
+ * @author Amlal El Mahrouss (amlal@nekernel.org)
+ * @brief Frontend API of NeCTI
+ * @version 0.0.2
+ *
+ * @copyright Copyright (c) 2025 Amlal El Mahrouss and NeKernel.org Contributors
+ *
+ */
 
 namespace CompilerKit {
 /// find the perfect matching word in a haystack.
 /// \param haystack base string
 /// \param needle the string we search for.
 /// \return if we found it or not.
-BOOL find_word(STLString haystack, STLString needle) noexcept {
+Bool find_word(STLString haystack, STLString needle) noexcept {
   auto index = haystack.find(needle);
 
   // check for needle validity.

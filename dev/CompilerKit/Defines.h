@@ -1,6 +1,6 @@
 /* -------------------------------------------
 
-  Copyright (C) 2024-2025 Amlal EL Mahrouss, all rights reserved
+  Copyright (C) 2024-2025 Amlal EL Mahrouss, Licensed under Apache 2.0
 
 ------------------------------------------- */
 
@@ -22,10 +22,6 @@
 #ifndef NO
 #define NO false
 #endif  // ifndef NO
-
-#ifndef BOOL
-#define BOOL bool
-#endif  // ifndef BOOL
 
 #define SizeType size_t
 

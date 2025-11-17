@@ -1,6 +1,6 @@
 /* -------------------------------------------
 
-  Copyright (C) 2024-2025 Amlal EL Mahrouss, all rights reserved
+  Copyright (C) 2024-2025 Amlal EL Mahrouss, Licensed under Apache 2.0
 
 ------------------------------------------- */
 
@@ -23,7 +23,7 @@ enum AsmKind : Int32 {
   k64X0Assembler,
   kPOWER64Assembler,
   kARM64Assembler,
-  kAssemblerCount,
+  kAssemblerCount = kARM64Assembler - kX64Assembler + 1,
 };
 
 Int32 main(Int32 argc, Char const* argv[]) {
@@ -42,7 +42,7 @@ Int32 main(Int32 argc, Char const* argv[]) {
           "rights reserved.\n");
       std::printf(
           "CompilerKit: Designed by Amlal El Mahrouss, Copyright (C) 2024-2025 Amlal El Mahrouss, "
-          "all rights reserved.\n");
+          "Licensed under Apache 2.0.\n");
 
       return 0;
     } else if (strstr(argv[index_arg], "-asm:x64")) {

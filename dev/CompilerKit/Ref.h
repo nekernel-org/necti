@@ -3,7 +3,7 @@
  *	========================================================
  *
  *	CompilerKit
- * 	Copyright (C) 2024-2025 Amlal El Mahrouss, all rights reserved.
+ * 	Copyright (C) 2024-2025 Amlal El Mahrouss, Licensed under Apache 2.0.
  *
  * 	========================================================
  */
@@ -13,8 +13,8 @@
 #include <CompilerKit/Defines.h>
 
 namespace CompilerKit {
-// @author EL Mahrouss Amlal
-// @brief Reference holder class, refers to a pointer of data in static memory.
+/// @author El Mahrouss Amlal
+/// @brief Reference holder class, refers to a pointer of data in static memory.
 template <typename T>
 class Ref final {
  public:
@@ -54,7 +54,7 @@ class Ref final {
   Bool m_Strong{false};
 };
 
-// @author EL Mahrouss Amlal
+// @author El Mahrouss Amlal
 // @brief Non null Reference holder class, refers to a pointer of data in static memory.
 template <typename T>
 class NonNullRef final {

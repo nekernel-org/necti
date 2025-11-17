@@ -2,7 +2,7 @@
  *	========================================================
  *
  *	CCompilerARM64
- * 	Copyright (C) 2024-2025 Amlal El Mahrouss, all rights reserved.
+ * 	Copyright (C) 2024-2025 Amlal El Mahrouss, Licensed under Apache 2.0.
  *
  * 	========================================================
  */
@@ -28,7 +28,7 @@
 /* This is part of the CompilerKit. */
 /* (c) Amlal El Mahrouss */
 
-/// @author EL Mahrouss Amlal (amlel)
+/// @author El Mahrouss Amlal (amlel)
 /// @file ARM64-cc.cc
 /// @brief ARM64 C Compiler.
 

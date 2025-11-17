@@ -2,13 +2,13 @@
  *	========================================================
  *
  *	CompilerKit
- * 	Copyright (C) 2024-2025 Amlal El Mahrouss, all rights reserved.
+ * 	Copyright (C) 2024-2025 Amlal El Mahrouss, Licensed under Apache 2.0.
  *
  * 	========================================================
  */
 
 /**
- * @file BasicString.cc
+ * @file StringKit.cc
  * @author Amlal (amlal@nekernel.org)
  * @brief C++ string manipulation API.
  * @version 0.2

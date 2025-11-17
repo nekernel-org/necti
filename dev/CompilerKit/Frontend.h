@@ -1,6 +1,6 @@
 /* -------------------------------------------
 
-  Copyright (C) 2024-2025 Amlal EL Mahrouss, all rights reserved
+  Copyright (C) 2024-2025 Amlal EL Mahrouss, Licensed under Apache 2.0
 
 ------------------------------------------- */
 
@@ -11,7 +11,7 @@
 #define CK_COMPILER_FRONTEND : public ::CompilerKit::CompilerFrontendInterface
 
 namespace CompilerKit {
-inline static auto kInvalidFrontend = "?";
+inline static auto kInvalidFrontend = "(null)";
 
 struct SyntaxLeafList;
 struct SyntaxLeafList;
@@ -85,7 +85,7 @@ struct SyntaxLeafList final {
 /// \param haystack base string
 /// \param needle the string we search for.
 /// \return if we found it or not.
-BOOL find_word(STLString haystack, STLString needle) noexcept;
+Bool find_word(STLString haystack, STLString needle) noexcept;
 
 /// find a word within strict conditions and returns a range of it.
 /// \param haystack
@@ -113,6 +113,7 @@ class CompilerFrontendInterface {
   //! @brief What language are we dealing with?
   virtual const char* Language() { return kInvalidFrontend; }
 
+  /// @brief Checks if language is a valid frontend.
   virtual bool IsValid() { return strcmp(this->Language(), kInvalidFrontend) > 0; }
 };
 }  // namespace CompilerKit

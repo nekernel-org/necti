@@ -2,18 +2,34 @@
  *	========================================================
  *
  *	C++ Compiler Driver
- * 	Copyright (C) 2024-2025 Amlal El Mahrouss, all rights reserved.
+ * 	Copyright (C) 2024-2025 Amlal El Mahrouss, Licensed under Apache 2.0.
  *
  * 	========================================================
  */
 
 /// BUGS: 0
 
+///////////////////////
+
+// ANSI ESCAPE CODES //
+
+///////////////////////
+
+///////////////////////
+
+// MACROS //
+
+///////////////////////
+
 #define kPrintF printf
 #define kPrintErr std::cerr
 
 #define kExitOK (EXIT_SUCCESS)
 #define kExitNO (EXIT_FAILURE)
+
+#define kBlank "\e[0;30m"
+#define kRed "\e[0;31m"
+#define kWhite "\e[0;97m"
 
 #include <CompilerKit/Frontend.h>
 #include <CompilerKit/PEF.h>
@@ -27,19 +43,9 @@
 /* This is part of the CompilerKit. */
 /* (c) Amlal El Mahrouss 2024-2025 */
 
-/// @author EL Mahrouss Amlal (amlal@nekernel.org)
+/// @author El Mahrouss Amlal (amlal@nekernel.org)
 /// @file CPlusPlusCompilerAMD64.cxx
 /// @brief Optimized C++ Compiler Driver.
-
-///////////////////////
-
-// ANSI ESCAPE CODES //
-
-///////////////////////
-
-#define kBlank "\e[0;30m"
-#define kRed "\e[0;31m"
-#define kWhite "\e[0;97m"
 
 /////////////////////////////////////
 
@@ -49,7 +55,7 @@
 
 /// @internal
 // Avoids relative_path which could discard parts of the original.
-std::filesystem::path expand_home(const std::filesystem::path& input) {
+std::filesystem::path necti_expand_home(const std::filesystem::path& input) {
   const std::string& raw = input.string();
 
   if (!raw.empty() && raw[0] == '~') {
@@ -115,7 +121,7 @@ static std::vector<CompilerKit::CompilerKeyword> kKeywords;
 
 /////////////////////////////////////////
 
-static CompilerKit::AssemblyFactory kFactory;
+static CompilerKit::AssemblyFactory kAssembler;
 static Boolean                      kInStruct    = false;
 static Boolean                      kOnWhileLoop = false;
 static Boolean                      kOnForLoop   = false;
@@ -138,7 +144,7 @@ class CompilerFrontendCPlusPlusAMD64 final CK_COMPILER_FRONTEND {
 
 /// @internal compiler variables
 
-static CompilerFrontendCPlusPlusAMD64* kCompilerFrontend = nullptr;
+static CompilerFrontendCPlusPlusAMD64* kFrontend = nullptr;
 
 static std::vector<CompilerKit::STLString> kRegisterMap;
 
@@ -739,7 +745,7 @@ class AssemblyCPlusPlusInterfaceAMD64 final CK_ASSEMBLY_INTERFACE {
   UInt32 Arch() noexcept override { return CompilerKit::AssemblyFactory::kArchAMD64; }
 
   Int32 CompileToFormat(CompilerKit::STLString src, Int32 arch) override {
-    if (kCompilerFrontend == nullptr) return kExitNO;
+    if (kFrontend == nullptr) return kExitNO;
 
     CompilerKit::STLString dest = src;
     dest += ".pp.masm";
@@ -753,7 +759,7 @@ class AssemblyCPlusPlusInterfaceAMD64 final CK_ASSEMBLY_INTERFACE {
     out_fp << "#org " << kOrigin << "\n\n";
 
     while (std::getline(src_fp, line_source)) {
-      out_fp << kCompilerFrontend->Compile(line_source, src).fUserValue;
+      out_fp << kFrontend->Compile(line_source, src).fUserValue;
     }
 
     return kExitOK;
@@ -830,15 +836,15 @@ NECTI_MODULE(CompilerCPlusPlusAMD64) {
 
   kErrorLimit = 0;
 
-  kCompilerFrontend = new CompilerFrontendCPlusPlusAMD64();
-  kFactory.Mount(new AssemblyCPlusPlusInterfaceAMD64());
+  kFrontend = new CompilerFrontendCPlusPlusAMD64();
+  kAssembler.Mount(new AssemblyCPlusPlusInterfaceAMD64());
 
   CompilerKit::install_signal(SIGSEGV, Detail::drvi_crash_handler);
 
   // Ensure cleanup on exit
   std::atexit([]() {
-    delete kCompilerFrontend;
-    kCompilerFrontend = nullptr;
+    delete kFrontend;
+    kFrontend = nullptr;
   });
 
   for (auto index = 1UL; index < argc; ++index) {
@@ -852,12 +858,11 @@ NECTI_MODULE(CompilerCPlusPlusAMD64) {
 
       if (strcmp(argv[index], "-cxx-verbose") == 0) {
         kVerbose = true;
-
         continue;
       }
 
       if (strcmp(argv[index], "-cxx-dialect") == 0) {
-        if (kCompilerFrontend) std::cout << kCompilerFrontend->Language() << "\n";
+        if (kFrontend) std::cout << kFrontend->Language() << "\n";
 
         return NECTI_SUCCESS;
       }
@@ -890,7 +895,7 @@ NECTI_MODULE(CompilerCPlusPlusAMD64) {
 
     for (CompilerKit::STLString ext : exts) {
       if (argv_i.ends_with(ext)) {
-        if (kFactory.Compile(argv_i, kMachine) != kExitOK) {
+        if (kAssembler.Compile(argv_i, kMachine) != kExitOK) {
           return NECTI_INVALID_DATA;
         }
 
@@ -899,7 +904,7 @@ NECTI_MODULE(CompilerCPlusPlusAMD64) {
     }
   }
 
-  kFactory.Unmount();
+  kAssembler.Unmount();
 
   return NECTI_SUCCESS;
 }
