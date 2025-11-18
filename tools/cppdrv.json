@@ -1,5 +1,5 @@
 {
-  "compiler_path": "g++",
+  "compiler_path": "clang++",
   "compiler_std": "c++20",
   "headers_path": ["../dev/CompilerKit", "../dev/", "../dev/CompilerKit/src/Detail"],
   "sources_path": ["cppdrv.cc"],

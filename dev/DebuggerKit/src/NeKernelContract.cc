@@ -2,7 +2,7 @@
   DebuggerKit
   (C) 2025 Amlal El Mahrouss
   File: NeKernelContract.cc
-  Purpose: NeKernel Debugger
+  Purpose: NeCTI Debugger
 */
 
 #ifdef DK_NEKERNEL_DEBUGGER

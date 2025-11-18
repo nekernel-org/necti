@@ -7,6 +7,8 @@
 #ifndef __NECTI_FS_H__
 #define __NECTI_FS_H__
 
+#include <LibC++/defines.h>
+
 namespace std {
 class path;
 class filesystem_error;
