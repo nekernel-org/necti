@@ -7,7 +7,7 @@
 /////////////////////////////////////////////////////////////////////////////////////////
 
 /// @file AssemblerARM64.cc
-/// @author El Mahrouss Amlal
+/// @author Amlal El Mahrouss
 /// @brief 'ACORN' Assembler.
 
 /// REMINDER: when dealing with an undefined symbol use (string

@@ -5,10 +5,6 @@
   Purpose: Common Debugger symbols.
 */
 
-#include <cstdint>
-#include <iostream>
-#include <string>
-
 #define kBlank "\e[0;30m"
 #define kRed "\e[0;31m"
 #define kWhite "\e[0;97m"
@@ -25,4 +21,4 @@ static DebuggerKit::POSIX::POSIXMachContract kDebugger;
 
 static DebuggerKit::ProcessID kPID           = 0L;
 static DebuggerKit::CAddress  kActiveAddress = nullptr;
-static std::string            kPath          = "";
+static CompilerKit::STLString            kPath          = "";

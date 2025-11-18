@@ -25,7 +25,7 @@ tools/pef-aarch64-cdrv
 
 Examples/
 
-# NeKernel/MP-UX executable
+# NeKernel executable
 *.exec
 *.bin
 

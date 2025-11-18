@@ -27,7 +27,7 @@ namespace Detail {
   typedef int64_t           dk_socket_type;
 }  // namespace Detail
 
-class NeKernelContract DK_DEBUGGER_CONTRACT {
+class NeKernelContract final DK_DEBUGGER_CONTRACT {
  public:
   NeKernelContract();
   virtual ~NeKernelContract() override;
@@ -37,8 +37,8 @@ class NeKernelContract DK_DEBUGGER_CONTRACT {
   NeKernelContract(const NeKernelContract&)            = default;
 
  public:
-  bool Attach(std::string path, std::string arg_v, ProcessID& pid) noexcept override;
-  bool BreakAt(std::string symbol) noexcept override;
+  bool Attach(CompilerKit::STLString path, CompilerKit::STLString arg_v, ProcessID& pid) noexcept override;
+  bool BreakAt(CompilerKit::STLString symbol) noexcept override;
   bool Break() noexcept override;
   bool Continue() noexcept override;
   bool Detach() noexcept override;

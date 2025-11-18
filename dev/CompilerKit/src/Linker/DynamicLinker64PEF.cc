@@ -7,7 +7,7 @@
 
 ------------------------------------------- */
 
-/// @author El Mahrouss Amlal (amlal@nekernel.org)
+/// @author Amlal El Mahrouss (amlal@nekernel.org)
 /// @brief NeKernel.org 64-bit PEF Linker.
 /// Last Rev: Sat Apr 19 CET 2025
 /// @note Do not look up for anything with .code64/.data64/.zero64!

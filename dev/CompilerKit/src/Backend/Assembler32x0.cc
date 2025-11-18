@@ -9,7 +9,7 @@
 /////////////////////////////////////////////////////////////////////////////////////////
 
 // @file 32asm.cc
-// @author El Mahrouss Amlal
+// @author Amlal El Mahrouss
 // @brief 32x0 Assembler.
 
 // REMINDER: when dealing with an undefined symbol use (string

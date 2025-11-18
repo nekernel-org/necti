@@ -20,7 +20,7 @@
 
 #define kMacroPrefix '#'
 
-/// @author El Mahrouss Amlal (amlel)
+/// @author Amlal El Mahrouss (amlal@nekernel.org)
 /// @file CPlusPlusPreprocessor.cc
 /// @brief Preprocessor.
 
