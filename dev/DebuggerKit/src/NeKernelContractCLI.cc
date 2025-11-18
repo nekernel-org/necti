@@ -2,7 +2,7 @@
   DebuggerKit
   (C) 2025 Amlal El Mahrouss
   File: NeKernelContract.cc
-  Purpose: NeKernel Debugger CLI.
+  Purpose: NeCTI Debugger CLI.
 */
 
 #ifdef DK_NEKERNEL_DEBUGGER
@@ -30,7 +30,7 @@ static void dbgi_ctrlc_handler(std::int32_t _) {
 
 NECTI_MODULE(DebuggerNeKernel) {
   pfd::notify("Debugger Event",
-              "NeKernel Debugger\n(C) 2025 Amlal El Mahrouss and NeKernel.org contributors, all "
+              "NeCTI Debugger\n(C) 2025 Amlal El Mahrouss and NeKernel.org contributors, all "
               "rights reserved.");
 
   if (argc >= 5 && std::string(argv[1]) == "-k" && argv[2] != nullptr &&

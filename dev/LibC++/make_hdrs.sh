@@ -1,6 +1,6 @@
 #! /bin/sh
 
-outputDir=stdcxx/
+outputDir=libCxx/
 
 mkdir -p $outputDir
 

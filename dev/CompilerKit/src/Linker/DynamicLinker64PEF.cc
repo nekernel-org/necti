@@ -22,11 +22,7 @@
 #include <CompilerKit/Version.h>
 #include <CompilerKit/utils/CompilerUtils.h>
 
-#define kLinkerVersionStr                                                                    \
-  "NeKernel.org 64-Bit Linker (Preferred Executable Format) %s, (c) Amlal El Mahrouss, and " \
-  "NeKernel Contributors "                                                                   \
-  "2024-2025 "                                                                               \
-  "Licensed under Apache 2.0.\n"
+#define kLinkerVersionStr "NeCTI 64-Bit Linker (Preferred Executable Format)"
 
 #define kPefNoCpu (0U)
 #define kPefNoSubCpu (0U)
@@ -36,7 +32,7 @@
 #define kLinkerAbiContainer "__PEFContainer:ABI:"
 
 #define kPrintF printf
-#define kLinkerSplash() kConsoleOut << std::printf(kLinkerVersionStr, kDistVersion)
+#define kLinkerSplash() kConsoleOut << kLinkerVersionStr << std::endl
 
 /// @brief PEF stack size symbol.
 #define kLinkerStackSizeSymbol "__PEFSizeOfReserveStack"
