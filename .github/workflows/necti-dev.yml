@@ -1,0 +1,21 @@
+name: C/C++ CI (NeCTI Dev)
+
+on:
+  push:
+    branches: [ "dev" ]
+  pull_request:
+    branches: [ "dev" ]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v4
+    - name: Install Packages
+      run: sudo apt update && sudo apt install build-essential && sudo apt install libboost-dev
+    - name: Build
+      run: cd dev/CompilerKit && nebuild ck-posix.json
+
+

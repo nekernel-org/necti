@@ -27,7 +27,7 @@
 /* This is part of the CompilerKit. */
 /* (c) Amlal El Mahrouss */
 
-/// @author El Mahrouss Amlal (amlel)
+/// @author Amlal El Mahrouss (amlal@nekernel.org)
 /// @file 64x0-cc.cc
 /// @brief 64x0 C Compiler.
 
@@ -59,7 +59,7 @@ struct CompilerRegisterMap final {
 };
 
 // \brief Map for C structs
-// \author amlel
+// \author amlal@nekernel.org
 struct CompilerStructMap final {
   // 'my_foo'
   std::string fName;

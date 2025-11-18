@@ -22,7 +22,7 @@
 
 #define kExitOK 0
 
-/// @author El Mahrouss Amlal (amlal@nekernel.org)
+/// @author Amlal El Mahrouss (amlal@nekernel.org)
 /// @file cc.cc
 /// @brief POWER64 C Compiler.
 
@@ -50,7 +50,7 @@ struct CompilerRegisterMap final {
 };
 
 // \brief Map for C structs
-// \author amlel
+// \author amlal@nekernel.org
 struct CompilerStructMap final {
   /// 'struct::my_foo'
   std::string fName;

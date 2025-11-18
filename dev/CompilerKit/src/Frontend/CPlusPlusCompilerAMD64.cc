@@ -43,7 +43,7 @@
 /* This is part of the CompilerKit. */
 /* (c) Amlal El Mahrouss 2024-2025 */
 
-/// @author El Mahrouss Amlal (amlal@nekernel.org)
+/// @author Amlal El Mahrouss (amlal@nekernel.org)
 /// @file CPlusPlusCompilerAMD64.cxx
 /// @brief Optimized C++ Compiler Driver.
 
@@ -71,14 +71,14 @@ std::filesystem::path necti_expand_home(const std::filesystem::path& input) {
 }
 
 struct CompilerRegisterMap final {
-  CompilerKit::STLString fName;
-  CompilerKit::STLString fReg;
+  CompilerKit::STLString fName{};
+  CompilerKit::STLString fReg{};
 };
 
 /// \brief Offset based struct/class
 struct CompilerStructMap final {
-  CompilerKit::STLString                                 fName;
-  CompilerKit::STLString                                 fReg;
+  CompilerKit::STLString                                 fName{};
+  CompilerKit::STLString                                 fReg{};
   std::vector<std::pair<UInt32, CompilerKit::STLString>> fOffsets;
 };
 
@@ -86,8 +86,8 @@ struct CompilerStructMap final {
 struct CompilerState final {
   std::vector<CompilerRegisterMap> fStackMapVector;
   std::vector<CompilerStructMap>   fStructMapVector;
-  CompilerKit::STLString           fLastFile;
-  CompilerKit::STLString           fLastError;
+  CompilerKit::STLString           fLastFile{};
+  CompilerKit::STLString           fLastError{};
 };
 
 /// @brief prints an error into stdout.

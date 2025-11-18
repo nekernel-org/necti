@@ -44,7 +44,7 @@ CK_IMPORT_C kern_return_t mach_vm_protect(vm_map_t target_task, mach_vm_address_
 namespace DebuggerKit::POSIX {
 /// \brief POSIXMachContract engine interface class in C++
 /// \author Amlal El Mahrouss
-class POSIXMachContract : public DebuggerContract {
+class POSIXMachContract final DK_DEBUGGER_CONTRACT {
  public:
   explicit POSIXMachContract()  = default;
   ~POSIXMachContract() override = default;
@@ -54,7 +54,7 @@ class POSIXMachContract : public DebuggerContract {
   POSIXMachContract(const POSIXMachContract&)            = default;
 
  public:
-  Bool Attach(std::string path, std::string argv, ProcessID& pid) noexcept override {
+  Bool Attach(CompilerKit::STLString path, CompilerKit::STLString argv, ProcessID& pid) noexcept override {
     pid = fork();
 
     if (pid == 0) {
@@ -82,7 +82,7 @@ class POSIXMachContract : public DebuggerContract {
     return true;
   }
 
-  void SetPath(std::string path) noexcept {
+  void SetPath(CompilerKit::STLString path) noexcept {
     if (path.empty()) {
       return;
     }
@@ -90,7 +90,7 @@ class POSIXMachContract : public DebuggerContract {
     m_path = path;
   }
 
-  Bool BreakAt(std::string symbol) noexcept override {
+  Bool BreakAt(CompilerKit::STLString symbol) noexcept override {
     if (!m_path.empty() && std::filesystem::exists(m_path) &&
         std::filesystem::is_regular_file(m_path)) {
       auto handle = dlopen(m_path.c_str(), RTLD_LAZY);
@@ -112,6 +112,7 @@ class POSIXMachContract : public DebuggerContract {
 
       mach_vm_protect(task, (mach_vm_address_t) addr, sizeof(uint32_t), false,
                       VM_PROT_READ | VM_PROT_WRITE | VM_PROT_EXECUTE);
+                      
       mach_vm_write(task, (mach_vm_address_t) addr, (vm_offset_t) &brk_inst, sizeof(addr));
 
       return true;
@@ -151,7 +152,7 @@ class POSIXMachContract : public DebuggerContract {
 
  private:
   ProcessID   m_pid{0};
-  std::string m_path;
+  CompilerKit::STLString m_path;
 };
 }  // namespace DebuggerKit::POSIX
 

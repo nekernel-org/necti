@@ -13,7 +13,7 @@
 #include <CompilerKit/Defines.h>
 
 namespace CompilerKit {
-/// @author El Mahrouss Amlal
+/// @author Amlal El Mahrouss
 /// @brief Reference holder class, refers to a pointer of data in static memory.
 template <typename T>
 class Ref final {
@@ -54,7 +54,7 @@ class Ref final {
   Bool m_Strong{false};
 };
 
-// @author El Mahrouss Amlal
+// @author Amlal El Mahrouss
 // @brief Non null Reference holder class, refers to a pointer of data in static memory.
 template <typename T>
 class NonNullRef final {

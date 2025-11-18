@@ -7,7 +7,7 @@
 <br/>
 
 ![CI](https://github.com/amlel-el-mahrouss/cc/actions/workflows/c-cpp.yml/badge.svg)
-[![License: GPL-3.0](https://img.shields.io/badge/license-GPL--3.0-blue.svg)](LICENSE)
+[![License: GPL-3.0](https://img.shields.io/badge/license-Apache--2.0-blue.svg)](LICENSE)
 
 ## Overview:
 
@@ -42,7 +42,7 @@ NeCTI is a modern, multi-platform compiler instractucture designed for modularit
 ```sh
 git clone git@github.com:nekernel-org/necti.git
 cd necti
-# Either build debugger or compiler libraries/tools using nebuild.
+# Either build the debugger or compiler libraries/tools using nebuild.
 ```
 
 ###### Copyright (C) 2024-2025 Amlal El Mahrouss & NeKernel.org Contributors, Licensed under Apache 2.0.
