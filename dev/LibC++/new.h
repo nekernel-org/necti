@@ -9,9 +9,21 @@
 
 #include <LibC++/defines.h>
 
+struct __placement_new_info;
+
 void* operator new(size_t);
 void* operator new[](size_t);
 
 void operator delete(void*) noexcept;
-void operator delete(void*, unsigned long);
+void operator delete(void*, unsigned long) noexcept;
+
 void operator delete[](void*) noexcept;
+
+/// =========================================================
+/// @brief Placement new information structure
+/// =========================================================
+struct __placement_new_info {
+  void* __base;
+  int __align;
+  long long __size;
+};
