@@ -7,6 +7,12 @@
 #ifndef __NECTI_DEFINES_H__
 #define __NECTI_DEFINES_H__
 
+/// =========================================================== ///
+/// @file Defines.h
+/// @author Amlal El Mahrouss
+/// @brief Basic defines and types for CompilerKit.
+/// =========================================================== ///
+
 #ifndef Yes
 #define Yes true
 #endif  // ifndef Yes

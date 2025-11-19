@@ -6,7 +6,7 @@
 
 #pragma once
 
-#define kDistVersion "v0.0.6-debuggerkit"
+#define kDistVersion "v0.0.7-debuggerkit"
 #define kDistVersionBCD 0x0001
 
 #define ToString(X) Stringify(X)

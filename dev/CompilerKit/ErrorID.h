@@ -11,6 +11,12 @@
 
 #include <CompilerKit/Defines.h>
 
+/// =========================================================== ///
+/// @file ErrorID.h
+/// @author Amlal El Mahrouss
+/// @brief Error IDs for CompilerKit.
+/// =========================================================== ///
+
 #define NECTI_SUCCESS 0
 #define NECTI_EXEC_ERROR -30
 #define NECTI_FILE_NOT_FOUND -31

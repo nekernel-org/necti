@@ -13,14 +13,20 @@
 namespace DebuggerKit {
 class DebuggerContract;
 
+/// =========================================================== ///
 /// \brief Process ID
+/// =========================================================== ///
 typedef uint64_t ProcessID;
 
+/// =========================================================== ///
 /// \brief Address type, a la BSD.
+/// =========================================================== ///
 typedef char* CAddress;
 
+/// =========================================================== ///
 /// \brief Debugger contract class in C++, as per the design states.
 /// \author Amlal El Mahrouss
+/// =========================================================== ///
 class DebuggerContract {
  public:
   explicit DebuggerContract() = default;

@@ -9,6 +9,12 @@
 
 #pragma once
 
+/// =========================================================== ///
+/// @file ErrorOr.h
+/// @author Amlal El Mahrouss
+/// @brief ErrorOr for CompilerKit.
+/// =========================================================== ///
+
 #include <CompilerKit/StringKit.h>
 #include <CompilerKit/Defines.h>
 #include <CompilerKit/ErrorID.h>
