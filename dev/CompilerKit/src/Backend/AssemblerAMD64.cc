@@ -25,8 +25,8 @@
 #define __ASM_NEED_AMD64__ 1
 #endif
 
-#define kAssemblerPragmaSymStr "#"
-#define kAssemblerPragmaSym '#'
+#define kAssemblerPragmaSymStr "%%"
+#define kAssemblerPragmaSym '%'
 
 #include <CompilerKit/AE.h>
 #include <CompilerKit/Frontend.h>
