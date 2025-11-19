@@ -13,6 +13,12 @@
 #include <CompilerKit/Defines.h>
 #include <CompilerKit/ErrorOr.h>
 
+/// =========================================================== ///
+/// @file StringKit.h
+/// @author Amlal El Mahrouss
+/// @brief StringKit for CompilerKit.
+/// =========================================================== ///
+
 namespace CompilerKit {
 class StringBuilder;
 class BasicString;

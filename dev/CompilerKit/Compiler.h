@@ -17,7 +17,9 @@ namespace CompilerKit {
 class AssemblyFactory;
 class AssemblyInterface;
 
+/// =========================================================== ///
 /// @brief Simple assembly factory
+/// =========================================================== ///
 class AssemblyFactory final {
  public:
   explicit AssemblyFactory() = default;
@@ -47,8 +49,10 @@ class AssemblyFactory final {
   AssemblyInterface* fMounted{nullptr};
 };
 
+/// =========================================================== ///
 ///	@brief Assembly to binary generator class.
 /// @note This interface creates according to the CPU target of the child class.
+/// =========================================================== ///
 class AssemblyInterface {
  public:
   explicit AssemblyInterface() = default;
@@ -58,11 +62,16 @@ class AssemblyInterface {
 
   virtual UInt32 Arch() noexcept { return AssemblyFactory::kArchAMD64; }
 
+  /// =========================================================== ///
   /// @brief compile to object file.
   /// @note Example C++ -> MASM -> AE object.
+  /// =========================================================== ///
   virtual Int32 CompileToFormat(std::string src, Int32 arch) = 0;
 };
 
+/// =========================================================== ///
+/// @brief Number casting unions for different sizes.
+/// =========================================================== ///
 union NumberCastBase {
   NumberCastBase()  = default;
   ~NumberCastBase() = default;
@@ -108,6 +117,9 @@ union NumberCast8 final {
   UInt8 raw;
 };
 
+/// =========================================================== ///
+/// @brief Assembly encoder interface.
+/// =========================================================== ///
 class EncoderInterface {
  public:
   explicit EncoderInterface() = default;
@@ -119,6 +131,10 @@ class EncoderInterface {
   virtual bool        WriteLine(std::string line, std::string file)               = 0;
   virtual bool        WriteNumber(const std::size_t& pos, std::string& from_what) = 0;
 };
+
+/// =========================================================== ///
+/// @brief Different architecture encoders.
+/// =========================================================== ///
 
 #ifdef __ASM_NEED_AMD64__
 

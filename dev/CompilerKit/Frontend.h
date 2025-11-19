@@ -17,7 +17,10 @@ struct SyntaxLeafList;
 struct SyntaxLeafList;
 struct CompilerKeyword;
 
+/// =========================================================== ///
 /// we want to do that because to separate keywords.
+/// =========================================================== ///
+
 enum KeywordKind {
   kKeywordKindNamespace,
   kKeywordKindFunctionStart,
@@ -56,7 +59,9 @@ enum KeywordKind {
   kKeywordKindPtr,
 };
 
+/// =========================================================== ///
 /// \brief Compiler keyword information struct.
+/// =========================================================== ///
 struct CompilerKeyword {
   CompilerKeyword(STLString name, KeywordKind kind) : keyword_name(name), keyword_kind(kind) {}
 
@@ -81,20 +86,26 @@ struct SyntaxLeafList final {
   SyntaxLeaf&              At(SizeType index) { return fLeafList[index]; }
 };
 
+/// =========================================================== ///
 /// find the perfect matching word in a haystack.
 /// \param haystack base string
 /// \param needle the string we search for.
 /// \return if we found it or not.
+/// =========================================================== ///
 Bool find_word(STLString haystack, STLString needle) noexcept;
 
+/// =========================================================== ///
 /// find a word within strict conditions and returns a range of it.
 /// \param haystack
 /// \param needle
 /// \return position of needle.
+/// =========================================================== ///
 SizeType find_word_range(STLString haystack, STLString needle) noexcept;
 
+/// =========================================================== ///
 /// @brief Compiler backend, implements a frontend, such as C, C++...
 /// See Toolchain, for some examples.
+/// =========================================================== ///
 class CompilerFrontendInterface {
  public:
   explicit CompilerFrontendInterface() = default;
@@ -102,18 +113,26 @@ class CompilerFrontendInterface {
 
   NECTI_COPY_DEFAULT(CompilerFrontendInterface);
 
+  /// =========================================================== ///
   // NOTE: cast this to your user defined ast.
+  /// =========================================================== ///
   typedef void* AstType;
 
+  /// =========================================================== ///
   //! @brief Compile a syntax tree ouf of the text.
   //! Also takes the source file name for metadata.
+  /// =========================================================== ///
 
   virtual CompilerKit::SyntaxLeafList::SyntaxLeaf Compile(std::string text, std::string file) = 0;
 
+  /// =========================================================== ///
   //! @brief What language are we dealing with?
+  /// =========================================================== ///
   virtual const char* Language() { return kInvalidFrontend; }
 
+  /// =========================================================== ///
   /// @brief Checks if language is a valid frontend.
+  /// =========================================================== ///
   virtual bool IsValid() { return strcmp(this->Language(), kInvalidFrontend) > 0; }
 };
 }  // namespace CompilerKit

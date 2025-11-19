@@ -27,6 +27,10 @@ namespace Detail {
   typedef int64_t           dk_socket_type;
 }  // namespace Detail
 
+/// =========================================================== ///
+/// \brief NeKernel Debugger Contract
+/// \author Amlal El Mahrouss
+/// =========================================================== ///
 class NeKernelContract final DK_DEBUGGER_CONTRACT {
  public:
   NeKernelContract();

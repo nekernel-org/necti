@@ -42,8 +42,10 @@ CK_IMPORT_C kern_return_t mach_vm_protect(vm_map_t target_task, mach_vm_address_
 #define PTRACE_PEEKTEXT PT_READ_I
 
 namespace DebuggerKit::POSIX {
-/// \brief POSIXMachContract engine interface class in C++
+/// =========================================================== ///
+/// \brief POSIXMachContract engine class in C++
 /// \author Amlal El Mahrouss
+/// =========================================================== ///
 class POSIXMachContract final DK_DEBUGGER_CONTRACT {
  public:
   explicit POSIXMachContract()  = default;
