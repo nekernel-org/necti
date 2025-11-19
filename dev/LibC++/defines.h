@@ -14,8 +14,6 @@ extern "C" {
 
 #define __ATTRIBUTE(X) __attribute__((X))
 
-#ifndef __GNUC__
-
 typedef __SIZE_TYPE__  size_t;
 typedef __SSIZE_TYPE__ ssize_t;
 
@@ -32,11 +30,7 @@ typedef char*  caddr_t;
 #define NULL ((voidptr_t) 0)
 #endif  // !null
 
-#ifdef __GNUC__
-#include <LibC++/alloca.h>
-#elif defined(__NECTI__)
-#define __alloca(sz) __lc_alloca(sz)
-#endif
+#define __alloca(sz) __ck_alloca(sz)
 
 #define __deref(ptr) (*(ptr))
 
@@ -82,7 +76,5 @@ typedef union double_cast {
 
   double f;
 } __ATTRIBUTE(packed) double_cast_t;
-
-#endif  // ifndef __GNUC__
 
 #endif /* __NECTI_DEFINES_H__ */
