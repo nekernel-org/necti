@@ -90,14 +90,6 @@ struct CompilerState final {
   CompilerKit::STLString           fLastError{};
 };
 
-/// @brief prints an error into stdout.
-/// @param reason the reason of the error.
-/// @param file where does it originate from?
-void print_error(const CompilerKit::STLString& reason,
-                 const CompilerKit::STLString& file) noexcept {
-  kPrintErr << kRed << "Error in " << file << ": " << reason << kWhite << std::endl;
-}
-
 static CompilerState kState;
 
 static Int32 kOnClassScope = 0;
@@ -180,7 +172,7 @@ CompilerKit::SyntaxLeafList::SyntaxLeaf CompilerFrontendCPlusPlusAMD64::Compile(
     CompilerKit::STLString text, CompilerKit::STLString file) {
   CompilerKit::SyntaxLeafList::SyntaxLeaf syntax_tree;
 
-  if (text.length() < 1) return syntax_tree;
+  if (text.empty()) return syntax_tree;
 
   std::size_t                                                       index = 0UL;
   std::vector<std::pair<CompilerKit::CompilerKeyword, std::size_t>> keywords_list;
@@ -755,8 +747,8 @@ class AssemblyCPlusPlusInterfaceAMD64 final CK_ASSEMBLY_INTERFACE {
 
     CompilerKit::STLString line_source;
 
-    out_fp << "#bits 64\n";
-    out_fp << "#org " << kOrigin << "\n\n";
+    out_fp << "%bits 64\n";
+    out_fp << "%org " << kOrigin << "\n\n";
 
     while (std::getline(src_fp, line_source)) {
       out_fp << kFrontend->Compile(line_source, src).fUserValue;
