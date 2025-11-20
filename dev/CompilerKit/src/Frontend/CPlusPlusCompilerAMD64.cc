@@ -90,14 +90,6 @@ struct CompilerState final {
   CompilerKit::STLString           fLastError{};
 };
 
-/// @brief prints an error into stdout.
-/// @param reason the reason of the error.
-/// @param file where does it originate from?
-void print_error(const CompilerKit::STLString& reason,
-                 const CompilerKit::STLString& file) noexcept {
-  kPrintErr << kRed << "Error in " << file << ": " << reason << kWhite << std::endl;
-}
-
 static CompilerState kState;
 
 static Int32 kOnClassScope = 0;
