@@ -46,7 +46,7 @@ enum {
   kPefArchIntel86S,
   kPefArchAMD64,
   kPefArchRISCV,
-  kPefArch64000, /* 64x0 RISC architecture. */
+  kPefArch64000, /* Open64x0 RISC architecture. */
   kPefArch32000,
   kPefArchPowerPC, /* 64-bit POWER architecture. */
   kPefArchARM64,

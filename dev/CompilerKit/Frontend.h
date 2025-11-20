@@ -18,7 +18,7 @@ struct SyntaxLeafList;
 struct CompilerKeyword;
 
 /// =========================================================== ///
-/// we want to do that because to separate keywords.
+/// @note we want to do that to separate keywords.
 /// =========================================================== ///
 
 enum KeywordKind {
@@ -79,7 +79,7 @@ struct SyntaxLeafList final {
   };
 
   std::vector<SyntaxLeaf> fLeafList;
-  SizeType                fNumLeafs;
+  SizeType                fNumLeafs{0};
 
   SizeType                 SizeOf() { return fNumLeafs; }
   std::vector<SyntaxLeaf>& Get() { return fLeafList; }
@@ -116,7 +116,7 @@ class CompilerFrontendInterface {
   /// =========================================================== ///
   // NOTE: cast this to your user defined ast.
   /// =========================================================== ///
-  typedef void* AstType;
+  typedef VoidPtr AstType;
 
   /// =========================================================== ///
   //! @brief Compile a syntax tree ouf of the text.

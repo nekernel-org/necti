@@ -12,10 +12,10 @@
 
 #include <CompilerKit/Defines.h>
 
-#define kAEVer (0x0120)
+#define kAEVer (0x0121)
 
-#define kAEMag0 'O'
-#define kAEMag1 'B'
+#define kAEMag0 'A'
+#define kAEMag1 'E'
 
 #define kAESymbolLen (255)
 #define kAEPad (8)
