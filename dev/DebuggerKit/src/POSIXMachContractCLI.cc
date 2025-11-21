@@ -27,8 +27,9 @@ static void dbgi_ctrlc_handler(std::int32_t _) {
 }
 
 NECTI_MODULE(DebuggerMachPOSIX) {
-  pfd::notify("Debugger Event",
-              "Userland Debugger\n(C) 2025 Amlal El Mahrouss, Licensed under Apache 2.0.");
+  pfd::notify(
+      "Debugger Event",
+      "Userland Debugger\n(C) 2025 Amlal El Mahrouss, Licensed under the Apache 2.0 license.");
 
   if (argc >= 3 && std::string(argv[1]) == "-p" && argv[2] != nullptr) {
     kPath = argv[2];

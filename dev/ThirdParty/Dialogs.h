@@ -218,7 +218,7 @@ namespace internal {
             : m_proc(reinterpret_cast<T*>((void*) ::GetProcAddress(lib.handle, sym.c_str()))) {}
 
         explicit operator bool() const { return m_proc != nullptr; }
-        operator T*() const { return m_proc; }
+                 operator T*() const { return m_proc; }
 
        private:
         T* m_proc;

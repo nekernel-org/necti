@@ -1,11 +1,11 @@
-/* -------------------------------------------
+/* ========================================
 
-  Copyright (C) 2024-2025 Amlal El Mahrouss, Licensed under Apache 2.0
+  Copyright (C) 2024-2025 Amlal El Mahrouss, Licensed under the Apache 2.0 license
 
   @file DynamicLinker64PEF.cc
   @brief: C++ 64-Bit PEF Linker for NeKernel.org's NeKernel
 
-------------------------------------------- */
+======================================== */
 
 /// @author Amlal El Mahrouss (amlal@nekernel.org)
 /// @brief NeKernel.org 64-bit PEF Linker.

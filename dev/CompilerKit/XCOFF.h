@@ -1,15 +1,15 @@
-/* -------------------------------------------
+/* ========================================
 
-  Copyright (C) 2024-2025 Amlal EL Mahrouss, Licensed under Apache 2.0
+  Copyright (C) 2024-2025 Amlal El Mahrouss, Licensed under the Apache 2.0 license
 
   File: XCOFF.h
   Purpose: XCOFF for NeKernel.
 
   Revision History:
 
-  04/07/24: Added file (Amlal EL Mahrouss)
+  04/07/24: Added file (Amlal El Mahrouss)
 
-------------------------------------------- */
+======================================== */
 
 #ifndef _NECTI_XCOFF_H_
 #define _NECTI_XCOFF_H_

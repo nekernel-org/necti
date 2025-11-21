@@ -2,7 +2,7 @@
  *	========================================================
  *
  *	CompilerKit
- * 	Copyright (C) 2024-2025 Amlal El Mahrouss, Licensed under Apache 2.0.
+ * 	Copyright (C) 2024-2025 Amlal El Mahrouss, Licensed under the Apache 2.0 license.
  *
  * 	========================================================
  */
@@ -15,10 +15,10 @@
 /// @brief ErrorOr for CompilerKit.
 /// =========================================================== ///
 
-#include <CompilerKit/StringKit.h>
 #include <CompilerKit/Defines.h>
 #include <CompilerKit/ErrorID.h>
 #include <CompilerKit/Ref.h>
+#include <CompilerKit/StringKit.h>
 
 namespace CompilerKit {
 using ErrorT = Int32;
@@ -47,9 +47,9 @@ class ErrorOr final {
 
  private:
   Ref<T> mRef;
-  ErrorT  mId{0};
+  ErrorT mId{0};
 };
 
-using ErrorOrAny = ErrorOr<VoidPtr>;
+using ErrorOrAny    = ErrorOr<VoidPtr>;
 using ErrorOrString = ErrorOr<STLString>;
 }  // namespace CompilerKit

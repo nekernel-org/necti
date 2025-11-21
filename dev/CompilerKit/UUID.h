@@ -580,25 +580,24 @@ class uuid_system_generator {
 
   uuid operator()() {
 #ifdef _WIN32
-
-    GUID    newId;
+    GUID    newId{};  /// AMLALE: Should be zero-initialized.
     HRESULT hr = ::CoCreateGuid(&newId);
 
     if (FAILED(hr)) {
       throw std::system_error(hr, std::system_category(), "CoCreateGuid failed");
     }
 
-    std::array<uint8_t, 16> bytes = {
-        {static_cast<unsigned char>((newId.Data1 >> 24) & 0xFF),
-         static_cast<unsigned char>((newId.Data1 >> 16) & 0xFF),
-         static_cast<unsigned char>((newId.Data1 >> 8) & 0xFF),
-         static_cast<unsigned char>((newId.Data1) & 0xFF),
-         static_cast<unsigned char>((newId.Data2 >> 8) & 0xFF),
-         static_cast<unsigned char>((newId.Data2) & 0xFF),
-         static_cast<unsigned char>((newId.Data3 >> 8) & 0xFF),
-         static_cast<unsigned char>((newId.Data3) & 0xFF),
-         newId.Data4[0], newId.Data4[1], newId.Data4[2], newId.Data4[3], newId.Data4[4],
-         newId.Data4[5], newId.Data4[6], newId.Data4[7]}};
+    std::array<uint8_t, 16> bytes = {{static_cast<unsigned char>((newId.Data1 >> 24) & 0xFF),
+                                      static_cast<unsigned char>((newId.Data1 >> 16) & 0xFF),
+                                      static_cast<unsigned char>((newId.Data1 >> 8) & 0xFF),
+                                      static_cast<unsigned char>((newId.Data1) & 0xFF),
+                                      static_cast<unsigned char>((newId.Data2 >> 8) & 0xFF),
+                                      static_cast<unsigned char>((newId.Data2) & 0xFF),
+                                      static_cast<unsigned char>((newId.Data3 >> 8) & 0xFF),
+                                      static_cast<unsigned char>((newId.Data3) & 0xFF),
+                                      newId.Data4[0], newId.Data4[1], newId.Data4[2],
+                                      newId.Data4[3], newId.Data4[4], newId.Data4[5],
+                                      newId.Data4[6], newId.Data4[7]}};
 
     return uuid{std::begin(bytes), std::end(bytes)};
 
