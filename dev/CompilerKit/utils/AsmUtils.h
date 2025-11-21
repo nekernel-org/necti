@@ -1,8 +1,8 @@
-/* -------------------------------------------
+/* ========================================
 
-  Copyright (C) 2024-2025 Amlal EL Mahrouss, Licensed under Apache 2.0
+  Copyright (C) 2024-2025 Amlal El Mahrouss, Licensed under the Apache 2.0 license
 
-------------------------------------------- */
+======================================== */
 
 #pragma once
 
@@ -16,7 +16,7 @@ using namespace CompilerKit;
 /// @param lineBuffer the lineBuffer to fetch from.
 /// @param numberKey where to seek that number.
 /// @return
-static NumberCast32 GetNumber32(std::string lineBuffer, std::string numberKey) {
+static NumberCast32 GetNumber32(STLString lineBuffer, STLString numberKey) {
   auto pos = lineBuffer.find(numberKey) + numberKey.size();
 
   while (lineBuffer[pos] == ' ') {

@@ -45,4 +45,4 @@ cd necti
 # Either build the debugger or compiler libraries/tools using nebuild.
 ```
 
-###### Copyright (C) 2024-2025 Amlal El Mahrouss & NeKernel.org Contributors, Licensed under Apache 2.0.
+###### Copyright (C) 2024-2025 Amlal El Mahrouss & NeKernel.org Contributors, Licensed under the Apache 2.0 license.

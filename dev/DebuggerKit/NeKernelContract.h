@@ -41,7 +41,8 @@ class NeKernelContract final DK_DEBUGGER_CONTRACT {
   NeKernelContract(const NeKernelContract&)            = default;
 
  public:
-  bool Attach(CompilerKit::STLString path, CompilerKit::STLString arg_v, ProcessID& pid) noexcept override;
+  bool Attach(CompilerKit::STLString path, CompilerKit::STLString arg_v,
+              ProcessID& pid) noexcept override;
   bool BreakAt(CompilerKit::STLString symbol) noexcept override;
   bool Break() noexcept override;
   bool Continue() noexcept override;

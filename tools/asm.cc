@@ -1,8 +1,8 @@
-/* -------------------------------------------
+/* ========================================
 
-  Copyright (C) 2024-2025 Amlal EL Mahrouss, Licensed under Apache 2.0
+  Copyright (C) 2024-2025 Amlal El Mahrouss, Licensed under the Apache 2.0 license
 
-------------------------------------------- */
+======================================== */
 
 /// @file asm.cc
 /// @brief Assembler frontend.
@@ -42,7 +42,7 @@ Int32 main(Int32 argc, Char const* argv[]) {
           "rights reserved.\n");
       std::printf(
           "CompilerKit: Designed by Amlal El Mahrouss, Copyright (C) 2024-2025 Amlal El Mahrouss, "
-          "Licensed under Apache 2.0.\n");
+          "Licensed under the Apache 2.0 license.\n");
 
       return 0;
     } else if (strstr(argv[index_arg], "-asm:x64")) {

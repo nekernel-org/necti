@@ -1,8 +1,8 @@
-/* -------------------------------------------
+/* ========================================
 
-  Copyright (C) 2024-2025 Amlal EL Mahrouss, Licensed under Apache 2.0
+  Copyright (C) 2024-2025 Amlal El Mahrouss, Licensed under the Apache 2.0 license
 
-------------------------------------------- */
+======================================== */
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
@@ -53,7 +53,7 @@
 static char kOutputArch = CompilerKit::kPefArchAMD64;
 
 static constexpr auto kIPAlignement = 0x1U;
-static auto kCounter = 0x1UL;
+static auto           kCounter      = 0x1UL;
 
 static std::uintptr_t                                      kOrigin = kPefBaseOrigin;
 static std::vector<std::pair<std::string, std::uintptr_t>> kOriginLabel;

@@ -56,7 +56,8 @@ class POSIXMachContract final DK_DEBUGGER_CONTRACT {
   POSIXMachContract(const POSIXMachContract&)            = default;
 
  public:
-  Bool Attach(CompilerKit::STLString path, CompilerKit::STLString argv, ProcessID& pid) noexcept override {
+  Bool Attach(CompilerKit::STLString path, CompilerKit::STLString argv,
+              ProcessID& pid) noexcept override {
     pid = fork();
 
     if (pid == 0) {
@@ -114,7 +115,7 @@ class POSIXMachContract final DK_DEBUGGER_CONTRACT {
 
       mach_vm_protect(task, (mach_vm_address_t) addr, sizeof(uint32_t), false,
                       VM_PROT_READ | VM_PROT_WRITE | VM_PROT_EXECUTE);
-                      
+
       mach_vm_write(task, (mach_vm_address_t) addr, (vm_offset_t) &brk_inst, sizeof(addr));
 
       return true;
@@ -153,7 +154,7 @@ class POSIXMachContract final DK_DEBUGGER_CONTRACT {
   }
 
  private:
-  ProcessID   m_pid{0};
+  ProcessID              m_pid{0};
   CompilerKit::STLString m_path;
 };
 }  // namespace DebuggerKit::POSIX

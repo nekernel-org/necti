@@ -1,8 +1,8 @@
-/* -------------------------------------------
+/* ========================================
 
   Copyright (C) 2025, Amlal El Mahrouss, licensed under the Apache 2.0 license.
 
-------------------------------------------- */
+======================================== */
 
 #pragma once
 
@@ -21,10 +21,10 @@ struct nothrow_t {
 /// =========================================================
 /// @brief Placement new metadata.
 /// =========================================================
-struct placement_new {
-  void*     __base;
-  int       __align;
-  long long __size;
+struct placement_new final {
+  void*   __base{};
+  int32_t __align{};
+  size_t  __size{};
 };
 
 using placement_new_t = placement_new;

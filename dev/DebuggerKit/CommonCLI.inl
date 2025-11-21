@@ -21,4 +21,4 @@ static DebuggerKit::POSIX::POSIXMachContract kDebugger;
 
 static DebuggerKit::ProcessID kPID           = 0L;
 static DebuggerKit::CAddress  kActiveAddress = nullptr;
-static CompilerKit::STLString            kPath          = "";
+static CompilerKit::STLString kPath          = "";
