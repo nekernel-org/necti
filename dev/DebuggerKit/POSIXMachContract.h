@@ -1,6 +1,8 @@
-/***
-  (C) 2025 Amlal El Mahrouss, licensed under Apache-2.0.
- */
+/* ========================================
+
+  Copyright (C) 2025 Amlal El Mahrouss, Licensed under the Apache 2.0 license.
+
+======================================== */
 
 #pragma once
 
@@ -9,24 +11,7 @@
 /// @file POSIXMachContract.h
 /// @brief POSIX Mach debugger.
 
-#include <CompilerKit/Defines.h>
 #include <DebuggerKit/DebuggerContract.h>
-
-#include <stdint.h>
-#include <sys/ptrace.h>
-#include <sys/types.h>
-#include <sys/user.h>
-#include <sys/wait.h>
-#include <unistd.h>
-
-#include <filesystem>
-#include <iostream>
-
-#include <dlfcn.h>
-#include <mach-o/dyld.h>
-#include <mach/mach.h>
-#include <mach/mach_error.h>
-#include <signal.h>
 
 CK_IMPORT_C kern_return_t mach_vm_write(vm_map_t target_task, mach_vm_address_t address,
                                         vm_offset_t data, mach_msg_type_number_t dataCnt);

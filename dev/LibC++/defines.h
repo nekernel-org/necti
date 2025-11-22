@@ -7,20 +7,16 @@
 #ifndef __NECTI_DEFINES_H__
 #define __NECTI_DEFINES_H__
 
-extern "C" {
-#include <stddef.h>
-#include <stdint.h>
-}
-
 #define __ATTRIBUTE(X) __attribute__((X))
 
 typedef __SIZE_TYPE__  size_t;
-typedef __SSIZE_TYPE__ ssize_t;
+typedef __INT64_TYPE__ ssize_t;
+typedef __INT32_TYPE__ int32_t;
 
 typedef void*         ptr_type;
 typedef __SIZE_TYPE__ size_type;
 
-typedef size_t ptrdiff_t;
+typedef __INT64_TYPE__ ptrdiff_t;
 typedef size_t uintptr_t;
 typedef void*  voidptr_t;
 typedef void*  any_t;

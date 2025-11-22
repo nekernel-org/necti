@@ -1,7 +1,8 @@
+/* ========================================
 
-/***
-  (C) 2025 Amlal El Mahrouss, licensed under Apache-2.0.
- */
+  Copyright (C) 2025 Amlal El Mahrouss, Licensed under the Apache 2.0 license.
+
+======================================== */
 
 #ifndef DK_NEKERNEL_CONTRACT_H
 #define DK_NEKERNEL_CONTRACT_H
