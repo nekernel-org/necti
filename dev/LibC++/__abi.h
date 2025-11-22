@@ -6,4 +6,10 @@
 
 #pragma once
 
-extern "C" void __compilerkit_unreachable(void);
+#include <LibC++/defines.h>
+
+__init_decl()
+
+extern void __compilerkit_unreachable(void);
+
+__fini_decl()

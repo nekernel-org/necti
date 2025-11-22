@@ -1,9 +1,8 @@
-/***
-  DebuggerKit
-  (C) 2025 Amlal El Mahrouss
-  File: POSIXMachContract.cc
-  Purpose: OS X/Darwin Debugger
-*/
+/* ========================================
+
+  Copyright (C) 2025 Amlal El Mahrouss, Licensed under the Apache 2.0 license.
+
+======================================== */
 
 #ifdef DK_MACH_DEBUGGER
 
@@ -19,7 +18,7 @@ static void dbgi_ctrlc_handler(std::int32_t _) {
     return;
   }
 
-  kDebugger.Break();
+  kUserDebugger.Break();
 
   pfd::notify("Debugger Event", "Breakpoint hit!");
 
@@ -33,7 +32,7 @@ NECTI_MODULE(DebuggerMachPOSIX) {
 
   if (argc >= 3 && std::string(argv[1]) == "-p" && argv[2] != nullptr) {
     kPath = argv[2];
-    kDebugger.SetPath(kPath);
+    kUserDebugger.SetPath(kPath);
 
     kStdOut << "[+] Image set to: " << kPath << "\n";
   } else {
@@ -54,7 +53,7 @@ NECTI_MODULE(DebuggerMachPOSIX) {
     if (!std::getline(std::cin, cmd)) break;
 
     if (cmd == "c" || cmd == "cont" || cmd == "continue") {
-      if (kDebugger.Continue()) {
+      if (kUserDebugger.Continue()) {
         kKeepRunning = true;
 
         kStdOut << "[+] Continuing...\n";
@@ -63,17 +62,17 @@ NECTI_MODULE(DebuggerMachPOSIX) {
       }
     }
 
-    if (cmd == "d" || cmd == "detach") kDebugger.Detach();
+    if (cmd == "d" || cmd == "detach") kUserDebugger.Detach();
 
     if (cmd == "start") {
       kStdOut << "[?] Enter a argument to use: ";
       std::getline(std::cin, cmd);
 
-      kDebugger.Attach(kPath, cmd, kPID);
+      kUserDebugger.Attach(kPath, cmd, kPID);
     }
 
     if (cmd == "exit") {
-      if (kPID > 0) kDebugger.Detach();
+      if (kPID > 0) kUserDebugger.Detach();
 
       break;
     }
@@ -83,7 +82,7 @@ NECTI_MODULE(DebuggerMachPOSIX) {
 
       std::getline(std::cin, cmd);
 
-      if (kDebugger.BreakAt(cmd)) {
+      if (kUserDebugger.BreakAt(cmd)) {
         pfd::notify("Debugger Event", "Add BreakAt at: " + cmd);
       }
     }

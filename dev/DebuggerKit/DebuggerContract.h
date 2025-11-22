@@ -1,12 +1,12 @@
-/***
-  (C) 2025 Amlal El Mahrouss
- */
+/* ========================================
+
+  Copyright (C) 2025 Amlal El Mahrouss, Licensed under the Apache 2.0 license.
+
+======================================== */
 
 #pragma once
 
-#include <cstdint>
-#include <string>
-#include <unordered_map>
+#include <DebuggerKit/Platform.h>
 
 #define DK_DEBUGGER_CONTRACT : public ::DebuggerKit::DebuggerContract
 
@@ -46,7 +46,7 @@ class DebuggerContract {
   virtual std::unordered_map<uintptr_t, uintptr_t>& Get() { return m_breakpoints; }
 
  protected:
-  ProcessID                                m_pid;
+  ProcessID                                m_pid{(ProcessID)~0};
   std::unordered_map<uintptr_t, uintptr_t> m_breakpoints;
 };
 }  // namespace DebuggerKit

@@ -8,10 +8,14 @@
 
 #include <LibC++/defines.h>
 
+#ifndef NAN
+#define NAN (__builtin_nanf(""))
+#endif  // !NAN
+
 /// @file Math.h
 /// @brief Math functions.
 
-#ifdef __NE_USE_DOUBLE__
+#ifdef __LIBCXX_USE_DOUBLE__
 typedef double real_type;
 #else
 typedef float real_type;
@@ -20,7 +24,9 @@ typedef float real_type;
 namespace std::base_math {
 inline constexpr static auto not_a_number = NAN;
 
+/// =========================================================== ///
 /// @brief Power function, with Repeat argument.
+/// =========================================================== ///
 template <size_t Exponent>
 inline real_type pow(real_type in) {
   if (Exponent == 0) return 1;  // Any number to the power of 0 is 1.
@@ -36,6 +42,9 @@ inline real_type pow(real_type in) {
   return result;
 }
 
+/// =========================================================== ///
+/// @brief Square root function.
+/// =========================================================== ///
 inline real_type sqrt(real_type in) {
   if (in == 0) return 0;
   if (in == not_a_number) return not_a_number;
@@ -51,8 +60,10 @@ inline real_type sqrt(real_type in) {
   return x;
 }
 
+/// =========================================================== ///
 /// @brief Square of function, with Base template argument.
-/// @param of Base argument to find sqquare of
+/// @param of Base argument to find the square of.
+/// =========================================================== ///
 template <size_t Base>
 inline real_type surd(real_type in) {
   if (in == 0) return 0;
@@ -64,10 +75,12 @@ inline real_type surd(real_type in) {
   return not_a_number;
 }
 
+/// =========================================================== ///
 /// @brief Linear interpolation equation solver.
 /// @param from where?
 /// @param to to?
 /// @param Updated diff value according to difference.
+/// =========================================================== ///
 inline real_type lerp(real_type to, real_type from, real_type stat) {
   real_type diff = (to - from);
   return from + (diff * stat);
