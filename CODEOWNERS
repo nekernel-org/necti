@@ -1,7 +1,7 @@
 # CompilerKit is managed by Amlal, this can be owned by someone else though.
 
-/dev/CompilerKit/ @amlel-el-mahrouss
-/dev/LibC++/ @amlel-el-mahrouss
-/dev/DebuggerKit @amlel-el-mahrouss
+/src/CompilerKit/ @amlel-el-mahrouss
+/src/LibC++/ @amlel-el-mahrouss
+/src/DebuggerKit @amlel-el-mahrouss
 
 # LibC++, and DebuggerKit needs ownership.
