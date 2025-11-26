@@ -1187,7 +1187,7 @@ class AssemblyCCInterface final CK_ASSEMBLY_INTERFACE {
 #include <CompilerKit/Version.h>
 
 #define kPrintF printf
-#define kSplashCxx() kPrintF(kWhite "NE C Driver, %s, (c) Amlal El Mahrouss\n", kDistVersion)
+#define kSplashCxx() kPrintF(kWhite "NeCTI C Driver, %s, (c) Amlal El Mahrouss\n", kDistVersion)
 
 static void cc_print_help() {
   kSplashCxx();
