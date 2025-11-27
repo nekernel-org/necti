@@ -14,7 +14,7 @@ jobs:
     steps:
     - uses: actions/checkout@v4
     - name: Build CI
-      run: sudo curl https://github.com/nekernel-org/nebuild/releases/download/v0.0.6-apple-m1/nebuild-debian -o /bin/nebuild && sudo chmod +x /bin/nebuild && sudo apt update && sudo apt install build-essential && sudo apt install libboost-dev |
-          cd src/CompilerKit && nebuild ck-posix.json |
+      run: sudo curl https://github.com/nekernel-org/nebuild/releases/download/v0.0.6-apple-m1/nebuild-debian -o /bin/nebuild && sudo chmod +x /bin/nebuild && sudo apt update && sudo apt install build-essential && sudo apt install libboost-dev &&
+          cd src/CompilerKit && nebuild ck-posix.json &&
           cd ../DebuggerKit && nebuild dk-posix.json
 
