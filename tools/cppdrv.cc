@@ -5,7 +5,7 @@
 ======================================== */
 
 /// @file cxxdrv.cc
-/// @brief NE frontend preprocessor.
+/// @brief NeCTI frontend preprocessor.
 
 #include <CompilerKit/Defines.h>
 #include <CompilerKit/ErrorID.h>

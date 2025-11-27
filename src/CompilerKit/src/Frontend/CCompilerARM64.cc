@@ -1,7 +1,7 @@
 /*
  *	========================================================
  *
- *	cc
+ *	CCompilerARM64
  * 	Copyright (C) 2024-2025 Amlal El Mahrouss, Licensed under the Apache 2.0 license.
  *
  * 	========================================================
@@ -12,8 +12,9 @@
 
 #include <CompilerKit/Frontend.h>
 #include <CompilerKit/UUID.h>
-#include <CompilerKit/impl/64x0.h>
+#include <CompilerKit/impl/Aarch64.h>
 #include <CompilerKit/utils/CompilerUtils.h>
+
 #include <cstdio>
 #include <fstream>
 #include <iostream>
@@ -28,8 +29,8 @@
 /* (c) Amlal El Mahrouss */
 
 /// @author Amlal El Mahrouss (amlal@nekernel.org)
-/// @file 64x0-cc.cc
-/// @brief 64x0 C Compiler.
+/// @file ARM64-cc.cc
+/// @brief ARM64 C Compiler.
 
 /// TODO: support structures, else if, else, . and  ->
 
@@ -113,7 +114,7 @@ static int kMachine = 0;
 /////////////////////////////////////////
 
 static size_t      kRegisterCnt     = kAsmRegisterLimit;
-static size_t      kStartUsable     = 2;
+static size_t      kStartUsable     = 8;
 static size_t      kUsableLimit     = 15;
 static size_t      kRegisterCounter = kStartUsable;
 static std::string kRegisterPrefix  = kAsmRegisterPrefix;
@@ -134,12 +135,12 @@ static bool                         kIfFound     = false;
 static size_t                       kBracesCount = 0UL;
 
 /* @brief C compiler backend for C */
-class CompilerFrontend64x0 final : public CompilerKit::CompilerFrontendInterface {
+class CompilerFrontendARM64 final : public CompilerKit::CompilerFrontendInterface {
  public:
-  explicit CompilerFrontend64x0()  = default;
-  ~CompilerFrontend64x0() override = default;
+  explicit CompilerFrontendARM64()  = default;
+  ~CompilerFrontendARM64() override = default;
 
-  NECTI_COPY_DEFAULT(CompilerFrontend64x0);
+  NECTI_COPY_DEFAULT(CompilerFrontendARM64);
 
   std::string                             Check(const char* text, const char* file);
   CompilerKit::SyntaxLeafList::SyntaxLeaf Compile(std::string text, std::string file) override;
@@ -147,7 +148,7 @@ class CompilerFrontend64x0 final : public CompilerKit::CompilerFrontendInterface
   const char* Language() override { return "64k C"; }
 };
 
-static CompilerFrontend64x0*             kCompilerFrontend = nullptr;
+static CompilerFrontendARM64*            kCompilerFrontend = nullptr;
 static std::vector<Detail::CompilerType> kCompilerVariables;
 static std::vector<std::string>          kCompilerFunctions;
 static std::vector<Detail::CompilerType> kCompilerTypes;
@@ -182,10 +183,8 @@ union double_cast final {
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
-CompilerKit::SyntaxLeafList::SyntaxLeaf CompilerFrontend64x0::Compile(std::string text_,
-                                                                      std::string file) {
-  std::string text = text_;
-
+CompilerKit::SyntaxLeafList::SyntaxLeaf CompilerFrontendARM64::Compile(std::string text,
+                                                                       std::string file) {
   bool typeFound = false;
   bool fnFound   = false;
 
@@ -625,7 +624,7 @@ CompilerKit::SyntaxLeafList::SyntaxLeaf CompilerFrontend64x0::Compile(std::strin
 static bool        kShouldHaveBraces = false;
 static std::string kFnName;
 
-std::string CompilerFrontend64x0::Check(const char* text, const char* file) {
+std::string CompilerFrontendARM64::Check(const char* text, const char* file) {
   std::string err_str;
   std::string ln = text;
 
@@ -1052,7 +1051,7 @@ class AssemblyCCInterface final CK_ASSEMBLY_INTERFACE {
 
   NECTI_COPY_DEFAULT(AssemblyCCInterface);
 
-  UInt32 Arch() noexcept override { return CompilerKit::AssemblyFactory::kArch64x0; }
+  UInt32 Arch() noexcept override { return CompilerKit::AssemblyFactory::kArchAARCH64; }
 
   Int32 CompileToFormat(std::string src, Int32 arch) override {
     if (kCompilerFrontend == nullptr) return 1;
@@ -1079,7 +1078,7 @@ class AssemblyCCInterface final CK_ASSEMBLY_INTERFACE {
     auto fmt = CompilerKit::current_date();
 
     (*kState.fOutputAssembly) << "# Path: " << src_file << "\n";
-    (*kState.fOutputAssembly) << "# Language: 64x0 Assembly (Generated from ANSI C)\n";
+    (*kState.fOutputAssembly) << "# Language: ARM64 Assembly (Generated from ANSI C)\n";
     (*kState.fOutputAssembly) << "# Date: " << fmt << "\n\n";
 
     CompilerKit::SyntaxLeafList syntax;
@@ -1188,7 +1187,7 @@ class AssemblyCCInterface final CK_ASSEMBLY_INTERFACE {
 #include <CompilerKit/Version.h>
 
 #define kPrintF printf
-#define kSplashCxx() kPrintF(kWhite "NE C Driver, %s, (c) Amlal El Mahrouss\n", kDistVersion)
+#define kSplashCxx() kPrintF(kWhite "NeCTI C Driver, %s, (c) Amlal El Mahrouss\n", kDistVersion)
 
 static void cc_print_help() {
   kSplashCxx();
@@ -1196,9 +1195,9 @@ static void cc_print_help() {
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
-#define kExt ".c"
+#define kCExtension ".c"
 
-NECTI_MODULE(CompilerCLang64x0) {
+NECTI_MODULE(CompilerCLangARM64) {
   ::signal(SIGSEGV, Detail::drvi_crash_handler);
 
   kCompilerTypes.push_back({.fName = "void", .fValue = "void"});
@@ -1211,8 +1210,8 @@ NECTI_MODULE(CompilerCLang64x0) {
   bool skip = false;
 
   kFactory.Mount(new AssemblyCCInterface());
-  kMachine          = CompilerKit::AssemblyFactory::kArch64x0;
-  kCompilerFrontend = new CompilerFrontend64x0();
+  kMachine          = CompilerKit::AssemblyFactory::kArchAARCH64;
+  kCompilerFrontend = new CompilerFrontendARM64();
 
   for (auto index = 1UL; index < argc; ++index) {
     if (skip) {
@@ -1270,7 +1269,7 @@ NECTI_MODULE(CompilerCLang64x0) {
 
     std::string srcFile = argv[index];
 
-    if (strstr(argv[index], kExt) == nullptr) {
+    if (strstr(argv[index], kCExtension) == nullptr) {
       if (kState.fVerbose) {
         Detail::print_error(srcFile + " is not a valid C source.\n", "cc");
       }

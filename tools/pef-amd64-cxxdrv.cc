@@ -5,7 +5,7 @@
 ======================================== */
 
 /// @file cxxdrv.cc
-/// @brief NE C++ frontend compiler.
+/// @brief NeCTI C++ frontend compiler.
 
 #include <CompilerKit/Defines.h>
 #include <CompilerKit/ErrorID.h>
