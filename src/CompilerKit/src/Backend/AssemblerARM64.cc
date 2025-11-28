@@ -21,7 +21,7 @@
 
 #include <CompilerKit/AE.h>
 #include <CompilerKit/ErrorID.h>
-#include <CompilerKit/Frontend.h>
+#include <CompilerKit/AST.h>
 #include <CompilerKit/PEF.h>
 #include <CompilerKit/Version.h>
 #include <CompilerKit/impl/Aarch64.h>
@@ -135,6 +135,7 @@ NECTI_MODULE(AssemblerMainARM64) {
 
     hdr.fMagic[0] = kAEMag0;
     hdr.fMagic[1] = kAEMag1;
+    hdr.fMagic[2] = kAEMag2;
     hdr.fSize     = sizeof(CompilerKit::AEHeader);
     hdr.fArch     = kOutputArch;
 

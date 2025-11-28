@@ -31,7 +31,7 @@
 #define kRed "\e[0;31m"
 #define kWhite "\e[0;97m"
 
-#include <CompilerKit/Frontend.h>
+#include <CompilerKit/AST.h>
 #include <CompilerKit/PEF.h>
 #include <CompilerKit/UUID.h>
 #include <CompilerKit/impl/X64.h>

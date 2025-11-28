@@ -12,14 +12,15 @@
 
 #include <CompilerKit/Defines.h>
 
-#define kAEVer (0x0121)
+#define kAEIdentVersion (0x0122)
 
 #define kAEMag0 'A'
 #define kAEMag1 'E'
+#define kAEMag2 'F'
 
-#define kAESymbolLen (255)
+#define kAESymbolLen (256)
 #define kAEPad (8)
-#define kAEMagLen (2)
+#define kAEMagLen (3)
 #define kAENullType (0x00)
 
 /// @author Amlal El Mahrouss
@@ -35,7 +36,7 @@ namespace CompilerKit {
 // This object format, is reloctable.
 typedef struct AEHeader final {
   Char     fMagic[kAEMagLen] = {};
-  UInt16   fVersion{kAEVer};
+  UInt16   fVersion{kAEIdentVersion};
   Char     fArch{};
   Char     fSubArch{};
   SizeType fCount{};

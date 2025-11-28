@@ -4,13 +4,13 @@
 
 ======================================== */
 
-#include <CompilerKit/Frontend.h>
+#include <CompilerKit/AST.h>
 
 /**
  * @file Frontend.cc
  * @author Amlal El Mahrouss (amlal@nekernel.org)
- * @brief Frontend API of NeCTI
- * @version 0.0.2
+ * @brief AST of NeCTI
+ * @version 0.0.3
  *
  * @copyright Copyright (c) 2025 Amlal El Mahrouss and NeKernel.org Contributors
  *
@@ -57,5 +57,19 @@ SizeType find_word_range(STLString haystack, STLString needle) noexcept {
   }
 
   return STLString::npos;
+}
+
+/// =========================================================== ///
+//! @brief What language are we dealing with?
+/// =========================================================== ///
+const char* CompilerFrontendInterface::Language() {
+  return kInvalidFrontend;
+}
+
+/// =========================================================== ///
+/// @brief Checks if language is a valid frontend.
+/// =========================================================== ///
+bool CompilerFrontendInterface::IsValid() {
+  return strcmp(this->Language(), kInvalidFrontend) > 0;
 }
 }  // namespace CompilerKit

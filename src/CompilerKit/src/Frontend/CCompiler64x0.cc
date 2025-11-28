@@ -10,7 +10,7 @@
 /// BUGS: 0
 /// TODO: none
 
-#include <CompilerKit/Frontend.h>
+#include <CompilerKit/AST.h>
 #include <CompilerKit/UUID.h>
 #include <CompilerKit/impl/64x0.h>
 #include <CompilerKit/utils/CompilerUtils.h>

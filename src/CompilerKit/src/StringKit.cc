@@ -11,7 +11,7 @@
  * @file StringKit.cc
  * @author Amlal (amlal@nekernel.org)
  * @brief C++ string manipulation API.
- * @version 0.2
+ * @version 0.0.2
  * @date 2024-01-23
  *
  * @copyright Copyright (c) Amlal El Mahrouss
@@ -22,58 +22,58 @@
 
 namespace CompilerKit {
 
-Char* BasicString::Data() {
+Char* NEString::Data() {
   return m_Data;
 }
 
-const Char* BasicString::CData() const {
+const Char* NEString::CData() const {
   return m_Data;
 }
 
-SizeType BasicString::Length() const {
+SizeType NEString::Length() const {
   return strlen(m_Data);
 }
 
-bool BasicString::operator==(const BasicString& rhs) const {
+bool NEString::operator==(const NEString& rhs) const {
   const SizeType len = Length();
   if (rhs.Length() != len) return false;
   return memcmp(m_Data, rhs.m_Data, len) == 0;
 }
 
-bool BasicString::operator==(const Char* rhs) const {
+bool NEString::operator==(const Char* rhs) const {
   const SizeType rhs_len = string_length(rhs);
   const SizeType len     = Length();
   if (rhs_len != len) return false;
   return memcmp(m_Data, rhs, len) == 0;
 }
 
-bool BasicString::operator!=(const BasicString& rhs) const {
+bool NEString::operator!=(const NEString& rhs) const {
   return !(*this == rhs);
 }
 
-bool BasicString::operator!=(const Char* rhs) const {
+bool NEString::operator!=(const Char* rhs) const {
   return !(*this == rhs);
 }
 
-BasicString StringBuilder::Construct(const Char* data) {
-  if (!data || *data == 0) return BasicString(0);
+NEString NEStringBuilder::Construct(const Char* data) {
+  if (!data || *data == 0) return NEString(0);
 
-  BasicString view(strlen(data));
+  NEString view(strlen(data));
   view += data;
 
   return view;
 }
 
-BasicString StringBuilder::FromInt(const char* fmt, int i) {
-  if (!fmt) return BasicString(0);
+NEString NEStringBuilder::FromInt(const char* fmt, int i) {
+  if (!fmt) return NEString(0);
 
   Char result[sizeof(int64_t)] = {0};
-  if (!to_str(result, sizeof(int64_t), i)) return BasicString(0);
+  if (!to_str(result, sizeof(int64_t), i)) return NEString(0);
 
   const SizeType fmt_len = string_length(fmt);
   const SizeType res_len = string_length(result);
 
-  BasicString output(fmt_len + res_len);
+  NEString output(fmt_len + res_len);
   bool        inserted = false;
 
   for (SizeType idx = 0; idx < fmt_len; ++idx) {
@@ -88,14 +88,14 @@ BasicString StringBuilder::FromInt(const char* fmt, int i) {
   return output;
 }
 
-BasicString StringBuilder::FromBool(const char* fmt, bool val) {
-  if (!fmt) return BasicString(0);
+NEString NEStringBuilder::FromBool(const char* fmt, bool val) {
+  if (!fmt) return NEString(0);
 
   const Char*    boolean_expr = val ? "true" : "false";
   const SizeType fmt_len      = string_length(fmt);
   const SizeType res_len      = string_length(boolean_expr);
 
-  BasicString output(fmt_len + res_len);
+  NEString output(fmt_len + res_len);
   bool        inserted = false;
 
   for (SizeType idx = 0; idx < fmt_len; ++idx) {
@@ -110,7 +110,7 @@ BasicString StringBuilder::FromBool(const char* fmt, bool val) {
   return output;
 }
 
-bool StringBuilder::Equals(const char* lhs, const char* rhs) {
+bool NEStringBuilder::Equals(const char* lhs, const char* rhs) {
   const SizeType lhs_len = string_length(lhs);
   const SizeType rhs_len = string_length(rhs);
 
@@ -118,13 +118,13 @@ bool StringBuilder::Equals(const char* lhs, const char* rhs) {
   return memcmp(lhs, rhs, lhs_len) == 0;
 }
 
-BasicString StringBuilder::Format(const char* fmt, const char* fmtRight) {
-  if (!fmt || !fmtRight) return BasicString(0);
+NEString NEStringBuilder::Format(const char* fmt, const char* fmtRight) {
+  if (!fmt || !fmtRight) return NEString(0);
 
   const SizeType fmt_len = string_length(fmt);
   const SizeType rhs_len = string_length(fmtRight);
 
-  BasicString output(fmt_len + rhs_len);
+  NEString output(fmt_len + rhs_len);
   bool        inserted = false;
 
   for (SizeType idx = 0; idx < fmt_len; ++idx) {
@@ -139,10 +139,10 @@ BasicString StringBuilder::Format(const char* fmt, const char* fmtRight) {
   return output;
 }
 
-BasicString& BasicString::operator+=(const Char* rhs) {
+NEString& NEString::operator+=(const Char* rhs) {
   const SizeType rhs_len = strlen(rhs);
   if (this->m_Cur + rhs_len >= this->m_Sz) {
-    throw std::runtime_error("out_of_bounds: BasicString");
+    throw std::runtime_error("out_of_bounds: NEString");
   }
 
   memcpy(this->m_Data + this->m_Cur, rhs, rhs_len);
@@ -153,9 +153,9 @@ BasicString& BasicString::operator+=(const Char* rhs) {
   return *this;
 }
 
-BasicString& BasicString::operator+=(const BasicString& rhs) {
+NEString& NEString::operator+=(const NEString& rhs) {
   if (this->m_Cur + rhs.m_Cur >= this->m_Sz) {
-    throw std::runtime_error("out_of_bounds: BasicString");
+    throw std::runtime_error("out_of_bounds: NEString");
   }
 
   memcpy(this->m_Data + this->m_Cur, rhs.CData(), rhs.m_Cur);
@@ -165,9 +165,9 @@ BasicString& BasicString::operator+=(const BasicString& rhs) {
   return *this;
 }
 
-BasicString& BasicString::operator+=(const Char ch) {
+NEString& NEString::operator+=(const Char ch) {
   if (this->m_Cur + 1 >= this->m_Sz) {
-    throw std::runtime_error("out_of_bounds..");
+    throw std::runtime_error("out_of_bounds.");
   }
 
   this->m_Data[this->m_Cur++] = ch;
