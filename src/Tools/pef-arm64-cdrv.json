@@ -2,9 +2,9 @@
   "compiler_path": "clang++",
   "compiler_std": "c++20",
   "headers_path": [
-    "../src/CompilerKit",
-    "../src/",
-    "../src/CompilerKit/src/Detail"
+    "../CompilerKit",
+    "../",
+    "../CompilerKit/src/Detail"
   ],
   "sources_path": [
     "pef-arm64-cdrv.cc"
