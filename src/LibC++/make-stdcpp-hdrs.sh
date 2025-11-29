@@ -1,6 +1,6 @@
 #! /bin/sh
 
-outputDir=libCxx/
+outputDir=libc++/
 
 mkdir -p $outputDir
 
