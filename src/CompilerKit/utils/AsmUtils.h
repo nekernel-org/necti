@@ -7,7 +7,7 @@
 #pragma once
 
 #include <CompilerKit/Compiler.h>
-#include <CompilerKit/Frontend.h>
+#include <CompilerKit/AST.h>
 #include <CompilerKit/utils/CompilerUtils.h>
 
 using namespace CompilerKit;

@@ -10,7 +10,7 @@
 /// BUGS: 0
 
 #include <CompilerKit/ErrorID.h>
-#include <CompilerKit/Frontend.h>
+#include <CompilerKit/AST.h>
 #include <algorithm>
 #include <filesystem>
 #include <fstream>

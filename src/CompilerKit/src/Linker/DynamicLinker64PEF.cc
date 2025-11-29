@@ -240,8 +240,8 @@ NECTI_MODULE(DynamicLinker64PEF) {
     reader_protocol.file_pointer_ >> hdr;
 
     if (hdr.fMagic[0] == kAEMag0 && hdr.fMagic[1] == kAEMag1 &&
-        hdr.fSize == sizeof(CompilerKit::AEHeader)) {
-      if (hdr.fArch != kArch) {
+        hdr.fSize == sizeof(CompilerKit::AEHeader) && hdr.fMagic[2] == kAEMag2) {
+      if (hdr.fArch != kArch && hdr.fVersion == kAEIdentVersion) {
         if (kVerbose) kConsoleOut << "is this a FAT binary? : ";
 
         if (!kFatBinaryEnable) {

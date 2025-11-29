@@ -7,7 +7,7 @@
  * 	========================================================
  */
 
-#include <CompilerKit/Frontend.h>
+#include <CompilerKit/AST.h>
 #include <CompilerKit/UUID.h>
 #include <CompilerKit/impl/PowerPC.h>
 #include <CompilerKit/utils/CompilerUtils.h>

@@ -11,8 +11,7 @@
  * @file AssemblyFactory.cc
  * @author Amlal El Mahrouss (amlal@nekernel.org)
  * @brief Assembly API of NeCTI
- * @version 0.0.2
- *
+ * @version 0.0.3
  * @copyright Copyright (c) 2024-2025 Amlal El Mahrouss
  *
  */

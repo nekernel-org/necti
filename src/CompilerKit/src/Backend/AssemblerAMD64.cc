@@ -29,7 +29,7 @@
 #define kAssemblerPragmaSym '%'
 
 #include <CompilerKit/AE.h>
-#include <CompilerKit/Frontend.h>
+#include <CompilerKit/AST.h>
 #include <CompilerKit/PEF.h>
 #include <CompilerKit/impl/X64.h>
 #include <algorithm>
@@ -186,6 +186,7 @@ NECTI_MODULE(AssemblerMainAMD64) {
 
     hdr.fMagic[0] = kAEMag0;
     hdr.fMagic[1] = kAEMag1;
+    hdr.fMagic[2] = kAEMag2;
     hdr.fSize     = sizeof(CompilerKit::AEHeader);
     hdr.fArch     = kOutputArch;
 

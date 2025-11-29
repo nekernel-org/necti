@@ -22,7 +22,8 @@ struct CompilerKeyword;
 /// =========================================================== ///
 
 enum KeywordKind {
-  kKeywordKindNamespace,
+  kKeywordKindReserved = 0,
+  kKeywordKindNamespace = 100,
   kKeywordKindFunctionStart,
   kKeywordKindFunctionEnd,
   kKeywordKindVariable,
@@ -57,6 +58,7 @@ enum KeywordKind {
   kKeywordKindGreaterEq,
   kKeywordKindLessEq,
   kKeywordKindPtr,
+  kKeywordKindCount = kKeywordKindPtr - kKeywordKindNamespace + 1,
 };
 
 /// =========================================================== ///
@@ -128,11 +130,11 @@ class CompilerFrontendInterface {
   /// =========================================================== ///
   //! @brief What language are we dealing with?
   /// =========================================================== ///
-  virtual const char* Language() { return kInvalidFrontend; }
+  virtual const char* Language();
 
   /// =========================================================== ///
   /// @brief Checks if language is a valid frontend.
   /// =========================================================== ///
-  virtual bool IsValid() { return strcmp(this->Language(), kInvalidFrontend) > 0; }
+  virtual bool IsValid();
 };
 }  // namespace CompilerKit

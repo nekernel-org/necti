@@ -20,24 +20,24 @@
 /// =========================================================== ///
 
 namespace CompilerKit {
-class StringBuilder;
-class BasicString;
+class NEStringBuilder;
+class NEString;
 
 /**
- * @brief BasicString class, contains a C string and manages it.
+ * @brief NEString class, contains a C string and manages it.
  * @note No need to manage it it's getting deleted by default.
  */
 
-class BasicString final {
+class NEString final {
  public:
-  explicit BasicString() = delete;
+  explicit NEString() = delete;
 
-  explicit BasicString(SizeType Sz) noexcept : m_Sz(Sz) {
+  explicit NEString(SizeType Sz) noexcept : m_Sz(Sz) {
     m_Data = new Char[Sz];
     assert(m_Data);
   }
 
-  ~BasicString() noexcept {
+  ~NEString() noexcept {
     if (m_Data) {
       memset(m_Data, 0, m_Sz);
       delete[] m_Data;
@@ -46,7 +46,7 @@ class BasicString final {
     }
   }
 
-  NECTI_COPY_DEFAULT(BasicString);
+  NECTI_COPY_DEFAULT(NEString);
 
   Char*       Data();
   const Char* CData() const;
@@ -55,12 +55,12 @@ class BasicString final {
   bool operator==(const Char* rhs) const;
   bool operator!=(const Char* rhs) const;
 
-  bool operator==(const BasicString& rhs) const;
-  bool operator!=(const BasicString& rhs) const;
+  bool operator==(const NEString& rhs) const;
+  bool operator!=(const NEString& rhs) const;
 
-  BasicString& operator+=(const Char* rhs);
-  BasicString& operator+=(const Char rhs);
-  BasicString& operator+=(const BasicString& rhs);
+  NEString& operator+=(const Char* rhs);
+  NEString& operator+=(const Char rhs);
+  NEString& operator+=(const NEString& rhs);
 
   explicit operator bool() { return m_Data && m_Data[0] != 0; }
 
@@ -71,24 +71,24 @@ class BasicString final {
   SizeType m_Sz{0};
   SizeType m_Cur{0};
 
-  friend class StringBuilder;
+  friend class NEStringBuilder;
 };
 
 /**
- * @brief StringBuilder class
+ * @brief NEStringBuilder class
  * @note These results shall call be delete[] after they're used.
  */
-struct StringBuilder final {
-  static BasicString Construct(const Char* data);
-  static BasicString FromInt(const char* fmt, int n);
-  static BasicString FromBool(const char* fmt, bool n);
-  static BasicString Format(const char* fmt, const char* from);
-  static Bool        Equals(const char* lhs, const char* rhs);
+struct NEStringBuilder final {
+  static NEString Construct(const Char* data);
+  static NEString FromInt(const char* fmt, int n);
+  static NEString FromBool(const char* fmt, bool n);
+  static NEString Format(const char* fmt, const char* from);
+  static Bool     Equals(const char* lhs, const char* rhs);
 };
 
-using BasicStringOr  = ErrorOr<BasicString>;
-using BasicStringPtr = BasicString*;
-using BasicStringRef = Ref<BasicString>;
+using NEStringOr  = ErrorOr<NEString>;
+using NEStringPtr = NEString*;
+using NEStringRef = Ref<NEString>;
 }  // namespace CompilerKit
 
 #endif /* ifndef __NECTI_STRINGKIT__ */
