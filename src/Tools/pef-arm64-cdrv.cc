@@ -7,7 +7,7 @@
 /// @file cxxdrv.cc
 /// @brief NeCTI C++ frontend compiler.
 
-#include <CompilerKit/Defines.h>
+#include <CompilerKit/Config.h>
 #include <CompilerKit/ErrorID.h>
 #include <CompilerKit/Version.h>
 #include <CompilerKit/utils/CompilerUtils.h>

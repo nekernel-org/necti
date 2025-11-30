@@ -6,7 +6,7 @@ Copyright (C) 2024-2025 Amlal El Mahrouss, Licensed under the Apache 2.0 license
 
 #pragma once
 
-#include <CompilerKit/Defines.h>
+#include <CompilerKit/Config.h>
 #include <stdint.h>
 
 /// @brief ARM64 encoding support.

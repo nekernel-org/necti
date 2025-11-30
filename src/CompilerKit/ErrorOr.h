@@ -15,7 +15,7 @@
 /// @brief ErrorOr for CompilerKit.
 /// =========================================================== ///
 
-#include <CompilerKit/Defines.h>
+#include <CompilerKit/Config.h>
 #include <CompilerKit/ErrorID.h>
 #include <CompilerKit/Ref.h>
 #include <CompilerKit/StringKit.h>

@@ -22,7 +22,7 @@ struct CompilerKeyword;
 /// =========================================================== ///
 
 enum KeywordKind {
-  kKeywordKindReserved = 0,
+  kKeywordKindReserved  = 0,
   kKeywordKindNamespace = 100,
   kKeywordKindFunctionStart,
   kKeywordKindFunctionEnd,

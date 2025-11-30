@@ -7,7 +7,7 @@
 /// @file asm.cc
 /// @brief Assembler frontend.
 
-#include <CompilerKit/Defines.h>
+#include <CompilerKit/Config.h>
 #include <CompilerKit/Version.h>
 #include <cstring>
 #include <vector>

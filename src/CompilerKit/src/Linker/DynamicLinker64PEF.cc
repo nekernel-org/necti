@@ -15,7 +15,7 @@
 
 #include <CompilerKit/AE.h>
 #include <CompilerKit/Compiler.h>
-#include <CompilerKit/Defines.h>
+#include <CompilerKit/Config.h>
 #include <CompilerKit/ErrorID.h>
 #include <CompilerKit/PEF.h>
 #include <CompilerKit/UUID.h>

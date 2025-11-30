@@ -6,7 +6,7 @@
 
 #pragma once
 
-#include <CompilerKit/Defines.h>
+#include <CompilerKit/Config.h>
 
 // @file PEF.h
 // @brief Preferred Executable Format

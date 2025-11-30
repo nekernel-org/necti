@@ -6,8 +6,8 @@
 
 #pragma once
 
-#include <CompilerKit/Compiler.h>
 #include <CompilerKit/AST.h>
+#include <CompilerKit/Compiler.h>
 #include <CompilerKit/utils/CompilerUtils.h>
 
 using namespace CompilerKit;

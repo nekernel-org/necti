@@ -6,9 +6,9 @@
 
 #pragma once
 
+#include <CompilerKit/AST.h>
 #include <CompilerKit/Compiler.h>
 #include <CompilerKit/ErrorID.h>
-#include <CompilerKit/AST.h>
 #include <CompilerKit/Version.h>
 #include <ThirdParty/Dialogs.h>
 #include <iostream>

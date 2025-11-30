@@ -20,8 +20,8 @@
 #endif
 
 #include <CompilerKit/AE.h>
-#include <CompilerKit/ErrorID.h>
 #include <CompilerKit/AST.h>
+#include <CompilerKit/ErrorID.h>
 #include <CompilerKit/PEF.h>
 #include <CompilerKit/Version.h>
 #include <CompilerKit/impl/Aarch64.h>

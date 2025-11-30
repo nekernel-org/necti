@@ -9,8 +9,8 @@
 
 /// BUGS: 0
 
-#include <CompilerKit/ErrorID.h>
 #include <CompilerKit/AST.h>
+#include <CompilerKit/ErrorID.h>
 #include <algorithm>
 #include <filesystem>
 #include <fstream>

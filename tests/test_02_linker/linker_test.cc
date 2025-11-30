@@ -23,6 +23,7 @@ TEST(LinkerTest, BasicLinkTest2) {
 
 /// link
 TEST(LinkerTest, BasicLinkTest3) {
-  auto expr = std::system("ld64 -amd64 sample/sample.cc.pp.obj -start __NECTI_main -output main.exec");
+  auto expr =
+      std::system("ld64 -amd64 sample/sample.cc.pp.obj -start __NECTI_main -output main.exec");
   EXPECT_TRUE(expr == 0) << "Linker did not link the easy object.";
 }
