@@ -6,7 +6,7 @@
 
 #pragma once
 
-#include <DebuggerKit/Platform.h>
+#include <DebuggerKit/Config.h>
 
 #define DK_DEBUGGER_CONTRACT : public ::DebuggerKit::DebuggerContract
 
@@ -46,7 +46,7 @@ class DebuggerContract {
   virtual std::unordered_map<uintptr_t, uintptr_t>& Get() { return m_breakpoints; }
 
  protected:
-  ProcessID                                m_pid{(ProcessID)~0};
+  ProcessID                                m_pid{(ProcessID) ~0};
   std::unordered_map<uintptr_t, uintptr_t> m_breakpoints;
 };
 }  // namespace DebuggerKit

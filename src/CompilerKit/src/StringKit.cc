@@ -74,7 +74,7 @@ NEString NEStringBuilder::FromInt(const char* fmt, int i) {
   const SizeType res_len = string_length(result);
 
   NEString output(fmt_len + res_len);
-  bool        inserted = false;
+  bool     inserted = false;
 
   for (SizeType idx = 0; idx < fmt_len; ++idx) {
     if (!inserted && fmt[idx] == '%') {
@@ -96,7 +96,7 @@ NEString NEStringBuilder::FromBool(const char* fmt, bool val) {
   const SizeType res_len      = string_length(boolean_expr);
 
   NEString output(fmt_len + res_len);
-  bool        inserted = false;
+  bool     inserted = false;
 
   for (SizeType idx = 0; idx < fmt_len; ++idx) {
     if (!inserted && fmt[idx] == '%') {
@@ -125,7 +125,7 @@ NEString NEStringBuilder::Format(const char* fmt, const char* fmtRight) {
   const SizeType rhs_len = string_length(fmtRight);
 
   NEString output(fmt_len + rhs_len);
-  bool        inserted = false;
+  bool     inserted = false;
 
   for (SizeType idx = 0; idx < fmt_len; ++idx) {
     if (!inserted && fmt[idx] == '%') {

@@ -10,6 +10,6 @@
 
 __init_decl()
 
-extern void __compilerkit_unreachable(void);
+    extern void __compilerkit_unreachable(void);
 
 __fini_decl()

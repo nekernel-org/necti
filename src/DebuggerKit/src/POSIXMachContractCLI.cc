@@ -6,7 +6,7 @@
 
 #ifdef DK_MACH_DEBUGGER
 
-#include <CompilerKit/Defines.h>
+#include <CompilerKit/Config.h>
 #include <DebuggerKit/POSIXMachContract.h>
 #include <ThirdParty/Dialogs.h>
 #include <DebuggerKit/CommonCLI.inl>

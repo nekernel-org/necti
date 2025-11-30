@@ -10,10 +10,10 @@
 
 __init_decl()
 
-/// @brief CRT exit, with exit code (!!! exits all threads. !!!)
-/// @param code the exit code.
-/// @return the return > 0 for non successful.
-extern int exit_(int code);
+    /// @brief CRT exit, with exit code (!!! exits all threads. !!!)
+    /// @param code the exit code.
+    /// @return the return > 0 for non successful.
+    extern int exit_(int code);
 
 /// @brief CRT signal handler.
 /// @param code the signal code.
@@ -25,21 +25,21 @@ extern size_t __atexit_lst_cnt;
 
 __fini_decl()
 
-/// @brief Standard C++ namespace
-namespace std::base_process {
-inline int signal(int code) {
-  signal_(code);
-  return -1;
-}
-
-inline int32_t exit(const int32_t& code) {
-  for (auto idx = 0UL; idx < __atexit_lst_cnt; ++idx) {
-    __atexit_lst_ptr[idx]();
+    /// @brief Standard C++ namespace
+    namespace std::base_process {
+  inline int signal(int code) {
+    signal_(code);
+    return -1;
   }
 
-  if (__atexit_cdecl_ptr) __atexit_cdecl_ptr();
+  inline int32_t exit(const int32_t& code) {
+    for (auto idx = 0UL; idx < __atexit_lst_cnt; ++idx) {
+      __atexit_lst_ptr[idx]();
+    }
 
-  exit_(code);
-  return -1;
-}
+    if (__atexit_cdecl_ptr) __atexit_cdecl_ptr();
+
+    exit_(code);
+    return -1;
+  }
 }  // namespace std::base_process

@@ -762,8 +762,7 @@ class AssemblyCPlusPlusInterfaceAMD64 final CK_ASSEMBLY_INTERFACE {
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
-#define kExtListCxx \
-  { ".cpp", ".cxx", ".cc", ".c++", ".cp" }
+#define kExtListCxx {".cpp", ".cxx", ".cc", ".c++", ".cp"}
 
 NECTI_MODULE(CompilerCPlusPlusAMD64) {
   Boolean skip = false;

@@ -6,7 +6,7 @@
 
 #pragma once
 
-#include <CompilerKit/Defines.h>
+#include <CompilerKit/Config.h>
 
 // @brief AMD64 support.
 // @file impl/X64.h

@@ -6,7 +6,7 @@
 
 #pragma once
 
-#include <CompilerKit/Defines.h>
+#include <CompilerKit/Config.h>
 
 // @brief Open32x0 support.
 // @file impl/32x0.h

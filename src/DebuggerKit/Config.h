@@ -10,7 +10,7 @@
 /// @author Amlal El Mahrouss
 /// =========================================================== ///
 
-#include <CompilerKit/Defines.h>
+#include <CompilerKit/Config.h>
 
 #include <arpa/inet.h>
 #include <sys/socket.h>
