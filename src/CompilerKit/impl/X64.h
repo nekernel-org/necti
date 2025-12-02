@@ -7,6 +7,7 @@
 #pragma once
 
 #include <CompilerKit/Config.h>
+#include <vector>
 
 // @brief AMD64 support.
 // @file impl/X64.h

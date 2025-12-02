@@ -9,7 +9,7 @@
 
 #include <CompilerKit/Config.h>
 #include <CompilerKit/ErrorID.h>
-#include <CompilerKit/Version.h>
+#include <CompilerKit/Config.h>
 #include <cstring>
 #include <iostream>
 #include <vector>

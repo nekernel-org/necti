@@ -1202,7 +1202,7 @@ class AssemblyMountpointCLang final CK_ASSEMBLY_INTERFACE {
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
-#include <CompilerKit/Version.h>
+#include <CompilerKit/Config.h>
 
 #define kPrintF printf
 #define kSplashCxx() kPrintF(kWhite "cc, %s, (c) Amlal El Mahrouss\n", kDistVersion)

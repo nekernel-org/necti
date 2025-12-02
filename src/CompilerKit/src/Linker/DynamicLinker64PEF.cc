@@ -14,13 +14,14 @@
 /// It will be loaded when the program loader will start the image.
 
 #include <CompilerKit/AE.h>
-#include <CompilerKit/Compiler.h>
+#include <CompilerKit/CodeGenerator.h>
 #include <CompilerKit/Config.h>
 #include <CompilerKit/ErrorID.h>
 #include <CompilerKit/PEF.h>
 #include <CompilerKit/UUID.h>
-#include <CompilerKit/Version.h>
+#include <CompilerKit/Config.h>
 #include <CompilerKit/utils/CompilerUtils.h>
+#include <filesystem>
 
 #define kLinkerVersionStr "NeCTI 64-Bit Linker (Preferred Executable Format)"
 

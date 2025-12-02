@@ -38,6 +38,7 @@
 #include <CompilerKit/utils/CompilerUtils.h>
 #include <csignal>
 #include <cstdlib>
+#include <filesystem>
 
 /* NeKernel C++ Compiler Driver */
 /* This is part of the CompilerKit. */

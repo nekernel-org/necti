@@ -8,7 +8,7 @@
 /// @brief Assembler frontend.
 
 #include <CompilerKit/Config.h>
-#include <CompilerKit/Version.h>
+#include <CompilerKit/Config.h>
 #include <cstring>
 #include <vector>
 
@@ -34,7 +34,7 @@ Int32 main(Int32 argc, Char const* argv[]) {
   Int32       asm_type          = kInvalidAssembler;
 
   for (size_t index_arg = 1; index_arg < argc; ++index_arg) {
-    if (strstr(argv[index_arg], "-asm:h")) {
+    if (strcmp(argv[index_arg], "-asm-h") == 0) {
       std::printf("asm: Frontend Assembler (64x0, power64, arm64, x64).\n");
       std::printf("asm: Version: %s, Release: %s.\n", kDistVersion, kDistRelease);
       std::printf(
@@ -45,13 +45,13 @@ Int32 main(Int32 argc, Char const* argv[]) {
           "Licensed under the Apache 2.0 license.\n");
 
       return 0;
-    } else if (strstr(argv[index_arg], "-asm:x64")) {
+    } else if (strcmp(argv[index_arg], "-asm-x64") == 0) {
       asm_type = kX64Assembler;
-    } else if (strstr(argv[index_arg], "-asm:aarch64")) {
+    } else if (strcmp(argv[index_arg], "-asm-aarch64") == 0) {
       asm_type = kARM64Assembler;
-    } else if (strstr(argv[index_arg], "-asm:64x0")) {
+    } else if (strcmp(argv[index_arg], "-asm-64x0") == 0) {
       asm_type = k64X0Assembler;
-    } else if (strstr(argv[index_arg], "-asm:power64")) {
+    } else if (strcmp(argv[index_arg], "-asm-power64") == 0) {
       asm_type = kPOWER64Assembler;
     } else {
       arg_vec_cstr.push_back(argv[index_arg]);

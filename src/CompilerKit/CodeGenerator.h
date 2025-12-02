@@ -9,6 +9,7 @@
 #include <CompilerKit/Config.h>
 #include <CompilerKit/Macros.h>
 #include <CompilerKit/StringKit.h>
+#include <cstring>
 
 #define CK_ASSEMBLY_INTERFACE : public ::CompilerKit::AssemblyInterface
 #define CK_ENCODER : public ::CompilerKit::EncoderInterface

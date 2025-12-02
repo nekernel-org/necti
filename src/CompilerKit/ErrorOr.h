@@ -18,7 +18,6 @@
 #include <CompilerKit/Config.h>
 #include <CompilerKit/ErrorID.h>
 #include <CompilerKit/Ref.h>
-#include <CompilerKit/StringKit.h>
 
 namespace CompilerKit {
 using ErrorT = Int32;

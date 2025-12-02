@@ -7,9 +7,9 @@
 #pragma once
 
 #include <CompilerKit/AST.h>
-#include <CompilerKit/Compiler.h>
+#include <CompilerKit/CodeGenerator.h>
 #include <CompilerKit/ErrorID.h>
-#include <CompilerKit/Version.h>
+#include <CompilerKit/Config.h>
 #include <ThirdParty/Dialogs.h>
 #include <iostream>
 

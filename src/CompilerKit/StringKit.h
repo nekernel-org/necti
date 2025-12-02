@@ -12,6 +12,7 @@
 
 #include <CompilerKit/Config.h>
 #include <CompilerKit/ErrorOr.h>
+#include <cstring>
 
 /// =========================================================== ///
 /// @file StringKit.h

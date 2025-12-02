@@ -7,6 +7,7 @@
 #pragma once
 
 #include <CompilerKit/Config.h>
+#include <vector>
 
 // @brief Open32x0 support.
 // @file impl/32x0.h

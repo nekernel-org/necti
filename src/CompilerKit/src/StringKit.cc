@@ -19,6 +19,7 @@
  */
 
 #include <CompilerKit/StringKit.h>
+#include <stdexcept>
 
 namespace CompilerKit {
 

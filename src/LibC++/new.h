@@ -9,26 +9,24 @@
 #include <LibC++/defines.h>
 
 namespace std {
-struct placement_new;
-
-/// =========================================================
-/// @brief Disambugate non-throwing allocation functions.
-/// =========================================================
-struct nothrow_t {
+struct nothrow_t final {
   explicit nothrow_t() = default;
+  ~nothrow_t() = default;
 };
 
-/// =========================================================
-/// @brief Placement new metadata.
-/// =========================================================
-struct placement_new final {
+struct placement_t final {
+  explicit placement_t() = default;
+  ~placement_t() = default;
+
   void*   __base{};
   int32_t __align{};
   size_t  __size{};
 };
-
-using placement_new_t = placement_new;
 }  // namespace std
+
+#ifndef __has_placement
+#define placement
+#endif
 
 void* operator new(size_t);
 void* operator new[](size_t);

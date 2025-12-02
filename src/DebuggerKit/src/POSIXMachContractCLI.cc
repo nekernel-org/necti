@@ -11,6 +11,7 @@
 #include <ThirdParty/Dialogs.h>
 #include <DebuggerKit/CommonCLI.inl>
 
+#ifdef __APPLE__
 /// @internal
 /// @brief Handles CTRL-C signal on debugger.
 static void dbgi_ctrlc_handler(std::int32_t _) {
@@ -90,5 +91,6 @@ NECTI_MODULE(DebuggerMachPOSIX) {
 
   return EXIT_SUCCESS;
 }
+#endif
 
 #endif

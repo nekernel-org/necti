@@ -9,8 +9,6 @@
 
 #include <LibC++/defines.h>
 
-/// @brief Filesystem module for LibC++
-
 namespace std {
 class path;
 class filesystem_error;

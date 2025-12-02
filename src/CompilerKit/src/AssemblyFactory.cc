@@ -4,7 +4,7 @@
 
 ======================================== */
 
-#include <CompilerKit/Compiler.h>
+#include <CompilerKit/CodeGenerator.h>
 #include <CompilerKit/ErrorID.h>
 
 /**

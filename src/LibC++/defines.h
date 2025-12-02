@@ -73,4 +73,9 @@ typedef union double_cast {
   double f;
 } __ATTRIBUTE(packed) double_cast_t;
 
+namespace std {
+struct placement_t;
+struct nothrow_t;
+}  // namespace std
+
 #endif /* __NECTI_DEFINES_H__ */

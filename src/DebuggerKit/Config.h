@@ -23,15 +23,22 @@
 #include <sys/wait.h>
 #include <unistd.h>
 
-#include <filesystem>
-#include <iostream>
-
 #include <dlfcn.h>
+
+#ifdef __APPLE__
 #include <mach-o/dyld.h>
 #include <mach/mach.h>
 #include <mach/mach_error.h>
-#include <signal.h>
+#endif
 
-#include <cstdint>
-#include <string>
-#include <unordered_map>
+#ifndef kDistRelease
+
+#define kDistVersion "v0.0.7-debuggerkit"
+#define kDistVersionBCD 0x0001
+
+#define ToString(X) Stringify(X)
+#define Stringify(X) #X
+
+#define kDistRelease ToString(kDistReleaseBranch)
+
+#endif // !kDistRelease

@@ -12,13 +12,17 @@
 /// @brief POSIX Mach debugger.
 
 #include <DebuggerKit/DebuggerContract.h>
+#include <filesystem>
+#include <vector>
 
+#ifdef __APPLE__
 CK_IMPORT_C kern_return_t mach_vm_write(vm_map_t target_task, mach_vm_address_t address,
                                         vm_offset_t data, mach_msg_type_number_t dataCnt);
 
 CK_IMPORT_C kern_return_t mach_vm_protect(vm_map_t target_task, mach_vm_address_t address,
                                           mach_vm_size_t size, boolean_t set_maximum,
                                           vm_prot_t new_protection);
+#endif
 
 #define PTRACE_ATTACH PT_ATTACHEXC
 #define PTRACE_DETACH PT_DETACH
@@ -93,6 +97,7 @@ class POSIXMachContract final DK_DEBUGGER_CONTRACT {
         return false;
       }
 
+#ifdef __APPLE__
       task_read_t task;
       task_for_pid(mach_task_self(), m_pid, &task);
 
@@ -102,6 +107,7 @@ class POSIXMachContract final DK_DEBUGGER_CONTRACT {
                       VM_PROT_READ | VM_PROT_WRITE | VM_PROT_EXECUTE);
 
       mach_vm_write(task, (mach_vm_address_t) addr, (vm_offset_t) &brk_inst, sizeof(addr));
+#endif
 
       return true;
     }
@@ -109,6 +115,7 @@ class POSIXMachContract final DK_DEBUGGER_CONTRACT {
     return false;
   }
 
+#ifdef __APPLE__
   Bool Break() noexcept override {
     task_read_t task;
     task_for_pid(mach_task_self(), m_pid, &task);
@@ -137,6 +144,7 @@ class POSIXMachContract final DK_DEBUGGER_CONTRACT {
 
     return kr = KERN_SUCCESS;
   }
+#endif
 
  private:
   ProcessID              m_pid{0};

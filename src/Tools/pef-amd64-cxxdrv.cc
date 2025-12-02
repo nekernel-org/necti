@@ -9,7 +9,7 @@
 
 #include <CompilerKit/Config.h>
 #include <CompilerKit/ErrorID.h>
-#include <CompilerKit/Version.h>
+#include <CompilerKit/Config.h>
 #include <CompilerKit/utils/CompilerUtils.h>
 #include <CompilerKit/utils/DylibHelpers.h>
 

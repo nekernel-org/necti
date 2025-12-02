@@ -1,4 +1,4 @@
-<!-- Read Me of NCTI -->
+<!-- Read Me of NeCTI -->
 
 <div align="center">
   <img src="meta/png/nekernel.png" alt="Logo" width="256"/>
@@ -7,6 +7,7 @@
 <br/>
 
 ![CI](https://github.com/amlel-el-mahrouss/cc/actions/workflows/necti.yml/badge.svg)
+![CI](https://github.com/amlel-el-mahrouss/cc/actions/workflows/necti-dev.yml/badge.svg)
 [![License: GPL-3.0](https://img.shields.io/badge/license-Apache--2.0-blue.svg)](LICENSE)
 
 ## Overview:

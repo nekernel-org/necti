@@ -56,18 +56,29 @@
 #include <signal.h>
 #include <unistd.h>
 #include <cassert>
-#include <cctype>
-#include <cstdint>
-#include <cstdio>
-#include <cstring>
-#include <filesystem>
-#include <fstream>
-#include <iostream>
-#include <memory>
-#include <new>
+#include <time.h>
 #include <string>
-#include <utility>
-#include <vector>
+#include <stdint.h>
+
+#define kDistVersion "v0.0.7-compilerkit"
+#define kDistVersionBCD 0x0002
+
+#define ToString(X) Stringify(X)
+#define Stringify(X) #X
+
+#define kDistRelease ToString(kDistReleaseBranch)
+
+#ifndef kDistRelease
+
+#define kDistVersion "v0.0.7-compilerkit"
+#define kDistVersionBCD 0x0002
+
+#define ToString(X) Stringify(X)
+#define Stringify(X) #X
+
+#define kDistRelease ToString(kDistReleaseBranch)
+
+#endif // !kDistRelease
 
 #define nullPtr std::nullptr_t
 
