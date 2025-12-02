@@ -21,9 +21,9 @@
 
 #include <CompilerKit/AE.h>
 #include <CompilerKit/AST.h>
+#include <CompilerKit/Config.h>
 #include <CompilerKit/ErrorID.h>
 #include <CompilerKit/PEF.h>
-#include <CompilerKit/Config.h>
 #include <CompilerKit/impl/PowerPC.h>
 #include <CompilerKit/utils/AsmUtils.h>
 #include <algorithm>

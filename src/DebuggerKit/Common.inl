@@ -10,12 +10,12 @@
 
 #define kStdOut (std::cout << kRed << "dbg: " << kWhite)
 
-static Bool kKeepRunning = false;
+inline bool kKeepRunning = false;
 
 #ifdef DK_NEKERNEL_DEBUGGER
-static DebuggerKit::NeKernel::NeKernelContract kKernelDebugger;
+inline DebuggerKit::NeKernel::NeKernelContract kKernelDebugger;
 #else
-static DebuggerKit::POSIX::POSIXMachContract kUserDebugger;
+inline DebuggerKit::POSIX::POSIXMachContract kUserDebugger;
 #endif
 
 static DebuggerKit::ProcessID kPID           = 0L;

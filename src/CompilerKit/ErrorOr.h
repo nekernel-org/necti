@@ -30,17 +30,17 @@ class ErrorOr final {
 
  public:
   explicit ErrorOr(ErrorT err) : mId(err) {}
-  explicit ErrorOr(nullPtr null) {}
+  explicit ErrorOr(std::nullptr_t null) {}
   explicit ErrorOr(T klass) : mRef(klass) {}
 
   ErrorOr& operator=(const ErrorOr&) = default;
   ErrorOr(const ErrorOr&)            = default;
 
-  Ref<T> Leak() { return mRef; }
+  Ref<T>& Leak() { return mRef; }
 
   ErrorT Error() { return mId; }
 
-  Bool HasError() { return mId != NECTI_SUCCESS; }
+  bool HasError() { return mId != NECTI_SUCCESS; }
 
   explicit operator bool() { return mRef; }
 

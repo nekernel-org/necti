@@ -966,7 +966,7 @@ bool CompilerKit::EncoderAMD64::WriteLine(std::string line, std::string file) {
       {.fName = "si", .fModRM = 0x6}, {.fName = "di", .fModRM = 7},
   };
 
-  Bool foundInstruction = false;
+  bool foundInstruction = false;
 
   for (auto& opcodeAMD64 : kOpcodesAMD64) {
     // strict check here

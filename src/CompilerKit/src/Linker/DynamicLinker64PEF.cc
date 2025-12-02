@@ -19,7 +19,6 @@
 #include <CompilerKit/ErrorID.h>
 #include <CompilerKit/PEF.h>
 #include <CompilerKit/UUID.h>
-#include <CompilerKit/Config.h>
 #include <CompilerKit/utils/CompilerUtils.h>
 #include <filesystem>
 
@@ -54,9 +53,9 @@ static CompilerKit::STLString kOutput           = "a" kPefExt;
 static Int32                  kAbi              = kABITypeNE;
 static Int32                  kSubArch          = kPefNoSubCpu;
 static Int32                  kArch             = CompilerKit::kPefArchInvalid;
-static Bool                   kFatBinaryEnable  = false;
-static Bool                   kStartFound       = false;
-static Bool                   kDuplicateSymbols = false;
+static bool                   kFatBinaryEnable  = false;
+static bool                   kStartFound       = false;
+static bool                   kDuplicateSymbols = false;
 
 /* ld64 is to be found, mld is to be found at runtime. */
 static const Char* kLdDefineSymbol = ":UndefinedSymbol:";

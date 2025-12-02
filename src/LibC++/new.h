@@ -11,12 +11,12 @@
 namespace std {
 struct nothrow_t final {
   explicit nothrow_t() = default;
-  ~nothrow_t() = default;
+  ~nothrow_t()         = default;
 };
 
 struct placement_t final {
   explicit placement_t() = default;
-  ~placement_t() = default;
+  ~placement_t()         = default;
 
   void*   __base{};
   int32_t __align{};

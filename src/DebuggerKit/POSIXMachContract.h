@@ -45,7 +45,7 @@ class POSIXMachContract final DK_DEBUGGER_CONTRACT {
   POSIXMachContract(const POSIXMachContract&)            = default;
 
  public:
-  Bool Attach(CompilerKit::STLString path, CompilerKit::STLString argv,
+  bool Attach(CompilerKit::STLString path, CompilerKit::STLString argv,
               ProcessID& pid) noexcept override {
     pid = fork();
 
@@ -82,7 +82,7 @@ class POSIXMachContract final DK_DEBUGGER_CONTRACT {
     m_path = path;
   }
 
-  Bool BreakAt(CompilerKit::STLString symbol) noexcept override {
+  bool BreakAt(CompilerKit::STLString symbol) noexcept override {
     if (!m_path.empty() && std::filesystem::exists(m_path) &&
         std::filesystem::is_regular_file(m_path)) {
       auto handle = dlopen(m_path.c_str(), RTLD_LAZY);
@@ -116,7 +116,7 @@ class POSIXMachContract final DK_DEBUGGER_CONTRACT {
   }
 
 #ifdef __APPLE__
-  Bool Break() noexcept override {
+  bool Break() noexcept override {
     task_read_t task;
     task_for_pid(mach_task_self(), m_pid, &task);
 
@@ -125,7 +125,7 @@ class POSIXMachContract final DK_DEBUGGER_CONTRACT {
     return ret == KERN_SUCCESS;
   }
 
-  Bool Continue() noexcept override {
+  bool Continue() noexcept override {
     task_read_t task;
     task_for_pid(mach_task_self(), m_pid, &task);
 
@@ -134,7 +134,7 @@ class POSIXMachContract final DK_DEBUGGER_CONTRACT {
     return ret == KERN_SUCCESS;
   }
 
-  Bool Detach() noexcept override {
+  bool Detach() noexcept override {
     this->Continue();
 
     task_read_t task;

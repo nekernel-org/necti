@@ -42,8 +42,6 @@
 #define Int32 int
 #define UInt32 unsigned
 
-#define Bool bool
-
 #define Int16 int16_t
 #define UInt16 uint16_t
 
@@ -51,14 +49,13 @@
 #define UInt8 uint8_t
 
 #define Char char
-#define Boolean bool
 
 #include <signal.h>
+#include <stdint.h>
+#include <time.h>
 #include <unistd.h>
 #include <cassert>
-#include <time.h>
 #include <string>
-#include <stdint.h>
 
 #define kDistVersion "v0.0.7-compilerkit"
 #define kDistVersionBCD 0x0002
@@ -78,9 +75,7 @@
 
 #define kDistRelease ToString(kDistReleaseBranch)
 
-#endif // !kDistRelease
-
-#define nullPtr std::nullptr_t
+#endif  // !kDistRelease
 
 #define MUST_PASS(E) assert(E)
 

@@ -41,4 +41,4 @@
 
 #define kDistRelease ToString(kDistReleaseBranch)
 
-#endif // !kDistRelease
+#endif  // !kDistRelease

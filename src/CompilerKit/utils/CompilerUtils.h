@@ -8,8 +8,8 @@
 
 #include <CompilerKit/AST.h>
 #include <CompilerKit/CodeGenerator.h>
-#include <CompilerKit/ErrorID.h>
 #include <CompilerKit/Config.h>
+#include <CompilerKit/ErrorID.h>
 #include <ThirdParty/Dialogs.h>
 #include <iostream>
 

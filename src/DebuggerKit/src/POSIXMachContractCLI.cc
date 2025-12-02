@@ -9,9 +9,10 @@
 #include <CompilerKit/Config.h>
 #include <DebuggerKit/POSIXMachContract.h>
 #include <ThirdParty/Dialogs.h>
-#include <DebuggerKit/CommonCLI.inl>
 
 #ifdef __APPLE__
+#include <DebuggerKit/Common.inl>
+
 /// @internal
 /// @brief Handles CTRL-C signal on debugger.
 static void dbgi_ctrlc_handler(std::int32_t _) {

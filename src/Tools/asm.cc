@@ -8,7 +8,6 @@
 /// @brief Assembler frontend.
 
 #include <CompilerKit/Config.h>
-#include <CompilerKit/Config.h>
 #include <cstring>
 #include <vector>
 

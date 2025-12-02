@@ -20,7 +20,7 @@ NeCTI is a modern, multi-platform compiler instractucture designed for modularit
 - `src/LibC++` – C++ ABI Library
 - `src/LibStdC++` – Standard C++ Library
 - `src/DebuggerKit` – Debugging Kit written in modern C++
-- `tools/` – C/C++ Frontend Tools
+- `src/Tools/` – C/C++ Frontend Tools
 
 
 ## Requirements:
@@ -32,15 +32,19 @@ NeCTI is a modern, multi-platform compiler instractucture designed for modularit
 
 ## Notice for Contributors:
 
-- Always use `format.sh` before commiting and pushing your code!
+Always use `format.sh` before commiting and pushing your code!
 
 ## Getting Started:
+
+Run the following:
 
 ```sh
 git clone git@github.com:nekernel-org/necti.git
 cd necti
 # Either build the debugger or compiler libraries/tools using nebuild.
 ```
+
+And build the source tree using the NeBuild system.
 
 ## Security
 

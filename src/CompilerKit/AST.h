@@ -95,7 +95,7 @@ struct SyntaxLeafList final {
 /// \param needle the string we search for.
 /// \return if we found it or not.
 /// =========================================================== ///
-Bool find_word(STLString haystack, STLString needle) noexcept;
+bool find_word(STLString haystack, STLString needle) noexcept;
 
 /// =========================================================== ///
 /// find a word within strict conditions and returns a range of it.

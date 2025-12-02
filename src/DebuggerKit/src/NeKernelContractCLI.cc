@@ -11,7 +11,7 @@
 #include <ThirdParty/Dialogs.h>
 #include <string>
 
-#include <DebuggerKit/CommonCLI.inl>
+#include <DebuggerKit/Common.inl>
 
 using namespace DebuggerKit::NeKernel;
 

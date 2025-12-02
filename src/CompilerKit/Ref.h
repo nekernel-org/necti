@@ -31,7 +31,7 @@ class Ref final {
   NECTI_COPY_DEFAULT(Ref);
 
  public:
-  explicit Ref(T* cls, const Bool& strong = false) : m_Class(cls), m_Strong(strong) {}
+  explicit Ref(T* cls, const bool& strong = false) : m_Class(cls), m_Strong(strong) {}
 
   Ref& operator=(T ref) {
     *m_Class = ref;
@@ -45,13 +45,13 @@ class Ref final {
 
   T operator*() { return *m_Class; }
 
-  Bool IsStrong() const { return m_Strong; }
+  bool IsStrong() const { return m_Strong; }
 
   explicit operator bool() { return *m_Class; }
 
  private:
   T*   m_Class{nullptr};
-  Bool m_Strong{false};
+  bool m_Strong{false};
 };
 
 // @author Amlal El Mahrouss

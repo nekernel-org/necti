@@ -21,7 +21,7 @@ namespace CompilerKit {
 /// \param haystack base string
 /// \param needle the string we search for.
 /// \return if we found it or not.
-Bool find_word(STLString haystack, STLString needle) noexcept {
+bool find_word(STLString haystack, STLString needle) noexcept {
   auto index = haystack.find(needle);
 
   // check for needle validity.

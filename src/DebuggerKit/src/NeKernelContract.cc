@@ -21,7 +21,7 @@ NeKernelContract::NeKernelContract() = default;
 
 NeKernelContract::~NeKernelContract() = default;
 
-Bool NeKernelContract::Attach(CompilerKit::STLString path, CompilerKit::STLString argv,
+bool NeKernelContract::Attach(CompilerKit::STLString path, CompilerKit::STLString argv,
                               ProcessID& pid) noexcept {
   if (path.empty() || argv.empty()) return NO;
 
@@ -47,11 +47,11 @@ Bool NeKernelContract::Attach(CompilerKit::STLString path, CompilerKit::STLStrin
   return ret;
 }
 
-Bool NeKernelContract::BreakAt(CompilerKit::STLString symbol) noexcept {
+bool NeKernelContract::BreakAt(CompilerKit::STLString symbol) noexcept {
   CompilerKit::STLString pkt = Detail::kDebugMagic;
-  pkt += ";SYM=";
+  pkt += ";SYM=\"";
   pkt += symbol;
-  pkt += ";\r";
+  pkt += "\";\r";
 
   if (pkt.size() > kDebugCmdLen) return NO;
 
@@ -59,7 +59,7 @@ Bool NeKernelContract::BreakAt(CompilerKit::STLString symbol) noexcept {
   return ret;
 }
 
-Bool NeKernelContract::Break() noexcept {
+bool NeKernelContract::Break() noexcept {
   CompilerKit::STLString pkt = Detail::kDebugMagic;
   pkt += ";BRK=1;\r";
 
@@ -67,7 +67,7 @@ Bool NeKernelContract::Break() noexcept {
   return ret;
 }
 
-Bool NeKernelContract::Continue() noexcept {
+bool NeKernelContract::Continue() noexcept {
   CompilerKit::STLString pkt = Detail::kDebugMagic;
   pkt += ";CONT=1;\r";
 
@@ -76,7 +76,7 @@ Bool NeKernelContract::Continue() noexcept {
   return NO;
 }
 
-Bool NeKernelContract::Detach() noexcept {
+bool NeKernelContract::Detach() noexcept {
   CompilerKit::STLString pkt = Detail::kDebugMagic;
   pkt += ";DTCH=1;\r";
 

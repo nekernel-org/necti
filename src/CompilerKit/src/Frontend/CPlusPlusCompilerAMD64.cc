@@ -115,10 +115,10 @@ static std::vector<CompilerKit::CompilerKeyword> kKeywords;
 /////////////////////////////////////////
 
 static CompilerKit::AssemblyFactory kAssembler;
-static Boolean                      kInStruct    = false;
-static Boolean                      kOnWhileLoop = false;
-static Boolean                      kOnForLoop   = false;
-static Boolean                      kInBraces    = false;
+static bool                         kInStruct    = false;
+static bool                         kOnWhileLoop = false;
+static bool                         kOnForLoop   = false;
+static bool                         kInBraces    = false;
 static size_t                       kBracesCount = 0UL;
 
 /* @brief C++ compiler backend for the NeKernel C++ driver */
@@ -429,7 +429,7 @@ CompilerKit::SyntaxLeafList::SyntaxLeaf CompilerFrontendCPlusPlusAMD64::Compile(
           varName.erase(varName.find(";"));
         }
 
-        static Boolean typeFound = false;
+        static bool typeFound = false;
 
         for (auto& keyword : kKeywords) {
           if (keyword.keyword_kind == CompilerKit::kKeywordKindType) {
@@ -766,7 +766,7 @@ class AssemblyCPlusPlusInterfaceAMD64 final CK_ASSEMBLY_INTERFACE {
 #define kExtListCxx {".cpp", ".cxx", ".cc", ".c++", ".cp"}
 
 NECTI_MODULE(CompilerCPlusPlusAMD64) {
-  Boolean skip = false;
+  bool skip = false;
 
   kKeywords.emplace_back("if", CompilerKit::kKeywordKindIf);
   kKeywords.emplace_back("else", CompilerKit::kKeywordKindElse);

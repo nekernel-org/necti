@@ -9,10 +9,10 @@
 #include <DebuggerKit/Config.h>
 #include <unordered_map>
 
-#define DK_DEBUGGER_CONTRACT : public ::DebuggerKit::DebuggerContract
+#define DK_DEBUGGER_CONTRACT : public ::DebuggerKit::IDebuggerContract
 
 namespace DebuggerKit {
-class DebuggerContract;
+class IDebuggerContract;
 
 /// =========================================================== ///
 /// \brief Process ID
@@ -28,14 +28,14 @@ typedef char* CAddress;
 /// \brief Debugger contract class in C++, as per the design states.
 /// \author Amlal El Mahrouss
 /// =========================================================== ///
-class DebuggerContract {
+class IDebuggerContract {
  public:
-  explicit DebuggerContract() = default;
-  virtual ~DebuggerContract() = default;
+  explicit IDebuggerContract() = default;
+  virtual ~IDebuggerContract() = default;
 
  public:
-  DebuggerContract& operator=(const DebuggerContract&) = default;
-  DebuggerContract(const DebuggerContract&)            = default;
+  IDebuggerContract& operator=(const IDebuggerContract&) = default;
+  IDebuggerContract(const IDebuggerContract&)            = default;
 
  public:
   virtual bool Attach(std::string path, std::string argv, ProcessID& pid) noexcept = 0;

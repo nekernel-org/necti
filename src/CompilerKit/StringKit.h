@@ -84,7 +84,7 @@ struct NEStringBuilder final {
   static NEString FromInt(const char* fmt, int n);
   static NEString FromBool(const char* fmt, bool n);
   static NEString Format(const char* fmt, const char* from);
-  static Bool     Equals(const char* lhs, const char* rhs);
+  static bool     Equals(const char* lhs, const char* rhs);
 };
 
 using NEStringOr  = ErrorOr<NEString>;
