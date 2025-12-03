@@ -51,4 +51,19 @@ And build the source tree using the NeBuild system.
 - **Vulnerability Disclosure:**  
   Please report security issues privately via email or GitHub Security Advisories.
 
-###### Copyright (C) 2024-2025 Amlal El Mahrouss & NeKernel.org Contributors, Licensed under the Apache 2.0 license.
+## Authors & Credits
+
+- **Amlal El Mahrouss** — Lead Developer and Compiler Architect.
+- [Full contributor list](https://github.com/nekernel-org/necti/graphs/contributors)
+
+---
+
+## License
+
+This project is licensed under the [Apache-2.0 License](LICENSE).
+
+<div align="center">
+  <sub>
+    &copy; 2024-2025 Amlal El Mahrouss & NeKernel contributors. Licensed under the Apache 2.0 license.
+  </sub>
+</div>
