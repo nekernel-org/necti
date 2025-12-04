@@ -8,9 +8,9 @@
 
 #include <CompilerKit/AST.h>
 #include <CompilerKit/CodeGenerator.h>
-#include <CompilerKit/detail/Config.h>
+#include <CompilerKit/Detail/Config.h>
 #include <CompilerKit/ErrorID.h>
-#include <ThirdParty/Dialogs.h>
+#include <ThirdParty/Dialogs/Dialogs.h>
 #include <iostream>
 
 #define kZero64Section ".zero64"
@@ -27,7 +27,10 @@
 #define kYellow "\e[0;33m"
 
 #define kStdOut (std::cout << kRed << "drv: " << kWhite)
-#define kStdErr (std::cout << kYellow << "drv: " << kWhite)
+#define kStdErr (std::cerr << kYellow << "drv: " << kWhite)
+
+#define kPrintF kStdOut
+#define kPrintErr kStdErr
 
 inline static UInt32 kErrorLimit       = 10;
 inline static UInt32 kAcceptableErrors = 0;

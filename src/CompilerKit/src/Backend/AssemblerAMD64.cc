@@ -31,7 +31,7 @@
 #include <CompilerKit/AE.h>
 #include <CompilerKit/AST.h>
 #include <CompilerKit/PEF.h>
-#include <CompilerKit/impl/X64.h>
+#include <CompilerKit/Detail/AMD64.h>
 #include <algorithm>
 #include <cstdlib>
 #include <filesystem>
@@ -75,7 +75,7 @@ static const std::string kUndefinedSymbol = ":UndefinedSymbol:";
 // \brief forward decl.
 static bool asm_read_attributes(std::string line);
 
-#include <CompilerKit/utils/AsmUtils.h>
+#include <CompilerKit/Utilities/Assembler.h>
 
 /////////////////////////////////////////////////////////////////////////////////////////
 

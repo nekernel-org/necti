@@ -7,7 +7,7 @@
 /// @file cxxdrv.cc
 /// @brief NeCTI frontend preprocessor.
 
-#include <CompilerKit/detail/Config.h>
+#include <CompilerKit/Detail/Config.h>
 #include <CompilerKit/ErrorID.h>
 #include <cstring>
 #include <iostream>

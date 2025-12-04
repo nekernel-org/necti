@@ -9,8 +9,8 @@
 
 #include <CompilerKit/AST.h>
 #include <CompilerKit/UUID.h>
-#include <CompilerKit/impl/PowerPC.h>
-#include <CompilerKit/utils/CompilerUtils.h>
+#include <CompilerKit/Detail/Power64.h>
+#include <CompilerKit/Utilities/Compiler.h>
 #include <cstdio>
 #include <fstream>
 #include <iostream>
@@ -20,21 +20,11 @@
 #include <utility>
 #include <vector>
 
-#define kExitOK 0
+#define kSourceExt ".c"
 
 /// @author Amlal El Mahrouss (amlal@nekernel.org)
 /// @file cc.cc
 /// @brief POWER64 C Compiler.
-
-/////////////////////
-
-/// ANSI ESCAPE CODES
-
-/////////////////////
-
-#define kBlank "\e[0;30m"
-#define kRed "\e[0;31m"
-#define kWhite "\e[0;97m"
 
 /////////////////////////////////////
 
@@ -1196,24 +1186,9 @@ class AssemblyMountpointCLang final CK_ASSEMBLY_INTERFACE {
     kState.fOutputAssembly->flush();
     kState.fOutputAssembly.reset();
 
-    return kExitOK;
+    return EXIT_SUCCESS;
   }
 };
-
-/////////////////////////////////////////////////////////////////////////////////////////
-
-#include <CompilerKit/detail/Config.h>
-
-#define kPrintF printf
-#define kSplashCxx() kPrintF(kWhite "cc, %s, (c) Amlal El Mahrouss\n", kDistVersion)
-
-static void cc_print_help() {
-  kSplashCxx();
-}
-
-/////////////////////////////////////////////////////////////////////////////////////////
-
-#define kExt ".c"
 
 NECTI_MODULE(CompilerCLangPowerPC) {
   ::signal(SIGSEGV, Detail::drvi_crash_handler);
@@ -1239,8 +1214,8 @@ NECTI_MODULE(CompilerCLangPowerPC) {
 
     if (argv[index][0] == '-') {
       if (strcmp(argv[index], "-v") == 0 || strcmp(argv[index], "-version") == 0) {
-        kSplashCxx();
-        return kExitOK;
+        // AMLALE Compiler Version.
+        return EXIT_SUCCESS;
       }
 
       if (strcmp(argv[index], "-verbose") == 0) {
@@ -1250,15 +1225,14 @@ NECTI_MODULE(CompilerCLangPowerPC) {
       }
 
       if (strcmp(argv[index], "-h") == 0 || strcmp(argv[index], "-help") == 0) {
-        cc_print_help();
-
-        return kExitOK;
+        // AMLALE Compiler Help.
+        return EXIT_SUCCESS;
       }
 
       if (strcmp(argv[index], "-dialect") == 0) {
         if (kCompilerFrontend) std::cout << kCompilerFrontend->Language() << "\n";
 
-        return kExitOK;
+        return EXIT_SUCCESS;
       }
 
       if (strcmp(argv[index], "-fmax-exceptions") == 0) {
@@ -1287,7 +1261,7 @@ NECTI_MODULE(CompilerCLangPowerPC) {
 
     std::string srcFile = argv[index];
 
-    if (strstr(argv[index], kExt) == nullptr) {
+    if (strstr(argv[index], kSourceExt) == nullptr) {
       if (kState.fVerbose) {
         Detail::print_error(srcFile + " is not a valid C source.\n", "cc");
       }
@@ -1295,10 +1269,10 @@ NECTI_MODULE(CompilerCLangPowerPC) {
       return 1;
     }
 
-    if (kFactory.Compile(srcFile, kMachine) != kExitOK) return 1;
+    if (kFactory.Compile(srcFile, kMachine) != EXIT_SUCCESS) return 1;
   }
 
-  return kExitOK;
+  return EXIT_SUCCESS;
 }
 
 // Last rev 8-1-24

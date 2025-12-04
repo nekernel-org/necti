@@ -8,14 +8,14 @@
 
 #include <CompilerKit/AST.h>
 #include <CompilerKit/CodeGenerator.h>
-#include <CompilerKit/utils/CompilerUtils.h>
+#include <CompilerKit/Utilities/Compiler.h>
 
 using namespace CompilerKit;
 
 /// @brief Get Number from lineBuffer.
 /// @param lineBuffer the lineBuffer to fetch from.
 /// @param numberKey where to seek that number.
-/// @return
+/// @return A numbercast of 32-bit width.
 static NumberCast32 GetNumber32(STLString lineBuffer, STLString numberKey) {
   auto pos = lineBuffer.find(numberKey) + numberKey.size();
 

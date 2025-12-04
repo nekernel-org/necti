@@ -15,11 +15,11 @@
 
 #include <CompilerKit/AE.h>
 #include <CompilerKit/CodeGenerator.h>
-#include <CompilerKit/detail/Config.h>
+#include <CompilerKit/Detail/Config.h>
 #include <CompilerKit/ErrorID.h>
 #include <CompilerKit/PEF.h>
 #include <CompilerKit/UUID.h>
-#include <CompilerKit/utils/CompilerUtils.h>
+#include <CompilerKit/Utilities/Compiler.h>
 #include <filesystem>
 
 #define kLinkerVersionStr "NeCTI 64-Bit Linker (Preferred Executable Format)"
@@ -31,8 +31,7 @@
 #define kLinkerId (0x5046FF)
 #define kLinkerAbiContainer "__PEFContainer:ABI:"
 
-#define kPrintF printf
-#define kLinkerSplash() kConsoleOut << kLinkerVersionStr << std::endl
+#define kLinkerSplash() kStdOut << kLinkerVersionStr << std::endl
 
 /// @brief PEF stack size symbol.
 #define kLinkerStackSizeSymbol "__PEFSizeOfReserveStack"

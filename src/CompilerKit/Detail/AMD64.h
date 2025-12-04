@@ -6,11 +6,11 @@
 
 #pragma once
 
-#include <CompilerKit/detail/Config.h>
+#include <CompilerKit/Detail/Config.h>
 #include <vector>
 
 // @brief AMD64 support.
-// @file impl/X64.h
+// @file Detail/AMD64.h
 
 #define CK_ASM_OPCODE(__NAME, __OPCODE) {.fName = __NAME, .fOpcode = __OPCODE},
 

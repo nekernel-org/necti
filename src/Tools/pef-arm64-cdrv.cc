@@ -7,10 +7,10 @@
 /// @file cxxdrv.cc
 /// @brief NeCTI C++ frontend compiler.
 
-#include <CompilerKit/detail/Config.h>
+#include <CompilerKit/Detail/Config.h>
 #include <CompilerKit/ErrorID.h>
-#include <CompilerKit/utils/CompilerUtils.h>
-#include <CompilerKit/utils/DylibHelpers.h>
+#include <CompilerKit/Utilities/Compiler.h>
+#include <CompilerKit/Utilities/DLL.h>
 
 #ifdef __APPLE__
 static auto kPath = "/usr/local/lib/libCompilerKit.dylib";

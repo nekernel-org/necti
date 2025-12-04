@@ -6,7 +6,7 @@
 
 #pragma once
 
-#include <CompilerKit/detail/Config.h>
+#include <CompilerKit/Detail/Config.h>
 #include <fstream>
 
 // @file PEF.h

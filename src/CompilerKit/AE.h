@@ -10,7 +10,7 @@
 #ifndef _NECTI_AE_H_
 #define _NECTI_AE_H_
 
-#include <CompilerKit/detail/Config.h>
+#include <CompilerKit/Detail/Config.h>
 #include <fstream>
 
 #define kAEIdentVersion (0x0122)

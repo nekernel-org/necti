@@ -6,9 +6,9 @@
 
 #ifdef DK_MACH_DEBUGGER
 
-#include <CompilerKit/detail/Config.h>
+#include <CompilerKit/Detail/Config.h>
 #include <DebuggerKit/POSIXMachContract.h>
-#include <ThirdParty/Dialogs.h>
+#include <ThirdParty/Dialogs/Dialogs.h>
 
 #ifdef __APPLE__
 #include <DebuggerKit/Common.inl>

@@ -6,7 +6,7 @@
 
 #pragma once
 
-#include <CompilerKit/detail/Config.h>
+#include <CompilerKit/Detail/Config.h>
 #include <CompilerKit/Macros.h>
 #include <CompilerKit/StringKit.h>
 #include <cstring>
@@ -84,7 +84,9 @@ union NumberCast64 final {
 
   ~NumberCast64() { raw = 0; }
 
-  Char   number[8];
+  static constexpr auto kLimit = 8;
+
+  Char   number[kLimit];
   UInt64 raw;
 };
 
@@ -94,7 +96,9 @@ union NumberCast32 final {
 
   ~NumberCast32() { raw = 0; }
 
-  Char   number[4];
+  static constexpr auto kLimit = 4;
+
+  Char   number[kLimit];
   UInt32 raw;
 };
 
@@ -104,7 +108,9 @@ union NumberCast16 final {
 
   ~NumberCast16() { raw = 0; }
 
-  Char   number[2];
+  static constexpr auto kLimit = 2;
+
+  Char   number[kLimit];
   UInt16 raw;
 };
 

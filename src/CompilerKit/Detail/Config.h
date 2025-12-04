@@ -12,12 +12,11 @@
 /// @brief Basic defines and types for CompilerKit.
 /// =========================================================== ///
 
-#include <CompilerKit/detail/PreConfig.h>
+#include <CompilerKit/Detail/PreConfig.h>
 
 namespace CompilerKit {
 inline constexpr int kBaseYear = 1900;
-
-typedef std::string STLString;
+using STLString = std::string;
 
 inline STLString current_date() noexcept {
   auto time_data   = time(nullptr);

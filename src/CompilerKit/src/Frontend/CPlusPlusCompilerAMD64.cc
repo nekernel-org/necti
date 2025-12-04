@@ -21,21 +21,11 @@
 
 ///////////////////////
 
-#define kPrintF printf
-#define kPrintErr std::cerr
-
-#define kExitOK (EXIT_SUCCESS)
-#define kExitNO (EXIT_FAILURE)
-
-#define kBlank "\e[0;30m"
-#define kRed "\e[0;31m"
-#define kWhite "\e[0;97m"
-
 #include <CompilerKit/AST.h>
 #include <CompilerKit/PEF.h>
 #include <CompilerKit/UUID.h>
-#include <CompilerKit/impl/X64.h>
-#include <CompilerKit/utils/CompilerUtils.h>
+#include <CompilerKit/Detail/AMD64.h>
+#include <CompilerKit/Utilities/Compiler.h>
 #include <csignal>
 #include <cstdlib>
 #include <filesystem>
@@ -738,7 +728,7 @@ class AssemblyCPlusPlusInterfaceAMD64 final CK_ASSEMBLY_INTERFACE {
   UInt32 Arch() noexcept override { return CompilerKit::AssemblyFactory::kArchAMD64; }
 
   Int32 CompileToFormat(CompilerKit::STLString src, Int32 arch) override {
-    if (kFrontend == nullptr) return kExitNO;
+    if (kFrontend == nullptr) return EXIT_FAILURE;
 
     CompilerKit::STLString dest = src;
     dest += ".pp.masm";
@@ -755,7 +745,7 @@ class AssemblyCPlusPlusInterfaceAMD64 final CK_ASSEMBLY_INTERFACE {
       out_fp << kFrontend->Compile(line_source, src).fUserValue;
     }
 
-    return kExitOK;
+    return EXIT_SUCCESS;
   }
 };
 
@@ -887,7 +877,7 @@ NECTI_MODULE(CompilerCPlusPlusAMD64) {
 
     for (CompilerKit::STLString ext : exts) {
       if (argv_i.ends_with(ext)) {
-        if (kAssembler.Compile(argv_i, kMachine) != kExitOK) {
+        if (kAssembler.Compile(argv_i, kMachine) != EXIT_SUCCESS) {
           return NECTI_INVALID_DATA;
         }
 

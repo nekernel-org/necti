@@ -12,8 +12,8 @@
 
 #include <CompilerKit/AST.h>
 #include <CompilerKit/UUID.h>
-#include <CompilerKit/impl/64x0.h>
-#include <CompilerKit/utils/CompilerUtils.h>
+#include <CompilerKit/Detail/64x0.h>
+#include <CompilerKit/Utilities/Compiler.h>
 #include <cstdio>
 #include <fstream>
 #include <iostream>
@@ -39,11 +39,7 @@
 
 /////////////////////
 
-#define kExitOK (0)
-
-#define kBlank "\e[0;30m"
-#define kRed "\e[0;31m"
-#define kWhite "\e[0;97m"
+#define kFrontendExt ".c"
 
 /////////////////////////////////////
 
@@ -1179,24 +1175,9 @@ class AssemblyCCInterface final CK_ASSEMBLY_INTERFACE {
     kState.fOutputAssembly->flush();
     kState.fOutputAssembly.reset();
 
-    return kExitOK;
+    return EXIT_SUCCESS;
   }
 };
-
-/////////////////////////////////////////////////////////////////////////////////////////
-
-#include <CompilerKit/detail/Config.h>
-
-#define kPrintF printf
-#define kSplashCxx() kPrintF(kWhite "NeCTI C Driver, %s, (c) Amlal El Mahrouss\n", kDistVersion)
-
-static void cc_print_help() {
-  kSplashCxx();
-}
-
-/////////////////////////////////////////////////////////////////////////////////////////
-
-#define kExt ".c"
 
 NECTI_MODULE(CompilerCLang64x0) {
   ::signal(SIGSEGV, Detail::drvi_crash_handler);
@@ -1222,8 +1203,7 @@ NECTI_MODULE(CompilerCLang64x0) {
 
     if (argv[index][0] == '-') {
       if (strcmp(argv[index], "--v") == 0 || strcmp(argv[index], "--version") == 0) {
-        kSplashCxx();
-        return kExitOK;
+        return EXIT_SUCCESS;
       }
 
       if (strcmp(argv[index], "--verbose") == 0) {
@@ -1233,15 +1213,13 @@ NECTI_MODULE(CompilerCLang64x0) {
       }
 
       if (strcmp(argv[index], "--h") == 0 || strcmp(argv[index], "--help") == 0) {
-        cc_print_help();
-
-        return kExitOK;
+        return EXIT_SUCCESS;
       }
 
       if (strcmp(argv[index], "--dialect") == 0) {
         if (kCompilerFrontend) std::cout << kCompilerFrontend->Language() << "\n";
 
-        return kExitOK;
+        return EXIT_SUCCESS;
       }
 
       if (strcmp(argv[index], "--fmax-exceptions") == 0) {
@@ -1270,7 +1248,7 @@ NECTI_MODULE(CompilerCLang64x0) {
 
     std::string srcFile = argv[index];
 
-    if (strstr(argv[index], kExt) == nullptr) {
+    if (strstr(argv[index], kFrontendExt) == nullptr) {
       if (kState.fVerbose) {
         Detail::print_error(srcFile + " is not a valid C source.\n", "cc");
       }
@@ -1278,10 +1256,10 @@ NECTI_MODULE(CompilerCLang64x0) {
       return 1;
     }
 
-    if (kFactory.Compile(srcFile, kMachine) != kExitOK) return 1;
+    if (kFactory.Compile(srcFile, kMachine) != EXIT_SUCCESS) return 1;
   }
 
-  return kExitOK;
+  return EXIT_SUCCESS;
 }
 
 // Last rev 8-1-24

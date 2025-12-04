@@ -6,7 +6,7 @@
 
 #pragma once
 
-#include <DebuggerKit/detail/Config.h>
+#include <DebuggerKit/Detail/Config.h>
 #include <unordered_map>
 
 #define DK_DEBUGGER_CONTRACT : public ::DebuggerKit::IDebuggerContract

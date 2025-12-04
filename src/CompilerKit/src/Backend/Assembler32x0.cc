@@ -24,8 +24,8 @@
 #include <CompilerKit/AE.h>
 #include <CompilerKit/AST.h>
 #include <CompilerKit/PEF.h>
-#include <CompilerKit/impl/32x0.h>
-#include <CompilerKit/utils/CompilerUtils.h>
+#include <CompilerKit/Detail/32x0.h>
+#include <CompilerKit/Utilities/Compiler.h>
 
 /////////////////////////////////////////////////////////////////////////////////////////
 

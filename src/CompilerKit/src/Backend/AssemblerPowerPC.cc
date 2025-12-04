@@ -21,11 +21,11 @@
 
 #include <CompilerKit/AE.h>
 #include <CompilerKit/AST.h>
-#include <CompilerKit/detail/Config.h>
+#include <CompilerKit/Detail/Config.h>
 #include <CompilerKit/ErrorID.h>
 #include <CompilerKit/PEF.h>
-#include <CompilerKit/impl/PowerPC.h>
-#include <CompilerKit/utils/AsmUtils.h>
+#include <CompilerKit/Detail/Power64.h>
+#include <CompilerKit/Utilities/Assembler.h>
 #include <algorithm>
 #include <filesystem>
 #include <fstream>

@@ -6,7 +6,7 @@
 
 #pragma once
 
-#include <CompilerKit/detail/Config.h>
+#include <CompilerKit/Detail/Config.h>
 #include <dlfcn.h>
 #include <mutex>
 

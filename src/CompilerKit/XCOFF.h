@@ -14,7 +14,7 @@
 #ifndef _NECTI_XCOFF_H_
 #define _NECTI_XCOFF_H_
 
-#include <CompilerKit/detail/Config.h>
+#include <CompilerKit/Detail/Config.h>
 
 #define kXCOFF64Magic 0x01F7
 

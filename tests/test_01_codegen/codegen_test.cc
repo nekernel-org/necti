@@ -10,6 +10,6 @@
 #include <gtest/gtest.h>
 
 TEST(CodegenTest, BasicCodegenTest) {
-  auto expr = std::system("asm -asm-x64 sample/sample.asm");
+  auto expr = std::system("asm -asm-x64 test_samples/sample.asm");
   EXPECT_TRUE(expr == 0) << "ASM Driver did not compile the easy ASM unit.";
 }

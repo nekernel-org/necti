@@ -12,7 +12,7 @@
 
 #ifdef DK_NEKERNEL_DEBUGGER
 
-#include <CompilerKit/detail/Config.h>
+#include <CompilerKit/Detail/Config.h>
 #include <DebuggerKit/DebuggerContract.h>
 
 namespace DebuggerKit::NeKernel {

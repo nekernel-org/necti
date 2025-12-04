@@ -9,10 +9,10 @@
 /// @author Amlal El Mahrouss
 /// @brief Kernel Debugger Protocol
 
-#include <CompilerKit/detail/Config.h>
-#include <DebuggerKit/detail/Config.h>
+#include <CompilerKit/Detail/Config.h>
+#include <DebuggerKit/Detail/Config.h>
 #include <DebuggerKit/NeKernelContract.h>
-#include <ThirdParty/Dialogs.h>
+#include <ThirdParty/Dialogs/Dialogs.h>
 
 using namespace DebuggerKit::NeKernel;
 using namespace DebuggerKit::NeKernel::Detail;

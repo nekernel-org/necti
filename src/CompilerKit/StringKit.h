@@ -10,7 +10,7 @@
 #ifndef __NECTI_STRINGKIT__
 #define __NECTI_STRINGKIT__
 
-#include <CompilerKit/detail/Config.h>
+#include <CompilerKit/Detail/Config.h>
 #include <CompilerKit/ErrorOr.h>
 #include <cstring>
 
