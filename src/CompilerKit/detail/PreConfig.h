@@ -4,14 +4,7 @@
 
 ======================================== */
 
-#ifndef __NECTI_DEFINES_H__
-#define __NECTI_DEFINES_H__
-
-/// =========================================================== ///
-/// @file Config.h
-/// @author Amlal El Mahrouss
-/// @brief Basic defines and types for CompilerKit.
-/// =========================================================== ///
+#pragma once
 
 #ifndef Yes
 #define Yes true
@@ -125,54 +118,3 @@
 
 #define CK_IMPORT_C extern "C"
 #define CK_IMPORT extern
-namespace CompilerKit {
-inline constexpr int kBaseYear = 1900;
-
-typedef std::string STLString;
-
-inline STLString current_date() noexcept {
-  auto time_data   = time(nullptr);
-  auto time_struct = gmtime(&time_data);
-
-  STLString fmt = std::to_string(kBaseYear + time_struct->tm_year);
-
-  fmt += "-";
-  fmt += std::to_string(time_struct->tm_mon + 1);
-  fmt += "-";
-  fmt += std::to_string(time_struct->tm_mday);
-
-  return fmt;
-}
-
-inline bool to_str(Char* str, Int32 limit, Int32 base) noexcept {
-  if (limit == 0) return false;
-
-  Int32 copy_limit = limit;
-  Int32 cnt        = 0;
-  Int32 ret        = base;
-
-  while (limit != 1) {
-    ret      = ret % 10;
-    str[cnt] = ret;
-
-    ++cnt;
-    --limit;
-    --ret;
-  }
-
-  str[copy_limit] = '\0';
-  return true;
-}
-
-inline bool install_signal(Int32 signal, void (*handler)(int)) noexcept {
-  if (handler == nullptr) return false;
-
-  if (::signal(signal, handler) == SIG_ERR) {
-    return false;
-  }
-
-  return true;
-}
-}  // namespace CompilerKit
-
-#endif /* ifndef __NECTI_DEFINES_H__ */

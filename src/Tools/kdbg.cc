@@ -4,7 +4,7 @@
 
 ======================================== */
 
-#include <CompilerKit/Config.h>
+#include <CompilerKit/detail/Config.h>
 
 /// @file kdbg.cc
 /// @brief NeKernel debugger.

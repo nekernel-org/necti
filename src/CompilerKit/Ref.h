@@ -10,7 +10,7 @@
 
 #pragma once
 
-#include <CompilerKit/Config.h>
+#include <CompilerKit/detail/Config.h>
 
 namespace CompilerKit {
 /// @author Amlal El Mahrouss

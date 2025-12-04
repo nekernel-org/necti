@@ -6,7 +6,7 @@
 
 #pragma once
 
-#include <CompilerKit/Config.h>
+#include <CompilerKit/detail/Config.h>
 #include <CompilerKit/Macros.h>
 #include <CompilerKit/StringKit.h>
 #include <cstring>

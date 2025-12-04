@@ -6,7 +6,7 @@
 
 #ifdef DK_NEKERNEL_DEBUGGER
 
-#include <CompilerKit/Config.h>
+#include <CompilerKit/detail/Config.h>
 #include <DebuggerKit/NeKernelContract.h>
 #include <ThirdParty/Dialogs.h>
 #include <string>

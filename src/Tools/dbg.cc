@@ -4,7 +4,7 @@
 
 ======================================== */
 
-#include <CompilerKit/Config.h>
+#include <CompilerKit/detail/Config.h>
 
 /// @file dbg.cc
 /// @brief NeCTI debugger.

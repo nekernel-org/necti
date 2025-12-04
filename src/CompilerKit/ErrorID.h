@@ -9,7 +9,7 @@
 
 #pragma once
 
-#include <CompilerKit/Config.h>
+#include <CompilerKit/detail/Config.h>
 
 /// =========================================================== ///
 /// @file ErrorID.h

@@ -4,7 +4,7 @@
 
 ======================================== */
 
-#include <CompilerKit/Config.h>
+#include <CompilerKit/detail/Config.h>
 
 /// @file ld64.cc
 /// @brief NeCTI linker for AE objects.
