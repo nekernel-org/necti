@@ -4,24 +4,12 @@
 
 ======================================== */
 
-#include <CompilerKit/AST.h>
-
-/**
- * @file Frontend.cc
- * @author Amlal El Mahrouss (amlal@nekernel.org)
- * @brief AST of NeCTI
- * @version 0.0.3
- *
- * @copyright Copyright (c) 2025 Amlal El Mahrouss and NeKernel.org Contributors
- *
- */
-
 namespace CompilerKit {
 /// find the perfect matching word in a haystack.
 /// \param haystack base string
 /// \param needle the string we search for.
 /// \return if we found it or not.
-bool find_word(STLString haystack, STLString needle) noexcept {
+inline bool find_word(STLString haystack, STLString needle) noexcept {
   auto index = haystack.find(needle);
 
   // check for needle validity.
@@ -43,7 +31,7 @@ bool find_word(STLString haystack, STLString needle) noexcept {
 /// \param haystack
 /// \param needle
 /// \return position of needle.
-SizeType find_word_range(STLString haystack, STLString needle) noexcept {
+inline SizeType find_word_range(STLString haystack, STLString needle) noexcept {
   auto index = haystack.find(needle);
 
   // check for needle validity.
@@ -62,14 +50,14 @@ SizeType find_word_range(STLString haystack, STLString needle) noexcept {
 /// =========================================================== ///
 //! @brief What language are we dealing with?
 /// =========================================================== ///
-const char* CompilerFrontendInterface::Language() {
+inline const char* CompilerFrontendInterface::Language() {
   return kInvalidFrontend;
 }
 
 /// =========================================================== ///
 /// @brief Checks if language is a valid frontend.
 /// =========================================================== ///
-bool CompilerFrontendInterface::IsValid() {
+inline bool CompilerFrontendInterface::IsValid() {
   return strcmp(this->Language(), kInvalidFrontend) > 0;
 }
 }  // namespace CompilerKit

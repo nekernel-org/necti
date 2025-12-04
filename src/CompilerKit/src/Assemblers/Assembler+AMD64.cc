@@ -86,7 +86,7 @@ static bool asm_read_attributes(std::string line);
 NECTI_MODULE(AssemblerMainAMD64) {
   //////////////// CPU OPCODES BEGIN ////////////////
 
-  CompilerKit::install_signal(SIGSEGV, Detail::drvi_crash_handler);
+  CompilerKit::install_signal(SIGSEGV, CompilerKit::Detail::drvi_crash_handler);
 
   std::string opcodes_jump[kJumpLimit] = {"ja",  "jae",  "jb",  "jbe",  "jc",  "je",   "jg",  "jge",
                                           "jl",  "jle",  "jna", "jnae", "jnb", "jnbe", "jnc", "jne",
@@ -205,7 +205,7 @@ NECTI_MODULE(AssemblerMainAMD64) {
 
     while (std::getline(file_ptr, line)) {
       if (auto ln = asm64.CheckLine(line, argv[i]); !ln.empty()) {
-        Detail::print_error(ln, argv[i]);
+        CompilerKit::Detail::print_error(ln, argv[i]);
         continue;
       }
 
@@ -215,7 +215,7 @@ NECTI_MODULE(AssemblerMainAMD64) {
       } catch (const std::exception& e) {
         if (kVerbose) {
           std::string what = e.what();
-          Detail::print_warning("exit because of: " + what, "CompilerKit");
+          CompilerKit::Detail::print_warning("exit because of: " + what, "CompilerKit");
         }
 
         try {
@@ -340,14 +340,14 @@ static bool asm_read_attributes(std::string line) {
   // that we need this symbol.
   if (CompilerKit::find_word(line, "extern_segment")) {
     if (kOutputAsBinary) {
-      Detail::print_error("Invalid directive in flat binary mode.", "CompilerKit");
+      CompilerKit::Detail::print_error("Invalid directive in flat binary mode.", "CompilerKit");
       throw std::runtime_error("invalid_extern_segment_bin");
     }
 
     auto name = line.substr(line.find("extern_segment") + strlen("extern_segment") + 1);
 
     if (name.size() == 0) {
-      Detail::print_error("Invalid extern_segment", "power-as");
+      CompilerKit::Detail::print_error("Invalid extern_segment", "power-as");
       throw std::runtime_error("invalid_extern_segment");
     }
 
@@ -399,7 +399,7 @@ static bool asm_read_attributes(std::string line) {
   // .zero64.
   else if (CompilerKit::find_word(line, "public_segment")) {
     if (kOutputAsBinary) {
-      Detail::print_error("Invalid directive in flat binary mode.", "CompilerKit");
+      CompilerKit::Detail::print_error("Invalid directive in flat binary mode.", "CompilerKit");
       throw std::runtime_error("invalid_public_segment_bin");
     }
 
@@ -412,7 +412,7 @@ static bool asm_read_attributes(std::string line) {
     }
 
     if (std::find(kDefinedSymbols.begin(), kDefinedSymbols.end(), name) != kDefinedSymbols.end()) {
-      Detail::print_error("Symbol already defined.", "CompilerKit");
+      CompilerKit::Detail::print_error("Symbol already defined.", "CompilerKit");
       throw std::runtime_error("invalid_public_segment_bin");
     }
 
@@ -468,7 +468,7 @@ static bool asm_read_attributes(std::string line) {
 
 // \brief algorithms and helpers.
 
-namespace Detail::algorithm {
+namespace CompilerKit::Detail::algorithm {
 // \brief authorize a brief set of characters.
 static inline bool is_not_valid(char c) {
   if ((isalpha(c) || isdigit(c)) ||
@@ -483,7 +483,7 @@ static inline bool is_not_valid(char c) {
 bool is_valid_amd64(std::string str) {
   return std::find_if(str.begin(), str.end(), is_not_valid) == str.end();
 }
-}  // namespace Detail::algorithm
+}  // namespace CompilerKit::Detail::algorithm
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
@@ -502,7 +502,7 @@ std::string CompilerKit::EncoderAMD64::CheckLine(std::string line, std::string f
       line.erase(line.find(';'));
     } else {
       // now check the line for validity
-      if (!Detail::algorithm::is_valid_amd64(line)) {
+      if (!CompilerKit::Detail::algorithm::is_valid_amd64(line)) {
         err_str = "Line contains non valid characters.\nhere -> ";
         err_str += line;
       }
@@ -564,7 +564,7 @@ bool CompilerKit::EncoderAMD64::WriteNumber(const std::size_t& pos, std::string&
     case 'x': {
       if (auto res = strtol(jump_label.substr(pos + 2).c_str(), nullptr, 16); !res) {
         if (errno != 0) {
-          Detail::print_error("invalid hex number: " + jump_label, "CompilerKit");
+          CompilerKit::Detail::print_error("invalid hex number: " + jump_label, "CompilerKit");
           throw std::runtime_error("invalid_hex");
         }
       }
@@ -588,7 +588,7 @@ bool CompilerKit::EncoderAMD64::WriteNumber(const std::size_t& pos, std::string&
     case 'b': {
       if (auto res = strtol(jump_label.substr(pos + 2).c_str(), nullptr, 2); !res) {
         if (errno != 0) {
-          Detail::print_error("invalid binary number: " + jump_label, "CompilerKit");
+          CompilerKit::Detail::print_error("invalid binary number: " + jump_label, "CompilerKit");
           throw std::runtime_error("invalid_bin");
         }
       }
@@ -611,7 +611,7 @@ bool CompilerKit::EncoderAMD64::WriteNumber(const std::size_t& pos, std::string&
     case 'o': {
       if (auto res = strtol(jump_label.substr(pos + 2).c_str(), nullptr, 7); !res) {
         if (errno != 0) {
-          Detail::print_error("invalid octal number: " + jump_label, "CompilerKit");
+          CompilerKit::Detail::print_error("invalid octal number: " + jump_label, "CompilerKit");
           throw std::runtime_error("invalid_octal");
         }
       }
@@ -764,7 +764,7 @@ bool CompilerKit::EncoderAMD64::WriteNumber16(const std::size_t& pos, std::strin
     case 'x': {
       if (auto res = strtol(jump_label.substr(pos + 2).c_str(), nullptr, 16); !res) {
         if (errno != 0) {
-          Detail::print_error("invalid hex number: " + jump_label, "CompilerKit");
+          CompilerKit::Detail::print_error("invalid hex number: " + jump_label, "CompilerKit");
           throw std::runtime_error("invalid_hex");
         }
       }
@@ -788,7 +788,7 @@ bool CompilerKit::EncoderAMD64::WriteNumber16(const std::size_t& pos, std::strin
     case 'b': {
       if (auto res = strtol(jump_label.substr(pos + 2).c_str(), nullptr, 2); !res) {
         if (errno != 0) {
-          Detail::print_error("invalid binary number: " + jump_label, "CompilerKit");
+          CompilerKit::Detail::print_error("invalid binary number: " + jump_label, "CompilerKit");
           throw std::runtime_error("invalid_bin");
         }
       }
@@ -811,7 +811,7 @@ bool CompilerKit::EncoderAMD64::WriteNumber16(const std::size_t& pos, std::strin
     case 'o': {
       if (auto res = strtol(jump_label.substr(pos + 2).c_str(), nullptr, 7); !res) {
         if (errno != 0) {
-          Detail::print_error("invalid octal number: " + jump_label, "CompilerKit");
+          CompilerKit::Detail::print_error("invalid octal number: " + jump_label, "CompilerKit");
           throw std::runtime_error("invalid_octal");
         }
       }
@@ -866,7 +866,7 @@ bool CompilerKit::EncoderAMD64::WriteNumber8(const std::size_t& pos, std::string
     case 'x': {
       if (auto res = strtol(jump_label.substr(pos + 2).c_str(), nullptr, 16); !res) {
         if (errno != 0) {
-          Detail::print_error("invalid hex number: " + jump_label, "CompilerKit");
+          CompilerKit::Detail::print_error("invalid hex number: " + jump_label, "CompilerKit");
           throw std::runtime_error("invalid_hex");
         }
       }
@@ -886,7 +886,7 @@ bool CompilerKit::EncoderAMD64::WriteNumber8(const std::size_t& pos, std::string
     case 'b': {
       if (auto res = strtol(jump_label.substr(pos + 2).c_str(), nullptr, 2); !res) {
         if (errno != 0) {
-          Detail::print_error("invalid binary number: " + jump_label, "CompilerKit");
+          CompilerKit::Detail::print_error("invalid binary number: " + jump_label, "CompilerKit");
           throw std::runtime_error("invalid_bin");
         }
       }
@@ -905,7 +905,7 @@ bool CompilerKit::EncoderAMD64::WriteNumber8(const std::size_t& pos, std::string
     case 'o': {
       if (auto res = strtol(jump_label.substr(pos + 2).c_str(), nullptr, 7); !res) {
         if (errno != 0) {
-          Detail::print_error("invalid octal number: " + jump_label, "CompilerKit");
+          CompilerKit::Detail::print_error("invalid octal number: " + jump_label, "CompilerKit");
           throw std::runtime_error("invalid_octal");
         }
       }
@@ -971,7 +971,7 @@ bool CompilerKit::EncoderAMD64::WriteLine(std::string line, std::string file) {
   for (auto& opcodeAMD64 : kOpcodesAMD64) {
     // strict check here
     if (CompilerKit::find_word(line, opcodeAMD64.fName) &&
-        Detail::algorithm::is_valid_amd64(line)) {
+        CompilerKit::Detail::algorithm::is_valid_amd64(line)) {
       foundInstruction = true;
       std::string name(opcodeAMD64.fName);
 
@@ -983,7 +983,7 @@ bool CompilerKit::EncoderAMD64::WriteLine(std::string line, std::string file) {
           uint64_t bits = kRegisterBitWidth;
 
           if (substr.find(",") == std::string::npos) {
-            Detail::print_error("Syntax error: missing right operand.", "CompilerKit");
+            CompilerKit::Detail::print_error("Syntax error: missing right operand.", "CompilerKit");
             throw std::runtime_error("syntax_err");
           }
 
@@ -1006,7 +1006,7 @@ bool CompilerKit::EncoderAMD64::WriteLine(std::string line, std::string file) {
 
                 if (bits == 16) {
                   if (registerName[0] == 'r') {
-                    Detail::print_error("invalid size for register, current bit width is: " +
+                    CompilerKit::Detail::print_error("invalid size for register, current bit width is: " +
                                             std::to_string(kRegisterBitWidth),
                                         file);
                     throw std::runtime_error("invalid_reg_size");
@@ -1046,7 +1046,7 @@ bool CompilerKit::EncoderAMD64::WriteLine(std::string line, std::string file) {
               if (!onlyOneReg) kAppBytes.emplace_back(0x89);
             } else if (bits == 16) {
               if (hasRBasedRegs) {
-                Detail::print_error("Invalid combination of operands and registers.",
+                CompilerKit::Detail::print_error("Invalid combination of operands and registers.",
                                     "CompilerKit");
                 throw std::runtime_error("comb_op_reg");
               } else {
@@ -1085,33 +1085,33 @@ bool CompilerKit::EncoderAMD64::WriteLine(std::string line, std::string file) {
           }
 
           if (currentRegList[1].fName[0] == 'r' && currentRegList[0].fName[0] == 'e') {
-            Detail::print_error("Invalid combination of operands and registers.", "CompilerKit");
+            CompilerKit::Detail::print_error("Invalid combination of operands and registers.", "CompilerKit");
             throw std::runtime_error("comb_op_reg");
           }
 
           if (currentRegList[0].fName[0] == 'r' && currentRegList[1].fName[0] == 'e') {
-            Detail::print_error("Invalid combination of operands and registers.", "CompilerKit");
+            CompilerKit::Detail::print_error("Invalid combination of operands and registers.", "CompilerKit");
             throw std::runtime_error("comb_op_reg");
           }
 
           if (bits == 16) {
             if (currentRegList[0].fName[0] == 'r' || currentRegList[0].fName[0] == 'e') {
-              Detail::print_error("Invalid combination of operands and registers.", "CompilerKit");
+              CompilerKit::Detail::print_error("Invalid combination of operands and registers.", "CompilerKit");
               throw std::runtime_error("comb_op_reg");
             }
 
             if (currentRegList[1].fName[0] == 'r' || currentRegList[1].fName[0] == 'e') {
-              Detail::print_error("Invalid combination of operands and registers.", "CompilerKit");
+              CompilerKit::Detail::print_error("Invalid combination of operands and registers.", "CompilerKit");
               throw std::runtime_error("comb_op_reg");
             }
           } else {
             if (currentRegList[0].fName[0] != 'r' || currentRegList[0].fName[0] == 'e') {
-              Detail::print_error("Invalid combination of operands and registers.", "CompilerKit");
+              CompilerKit::Detail::print_error("Invalid combination of operands and registers.", "CompilerKit");
               throw std::runtime_error("comb_op_reg");
             }
 
             if (currentRegList[1].fName[0] != 'r' || currentRegList[1].fName[0] == 'e') {
-              Detail::print_error("Invalid combination of operands and registers.", "CompilerKit");
+              CompilerKit::Detail::print_error("Invalid combination of operands and registers.", "CompilerKit");
               throw std::runtime_error("comb_op_reg");
             }
           }
@@ -1154,7 +1154,7 @@ bool CompilerKit::EncoderAMD64::WriteLine(std::string line, std::string file) {
 
   if (line[0] == kAssemblerPragmaSym) {
     if (foundInstruction) {
-      Detail::print_error("Syntax error: " + line, file);
+      CompilerKit::Detail::print_error("Syntax error: " + line, file);
       throw std::runtime_error("syntax_err");
     }
 

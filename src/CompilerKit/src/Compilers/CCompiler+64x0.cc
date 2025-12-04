@@ -23,6 +23,8 @@
 #include <utility>
 #include <vector>
 
+#define kSourceExt ".c"
+
 /* C driver */
 /* This is part of the CompilerKit. */
 /* (c) Amlal El Mahrouss */
@@ -38,8 +40,6 @@
 // ANSI ESCAPE CODES
 
 /////////////////////
-
-#define kFrontendExt ".c"
 
 /////////////////////////////////////
 
@@ -346,7 +346,7 @@ CompilerKit::SyntaxLeafList::SyntaxLeaf CompilerFrontend64x0::Compile(std::strin
       if (text.find("typedef ") != std::string::npos) continue;
 
       if (text[text_index] == '=' && kInStruct) {
-        Detail::print_error("assignement of value in struct " + text, file);
+        CompilerKit::Detail::print_error("assignement of value in struct " + text, file);
         continue;
       }
 
@@ -1089,7 +1089,7 @@ class AssemblyCCInterface final CK_ASSEMBLY_INTERFACE {
       if (auto err = kCompilerFrontend->Check(line_src.c_str(), src.data()); err.empty()) {
         kCompilerFrontend->Compile(line_src, src.data());
       } else {
-        Detail::print_error(err, src.data());
+        CompilerKit::Detail::print_error(err, src.data());
       }
     }
 
@@ -1180,7 +1180,7 @@ class AssemblyCCInterface final CK_ASSEMBLY_INTERFACE {
 };
 
 NECTI_MODULE(CompilerCLang64x0) {
-  ::signal(SIGSEGV, Detail::drvi_crash_handler);
+  ::signal(SIGSEGV, CompilerKit::Detail::drvi_crash_handler);
 
   kCompilerTypes.push_back({.fName = "void", .fValue = "void"});
   kCompilerTypes.push_back({.fName = "char", .fValue = "byte"});
@@ -1239,7 +1239,7 @@ NECTI_MODULE(CompilerCLang64x0) {
       std::string err = "Unknown command: ";
       err += argv[index];
 
-      Detail::print_error(err, "cc");
+      CompilerKit::Detail::print_error(err, "cc");
 
       continue;
     }
@@ -1248,9 +1248,9 @@ NECTI_MODULE(CompilerCLang64x0) {
 
     std::string srcFile = argv[index];
 
-    if (strstr(argv[index], kFrontendExt) == nullptr) {
+    if (strstr(argv[index], kSourceExt) == nullptr) {
       if (kState.fVerbose) {
-        Detail::print_error(srcFile + " is not a valid C source.\n", "cc");
+        CompilerKit::Detail::print_error(srcFile + " is not a valid C source.\n", "cc");
       }
 
       return 1;

@@ -27,7 +27,7 @@ static NumberCast32 GetNumber32(STLString lineBuffer, STLString numberKey) {
     case 'x': {
       if (auto res = strtol(lineBuffer.substr(pos).c_str(), nullptr, 16); !res) {
         if (errno != 0) {
-          Detail::print_error("invalid hex number: " + lineBuffer, "CompilerKit");
+          CompilerKit::Detail::print_error("invalid hex number: " + lineBuffer, "CompilerKit");
           throw std::runtime_error("invalid_hex");
         }
       }
@@ -43,7 +43,7 @@ static NumberCast32 GetNumber32(STLString lineBuffer, STLString numberKey) {
     case 'b': {
       if (auto res = strtol(lineBuffer.substr(pos).c_str(), nullptr, 2); !res) {
         if (errno != 0) {
-          Detail::print_error("invalid binary number:" + lineBuffer, "CompilerKit");
+          CompilerKit::Detail::print_error("invalid binary number:" + lineBuffer, "CompilerKit");
           throw std::runtime_error("invalid_bin");
         }
       }
@@ -59,7 +59,7 @@ static NumberCast32 GetNumber32(STLString lineBuffer, STLString numberKey) {
     case 'o': {
       if (auto res = strtol(lineBuffer.substr(pos).c_str(), nullptr, 7); !res) {
         if (errno != 0) {
-          Detail::print_error("invalid octal number: " + lineBuffer, "CompilerKit");
+          CompilerKit::Detail::print_error("invalid octal number: " + lineBuffer, "CompilerKit");
           throw std::runtime_error("invalid_octal");
         }
       }
@@ -75,7 +75,7 @@ static NumberCast32 GetNumber32(STLString lineBuffer, STLString numberKey) {
     default: {
       if (auto res = strtol(lineBuffer.substr(pos).c_str(), nullptr, 10); !res) {
         if (errno != 0) {
-          Detail::print_error("invalid hex number: " + lineBuffer, "CompilerKit");
+          CompilerKit::Detail::print_error("invalid hex number: " + lineBuffer, "CompilerKit");
           throw std::runtime_error("invalid_hex");
         }
       }

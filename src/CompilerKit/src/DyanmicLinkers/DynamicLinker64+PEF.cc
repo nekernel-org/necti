@@ -64,14 +64,14 @@ static CompilerKit::STLString kLinkerStart = kPefStart;
 
 /* object code and list. */
 static std::vector<CompilerKit::STLString>    kObjectList;
-static std::vector<Detail::DynamicLinkerBlob> kObjectBytes;
+static std::vector<CompilerKit::Detail::Blob> kObjectBytes;
 
 ///	@brief NeCTI 64-bit Linker.
 /// @note This linker is made for PEF executable, thus NeCTI based OSes.
 NECTI_MODULE(DynamicLinker64PEF) {
   bool is_executable = true;
 
-  CompilerKit::install_signal(SIGSEGV, Detail::drvi_crash_handler);
+  CompilerKit::install_signal(SIGSEGV, CompilerKit::Detail::drvi_crash_handler);
 
   /**
    * @brief parse flags and trigger options.

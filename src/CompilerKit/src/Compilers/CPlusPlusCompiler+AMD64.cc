@@ -217,7 +217,7 @@ CompilerKit::SyntaxLeafList::SyntaxLeaf CompilerFrontendCPlusPlusAMD64::Compile(
         if (keywordPos == CompilerKit::STLString::npos ||
             openParen == CompilerKit::STLString::npos ||
             closeParen == CompilerKit::STLString::npos || closeParen <= openParen) {
-          Detail::print_error("Malformed if expression: " + text, file);
+          CompilerKit::Detail::print_error("Malformed if expression: " + text, file);
           break;
         }
 
@@ -328,14 +328,14 @@ CompilerKit::SyntaxLeafList::SyntaxLeaf CompilerFrontendCPlusPlusAMD64::Compile(
         if (text.ends_with(";") && text.find("return") == CompilerKit::STLString::npos)
           goto lc_write_assembly;
         else if (text.size() <= indexFnName)
-          Detail::print_error("Invalid function name: " + symbol_name_fn, file);
+          CompilerKit::Detail::print_error("Invalid function name: " + symbol_name_fn, file);
 
         indexFnName = 0;
 
         for (auto& ch : symbol_name_fn) {
           if (ch == ' ' || ch == '\t') {
             if (symbol_name_fn[indexFnName - 1] != ')')
-              Detail::print_error("Invalid function name: " + symbol_name_fn, file);
+              CompilerKit::Detail::print_error("Invalid function name: " + symbol_name_fn, file);
           }
 
           ++indexFnName;
@@ -525,7 +525,7 @@ CompilerKit::SyntaxLeafList::SyntaxLeaf CompilerFrontendCPlusPlusAMD64::Compile(
               if (pair == valueOfVar) goto done;
             }
 
-            Detail::print_error("Variable not declared: " + varName, file);
+            CompilerKit::Detail::print_error("Variable not declared: " + varName, file);
             break;
           }
 
@@ -627,7 +627,7 @@ CompilerKit::SyntaxLeafList::SyntaxLeaf CompilerFrontendCPlusPlusAMD64::Compile(
         }
 
         if (syntax_tree.fUserValue.empty()) {
-          Detail::print_error("Variable not declared: " + varName, file);
+          CompilerKit::Detail::print_error("Variable not declared: " + varName, file);
         }
 
         kRegisterMap.insert(kRegisterMap.end(), newVars.begin(), newVars.end());
@@ -679,7 +679,7 @@ CompilerKit::SyntaxLeafList::SyntaxLeaf CompilerFrontendCPlusPlusAMD64::Compile(
                   });
 
               if (it == kOriginMap.end())
-                Detail::print_error("Invalid return value: " + subText, file);
+                CompilerKit::Detail::print_error("Invalid return value: " + subText, file);
 
               std::stringstream ss;
               ss << it->second;
@@ -821,7 +821,7 @@ NECTI_MODULE(CompilerCPlusPlusAMD64) {
   kFrontend = new CompilerFrontendCPlusPlusAMD64();
   kAssembler.Mount(new AssemblyCPlusPlusInterfaceAMD64());
 
-  CompilerKit::install_signal(SIGSEGV, Detail::drvi_crash_handler);
+  CompilerKit::install_signal(SIGSEGV, CompilerKit::Detail::drvi_crash_handler);
 
   // Ensure cleanup on exit
   std::atexit([]() {
@@ -866,7 +866,7 @@ NECTI_MODULE(CompilerCPlusPlusAMD64) {
       CompilerKit::STLString err = "Unknown option: ";
       err += argv[index];
 
-      Detail::print_error(err, "cxxdrv");
+      CompilerKit::Detail::print_error(err, "cxxdrv");
 
       continue;
     }

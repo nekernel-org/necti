@@ -8,7 +8,6 @@
 
 #include <CompilerKit/Detail/Config.h>
 #include <CompilerKit/Macros.h>
-#include <CompilerKit/StringKit.h>
 #include <cstring>
 
 #define CK_ASSEMBLY_INTERFACE : public ::CompilerKit::AssemblyInterface

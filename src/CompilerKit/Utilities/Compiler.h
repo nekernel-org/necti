@@ -37,14 +37,18 @@ inline static UInt32 kAcceptableErrors = 0;
 inline static bool   kVerbose          = false;
 inline static bool   kOutputAsBinary   = false;
 
-namespace Detail {
-/// @brief Linker specific blob metadata structure
-struct DynamicLinkerBlob final {
+namespace CompilerKit::Detail {
+/// @brief Blob structure
+struct Blob final {
   std::vector<Char> mBlob{};       // PEF code/bss/data blob.
   UIntPtr           mOffset{0UL};  // the offset of the PEF container header...
+
+  explicit operator bool() {
+    return mBlob.empty() && mOffset > 0UL;
+  }
 };
 
-inline void print_error(std::string reason, std::string file) noexcept {
+inline void print_error(STLString reason, STLString file) noexcept {
   if (reason[0] == '\n') reason.erase(0, 1);
 
   kStdErr << reason << kBlank << std::endl;
@@ -54,7 +58,7 @@ inline void print_error(std::string reason, std::string file) noexcept {
   ++kAcceptableErrors;
 }
 
-inline void print_warning(std::string reason, std::string file) noexcept {
+inline void print_warning(STLString reason, STLString file) noexcept {
   if (reason[0] == '\n') reason.erase(0, 1);
 
   kStdOut << kYellow << reason << kBlank << std::endl;

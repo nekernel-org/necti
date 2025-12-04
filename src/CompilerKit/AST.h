@@ -139,3 +139,5 @@ class CompilerFrontendInterface {
   virtual bool IsValid();
 };
 }  // namespace CompilerKit
+
+#include <CompilerKit/AST.inl>

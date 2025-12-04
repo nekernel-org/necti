@@ -20,6 +20,10 @@ struct CompilerKitDylibTraits final {
   CompilerKitEntrypoint fEntrypoint{nullptr};
   std::mutex            fMutex;
 
+  explicit operator bool() {
+    return fDylib && fEntrypoint;
+  }
+
   CompilerKitDylibTraits& operator()(const Char* path, const Char* fEntrypoint) {
     std::lock_guard<std::mutex> lock(this->fMutex);
 

@@ -73,7 +73,7 @@ static bool asm_read_attributes(std::string line);
 /////////////////////////////////////////////////////////////////////////////////////////
 
 NECTI_MODULE(AssemblerMainARM64) {
-  CompilerKit::install_signal(SIGSEGV, Detail::drvi_crash_handler);
+  CompilerKit::install_signal(SIGSEGV, CompilerKit::Detail::drvi_crash_handler);
 
   for (size_t i = 1; i < argc; ++i) {
     if (argv[i][0] == '-') {
@@ -149,7 +149,7 @@ NECTI_MODULE(AssemblerMainARM64) {
 
     while (std::getline(file_ptr, line)) {
       if (auto ln = asm64.CheckLine(line, argv[i]); !ln.empty()) {
-        Detail::print_error(ln, argv[i]);
+        CompilerKit::Detail::print_error(ln, argv[i]);
         continue;
       }
 
@@ -159,7 +159,7 @@ NECTI_MODULE(AssemblerMainARM64) {
       } catch (const std::exception& e) {
         if (kVerbose) {
           std::string what = e.what();
-          Detail::print_warning("exit because of: " + what, "CompilerKit");
+          CompilerKit::Detail::print_warning("exit because of: " + what, "CompilerKit");
         }
 
         std::filesystem::remove(object_output);
@@ -274,14 +274,14 @@ static bool asm_read_attributes(std::string line) {
   // that we need this symbol.
   if (CompilerKit::find_word(line, "extern_segment")) {
     if (kOutputAsBinary) {
-      Detail::print_error("Invalid extern_segment directive in flat binary mode.", "CompilerKit");
+      CompilerKit::Detail::print_error("Invalid extern_segment directive in flat binary mode.", "CompilerKit");
       throw std::runtime_error("invalid_extern_segment_bin");
     }
 
     auto name = line.substr(line.find("extern_segment") + strlen("extern_segment") + 1);
 
     if (name.size() == 0) {
-      Detail::print_error("Invalid extern_segment", "CompilerKit");
+      CompilerKit::Detail::print_error("Invalid extern_segment", "CompilerKit");
       throw std::runtime_error("invalid_extern_segment");
     }
 
@@ -333,7 +333,7 @@ static bool asm_read_attributes(std::string line) {
   // .zero64
   else if (CompilerKit::find_word(line, "public_segment")) {
     if (kOutputAsBinary) {
-      Detail::print_error("Invalid public_segment directive in flat binary mode.", "CompilerKit");
+      CompilerKit::Detail::print_error("Invalid public_segment directive in flat binary mode.", "CompilerKit");
       throw std::runtime_error("invalid_public_segment_bin");
     }
 
@@ -395,7 +395,7 @@ static bool asm_read_attributes(std::string line) {
 
 // \brief algorithms and helpers.
 
-namespace Detail::algorithm {
+namespace CompilerKit::Detail::algorithm {
 // \brief authorize a brief set of characters.
 static inline bool is_not_alnum_space(char c) {
   return !(isalpha(c) || isdigit(c) || (c == ' ') || (c == '\t') || (c == ',') || (c == '(') ||
@@ -406,7 +406,7 @@ static inline bool is_not_alnum_space(char c) {
 bool is_valid_arm64(std::string str) {
   return std::find_if(str.begin(), str.end(), is_not_alnum_space) == str.end();
 }
-}  // namespace Detail::algorithm
+}  // namespace CompilerKit::Detail::algorithm
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
@@ -426,7 +426,7 @@ std::string CompilerKit::EncoderARM64::CheckLine(std::string line, std::string f
       line.erase(line.find(';'));
     } else {
       /// does the line contains valid input?
-      if (!Detail::algorithm::is_valid_arm64(line)) {
+      if (!CompilerKit::Detail::algorithm::is_valid_arm64(line)) {
         err_str = "Line contains non alphanumeric characters.\nhere -> ";
         err_str += line;
       }
@@ -435,7 +435,7 @@ std::string CompilerKit::EncoderARM64::CheckLine(std::string line, std::string f
     return err_str;
   }
 
-  if (!Detail::algorithm::is_valid_arm64(line)) {
+  if (!CompilerKit::Detail::algorithm::is_valid_arm64(line)) {
     err_str = "Line contains non alphanumeric characters.\nhere -> ";
     err_str += line;
 
@@ -488,7 +488,7 @@ bool CompilerKit::EncoderARM64::WriteNumber(const std::size_t& pos, std::string&
     case 'x': {
       if (auto res = strtol(jump_label.substr(pos + 2).c_str(), nullptr, 16); !res) {
         if (errno != 0) {
-          Detail::print_error("invalid hex number: " + jump_label, "CompilerKit");
+          CompilerKit::Detail::print_error("invalid hex number: " + jump_label, "CompilerKit");
           throw std::runtime_error("invalid_hex");
         }
       }
@@ -509,7 +509,7 @@ bool CompilerKit::EncoderARM64::WriteNumber(const std::size_t& pos, std::string&
     case 'b': {
       if (auto res = strtol(jump_label.substr(pos + 2).c_str(), nullptr, 2); !res) {
         if (errno != 0) {
-          Detail::print_error("invalid binary number: " + jump_label, "CompilerKit");
+          CompilerKit::Detail::print_error("invalid binary number: " + jump_label, "CompilerKit");
           throw std::runtime_error("invalid_bin");
         }
       }
@@ -529,7 +529,7 @@ bool CompilerKit::EncoderARM64::WriteNumber(const std::size_t& pos, std::string&
     case 'o': {
       if (auto res = strtol(jump_label.substr(pos + 2).c_str(), nullptr, 7); !res) {
         if (errno != 0) {
-          Detail::print_error("invalid octal number: " + jump_label, "CompilerKit");
+          CompilerKit::Detail::print_error("invalid octal number: " + jump_label, "CompilerKit");
           throw std::runtime_error("invalid_octal");
         }
       }
@@ -580,7 +580,7 @@ bool CompilerKit::EncoderARM64::WriteNumber(const std::size_t& pos, std::string&
 bool CompilerKit::EncoderARM64::WriteLine(std::string line, std::string file) {
   if (CompilerKit::find_word(line, "public_segment")) return false;
 
-  if (!Detail::algorithm::is_valid_arm64(line)) return false;
+  if (!CompilerKit::Detail::algorithm::is_valid_arm64(line)) return false;
 
   return true;
 }
