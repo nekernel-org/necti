@@ -31,7 +31,7 @@
 #define kLinkerId (0x5046FF)
 #define kLinkerAbiContainer "__PEFContainer:ABI:"
 
-#define kLinkerSplash() kStdOut << kLinkerVersionStr << std::endl
+#define kLinkerSplash() kStdOut << kLinkerVersionStr << kStdEndl
 
 /// @brief PEF stack size symbol.
 #define kLinkerStackSizeSymbol "__PEFSizeOfReserveStack"

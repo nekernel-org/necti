@@ -28,7 +28,7 @@
 
 #define kStdOut (std::cout << kRed << "drv: " << kWhite)
 #define kStdErr (std::cerr << kYellow << "drv: " << kWhite)
-
+#define kStdEndl std::endl
 #define kPrintF kStdOut
 #define kPrintErr kStdErr
 

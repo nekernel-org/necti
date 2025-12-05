@@ -26,20 +26,20 @@ Int32 AssemblyFactory::Compile(STLString sourceFile, const Int32& arch) noexcept
 
   try {
     return this->fMounted->CompileToFormat(sourceFile, arch);
-  } catch (std::exception& e) {
+  } catch (...) {
     return NECTI_EXEC_ERROR;
   }
 }
 
 ///! @brief mount assembly backend.
-void AssemblyFactory::Mount(AssemblyInterface* mountPtr) noexcept {
+void AssemblyFactory::Mount(IAssembly* mountPtr) noexcept {
   if (mountPtr) {
     fMounted = mountPtr;
   }
 }
 
 ///! @brief Unmount assembler.
-AssemblyInterface* AssemblyFactory::Unmount() noexcept {
+IAssembly* AssemblyFactory::Unmount() noexcept {
   auto mount_prev = fMounted;
 
   if (fMounted) {

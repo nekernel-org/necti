@@ -7,9 +7,16 @@
 #pragma once
 
 #include <LibC++/defines.h>
+#include <LibC++/base_process.h>
 
 __init_decl()
 
-    extern void __compilerkit_unreachable(void);
+static constexpr int32_t __unreachable_code = 34;
+
+inline void __compilerkit_unreachable(void) {
+  std::base_process::signal(__unreachable_code);
+
+  while (1);
+}
 
 __fini_decl()

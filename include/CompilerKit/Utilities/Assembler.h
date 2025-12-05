@@ -10,13 +10,14 @@
 #include <CompilerKit/CodeGenerator.h>
 #include <CompilerKit/Utilities/Compiler.h>
 
-using namespace CompilerKit;
-
+namespace CompilerKit {
 /// @brief Get Number from lineBuffer.
 /// @param lineBuffer the lineBuffer to fetch from.
 /// @param numberKey where to seek that number.
 /// @return A numbercast of 32-bit width.
-static NumberCast32 GetNumber32(STLString lineBuffer, STLString numberKey) {
+inline NumberCast32 GetNumber32(STLString lineBuffer, STLString numberKey) {
+  if (lineBuffer.empty()) return {};
+
   auto pos = lineBuffer.find(numberKey) + numberKey.size();
 
   while (lineBuffer[pos] == ' ') {
@@ -83,10 +84,11 @@ static NumberCast32 GetNumber32(STLString lineBuffer, STLString numberKey) {
       NumberCast32 numOffset(strtol(lineBuffer.substr(pos).c_str(), nullptr, 10));
 
       if (kVerbose) {
-        kStdOut << "asm: found a base 10 number here:" << lineBuffer.substr(pos) << "\n";
+        kStdOut << "asm: found a base 10 number here:" << lineBuffer.substr(pos) << kStdEndl;
       }
 
       return numOffset;
     }
   }
 }
+}  // namespace CompilerKit

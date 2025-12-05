@@ -35,7 +35,7 @@
 /* (c) Amlal El Mahrouss 2024-2025 */
 
 /// @author Amlal El Mahrouss (amlal@nekernel.org)
-/// @file CPlusPlusCompilerAMD64.cxx
+/// @file CPlusPlusCompilerAMD64.cc
 /// @brief Optimized C++ Compiler Driver.
 
 /////////////////////////////////////
@@ -146,7 +146,7 @@ static std::size_t kFunctionEmbedLevel = 0UL;
 /// detail namespaces
 
 const char* CompilerFrontendCPlusPlusAMD64::Language() {
-  return "AMD64 C++";
+  return "AMD64 CFront";
 }
 
 static std::uintptr_t                                                 kOrigin = kPefBaseOrigin;
@@ -753,7 +753,7 @@ class AssemblyCPlusPlusInterfaceAMD64 final CK_ASSEMBLY_INTERFACE {
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
-#define kExtListCxx {".cpp", ".cxx", ".cc", ".c++", ".cp"}
+#define kExtListCxx {".cpp", ".cc", ".cc", ".c++", ".cp"}
 
 NECTI_MODULE(CompilerCPlusPlusAMD64) {
   bool skip = false;

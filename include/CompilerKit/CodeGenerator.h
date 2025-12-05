@@ -10,12 +10,12 @@
 #include <CompilerKit/Macros.h>
 #include <cstring>
 
-#define CK_ASSEMBLY_INTERFACE : public ::CompilerKit::AssemblyInterface
+#define CK_ASSEMBLY_INTERFACE : public ::CompilerKit::IAssembly
 #define CK_ENCODER : public ::CompilerKit::EncoderInterface
 
 namespace CompilerKit {
 class AssemblyFactory;
-class AssemblyInterface;
+class IAssembly;
 
 /// =========================================================== ///
 /// @brief Simple assembly factory
@@ -42,23 +42,23 @@ class AssemblyFactory final {
 
   Int32 Compile(std::string sourceFile, const Int32& arch) noexcept;
 
-  void               Mount(AssemblyInterface* mountPtr) noexcept;
-  AssemblyInterface* Unmount() noexcept;
+  void               Mount(IAssembly* mountPtr) noexcept;
+  IAssembly* Unmount() noexcept;
 
  private:
-  AssemblyInterface* fMounted{nullptr};
+  IAssembly* fMounted{nullptr};
 };
 
 /// =========================================================== ///
 ///	@brief Assembly to binary generator class.
 /// @note This interface creates according to the CPU target of the child class.
 /// =========================================================== ///
-class AssemblyInterface {
+class IAssembly {
  public:
-  explicit AssemblyInterface() = default;
-  virtual ~AssemblyInterface() = default;
+  explicit IAssembly() = default;
+  virtual ~IAssembly() = default;
 
-  NECTI_COPY_DEFAULT(AssemblyInterface);
+  NECTI_COPY_DEFAULT(IAssembly);
 
   virtual UInt32 Arch() noexcept { return AssemblyFactory::kArchAMD64; }
 

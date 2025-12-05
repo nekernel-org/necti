@@ -18,7 +18,7 @@ namespace CompilerKit {
 template <typename T>
 class Ref final {
  public:
-  explicit Ref() = default;
+  Ref() = default;
 
   ~Ref() {
     if (m_Strong) {
