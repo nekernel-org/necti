@@ -2,8 +2,8 @@
   "compiler_path": "clang++",
   "compiler_std": "c++20",
   "headers_path": [
-    "../DebuggerKit",
-    "../"
+    "../../include/DebuggerKit",
+    "../../include"
   ],
   "sources_path": ["src/*.cc"],
   "output_name": "/usr/local/lib/libDebuggerKit.dylib",

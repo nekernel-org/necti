@@ -1,7 +1,5 @@
 -std=c++20
--Isrc/
--Isrc/src/
--Isrc/CompilerKit/Detail
+-Iinclude/
 -Ivendor/
 -I./
 -DCK_USE_STRUCTS

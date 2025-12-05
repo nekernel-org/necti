@@ -1,6 +1,6 @@
 root = true
 
-[*.{cpp,hpp}]
+[*.{cc,h, inl}]
 indent_size = 4
 tab_width = 4
 indent_style = space
