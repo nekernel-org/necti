@@ -42,3 +42,25 @@
 #define kDistRelease ToString(kDistReleaseBranch)
 
 #endif  // !kDistRelease
+
+namespace DebuggerKit {
+/// =========================================================== ///
+/// \brief Process ID
+/// =========================================================== ///
+typedef uint64_t ProcessID;
+
+/// =========================================================== ///
+/// \brief Address type, a la BSD.
+/// =========================================================== ///
+typedef char* CAddress;
+
+namespace Detail {
+  constexpr auto     kDebugCmdLen  = 256U;
+  constexpr auto     kDebugPort    = 51820;
+  constexpr auto     kDebugMagic   = "NE1.0.0;";
+  constexpr uint16_t kDebugVersion = 0x0100;
+  constexpr auto     kDebugDelim   = ';';
+  constexpr auto     kDebugEnd     = '\r';
+  using dk_socket_type = int64_t;
+}  // namespace Detail
+}  // namespace DebuggerKit

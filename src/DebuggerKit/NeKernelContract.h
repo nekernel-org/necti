@@ -18,16 +18,6 @@
 namespace DebuggerKit::NeKernel {
 class NeKernelContract;
 
-namespace Detail {
-  inline constexpr auto     kDebugCmdLen  = 256U;
-  inline constexpr auto     kDebugPort    = 51820;
-  inline constexpr auto     kDebugMagic   = "NE1.0.0;";
-  inline constexpr uint16_t kDebugVersion = 0x0100;
-  inline constexpr auto     kDebugDelim   = ';';
-  inline constexpr auto     kDebugEnd     = '\r';
-  typedef int64_t           dk_socket_type;
-}  // namespace Detail
-
 /// =========================================================== ///
 /// \brief NeKernel Debugger Contract
 /// \author Amlal El Mahrouss

@@ -14,8 +14,8 @@
 #include <DebuggerKit/NeKernelContract.h>
 #include <ThirdParty/Dialogs/Dialogs.h>
 
+using namespace DebuggerKit::Detail;
 using namespace DebuggerKit::NeKernel;
-using namespace DebuggerKit::NeKernel::Detail;
 
 NeKernelContract::NeKernelContract() = default;
 
