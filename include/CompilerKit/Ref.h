@@ -60,7 +60,6 @@ template <typename T>
 class NonNullRef final {
  public:
   explicit NonNullRef() = delete;
-
   explicit NonNullRef(T* ref) : m_Ref(ref, true) {}
 
   Ref<T>& operator->() {
