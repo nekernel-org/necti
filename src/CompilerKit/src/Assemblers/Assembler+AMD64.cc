@@ -30,8 +30,8 @@
 
 #include <CompilerKit/AE.h>
 #include <CompilerKit/AST.h>
-#include <CompilerKit/PEF.h>
 #include <CompilerKit/Detail/AMD64.h>
+#include <CompilerKit/PEF.h>
 #include <algorithm>
 #include <cstdlib>
 #include <filesystem>
@@ -496,8 +496,8 @@ std::string CompilerKit::EncoderAMD64::CheckLine(std::string line, std::string f
 
   if (line.empty() || CompilerKit::ast_find_needle(line, "extern_segment") ||
       CompilerKit::ast_find_needle(line, "public_segment") ||
-      CompilerKit::ast_find_needle(line, kAssemblerPragmaSymStr) || CompilerKit::ast_find_needle(line, ";") ||
-      line[0] == kAssemblerPragmaSym) {
+      CompilerKit::ast_find_needle(line, kAssemblerPragmaSymStr) ||
+      CompilerKit::ast_find_needle(line, ";") || line[0] == kAssemblerPragmaSym) {
     if (line.find(';') != std::string::npos) {
       line.erase(line.find(';'));
     } else {
@@ -1006,9 +1006,10 @@ bool CompilerKit::EncoderAMD64::WriteLine(std::string line, std::string file) {
 
                 if (bits == 16) {
                   if (registerName[0] == 'r') {
-                    CompilerKit::Detail::print_error("invalid size for register, current bit width is: " +
-                                            std::to_string(kRegisterBitWidth),
-                                        file);
+                    CompilerKit::Detail::print_error(
+                        "invalid size for register, current bit width is: " +
+                            std::to_string(kRegisterBitWidth),
+                        file);
                     throw std::runtime_error("invalid_reg_size");
                   }
                 }
@@ -1047,7 +1048,7 @@ bool CompilerKit::EncoderAMD64::WriteLine(std::string line, std::string file) {
             } else if (bits == 16) {
               if (hasRBasedRegs) {
                 CompilerKit::Detail::print_error("Invalid combination of operands and registers.",
-                                    "CompilerKit");
+                                                 "CompilerKit");
                 throw std::runtime_error("comb_op_reg");
               } else {
                 kAppBytes.emplace_back(0x66);
@@ -1085,33 +1086,39 @@ bool CompilerKit::EncoderAMD64::WriteLine(std::string line, std::string file) {
           }
 
           if (currentRegList[1].fName[0] == 'r' && currentRegList[0].fName[0] == 'e') {
-            CompilerKit::Detail::print_error("Invalid combination of operands and registers.", "CompilerKit");
+            CompilerKit::Detail::print_error("Invalid combination of operands and registers.",
+                                             "CompilerKit");
             throw std::runtime_error("comb_op_reg");
           }
 
           if (currentRegList[0].fName[0] == 'r' && currentRegList[1].fName[0] == 'e') {
-            CompilerKit::Detail::print_error("Invalid combination of operands and registers.", "CompilerKit");
+            CompilerKit::Detail::print_error("Invalid combination of operands and registers.",
+                                             "CompilerKit");
             throw std::runtime_error("comb_op_reg");
           }
 
           if (bits == 16) {
             if (currentRegList[0].fName[0] == 'r' || currentRegList[0].fName[0] == 'e') {
-              CompilerKit::Detail::print_error("Invalid combination of operands and registers.", "CompilerKit");
+              CompilerKit::Detail::print_error("Invalid combination of operands and registers.",
+                                               "CompilerKit");
               throw std::runtime_error("comb_op_reg");
             }
 
             if (currentRegList[1].fName[0] == 'r' || currentRegList[1].fName[0] == 'e') {
-              CompilerKit::Detail::print_error("Invalid combination of operands and registers.", "CompilerKit");
+              CompilerKit::Detail::print_error("Invalid combination of operands and registers.",
+                                               "CompilerKit");
               throw std::runtime_error("comb_op_reg");
             }
           } else {
             if (currentRegList[0].fName[0] != 'r' || currentRegList[0].fName[0] == 'e') {
-              CompilerKit::Detail::print_error("Invalid combination of operands and registers.", "CompilerKit");
+              CompilerKit::Detail::print_error("Invalid combination of operands and registers.",
+                                               "CompilerKit");
               throw std::runtime_error("comb_op_reg");
             }
 
             if (currentRegList[1].fName[0] != 'r' || currentRegList[1].fName[0] == 'e') {
-              CompilerKit::Detail::print_error("Invalid combination of operands and registers.", "CompilerKit");
+              CompilerKit::Detail::print_error("Invalid combination of operands and registers.",
+                                               "CompilerKit");
               throw std::runtime_error("comb_op_reg");
             }
           }

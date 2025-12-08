@@ -16,7 +16,7 @@
 
 namespace CompilerKit {
 inline constexpr int kBaseYear = 1900;
-using STLString = std::string;
+using STLString                = std::string;
 
 inline STLString current_date() noexcept {
   auto time_data   = time(nullptr);

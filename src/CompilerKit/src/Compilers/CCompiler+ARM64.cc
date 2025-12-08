@@ -11,8 +11,8 @@
 /// TODO: none
 
 #include <CompilerKit/AST.h>
-#include <CompilerKit/UUID.h>
 #include <CompilerKit/Detail/Aarch64.h>
+#include <CompilerKit/UUID.h>
 #include <CompilerKit/Utilities/Compiler.h>
 
 #include <cstdio>
@@ -41,7 +41,6 @@
 // ANSI ESCAPE CODES
 
 /////////////////////
-
 
 /////////////////////////////////////
 

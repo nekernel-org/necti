@@ -43,9 +43,7 @@ struct Blob final {
   std::vector<Char> mBlob{};       // PEF code/bss/data blob.
   UIntPtr           mOffset{0UL};  // the offset of the PEF container header...
 
-  explicit operator bool() {
-    return mBlob.empty() && mOffset > 0UL;
-  }
+  explicit operator bool() { return mBlob.empty() && mOffset > 0UL; }
 };
 
 inline void print_error(STLString reason, STLString file) noexcept {
@@ -120,4 +118,4 @@ inline void drvi_crash_handler(std::int32_t id) {
 
   std::exit(NECTI_EXEC_ERROR);
 }
-}  // namespace Detail
+}  // namespace CompilerKit::Detail

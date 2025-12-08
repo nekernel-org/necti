@@ -22,9 +22,9 @@
 ///////////////////////
 
 #include <CompilerKit/AST.h>
+#include <CompilerKit/Detail/AMD64.h>
 #include <CompilerKit/PEF.h>
 #include <CompilerKit/UUID.h>
-#include <CompilerKit/Detail/AMD64.h>
 #include <CompilerKit/Utilities/Compiler.h>
 #include <csignal>
 #include <cstdlib>
@@ -165,7 +165,7 @@ CompilerKit::SyntaxLeafList::SyntaxLeaf CompilerFrontendCPlusPlusAMD64::Compile(
 
   if (text.empty()) return syntax_tree;
 
-  std::size_t                                                       index = 0UL;
+  std::size_t                                                     index = 0UL;
   std::vector<std::pair<CompilerKit::SyntaxKeyword, std::size_t>> keywords_list;
 
   for (auto& keyword : kKeywords) {

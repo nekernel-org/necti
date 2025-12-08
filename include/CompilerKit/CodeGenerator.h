@@ -40,9 +40,9 @@ class AssemblyFactory final {
     kArchCount = kArchUnknown - kArchAMD64,
   };
 
-  Int32 Compile(std::string sourceFile, const Int32& arch) noexcept;
+  Int32 Compile(STLString sourceFile, const Int32& arch) noexcept;
 
-  void               Mount(IAssembly* mountPtr) noexcept;
+  void       Mount(IAssembly* mountPtr) noexcept;
   IAssembly* Unmount() noexcept;
 
  private:
@@ -66,7 +66,7 @@ class IAssembly {
   /// @brief compile to object file.
   /// @note Example C++ -> MASM -> AE object.
   /// =========================================================== ///
-  virtual Int32 CompileToFormat(std::string src, Int32 arch) = 0;
+  virtual Int32 CompileToFormat(STLString src, Int32 arch) = 0;
 };
 
 /// =========================================================== ///
@@ -133,9 +133,9 @@ class EncoderInterface {
 
   NECTI_COPY_DEFAULT(EncoderInterface);
 
-  virtual std::string CheckLine(std::string line, std::string file)               = 0;
-  virtual bool        WriteLine(std::string line, std::string file)               = 0;
-  virtual bool        WriteNumber(const std::size_t& pos, std::string& from_what) = 0;
+  virtual STLString CheckLine(STLString line, STLString file)                 = 0;
+  virtual bool      WriteLine(STLString line, STLString file)                 = 0;
+  virtual bool      WriteNumber(const std::size_t& pos, STLString& from_what) = 0;
 };
 
 /// =========================================================== ///
@@ -151,13 +151,13 @@ class EncoderAMD64 final : public EncoderInterface {
 
   NECTI_COPY_DEFAULT(EncoderAMD64);
 
-  virtual std::string CheckLine(std::string line, std::string file) override;
-  virtual bool        WriteLine(std::string line, std::string file) override;
-  virtual bool        WriteNumber(const std::size_t& pos, std::string& from_what) override;
+  virtual STLString CheckLine(STLString line, STLString file) override;
+  virtual bool      WriteLine(STLString line, STLString file) override;
+  virtual bool      WriteNumber(const std::size_t& pos, STLString& from_what) override;
 
-  virtual bool WriteNumber16(const std::size_t& pos, std::string& from_what);
-  virtual bool WriteNumber32(const std::size_t& pos, std::string& from_what);
-  virtual bool WriteNumber8(const std::size_t& pos, std::string& from_what);
+  virtual bool WriteNumber16(const std::size_t& pos, STLString& from_what);
+  virtual bool WriteNumber32(const std::size_t& pos, STLString& from_what);
+  virtual bool WriteNumber8(const std::size_t& pos, STLString& from_what);
 };
 
 #endif  // __ASM_NEED_AMD64__
@@ -171,9 +171,9 @@ class EncoderARM64 final : public EncoderInterface {
 
   NECTI_COPY_DEFAULT(EncoderARM64);
 
-  virtual std::string CheckLine(std::string line, std::string file) override;
-  virtual bool        WriteLine(std::string line, std::string file) override;
-  virtual bool        WriteNumber(const std::size_t& pos, std::string& from_what) override;
+  virtual STLString CheckLine(STLString line, STLString file) override;
+  virtual bool      WriteLine(STLString line, STLString file) override;
+  virtual bool      WriteNumber(const std::size_t& pos, STLString& from_what) override;
 };
 
 #endif  // __ASM_NEED_ARM64__
@@ -187,9 +187,9 @@ class Encoder64x0 final : public EncoderInterface {
 
   NECTI_COPY_DEFAULT(Encoder64x0);
 
-  virtual std::string CheckLine(std::string line, std::string file) override;
-  virtual bool        WriteLine(std::string line, std::string file) override;
-  virtual bool        WriteNumber(const std::size_t& pos, std::string& from_what) override;
+  virtual STLString CheckLine(STLString line, STLString file) override;
+  virtual bool      WriteLine(STLString line, STLString file) override;
+  virtual bool      WriteNumber(const std::size_t& pos, STLString& from_what) override;
 };
 
 #endif  // __ASM_NEED_64x0__
@@ -203,9 +203,9 @@ class Encoder32x0 final : public EncoderInterface {
 
   NECTI_COPY_DEFAULT(Encoder32x0);
 
-  virtual std::string CheckLine(std::string line, std::string file) override;
-  virtual bool        WriteLine(std::string line, std::string file) override;
-  virtual bool        WriteNumber(const std::size_t& pos, std::string& from_what) override;
+  virtual STLString CheckLine(STLString line, STLString file) override;
+  virtual bool      WriteLine(STLString line, STLString file) override;
+  virtual bool      WriteNumber(const std::size_t& pos, STLString& from_what) override;
 };
 
 #endif  // __ASM_NEED_32x0__
@@ -219,9 +219,9 @@ class EncoderPowerPC final : public EncoderInterface {
 
   NECTI_COPY_DEFAULT(EncoderPowerPC);
 
-  virtual std::string CheckLine(std::string line, std::string file) override;
-  virtual bool        WriteLine(std::string line, std::string file) override;
-  virtual bool        WriteNumber(const std::size_t& pos, std::string& from_what) override;
+  virtual STLString CheckLine(STLString line, STLString file) override;
+  virtual bool      WriteLine(STLString line, STLString file) override;
+  virtual bool      WriteNumber(const std::size_t& pos, STLString& from_what) override;
 };
 
 #endif  // __ASM_NEED_32x0__

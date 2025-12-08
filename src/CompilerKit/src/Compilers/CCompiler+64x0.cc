@@ -11,8 +11,8 @@
 /// TODO: none
 
 #include <CompilerKit/AST.h>
-#include <CompilerKit/UUID.h>
 #include <CompilerKit/Detail/64x0.h>
+#include <CompilerKit/UUID.h>
 #include <CompilerKit/Utilities/Compiler.h>
 #include <cstdio>
 #include <fstream>

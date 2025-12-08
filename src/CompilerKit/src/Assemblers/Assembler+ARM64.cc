@@ -21,10 +21,10 @@
 
 #include <CompilerKit/AE.h>
 #include <CompilerKit/AST.h>
+#include <CompilerKit/Detail/Aarch64.h>
 #include <CompilerKit/Detail/Config.h>
 #include <CompilerKit/ErrorID.h>
 #include <CompilerKit/PEF.h>
-#include <CompilerKit/Detail/Aarch64.h>
 #include <CompilerKit/Utilities/Assembler.h>
 #include <algorithm>
 #include <filesystem>
@@ -274,7 +274,8 @@ static bool asm_read_attributes(std::string line) {
   // that we need this symbol.
   if (CompilerKit::ast_find_needle(line, "extern_segment")) {
     if (kOutputAsBinary) {
-      CompilerKit::Detail::print_error("Invalid extern_segment directive in flat binary mode.", "CompilerKit");
+      CompilerKit::Detail::print_error("Invalid extern_segment directive in flat binary mode.",
+                                       "CompilerKit");
       throw std::runtime_error("invalid_extern_segment_bin");
     }
 
@@ -333,7 +334,8 @@ static bool asm_read_attributes(std::string line) {
   // .zero64
   else if (CompilerKit::ast_find_needle(line, "public_segment")) {
     if (kOutputAsBinary) {
-      CompilerKit::Detail::print_error("Invalid public_segment directive in flat binary mode.", "CompilerKit");
+      CompilerKit::Detail::print_error("Invalid public_segment directive in flat binary mode.",
+                                       "CompilerKit");
       throw std::runtime_error("invalid_public_segment_bin");
     }
 

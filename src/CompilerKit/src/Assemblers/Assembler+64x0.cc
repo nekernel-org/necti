@@ -23,8 +23,8 @@
 
 #include <CompilerKit/AE.h>
 #include <CompilerKit/AST.h>
-#include <CompilerKit/PEF.h>
 #include <CompilerKit/Detail/64x0.h>
+#include <CompilerKit/PEF.h>
 #include <CompilerKit/Utilities/Compiler.h>
 #include <algorithm>
 #include <filesystem>
@@ -269,7 +269,8 @@ static bool asm_read_attributes(std::string line) {
   // that we need this symbol.
   if (CompilerKit::ast_find_needle(line, "extern_segment")) {
     if (kOutputAsBinary) {
-      CompilerKit::Detail::print_error("Invalid extern_segment directive in flat binary mode.", "CompilerKit");
+      CompilerKit::Detail::print_error("Invalid extern_segment directive in flat binary mode.",
+                                       "CompilerKit");
       throw std::runtime_error("invalid_extern_segment_bin");
     }
 
@@ -329,7 +330,8 @@ static bool asm_read_attributes(std::string line) {
   // .zero64
   else if (CompilerKit::ast_find_needle(line, "public_segment")) {
     if (kOutputAsBinary) {
-      CompilerKit::Detail::print_error("Invalid public_segment directive in flat binary mode.", "CompilerKit");
+      CompilerKit::Detail::print_error("Invalid public_segment directive in flat binary mode.",
+                                       "CompilerKit");
       throw std::runtime_error("invalid_public_segment_bin");
     }
 
@@ -616,7 +618,8 @@ bool CompilerKit::Encoder64x0::WriteLine(std::string line, std::string file) {
 
   for (auto& opcode64x0 : kOpcodes64x0) {
     // strict check here
-    if (CompilerKit::ast_find_needle(line, opcode64x0.fName) && CompilerKit::Detail::algorithm::is_valid_64x0(line)) {
+    if (CompilerKit::ast_find_needle(line, opcode64x0.fName) &&
+        CompilerKit::Detail::algorithm::is_valid_64x0(line)) {
       std::string name(opcode64x0.fName);
       std::string jump_label, cpy_jump_label;
 
@@ -649,9 +652,10 @@ bool CompilerKit::Encoder64x0::WriteLine(std::string line, std::string file) {
               if (kOutputArch == CompilerKit::kPefArch64000) {
                 if (isdigit(line[line_index + 3]) && isdigit(line[line_index + 2])) {
                   reg_str += line[line_index + 3];
-                  CompilerKit::Detail::print_error("invalid register index, r" + reg_str +
-                                          "\nnote: The 64x0 accepts registers from r0 to r20.",
-                                      file);
+                  CompilerKit::Detail::print_error(
+                      "invalid register index, r" + reg_str +
+                          "\nnote: The 64x0 accepts registers from r0 to r20.",
+                      file);
                   throw std::runtime_error("invalid_register_index");
                 }
               }
@@ -688,16 +692,16 @@ bool CompilerKit::Encoder64x0::WriteLine(std::string line, std::string file) {
           }
 
           if (found_some < 1 && name != "ldw" && name != "lda" && name != "stw") {
-            CompilerKit::Detail::print_error("invalid combination of opcode and registers.\nline: " + line,
-                                file);
+            CompilerKit::Detail::print_error(
+                "invalid combination of opcode and registers.\nline: " + line, file);
             throw std::runtime_error("invalid_comb_op_reg");
           } else if (found_some == 1 && name == "add") {
-            CompilerKit::Detail::print_error("invalid combination of opcode and registers.\nline: " + line,
-                                file);
+            CompilerKit::Detail::print_error(
+                "invalid combination of opcode and registers.\nline: " + line, file);
             throw std::runtime_error("invalid_comb_op_reg");
           } else if (found_some == 1 && name == "sub") {
-            CompilerKit::Detail::print_error("invalid combination of opcode and registers.\nline: " + line,
-                                file);
+            CompilerKit::Detail::print_error(
+                "invalid combination of opcode and registers.\nline: " + line, file);
             throw std::runtime_error("invalid_comb_op_reg");
           }
 
@@ -759,13 +763,14 @@ bool CompilerKit::Encoder64x0::WriteLine(std::string line, std::string file) {
         if (!this->WriteNumber(0, jump_label)) {
           // sta expects this: sta 0x000000, r0
           if (name == "sta") {
-            CompilerKit::Detail::print_error("invalid combination of opcode and operands.\nHere ->" + line,
-                                file);
+            CompilerKit::Detail::print_error(
+                "invalid combination of opcode and operands.\nHere ->" + line, file);
             throw std::runtime_error("invalid_comb_op_ops");
           }
         } else {
           if (name == "sta" && cpy_jump_label.find("extern_segment ") != std::string::npos) {
-            CompilerKit::Detail::print_error("invalid usage extern_segment on 'sta', here: " + line, file);
+            CompilerKit::Detail::print_error("invalid usage extern_segment on 'sta', here: " + line,
+                                             file);
             throw std::runtime_error("invalid_sta_usage");
           }
         }
@@ -783,7 +788,8 @@ bool CompilerKit::Encoder64x0::WriteLine(std::string line, std::string file) {
           cpy_jump_label.erase(cpy_jump_label.find("extern_segment"), strlen("extern_segment"));
 
           if (name == "sta") {
-            CompilerKit::Detail::print_error("extern_segment is not allowed on a sta operation.", file);
+            CompilerKit::Detail::print_error("extern_segment is not allowed on a sta operation.",
+                                             file);
             throw std::runtime_error("extern_segment_sta_op");
           } else {
             goto asm_end_label_cpy;

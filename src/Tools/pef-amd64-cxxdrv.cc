@@ -24,7 +24,8 @@ Int32 main(Int32 argc, Char const* argv[]) {
   CompilerKit::DLLTraits dylib;
   dylib(kPath, kSymbol);
 
-  CompilerKit::DLLTraits::Entrypoint entrypoint_cxx = reinterpret_cast<CompilerKit::DLLTraits::Entrypoint>(dylib.fEntrypoint);
+  CompilerKit::DLLTraits::Entrypoint entrypoint_cxx =
+      reinterpret_cast<CompilerKit::DLLTraits::Entrypoint>(dylib.fEntrypoint);
 
   if (!entrypoint_cxx) {
     kStdOut;

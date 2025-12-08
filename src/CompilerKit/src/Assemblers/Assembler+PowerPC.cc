@@ -22,9 +22,9 @@
 #include <CompilerKit/AE.h>
 #include <CompilerKit/AST.h>
 #include <CompilerKit/Detail/Config.h>
+#include <CompilerKit/Detail/Power64.h>
 #include <CompilerKit/ErrorID.h>
 #include <CompilerKit/PEF.h>
-#include <CompilerKit/Detail/Power64.h>
 #include <CompilerKit/Utilities/Assembler.h>
 #include <algorithm>
 #include <filesystem>
@@ -274,7 +274,8 @@ static bool asm_read_attributes(std::string line) {
   // that we need this symbol.
   if (CompilerKit::ast_find_needle(line, "extern_segment")) {
     if (kOutputAsBinary) {
-      CompilerKit::Detail::print_error("Invalid extern_segment directive in flat binary mode.", "CompilerKit");
+      CompilerKit::Detail::print_error("Invalid extern_segment directive in flat binary mode.",
+                                       "CompilerKit");
       throw std::runtime_error("invalid_extern_segment_bin");
     }
 
@@ -333,7 +334,8 @@ static bool asm_read_attributes(std::string line) {
   // .zero64
   else if (CompilerKit::ast_find_needle(line, "public_segment")) {
     if (kOutputAsBinary) {
-      CompilerKit::Detail::print_error("Invalid public_segment directive in flat binary mode.", "CompilerKit");
+      CompilerKit::Detail::print_error("Invalid public_segment directive in flat binary mode.",
+                                       "CompilerKit");
       throw std::runtime_error("invalid_public_segment_bin");
     }
 
@@ -676,9 +678,10 @@ bool CompilerKit::EncoderPowerPC::WriteLine(std::string line, std::string file) 
               // something like r190 doesn't exist in the instruction set.
               if (isdigit(line[line_index + 3]) && isdigit(line[line_index + 2])) {
                 reg_str += line[line_index + 3];
-                CompilerKit::Detail::print_error("invalid register index, r" + reg_str +
-                                        "\nnote: The POWER accepts registers from r0 to r32.",
-                                    file);
+                CompilerKit::Detail::print_error(
+                    "invalid register index, r" + reg_str +
+                        "\nnote: The POWER accepts registers from r0 to r32.",
+                    file);
                 throw std::runtime_error("invalid_register_index");
               }
 
@@ -892,8 +895,8 @@ bool CompilerKit::EncoderPowerPC::WriteLine(std::string line, std::string file) 
           }
 
           if (found_some_count < 1 && name[0] != 'l' && name[0] != 's') {
-            CompilerKit::Detail::print_error("invalid combination of opcode and registers.\nline: " + line,
-                                file);
+            CompilerKit::Detail::print_error(
+                "invalid combination of opcode and registers.\nline: " + line, file);
             throw std::runtime_error("invalid_comb_op_reg");
           }
 

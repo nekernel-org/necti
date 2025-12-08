@@ -61,6 +61,6 @@ namespace Detail {
   constexpr uint16_t kDebugVersion = 0x0100;
   constexpr auto     kDebugDelim   = ';';
   constexpr auto     kDebugEnd     = '\r';
-  using dk_socket_type = int64_t;
+  using dk_socket_type             = int64_t;
 }  // namespace Detail
 }  // namespace DebuggerKit

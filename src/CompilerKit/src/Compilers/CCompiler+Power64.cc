@@ -8,8 +8,8 @@
  */
 
 #include <CompilerKit/AST.h>
-#include <CompilerKit/UUID.h>
 #include <CompilerKit/Detail/Power64.h>
+#include <CompilerKit/UUID.h>
 #include <CompilerKit/Utilities/Compiler.h>
 #include <cstdio>
 #include <fstream>
