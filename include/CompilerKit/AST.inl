@@ -9,7 +9,7 @@ namespace CompilerKit {
 /// \param haystack base string
 /// \param needle the string we search for.
 /// \return if we found it or not.
-inline bool find_word(STLString haystack, STLString needle) noexcept {
+inline bool ast_find_needle(STLString haystack, STLString needle) noexcept {
   auto index = haystack.find(needle);
 
   // check for needle validity.
@@ -31,7 +31,7 @@ inline bool find_word(STLString haystack, STLString needle) noexcept {
 /// \param haystack
 /// \param needle
 /// \return position of needle.
-inline SizeType find_word_range(STLString haystack, STLString needle) noexcept {
+inline SizeType ast_find_needle_range(STLString haystack, STLString needle) noexcept {
   auto index = haystack.find(needle);
 
   // check for needle validity.
@@ -50,14 +50,14 @@ inline SizeType find_word_range(STLString haystack, STLString needle) noexcept {
 /// =========================================================== ///
 //! @brief What language are we dealing with?
 /// =========================================================== ///
-inline const char* CompilerFrontendInterface::Language() {
+inline const char* ICompilerFrontend::Language() {
   return kInvalidFrontend;
 }
 
 /// =========================================================== ///
 /// @brief Checks if language is a valid frontend.
 /// =========================================================== ///
-inline bool CompilerFrontendInterface::IsValid() {
+inline bool ICompilerFrontend::IsValid() {
   return strcmp(this->Language(), kInvalidFrontend) > 0;
 }
 }  // namespace CompilerKit

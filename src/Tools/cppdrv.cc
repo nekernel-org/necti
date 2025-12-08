@@ -4,14 +4,11 @@
 
 ======================================== */
 
-/// @file cxxdrv.cc
+/// @file cppdrv.cc
 /// @brief NeCTI frontend preprocessor.
 
 #include <CompilerKit/Detail/Config.h>
 #include <CompilerKit/ErrorID.h>
-#include <cstring>
-#include <iostream>
-#include <vector>
 
 CK_IMPORT_C int CPlusPlusPreprocessorMain(int argc, char const* argv[]);
 

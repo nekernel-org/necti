@@ -10,21 +10,18 @@
 #include <dlfcn.h>
 #include <mutex>
 
-struct CompilerKitDylibTraits;
+namespace CompilerKit {
+struct DLLTraits final {
+  typedef Int32 (*Entrypoint)(Int32 argc, Char const* argv[]);
+  using DLL = VoidPtr;
 
-typedef Int32 (*CompilerKitEntrypoint)(Int32 argc, Char const* argv[]);
-typedef VoidPtr CompilerKitDylib;
+  DLL        fDylib{nullptr};
+  Entrypoint fEntrypoint{nullptr};
+  std::mutex fMutex;
 
-struct CompilerKitDylibTraits final {
-  CompilerKitDylib      fDylib{nullptr};
-  CompilerKitEntrypoint fEntrypoint{nullptr};
-  std::mutex            fMutex;
+  explicit operator bool() { return fDylib && fEntrypoint; }
 
-  explicit operator bool() {
-    return fDylib && fEntrypoint;
-  }
-
-  CompilerKitDylibTraits& operator()(const Char* path, const Char* fEntrypoint) {
+  DLLTraits& operator()(const Char* path, const Char* fEntrypoint) {
     std::lock_guard<std::mutex> lock(this->fMutex);
 
     if (!path || !fEntrypoint) return *this;
@@ -40,7 +37,7 @@ struct CompilerKitDylibTraits final {
       return *this;
     }
 
-    this->fEntrypoint = (CompilerKitEntrypoint) dlsym(this->fDylib, fEntrypoint);
+    this->fEntrypoint = (Entrypoint) dlsym(this->fDylib, fEntrypoint);
 
     if (!this->fEntrypoint) {
       dlclose(this->fDylib);
@@ -52,11 +49,11 @@ struct CompilerKitDylibTraits final {
     return *this;
   }
 
-  NECTI_COPY_DELETE(CompilerKitDylibTraits);
+  NECTI_COPY_DELETE(DLLTraits)
 
-  CompilerKitDylibTraits() = default;
+  explicit DLLTraits() = default;
 
-  ~CompilerKitDylibTraits() {
+  ~DLLTraits() {
     if (this->fDylib) {
       dlclose(this->fDylib);
       this->fDylib = nullptr;
@@ -65,3 +62,4 @@ struct CompilerKitDylibTraits final {
     this->fEntrypoint = nullptr;
   }
 };
+}  // namespace CompilerKit

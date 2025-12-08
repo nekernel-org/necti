@@ -4,8 +4,8 @@
 
 ======================================== */
 
-/// @file cxxdrv.cc
-/// @brief NeCTI C++ frontend compiler.
+/// @file pef-arm-cdrv.cc
+/// @brief NeCTI ARm64 C frontend compiler.
 
 #include <CompilerKit/Detail/Config.h>
 #include <CompilerKit/ErrorID.h>
@@ -21,28 +21,20 @@ static auto kPath = "/usr/lib/libCompilerKit.so";
 static auto kSymbol = "CompilerCLangARM64";
 
 Int32 main(Int32 argc, Char const* argv[]) {
-  CompilerKitDylib handler = dlopen(kPath, RTLD_LAZY | RTLD_GLOBAL);
+  CompilerKit::DLLTraits dylib;
+  dylib(kPath, kSymbol);
 
-  if (!handler) {
-    kStdOut;
-    std::printf("error: Could not load dylib in %s: %s\n", kPath, dlerror());
-
-    return EXIT_FAILURE;
-  }
-
-  CompilerKitEntrypoint entrypoint_cxx = (CompilerKitEntrypoint) dlsym(handler, kSymbol);
+  CompilerKit::DLLTraits::Entrypoint entrypoint_cxx =
+      reinterpret_cast<CompilerKit::DLLTraits::Entrypoint>(dylib.fEntrypoint);
 
   if (!entrypoint_cxx) {
     kStdOut;
     std::printf("error: Could not find entrypoint in %s: %s\n", kPath, dlerror());
-    dlclose(handler);
 
     return EXIT_FAILURE;
   }
 
   auto ret = (entrypoint_cxx(argc, argv) == NECTI_SUCCESS) ? EXIT_SUCCESS : EXIT_FAILURE;
-
-  dlclose(handler);
 
   return ret;
 }

@@ -4,8 +4,8 @@
 
 ======================================== */
 
-/// @file cxxdrv.cc
-/// @brief NeCTI C++ frontend compiler.
+/// @file pef-amd64-cxxdrv.cc
+/// @brief NeCTI C++ frontend compiler for AMD64.
 
 #include <CompilerKit/Detail/Config.h>
 #include <CompilerKit/ErrorID.h>
@@ -21,10 +21,10 @@ static auto kPath = "/usr/lib/libCompilerKit.so";
 static auto kSymbol = "CompilerCPlusPlusAMD64";
 
 Int32 main(Int32 argc, Char const* argv[]) {
-  CompilerKitDylibTraits dylib;
+  CompilerKit::DLLTraits dylib;
   dylib(kPath, kSymbol);
 
-  CompilerKitEntrypoint entrypoint_cxx = (CompilerKitEntrypoint) dylib.fEntrypoint;
+  CompilerKit::DLLTraits::Entrypoint entrypoint_cxx = reinterpret_cast<CompilerKit::DLLTraits::Entrypoint>(dylib.fEntrypoint);
 
   if (!entrypoint_cxx) {
     kStdOut;

@@ -17,18 +17,20 @@ namespace CompilerKit {
 /// @return A numbercast of 32-bit width.
 inline NumberCast32 GetNumber32(STLString lineBuffer, STLString numberKey) {
   if (lineBuffer.empty()) return {};
+  if (lineBuffer.find(numberKey) == STLString::npos) return {};
 
   auto pos = lineBuffer.find(numberKey) + numberKey.size();
 
-  while (lineBuffer[pos] == ' ') {
-    ++pos;
-  }
+  if (pos > lineBuffer.size()) return {};
+  if ((pos + 1) > lineBuffer.size()) return {};
+
+  while (lineBuffer[pos] == ' ') ++pos;
 
   switch (lineBuffer[pos + 1]) {
     case 'x': {
       if (auto res = strtol(lineBuffer.substr(pos).c_str(), nullptr, 16); !res) {
         if (errno != 0) {
-          CompilerKit::Detail::print_error("invalid hex number: " + lineBuffer, "CompilerKit");
+          Detail::print_error("invalid hex number: " + lineBuffer, "CompilerKit");
           throw std::runtime_error("invalid_hex");
         }
       }
@@ -44,7 +46,7 @@ inline NumberCast32 GetNumber32(STLString lineBuffer, STLString numberKey) {
     case 'b': {
       if (auto res = strtol(lineBuffer.substr(pos).c_str(), nullptr, 2); !res) {
         if (errno != 0) {
-          CompilerKit::Detail::print_error("invalid binary number:" + lineBuffer, "CompilerKit");
+          Detail::print_error("invalid binary number:" + lineBuffer, "CompilerKit");
           throw std::runtime_error("invalid_bin");
         }
       }
@@ -60,7 +62,7 @@ inline NumberCast32 GetNumber32(STLString lineBuffer, STLString numberKey) {
     case 'o': {
       if (auto res = strtol(lineBuffer.substr(pos).c_str(), nullptr, 7); !res) {
         if (errno != 0) {
-          CompilerKit::Detail::print_error("invalid octal number: " + lineBuffer, "CompilerKit");
+          Detail::print_error("invalid octal number: " + lineBuffer, "CompilerKit");
           throw std::runtime_error("invalid_octal");
         }
       }
@@ -76,7 +78,7 @@ inline NumberCast32 GetNumber32(STLString lineBuffer, STLString numberKey) {
     default: {
       if (auto res = strtol(lineBuffer.substr(pos).c_str(), nullptr, 10); !res) {
         if (errno != 0) {
-          CompilerKit::Detail::print_error("invalid hex number: " + lineBuffer, "CompilerKit");
+          Detail::print_error("invalid hex number: " + lineBuffer, "CompilerKit");
           throw std::runtime_error("invalid_hex");
         }
       }

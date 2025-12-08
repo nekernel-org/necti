@@ -9,8 +9,8 @@
 #include <CompilerKit/Detail/Config.h>
 #include <vector>
 
-// @brief Open32x0 support.
-// @file Detail/32x0.h
+/// @brief Open32x0 support.
+/// @file Detail/32x0.h
 
 #define CK_ASM_OPCODE(__NAME, __OPCODE, __FUNCT3, __FUNCT7) \
   {.fName = __NAME, .fOpcode = __OPCODE, .fFunct3 = __FUNCT3, .fFunct7 = __FUNCT7},

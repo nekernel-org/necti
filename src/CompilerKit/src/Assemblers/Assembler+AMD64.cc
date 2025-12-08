@@ -338,7 +338,7 @@ asm_fail_exit:
 static bool asm_read_attributes(std::string line) {
   // extern_segment is the opposite of public_segment, it signals to the ld
   // that we need this symbol.
-  if (CompilerKit::find_word(line, "extern_segment")) {
+  if (CompilerKit::ast_find_needle(line, "extern_segment")) {
     if (kOutputAsBinary) {
       CompilerKit::Detail::print_error("Invalid directive in flat binary mode.", "CompilerKit");
       throw std::runtime_error("invalid_extern_segment_bin");
@@ -397,7 +397,7 @@ static bool asm_read_attributes(std::string line) {
   // public_segment is a special keyword used by AssemblerAMD64 to tell the AE output stage to
   // mark this section as a header. it currently supports .code64, .data64 and
   // .zero64.
-  else if (CompilerKit::find_word(line, "public_segment")) {
+  else if (CompilerKit::ast_find_needle(line, "public_segment")) {
     if (kOutputAsBinary) {
       CompilerKit::Detail::print_error("Invalid directive in flat binary mode.", "CompilerKit");
       throw std::runtime_error("invalid_public_segment_bin");
@@ -494,9 +494,9 @@ bool is_valid_amd64(std::string str) {
 std::string CompilerKit::EncoderAMD64::CheckLine(std::string line, std::string file) {
   std::string err_str;
 
-  if (line.empty() || CompilerKit::find_word(line, "extern_segment") ||
-      CompilerKit::find_word(line, "public_segment") ||
-      CompilerKit::find_word(line, kAssemblerPragmaSymStr) || CompilerKit::find_word(line, ";") ||
+  if (line.empty() || CompilerKit::ast_find_needle(line, "extern_segment") ||
+      CompilerKit::ast_find_needle(line, "public_segment") ||
+      CompilerKit::ast_find_needle(line, kAssemblerPragmaSymStr) || CompilerKit::ast_find_needle(line, ";") ||
       line[0] == kAssemblerPragmaSym) {
     if (line.find(';') != std::string::npos) {
       line.erase(line.find(';'));
@@ -547,7 +547,7 @@ std::string CompilerKit::EncoderAMD64::CheckLine(std::string line, std::string f
     }
   }
   for (auto& opcodeAMD64 : kOpcodesAMD64) {
-    if (CompilerKit::find_word(line, opcodeAMD64.fName)) {
+    if (CompilerKit::ast_find_needle(line, opcodeAMD64.fName)) {
       return err_str;
     }
   }
@@ -952,7 +952,7 @@ bool CompilerKit::EncoderAMD64::WriteNumber8(const std::size_t& pos, std::string
 /////////////////////////////////////////////////////////////////////////////////////////
 
 bool CompilerKit::EncoderAMD64::WriteLine(std::string line, std::string file) {
-  if (CompilerKit::find_word(line, "public_segment ")) return true;
+  if (CompilerKit::ast_find_needle(line, "public_segment ")) return true;
 
   struct RegMapAMD64 {
     CompilerKit::STLString fName;
@@ -970,7 +970,7 @@ bool CompilerKit::EncoderAMD64::WriteLine(std::string line, std::string file) {
 
   for (auto& opcodeAMD64 : kOpcodesAMD64) {
     // strict check here
-    if (CompilerKit::find_word(line, opcodeAMD64.fName) &&
+    if (CompilerKit::ast_find_needle(line, opcodeAMD64.fName) &&
         CompilerKit::Detail::algorithm::is_valid_amd64(line)) {
       foundInstruction = true;
       std::string name(opcodeAMD64.fName);

@@ -290,7 +290,7 @@ void bpp_parse_file(std::ifstream& hdr_file, std::ofstream& pp_out) {
       }
 
       for (auto macro : kMacros) {
-        if (CompilerKit::find_word(hdr_line, macro.fName)) {
+        if (CompilerKit::ast_find_needle(hdr_line, macro.fName)) {
           if (hdr_line.substr(hdr_line.find(macro.fName)).find(macro.fName + '(') !=
               CompilerKit::STLString::npos) {
             if (!macro.fArgs.empty()) {

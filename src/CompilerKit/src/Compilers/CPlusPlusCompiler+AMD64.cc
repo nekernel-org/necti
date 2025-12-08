@@ -96,7 +96,7 @@ static Int32 kMachine = CompilerKit::AssemblyFactory::kArchAMD64;
 
 /////////////////////////////////////////
 
-static std::vector<CompilerKit::CompilerKeyword> kKeywords;
+static std::vector<CompilerKit::SyntaxKeyword> kKeywords;
 
 /////////////////////////////////////////
 
@@ -166,11 +166,11 @@ CompilerKit::SyntaxLeafList::SyntaxLeaf CompilerFrontendCPlusPlusAMD64::Compile(
   if (text.empty()) return syntax_tree;
 
   std::size_t                                                       index = 0UL;
-  std::vector<std::pair<CompilerKit::CompilerKeyword, std::size_t>> keywords_list;
+  std::vector<std::pair<CompilerKit::SyntaxKeyword, std::size_t>> keywords_list;
 
   for (auto& keyword : kKeywords) {
-    if (text.find(keyword.keyword_name) != std::string::npos) {
-      switch (keyword.keyword_kind) {
+    if (text.find(keyword.fKeywordName) != std::string::npos) {
+      switch (keyword.fKeywordKind) {
         case CompilerKit::kKeywordKindCommentInline: {
           break;
         }
@@ -178,22 +178,22 @@ CompilerKit::SyntaxLeafList::SyntaxLeaf CompilerFrontendCPlusPlusAMD64::Compile(
           break;
       }
 
-      std::size_t pos = text.find(keyword.keyword_name);
+      std::size_t pos = text.find(keyword.fKeywordName);
       if (pos == std::string::npos) continue;
 
       // can't go before start of string
       if (pos > 0 && text[pos - 1] == '+' &&
-          keyword.keyword_kind == CompilerKit::kKeywordKindVariableAssign)
+          keyword.fKeywordKind == CompilerKit::kKeywordKindVariableAssign)
         continue;
 
       if (pos > 0 && text[pos - 1] == '-' &&
-          keyword.keyword_kind == CompilerKit::kKeywordKindVariableAssign)
+          keyword.fKeywordKind == CompilerKit::kKeywordKindVariableAssign)
         continue;
 
       // don't go out of range
-      if ((pos + keyword.keyword_name.size()) < text.size() &&
-          text[pos + keyword.keyword_name.size()] == '=' &&
-          keyword.keyword_kind == CompilerKit::kKeywordKindVariableAssign)
+      if ((pos + keyword.fKeywordName.size()) < text.size() &&
+          text[pos + keyword.fKeywordName.size()] == '=' &&
+          keyword.fKeywordKind == CompilerKit::kKeywordKindVariableAssign)
         continue;
 
       keywords_list.emplace_back(std::make_pair(keyword, index));
@@ -202,15 +202,15 @@ CompilerKit::SyntaxLeafList::SyntaxLeaf CompilerFrontendCPlusPlusAMD64::Compile(
   }
 
   for (auto& keyword : keywords_list) {
-    if (text.find(keyword.first.keyword_name) == CompilerKit::STLString::npos) continue;
+    if (text.find(keyword.first.fKeywordName) == CompilerKit::STLString::npos) continue;
 
-    switch (keyword.first.keyword_kind) {
+    switch (keyword.first.fKeywordKind) {
       case CompilerKit::KeywordKind::kKeywordKindClass: {
         ++kOnClassScope;
         break;
       }
       case CompilerKit::KeywordKind::kKeywordKindIf: {
-        std::size_t keywordPos = text.find(keyword.first.keyword_name);
+        std::size_t keywordPos = text.find(keyword.first.fKeywordName);
         std::size_t openParen  = text.find("(", keywordPos);
         std::size_t closeParen = text.find(")", openParen);
 
@@ -225,7 +225,7 @@ CompilerKit::SyntaxLeafList::SyntaxLeaf CompilerFrontendCPlusPlusAMD64::Compile(
 
         if (expr.find(">=") != CompilerKit::STLString::npos) {
           auto left = text.substr(
-              text.find(keyword.first.keyword_name) + keyword.first.keyword_name.size() + 2,
+              text.find(keyword.first.fKeywordName) + keyword.first.fKeywordName.size() + 2,
               expr.find("<=") + strlen("<="));
           auto right = text.substr(expr.find(">=") + strlen(">="), text.find(")") - 1);
 
@@ -282,7 +282,7 @@ CompilerKit::SyntaxLeafList::SyntaxLeaf CompilerFrontendCPlusPlusAMD64::Compile(
 
           CompilerKit::STLString symbol_name_fn = text;
 
-          symbol_name_fn.erase(symbol_name_fn.find(keyword.first.keyword_name));
+          symbol_name_fn.erase(symbol_name_fn.find(keyword.first.fKeywordName));
 
           for (auto& ch : symbol_name_fn) {
             if (ch == ' ') ch = '_';
@@ -388,43 +388,43 @@ CompilerKit::SyntaxLeafList::SyntaxLeaf CompilerFrontendCPlusPlusAMD64::Compile(
       case CompilerKit::KeywordKind::kKeywordKindVariableAssign: {
         CompilerKit::STLString valueOfVar = "";
 
-        if (keyword.first.keyword_kind == CompilerKit::KeywordKind::kKeywordKindVariableInc) {
+        if (keyword.first.fKeywordKind == CompilerKit::KeywordKind::kKeywordKindVariableInc) {
           valueOfVar = text.substr(text.find("+=") + 2);
-        } else if (keyword.first.keyword_kind ==
+        } else if (keyword.first.fKeywordKind ==
                    CompilerKit::KeywordKind::kKeywordKindVariableDec) {
           valueOfVar = text.substr(text.find("-=") + 2);
-        } else if (keyword.first.keyword_kind ==
+        } else if (keyword.first.fKeywordKind ==
                    CompilerKit::KeywordKind::kKeywordKindVariableAssign) {
           valueOfVar = text.substr(text.find("=") + 1);
-        } else if (keyword.first.keyword_kind == CompilerKit::KeywordKind::kKeywordKindEndInstr) {
+        } else if (keyword.first.fKeywordKind == CompilerKit::KeywordKind::kKeywordKindEndInstr) {
           break;
         }
 
         while (valueOfVar.find(";") != CompilerKit::STLString::npos &&
-               keyword.first.keyword_kind != CompilerKit::KeywordKind::kKeywordKindEndInstr) {
+               keyword.first.fKeywordKind != CompilerKit::KeywordKind::kKeywordKindEndInstr) {
           valueOfVar.erase(valueOfVar.find(";"));
         }
 
         CompilerKit::STLString varName = text;
 
-        if (keyword.first.keyword_kind == CompilerKit::KeywordKind::kKeywordKindVariableInc) {
+        if (keyword.first.fKeywordKind == CompilerKit::KeywordKind::kKeywordKindVariableInc) {
           varName.erase(varName.find("+="));
-        } else if (keyword.first.keyword_kind ==
+        } else if (keyword.first.fKeywordKind ==
                    CompilerKit::KeywordKind::kKeywordKindVariableDec) {
           varName.erase(varName.find("-="));
-        } else if (keyword.first.keyword_kind ==
+        } else if (keyword.first.fKeywordKind ==
                    CompilerKit::KeywordKind::kKeywordKindVariableAssign) {
           varName.erase(varName.find("="));
-        } else if (keyword.first.keyword_kind == CompilerKit::KeywordKind::kKeywordKindEndInstr) {
+        } else if (keyword.first.fKeywordKind == CompilerKit::KeywordKind::kKeywordKindEndInstr) {
           varName.erase(varName.find(";"));
         }
 
         static bool typeFound = false;
 
         for (auto& keyword : kKeywords) {
-          if (keyword.keyword_kind == CompilerKit::kKeywordKindType) {
-            if (text.find(keyword.keyword_name) != CompilerKit::STLString::npos) {
-              if (text[text.find(keyword.keyword_name)] == ' ') {
+          if (keyword.fKeywordKind == CompilerKit::kKeywordKindType) {
+            if (text.find(keyword.fKeywordName) != CompilerKit::STLString::npos) {
+              if (text[text.find(keyword.fKeywordName)] == ' ') {
                 typeFound = false;
                 continue;
               }
@@ -439,8 +439,8 @@ CompilerKit::SyntaxLeafList::SyntaxLeaf CompilerFrontendCPlusPlusAMD64::Compile(
         std::vector<CompilerKit::STLString> newVars;
 
         if (typeFound &&
-            keyword.first.keyword_kind != CompilerKit::KeywordKind::kKeywordKindVariableInc &&
-            keyword.first.keyword_kind != CompilerKit::KeywordKind::kKeywordKindVariableDec) {
+            keyword.first.fKeywordKind != CompilerKit::KeywordKind::kKeywordKindVariableInc &&
+            keyword.first.fKeywordKind != CompilerKit::KeywordKind::kKeywordKindVariableDec) {
           if (kRegisterMap.size() > kRegisterList.size()) {
             ++kFunctionEmbedLevel;
           }
@@ -531,9 +531,9 @@ CompilerKit::SyntaxLeafList::SyntaxLeaf CompilerFrontendCPlusPlusAMD64::Compile(
 
         done:
           for (auto& keyword : kKeywords) {
-            if (keyword.keyword_kind == CompilerKit::kKeywordKindType &&
-                varName.find(keyword.keyword_name) != CompilerKit::STLString::npos) {
-              varName.erase(varName.find(keyword.keyword_name), keyword.keyword_name.size());
+            if (keyword.fKeywordKind == CompilerKit::kKeywordKindType &&
+                varName.find(keyword.fKeywordName) != CompilerKit::STLString::npos) {
+              varName.erase(varName.find(keyword.fKeywordName), keyword.fKeywordName.size());
               break;
             }
           }
@@ -546,20 +546,20 @@ CompilerKit::SyntaxLeafList::SyntaxLeaf CompilerFrontendCPlusPlusAMD64::Compile(
         kRegisterMap.insert(kRegisterMap.end(), newVars.begin(), newVars.end());
 
         if (keyword.second > 0 &&
-                kKeywords[keyword.second - 1].keyword_kind == CompilerKit::kKeywordKindType ||
-            kKeywords[keyword.second - 1].keyword_kind == CompilerKit::kKeywordKindTypePtr) {
+                kKeywords[keyword.second - 1].fKeywordKind == CompilerKit::kKeywordKindType ||
+            kKeywords[keyword.second - 1].fKeywordKind == CompilerKit::kKeywordKindTypePtr) {
           syntax_tree.fUserValue = "\n";
           continue;
         }
 
-        if (keyword.first.keyword_kind == CompilerKit::KeywordKind::kKeywordKindEndInstr) {
+        if (keyword.first.fKeywordKind == CompilerKit::KeywordKind::kKeywordKindEndInstr) {
           syntax_tree.fUserValue = "\n";
           continue;
         }
 
-        if (keyword.first.keyword_kind == CompilerKit::KeywordKind::kKeywordKindVariableInc) {
+        if (keyword.first.fKeywordKind == CompilerKit::KeywordKind::kKeywordKindVariableInc) {
           instr = "add ";
-        } else if (keyword.first.keyword_kind ==
+        } else if (keyword.first.fKeywordKind ==
                    CompilerKit::KeywordKind::kKeywordKindVariableDec) {
           instr = "sub ";
         }

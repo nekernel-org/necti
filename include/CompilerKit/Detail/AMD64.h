@@ -9,8 +9,8 @@
 #include <CompilerKit/Detail/Config.h>
 #include <vector>
 
-// @brief AMD64 support.
-// @file Detail/AMD64.h
+/// @brief AMD64 support.
+/// @file Detail/AMD64.h
 
 #define CK_ASM_OPCODE(__NAME, __OPCODE) {.fName = __NAME, .fOpcode = __OPCODE},
 

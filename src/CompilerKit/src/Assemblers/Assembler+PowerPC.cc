@@ -272,7 +272,7 @@ asm_fail_exit:
 static bool asm_read_attributes(std::string line) {
   // extern_segment is the opposite of public_segment, it signals to the li
   // that we need this symbol.
-  if (CompilerKit::find_word(line, "extern_segment")) {
+  if (CompilerKit::ast_find_needle(line, "extern_segment")) {
     if (kOutputAsBinary) {
       CompilerKit::Detail::print_error("Invalid extern_segment directive in flat binary mode.", "CompilerKit");
       throw std::runtime_error("invalid_extern_segment_bin");
@@ -331,7 +331,7 @@ static bool asm_read_attributes(std::string line) {
   // public_segment is a special keyword used by AssemblerPower to tell the AE output stage to
   // mark this section as a header. it currently supports .code64, .data64.,
   // .zero64
-  else if (CompilerKit::find_word(line, "public_segment")) {
+  else if (CompilerKit::ast_find_needle(line, "public_segment")) {
     if (kOutputAsBinary) {
       CompilerKit::Detail::print_error("Invalid public_segment directive in flat binary mode.", "CompilerKit");
       throw std::runtime_error("invalid_public_segment_bin");
@@ -417,9 +417,9 @@ bool is_valid_power64(std::string str) {
 std::string CompilerKit::EncoderPowerPC::CheckLine(std::string line, std::string file) {
   std::string err_str;
 
-  if (line.empty() || CompilerKit::find_word(line, "extern_segment") ||
-      CompilerKit::find_word(line, "public_segment") || line.find('#') != std::string::npos ||
-      CompilerKit::find_word(line, ";")) {
+  if (line.empty() || CompilerKit::ast_find_needle(line, "extern_segment") ||
+      CompilerKit::ast_find_needle(line, "public_segment") || line.find('#') != std::string::npos ||
+      CompilerKit::ast_find_needle(line, ";")) {
     if (line.find('#') != std::string::npos) {
       line.erase(line.find('#'));
     } else if (line.find(';') != std::string::npos) {
@@ -485,7 +485,7 @@ std::string CompilerKit::EncoderPowerPC::CheckLine(std::string line, std::string
   std::vector<std::string> filter_inst = {"blr", "bl", "sc"};
 
   for (auto& opcode_risc : kOpcodesPowerPC) {
-    if (CompilerKit::find_word(line, opcode_risc.name)) {
+    if (CompilerKit::ast_find_needle(line, opcode_risc.name)) {
       for (auto& op : operands_inst) {
         // if only the instruction was found.
         if (line == op) {
@@ -499,7 +499,7 @@ std::string CompilerKit::EncoderPowerPC::CheckLine(std::string line, std::string
       // if it is like that -> addr1, 0x0
       if (auto it = std::find(filter_inst.begin(), filter_inst.end(), opcode_risc.name);
           it == filter_inst.cend()) {
-        if (CompilerKit::find_word(line, opcode_risc.name)) {
+        if (CompilerKit::ast_find_needle(line, opcode_risc.name)) {
           if (!isspace(line[line.find(opcode_risc.name) + strlen(opcode_risc.name)])) {
             err_str += "\nMissing space between ";
             err_str += opcode_risc.name;
@@ -615,12 +615,12 @@ bool CompilerKit::EncoderPowerPC::WriteNumber(const std::size_t& pos, std::strin
 /////////////////////////////////////////////////////////////////////////////////////////
 
 bool CompilerKit::EncoderPowerPC::WriteLine(std::string line, std::string file) {
-  if (CompilerKit::find_word(line, "public_segment")) return false;
+  if (CompilerKit::ast_find_needle(line, "public_segment")) return false;
   if (!CompilerKit::Detail::algorithm::is_valid_power64(line)) return false;
 
   for (auto& opcode_risc : kOpcodesPowerPC) {
     // strict check here
-    if (CompilerKit::find_word(line, opcode_risc.name)) {
+    if (CompilerKit::ast_find_needle(line, opcode_risc.name)) {
       std::string         name(opcode_risc.name);
       std::string         jump_label, cpy_jump_label;
       std::vector<size_t> found_registers_index;

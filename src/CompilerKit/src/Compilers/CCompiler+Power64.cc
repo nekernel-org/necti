@@ -115,7 +115,7 @@ static bool                         kIfFound     = false;
 static size_t                       kBracesCount = 0UL;
 
 /* @brief C compiler backend for C */
-class CompilerFrontendPower64 final : public CompilerKit::CompilerFrontendInterface {
+class CompilerFrontendPower64 final : public CompilerKit::ICompilerFrontend {
  public:
   explicit CompilerFrontendPower64()  = default;
   ~CompilerFrontendPower64() override = default;
@@ -833,7 +833,7 @@ cc_next:
 
   // extern does not declare anything, it extern_segments a variable.
   // so that's why it's not declare upper.
-  if (CompilerKit::find_word(ln, "extern")) {
+  if (CompilerKit::ast_find_needle(ln, "extern")) {
     auto substr = ln.substr(ln.find("extern") + strlen("extern"));
     kCompilerVariables.push_back({.fValue = substr});
   }
@@ -890,7 +890,7 @@ cc_next:
 skip_braces_check:
 
   for (auto& key : kCompilerTypes) {
-    if (CompilerKit::find_word(ln, key.fName)) {
+    if (CompilerKit::ast_find_needle(ln, key.fName)) {
       if (isdigit(ln[ln.find(key.fName) + key.fName.size() + 1])) {
         err_str += "\nNumber cannot be set for ";
         err_str += key.fName;
@@ -963,9 +963,9 @@ skip_braces_check:
   }
 
   if (ln.find('(') != std::string::npos) {
-    if (ln.find(';') == std::string::npos && !CompilerKit::find_word(ln, "|") &&
-        !CompilerKit::find_word(ln, "||") && !CompilerKit::find_word(ln, "&") &&
-        !CompilerKit::find_word(ln, "&&") && !CompilerKit::find_word(ln, "~")) {
+    if (ln.find(';') == std::string::npos && !CompilerKit::ast_find_needle(ln, "|") &&
+        !CompilerKit::ast_find_needle(ln, "||") && !CompilerKit::ast_find_needle(ln, "&") &&
+        !CompilerKit::ast_find_needle(ln, "&&") && !CompilerKit::ast_find_needle(ln, "~")) {
       bool              found_func = false;
       size_t            i          = ln.find('(');
       std::vector<char> opens;
@@ -1117,7 +1117,7 @@ class AssemblyMountpointCLang final CK_ASSEMBLY_INTERFACE {
       std::vector<std::string> access_keywords = {"->", "."};
 
       for (auto& access_ident : access_keywords) {
-        if (CompilerKit::find_word(leaf.fUserValue, access_ident)) {
+        if (CompilerKit::ast_find_needle(leaf.fUserValue, access_ident)) {
           for (auto& struc : kState.kStructMap) {
             /// TODO:
           }
@@ -1125,7 +1125,7 @@ class AssemblyMountpointCLang final CK_ASSEMBLY_INTERFACE {
       }
 
       for (auto& keyword : keywords) {
-        if (CompilerKit::find_word(leaf.fUserValue, keyword)) {
+        if (CompilerKit::ast_find_needle(leaf.fUserValue, keyword)) {
           std::size_t cnt = 0UL;
 
           for (auto& reg : kState.kStackFrame) {
@@ -1149,7 +1149,7 @@ class AssemblyMountpointCLang final CK_ASSEMBLY_INTERFACE {
               }
             }
 
-            if (CompilerKit::find_word(leaf.fUserValue, needle)) {
+            if (CompilerKit::ast_find_needle(leaf.fUserValue, needle)) {
               if (leaf.fUserValue.find("extern_segment ") != std::string::npos) {
                 std::string range = "extern_segment ";
                 leaf.fUserValue.replace(leaf.fUserValue.find(range), range.size(), "");

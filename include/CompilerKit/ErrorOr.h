@@ -29,6 +29,8 @@ class ErrorOr final {
   ~ErrorOr() = default;
 
  public:
+  using RefType = Ref<T>;
+
   explicit ErrorOr(ErrorT err) : mId(err) {}
   explicit ErrorOr(std::nullptr_t null) {}
   explicit ErrorOr(T klass) : mRef(klass) {}
@@ -36,7 +38,7 @@ class ErrorOr final {
   ErrorOr& operator=(const ErrorOr&) = default;
   ErrorOr(const ErrorOr&)            = default;
 
-  Ref<T>& Leak() { return mRef; }
+  RefType& Leak() { return mRef; }
 
   ErrorT Error() { return mId; }
 
@@ -45,8 +47,8 @@ class ErrorOr final {
   explicit operator bool() { return mRef; }
 
  private:
-  Ref<T> mRef;
-  ErrorT mId{0};
+  RefType mRef;
+  ErrorT  mId{0};
 };
 
 using ErrorOrAny    = ErrorOr<VoidPtr>;
