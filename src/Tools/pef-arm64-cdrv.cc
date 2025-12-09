@@ -24,17 +24,15 @@ Int32 main(Int32 argc, Char const* argv[]) {
   CompilerKit::DLLLoader dylib;
   dylib(kPath, kSymbol);
 
-  CompilerKit::DLLLoader::EntryT entrypoint_cxx =
+  CompilerKit::DLLLoader::EntryT entrypoint_c =
       reinterpret_cast<CompilerKit::DLLLoader::EntryT>(dylib.fEntrypoint);
 
-  if (!entrypoint_cxx) {
+  if (!entrypoint_c) {
     kStdOut;
     std::printf("error: Could not find entrypoint in %s: %s\n", kPath, dlerror());
 
     return EXIT_FAILURE;
   }
 
-  auto ret = (entrypoint_cxx(argc, argv) == NECTI_SUCCESS) ? EXIT_SUCCESS : EXIT_FAILURE;
-
-  return ret;
+  return (entrypoint_c(argc, argv) == NECTI_SUCCESS) ? EXIT_SUCCESS : EXIT_FAILURE;
 }
