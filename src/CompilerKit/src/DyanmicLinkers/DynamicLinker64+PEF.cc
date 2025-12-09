@@ -235,8 +235,8 @@ NECTI_MODULE(DynamicLinker64PEF) {
 
     CompilerKit::AEHeader hdr{};
 
-    reader_protocol.file_pointer_ = std::ifstream(objectFile, std::ifstream::binary);
-    reader_protocol.file_pointer_ >> hdr;
+    reader_protocol.fFilePtr = std::ifstream(objectFile, std::ifstream::binary);
+    reader_protocol.fFilePtr >> hdr;
 
     if (hdr.fMagic[0] == kAEMag0 && hdr.fMagic[1] == kAEMag1 &&
         hdr.fSize == sizeof(CompilerKit::AEHeader) && hdr.fMagic[2] == kAEMag2) {
@@ -331,14 +331,14 @@ NECTI_MODULE(DynamicLinker64PEF) {
       std::vector<char> bytes;
       bytes.resize(hdr.fCodeSize);
 
-      reader_protocol.file_pointer_.seekg(std::streamsize(hdr.fStartCode));
-      reader_protocol.file_pointer_.read(bytes.data(), std::streamsize(hdr.fCodeSize));
+      reader_protocol.fFilePtr.seekg(std::streamsize(hdr.fStartCode));
+      reader_protocol.fFilePtr.read(bytes.data(), std::streamsize(hdr.fCodeSize));
 
       kObjectBytes.push_back({.mBlob = bytes, .mOffset = hdr.fStartCode});
 
       // Blob was written, close fp.
 
-      reader_protocol.file_pointer_.close();
+      reader_protocol.fFilePtr.close();
 
       continue;
     }

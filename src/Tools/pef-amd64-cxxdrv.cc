@@ -21,11 +21,11 @@ static auto kPath = "/usr/lib/libCompilerKit.so";
 static auto kSymbol = "CompilerCPlusPlusAMD64";
 
 Int32 main(Int32 argc, Char const* argv[]) {
-  CompilerKit::DLLTraits dylib;
+  CompilerKit::DLLLoader dylib;
   dylib(kPath, kSymbol);
 
-  CompilerKit::DLLTraits::Entrypoint entrypoint_cxx =
-      reinterpret_cast<CompilerKit::DLLTraits::Entrypoint>(dylib.fEntrypoint);
+  CompilerKit::DLLLoader::EntryT entrypoint_cxx =
+      reinterpret_cast<CompilerKit::DLLLoader::EntryT>(dylib.fEntrypoint);
 
   if (!entrypoint_cxx) {
     kStdOut;

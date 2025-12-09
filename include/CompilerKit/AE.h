@@ -97,13 +97,13 @@ namespace CompilerKit::Utils {
  */
 class AEReadableProtocol final {
  public:
-  std::ifstream file_pointer_;
+  std::ifstream fFilePtr;
 
  public:
   explicit AEReadableProtocol() = default;
   ~AEReadableProtocol()         = default;
 
-  NECTI_COPY_DELETE(AEReadableProtocol);
+  NECTI_COPY_DELETE(AEReadableProtocol)
 
   /**
    * @brief Read AE Record headers.
@@ -129,7 +129,7 @@ class AEReadableProtocol final {
    */
   template <typename TypeClass>
   TypeClass* Read_(char* raw, std::size_t sz) {
-    file_pointer_.read(raw, std::streamsize(sz));
+    fFilePtr.read(raw, std::streamsize(sz));
     return reinterpret_cast<TypeClass*>(raw);
   }
 };

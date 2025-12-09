@@ -11,52 +11,55 @@
 #include <mutex>
 
 namespace CompilerKit {
-struct DLLTraits final {
-  typedef Int32 (*Entrypoint)(Int32 argc, Char const* argv[]);
-  using DLL = VoidPtr;
+class DLLLoader final {
+ public:
+  typedef Int32 (*EntryT)(Int32 argc, Char const* argv[]);
+  using DLL   = VoidPtr;
+  using Mutex = std::mutex;
+  EntryT fEntrypoint{nullptr};
 
-  DLL        fDylib{nullptr};
-  Entrypoint fEntrypoint{nullptr};
-  std::mutex fMutex;
+ private:
+  DLL   mDLL{nullptr};
+  Mutex mMutex;
 
-  explicit operator bool() { return fDylib && fEntrypoint; }
+ public:
+  explicit operator bool() { return this->mDLL && this->fEntrypoint; }
 
-  DLLTraits& operator()(const Char* path, const Char* fEntrypoint) {
-    std::lock_guard<std::mutex> lock(this->fMutex);
-
+  DLLLoader& operator()(const Char* path, const Char* fEntrypoint) {
     if (!path || !fEntrypoint) return *this;
 
-    if (this->fDylib) {
-      dlclose(this->fDylib);
-      this->fDylib = nullptr;
+    std::lock_guard<Mutex> lock(this->mMutex);
+
+    if (this->mDLL) {
+      this->Destroy();
     }
 
-    this->fDylib = dlopen(path, RTLD_LAZY);
+    this->mDLL = ::dlopen(path, RTLD_LAZY);
 
-    if (!this->fDylib) {
+    if (!this->mDLL) {
       return *this;
     }
 
-    this->fEntrypoint = (Entrypoint) dlsym(this->fDylib, fEntrypoint);
+    this->fEntrypoint = reinterpret_cast<EntryT>(::dlsym(this->mDLL, fEntrypoint));
 
     if (!this->fEntrypoint) {
-      dlclose(this->fDylib);
-      this->fDylib = nullptr;
-
+      this->Destroy();
       return *this;
     }
 
     return *this;
   }
 
-  NECTI_COPY_DELETE(DLLTraits)
+  NECTI_COPY_DELETE(DLLLoader)
 
-  explicit DLLTraits() = default;
+  explicit DLLLoader() = default;
+  ~DLLLoader() { this->Destroy(); }
 
-  ~DLLTraits() {
-    if (this->fDylib) {
-      dlclose(this->fDylib);
-      this->fDylib = nullptr;
+ private:
+  void Destroy() noexcept {
+    if (this->mDLL) {
+      ::dlclose(this->mDLL);
+      this->mDLL = nullptr;
     }
 
     this->fEntrypoint = nullptr;

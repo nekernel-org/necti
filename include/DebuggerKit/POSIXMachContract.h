@@ -67,9 +67,9 @@ class POSIXMachContract final DK_DEBUGGER_CONTRACT {
     }
 
     m_path = path;
-    m_pid  = pid;
+    mPid  = pid;
 
-    pid = this->m_pid;
+    pid = this->mPid;
 
     return true;
   }
@@ -99,7 +99,7 @@ class POSIXMachContract final DK_DEBUGGER_CONTRACT {
 
 #ifdef __APPLE__
       task_read_t task;
-      task_for_pid(mach_task_self(), m_pid, &task);
+      task_for_pid(mach_task_self(), mPid, &task);
 
       uint32_t brk_inst = 0xD43E0000;
 
@@ -118,7 +118,7 @@ class POSIXMachContract final DK_DEBUGGER_CONTRACT {
 #ifdef __APPLE__
   bool Break() noexcept override {
     task_read_t task;
-    task_for_pid(mach_task_self(), m_pid, &task);
+    task_for_pid(mach_task_self(), mPid, &task);
 
     kern_return_t ret = task_suspend(task);
 
@@ -127,7 +127,7 @@ class POSIXMachContract final DK_DEBUGGER_CONTRACT {
 
   bool Continue() noexcept override {
     task_read_t task;
-    task_for_pid(mach_task_self(), m_pid, &task);
+    task_for_pid(mach_task_self(), mPid, &task);
 
     kern_return_t ret = task_resume(task);
 
@@ -138,7 +138,7 @@ class POSIXMachContract final DK_DEBUGGER_CONTRACT {
     this->Continue();
 
     task_read_t task;
-    task_for_pid(mach_task_self(), m_pid, &task);
+    task_for_pid(mach_task_self(), mPid, &task);
 
     kern_return_t kr = mach_port_deallocate(mach_task_self(), task);
 
@@ -147,7 +147,7 @@ class POSIXMachContract final DK_DEBUGGER_CONTRACT {
 #endif
 
  private:
-  ProcessID              m_pid{0};
+  ProcessID              mPid{0};
   CompilerKit::STLString m_path;
 };
 }  // namespace DebuggerKit::POSIX

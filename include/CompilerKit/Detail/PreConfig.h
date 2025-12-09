@@ -4,7 +4,8 @@
 
 ======================================== */
 
-#pragma once
+#ifndef __COMPILERKIT_PRECONFIG_H__
+#define __COMPILERKIT_PRECONFIG_H__
 
 #ifndef Yes
 #define Yes true
@@ -116,5 +117,8 @@
   KLASS& operator=(KLASS&&) = default; \
   KLASS(KLASS&&)            = default;
 
+#define CK_IMPORT_CXX extern "C++"
 #define CK_IMPORT_C extern "C"
 #define CK_IMPORT extern
+
+#endif  // __COMPILERKIT_PRECONFIG_H__

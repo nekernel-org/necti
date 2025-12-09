@@ -34,10 +34,12 @@ class IDebuggerContract {
   virtual bool Continue() noexcept                                                 = 0;
   virtual bool Detach() noexcept                                                   = 0;
 
-  virtual std::unordered_map<uintptr_t, uintptr_t>& Get() { return m_breakpoints; }
+  using BreakpointMap = std::unordered_map<uintptr_t, uintptr_t>;
+
+  virtual BreakpointMap& Get() { return mBreakpoints; }
 
  protected:
-  ProcessID                                m_pid{(ProcessID) ~0};
-  std::unordered_map<uintptr_t, uintptr_t> m_breakpoints;
+  ProcessID     mPid{(ProcessID) ~0};
+  BreakpointMap mBreakpoints;
 };
 }  // namespace DebuggerKit

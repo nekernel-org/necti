@@ -11,7 +11,7 @@
 #include <cstring>
 
 #define CK_ASSEMBLY_INTERFACE : public ::CompilerKit::IAssembly
-#define CK_ENCODER : public ::CompilerKit::EncoderInterface
+#define CK_ENCODER : public ::CompilerKit::IAssemblyEncoder
 
 namespace CompilerKit {
 class AssemblyFactory;
@@ -75,6 +75,11 @@ class IAssembly {
 union NumberCastBase {
   NumberCastBase()  = default;
   ~NumberCastBase() = default;
+
+  static constexpr auto kLimit = 1;
+
+  Char   number[kLimit];
+  UInt64 raw;
 };
 
 union NumberCast64 final {
@@ -126,12 +131,12 @@ union NumberCast8 final {
 /// =========================================================== ///
 /// @brief Assembly encoder interface.
 /// =========================================================== ///
-class EncoderInterface {
+class IAssemblyEncoder {
  public:
-  explicit EncoderInterface() = default;
-  virtual ~EncoderInterface() = default;
+  explicit IAssemblyEncoder() = default;
+  virtual ~IAssemblyEncoder() = default;
 
-  NECTI_COPY_DEFAULT(EncoderInterface);
+  NECTI_COPY_DEFAULT(IAssemblyEncoder);
 
   virtual STLString CheckLine(STLString line, STLString file)                 = 0;
   virtual bool      WriteLine(STLString line, STLString file)                 = 0;
@@ -144,7 +149,7 @@ class EncoderInterface {
 
 #ifdef __ASM_NEED_AMD64__
 
-class EncoderAMD64 final : public EncoderInterface {
+class EncoderAMD64 final : public IAssemblyEncoder {
  public:
   explicit EncoderAMD64()  = default;
   ~EncoderAMD64() override = default;
@@ -164,7 +169,7 @@ class EncoderAMD64 final : public EncoderInterface {
 
 #ifdef __ASM_NEED_ARM64__
 
-class EncoderARM64 final : public EncoderInterface {
+class EncoderARM64 final : public IAssemblyEncoder {
  public:
   explicit EncoderARM64()  = default;
   ~EncoderARM64() override = default;
@@ -180,7 +185,7 @@ class EncoderARM64 final : public EncoderInterface {
 
 #ifdef __ASM_NEED_64x0__
 
-class Encoder64x0 final : public EncoderInterface {
+class Encoder64x0 final : public IAssemblyEncoder {
  public:
   explicit Encoder64x0()  = default;
   ~Encoder64x0() override = default;
@@ -196,7 +201,7 @@ class Encoder64x0 final : public EncoderInterface {
 
 #ifdef __ASM_NEED_32x0__
 
-class Encoder32x0 final : public EncoderInterface {
+class Encoder32x0 final : public IAssemblyEncoder {
  public:
   explicit Encoder32x0()  = default;
   ~Encoder32x0() override = default;
@@ -212,7 +217,7 @@ class Encoder32x0 final : public EncoderInterface {
 
 #ifdef __ASM_NEED_PPC__
 
-class EncoderPowerPC final : public EncoderInterface {
+class EncoderPowerPC final : public IAssemblyEncoder {
  public:
   explicit EncoderPowerPC()  = default;
   ~EncoderPowerPC() override = default;
