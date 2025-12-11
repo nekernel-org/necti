@@ -17,7 +17,7 @@
 
 #include <CompilerKit/Detail/Config.h>
 #include <CompilerKit/ErrorID.h>
-#include <CompilerKit/Ref.h>
+#include <CompilerKit/StrongRef.h>
 
 namespace CompilerKit {
 using ErrorT = Int32;
@@ -29,7 +29,7 @@ class ErrorOr final {
   ~ErrorOr() = default;
 
  public:
-  using RefType = Ref<T>;
+  using RefType = StrongRef<T>;
 
   explicit ErrorOr(ErrorT err) : mId(err) {}
   explicit ErrorOr(std::nullptr_t null) {}

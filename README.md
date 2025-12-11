@@ -27,6 +27,7 @@ NeCTI is a modern, multi-platform compiler instractucture designed for modularit
 
 - [Clang](https://clang.llvm.org/)
 - [Git](https://git-scm.com/)
+- [Boost](https://boost.org/)
 - [NeBuild](https://github.com/nekernel-org/nebuild)
 - [Doxygen](https://www.doxygen.nl/)
 

@@ -16,11 +16,11 @@ namespace CompilerKit {
 /// @author Amlal El Mahrouss
 /// @brief Reference holder class, refers to a pointer of data in static memory.
 template <typename T>
-class Ref final {
+class StrongRef {
  public:
-  Ref() = default;
+  StrongRef() = default;
 
-  ~Ref() {
+  virtual ~StrongRef() {
     if (m_Strong) {
       MUST_PASS(m_Class);
       if (m_Class) delete m_Class;
@@ -28,49 +28,72 @@ class Ref final {
     }
   }
 
-  NECTI_COPY_DEFAULT(Ref);
+  NECTI_COPY_DEFAULT(StrongRef)
+
+  using Type = T;
+
+ protected:
+  explicit StrongRef(Type* cls, const bool strong) : m_Class(cls), m_Strong(strong) {}
 
  public:
-  explicit Ref(T* cls, const bool& strong = false) : m_Class(cls), m_Strong(strong) {}
+  explicit StrongRef(Type* cls) : m_Class(cls), m_Strong(true) {}
 
-  Ref& operator=(T ref) {
+  StrongRef& operator=(Type ref) {
     *m_Class = ref;
     return *this;
   }
 
  public:
-  T* operator->() const { return m_Class; }
+  Type* operator->() const { return m_Class; }
 
-  T& Leak() { return *m_Class; }
+  Type& Leak() { return *m_Class; }
 
-  T operator*() { return *m_Class; }
+  Type operator*() { return *m_Class; }
 
   bool IsStrong() const { return m_Strong; }
 
   explicit operator bool() { return *m_Class; }
 
  private:
-  T*   m_Class{nullptr};
-  bool m_Strong{false};
+  Type* m_Class{nullptr};
+  bool  m_Strong{false};
 };
 
-// @author Amlal El Mahrouss
-// @brief Non null Reference holder class, refers to a pointer of data in static memory.
 template <typename T>
+class WeakRef final : StrongRef<T> {
+ public:
+  WeakRef() = default;
+
+  ~WeakRef() = default;
+
+  NECTI_COPY_DELETE(WeakRef)
+
+ public:
+  using Type = T;
+
+  explicit WeakRef(Type* cls) : StrongRef<Type>(cls, false) {}
+};
+
+/// @author Amlal El Mahrouss
+/// @brief Non null reference holder class, refers to a pointer of data in static memory.
+template <typename Type>
 class NonNullRef final {
  public:
   explicit NonNullRef() = delete;
-  explicit NonNullRef(T* ref) : m_Ref(ref, true) {}
+  explicit NonNullRef(Type* ref) : m_Ref(ref, true) {}
 
-  Ref<T>& operator->() {
+  StrongRef<Type>& operator->() {
     MUST_PASS(m_Ref);
     return m_Ref;
   }
 
-  NonNullRef& operator=(const NonNullRef<T>& ref) = delete;
-  NonNullRef(const NonNullRef<T>& ref)            = default;
+  NonNullRef& operator=(const NonNullRef<Type>& ref) = delete;
+  NonNullRef(const NonNullRef<Type>& ref)            = default;
 
  private:
-  Ref<T> m_Ref{nullptr};
+  StrongRef<Type> m_Ref{nullptr};
 };
+
+using StrongAny = StrongRef<VoidPtr>;
+using WeakAny = WeakRef<VoidPtr>;
 }  // namespace CompilerKit

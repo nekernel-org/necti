@@ -6,7 +6,7 @@
     "../../include/",
     "../../include/CompilerKit/src/",
     "../../include/CompilerKit/src/impl",
-    "/opt/homebrew/Cellar/boost/1.89.0/include"
+    "/opt/homebrew/Cellar/boost/1.90.0/include"
   ],
   "sources_path": [
     "src/*.cc",
