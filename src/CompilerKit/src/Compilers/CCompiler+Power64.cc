@@ -1202,7 +1202,9 @@ NECTI_MODULE(CompilerCLangPowerPC) {
 
   bool skip = false;
 
-  kFactory.Mount(new AssemblyMountpointCLang());
+  CompilerKit::StrongRef<AssemblyMountpointCLang> mntPnt{new AssemblyMountpointCLang()};
+
+  kFactory.Mount({mntPnt.Leak()});
   kMachine          = CompilerKit::AssemblyFactory::kArchPowerPC;
   kCompilerFrontend = new CompilerFrontendPower64();
 

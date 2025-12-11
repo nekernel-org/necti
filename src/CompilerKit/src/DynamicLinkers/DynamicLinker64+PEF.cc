@@ -27,6 +27,8 @@
 #define kPefNoCpu (0U)
 #define kPefNoSubCpu (0U)
 
+#define kPefDefaultOutput {"a" kPefExt}
+
 #define kLinkerDefaultOrigin kPefBaseOrigin
 #define kLinkerId (0x5046FF)
 #define kLinkerAbiContainer "__PEFContainer:ABI:"
@@ -48,7 +50,7 @@ enum {
   kABITypeInvalid = 0xFFFF,
 };
 
-static CompilerKit::STLString kOutput           = "a" kPefExt;
+static CompilerKit::STLString kOutput           = kPefDefaultOutput;
 static Int32                  kAbi              = kABITypeNE;
 static Int32                  kSubArch          = kPefNoSubCpu;
 static Int32                  kArch             = CompilerKit::kPefArchInvalid;

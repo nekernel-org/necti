@@ -1191,7 +1191,9 @@ NECTI_MODULE(CompilerCLang64x0) {
 
   bool skip = false;
 
-  kFactory.Mount(new AssemblyCCInterface());
+  CompilerKit::StrongRef<AssemblyCCInterface> mntPnt{new AssemblyCCInterface()};
+
+  kFactory.Mount({mntPnt.Leak()});
   kMachine          = CompilerKit::AssemblyFactory::kArch64x0;
   kCompilerFrontend = new CompilerFrontend64x0();
 

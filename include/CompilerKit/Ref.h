@@ -28,28 +28,27 @@ class StrongRef {
     }
   }
 
-  NECTI_COPY_DELETE(StrongRef)
-  NECTI_MOVE_DEFAULT(StrongRef)
+  NECTI_COPY_DEFAULT(StrongRef)
 
   using Type = T;
 
  protected:
-  explicit StrongRef(Type* cls, const bool strong) : m_Class(cls), m_Strong(strong) {}
+  StrongRef(Type* cls, const bool strong) : m_Class(cls), m_Strong(strong) {}
 
  public:
-  explicit StrongRef(Type* cls) : m_Class(cls), m_Strong(true) {}
+  StrongRef(Type* cls) : m_Class(cls), m_Strong(true) {}
 
-  StrongRef& operator=(Type ref) {
-    *m_Class = ref;
+  StrongRef& operator=(Type *ref) {
+    m_Class = ref;
     return *this;
   }
 
  public:
   Type* operator->() const { return m_Class; }
 
-  Type& Leak() { return *m_Class; }
+  Type* Leak() { return m_Class; }
 
-  Type operator*() { return *m_Class; }
+  Type* operator*() { return m_Class; }
 
   bool IsStrong() const { return m_Strong; }
 
@@ -61,19 +60,17 @@ class StrongRef {
 };
 
 template <typename T>
-class WeakRef final : StrongRef<T> {
+class WeakRef final : public StrongRef<T> {
  public:
-  WeakRef() = default;
-
+  WeakRef() = delete;
   ~WeakRef() = default;
 
-  NECTI_COPY_DELETE(WeakRef)
-  NECTI_MOVE_DEFAULT(WeakRef)
+  NECTI_COPY_DEFAULT(WeakRef)
 
  public:
   using Type = T;
 
-  explicit WeakRef(Type* cls) : StrongRef<Type>(cls, false) {}
+  WeakRef(Type* cls) : StrongRef<Type>(cls, false) {}
 };
 
 /// @author Amlal El Mahrouss
@@ -82,7 +79,7 @@ template <typename Type>
 class NonNullRef final {
  public:
   explicit NonNullRef() = delete;
-  explicit NonNullRef(Type* ref) : m_Ref(ref, true) {}
+  NonNullRef(Type* ref) : m_Ref(ref, true) {}
 
   StrongRef<Type>& operator->() {
     MUST_PASS(m_Ref);

@@ -17,7 +17,7 @@
 
 #include <CompilerKit/Detail/Config.h>
 #include <CompilerKit/ErrorID.h>
-#include <CompilerKit/StrongRef.h>
+#include <CompilerKit/Ref.h>
 
 namespace CompilerKit {
 using ErrorT = Int32;

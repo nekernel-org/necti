@@ -8,6 +8,10 @@
 
 #include <CompilerKit/Detail/Config.h>
 #include <CompilerKit/Macros.h>
+
+#include <CompilerKit/ErrorOr.h>
+#include <CompilerKit/Ref.h>
+
 #include <cstring>
 
 #define CK_ASSEMBLY_INTERFACE : public ::CompilerKit::IAssembly
@@ -42,8 +46,8 @@ class AssemblyFactory final {
 
   Int32 Compile(STLString sourceFile, const Int32& arch) noexcept;
 
-  void       Mount(IAssembly* mountPtr) noexcept;
-  IAssembly* Unmount() noexcept;
+  void       Mount(WeakRef<IAssembly> mountPtr) noexcept;
+  WeakRef<IAssembly> Unmount() noexcept;
 
  private:
   IAssembly* fMounted{nullptr};

@@ -5,7 +5,6 @@
 ======================================== */
 
 #include <CompilerKit/CodeGenerator.h>
-#include <CompilerKit/ErrorID.h>
 
 /**
  * @file AssemblyFactory.cc
@@ -32,20 +31,20 @@ Int32 AssemblyFactory::Compile(STLString sourceFile, const Int32& arch) noexcept
 }
 
 ///! @brief mount assembly backend.
-void AssemblyFactory::Mount(IAssembly* mountPtr) noexcept {
+void AssemblyFactory::Mount(WeakRef<IAssembly> mountPtr) noexcept {
   if (mountPtr) {
-    fMounted = mountPtr;
+    fMounted = mountPtr.Leak();
   }
 }
 
 ///! @brief Unmount assembler.
-IAssembly* AssemblyFactory::Unmount() noexcept {
+WeakRef<IAssembly> AssemblyFactory::Unmount() noexcept {
   auto mount_prev = fMounted;
 
   if (fMounted) {
     fMounted = nullptr;
   }
 
-  return mount_prev;
+  return WeakRef<IAssembly>{mount_prev};
 }
 }  // namespace CompilerKit
