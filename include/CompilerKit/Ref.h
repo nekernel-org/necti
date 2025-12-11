@@ -28,7 +28,8 @@ class StrongRef {
     }
   }
 
-  NECTI_COPY_DEFAULT(StrongRef)
+  NECTI_COPY_DELETE(StrongRef)
+  NECTI_MOVE_DEFAULT(StrongRef)
 
   using Type = T;
 
@@ -52,7 +53,7 @@ class StrongRef {
 
   bool IsStrong() const { return m_Strong; }
 
-  explicit operator bool() { return *m_Class; }
+  explicit operator bool() { return m_Class != nullptr; }
 
  private:
   Type* m_Class{nullptr};
@@ -67,6 +68,7 @@ class WeakRef final : StrongRef<T> {
   ~WeakRef() = default;
 
   NECTI_COPY_DELETE(WeakRef)
+  NECTI_MOVE_DEFAULT(WeakRef)
 
  public:
   using Type = T;
