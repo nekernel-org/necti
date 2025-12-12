@@ -1,10 +1,11 @@
 /* ========================================
 
-  Copyright (C) 2024-2025 Amlal El Mahrouss, Licensed under the Apache 2.0 license
+  Copyright (C) 2024-2025 Amlal El Mahrouss, licensed under the Apache 2.0 license
 
 ======================================== */
 
-#pragma once
+#ifndef __COMPILERKIT_CONFIG_H__
+#define __COMPILERKIT_CONFIG_H__
 
 /// =========================================================== ///
 /// @file detail/Config.h
@@ -62,3 +63,5 @@ inline bool install_signal(Int32 signal, void (*handler)(int)) noexcept {
   return true;
 }
 }  // namespace CompilerKit
+
+#endif // __COMPILERKIT_CONFIG_H__

@@ -2,7 +2,7 @@
 # Language: CompilerKit POWER Assembly support for GNU.
 # Build Date: 2024-6-4
 
-#ifdef __NECTI__
+#ifdef __NECTAR__
 
 #ifdef __ASSEMBLER__
 

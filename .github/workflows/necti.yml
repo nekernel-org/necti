@@ -1,4 +1,4 @@
-name: Kits CI (NeCTI,Stable)
+name: Kits CI (Nectar,Stable)
 
 on:
   push:

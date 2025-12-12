@@ -1,6 +1,6 @@
 /* ========================================
 
-  Copyright (C) 2025 Amlal El Mahrouss, Licensed under the Apache 2.0 license.
+  Copyright (C) 2025 Amlal El Mahrouss, licensed under the Apache 2.0 license.
 
 ======================================== */
 
@@ -29,7 +29,7 @@ static void dbgi_ctrlc_handler(std::int32_t _) {
 
 NECTI_MODULE(DebuggerNeKernel) {
   pfd::notify("Debugger Event",
-              "NeCTI Debugger\n(C) 2025 Amlal El Mahrouss and NeKernel.org contributors, all "
+              "Nectar Debugger\n(C) 2025 Amlal El Mahrouss and NeKernel.org contributors, all "
               "rights reserved.");
 
   if (argc >= 5 && std::string(argv[1]) == "-k" && argv[2] != nullptr &&

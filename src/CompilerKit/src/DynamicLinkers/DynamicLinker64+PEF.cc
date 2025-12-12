@@ -1,6 +1,6 @@
 /* ========================================
 
-  Copyright (C) 2024-2025 Amlal El Mahrouss, Licensed under the Apache 2.0 license
+  Copyright (C) 2024-2025 Amlal El Mahrouss, licensed under the Apache 2.0 license
 
   @file DynamicLinker64PEF.cc
   @brief: C++ 64-Bit PEF Linker for NeKernel.org's NeKernel
@@ -22,7 +22,7 @@
 #include <CompilerKit/Utilities/Compiler.h>
 #include <filesystem>
 
-#define kLinkerVersionStr "NeCTI 64-Bit Linker (Preferred Executable Format)"
+#define kLinkerVersionStr "Nectar 64-Bit Linker (Preferred Executable Format)"
 
 #define kPefNoCpu (0U)
 #define kPefNoSubCpu (0U)
@@ -68,8 +68,8 @@ static CompilerKit::STLString kLinkerStart = kPefStart;
 static std::vector<CompilerKit::STLString>    kObjectList;
 static std::vector<CompilerKit::Detail::Blob> kObjectBytes;
 
-///	@brief NeCTI 64-bit Linker.
-/// @note This linker is made for PEF executable, thus NeCTI based OSes.
+///	@brief Nectar 64-bit Linker.
+/// @note This linker is made for PEF executable, thus Nectar based OSes.
 NECTI_MODULE(DynamicLinker64PEF) {
   bool is_executable = true;
 

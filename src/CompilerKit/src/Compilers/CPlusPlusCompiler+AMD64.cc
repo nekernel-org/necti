@@ -2,7 +2,7 @@
  *	========================================================
  *
  *	C++ Compiler Driver
- * 	Copyright (C) 2024-2025 Amlal El Mahrouss, Licensed under the Apache 2.0 license.
+ * 	Copyright (C) 2024-2025 Amlal El Mahrouss, licensed under the Apache 2.0 license.
  *
  * 	========================================================
  */
@@ -345,10 +345,10 @@ CompilerKit::SyntaxLeafList::SyntaxLeaf CompilerFrontendCPlusPlusAMD64::Compile(
           symbol_name_fn.erase(symbol_name_fn.find("("));
         }
 
-        syntax_tree.fUserValue = "public_segment .code64 __NECTI_" + symbol_name_fn + "\n";
+        syntax_tree.fUserValue = "public_segment .code64 __NECTAR_" + symbol_name_fn + "\n";
         ++kFunctionEmbedLevel;
 
-        kOriginMap.push_back({"__NECTI_" + symbol_name_fn, kOrigin});
+        kOriginMap.push_back({"__NECTAR_" + symbol_name_fn, kOrigin});
 
         break;
 
@@ -474,10 +474,10 @@ CompilerKit::SyntaxLeafList::SyntaxLeaf CompilerFrontendCPlusPlusAMD64::Compile(
 
             if (pairRight != valueOfVar) {
               if (valueOfVar[0] == '\"') {
-                syntax_tree.fUserValue = "segment .data64 __NECTI_LOCAL_VAR_" + varName + ": db " +
+                syntax_tree.fUserValue = "segment .data64 __NECTAR_LOCAL_VAR_" + varName + ": db " +
                                          valueOfVar + ", 0\n\n";
                 syntax_tree.fUserValue += instr + kRegisterList[kRegisterMap.size() - 1] + ", " +
-                                          "__NECTI_LOCAL_VAR_" + varName + "\n";
+                                          "__NECTAR_LOCAL_VAR_" + varName + "\n";
                 kOrigin += 1UL;
               } else {
                 syntax_tree.fUserValue =
@@ -492,16 +492,16 @@ CompilerKit::SyntaxLeafList::SyntaxLeaf CompilerFrontendCPlusPlusAMD64::Compile(
           if (((int) indexRight - 1) < 0) {
             if (valueOfVar[0] == '\"') {
               syntax_tree.fUserValue =
-                  "segment .data64 __NECTI_LOCAL_VAR_" + varName + ": db " + valueOfVar + ", 0\n";
+                  "segment .data64 __NECTAR_LOCAL_VAR_" + varName + ": db " + valueOfVar + ", 0\n";
               syntax_tree.fUserValue += instr + kRegisterList[kRegisterMap.size()] + ", " +
-                                        "__NECTI_LOCAL_VAR_" + varName + "\n";
+                                        "__NECTAR_LOCAL_VAR_" + varName + "\n";
               kOrigin += 1UL;
             } else {
               auto mangled = valueOfVar;
 
               if (mangled.find("(") != std::string::npos) {
                 auto ret = mangled.erase(mangled.find("("));
-                mangled  = "__NECTI_";
+                mangled  = "__NECTAR_";
                 mangled += ret;
 
                 syntax_tree.fUserValue = "jmp " + mangled + "\n";
@@ -660,8 +660,8 @@ CompilerKit::SyntaxLeafList::SyntaxLeaf CompilerFrontendCPlusPlusAMD64::Compile(
               break;
             }
           } else {
-            syntax_tree.fUserValue = "__NECTI_LOCAL_RETURN_STRING: db " + subText +
-                                     ", 0\nmov rcx, __NECTI_LOCAL_RETURN_STRING\n";
+            syntax_tree.fUserValue = "__NECTAR_LOCAL_RETURN_STRING: db " + subText +
+                                     ", 0\nmov rcx, __NECTAR_LOCAL_RETURN_STRING\n";
             syntax_tree.fUserValue += "mov rax, rcx\nret\n";
             kOrigin += 1UL;
 

@@ -2,7 +2,7 @@
  *	========================================================
  *
  *	CCompilerARM64
- * 	Copyright (C) 2024-2025 Amlal El Mahrouss, Licensed under the Apache 2.0 license.
+ * 	Copyright (C) 2024-2025 Amlal El Mahrouss, licensed under the Apache 2.0 license.
  *
  * 	========================================================
  */
@@ -320,7 +320,7 @@ CompilerKit::SyntaxLeafList::SyntaxLeaf CompilerFrontendARM64::Compile(std::stri
 
       if (expr.find(")") != std::string::npos) expr.erase(expr.find(")"));
 
-      kIfFunction = "__NECTI_IF_PROC_";
+      kIfFunction = "__NECTAR_IF_PROC_";
       kIfFunction += std::to_string(time_off._Raw);
 
       syntaxLeaf.fUserValue = "\tlda r12, extern_segment ";

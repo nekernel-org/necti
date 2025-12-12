@@ -1,18 +1,9 @@
-<!-- Read Me of NeCTI -->
+<!-- Read Me of Nectar -->
 
-<div align="center">
-  <img src="meta/png/nekernel.png" alt="Logo" width="256"/>
-</div>
+# Nectar
 
-<br/>
-
-![CI](https://github.com/amlel-el-mahrouss/cc/actions/workflows/necti.yml/badge.svg)
 ![CI](https://github.com/amlel-el-mahrouss/cc/actions/workflows/necti-dev.yml/badge.svg)
 [![License: GPL-3.0](https://img.shields.io/badge/license-Apache--2.0-blue.svg)](LICENSE)
-
-## Overview:
-
-NeCTI is a modern, multi-platform compiler instractucture designed for modularity, and performance. It features a custom debugger engine, advanced linker, and a modular compiler architecture. It is built for research, education, and next-generation toolchain development.
 
 ## Structure:
 
@@ -20,7 +11,7 @@ NeCTI is a modern, multi-platform compiler instractucture designed for modularit
 - `src/LibC++` – C++ ABI Library
 - `src/LibStdC++` – Standard C++ Library
 - `src/DebuggerKit` – Debugging Kit written in modern C++
-- `src/Tools/` – C/C++ Frontend Tools
+- `src/CommandLine/` – C/C++ Command Line Tools
 
 
 ## Requirements:

@@ -2,7 +2,7 @@
  *	========================================================
  *
  *	CompilerPower64
- * 	Copyright (C) 2024-2025 Amlal El Mahrouss, Licensed under the Apache 2.0 license.
+ * 	Copyright (C) 2024-2025 Amlal El Mahrouss, licensed under the Apache 2.0 license.
  *
  * 	========================================================
  */
@@ -321,7 +321,7 @@ CompilerKit::SyntaxLeafList::SyntaxLeaf CompilerFrontendPower64::Compile(std::st
 
       if (expr.find(")") != std::string::npos) expr.erase(expr.find(")"));
 
-      kIfFunction = "__NECTI_IF_PROC_";
+      kIfFunction = "__NECTAR_IF_PROC_";
       kIfFunction += std::to_string(time_off._Raw);
 
       syntax_leaf.fUserValue =

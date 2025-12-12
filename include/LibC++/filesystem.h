@@ -1,11 +1,11 @@
 /* ========================================
 
-  Copyright (C) 2024-2025 Amlal El Mahrouss, Licensed under the Apache 2.0 license.
+  Copyright (C) 2024-2025 Amlal El Mahrouss, licensed under the Apache 2.0 license.
 
 ======================================== */
 
-#ifndef __NECTI_FS_H__
-#define __NECTI_FS_H__
+#ifndef __NECTAR_FS_H__
+#define __NECTAR_FS_H__
 
 #include <LibC++/defines.h>
 
@@ -16,4 +16,4 @@ class directory_entry;
 class directory_iterator;
 }  // namespace std
 
-#endif  // __NECTI_FS_H__
+#endif  // __NECTAR_FS_H__

@@ -1,6 +1,6 @@
 /* ========================================
 
-  Copyright (C) 2024-2025 Amlal El Mahrouss, Licensed under the Apache 2.0 license
+  Copyright (C) 2024-2025 Amlal El Mahrouss, licensed under the Apache 2.0 license
 
   File: XCOFF.h
   Purpose: XCOFF for NeKernel.
@@ -11,8 +11,8 @@
 
 ======================================== */
 
-#ifndef _NECTI_XCOFF_H_
-#define _NECTI_XCOFF_H_
+#ifndef _NECTAR_XCOFF_H_
+#define _NECTAR_XCOFF_H_
 
 #include <CompilerKit/Detail/Config.h>
 
@@ -40,4 +40,4 @@ typedef struct XCoffFileHeader {
 typedef struct XCoffFileHeader* XCoffFileHeaderPtr;
 }  // namespace CompilerKit
 
-#endif  // ifndef _NECTI_XCOFF_H_
+#endif  // ifndef _NECTAR_XCOFF_H_

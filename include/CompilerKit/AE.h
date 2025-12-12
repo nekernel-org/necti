@@ -2,13 +2,13 @@
  * ========================================================
  *
  *      CompilerKit
- *      Copyright (C) 2024-2025 Amlal El Mahrouss, Licensed under the Apache 2.0 license.
+ *      Copyright (C) 2024-2025 Amlal El Mahrouss, licensed under the Apache 2.0 license.
  *
  * ========================================================
  */
 
-#ifndef _NECTI_AE_H_
-#define _NECTI_AE_H_
+#ifndef _NECTAR_AE_H_
+#define _NECTAR_AE_H_
 
 #include <CompilerKit/Detail/Config.h>
 #include <fstream>
@@ -135,4 +135,4 @@ class AEReadableProtocol final {
 };
 }  // namespace CompilerKit::Utils
 
-#endif /* ifndef _NECTI_AE_H_ */
+#endif /* ifndef _NECTAR_AE_H_ */

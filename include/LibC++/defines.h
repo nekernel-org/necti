@@ -1,11 +1,11 @@
 /* ========================================
 
-  Copyright (C) 2024-2025 Amlal El Mahrouss, Licensed under the Apache 2.0 license.
+  Copyright (C) 2024-2025 Amlal El Mahrouss, licensed under the Apache 2.0 license.
 
 ======================================== */
 
-#ifndef __NECTI_DEFINES_H__
-#define __NECTI_DEFINES_H__
+#ifndef __NECTAR_DEFINES_H__
+#define __NECTAR_DEFINES_H__
 
 #define __ATTRIBUTE(X) __attribute__((X))
 
@@ -78,4 +78,4 @@ struct placement_t;
 struct nothrow_t;
 }  // namespace std
 
-#endif /* __NECTI_DEFINES_H__ */
+#endif /* __NECTAR_DEFINES_H__ */

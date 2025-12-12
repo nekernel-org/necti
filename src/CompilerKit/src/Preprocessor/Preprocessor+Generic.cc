@@ -2,7 +2,7 @@
  *	========================================================
  *
  *	C++ Preprocessor Driver
- * 	Copyright (C) 2024-2025 Amlal El Mahrouss, Licensed under the Apache 2.0 license.
+ * 	Copyright (C) 2024-2025 Amlal El Mahrouss, licensed under the Apache 2.0 license.
  *
  * 	========================================================
  */
@@ -760,7 +760,7 @@ NECTI_MODULE(CPlusPlusPreprocessorMain) {
 
     Detail::bpp_macro macro_zka;
 
-    macro_zka.fName  = "__NECTI__";
+    macro_zka.fName  = "__NECTAR__";
     macro_zka.fValue = "1";
 
     kMacros.push_back(macro_zka);
