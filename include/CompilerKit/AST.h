@@ -8,7 +8,6 @@
 
 #include <CompilerKit/CodeGenerator.h>
 #include <vector>
-#include "CompilerKit/Detail/Config.h"
 
 #define CK_COMPILER_FRONTEND : public ::CompilerKit::ICompilerFrontend
 
