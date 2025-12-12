@@ -21,6 +21,8 @@
 - [Boost](https://boost.org/)
 - [NeBuild](https://github.com/nekernel-org/nebuild)
 - [Doxygen](https://www.doxygen.nl/)
+- CoreUtils
+- Git
 
 ## Notice for Contributors:
 
