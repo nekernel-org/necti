@@ -64,4 +64,4 @@ inline bool install_signal(Int32 signal, void (*handler)(int)) noexcept {
 }
 }  // namespace CompilerKit
 
-#endif // __COMPILERKIT_CONFIG_H__
+#endif  // __COMPILERKIT_CONFIG_H__

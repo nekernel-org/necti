@@ -46,7 +46,7 @@ class AssemblyFactory final {
 
   Int32 Compile(STLString sourceFile, const Int32& arch) noexcept;
 
-  void       Mount(WeakRef<IAssembly> mountPtr) noexcept;
+  void               Mount(WeakRef<IAssembly> mountPtr) noexcept;
   WeakRef<IAssembly> Unmount() noexcept;
 
  private:

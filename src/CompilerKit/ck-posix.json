@@ -20,5 +20,6 @@
     "__NECTAR__=202505",
     "CK_USE_STRUCTS=1",
     "kDistReleaseBranch=$(git rev-parse --abbrev-ref HEAD)-$(uuidgen)"
-  ]
+  ],
+  "run_after_build": true
 }

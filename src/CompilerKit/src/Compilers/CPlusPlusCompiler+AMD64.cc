@@ -820,7 +820,8 @@ NECTI_MODULE(CompilerCPlusPlusAMD64) {
 
   kFrontend = new CompilerFrontendCPlusPlusAMD64();
 
-  CompilerKit::StrongRef<AssemblyCPlusPlusInterfaceAMD64> mntPnt{new AssemblyCPlusPlusInterfaceAMD64()};
+  CompilerKit::StrongRef<AssemblyCPlusPlusInterfaceAMD64> mntPnt{
+      new AssemblyCPlusPlusInterfaceAMD64()};
   kAssembler.Mount({mntPnt.Leak()});
 
   CompilerKit::install_signal(SIGSEGV, CompilerKit::Detail::drvi_crash_handler);

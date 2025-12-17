@@ -67,7 +67,7 @@ class POSIXMachContract final DK_DEBUGGER_CONTRACT {
     }
 
     m_path = path;
-    mPid  = pid;
+    mPid   = pid;
 
     pid = this->mPid;
 

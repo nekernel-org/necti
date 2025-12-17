@@ -43,7 +43,7 @@
 #define kWhite "\e[0;97m"
 #define kYellow "\e[0;33m"
 
-constexpr auto cPowerIPAlignment = 0x1U;
+constexpr auto kArm64Alignment = 0x1U;
 
 static Char kOutputArch = CompilerKit::kPefArchARM64;
 

@@ -43,7 +43,7 @@
 #define kWhite "\e[0;97m"
 #define kYellow "\e[0;33m"
 
-constexpr auto cPowerIPAlignment = 0x4U;
+constexpr auto kPowerIPAlignment = 0x1U;
 
 static Char kOutputArch = CompilerKit::kPefArchPowerPC;
 
@@ -904,7 +904,7 @@ bool CompilerKit::EncoderPowerPC::WriteLine(std::string line, std::string file) 
         }
       }
 
-      kOrigin += cPowerIPAlignment;
+      kOrigin += kPowerIPAlignment;
       break;
     }
   }

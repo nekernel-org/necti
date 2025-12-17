@@ -38,7 +38,7 @@ class StrongRef {
  public:
   StrongRef(Type* cls) : m_Class(cls), m_Strong(true) {}
 
-  StrongRef& operator=(Type *ref) {
+  StrongRef& operator=(Type* ref) {
     m_Class = ref;
     return *this;
   }
@@ -62,7 +62,7 @@ class StrongRef {
 template <typename T>
 class WeakRef final : public StrongRef<T> {
  public:
-  WeakRef() = delete;
+  WeakRef()  = delete;
   ~WeakRef() = default;
 
   NECTI_COPY_DEFAULT(WeakRef)
@@ -94,5 +94,5 @@ class NonNullRef final {
 };
 
 using StrongAny = StrongRef<VoidPtr>;
-using WeakAny = WeakRef<VoidPtr>;
+using WeakAny   = WeakRef<VoidPtr>;
 }  // namespace CompilerKit
