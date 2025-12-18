@@ -6,7 +6,7 @@
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
-/// @file AssemblerARM64.cc
+/// @file Assembler+ARM64.cc
 /// @author Amlal El Mahrouss
 /// @brief 'ACORN' Assembler.
 
@@ -16,7 +16,7 @@
 /////////////////////////////////////////////////////////////////////////////////////////
 
 #ifndef __ASM_NEED_ARM64__
-#define __ASM_NEED_ARM64__ 1
+#define __ASM_NEED_ARM64__
 #endif
 
 #include <CompilerKit/AE.h>

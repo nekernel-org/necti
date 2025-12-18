@@ -33,14 +33,14 @@
 /////////////////////////////////////
 
 namespace Detail {
-// \brief name to register struct.
+/// \brief name to register struct.
 struct CompilerRegisterMap final {
   std::string fName;
   std::string fReg;
 };
 
-// \brief Map for C structs
-// \author amlal@nekernel.org
+/// \brief Map for C structs
+/// \author amlal@nekernel.org
 struct CompilerStructMap final {
   /// 'struct::my_foo'
   std::string fName;

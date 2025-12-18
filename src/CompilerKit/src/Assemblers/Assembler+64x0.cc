@@ -8,7 +8,7 @@
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
-// @file Assembler64x0.cc
+// @file Assembler+64x0.cc
 // @author Amlal El Mahrouss
 // @brief 64x000 Assembler.
 
@@ -18,7 +18,7 @@
 /////////////////////////////////////////////////////////////////////////////////////////
 
 #ifndef __ASM_NEED_64x0__
-#define __ASM_NEED_64x0__ 1
+#define __ASM_NEED_64x0__
 #endif
 
 #include <CompilerKit/AE.h>

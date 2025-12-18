@@ -9,7 +9,7 @@
 /**
  * @file AssemblyFactory.cc
  * @author Amlal El Mahrouss (amlal@nekernel.org)
- * @brief Assembly API of Nectar
+ * @brief Nectar Assembly API
  * @version 0.0.3
  * @copyright Copyright (c) 2024-2025 Amlal El Mahrouss
  *
@@ -17,23 +17,19 @@
 
 namespace CompilerKit {
 ///! @brief Compile for specific format (ELF, PEF, ZBIN)
-Int32 AssemblyFactory::Compile(STLString sourceFile, const Int32& arch) noexcept {
+Int32 AssemblyFactory::Compile(STLString sourceFile, const Int32& arch) {
   if (sourceFile.length() < 1) return NECTI_UNIMPLEMENTED;
 
-  if (!fMounted) return NECTI_UNIMPLEMENTED;
-  if (arch != fMounted->Arch()) return NECTI_INVALID_ARCH;
+  if (!this->fMounted) return NECTI_UNIMPLEMENTED;
+  if (arch != this->fMounted->Arch()) return NECTI_INVALID_ARCH;
 
-  try {
-    return this->fMounted->CompileToFormat(sourceFile, arch);
-  } catch (...) {
-    return NECTI_EXEC_ERROR;
-  }
+  return this->fMounted->CompileToFormat(sourceFile, arch);
 }
 
 ///! @brief mount assembly backend.
-void AssemblyFactory::Mount(WeakRef<IAssembly> mountPtr) noexcept {
-  if (mountPtr) {
-    fMounted = mountPtr.Leak();
+void AssemblyFactory::Mount(WeakRef<IAssembly> mountPtr) {
+  if (mountPtr && !this->fMounted) {
+    this->fMounted = mountPtr.Leak();
   }
 }
 
@@ -41,8 +37,8 @@ void AssemblyFactory::Mount(WeakRef<IAssembly> mountPtr) noexcept {
 WeakRef<IAssembly> AssemblyFactory::Unmount() noexcept {
   auto mount_prev = fMounted;
 
-  if (fMounted) {
-    fMounted = nullptr;
+  if (this->fMounted) {
+    this->fMounted = nullptr;
   }
 
   return WeakRef<IAssembly>{mount_prev};

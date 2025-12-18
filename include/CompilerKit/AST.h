@@ -70,7 +70,7 @@ enum KeywordKind {
 /// \brief Compiler keyword information struct.
 /// =========================================================== ///
 struct SyntaxKeyword {
-  SyntaxKeyword(STLString name, KeywordKind kind) : fKeywordName(name), fKeywordKind(kind) {}
+  SyntaxKeyword(const STLString& name, KeywordKind kind) : fKeywordName(name), fKeywordKind(kind) {}
 
   STLString   fKeywordName{""};
   KeywordKind fKeywordKind{kKeywordKindInvalid};
@@ -78,10 +78,15 @@ struct SyntaxKeyword {
 
 struct SyntaxLeafList final {
   struct SyntaxLeaf final {
-    Int32         fUserType{0U};
+    // \brief User data type.
+    Int32 fUserType{0U};
+    // \brief User data buffer.
     SyntaxKeyword fUserData{"", kKeywordKindInvalid};
 
-    STLString          fUserValue{""};
+    // \brief User data value
+    STLString fUserValue{""};
+
+    // \brief Next user data on list.
     struct SyntaxLeaf* fNext{nullptr};
   };
 
@@ -90,8 +95,14 @@ struct SyntaxLeafList final {
   ArrayType fLeafList;
   SizeType  fNumLeafs{0};
 
-  SizeType    NumLeafs() { return fNumLeafs; }
-  ArrayType&  Get() { return fLeafList; }
+ public:
+  const SizeType&  NumLeafs() { return fNumLeafs; }
+  const SizeType&  NumLeafs() const { return fNumLeafs; }
+  const ArrayType& Get() const { return fLeafList; }
+  ArrayType&       Get() { return fLeafList; }
+  // \brief You can't get a reference of a leaf in a const context.
+  const SyntaxLeaf& At(const SizeType& index) const = delete;
+  // \breif Grab leaf from index.
   SyntaxLeaf& At(const SizeType& index) { return fLeafList[index]; }
 };
 
@@ -131,7 +142,7 @@ class ICompilerFrontend {
   //! @brief Compile a syntax tree ouf of the text.
   //! Also takes the source file name for metadata.
   /// =========================================================== ///
-  virtual SyntaxLeafList::SyntaxLeaf Compile(STLString text, STLString file) = 0;
+  virtual SyntaxLeafList::SyntaxLeaf Compile(STLString text, STLString file) { return {}; }
 
   /// =========================================================== ///
   //! @brief What language are we dealing with?

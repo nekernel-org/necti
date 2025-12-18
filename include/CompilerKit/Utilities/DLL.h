@@ -13,22 +13,23 @@
 namespace CompilerKit {
 class DLLLoader final {
  public:
-  typedef Int32 (*EntryT)(Int32 argc, Char const* argv[]);
-  using DLL   = VoidPtr;
-  using Mutex = std::mutex;
+  using EntryT  = Int32 (*)(Int32 argc, Char const* argv[]);
+  using HandleT = VoidPtr;
+  using MutexT  = std::mutex;
+
   EntryT fEntrypoint{nullptr};
 
  private:
-  DLL   mDLL{nullptr};
-  Mutex mMutex;
+  HandleT mDLL{nullptr};
+  MutexT  mMutex;
 
  public:
-  explicit operator bool() { return this->mDLL && this->fEntrypoint; }
+  explicit operator bool() { return this->mDLL; }
 
-  DLLLoader& operator()(const Char* path, const Char* fEntrypoint) {
-    if (!path || !fEntrypoint) return *this;
+  DLLLoader& operator()(const Char* path, const Char* entrypoint) {
+    if (!path || !entrypoint) return *this;
 
-    std::lock_guard<Mutex> lock(this->mMutex);
+    std::lock_guard<MutexT> lock(this->mMutex);
 
     if (this->mDLL) {
       this->Destroy();
@@ -40,7 +41,7 @@ class DLLLoader final {
       return *this;
     }
 
-    this->fEntrypoint = reinterpret_cast<EntryT>(::dlsym(this->mDLL, fEntrypoint));
+    this->fEntrypoint = reinterpret_cast<EntryT>(::dlsym(this->mDLL, entrypoint));
 
     if (!this->fEntrypoint) {
       this->Destroy();
@@ -52,7 +53,7 @@ class DLLLoader final {
 
   NECTI_COPY_DELETE(DLLLoader)
 
-  explicit DLLLoader() = default;
+  DLLLoader() = default;
   ~DLLLoader() { this->Destroy(); }
 
  private:

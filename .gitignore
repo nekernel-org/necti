@@ -18,6 +18,7 @@ src/*/kdbg
 src/*/pef-amd64-cxxdrv
 src/*/pef-aarch64-cxxdrv
 src/*/pef-aarch64-cdrv
+src/*/pef-arm64-cdrv
 
 *.pp
 *.masm

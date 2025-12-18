@@ -6,7 +6,7 @@
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
-/// @file AssemblerAMD64.cc
+/// @file Assembler+AMD64.cc
 /// @author Amlal El Mahrouss
 /// @brief AMD64 Assembler.
 /// REMINDER: when dealing with an undefined symbol use (string
@@ -22,7 +22,7 @@
 /////////////////////////////////////////////////////////////////////////////////////////
 
 #ifndef __ASM_NEED_AMD64__
-#define __ASM_NEED_AMD64__ 1
+#define __ASM_NEED_AMD64__
 #endif
 
 #define kAssemblerPragmaSymStr "%%"

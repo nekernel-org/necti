@@ -12,7 +12,7 @@
 #include <CompilerKit/Utilities/Compiler.h>
 #include <CompilerKit/Utilities/DLL.h>
 
-#ifdef __APPLE__
+#if defined(__APPLE__)
 static auto kPath = "/usr/local/lib/libCompilerKit.dylib";
 #else
 static auto kPath = "/usr/lib/libCompilerKit.so";
@@ -22,6 +22,7 @@ static auto kSymbol = "CompilerCLangARM64";
 
 Int32 main(Int32 argc, Char const* argv[]) {
   CompilerKit::DLLLoader dylib;
+
   dylib(kPath, kSymbol);
 
   CompilerKit::DLLLoader::EntryT entrypoint_c =

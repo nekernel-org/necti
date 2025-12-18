@@ -30,7 +30,7 @@
 #include <cstdlib>
 #include <filesystem>
 
-/* NeKernel C++ Compiler Driver */
+/* NeKernel C++ Compiler Driver. */
 /* This is part of the CompilerKit. */
 /* (c) Amlal El Mahrouss 2024-2025 */
 
@@ -45,7 +45,7 @@
 /////////////////////////////////////
 
 /// @internal
-// Avoids relative_path which could discard parts of the original.
+/// @brief Avoids relative_path which could discard parts of the original.
 std::filesystem::path necti_expand_home(const std::filesystem::path& input) {
   const std::string& raw = input.string();
 
@@ -61,19 +61,20 @@ std::filesystem::path necti_expand_home(const std::filesystem::path& input) {
   return input;
 }
 
+/// \brief Register map, i.e ({foobar, rbp+48}, etc...)
 struct CompilerRegisterMap final {
   CompilerKit::STLString fName{};
   CompilerKit::STLString fReg{};
 };
 
-/// \brief Offset based struct/class
+/// \brief Offsets of struct and classes.
 struct CompilerStructMap final {
   CompilerKit::STLString                                 fName{};
   CompilerKit::STLString                                 fReg{};
   std::vector<std::pair<UInt32, CompilerKit::STLString>> fOffsets;
 };
 
-/// \brief Compiler state structure.
+/// \brief State machine of the compiler.
 struct CompilerState final {
   std::vector<CompilerRegisterMap> fStackMapVector;
   std::vector<CompilerStructMap>   fStructMapVector;
@@ -83,16 +84,18 @@ struct CompilerState final {
 
 static CompilerState kState;
 
+/// \brief Embed Scope of a class.
 static Int32 kOnClassScope = 0;
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
-// Target architecture.
+/// \brief Target architecture.
+/// \note This shall never change.
 static Int32 kMachine = CompilerKit::AssemblyFactory::kArchAMD64;
 
 /////////////////////////////////////////
 
-// ARGUMENTS REGISTERS (R8, R15)
+// ARGUMENT REGISTERS (R8, R15)
 
 /////////////////////////////////////////
 
@@ -111,7 +114,7 @@ static bool                         kOnForLoop   = false;
 static bool                         kInBraces    = false;
 static size_t                       kBracesCount = 0UL;
 
-/* @brief C++ compiler backend for the NeKernel C++ driver */
+/* \brief C++ compiler backend for the NeKernel C++ driver */
 class CompilerFrontendCPlusPlusAMD64 final CK_COMPILER_FRONTEND {
  public:
   explicit CompilerFrontendCPlusPlusAMD64()  = default;
@@ -146,7 +149,7 @@ static std::size_t kFunctionEmbedLevel = 0UL;
 /// detail namespaces
 
 const char* CompilerFrontendCPlusPlusAMD64::Language() {
-  return "AMD64 CFront";
+  return "AMD64 C++";
 }
 
 static std::uintptr_t                                                 kOrigin = kPefBaseOrigin;

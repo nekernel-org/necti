@@ -44,9 +44,8 @@ class AssemblyFactory final {
     kArchCount = kArchUnknown - kArchAMD64,
   };
 
-  Int32 Compile(STLString sourceFile, const Int32& arch) noexcept;
-
-  void               Mount(WeakRef<IAssembly> mountPtr) noexcept;
+  Int32              Compile(STLString sourceFile, const Int32& arch);
+  void               Mount(WeakRef<IAssembly> mountPtr);
   WeakRef<IAssembly> Unmount() noexcept;
 
  private:

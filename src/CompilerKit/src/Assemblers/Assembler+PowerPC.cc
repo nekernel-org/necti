@@ -6,7 +6,7 @@
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
-/// @file AssemblerPower.cc
+/// @file Assembler+PowerPC.cc
 /// @author Amlal El Mahrouss
 /// @brief POWER Assembler.
 
@@ -16,7 +16,7 @@
 /////////////////////////////////////////////////////////////////////////////////////////
 
 #ifndef __ASM_NEED_PPC__
-#define __ASM_NEED_PPC__ 1
+#define __ASM_NEED_PPC__
 #endif
 
 #include <CompilerKit/AE.h>
