@@ -11,7 +11,7 @@
 namespace std::base_alloc {
 /// @brief allocate a new class.
 /// @tparam KindClass the class type to allocate.
-template <typename KindClass, typename... Args>
+template <class KindClass, typename... Args>
 inline KindClass* allocate(Args&&... args) {
   return new KindClass(forward(args)...);
 }
@@ -19,14 +19,14 @@ inline KindClass* allocate(Args&&... args) {
 /// @brief allocate a new class.
 /// @note aborts on error.
 /// @tparam KindClass the class type to allocate.
-template <typename KindClass, typename... Args>
+template <class KindClass, typename... Args>
 inline KindClass* allocate_nothrow(Args&&... args) noexcept {
   return allocate(forward(args)...);
 }
 
 /// @brief free a class.
 /// @tparam KindClass the class type to allocate.
-template <typename KindClass>
+template <class KindClass>
 inline void release(KindClass ptr) {
   if (!ptr) return;
 
@@ -36,7 +36,7 @@ inline void release(KindClass ptr) {
 /// @brief destroy and free a class.
 /// @note aborts on error.
 /// @tparam KindClass the class type to allocate.
-template <typename KindClass>
+template <class KindClass>
 inline void release_nothrow(KindClass ptr) noexcept {
   release(ptr);
 }

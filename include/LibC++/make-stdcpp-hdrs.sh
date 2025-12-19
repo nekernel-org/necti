@@ -1,6 +1,6 @@
 #! /bin/sh
 
-outputDir=libc++/
+outputDir=libc++/nectar/
 
 mkdir -p $outputDir
 
