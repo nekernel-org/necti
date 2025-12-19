@@ -44,8 +44,8 @@ void operator _placement_delete(void*);
 
 /// \note This should NOT fail, failure to meet the conditions will cause the program's state to be aborted.
 /// \brief Set the placement policy of future memory allocations.
-template <class PlaceableType>
-void set_placement_policy(const PlaceableType&) noexcept;
+template <class PlaceableCallable>
+void set_placement_policy(const PlaceableCallable&) noexcept;
 
 void* operator new(size_t, const nothrow_t&) noexcept;
 void* operator new(size_t, void*) noexcept;
