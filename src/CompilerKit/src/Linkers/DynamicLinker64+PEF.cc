@@ -22,12 +22,11 @@
 #include <CompilerKit/Utilities/Compiler.h>
 #include <filesystem>
 
-#define kLinkerVersionStr "Nectar 64-Bit Linker (Preferred Executable Format)"
-
 #define kPefNoCpu (0U)
 #define kPefNoSubCpu (0U)
-
 #define kPefDefaultOutput {"a" kPefExt}
+
+#define kLinkerVersionStr "Nectar 64-Bit Linker (Preferred Executable Format)"
 
 #define kLinkerDefaultOrigin kPefBaseOrigin
 #define kLinkerId (0x5046FF)
