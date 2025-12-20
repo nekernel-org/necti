@@ -6,14 +6,14 @@
 
 #pragma once
 
-#include <LibC++/defines.h>
+#include <defines>
 
 #ifndef NAN
 #define NAN (__builtin_nanf(""))
 #endif  // !NAN
 
-/// @file Math.h
-/// @brief Math functions.
+/// @file base_math.h
+/// @brief Base Mathematic functions.
 
 #ifdef __LIBCXX_USE_DOUBLE__
 typedef double real_type;
@@ -25,19 +25,16 @@ namespace std::base_math {
 inline constexpr static auto not_a_number = NAN;
 
 /// =========================================================== ///
-/// @brief Power function, with Repeat argument.
+/// @brief Power of Exponent function.
 /// =========================================================== ///
 template <size_t Exponent>
 inline real_type pow(real_type in) {
-  if (Exponent == 0) return 1;  // Any number to the power of 0 is 1.
-
+  if (Exponent == 0) return 1;   // Any number to the power of 0 is 1.
   if (Exponent == 1) return in;  // Any number to the power of 1 is itself.
-
-  size_t cnt = Exponent;
 
   real_type result = 1;
 
-  for (auto i = 0; i < cnt; ++i) result *= in;
+  for (auto i = 0UL; i < Exponent; ++i) result *= in;
 
   return result;
 }
@@ -85,4 +82,17 @@ inline real_type lerp(real_type to, real_type from, real_type stat) {
   real_type diff = (to - from);
   return from + (diff * stat);
 }
+
+using real_domain = double;
+
+struct complex_domain final {
+  double Re;
+  double Im;
+};
+
+typename<class Result> using callable_type = Result (*)(size_t n, ...);
 }  // namespace std::base_math
+
+#ifdef __cpp_lib_base_math
+#define __cpp_lib_base_math 1
+#endif

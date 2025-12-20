@@ -6,7 +6,7 @@
 
 #pragma once
 
-#include <LibC++/defines.h>
+#include <defines>
 
 __init_decl()
 
