@@ -7,11 +7,11 @@
 
 ## Structure:
 
-- `src/CompilerKit` – Compiler Kit written in modern C++
-- `src/LibC++` – C++ ABI Library
-- `src/LibStdC++` – Standard C++ Library
-- `src/DebuggerKit` – Debugging Kit written in modern C++
-- `src/CommandLine/` – C/C++ Command Line Tools
+- `src/CompilerKit` – Compiler Kit written in C++
+- `src/LibC++` – C++ ABI Library.
+- `src/ThirdParty` – Third Party Code.
+- `src/DebuggerKit` – Debugging Kit written in C++
+- `src/CommandLine/` – C/C++ Command Line Tools.
 
 
 ## Requirements:
