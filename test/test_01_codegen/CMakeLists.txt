@@ -13,7 +13,7 @@ FetchContent_MakeAvailable(googletest)
 
 enable_testing()
 
-add_executable(CodegenTestBasic linker_test.cc)
+add_executable(CodegenTestBasic codegen.test.cc)
 target_link_libraries(CodegenTestBasic gtest_main)
 
 set_property(TARGET CodegenTestBasic PROPERTY CXX_STANDARD 20)

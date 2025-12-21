@@ -13,7 +13,7 @@ FetchContent_MakeAvailable(googletest)
 
 enable_testing()
 
-add_executable(LinkerTestBasic linker_test.cc)
+add_executable(LinkerTestBasic linker.test.cc)
 target_link_libraries(LinkerTestBasic gtest_main)
 
 set_property(TARGET LinkerTestBasic PROPERTY CXX_STANDARD 20)
