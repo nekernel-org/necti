@@ -12,7 +12,7 @@
 #define CK_COMPILER_FRONTEND : public ::CompilerKit::ICompilerFrontend
 
 namespace CompilerKit {
-inline static auto kInvalidFrontend = "(null)";
+inline static constexpr auto kInvalidFrontend = "(null)";
 
 struct SyntaxLeafList;
 struct SyntaxLeafList;
@@ -22,7 +22,8 @@ struct SyntaxKeyword;
 /// @note we want to do that to separate keywords.
 /// =========================================================== ///
 
-enum KeywordKind {
+/// \brief The type of keyword we are dealing with.
+enum struct KeywordKind {
   kKeywordKindReserved  = 0,
   kKeywordKindNamespace = 100,
   kKeywordKindFunctionStart,
@@ -71,9 +72,13 @@ enum KeywordKind {
 /// =========================================================== ///
 struct SyntaxKeyword {
   SyntaxKeyword(const STLString& name, KeywordKind kind) : fKeywordName(name), fKeywordKind(kind) {}
+  ~SyntaxKeyword() = default;
+  SyntaxKeyword()  = delete;
 
-  STLString   fKeywordName{""};
-  KeywordKind fKeywordKind{kKeywordKindInvalid};
+  NECTAR_COPY_DEFAULT(SyntaxKeyword);
+
+  STLString   fKeywordName{};
+  KeywordKind fKeywordKind{KeywordKind::kKeywordKindInvalid};
 };
 
 struct SyntaxLeafList final {
@@ -81,10 +86,10 @@ struct SyntaxLeafList final {
     // \brief User data type.
     Int32 fUserType{0U};
     // \brief User data buffer.
-    SyntaxKeyword fUserData{"", kKeywordKindInvalid};
+    SyntaxKeyword fUserData{{}, KeywordKind::kKeywordKindInvalid};
 
     // \brief User data value
-    STLString fUserValue{""};
+    STLString fUserValue{};
 
     // \brief Next user data on list.
     struct SyntaxLeaf* fNext{nullptr};
@@ -131,7 +136,7 @@ class ICompilerFrontend {
   explicit ICompilerFrontend() = default;
   virtual ~ICompilerFrontend() = default;
 
-  NECTI_COPY_DEFAULT(ICompilerFrontend)
+  NECTAR_COPY_DEFAULT(ICompilerFrontend)
 
   /// =========================================================== ///
   /// NOTE: cast this to your user defined ast.

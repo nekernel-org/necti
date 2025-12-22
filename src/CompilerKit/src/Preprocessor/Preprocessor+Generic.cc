@@ -725,7 +725,7 @@ void bpp_parse_file(std::ifstream& hdr_file, std::ofstream& pp_out) {
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
-NECTI_MODULE(CPlusPlusPreprocessorMain) {
+NECTAR_MODULE(CPlusPlusPreprocessorMain) {
   try {
     bool skip        = false;
     bool double_skip = false;
@@ -806,7 +806,7 @@ NECTI_MODULE(CPlusPlusPreprocessorMain) {
                  "NeKernel Preprocessor Driver v1.11, (c) Amlal El Mahrouss 2024-2025 all rights "
                  "reserved.");
 
-          return NECTI_SUCCESS;
+          return NECTAR_SUCCESS;
         }
 
         if (strcmp(argv[index], "-cpp-help") == 0) {
@@ -819,7 +819,7 @@ NECTI_MODULE(CPlusPlusPreprocessorMain) {
           printf("%s\n", "-cpp-ver: print the version.");
           printf("%s\n", "-cpp-help: show help (this current command).");
 
-          return NECTI_SUCCESS;
+          return NECTAR_SUCCESS;
         }
 
         if (strcmp(argv[index], "-cpp-include-dir") == 0) {
@@ -871,7 +871,7 @@ NECTI_MODULE(CPlusPlusPreprocessorMain) {
       kFiles.emplace_back(argv[index]);
     }
 
-    if (kFiles.empty()) return NECTI_EXEC_ERROR;
+    if (kFiles.empty()) return NECTAR_EXEC_ERROR;
 
     for (auto& file : kFiles) {
       if (!std::filesystem::exists(file)) continue;
@@ -882,12 +882,12 @@ NECTI_MODULE(CPlusPlusPreprocessorMain) {
       bpp_parse_file(file_descriptor, file_descriptor_pp);
     }
 
-    return NECTI_SUCCESS;
+    return NECTAR_SUCCESS;
   } catch (const std::runtime_error& e) {
     std::cout << e.what() << '\n';
   }
 
-  return NECTI_EXEC_ERROR;
+  return NECTAR_EXEC_ERROR;
 }
 
 // Last rev 8-1-24

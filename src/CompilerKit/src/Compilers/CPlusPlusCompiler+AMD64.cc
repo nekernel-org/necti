@@ -120,7 +120,7 @@ class CompilerFrontendCPlusPlusAMD64 final CK_COMPILER_FRONTEND {
   explicit CompilerFrontendCPlusPlusAMD64()  = default;
   ~CompilerFrontendCPlusPlusAMD64() override = default;
 
-  NECTI_COPY_DEFAULT(CompilerFrontendCPlusPlusAMD64);
+  NECTAR_COPY_DEFAULT(CompilerFrontendCPlusPlusAMD64);
 
   CompilerKit::SyntaxLeafList::SyntaxLeaf Compile(const CompilerKit::STLString text,
                                                   CompilerKit::STLString       file) override;
@@ -174,7 +174,7 @@ CompilerKit::SyntaxLeafList::SyntaxLeaf CompilerFrontendCPlusPlusAMD64::Compile(
   for (auto& keyword : kKeywords) {
     if (text.find(keyword.fKeywordName) != std::string::npos) {
       switch (keyword.fKeywordKind) {
-        case CompilerKit::kKeywordKindCommentInline: {
+        case CompilerKit::KeywordKind::kKeywordKindCommentInline: {
           break;
         }
         default:
@@ -186,17 +186,17 @@ CompilerKit::SyntaxLeafList::SyntaxLeaf CompilerFrontendCPlusPlusAMD64::Compile(
 
       // can't go before start of string
       if (pos > 0 && text[pos - 1] == '+' &&
-          keyword.fKeywordKind == CompilerKit::kKeywordKindVariableAssign)
+          keyword.fKeywordKind == CompilerKit::KeywordKind::kKeywordKindVariableAssign)
         continue;
 
       if (pos > 0 && text[pos - 1] == '-' &&
-          keyword.fKeywordKind == CompilerKit::kKeywordKindVariableAssign)
+          keyword.fKeywordKind == CompilerKit::KeywordKind::kKeywordKindVariableAssign)
         continue;
 
       // don't go out of range
       if ((pos + keyword.fKeywordName.size()) < text.size() &&
           text[pos + keyword.fKeywordName.size()] == '=' &&
-          keyword.fKeywordKind == CompilerKit::kKeywordKindVariableAssign)
+          keyword.fKeywordKind == CompilerKit::KeywordKind::kKeywordKindVariableAssign)
         continue;
 
       keywords_list.emplace_back(std::make_pair(keyword, index));
@@ -425,7 +425,7 @@ CompilerKit::SyntaxLeafList::SyntaxLeaf CompilerFrontendCPlusPlusAMD64::Compile(
         static bool typeFound = false;
 
         for (auto& keyword : kKeywords) {
-          if (keyword.fKeywordKind == CompilerKit::kKeywordKindType) {
+          if (keyword.fKeywordKind == CompilerKit::KeywordKind::kKeywordKindType) {
             if (text.find(keyword.fKeywordName) != CompilerKit::STLString::npos) {
               if (text[text.find(keyword.fKeywordName)] == ' ') {
                 typeFound = false;
@@ -534,7 +534,7 @@ CompilerKit::SyntaxLeafList::SyntaxLeaf CompilerFrontendCPlusPlusAMD64::Compile(
 
         done:
           for (auto& keyword : kKeywords) {
-            if (keyword.fKeywordKind == CompilerKit::kKeywordKindType &&
+            if (keyword.fKeywordKind == CompilerKit::KeywordKind::kKeywordKindType &&
                 varName.find(keyword.fKeywordName) != CompilerKit::STLString::npos) {
               varName.erase(varName.find(keyword.fKeywordName), keyword.fKeywordName.size());
               break;
@@ -548,9 +548,10 @@ CompilerKit::SyntaxLeafList::SyntaxLeaf CompilerFrontendCPlusPlusAMD64::Compile(
 
         kRegisterMap.insert(kRegisterMap.end(), newVars.begin(), newVars.end());
 
-        if (keyword.second > 0 &&
-                kKeywords[keyword.second - 1].fKeywordKind == CompilerKit::kKeywordKindType ||
-            kKeywords[keyword.second - 1].fKeywordKind == CompilerKit::kKeywordKindTypePtr) {
+        if (keyword.second > 0 && kKeywords[keyword.second - 1].fKeywordKind ==
+                                      CompilerKit::KeywordKind::kKeywordKindType ||
+            kKeywords[keyword.second - 1].fKeywordKind ==
+                CompilerKit::KeywordKind::kKeywordKindTypePtr) {
           syntax_tree.fUserValue = "\n";
           continue;
         }
@@ -726,7 +727,7 @@ class AssemblyCPlusPlusInterfaceAMD64 final CK_ASSEMBLY_INTERFACE {
   explicit AssemblyCPlusPlusInterfaceAMD64()  = default;
   ~AssemblyCPlusPlusInterfaceAMD64() override = default;
 
-  NECTI_COPY_DEFAULT(AssemblyCPlusPlusInterfaceAMD64);
+  NECTAR_COPY_DEFAULT(AssemblyCPlusPlusInterfaceAMD64);
 
   UInt32 Arch() noexcept override { return CompilerKit::AssemblyFactory::kArchAMD64; }
 
@@ -758,66 +759,66 @@ class AssemblyCPlusPlusInterfaceAMD64 final CK_ASSEMBLY_INTERFACE {
 
 #define kExtListCxx {".cpp", ".cc", ".cc", ".c++", ".cp"}
 
-NECTI_MODULE(CompilerCPlusPlusAMD64) {
+NECTAR_MODULE(CompilerCPlusPlusAMD64) {
   bool skip = false;
 
-  kKeywords.emplace_back("if", CompilerKit::kKeywordKindIf);
-  kKeywords.emplace_back("else", CompilerKit::kKeywordKindElse);
-  kKeywords.emplace_back("else if", CompilerKit::kKeywordKindElseIf);
+  kKeywords.emplace_back("if", CompilerKit::KeywordKind::kKeywordKindIf);
+  kKeywords.emplace_back("else", CompilerKit::KeywordKind::kKeywordKindElse);
+  kKeywords.emplace_back("else if", CompilerKit::KeywordKind::kKeywordKindElseIf);
 
-  kKeywords.emplace_back("class", CompilerKit::kKeywordKindClass);
-  kKeywords.emplace_back("struct", CompilerKit::kKeywordKindClass);
-  kKeywords.emplace_back("namespace", CompilerKit::kKeywordKindNamespace);
-  kKeywords.emplace_back("typedef", CompilerKit::kKeywordKindTypedef);
-  kKeywords.emplace_back("using", CompilerKit::kKeywordKindTypedef);
-  kKeywords.emplace_back("{", CompilerKit::kKeywordKindBodyStart);
-  kKeywords.emplace_back("}", CompilerKit::kKeywordKindBodyEnd);
-  kKeywords.emplace_back("auto", CompilerKit::kKeywordKindType);
-  kKeywords.emplace_back("int", CompilerKit::kKeywordKindType);
-  kKeywords.emplace_back("bool", CompilerKit::kKeywordKindType);
-  kKeywords.emplace_back("unsigned", CompilerKit::kKeywordKindType);
-  kKeywords.emplace_back("short", CompilerKit::kKeywordKindType);
-  kKeywords.emplace_back("char", CompilerKit::kKeywordKindType);
-  kKeywords.emplace_back("long", CompilerKit::kKeywordKindType);
-  kKeywords.emplace_back("float", CompilerKit::kKeywordKindType);
-  kKeywords.emplace_back("double", CompilerKit::kKeywordKindType);
-  kKeywords.emplace_back("void", CompilerKit::kKeywordKindType);
+  kKeywords.emplace_back("class", CompilerKit::KeywordKind::kKeywordKindClass);
+  kKeywords.emplace_back("struct", CompilerKit::KeywordKind::kKeywordKindClass);
+  kKeywords.emplace_back("namespace", CompilerKit::KeywordKind::kKeywordKindNamespace);
+  kKeywords.emplace_back("typedef", CompilerKit::KeywordKind::kKeywordKindTypedef);
+  kKeywords.emplace_back("using", CompilerKit::KeywordKind::kKeywordKindTypedef);
+  kKeywords.emplace_back("{", CompilerKit::KeywordKind::kKeywordKindBodyStart);
+  kKeywords.emplace_back("}", CompilerKit::KeywordKind::kKeywordKindBodyEnd);
+  kKeywords.emplace_back("auto", CompilerKit::KeywordKind::kKeywordKindType);
+  kKeywords.emplace_back("int", CompilerKit::KeywordKind::kKeywordKindType);
+  kKeywords.emplace_back("bool", CompilerKit::KeywordKind::kKeywordKindType);
+  kKeywords.emplace_back("unsigned", CompilerKit::KeywordKind::kKeywordKindType);
+  kKeywords.emplace_back("short", CompilerKit::KeywordKind::kKeywordKindType);
+  kKeywords.emplace_back("char", CompilerKit::KeywordKind::kKeywordKindType);
+  kKeywords.emplace_back("long", CompilerKit::KeywordKind::kKeywordKindType);
+  kKeywords.emplace_back("float", CompilerKit::KeywordKind::kKeywordKindType);
+  kKeywords.emplace_back("double", CompilerKit::KeywordKind::kKeywordKindType);
+  kKeywords.emplace_back("void", CompilerKit::KeywordKind::kKeywordKindType);
 
-  kKeywords.emplace_back("auto*", CompilerKit::kKeywordKindTypePtr);
-  kKeywords.emplace_back("int*", CompilerKit::kKeywordKindTypePtr);
-  kKeywords.emplace_back("bool*", CompilerKit::kKeywordKindTypePtr);
-  kKeywords.emplace_back("unsigned*", CompilerKit::kKeywordKindTypePtr);
-  kKeywords.emplace_back("short*", CompilerKit::kKeywordKindTypePtr);
-  kKeywords.emplace_back("char*", CompilerKit::kKeywordKindTypePtr);
-  kKeywords.emplace_back("long*", CompilerKit::kKeywordKindTypePtr);
-  kKeywords.emplace_back("float*", CompilerKit::kKeywordKindTypePtr);
-  kKeywords.emplace_back("double*", CompilerKit::kKeywordKindTypePtr);
-  kKeywords.emplace_back("void*", CompilerKit::kKeywordKindTypePtr);
+  kKeywords.emplace_back("auto*", CompilerKit::KeywordKind::kKeywordKindTypePtr);
+  kKeywords.emplace_back("int*", CompilerKit::KeywordKind::kKeywordKindTypePtr);
+  kKeywords.emplace_back("bool*", CompilerKit::KeywordKind::kKeywordKindTypePtr);
+  kKeywords.emplace_back("unsigned*", CompilerKit::KeywordKind::kKeywordKindTypePtr);
+  kKeywords.emplace_back("short*", CompilerKit::KeywordKind::kKeywordKindTypePtr);
+  kKeywords.emplace_back("char*", CompilerKit::KeywordKind::kKeywordKindTypePtr);
+  kKeywords.emplace_back("long*", CompilerKit::KeywordKind::kKeywordKindTypePtr);
+  kKeywords.emplace_back("float*", CompilerKit::KeywordKind::kKeywordKindTypePtr);
+  kKeywords.emplace_back("double*", CompilerKit::KeywordKind::kKeywordKindTypePtr);
+  kKeywords.emplace_back("void*", CompilerKit::KeywordKind::kKeywordKindTypePtr);
 
-  kKeywords.emplace_back("(", CompilerKit::kKeywordKindFunctionStart);
-  kKeywords.emplace_back(")", CompilerKit::kKeywordKindFunctionEnd);
-  kKeywords.emplace_back("=", CompilerKit::kKeywordKindVariableAssign);
-  kKeywords.emplace_back("+=", CompilerKit::kKeywordKindVariableInc);
-  kKeywords.emplace_back("-=", CompilerKit::kKeywordKindVariableDec);
-  kKeywords.emplace_back("const", CompilerKit::kKeywordKindConstant);
-  kKeywords.emplace_back("*", CompilerKit::kKeywordKindPtr);
-  kKeywords.emplace_back("->", CompilerKit::kKeywordKindPtrAccess);
-  kKeywords.emplace_back(".", CompilerKit::kKeywordKindAccess);
-  kKeywords.emplace_back(",", CompilerKit::kKeywordKindArgSeparator);
-  kKeywords.emplace_back(";", CompilerKit::kKeywordKindEndInstr);
-  kKeywords.emplace_back(":", CompilerKit::kKeywordKindSpecifier);
-  kKeywords.emplace_back("public:", CompilerKit::kKeywordKindSpecifier);
-  kKeywords.emplace_back("private:", CompilerKit::kKeywordKindSpecifier);
-  kKeywords.emplace_back("protected:", CompilerKit::kKeywordKindSpecifier);
-  kKeywords.emplace_back("final", CompilerKit::kKeywordKindSpecifier);
-  kKeywords.emplace_back("return", CompilerKit::kKeywordKindReturn);
-  kKeywords.emplace_back("/*", CompilerKit::kKeywordKindCommentMultiLineStart);
-  kKeywords.emplace_back("*/", CompilerKit::kKeywordKindCommentMultiLineEnd);
-  kKeywords.emplace_back("//", CompilerKit::kKeywordKindCommentInline);
-  kKeywords.emplace_back("==", CompilerKit::kKeywordKindEq);
-  kKeywords.emplace_back("!=", CompilerKit::kKeywordKindNotEq);
-  kKeywords.emplace_back(">=", CompilerKit::kKeywordKindGreaterEq);
-  kKeywords.emplace_back("<=", CompilerKit::kKeywordKindLessEq);
+  kKeywords.emplace_back("(", CompilerKit::KeywordKind::kKeywordKindFunctionStart);
+  kKeywords.emplace_back(")", CompilerKit::KeywordKind::kKeywordKindFunctionEnd);
+  kKeywords.emplace_back("=", CompilerKit::KeywordKind::kKeywordKindVariableAssign);
+  kKeywords.emplace_back("+=", CompilerKit::KeywordKind::kKeywordKindVariableInc);
+  kKeywords.emplace_back("-=", CompilerKit::KeywordKind::kKeywordKindVariableDec);
+  kKeywords.emplace_back("const", CompilerKit::KeywordKind::kKeywordKindConstant);
+  kKeywords.emplace_back("*", CompilerKit::KeywordKind::kKeywordKindPtr);
+  kKeywords.emplace_back("->", CompilerKit::KeywordKind::kKeywordKindPtrAccess);
+  kKeywords.emplace_back(".", CompilerKit::KeywordKind::kKeywordKindAccess);
+  kKeywords.emplace_back(",", CompilerKit::KeywordKind::kKeywordKindArgSeparator);
+  kKeywords.emplace_back(";", CompilerKit::KeywordKind::kKeywordKindEndInstr);
+  kKeywords.emplace_back(":", CompilerKit::KeywordKind::kKeywordKindSpecifier);
+  kKeywords.emplace_back("public:", CompilerKit::KeywordKind::kKeywordKindSpecifier);
+  kKeywords.emplace_back("private:", CompilerKit::KeywordKind::kKeywordKindSpecifier);
+  kKeywords.emplace_back("protected:", CompilerKit::KeywordKind::kKeywordKindSpecifier);
+  kKeywords.emplace_back("final", CompilerKit::KeywordKind::kKeywordKindSpecifier);
+  kKeywords.emplace_back("return", CompilerKit::KeywordKind::kKeywordKindReturn);
+  kKeywords.emplace_back("/*", CompilerKit::KeywordKind::kKeywordKindCommentMultiLineStart);
+  kKeywords.emplace_back("*/", CompilerKit::KeywordKind::kKeywordKindCommentMultiLineEnd);
+  kKeywords.emplace_back("//", CompilerKit::KeywordKind::kKeywordKindCommentInline);
+  kKeywords.emplace_back("==", CompilerKit::KeywordKind::kKeywordKindEq);
+  kKeywords.emplace_back("!=", CompilerKit::KeywordKind::kKeywordKindNotEq);
+  kKeywords.emplace_back(">=", CompilerKit::KeywordKind::kKeywordKindGreaterEq);
+  kKeywords.emplace_back("<=", CompilerKit::KeywordKind::kKeywordKindLessEq);
 
   kErrorLimit = 0;
 
@@ -852,7 +853,7 @@ NECTI_MODULE(CompilerCPlusPlusAMD64) {
       if (strcmp(argv[index], "-cxx-dialect") == 0) {
         if (kFrontend) std::cout << kFrontend->Language() << "\n";
 
-        return NECTI_SUCCESS;
+        return NECTAR_SUCCESS;
       }
 
       if (strcmp(argv[index], "-cxx-max-err") == 0) {
@@ -884,7 +885,7 @@ NECTI_MODULE(CompilerCPlusPlusAMD64) {
     for (CompilerKit::STLString ext : exts) {
       if (argv_i.ends_with(ext)) {
         if (kAssembler.Compile(argv_i, kMachine) != EXIT_SUCCESS) {
-          return NECTI_INVALID_DATA;
+          return NECTAR_INVALID_DATA;
         }
 
         break;
@@ -894,7 +895,7 @@ NECTI_MODULE(CompilerCPlusPlusAMD64) {
 
   kAssembler.Unmount();
 
-  return NECTI_SUCCESS;
+  return NECTAR_SUCCESS;
 }
 
 //

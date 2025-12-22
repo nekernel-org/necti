@@ -83,7 +83,7 @@ static bool asm_read_attributes(std::string line);
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
-NECTI_MODULE(AssemblerMainAMD64) {
+NECTAR_MODULE(AssemblerMainAMD64) {
   //////////////// CPU OPCODES BEGIN ////////////////
 
   CompilerKit::install_signal(SIGSEGV, CompilerKit::Detail::drvi_crash_handler);

@@ -135,7 +135,7 @@ class CompilerFrontend64x0 final : public CompilerKit::ICompilerFrontend {
   explicit CompilerFrontend64x0()  = default;
   ~CompilerFrontend64x0() override = default;
 
-  NECTI_COPY_DEFAULT(CompilerFrontend64x0);
+  NECTAR_COPY_DEFAULT(CompilerFrontend64x0);
 
   std::string                             Check(const char* text, const char* file);
   CompilerKit::SyntaxLeafList::SyntaxLeaf Compile(std::string text, std::string file) override;
@@ -1046,7 +1046,7 @@ class AssemblyCCInterface final CK_ASSEMBLY_INTERFACE {
   explicit AssemblyCCInterface()  = default;
   ~AssemblyCCInterface() override = default;
 
-  NECTI_COPY_DEFAULT(AssemblyCCInterface);
+  NECTAR_COPY_DEFAULT(AssemblyCCInterface);
 
   UInt32 Arch() noexcept override { return CompilerKit::AssemblyFactory::kArch64x0; }
 
@@ -1179,7 +1179,7 @@ class AssemblyCCInterface final CK_ASSEMBLY_INTERFACE {
   }
 };
 
-NECTI_MODULE(CompilerCLang64x0) {
+NECTAR_MODULE(CompilerCLang64x0) {
   ::signal(SIGSEGV, CompilerKit::Detail::drvi_crash_handler);
 
   kCompilerTypes.push_back({.fName = "void", .fValue = "void"});

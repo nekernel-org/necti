@@ -51,7 +51,7 @@ inline void print_error(STLString reason, STLString file) noexcept {
 
   kStdErr << reason << kBlank << std::endl;
 
-  if (kAcceptableErrors > kErrorLimit) std::exit(NECTI_EXEC_ERROR);
+  if (kAcceptableErrors > kErrorLimit) std::exit(NECTAR_EXEC_ERROR);
 
   ++kAcceptableErrors;
 }
@@ -116,6 +116,6 @@ inline void drvi_crash_handler(std::int32_t id) {
 
   std::cout << std::endl;
 
-  std::exit(NECTI_EXEC_ERROR);
+  std::exit(NECTAR_EXEC_ERROR);
 }
 }  // namespace CompilerKit::Detail

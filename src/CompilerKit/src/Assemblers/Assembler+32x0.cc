@@ -33,7 +33,7 @@
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
-NECTI_MODULE(NEAssemblerMain32000) {
+NECTAR_MODULE(NEAssemblerMain32000) {
   CompilerKit::install_signal(SIGSEGV, CompilerKit::Detail::drvi_crash_handler);
   return EXIT_SUCCESS;
 }

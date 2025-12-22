@@ -18,10 +18,10 @@
 namespace CompilerKit {
 ///! @brief Compile for specific format (ELF, PEF, ZBIN)
 Int32 AssemblyFactory::Compile(STLString sourceFile, const Int32& arch) {
-  if (sourceFile.length() < 1) return NECTI_UNIMPLEMENTED;
+  if (sourceFile.length() < 1) return NECTAR_UNIMPLEMENTED;
 
-  if (!this->fMounted) return NECTI_UNIMPLEMENTED;
-  if (arch != this->fMounted->Arch()) return NECTI_INVALID_ARCH;
+  if (!this->fMounted) return NECTAR_UNIMPLEMENTED;
+  if (arch != this->fMounted->Arch()) return NECTAR_INVALID_ARCH;
 
   return this->fMounted->CompileToFormat(sourceFile, arch);
 }

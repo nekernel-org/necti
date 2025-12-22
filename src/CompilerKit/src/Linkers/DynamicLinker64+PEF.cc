@@ -69,7 +69,7 @@ static std::vector<CompilerKit::Detail::Blob> kObjectBytes;
 
 ///	@brief Nectar 64-bit Linker.
 /// @note This linker is made for PEF executable, thus Nectar based OSes.
-NECTI_MODULE(DynamicLinker64PEF) {
+NECTAR_MODULE(DynamicLinker64PEF) {
   bool is_executable = true;
 
   CompilerKit::install_signal(SIGSEGV, CompilerKit::Detail::drvi_crash_handler);
@@ -94,11 +94,11 @@ NECTI_MODULE(DynamicLinker64PEF) {
       kConsoleOut << "-arm64: Output as a ARM64 PEF.\n";
       kConsoleOut << "-output: Select the output file name.\n";
 
-      return NECTI_SUCCESS;
+      return NECTAR_SUCCESS;
     } else if (std::strcmp(argv[linker_arg], "-version") == 0) {
       kLinkerSplash();
 
-      return NECTI_SUCCESS;
+      return NECTAR_SUCCESS;
     } else if (std::strcmp(argv[linker_arg], "-fat") == 0) {
       kFatBinaryEnable = true;
 
@@ -172,10 +172,10 @@ NECTI_MODULE(DynamicLinker64PEF) {
 
   if (kOutput.empty()) {
     kConsoleOut << "no output filename set." << std::endl;
-    return NECTI_EXEC_ERROR;
+    return NECTAR_EXEC_ERROR;
   } else if (kObjectList.empty()) {
     kConsoleOut << "no input files." << std::endl;
-    return NECTI_EXEC_ERROR;
+    return NECTAR_EXEC_ERROR;
   } else {
     namespace FS = std::filesystem;
 
@@ -185,7 +185,7 @@ NECTI_MODULE(DynamicLinker64PEF) {
         // if filesystem doesn't find file
         //          -> throw error.
         kConsoleOut << "no such file: " << obj << std::endl;
-        return NECTI_EXEC_ERROR;
+        return NECTAR_EXEC_ERROR;
       }
     }
   }
@@ -193,7 +193,7 @@ NECTI_MODULE(DynamicLinker64PEF) {
   // PEF expects a valid target architecture when outputing a binary.
   if (kArch == CompilerKit::kPefArchInvalid) {
     kConsoleOut << "no target architecture set, can't continue." << std::endl;
-    return NECTI_EXEC_ERROR;
+    return NECTAR_EXEC_ERROR;
   }
 
   CompilerKit::PEFContainer pef_container{};
@@ -223,7 +223,7 @@ NECTI_MODULE(DynamicLinker64PEF) {
       kConsoleOut << "error: " << strerror(errno) << "\n";
     }
 
-    return NECTI_FILE_NOT_FOUND;
+    return NECTAR_FILE_NOT_FOUND;
   }
 
   //! Read AE to convert as PEF.
@@ -252,7 +252,7 @@ NECTI_MODULE(DynamicLinker64PEF) {
                          "treated as a FAT binary."
                       << std::endl;
 
-          return NECTI_FAT_ERROR;
+          return NECTAR_FAT_ERROR;
         } else {
           if (kVerbose) {
             kConsoleOut << "Architecture matches what we expect.\n";
@@ -347,7 +347,7 @@ NECTI_MODULE(DynamicLinker64PEF) {
     kConsoleOut << "not an object container: " << objectFile << std::endl;
 
     // don't continue, it is a fatal error.
-    return NECTI_EXEC_ERROR;
+    return NECTAR_EXEC_ERROR;
   }
 
   pef_container.Cpu = archs;
@@ -630,7 +630,7 @@ NECTI_MODULE(DynamicLinker64PEF) {
       kConsoleOut << "Multiple symbols of: " << symbol << " detected, cannot continue.\n";
     }
 
-    return NECTI_EXEC_ERROR;
+    return NECTAR_EXEC_ERROR;
   }
 
   // step 2.5: write program bytes.
@@ -660,7 +660,7 @@ NECTI_MODULE(DynamicLinker64PEF) {
       kConsoleOut << "Undefined symbol " << unreferenced_symbol << "\n";
     }
 
-    return NECTI_EXEC_ERROR;
+    return NECTAR_EXEC_ERROR;
   }
 
   if ((!kStartFound || kDuplicateSymbols) &&
@@ -669,10 +669,10 @@ NECTI_MODULE(DynamicLinker64PEF) {
       kConsoleOut << "File: " << kOutput << " is corrupt now...\n";
     }
 
-    return NECTI_EXEC_ERROR;
+    return NECTAR_EXEC_ERROR;
   }
 
-  return NECTI_SUCCESS;
+  return NECTAR_SUCCESS;
 }
 
 // Last rev 13-1-24

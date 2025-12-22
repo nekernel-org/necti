@@ -42,7 +42,7 @@ class ErrorOr final {
 
   ErrorT Error() { return mId; }
 
-  bool HasError() { return mId != NECTI_SUCCESS; }
+  bool HasError() { return mId != NECTAR_SUCCESS; }
 
   explicit operator bool() { return mRef; }
 

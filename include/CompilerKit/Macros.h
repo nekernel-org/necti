@@ -9,19 +9,19 @@
 #ifndef _NECTAR_MACROS_H_
 #define _NECTAR_MACROS_H_
 
-#define NECTI_COPY_DELETE(KLASS)           \
+#define NECTAR_COPY_DELETE(KLASS)          \
   KLASS& operator=(const KLASS&) = delete; \
   KLASS(const KLASS&)            = delete;
 
-#define NECTI_COPY_DEFAULT(KLASS)           \
+#define NECTAR_COPY_DEFAULT(KLASS)          \
   KLASS& operator=(const KLASS&) = default; \
   KLASS(const KLASS&)            = default;
 
-#define NECTI_MOVE_DELETE(KLASS)      \
+#define NECTAR_MOVE_DELETE(KLASS)     \
   KLASS& operator=(KLASS&&) = delete; \
   KLASS(KLASS&&)            = delete;
 
-#define NECTI_MOVE_DEFAULT(KLASS)      \
+#define NECTAR_MOVE_DEFAULT(KLASS)     \
   KLASS& operator=(KLASS&&) = default; \
   KLASS(KLASS&&)            = default;
 

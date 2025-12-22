@@ -51,7 +51,7 @@ class DLLLoader final {
     return *this;
   }
 
-  NECTI_COPY_DELETE(DLLLoader)
+  NECTAR_COPY_DELETE(DLLLoader)
 
   DLLLoader() = default;
   ~DLLLoader() { this->Destroy(); }

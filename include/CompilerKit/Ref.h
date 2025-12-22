@@ -28,7 +28,7 @@ class StrongRef {
     }
   }
 
-  NECTI_COPY_DEFAULT(StrongRef)
+  NECTAR_COPY_DEFAULT(StrongRef)
 
   using Type = T;
 
@@ -65,7 +65,7 @@ class WeakRef final : public StrongRef<T> {
   WeakRef()  = delete;
   ~WeakRef() = default;
 
-  NECTI_COPY_DEFAULT(WeakRef)
+  NECTAR_COPY_DEFAULT(WeakRef)
 
  public:
   using Type = T;

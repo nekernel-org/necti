@@ -16,8 +16,8 @@ int main(int argc, char const* argv[]) {
   if (auto code = CPlusPlusPreprocessorMain(argc, argv); code > 0) {
     std::printf("cppdrv: preprocessor exited with code %i.\n", code);
 
-    return NECTI_EXEC_ERROR;
+    return NECTAR_EXEC_ERROR;
   }
 
-  return NECTI_SUCCESS;
+  return NECTAR_SUCCESS;
 }

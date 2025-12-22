@@ -29,7 +29,7 @@ class AssemblyFactory final {
   explicit AssemblyFactory() = default;
   ~AssemblyFactory()         = default;
 
-  NECTI_COPY_DEFAULT(AssemblyFactory);
+  NECTAR_COPY_DEFAULT(AssemblyFactory);
 
  public:
   enum {
@@ -61,7 +61,7 @@ class IAssembly {
   explicit IAssembly() = default;
   virtual ~IAssembly() = default;
 
-  NECTI_COPY_DEFAULT(IAssembly);
+  NECTAR_COPY_DEFAULT(IAssembly);
 
   virtual UInt32 Arch() noexcept { return AssemblyFactory::kArchAMD64; }
 
@@ -139,7 +139,7 @@ class IAssemblyEncoder {
   explicit IAssemblyEncoder() = default;
   virtual ~IAssemblyEncoder() = default;
 
-  NECTI_COPY_DEFAULT(IAssemblyEncoder);
+  NECTAR_COPY_DEFAULT(IAssemblyEncoder);
 
   virtual STLString CheckLine(STLString line, STLString file)                 = 0;
   virtual bool      WriteLine(STLString line, STLString file)                 = 0;
@@ -157,7 +157,7 @@ class EncoderAMD64 final : public IAssemblyEncoder {
   explicit EncoderAMD64()  = default;
   ~EncoderAMD64() override = default;
 
-  NECTI_COPY_DEFAULT(EncoderAMD64);
+  NECTAR_COPY_DEFAULT(EncoderAMD64);
 
   virtual STLString CheckLine(STLString line, STLString file) override;
   virtual bool      WriteLine(STLString line, STLString file) override;
@@ -177,7 +177,7 @@ class EncoderARM64 final : public IAssemblyEncoder {
   explicit EncoderARM64()  = default;
   ~EncoderARM64() override = default;
 
-  NECTI_COPY_DEFAULT(EncoderARM64);
+  NECTAR_COPY_DEFAULT(EncoderARM64);
 
   virtual STLString CheckLine(STLString line, STLString file) override;
   virtual bool      WriteLine(STLString line, STLString file) override;
@@ -193,7 +193,7 @@ class Encoder64x0 final : public IAssemblyEncoder {
   explicit Encoder64x0()  = default;
   ~Encoder64x0() override = default;
 
-  NECTI_COPY_DEFAULT(Encoder64x0);
+  NECTAR_COPY_DEFAULT(Encoder64x0);
 
   virtual STLString CheckLine(STLString line, STLString file) override;
   virtual bool      WriteLine(STLString line, STLString file) override;
@@ -209,7 +209,7 @@ class Encoder32x0 final : public IAssemblyEncoder {
   explicit Encoder32x0()  = default;
   ~Encoder32x0() override = default;
 
-  NECTI_COPY_DEFAULT(Encoder32x0);
+  NECTAR_COPY_DEFAULT(Encoder32x0);
 
   virtual STLString CheckLine(STLString line, STLString file) override;
   virtual bool      WriteLine(STLString line, STLString file) override;
@@ -225,7 +225,7 @@ class EncoderPowerPC final : public IAssemblyEncoder {
   explicit EncoderPowerPC()  = default;
   ~EncoderPowerPC() override = default;
 
-  NECTI_COPY_DEFAULT(EncoderPowerPC);
+  NECTAR_COPY_DEFAULT(EncoderPowerPC);
 
   virtual STLString CheckLine(STLString line, STLString file) override;
   virtual bool      WriteLine(STLString line, STLString file) override;

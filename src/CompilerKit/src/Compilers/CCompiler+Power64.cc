@@ -120,7 +120,7 @@ class CompilerFrontendPower64 final : public CompilerKit::ICompilerFrontend {
   explicit CompilerFrontendPower64()  = default;
   ~CompilerFrontendPower64() override = default;
 
-  NECTI_COPY_DEFAULT(CompilerFrontendPower64);
+  NECTAR_COPY_DEFAULT(CompilerFrontendPower64);
 
   std::string                             Check(const char* text, const char* file);
   CompilerKit::SyntaxLeafList::SyntaxLeaf Compile(std::string text, std::string file) override;
@@ -1058,7 +1058,7 @@ class AssemblyMountpointCLang final CK_ASSEMBLY_INTERFACE {
   explicit AssemblyMountpointCLang()  = default;
   ~AssemblyMountpointCLang() override = default;
 
-  NECTI_COPY_DEFAULT(AssemblyMountpointCLang);
+  NECTAR_COPY_DEFAULT(AssemblyMountpointCLang);
 
   UInt32 Arch() noexcept override { return CompilerKit::AssemblyFactory::kArchPowerPC; }
 
@@ -1190,7 +1190,7 @@ class AssemblyMountpointCLang final CK_ASSEMBLY_INTERFACE {
   }
 };
 
-NECTI_MODULE(CompilerCLangPowerPC) {
+NECTAR_MODULE(CompilerCLangPowerPC) {
   CompilerKit::install_signal(SIGSEGV, CompilerKit::Detail::drvi_crash_handler);
 
   kCompilerTypes.push_back({.fName = "void", .fValue = "void"});

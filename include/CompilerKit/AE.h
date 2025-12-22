@@ -103,7 +103,7 @@ class AEReadableProtocol final {
   explicit AEReadableProtocol() = default;
   ~AEReadableProtocol()         = default;
 
-  NECTI_COPY_DELETE(AEReadableProtocol)
+  NECTAR_COPY_DELETE(AEReadableProtocol)
 
   /**
    * @brief Read AE Record headers.

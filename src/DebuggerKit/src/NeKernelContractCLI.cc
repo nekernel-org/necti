@@ -27,7 +27,7 @@ static void dbgi_ctrlc_handler(std::int32_t _) {
   kKeepRunning = false;
 }
 
-NECTI_MODULE(DebuggerNeKernel) {
+NECTAR_MODULE(DebuggerNeKernel) {
   pfd::notify("Debugger Event",
               "Nectar Debugger\n(C) 2025 Amlal El Mahrouss and NeKernel.org contributors, all "
               "rights reserved.");
