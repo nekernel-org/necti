@@ -98,3 +98,4 @@ NECTAR_MODULE(DebuggerNeKernel) {
 }
 
 #endif  // DK_NEKERNEL_DEBUGGER
+

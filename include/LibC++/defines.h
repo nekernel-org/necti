@@ -79,3 +79,4 @@ struct nothrow_t;
 }  // namespace std
 
 #endif /* __NECTAR_DEFINES_H__ */
+

@@ -48,3 +48,4 @@ class NeKernelContract final DK_DEBUGGER_CONTRACT {
 #endif  // ifdef DK_NEKERNEL_DEBUGGER
 
 #endif  // DK_NEKERNEL_CONTRACT_H
+

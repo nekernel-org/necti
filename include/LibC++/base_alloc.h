@@ -41,3 +41,4 @@ inline void release_nothrow(KindClass ptr) noexcept {
   release(ptr);
 }
 }  // namespace std::base_alloc
+

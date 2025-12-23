@@ -234,3 +234,4 @@ class EncoderPowerPC final : public IAssemblyEncoder {
 
 #endif  // __ASM_NEED_32x0__
 }  // namespace CompilerKit
+

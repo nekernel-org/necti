@@ -26,3 +26,4 @@
   KLASS(KLASS&&)            = default;
 
 #endif /* ifndef _NECTAR_MACROS_H_ */
+

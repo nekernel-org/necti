@@ -96,3 +96,4 @@ class NonNullRef final {
 using StrongAny = StrongRef<VoidPtr>;
 using WeakAny   = WeakRef<VoidPtr>;
 }  // namespace CompilerKit
+

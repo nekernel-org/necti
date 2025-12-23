@@ -136,3 +136,4 @@ inline std::ifstream& operator>>(std::ifstream& fp, CompilerKit::PEFCommandHeade
   fp.read((char*) &container, sizeof(CompilerKit::PEFCommandHeader));
   return fp;
 }
+

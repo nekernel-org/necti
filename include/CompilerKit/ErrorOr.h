@@ -54,3 +54,4 @@ class ErrorOr final {
 using ErrorOrAny    = ErrorOr<VoidPtr>;
 using ErrorOrString = ErrorOr<STLString>;
 }  // namespace CompilerKit
+

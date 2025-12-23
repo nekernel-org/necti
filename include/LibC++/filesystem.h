@@ -22,3 +22,4 @@ class directory_iterator;
 #endif
 
 #endif  // __NECTAR_FS_H__
+

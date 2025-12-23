@@ -1555,3 +1555,4 @@ inline CpuOpcodePPC kOpcodesPowerPC[] = {
 
 /* return address register */
 #define kAsmRetRegister 19
+

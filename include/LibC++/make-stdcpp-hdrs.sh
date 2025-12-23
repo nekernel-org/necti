@@ -11,3 +11,4 @@ baseName=`echo $f | cut -d "." -f 1`
 cp $f $outputDir$baseName
 
 done
+

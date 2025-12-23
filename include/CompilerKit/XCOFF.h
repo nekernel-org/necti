@@ -41,3 +41,4 @@ typedef struct XCoffFileHeader* XCoffFileHeaderPtr;
 }  // namespace CompilerKit
 
 #endif  // ifndef _NECTAR_XCOFF_H_
+

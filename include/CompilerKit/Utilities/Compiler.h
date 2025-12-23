@@ -119,3 +119,4 @@ inline void drvi_crash_handler(std::int32_t id) {
   std::exit(NECTAR_EXEC_ERROR);
 }
 }  // namespace CompilerKit::Detail
+

@@ -1210,3 +1210,4 @@ bool CompilerKit::EncoderAMD64::WriteLine(std::string line, std::string file) {
 }
 
 // Last rev 13-1-24
+

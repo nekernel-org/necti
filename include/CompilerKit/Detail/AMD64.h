@@ -48,3 +48,4 @@ inline std::vector<CpuOpcodeAMD64> kOpcodesAMD64 = {
                         CK_ASM_OPCODE("syscall", 0x0F) CK_ASM_OPCODE("xor", 0x48)};
 
 #define kAsmRegisterLimit 16
+

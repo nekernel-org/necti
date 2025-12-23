@@ -824,3 +824,4 @@ struct hash<uuids::uuid> {
 }  // namespace std
 
 #endif /* STDUUID_H */
+

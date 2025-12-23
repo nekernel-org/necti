@@ -162,3 +162,4 @@ class ICompilerFrontend {
 }  // namespace CompilerKit
 
 #include <CompilerKit/AST.inl>
+
