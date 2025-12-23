@@ -82,17 +82,24 @@ struct SyntaxKeyword {
 };
 
 struct SyntaxLeafList final {
-  struct SyntaxLeaf final {
-    // \brief User data type.
-    Int32 fUserType{0U};
-    // \brief User data buffer.
+  struct SyntaxLeaf;
+
+  struct SyntaxLeaf {
+    using Ptr = SyntaxLeaf*;
+    using Reference = SyntaxLeaf&;
+    using ConstReference = const SyntaxLeaf&;
+
+    /// \brief User data type.
+    Int32 fUserType{};
+
+    /// \brief User data buffer.
     SyntaxKeyword fUserData{{}, KeywordKind::kKeywordKindInvalid};
 
-    // \brief User data value
+    /// \brief User data value
     STLString fUserValue{};
 
-    // \brief Next user data on list.
-    struct SyntaxLeaf* fNext{nullptr};
+    /// \brief Next user data on list.
+    Ptr fNext{nullptr};
   };
 
   using ArrayType = std::vector<SyntaxLeaf>;
@@ -147,7 +154,7 @@ class ICompilerFrontend {
   //! @brief Compile a syntax tree ouf of the text.
   //! Also takes the source file name for metadata.
   /// =========================================================== ///
-  virtual SyntaxLeafList::SyntaxLeaf Compile(STLString text, STLString file) { return {}; }
+  virtual SyntaxLeafList::SyntaxLeaf Compile(STLString& text, const STLString& file) { return {}; }
 
   /// =========================================================== ///
   //! @brief What language are we dealing with?
@@ -162,4 +169,3 @@ class ICompilerFrontend {
 }  // namespace CompilerKit
 
 #include <CompilerKit/AST.inl>
-

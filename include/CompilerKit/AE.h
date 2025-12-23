@@ -106,7 +106,7 @@ class AEReadableProtocol final {
   NECTAR_COPY_DELETE(AEReadableProtocol)
 
   /**
-   * @brief Read AE Record headers.
+   * @brief Reads the AE Record headers.
    *
    * @param raw the containing buffer
    * @param sz it's size (1 = one AERecordHeader, 2 two AERecordHeader(s))
@@ -114,7 +114,6 @@ class AEReadableProtocol final {
    */
   AERecordHeaderPtr Read(char* raw, std::size_t sz) {
     if (!raw) return nullptr;
-
     return this->Read_<AERecordHeader>(raw, sz * sizeof(AERecordHeader));
   }
 

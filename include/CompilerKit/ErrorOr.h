@@ -30,6 +30,8 @@ class ErrorOr final {
 
  public:
   using RefType = StrongRef<T>;
+  using Reference = T&;
+  using Ptr = T*;
 
   explicit ErrorOr(ErrorT err) : mId(err) {}
   explicit ErrorOr(std::nullptr_t null) {}

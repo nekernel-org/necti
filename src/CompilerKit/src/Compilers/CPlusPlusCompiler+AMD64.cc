@@ -122,10 +122,19 @@ class CompilerFrontendCPlusPlusAMD64 final CK_COMPILER_FRONTEND {
 
   NECTAR_COPY_DEFAULT(CompilerFrontendCPlusPlusAMD64);
 
-  CompilerKit::SyntaxLeafList::SyntaxLeaf Compile(const CompilerKit::STLString text,
-                                                  CompilerKit::STLString       file) override;
+  /// \brief Parse C symbols and syntax.
+  CompilerKit::SyntaxLeafList::SyntaxLeaf Compile(CompilerKit::STLString&       text,
+                                                  const CompilerKit::STLString& file) override;
 
+  /// \brief Contract language
   const char* Language() override;
+
+ public:
+  /// \brief Parse C++ namespaces and objects.
+  /// \param CompilerKit::SyntaxLeafList::SyntaxLeaf the leaf to build upon.
+  CompilerKit::SyntaxLeafList::SyntaxLeaf CompilePass2(CompilerKit::STLString&       text,
+                                                       const CompilerKit::STLString& file,
+                                                       CompilerKit::SyntaxLeafList::SyntaxLeaf&);
 };
 
 /// @internal compiler variables
@@ -149,7 +158,7 @@ static std::size_t kFunctionEmbedLevel = 0UL;
 /// detail namespaces
 
 const char* CompilerFrontendCPlusPlusAMD64::Language() {
-  return "AMD64 C++";
+  return "C++";
 }
 
 static std::uintptr_t                                                 kOrigin = kPefBaseOrigin;
@@ -163,12 +172,12 @@ static std::vector<std::pair<CompilerKit::STLString, std::uintptr_t>> kOriginMap
 /////////////////////////////////////////////////////////////////////////////////////////
 
 CompilerKit::SyntaxLeafList::SyntaxLeaf CompilerFrontendCPlusPlusAMD64::Compile(
-    CompilerKit::STLString text, CompilerKit::STLString file) {
+    CompilerKit::STLString& text, const CompilerKit::STLString& file) {
   CompilerKit::SyntaxLeafList::SyntaxLeaf syntax_tree;
 
   if (text.empty()) return syntax_tree;
 
-  std::size_t                                                     index = 0UL;
+  std::size_t                                                     index{};
   std::vector<std::pair<CompilerKit::SyntaxKeyword, std::size_t>> keywords_list;
 
   for (auto& keyword : kKeywords) {
@@ -711,6 +720,14 @@ CompilerKit::SyntaxLeafList::SyntaxLeaf CompilerFrontendCPlusPlusAMD64::Compile(
     }
   }
 
+  return this->CompilePass2(text, file, syntax_tree);
+}
+
+/// \brief Parse C++ namespaces and objects.
+/// \param CompilerKit::SyntaxLeafList::SyntaxLeaf the leaf to build upon.
+CompilerKit::SyntaxLeafList::SyntaxLeaf CompilerFrontendCPlusPlusAMD64::CompilePass2(
+    CompilerKit::STLString& text, const CompilerKit::STLString& file,
+    CompilerKit::SyntaxLeafList::SyntaxLeaf& syntax_tree) {
   return syntax_tree;
 }
 
@@ -901,4 +918,3 @@ NECTAR_MODULE(CompilerCPlusPlusAMD64) {
 //
 // Last rev 25-8-7
 //
-
