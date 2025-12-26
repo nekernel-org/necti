@@ -4,7 +4,8 @@
 
 ======================================== */
 
-#pragma once
+#ifndef NECTAR_DEBUGGERKIT_POSIXMACHCONTRACT_H
+#define NECTAR_DEBUGGERKIT_POSIXMACHCONTRACT_H
 
 #ifdef DK_MACH_DEBUGGER
 
@@ -152,5 +153,7 @@ class POSIXMachContract final DK_DEBUGGER_CONTRACT {
 };
 }  // namespace DebuggerKit::POSIX
 
-#endif
+#endif  // DK_MACH_DEBUGGER
+
+#endif  // NECTAR_DEBUGGERKIT_POSIXMACHCONTRACT_H
 

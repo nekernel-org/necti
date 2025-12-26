@@ -4,7 +4,8 @@
 
 ======================================== */
 
-#pragma once
+#ifndef NECTAR_COMPILERKIT_UTILITIES_DLL_H
+#define NECTAR_COMPILERKIT_UTILITIES_DLL_H
 
 #include <CompilerKit/Detail/Config.h>
 #include <dlfcn.h>
@@ -67,4 +68,6 @@ class DLLLoader final {
   }
 };
 }  // namespace CompilerKit
+
+#endif  // NECTAR_COMPILERKIT_UTILITIES_DLL_H
 

@@ -4,7 +4,8 @@
 
 ======================================== */
 
-#pragma once
+#ifndef NECTAR_LIBCXX_ABI_H
+#define NECTAR_LIBCXX_ABI_H
 
 #include <LibC++/base_process.h>
 #include <LibC++/defines.h>
@@ -20,3 +21,5 @@ inline void __compilerkit_unreachable(void) {
 }
 
 __fini_decl()
+
+#endif  // NECTAR_LIBCXX_ABI_H

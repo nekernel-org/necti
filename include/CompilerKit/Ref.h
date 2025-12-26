@@ -8,7 +8,8 @@
  * 	========================================================
  */
 
-#pragma once
+#ifndef NECTAR_COMPILERKIT_REF_H
+#define NECTAR_COMPILERKIT_REF_H
 
 #include <CompilerKit/Detail/Config.h>
 
@@ -96,4 +97,6 @@ class NonNullRef final {
 using StrongAny = StrongRef<VoidPtr>;
 using WeakAny   = WeakRef<VoidPtr>;
 }  // namespace CompilerKit
+
+#endif  // NECTAR_COMPILERKIT_REF_H
 

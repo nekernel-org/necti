@@ -4,7 +4,8 @@
 
 ======================================== */
 
-#pragma once
+#ifndef NECTAR_DEBUGGERKIT_DETAIL_CONFIG_H
+#define NECTAR_DEBUGGERKIT_DETAIL_CONFIG_H
 
 /// =========================================================== ///
 /// @author Amlal El Mahrouss
@@ -64,3 +65,5 @@ namespace Detail {
   using dk_socket_type             = int64_t;
 }  // namespace Detail
 }  // namespace DebuggerKit
+
+#endif  // NECTAR_DEBUGGERKIT_DETAIL_CONFIG_H

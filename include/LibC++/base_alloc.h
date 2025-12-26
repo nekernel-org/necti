@@ -4,7 +4,8 @@
 
 ======================================== */
 
-#pragma once
+#ifndef NECTAR_LIBCXX_BASE_ALLOC_H
+#define NECTAR_LIBCXX_BASE_ALLOC_H
 
 #include <LibC++/defines.h>
 
@@ -41,4 +42,6 @@ inline void release_nothrow(KindClass ptr) noexcept {
   release(ptr);
 }
 }  // namespace std::base_alloc
+
+#endif  // NECTAR_LIBCXX_BASE_ALLOC_H
 

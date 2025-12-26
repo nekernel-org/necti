@@ -4,7 +4,8 @@
 
 ======================================== */
 
-#pragma once
+#ifndef NECTAR_COMPILERKIT_DETAIL_64X0_H
+#define NECTAR_COMPILERKIT_DETAIL_64X0_H
 
 #include <CompilerKit/Detail/Config.h>
 #include <vector>
@@ -98,4 +99,6 @@ inline std::vector<CpuOpcode64x0> kOpcodes64x0 = {
 // ENABLE INTERRUPTS
 
 ////////////////////////////////
+
+#endif  // NECTAR_COMPILERKIT_DETAIL_64X0_H
 

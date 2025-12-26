@@ -4,7 +4,8 @@
 
 ======================================== */
 
-#pragma once
+#ifndef NECTAR_LIBCXX_BASE_EXCEPTION_H
+#define NECTAR_LIBCXX_BASE_EXCEPTION_H
 
 #include <LibC++/__abi.h>
 #include <LibC++/base_process.h>
@@ -35,4 +36,6 @@ inline void __throw_bad_array_new_length(const char* what) {
   __builtin_unreachable();  // prevent from continuing.
 }
 }  // namespace std::base_exception::abi
+
+#endif  // NECTAR_LIBCXX_BASE_EXCEPTION_H
 

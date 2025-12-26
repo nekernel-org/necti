@@ -4,7 +4,8 @@ Copyright (C) 2024-2025 Amlal El Mahrouss, licensed under the Apache 2.0 license
 
 ======================================== */
 
-#pragma once
+#ifndef NECTAR_COMPILERKIT_DETAIL_AARCH64_H
+#define NECTAR_COMPILERKIT_DETAIL_AARCH64_H
 
 #include <CompilerKit/Detail/Config.h>
 #include <stdint.h>
@@ -39,4 +40,6 @@ typedef struct {
 #define kAsmRegisterLimit (30)
 #define kAsmRegisterPrefix "x"
 #define kOpcodeARM64Count (1000)
+
+#endif  // NECTAR_COMPILERKIT_DETAIL_AARCH64_H
 

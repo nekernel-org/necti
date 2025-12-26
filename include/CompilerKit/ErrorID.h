@@ -7,7 +7,8 @@
  * 	========================================================
  */
 
-#pragma once
+#ifndef NECTAR_COMPILERKIT_ERRORID_H
+#define NECTAR_COMPILERKIT_ERRORID_H
 
 #include <CompilerKit/Detail/Config.h>
 
@@ -27,4 +28,6 @@
 #define NECTAR_UNIMPLEMENTED -36
 #define NECTAR_FAT_ERROR -37
 #define NECTAR_INVALID_ARCH -38
+
+#endif  // NECTAR_COMPILERKIT_ERRORID_H
 

@@ -4,7 +4,8 @@
 
 ======================================== */
 
-#pragma once
+#ifndef NECTAR_COMPILERKIT_UTILITIES_ASSEMBLER_H
+#define NECTAR_COMPILERKIT_UTILITIES_ASSEMBLER_H
 
 #include <CompilerKit/AST.h>
 #include <CompilerKit/CodeGenerator.h>
@@ -94,3 +95,5 @@ inline NumberCast32 GetNumber32(STLString lineBuffer, STLString numberKey) {
   }
 }
 }  // namespace CompilerKit
+
+#endif  // NECTAR_COMPILERKIT_UTILITIES_ASSEMBLER_H

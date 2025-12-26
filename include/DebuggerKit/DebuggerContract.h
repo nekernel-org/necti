@@ -4,7 +4,8 @@
 
 ======================================== */
 
-#pragma once
+#ifndef NECTAR_DEBUGGERKIT_DEBUGGERCONTRACT_H
+#define NECTAR_DEBUGGERKIT_DEBUGGERCONTRACT_H
 
 #include <DebuggerKit/Detail/Config.h>
 #include <unordered_map>
@@ -43,4 +44,6 @@ class IDebuggerContract {
   BreakpointMap mBreakpoints;
 };
 }  // namespace DebuggerKit
+
+#endif  // NECTAR_DEBUGGERKIT_DEBUGGERCONTRACT_H
 

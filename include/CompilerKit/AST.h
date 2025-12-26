@@ -4,7 +4,8 @@
 
 ======================================== */
 
-#pragma once
+#ifndef NECTAR_COMPILERKIT_AST_H
+#define NECTAR_COMPILERKIT_AST_H
 
 #include <CompilerKit/CodeGenerator.h>
 #include <vector>
@@ -169,3 +170,5 @@ class ICompilerFrontend {
 }  // namespace CompilerKit
 
 #include <CompilerKit/AST.inl>
+
+#endif  // NECTAR_COMPILERKIT_AST_H

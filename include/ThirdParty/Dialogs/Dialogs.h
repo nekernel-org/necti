@@ -10,7 +10,8 @@
 //  See http://www.wtfpl.net/ for more details.
 //
 
-#pragma once
+#ifndef NECTAR_THIRDPARTY_DIALOGS_DIALOGS_H
+#define NECTAR_THIRDPARTY_DIALOGS_DIALOGS_H
 
 #if _WIN32
 #ifndef WIN32_LEAN_AND_MEAN
@@ -1736,3 +1737,5 @@ inline std::string select_folder::result() {
 #endif  // PFD_SKIP_IMPLEMENTATION
 
 }  // namespace pfd
+
+#endif  // NECTAR_THIRDPARTY_DIALOGS_DIALOGS_H

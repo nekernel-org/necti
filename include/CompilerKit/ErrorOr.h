@@ -7,7 +7,8 @@
  * 	========================================================
  */
 
-#pragma once
+#ifndef NECTAR_COMPILERKIT_ERROROR_H
+#define NECTAR_COMPILERKIT_ERROROR_H
 
 /// =========================================================== ///
 /// @file ErrorOr.h
@@ -56,4 +57,6 @@ class ErrorOr final {
 using ErrorOrAny    = ErrorOr<VoidPtr>;
 using ErrorOrString = ErrorOr<STLString>;
 }  // namespace CompilerKit
+
+#endif  // NECTAR_COMPILERKIT_ERROROR_H
 

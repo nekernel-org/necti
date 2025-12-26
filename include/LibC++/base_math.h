@@ -4,7 +4,8 @@
 
 ======================================== */
 
-#pragma once
+#ifndef NECTAR_LIBCXX_BASE_MATH_H
+#define NECTAR_LIBCXX_BASE_MATH_H
 
 #include <defines>
 
@@ -96,4 +97,6 @@ typename<class Result> using callable_type = Result (*)(size_t n, ...);
 #ifdef __cpp_lib_base_math
 #define __cpp_lib_base_math 1
 #endif
+
+#endif  // NECTAR_LIBCXX_BASE_MATH_H
 

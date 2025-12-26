@@ -4,7 +4,8 @@
 
 ======================================== */
 
-#pragma once
+#ifndef NECTAR_COMPILERKIT_PEF_H
+#define NECTAR_COMPILERKIT_PEF_H
 
 #include <CompilerKit/Detail/Config.h>
 #include <fstream>
@@ -136,4 +137,6 @@ inline std::ifstream& operator>>(std::ifstream& fp, CompilerKit::PEFCommandHeade
   fp.read((char*) &container, sizeof(CompilerKit::PEFCommandHeader));
   return fp;
 }
+
+#endif  // NECTAR_COMPILERKIT_PEF_H
 

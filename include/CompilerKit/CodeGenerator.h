@@ -4,7 +4,8 @@
 
 ======================================== */
 
-#pragma once
+#ifndef NECTAR_COMPILERKIT_CODEGENERATOR_H
+#define NECTAR_COMPILERKIT_CODEGENERATOR_H
 
 #include <CompilerKit/Detail/Config.h>
 #include <CompilerKit/Macros.h>
@@ -234,4 +235,6 @@ class EncoderPowerPC final : public IAssemblyEncoder {
 
 #endif  // __ASM_NEED_32x0__
 }  // namespace CompilerKit
+
+#endif  // NECTAR_COMPILERKIT_CODEGENERATOR_H
 

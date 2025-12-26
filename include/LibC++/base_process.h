@@ -4,7 +4,8 @@
 
 ======================================== */
 
-#pragma once
+#ifndef NECTAR_LIBCXX_BASE_PROCESS_H
+#define NECTAR_LIBCXX_BASE_PROCESS_H
 
 #include <defines>
 
@@ -43,4 +44,6 @@ __fini_decl()
     return -1;
   }
 }  // namespace std::base_process
+
+#endif  // NECTAR_LIBCXX_BASE_PROCESS_H
 

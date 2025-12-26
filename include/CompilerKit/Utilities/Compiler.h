@@ -4,7 +4,8 @@
 
 ======================================== */
 
-#pragma once
+#ifndef NECTAR_COMPILERKIT_UTILITIES_COMPILER_H
+#define NECTAR_COMPILERKIT_UTILITIES_COMPILER_H
 
 #include <CompilerKit/AST.h>
 #include <CompilerKit/CodeGenerator.h>
@@ -119,4 +120,6 @@ inline void drvi_crash_handler(std::int32_t id) {
   std::exit(NECTAR_EXEC_ERROR);
 }
 }  // namespace CompilerKit::Detail
+
+#endif  // NECTAR_COMPILERKIT_UTILITIES_COMPILER_H
 

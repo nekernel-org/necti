@@ -4,7 +4,8 @@
 
 ======================================== */
 
-#pragma once
+#ifndef NECTAR_LIBCXX_NEW_H
+#define NECTAR_LIBCXX_NEW_H
 
 #include <defines>
 
@@ -63,4 +64,6 @@ void operator delete(void*) noexcept;
 void operator delete(void*, size_t) noexcept;
 
 void operator delete[](void*) noexcept;
+
+#endif  // NECTAR_LIBCXX_NEW_H
 
