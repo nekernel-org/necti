@@ -1,8 +1,10 @@
-/* ========================================
+// Copyright 2024-2025, Amlal El Mahrouss (amlal@nekernel.org)
+// Licensed under the Apache License, Version 2.0 (See accompanying
+// file LICENSE or copy at http://www.apache.org/licenses/LICENSE-2.0)
+// Official repository: https://github.com/nekernel-org/nectar
 
-  Copyright (C) 2025 Amlal El Mahrouss, licensed under the Apache 2.0 license
-
-======================================== */
+#ifndef NECTAR_COMPILERKIT_AST_INL
+#define NECTAR_COMPILERKIT_AST_INL
 
 namespace CompilerKit {
 /// find the perfect matching word in a haystack.
@@ -61,3 +63,5 @@ inline bool ICompilerFrontend::IsValid() {
   return strcmp(this->Language(), kInvalidFrontend) > 0;
 }
 }  // namespace CompilerKit
+
+#endif
