@@ -1,15 +1,7 @@
-/* ========================================
-
-  Copyright (C) 2024-2025 Amlal El Mahrouss, licensed under the Apache 2.0 license
-
-  File: XCOFF.h
-  Purpose: XCOFF for Nectar.
-
-  Revision History:
-
-  04/07/24: Added file (Amlal El Mahrouss)
-
-======================================== */
+// Copyright 2024-2025, Amlal El Mahrouss (amlal@nekernel.org)
+// Licensed under the Apache License, Version 2.0 (See accompanying
+// file LICENSE or copy at http://www.apache.org/licenses/LICENSE-2.0)
+// Official repository: https://github.com/nekernel-org/nectar
 
 #ifndef _NECTAR_XCOFF_H_
 #define _NECTAR_XCOFF_H_
@@ -41,4 +33,3 @@ typedef struct XCoffFileHeader* XCoffFileHeaderPtr;
 }  // namespace CompilerKit
 
 #endif  // ifndef _NECTAR_XCOFF_H_
-

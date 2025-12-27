@@ -1,8 +1,7 @@
-/* ========================================
-
-  Copyright (C) 2024-2025 Amlal El Mahrouss, licensed under the Apache 2.0 license
-
-======================================== */
+// Copyright 2024-2025, Amlal El Mahrouss (amlal@nekernel.org)
+// Licensed under the Apache License, Version 2.0 (See accompanying
+// file LICENSE or copy at http://www.apache.org/licenses/LICENSE-2.0)
+// Official repository: https://github.com/nekernel-org/nectar
 
 #ifndef NECTAR_COMPILERKIT_DETAIL_64X0_H
 #define NECTAR_COMPILERKIT_DETAIL_64X0_H
@@ -101,4 +100,3 @@ inline std::vector<CpuOpcode64x0> kOpcodes64x0 = {
 ////////////////////////////////
 
 #endif  // NECTAR_COMPILERKIT_DETAIL_64X0_H
-

@@ -1558,4 +1558,3 @@ inline CpuOpcodePPC kOpcodesPowerPC[] = {
 #define kAsmRetRegister 19
 
 #endif  // NECTAR_COMPILERKIT_DETAIL_POWER64_H
-

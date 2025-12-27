@@ -1,8 +1,7 @@
-/* ========================================
-
-  Copyright (C) 2025 Amlal El Mahrouss, licensed under the Apache 2.0 license.
-
-======================================== */
+// Copyright 2024-2025, Amlal El Mahrouss (amlal@nekernel.org)
+// Licensed under the Apache License, Version 2.0 (See accompanying
+// file LICENSE or copy at http://www.apache.org/licenses/LICENSE-2.0)
+// Official repository: https://github.com/nekernel-org/nectar
 
 #ifndef NECTAR_DEBUGGERKIT_POSIXMACHCONTRACT_H
 #define NECTAR_DEBUGGERKIT_POSIXMACHCONTRACT_H
@@ -156,4 +155,3 @@ class POSIXMachContract final DK_DEBUGGER_CONTRACT {
 #endif  // DK_MACH_DEBUGGER
 
 #endif  // NECTAR_DEBUGGERKIT_POSIXMACHCONTRACT_H
-

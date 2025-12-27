@@ -1,11 +1,7 @@
-/* ========================================
-
-  Copyright (C) 2024-2025 Amlal El Mahrouss, licensed under the Apache 2.0 license
-
-  @file DynamicLinker64+PEF.cc
-  @brief: C++ 64-Bit PEF Linker for NeKernel.org's NeKernel
-
-======================================== */
+// Copyright 2024-2025, Amlal El Mahrouss (amlal@nekernel.org)
+// Licensed under the Apache License, Version 2.0 (See accompanying
+// file LICENSE or copy at http://www.apache.org/licenses/LICENSE-2.0)
+// Official repository: https://github.com/nekernel-org/nectar
 
 /// @author Amlal El Mahrouss (amlal@nekernel.org)
 /// @brief NeKernel.org 64-bit PEF Linker.
@@ -676,4 +672,3 @@ NECTAR_MODULE(DynamicLinker64PEF) {
 }
 
 // Last rev 13-1-24
-
