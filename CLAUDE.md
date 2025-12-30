@@ -102,7 +102,7 @@ The project supports **5 CPU architectures**:
 - **ARM64** (AArch64)
 - **PowerPC** (64-bit POWER)
 - **64x0** - Open64x0 RISC architecture
-- **32x0** - 32-bit variant
+- **32x0** - 32-bit variant of Open64x0
 
 Each architecture has dedicated assembler implementations in `src/CompilerKit/src/Assemblers/Assembler+<ARCH>.cc`.
 
