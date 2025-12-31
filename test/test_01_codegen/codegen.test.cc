@@ -8,7 +8,25 @@
 
 #include <gtest/gtest.h>
 
-TEST(CodegenTest, BasicCodegenTest) {
+TEST(CodegenTest, BasicCodegenTestAssemble) {
   auto expr = std::system("asm -asm-x64 test_samples/sample.asm");
   EXPECT_TRUE(expr == 0) << "ASM Driver did not compile the easy ASM unit.";
+}
+
+TEST(CodegenTest, BasicCodegenTestGrep) {
+  // Compile C++ source to assembly
+  auto compile_result = std::system("pef-amd64-cxxdrv ../test_samples/sample.cc > /dev/null 2>&1");
+  EXPECT_TRUE(compile_result == 0) << "C++ compiler driver failed to compile sample.cc";
+
+  // Grep for expected entry point symbol in generated assembly
+  auto grep_main = std::system("grep -q '__NECTI_main' ../test_samples/sample.cc.pp.masm");
+  EXPECT_TRUE(grep_main == 0) << "Generated assembly missing expected entry point __NECTI_main";
+
+  // Grep for return instruction
+  auto grep_ret = std::system("grep -q 'ret' ../test_samples/sample.cc.pp.masm");
+  EXPECT_TRUE(grep_ret == 0) << "Generated assembly missing return instruction";
+
+  // Grep for 64-bit mode directive
+  auto grep_bits64 = std::system("grep -q '%bits 64' ../test_samples/sample.cc.pp.masm");
+  EXPECT_TRUE(grep_bits64 == 0) << "Generated assembly missing 64-bit mode directive";
 }
