@@ -84,7 +84,10 @@ int32_t bpp_parse_if_condition(Detail::bpp_macro_condition& cond, Detail::bpp_ma
                                bool& inactive_code, bool& defined,
                                CompilerKit::STLString& macro_str) {
   if (cond.fType == Detail::kEqual) {
-    auto substr_macro = macro_str.substr(macro_str.find(macro.fName) + macro.fName.size());
+    auto pos = macro_str.find(macro.fName);
+    if (pos == CompilerKit::STLString::npos) return 0;
+
+    auto substr_macro = macro_str.substr(pos + macro.fName.size());
 
     if (substr_macro.find(macro.fValue) != CompilerKit::STLString::npos) {
       if (macro.fValue == "0") {
@@ -100,7 +103,10 @@ int32_t bpp_parse_if_condition(Detail::bpp_macro_condition& cond, Detail::bpp_ma
       return 1;
     }
   } else if (cond.fType == Detail::kNotEqual) {
-    auto substr_macro = macro_str.substr(macro_str.find(macro.fName) + macro.fName.size());
+    auto pos = macro_str.find(macro.fName);
+    if (pos == CompilerKit::STLString::npos) return 0;
+
+    auto substr_macro = macro_str.substr(pos + macro.fName.size());
 
     if (substr_macro.find(macro.fName) != CompilerKit::STLString::npos) {
       if (substr_macro.find(macro.fValue) != CompilerKit::STLString::npos) {
@@ -119,13 +125,16 @@ int32_t bpp_parse_if_condition(Detail::bpp_macro_condition& cond, Detail::bpp_ma
     return 0;
   }
 
-  auto substr_macro = macro_str.substr(macro_str.find(macro.fName) + macro.fName.size());
+  auto pos = macro_str.find(macro.fName);
+  if (pos == CompilerKit::STLString::npos) return 0;
+
+  auto substr_macro = macro_str.substr(pos + macro.fName.size());
 
   CompilerKit::STLString number;
 
   for (auto& macro_num : kMacros) {
     if (substr_macro.find(macro_num.fName) != CompilerKit::STLString::npos) {
-      for (size_t i = 0; i < macro_num.fName.size(); ++i) {
+      for (size_t i = 0; i < macro_num.fValue.size(); ++i) {
         if (isdigit(macro_num.fValue[i])) {
           number += macro_num.fValue[i];
         } else {
@@ -176,7 +185,7 @@ int32_t bpp_parse_if_condition(Detail::bpp_macro_condition& cond, Detail::bpp_ma
   }
 
   if (cond.fType == Detail::kGreaterThan) {
-    if (lhs < rhs) {
+    if (lhs > rhs) {
       defined       = true;
       inactive_code = false;
 
@@ -187,17 +196,6 @@ int32_t bpp_parse_if_condition(Detail::bpp_macro_condition& cond, Detail::bpp_ma
   }
 
   if (cond.fType == Detail::kGreaterEqThan) {
-    if (lhs <= rhs) {
-      defined       = true;
-      inactive_code = false;
-
-      return 1;
-    }
-
-    return 0;
-  }
-
-  if (cond.fType == Detail::kLesserEqThan) {
     if (lhs >= rhs) {
       defined       = true;
       inactive_code = false;
@@ -208,8 +206,19 @@ int32_t bpp_parse_if_condition(Detail::bpp_macro_condition& cond, Detail::bpp_ma
     return 0;
   }
 
+  if (cond.fType == Detail::kLesserEqThan) {
+    if (lhs <= rhs) {
+      defined       = true;
+      inactive_code = false;
+
+      return 1;
+    }
+
+    return 0;
+  }
+
   if (cond.fType == Detail::kLesserThan) {
-    if (lhs > rhs) {
+    if (lhs < rhs) {
       defined       = true;
       inactive_code = false;
 
@@ -287,8 +296,10 @@ void bpp_parse_file(std::ifstream& hdr_file, std::ofstream& pp_out) {
 
       for (auto macro : kMacros) {
         if (CompilerKit::ast_find_needle(hdr_line, macro.fName)) {
-          if (hdr_line.substr(hdr_line.find(macro.fName)).find(macro.fName + '(') !=
-              CompilerKit::STLString::npos) {
+          auto macro_pos = hdr_line.find(macro.fName);
+          if (macro_pos == CompilerKit::STLString::npos) continue;
+
+          if (hdr_line.substr(macro_pos).find(macro.fName + '(') != CompilerKit::STLString::npos) {
             if (!macro.fArgs.empty()) {
               CompilerKit::STLString              symbol_val = macro.fValue;
               std::vector<CompilerKit::STLString> args;
@@ -332,10 +343,15 @@ void bpp_parse_file(std::ifstream& hdr_file, std::ofstream& pp_out) {
               len += symbol_val.size();
               len += 2;  // ( and )
 
-              hdr_line.erase(hdr_line.find(")"), 1);
+              auto paren_pos = hdr_line.find(")");
+              if (paren_pos != CompilerKit::STLString::npos) {
+                hdr_line.erase(paren_pos, 1);
+              }
 
-              hdr_line.replace(hdr_line.find(hdr_line.substr(hdr_line.find(macro.fName + '('))),
-                               len, symbol_val);
+              auto macro_call_pos = hdr_line.find(macro.fName + '(');
+              if (macro_call_pos != CompilerKit::STLString::npos) {
+                hdr_line.replace(macro_call_pos, len, symbol_val);
+              }
             } else {
               auto value = macro.fValue;
 
@@ -346,7 +362,10 @@ void bpp_parse_file(std::ifstream& hdr_file, std::ofstream& pp_out) {
       }
 
       if (hdr_line[0] == kMacroPrefix && hdr_line.find("define ") != CompilerKit::STLString::npos) {
-        auto line_after_define = hdr_line.substr(hdr_line.find("define ") + strlen("define "));
+        auto define_pos = hdr_line.find("define ");
+        if (define_pos == CompilerKit::STLString::npos) continue;
+
+        auto line_after_define = hdr_line.substr(define_pos + strlen("define "));
 
         CompilerKit::STLString macro_value;
         CompilerKit::STLString macro_key;
@@ -426,7 +445,10 @@ void bpp_parse_file(std::ifstream& hdr_file, std::ofstream& pp_out) {
       }
 
       if (hdr_line[0] == kMacroPrefix && hdr_line.find("ifndef") != CompilerKit::STLString::npos) {
-        auto line_after_ifndef = hdr_line.substr(hdr_line.find("ifndef") + strlen("ifndef") + 1);
+        auto ifndef_pos = hdr_line.find("ifndef");
+        if (ifndef_pos == CompilerKit::STLString::npos) continue;
+
+        auto line_after_ifndef = hdr_line.substr(ifndef_pos + strlen("ifndef") + 1);
         CompilerKit::STLString macro;
 
         for (auto& ch : line_after_ifndef) {
@@ -483,7 +505,10 @@ void bpp_parse_file(std::ifstream& hdr_file, std::ofstream& pp_out) {
         }
       } else if (hdr_line[0] == kMacroPrefix &&
                  hdr_line.find("ifdef") != CompilerKit::STLString::npos) {
-        auto line_after_ifdef = hdr_line.substr(hdr_line.find("ifdef") + strlen("ifdef") + 1);
+        auto ifdef_pos = hdr_line.find("ifdef");
+        if (ifdef_pos == CompilerKit::STLString::npos) continue;
+
+        auto                   line_after_ifdef = hdr_line.substr(ifdef_pos + strlen("ifdef") + 1);
         CompilerKit::STLString macro;
 
         for (auto& ch : line_after_ifdef) {
@@ -567,7 +592,10 @@ void bpp_parse_file(std::ifstream& hdr_file, std::ofstream& pp_out) {
 
         if (good_to_go) continue;
 
-        auto line_after_if = hdr_line.substr(hdr_line.find("if") + strlen("if") + 1);
+        auto if_pos = hdr_line.find("if");
+        if (if_pos == CompilerKit::STLString::npos) continue;
+
+        auto                   line_after_if = hdr_line.substr(if_pos + strlen("if") + 1);
         CompilerKit::STLString macro;
 
         for (auto& ch : line_after_if) {
@@ -603,7 +631,10 @@ void bpp_parse_file(std::ifstream& hdr_file, std::ofstream& pp_out) {
         }
       } else if (hdr_line[0] == kMacroPrefix &&
                  hdr_line.find("warning") != CompilerKit::STLString::npos) {
-        auto line_after_warning = hdr_line.substr(hdr_line.find("warning") + strlen("warning") + 1);
+        auto warning_pos = hdr_line.find("warning");
+        if (warning_pos == CompilerKit::STLString::npos) continue;
+
+        auto line_after_warning = hdr_line.substr(warning_pos + strlen("warning") + 1);
         CompilerKit::STLString message;
 
         for (auto& ch : line_after_warning) {
@@ -617,7 +648,10 @@ void bpp_parse_file(std::ifstream& hdr_file, std::ofstream& pp_out) {
         std::cout << "warn: " << message << std::endl;
       } else if (hdr_line[0] == kMacroPrefix &&
                  hdr_line.find("error") != CompilerKit::STLString::npos) {
-        auto line_after_warning = hdr_line.substr(hdr_line.find("error") + strlen("error") + 1);
+        auto error_pos = hdr_line.find("error");
+        if (error_pos == CompilerKit::STLString::npos) continue;
+
+        auto line_after_warning = hdr_line.substr(error_pos + strlen("error") + 1);
         CompilerKit::STLString message;
 
         for (auto& ch : line_after_warning) {
@@ -631,7 +665,10 @@ void bpp_parse_file(std::ifstream& hdr_file, std::ofstream& pp_out) {
         throw std::runtime_error("error: " + message);
       } else if (hdr_line[0] == kMacroPrefix &&
                  hdr_line.find("include ") != CompilerKit::STLString::npos) {
-        line_after_include = hdr_line.substr(hdr_line.find("include ") + strlen("include "));
+        auto include_pos = hdr_line.find("include ");
+        if (include_pos == CompilerKit::STLString::npos) continue;
+
+        line_after_include = hdr_line.substr(include_pos + strlen("include "));
 
       kIncludeFile:
         auto it = std::find(kAllIncludes.cbegin(), kAllIncludes.cend(), line_after_include);
@@ -710,7 +747,7 @@ void bpp_parse_file(std::ifstream& hdr_file, std::ofstream& pp_out) {
         continue;
       }
     }
-  } catch (std::out_of_range& oor) {
+  } catch (const std::out_of_range& oor) {
     return;
   }
 }
@@ -742,8 +779,8 @@ NECTAR_MODULE(CPlusPlusPreprocessorMain) {
 
     Detail::bpp_macro macro_unused;
 
-    macro_unreachable.fName  = "__unused";
-    macro_unreachable.fValue = "__compilerkit_unused";
+    macro_unused.fName  = "__unused";
+    macro_unused.fValue = "__compilerkit_unused";
 
     kMacros.push_back(macro_unused);
 
@@ -839,8 +876,8 @@ NECTAR_MODULE(CPlusPlusPreprocessorMain) {
           CompilerKit::STLString macro_value;
           bool                   is_string = false;
 
-          for (int argv_find_len = 0; argv_find_len < strlen(argv[index]); ++argv_find_len) {
-            if (!isdigit(argv[index][argv_find_len])) {
+          for (int argv_find_len = 0; argv_find_len < strlen(argv[index + 2]); ++argv_find_len) {
+            if (!isdigit(argv[index + 2][argv_find_len])) {
               is_string = true;
               macro_value += "\"";
 
