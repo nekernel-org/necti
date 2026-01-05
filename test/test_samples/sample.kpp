@@ -1,0 +1,12 @@
+struct foo
+{
+       int bar()
+       {
+	int y = 0;
+	return y;
+       }
+};
+
+int main() {
+  return 0;
+}

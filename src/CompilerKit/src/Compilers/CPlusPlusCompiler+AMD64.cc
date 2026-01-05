@@ -149,12 +149,13 @@ static std::vector<CompilerKit::STLString> kRegisterConventionCallList = {
     "r8", "r9", "r10", "r11", "r12", "r13", "r14", "r15",
 };
 
-static std::size_t kFunctionEmbedLevel = 0UL;
+static std::size_t kFunctionEmbedLevel{};
+static std::size_t kNamespaceEmbedLevel{};
 
 /// detail namespaces
 
 const char* CompilerFrontendCPlusPlusAMD64::Language() {
-  return "C++";
+  return "NeKernel CT-C++";
 }
 
 static std::uintptr_t                                                 kOrigin = kPefBaseOrigin;
@@ -215,6 +216,15 @@ CompilerKit::SyntaxLeafList::SyntaxLeaf CompilerFrontendCPlusPlusAMD64::Compile(
     switch (keyword.first.fKeywordKind) {
       case CompilerKit::KeywordKind::kKeywordKindClass: {
         ++kOnClassScope;
+        auto symbol_name_cls = text.substr(text.find(keyword.first.fKeywordName));
+
+        for (auto& key : symbol_name_cls) {
+          if (key == ' ') key = '_';
+          if (key == ':') key = '$';
+        }
+
+        syntax_tree.fUserValue += "public_segment .data64 __NECTAR_" + symbol_name_cls + "\n";
+
         break;
       }
       case CompilerKit::KeywordKind::kKeywordKindIf: {
@@ -335,15 +345,12 @@ CompilerKit::SyntaxLeafList::SyntaxLeaf CompilerFrontendCPlusPlusAMD64::Compile(
 
         if (text.ends_with(";") && text.find("return") == CompilerKit::STLString::npos)
           goto lc_write_assembly;
-        else if (text.size() <= indexFnName)
-          CompilerKit::Detail::print_error("Invalid function name: " + symbol_name_fn, file);
 
         indexFnName = 0;
 
         for (auto& ch : symbol_name_fn) {
           if (ch == ' ' || ch == '\t') {
-            if (symbol_name_fn[indexFnName - 1] != ')')
-              CompilerKit::Detail::print_error("Invalid function name: " + symbol_name_fn, file);
+            ch = '_';
           }
 
           ++indexFnName;
@@ -751,7 +758,7 @@ class AssemblyCPlusPlusInterfaceAMD64 final CK_ASSEMBLY_INTERFACE {
     dest += ".pp.masm";
 
     std::ofstream out_fp(dest);
-    std::ifstream src_fp = std::ifstream(src + ".pp");
+    std::ifstream src_fp = std::ifstream(src);
 
     CompilerKit::STLString line_source;
 
@@ -770,7 +777,7 @@ class AssemblyCPlusPlusInterfaceAMD64 final CK_ASSEMBLY_INTERFACE {
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
-#define kExtListCxx {".cpp", ".cc", ".cc", ".c++", ".cp"}
+#define kExtListCxx {".cpp", ".cc", ".cc", ".c++", ".cp", ".kpp", ".k++"}
 
 NECTAR_MODULE(CompilerCPlusPlusAMD64) {
   bool skip = false;
@@ -797,16 +804,7 @@ NECTAR_MODULE(CompilerCPlusPlusAMD64) {
   kKeywords.emplace_back("double", CompilerKit::KeywordKind::kKeywordKindType);
   kKeywords.emplace_back("void", CompilerKit::KeywordKind::kKeywordKindType);
 
-  kKeywords.emplace_back("auto*", CompilerKit::KeywordKind::kKeywordKindTypePtr);
-  kKeywords.emplace_back("int*", CompilerKit::KeywordKind::kKeywordKindTypePtr);
-  kKeywords.emplace_back("bool*", CompilerKit::KeywordKind::kKeywordKindTypePtr);
-  kKeywords.emplace_back("unsigned*", CompilerKit::KeywordKind::kKeywordKindTypePtr);
-  kKeywords.emplace_back("short*", CompilerKit::KeywordKind::kKeywordKindTypePtr);
-  kKeywords.emplace_back("char*", CompilerKit::KeywordKind::kKeywordKindTypePtr);
-  kKeywords.emplace_back("long*", CompilerKit::KeywordKind::kKeywordKindTypePtr);
-  kKeywords.emplace_back("float*", CompilerKit::KeywordKind::kKeywordKindTypePtr);
-  kKeywords.emplace_back("double*", CompilerKit::KeywordKind::kKeywordKindTypePtr);
-  kKeywords.emplace_back("void*", CompilerKit::KeywordKind::kKeywordKindTypePtr);
+  kKeywords.emplace_back("*", CompilerKit::KeywordKind::kKeywordKindTypePtr);
 
   kKeywords.emplace_back("(", CompilerKit::KeywordKind::kKeywordKindFunctionStart);
   kKeywords.emplace_back(")", CompilerKit::KeywordKind::kKeywordKindFunctionEnd);
