@@ -762,8 +762,11 @@ class AssemblyCPlusPlusInterfaceAMD64 final CK_ASSEMBLY_INTERFACE {
 
     CompilerKit::STLString line_source;
 
+    std::stringstream ss;
+    ss << std::hex << kOrigin;
+
     out_fp << "%bits 64\n";
-    out_fp << "%org " << kOrigin << "\n\n";
+    out_fp << "%org 0x" << ss.str() << "\n\n";
 
     while (std::getline(src_fp, line_source)) {
       out_fp << kFrontend->Compile(line_source, src).fUserValue;
