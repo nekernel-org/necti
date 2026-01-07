@@ -15,6 +15,7 @@ tools/cxxdrv
 src/*/dbg
 src/*/cppdrv
 src/*/kdbg
+src/*/asm
 src/*/pef-amd64-cxxdrv
 src/*/pef-aarch64-cxxdrv
 src/*/pef-aarch64-cdrv
