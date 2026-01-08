@@ -251,7 +251,7 @@ static std::size_t kNamespaceEmbedLevel{};
 /// detail namespaces
 
 const char* CompilerFrontendCPlusPlusAMD64::Language() {
-  return "Nectar C++";
+  return "Nectar";
 }
 
 static std::uintptr_t                                                 kOrigin = kPefBaseOrigin;
@@ -756,7 +756,7 @@ CompilerKit::SyntaxLeafList::SyntaxLeaf CompilerFrontendCPlusPlusAMD64::Compile(
           for (auto pairRight : kRegisterMap) {
             ++indexRight;
 
-            if (pairRight != varName) {
+            if (pairRight.ends_with(varName)) {
               syntax_tree.fUserValue +=
                   instr + kRegisterList[kRegisterMap.size()] + ", " + valueOfVar + "\n";
               kOrigin += 1UL;
@@ -1452,7 +1452,7 @@ class AssemblyCPlusPlusInterfaceAMD64 final CK_ASSEMBLY_INTERFACE {
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
-#define kExtListCxx {".cpp", ".cc", ".cc", ".c++", ".cp", ".ipp", ".i++"}
+#define kExtListCxx {".ncpp"}
 
 NECTAR_MODULE(CompilerCPlusPlusAMD64) {
   bool skip = false;
@@ -1461,14 +1461,13 @@ NECTAR_MODULE(CompilerCPlusPlusAMD64) {
   kKeywords.emplace_back("else", CompilerKit::KeywordKind::kKeywordKindElse);
   kKeywords.emplace_back("else if", CompilerKit::KeywordKind::kKeywordKindElseIf);
 
-  kKeywords.emplace_back("class", CompilerKit::KeywordKind::kKeywordKindClass);
   kKeywords.emplace_back("struct", CompilerKit::KeywordKind::kKeywordKindClass);
-  kKeywords.emplace_back("namespace", CompilerKit::KeywordKind::kKeywordKindNamespace);
   kKeywords.emplace_back("typedef", CompilerKit::KeywordKind::kKeywordKindTypedef);
   kKeywords.emplace_back("using", CompilerKit::KeywordKind::kKeywordKindTypedef);
+  kKeywords.emplace_back("alias", CompilerKit::KeywordKind::kKeywordKindTypedef);
   kKeywords.emplace_back("{", CompilerKit::KeywordKind::kKeywordKindBodyStart);
   kKeywords.emplace_back("}", CompilerKit::KeywordKind::kKeywordKindBodyEnd);
-  kKeywords.emplace_back("auto", CompilerKit::KeywordKind::kKeywordKindType);
+  kKeywords.emplace_back("let", CompilerKit::KeywordKind::kKeywordKindType);
   kKeywords.emplace_back("int", CompilerKit::KeywordKind::kKeywordKindType);
   kKeywords.emplace_back("bool", CompilerKit::KeywordKind::kKeywordKindType);
   kKeywords.emplace_back("unsigned", CompilerKit::KeywordKind::kKeywordKindType);

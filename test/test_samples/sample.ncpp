@@ -1,0 +1,11 @@
+#import "ostream.ncpp"
+
+int main(void)
+{
+  ostream s;
+  let six_seven = 67;
+
+  s.write(six_seven);
+
+  return 0;
+}

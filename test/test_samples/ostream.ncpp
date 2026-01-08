@@ -1,0 +1,9 @@
+#import <stdio.h>
+
+struct ostream
+{
+    void write(int& val)
+    {
+        printf("%i", val);
+    }
+};
