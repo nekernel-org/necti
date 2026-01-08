@@ -10,7 +10,7 @@ class ostream
     return void;
   }
 
-  ostream& noop(const ostream in)
+  ostream& write(const char* buf, const long sz)
   {
     return *this;
   }
@@ -18,7 +18,7 @@ class ostream
 
 int main()
 {
-  void* f = new ostream();
-  f->noop(f);
+  ostream* f = new ostream();
+  f->write("foo", 3);
   return 0;
 }

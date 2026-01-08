@@ -452,7 +452,7 @@ CompilerKit::SyntaxLeafList::SyntaxLeaf CompilerFrontendCPlusPlusAMD64::Compile(
             std::stringstream ss;
             ss << std::hex << it->second;
 
-            syntax_tree.fUserValue = "jmp " + ss.str() + "\n";
+            syntax_tree.fUserValue += "jmp " + ss.str() + "\n";
             kOrigin += 1UL;
           }
           break;
@@ -482,7 +482,7 @@ CompilerKit::SyntaxLeafList::SyntaxLeaf CompilerFrontendCPlusPlusAMD64::Compile(
         auto mangled_name = nectar_mangle_name(cleanFnName, args);
 
         // Generate function label and prologue
-        syntax_tree.fUserValue = "public_segment .code64 " + mangled_name + "\n";
+        syntax_tree.fUserValue += "public_segment .code64 " + mangled_name + "\n";
         syntax_tree.fUserValue += nectar_generate_prologue();
 
         // Initialize function-local state
@@ -618,13 +618,13 @@ CompilerKit::SyntaxLeafList::SyntaxLeaf CompilerFrontendCPlusPlusAMD64::Compile(
 
             if (pairRight != valueOfVar) {
               if (valueOfVar[0] == '\"') {
-                syntax_tree.fUserValue = "segment .data64 __NECTAR_LOCAL_VAR_" + varName + ": db " +
+                syntax_tree.fUserValue += "segment .data64 __NECTAR_LOCAL_VAR_" + varName + ": db " +
                                          valueOfVar + ", 0\n\n";
                 syntax_tree.fUserValue += instr + kRegisterList[kRegisterMap.size() - 1] + ", " +
                                           "__NECTAR_LOCAL_VAR_" + varName + "\n";
                 kOrigin += 1UL;
               } else {
-                syntax_tree.fUserValue =
+                syntax_tree.fUserValue +=
                     instr + kRegisterList[kRegisterMap.size() - 1] + ", " + valueOfVar + "\n";
                 kOrigin += 1UL;
               }
@@ -635,7 +635,7 @@ CompilerKit::SyntaxLeafList::SyntaxLeaf CompilerFrontendCPlusPlusAMD64::Compile(
 
           if (((int) indexRight - 1) < 0) {
             if (valueOfVar[0] == '\"') {
-              syntax_tree.fUserValue =
+              syntax_tree.fUserValue +=
                   "segment .data64 __NECTAR_LOCAL_VAR_" + varName + ": db " + valueOfVar + ", 0\n";
               syntax_tree.fUserValue += instr + kRegisterList[kRegisterMap.size()] + ", " +
                                         "__NECTAR_LOCAL_VAR_" + varName + "\n";
@@ -648,14 +648,14 @@ CompilerKit::SyntaxLeafList::SyntaxLeaf CompilerFrontendCPlusPlusAMD64::Compile(
                 mangled  = "__NECTAR_";
                 mangled += ret;
 
-                syntax_tree.fUserValue = "jmp " + mangled + "\n";
+                syntax_tree.fUserValue += "jmp " + mangled + "\n";
                 syntax_tree.fUserValue +=
                     instr + " rax, " + kRegisterList[kRegisterMap.size()] + "\n";
 
                 goto done;
               }
 
-              syntax_tree.fUserValue =
+              syntax_tree.fUserValue +=
                   instr + kRegisterList[kRegisterMap.size()] + ", " + mangled + "\n";
               kOrigin += 1UL;
             }
@@ -668,9 +668,6 @@ CompilerKit::SyntaxLeafList::SyntaxLeaf CompilerFrontendCPlusPlusAMD64::Compile(
             for (auto pair : kRegisterMap) {
               if (pair == valueOfVar) goto done;
             }
-
-            CompilerKit::Detail::print_error("Variable not declared: " + varName, file);
-            break;
           }
 
         done:
@@ -693,12 +690,12 @@ CompilerKit::SyntaxLeafList::SyntaxLeaf CompilerFrontendCPlusPlusAMD64::Compile(
                                       CompilerKit::KeywordKind::kKeywordKindType ||
             kKeywords[keyword.second - 1].fKeywordKind ==
                 CompilerKit::KeywordKind::kKeywordKindTypePtr) {
-          syntax_tree.fUserValue = "\n";
+          syntax_tree.fUserValue += "\n";
           continue;
         }
 
         if (keyword.first.fKeywordKind == CompilerKit::KeywordKind::kKeywordKindEndInstr) {
-          syntax_tree.fUserValue = "\n";
+          syntax_tree.fUserValue += "\n";
           continue;
         }
 
@@ -744,6 +741,11 @@ CompilerKit::SyntaxLeafList::SyntaxLeaf CompilerFrontendCPlusPlusAMD64::Compile(
           valueOfVar = "0";
         }
 
+        if (CompilerKit::STLString::npos == varName.find("*"))
+            CompilerKit::Detail::print_error("Type not declared: " + varName, file);
+
+        varName = varName.substr(varName.find("*") + 1);
+
         for (auto pair : kRegisterMap) {
           ++indxReg;
 
@@ -755,13 +757,13 @@ CompilerKit::SyntaxLeafList::SyntaxLeaf CompilerFrontendCPlusPlusAMD64::Compile(
             ++indexRight;
 
             if (pairRight != varName) {
-              syntax_tree.fUserValue =
+              syntax_tree.fUserValue +=
                   instr + kRegisterList[kRegisterMap.size()] + ", " + valueOfVar + "\n";
               kOrigin += 1UL;
               continue;
             }
 
-            syntax_tree.fUserValue =
+            syntax_tree.fUserValue +=
                 instr + kRegisterList[indexRight - 1] + ", " + valueOfVar + "\n";
             kOrigin += 1UL;
             break;
@@ -801,21 +803,21 @@ CompilerKit::SyntaxLeafList::SyntaxLeaf CompilerFrontendCPlusPlusAMD64::Compile(
               for (auto pair : kRegisterMap) {
                 ++indxReg;
 
-                syntax_tree.fUserValue = "mov rax, " + kRegisterList[indxReg - 1] + "\n" +
+                syntax_tree.fUserValue += "mov rax, " + kRegisterList[indxReg - 1] + "\n" +
                                          nectar_generate_epilogue() + "ret\n";
                 kOrigin += 3UL;  // mov + epilogue (2) + ret
 
                 break;
               }
             } else {
-              syntax_tree.fUserValue =
+              syntax_tree.fUserValue +=
                   "mov rax, " + subText + "\n" + nectar_generate_epilogue() + "ret\n";
               kOrigin += 3UL;
 
               break;
             }
           } else if (!subText.empty()) {
-            syntax_tree.fUserValue = "__NECTAR_LOCAL_RETURN_STRING: db " + subText +
+            syntax_tree.fUserValue += "__NECTAR_LOCAL_RETURN_STRING: db " + subText +
                                      ", 0\nmov rcx, __NECTAR_LOCAL_RETURN_STRING\n";
             syntax_tree.fUserValue += "mov rax, rcx\n" + nectar_generate_epilogue() + "ret\n";
             kOrigin += 4UL;  // mov rcx + mov rax + epilogue (2) + ret
@@ -858,7 +860,7 @@ CompilerKit::SyntaxLeafList::SyntaxLeaf CompilerFrontendCPlusPlusAMD64::Compile(
                 auto mangled = nectar_mangle_name(funcName);
                 nectar_pop_scope();
 
-                syntax_tree.fUserValue =
+                syntax_tree.fUserValue +=
                     "call " + mangled + "\n" + nectar_generate_epilogue() + "ret\n";
                 kOrigin += 3UL;
                 break;
@@ -876,7 +878,7 @@ CompilerKit::SyntaxLeafList::SyntaxLeaf CompilerFrontendCPlusPlusAMD64::Compile(
                   std::stringstream ss;
                   ss << std::hex << it->second;
 
-                  syntax_tree.fUserValue =
+                  syntax_tree.fUserValue +=
                       "call " + ss.str() + "\n" + nectar_generate_epilogue() + "ret\n";
                   kOrigin += 3UL;
                   break;
@@ -885,12 +887,12 @@ CompilerKit::SyntaxLeafList::SyntaxLeaf CompilerFrontendCPlusPlusAMD64::Compile(
             }
           }
 
-          syntax_tree.fUserValue = nectar_generate_epilogue() + "ret\n";
+          syntax_tree.fUserValue += nectar_generate_epilogue() + "ret\n";
           kOrigin += 2UL;
 
           break;
         } catch (...) {
-          syntax_tree.fUserValue = nectar_generate_epilogue() + "ret\n";
+          syntax_tree.fUserValue += nectar_generate_epilogue() + "ret\n";
           kOrigin += 2UL;
 
           break;
