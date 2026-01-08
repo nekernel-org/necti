@@ -2,7 +2,7 @@
 
 # Nectar
 
-![CI](https://github.com/amlel-el-mahrouss/cc/actions/workflows/necti-dev.yml/badge.svg)
+![CI](https://github.com/amlel-el-mahrouss/cc/actions/workflows/nectar-dev.yml/badge.svg)
 [![License: GPL-3.0](https://img.shields.io/badge/license-Apache--2.0-blue.svg)](LICENSE)
 
 ## Structure:
@@ -33,8 +33,8 @@ Always use `format.sh` before commiting and pushing your code!
 Run the following:
 
 ```sh
-git clone git@github.com:nekernel-org/necti.git
-cd necti
+git clone git@github.com:nekernel-org/nectar.git
+cd nectar
 # Either build the debugger or compiler libraries/tools using nebuild.
 ```
 
@@ -48,7 +48,7 @@ And build the source tree using the NeBuild system.
 ## Authors & Credits
 
 - **Amlal El Mahrouss** — Lead Developer and Compiler Architect.
-- [Full contributor list](https://github.com/nekernel-org/necti/graphs/contributors)
+- [Full contributor list](https://github.com/nekernel-org/nectar/graphs/contributors)
 
 ---
 
