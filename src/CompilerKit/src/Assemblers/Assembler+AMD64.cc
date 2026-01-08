@@ -24,7 +24,7 @@
 #define __ASM_NEED_AMD64__
 #endif
 
-#define kAssemblerPragmaSymStr "%%"
+#define kAssemblerPragmaSymStr "%"
 #define kAssemblerPragmaSym '%'
 
 #include <CompilerKit/AE.h>
@@ -203,12 +203,12 @@ NECTAR_MODULE(AssemblerMainAMD64) {
     }
 
     while (std::getline(file_ptr, line)) {
-      if (auto ln = asm64.CheckLine(line, argv[i]); !ln.empty()) {
-        CompilerKit::Detail::print_error(ln, argv[i]);
-        continue;
-      }
-
       try {
+        if (auto ln = asm64.CheckLine(line, argv[i]); !ln.empty()) {
+          CompilerKit::Detail::print_error(ln, argv[i]);
+          continue;
+        }
+
         asm_read_attributes(line);
         asm64.WriteLine(line, argv[i]);
       } catch (const std::exception& e) {
@@ -343,7 +343,15 @@ static bool asm_read_attributes(std::string line) {
       throw std::runtime_error("invalid_extern_segment_bin");
     }
 
-    auto name = line.substr(line.find("extern_segment") + strlen("extern_segment") + 1);
+    auto pos      = line.find("extern_segment");
+    auto name_pos = pos + strlen("extern_segment") + 1;
+
+    if (pos == std::string::npos || name_pos >= line.size()) {
+      CompilerKit::Detail::print_error("Invalid extern_segment", "power-as");
+      throw std::runtime_error("invalid_extern_segment");
+    }
+
+    auto name = line.substr(name_pos);
 
     if (name.size() == 0) {
       CompilerKit::Detail::print_error("Invalid extern_segment", "power-as");
@@ -402,7 +410,13 @@ static bool asm_read_attributes(std::string line) {
       throw std::runtime_error("invalid_public_segment_bin");
     }
 
-    auto name = line.substr(line.find("public_segment") + strlen("public_segment") + 1);
+    auto res_sym_at = (line.find("public_segment") + strlen("public_segment") + 1);
+    if (res_sym_at > line.size()) {
+      CompilerKit::Detail::print_error("Invalid symbol for public_segment.", "CompilerKit");
+      throw std::runtime_error("invalid_public_segment_symbol");
+    }
+
+    auto name = line.substr(res_sym_at);
 
     std::string name_copy = name;
 
@@ -473,7 +487,7 @@ static inline bool is_not_valid(char c) {
   if ((isalpha(c) || isdigit(c)) ||
       ((c == ' ') || (c == '\t') || (c == ',') || (c == '(') || (c == ')') || (c == '"') ||
        (c == '*') || (c == '\'') || (c == '[') || (c == ']') || (c == '+') || (c == '_') ||
-       (c == ':') || (c == '@') || (c == '.') || (c == '#') || (c == ';')))
+       (c == ':') || (c == '@') || (c == '.') || (c == '#') || (c == '%') || (c == '~') || (c == ';')))
     return false;
 
   return true;
@@ -571,7 +585,7 @@ bool CompilerKit::EncoderAMD64::WriteNumber(const std::size_t& pos, std::string&
       CompilerKit::NumberCast64 num =
           CompilerKit::NumberCast64(strtol(jump_label.substr(pos + 2).c_str(), nullptr, 16));
 
-      for (char& i : num.number) {
+      for (auto& i : num.number) {
         if (i == 0) i = 0xFF;
 
         kAppBytes.push_back(i);
@@ -1170,13 +1184,18 @@ bool CompilerKit::EncoderAMD64::WriteLine(std::string line, std::string file) {
       kRegisterBitWidth = 32U;
     } else if (line.find("bits 16") != std::string::npos) {
       kRegisterBitWidth = 16U;
-    } else if (line.find("org") != std::string::npos) {
+    } else if (auto org_pos = line.find("org"); org_pos != std::string::npos) {
+      auto value_pos = org_pos + strlen("org") + 1;
+
+      if (value_pos >= line.size()) {
+        CompilerKit::Detail::print_error("Invalid org directive", "CompilerKit");
+        throw std::runtime_error("invalid_org");
+      }
+
       size_t base[] = {10, 16, 2, 7};
 
       for (size_t i = 0; i < 4; i++) {
-        if (kOrigin = strtol((line.substr(line.find("org") + strlen("org") + 1)).c_str(), nullptr,
-                             base[i]);
-            kOrigin) {
+        if (kOrigin = strtol(line.substr(value_pos).c_str(), nullptr, base[i]); kOrigin) {
           if (errno != 0) {
             continue;
           } else {
@@ -1191,16 +1210,16 @@ bool CompilerKit::EncoderAMD64::WriteLine(std::string line, std::string file) {
     }
   }
   /// write a dword
-  else if (line.find(".dword") != std::string::npos) {
-    this->WriteNumber32(line.find(".dword") + strlen(".dword") + 1, line);
+  else if (auto pos = line.find(".dword"); pos != std::string::npos) {
+    this->WriteNumber32(pos + strlen(".dword") + 1, line);
   }
   /// write a long
-  else if (line.find(".long") != std::string::npos) {
-    this->WriteNumber(line.find(".long") + strlen(".long") + 1, line);
+  else if (auto pos = line.find(".long"); pos != std::string::npos) {
+    this->WriteNumber(pos + strlen(".long") + 1, line);
   }
   /// write a 16-bit number
-  else if (line.find(".word") != std::string::npos) {
-    this->WriteNumber16(line.find(".word") + strlen(".word") + 1, line);
+  else if (auto pos = line.find(".word"); pos != std::string::npos) {
+    this->WriteNumber16(pos + strlen(".word") + 1, line);
   }
 
   kOrigin += kIPAlignement;
