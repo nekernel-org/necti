@@ -214,7 +214,7 @@ class CompilerFrontendNectarAMD64 final CK_COMPILER_FRONTEND {
 
   NECTAR_COPY_DEFAULT(CompilerFrontendNectarAMD64);
 
-  /// \brief Parse C symbols and syntax.
+  /// \brief Parse Nectar symbols and syntax.
   CompilerKit::SyntaxLeafList::SyntaxLeaf Compile(CompilerKit::STLString&       text,
                                                   const CompilerKit::STLString& file) override;
 
@@ -232,8 +232,6 @@ class CompilerFrontendNectarAMD64 final CK_COMPILER_FRONTEND {
 /// @internal compiler variables
 
 static CompilerFrontendNectarAMD64* kFrontend = nullptr;
-
-static std::vector<CompilerKit::STLString> kRegisterMap;
 
 static std::vector<CompilerKit::STLString> kRegisterList = {
     "rbx", "rsi", "r10", "r11", "r12", "r13", "r14", "r15", "xmm12", "xmm13", "xmm14", "xmm15",
@@ -364,46 +362,9 @@ CompilerKit::SyntaxLeafList::SyntaxLeaf CompilerFrontendNectarAMD64::Compile(
             auto& valueOfVar = (!left.empty() && !isdigit(left[0])) ? left : right;
 
             if (!valueOfVar.empty()) {
-              for (auto pairRight : kRegisterMap) {
-                ++indexRight;
-
-                CompilerKit::STLString instr = "mov ";
-
-                if (pairRight != valueOfVar) {
-                  auto& valueOfVarOpposite = (!left.empty() && isdigit(left[0])) ? left : right;
-
-                  syntax_tree.fUserValue +=
-                      instr + kRegisterList[indexRight + 1] + ", " + valueOfVarOpposite + "\n";
-                  syntax_tree.fUserValue += "cmp " + kRegisterList[kRegisterMap.size() - 1] + "," +
-                                            kRegisterList[indexRight + 1] + "\n";
-
-                  goto lc_done_iterarting_on_if;
-                }
-
-                auto& valueOfVarOpposite = (!left.empty() && isdigit(left[0])) ? left : right;
-
-                syntax_tree.fUserValue +=
-                    instr + kRegisterList[indexRight + 1] + ", " + valueOfVarOpposite + "\n";
-                syntax_tree.fUserValue += "cmp " + kRegisterList[kRegisterMap.size() - 1] + ", " +
-                                          kRegisterList[indexRight + 1] + "\n";
-
-                break;
-              }
+              nectar_allocate_register(valueOfVar);
             }
           }
-
-        lc_done_iterarting_on_if:
-
-          CompilerKit::STLString symbol_name_fn = text;
-
-          symbol_name_fn.erase(symbol_name_fn.find(keyword.first.fKeywordName));
-
-          for (auto& ch : symbol_name_fn) {
-            if (ch == ' ') ch = '_';
-          }
-
-          syntax_tree.fUserValue +=
-              "jge __OFFSET_ON_TRUE_LC\nsegment .code64 __OFFSET_ON_TRUE_LC:\n";
         }
 
         break;
@@ -509,9 +470,7 @@ CompilerKit::SyntaxLeafList::SyntaxLeaf CompilerFrontendNectarAMD64::Compile(
 
         if (text.ends_with(";")) break;
 
-        --kFunctionEmbedLevel;
-
-        if (kRegisterMap.size() > kRegisterList.size()) {
+        if (kFunctionEmbedLevel) {
           --kFunctionEmbedLevel;
         }
 
@@ -520,9 +479,67 @@ CompilerKit::SyntaxLeafList::SyntaxLeaf CompilerFrontendNectarAMD64::Compile(
 
         // Clear function-local state
         if (kFunctionEmbedLevel < 1) {
-          kRegisterMap.clear();
           kContext.fVariables.clear();
         }
+
+        break;
+      }
+      case CompilerKit::KeywordKind::kKeywordKindAccess:
+      case CompilerKit::KeywordKind::kKeywordKindPtrAccess:
+      {
+        CompilerKit::STLString valueOfVar = text.substr(text.find(keyword.first.fKeywordName) 
+            + keyword.first.fKeywordName.size());
+
+        auto args = valueOfVar.substr(valueOfVar.find("(") + 1);
+
+        if (!valueOfVar.find("("))
+          CompilerKit::Detail::print_error("Malformed function call: " + text, file);
+
+        valueOfVar.erase(valueOfVar.find("("));
+        valueOfVar += "\n";
+
+        syntax_tree.fUserValue += "lea r8, [rbp-1]\n";
+
+        CompilerKit::STLString arg;
+        auto index = 9;
+        auto cnter = 0;
+
+        for (auto& ch : args) {
+          if (ch == ',' || ch == ')') {
+            if (index <= 15) {
+              auto val = nectar_get_variable_ref(arg);
+
+              if (val.empty())
+              {
+                val = arg;
+
+                while (val.find(" ") != CompilerKit::STLString::npos) {
+                  val.erase(val.find(" "), 1);
+                }
+
+                if (!isnumber(val[0])) {
+                  val = "0";
+                  CompilerKit::Detail::print_error("Variable not declared: " + arg, file);
+                }
+              }
+
+              if (!arg.empty())
+                syntax_tree.fUserValue += "mov r" + std::to_string(index) + ", " + val + "\n";
+              
+              arg.clear();
+              ++index;
+              ++cnter;
+            }
+
+            continue;
+          }
+
+          arg += ch;
+        }
+
+        // TODO1: Handle more than 7 arguments (stack)
+        // TODO2: valueOfVar should properly form member function calls.
+        syntax_tree.fUserValue += "call " + valueOfVar;
 
         break;
       }
@@ -585,106 +602,11 @@ CompilerKit::SyntaxLeafList::SyntaxLeaf CompilerFrontendNectarAMD64::Compile(
         if (typeFound &&
             keyword.first.fKeywordKind != CompilerKit::KeywordKind::kKeywordKindVariableInc &&
             keyword.first.fKeywordKind != CompilerKit::KeywordKind::kKeywordKindVariableDec) {
-          if (kRegisterMap.size() > kRegisterList.size()) {
-            ++kFunctionEmbedLevel;
-          }
-
-          while (varName.find(" ") != CompilerKit::STLString::npos) {
-            varName.erase(varName.find(" "), 1);
-          }
-
-          while (varName.find("\t") != CompilerKit::STLString::npos) {
-            varName.erase(varName.find("\t"), 1);
-          }
-
           // Remove whitespace only (keep operators and quotes)
           while (!valueOfVar.empty() && (valueOfVar[0] == ' ' || valueOfVar[0] == '\t')) {
             valueOfVar.erase(0, 1);
           }
-
-          constexpr auto kTrueVal  = "true";
-          constexpr auto kFalseVal = "false";
-
-          if (valueOfVar == kTrueVal) {
-            valueOfVar = "1";
-          } else if (valueOfVar == kFalseVal) {
-            valueOfVar = "0";
-          }
-
-          std::size_t indexRight = 0UL;
-
-          for (auto pairRight : kRegisterMap) {
-            ++indexRight;
-
-            if (pairRight != valueOfVar) {
-              if (valueOfVar[0] == '\"') {
-                syntax_tree.fUserValue += "segment .data64 __NECTAR_LOCAL_VAR_" + varName +
-                                          ": db " + valueOfVar + ", 0\n\n";
-                syntax_tree.fUserValue += instr + kRegisterList[kRegisterMap.size() - 1] + ", " +
-                                          "__NECTAR_LOCAL_VAR_" + varName + "\n";
-                kOrigin += 1UL;
-              } else {
-                syntax_tree.fUserValue +=
-                    instr + kRegisterList[kRegisterMap.size() - 1] + ", " + valueOfVar + "\n";
-                kOrigin += 1UL;
-              }
-
-              goto done;
-            }
-          }
-
-          if (((int) indexRight - 1) < 0) {
-            if (valueOfVar[0] == '\"') {
-              syntax_tree.fUserValue +=
-                  "segment .data64 __NECTAR_LOCAL_VAR_" + varName + ": db " + valueOfVar + ", 0\n";
-              syntax_tree.fUserValue += instr + kRegisterList[kRegisterMap.size()] + ", " +
-                                        "__NECTAR_LOCAL_VAR_" + varName + "\n";
-              kOrigin += 1UL;
-            } else {
-              auto mangled = valueOfVar;
-
-              if (mangled.find("(") != std::string::npos) {
-                auto ret = mangled.erase(mangled.find("("));
-                mangled  = "__NECTAR_";
-                mangled += ret;
-
-                syntax_tree.fUserValue += "jmp " + mangled + "\n";
-                syntax_tree.fUserValue +=
-                    instr + " rax, " + kRegisterList[kRegisterMap.size()] + "\n";
-
-                goto done;
-              }
-
-              syntax_tree.fUserValue +=
-                  instr + kRegisterList[kRegisterMap.size()] + ", " + mangled + "\n";
-              kOrigin += 1UL;
-            }
-
-            goto done;
-          }
-
-          if (!valueOfVar.empty() && valueOfVar[0] != '\"' && valueOfVar[0] != '\'' &&
-              !isdigit(valueOfVar[0])) {
-            for (auto pair : kRegisterMap) {
-              if (pair == valueOfVar) goto done;
-            }
-          }
-
-        done:
-          for (auto& keyword : kKeywords) {
-            if (keyword.fKeywordKind == CompilerKit::KeywordKind::kKeywordKindType &&
-                varName.find(keyword.fKeywordName) != CompilerKit::STLString::npos) {
-              varName.erase(varName.find(keyword.fKeywordName), keyword.fKeywordName.size());
-              break;
-            }
-          }
-
-          newVars.push_back(varName);
-
-          break;
         }
-
-        kRegisterMap.insert(kRegisterMap.end(), newVars.begin(), newVars.end());
 
         if (keyword.second > 0 && kKeywords[keyword.second - 1].fKeywordKind ==
                                       CompilerKit::KeywordKind::kKeywordKindType ||
@@ -708,14 +630,6 @@ CompilerKit::SyntaxLeafList::SyntaxLeaf CompilerFrontendNectarAMD64::Compile(
 
         CompilerKit::STLString varErrCpy = varName;
 
-        while (varName.find(" ") != CompilerKit::STLString::npos) {
-          varName.erase(varName.find(" "), 1);
-        }
-
-        while (varName.find("\t") != CompilerKit::STLString::npos) {
-          varName.erase(varName.find("\t"), 1);
-        }
-
         std::size_t indxReg = 0UL;
 
         while (!valueOfVar.empty() && (valueOfVar[0] == ' ' || valueOfVar[0] == '\t')) {
@@ -730,54 +644,14 @@ CompilerKit::SyntaxLeafList::SyntaxLeaf CompilerFrontendNectarAMD64::Compile(
           valueOfVar.erase(valueOfVar.find("\t"), 1);
         }
 
-        constexpr auto kTrueVal  = "true";
-        constexpr auto kFalseVal = "false";
-
-        /// interpet boolean values, since we're on NECTAR
-
-        if (valueOfVar == kTrueVal) {
-          valueOfVar = "1";
-        } else if (valueOfVar == kFalseVal) {
-          valueOfVar = "0";
-        }
-
-        if (CompilerKit::STLString::npos == varName.find("*"))
-          CompilerKit::Detail::print_error("Type not declared: " + varName, file);
-
-        varName = varName.substr(varName.find("*") + 1);
-
-        for (auto pair : kRegisterMap) {
-          ++indxReg;
-
-          if (pair != varName) continue;
-
-          std::size_t indexRight = 0ul;
-
-          for (auto pairRight : kRegisterMap) {
-            ++indexRight;
-
-            if (pairRight.ends_with(varName)) {
-              syntax_tree.fUserValue +=
-                  instr + kRegisterList[kRegisterMap.size()] + ", " + valueOfVar + "\n";
-              kOrigin += 1UL;
-              continue;
-            }
-
-            syntax_tree.fUserValue +=
-                instr + kRegisterList[indexRight - 1] + ", " + valueOfVar + "\n";
-            kOrigin += 1UL;
-            break;
-          }
-
-          newVars.push_back(varName);
-          break;
-        }
-
-        if (syntax_tree.fUserValue.empty()) {
+        if (varName.find("let ") == CompilerKit::STLString::npos)
           CompilerKit::Detail::print_error("Variable not declared: " + varName, file);
-        }
 
-        kRegisterMap.insert(kRegisterMap.end(), newVars.begin(), newVars.end());
+        varName = varName.substr(varName.find("let ") + std::string{"let "}.size());
+
+        nectar_allocate_stack_variable(varName);
+        syntax_tree.fUserValue += instr +
+            nectar_get_variable_ref(varName) + ", " + valueOfVar + "\n";
 
         break;
       }
@@ -796,33 +670,6 @@ CompilerKit::SyntaxLeafList::SyntaxLeaf CompilerFrontendNectarAMD64::Compile(
           }
           while (!subText.empty() && (subText.back() == ' ' || subText.back() == '\t')) {
             subText.pop_back();
-          }
-
-          if (!subText.empty() && subText[0] != '\"' && subText[0] != '\'') {
-            if (!isdigit(subText[0])) {
-              for (auto pair : kRegisterMap) {
-                ++indxReg;
-
-                syntax_tree.fUserValue += "mov rax, " + kRegisterList[indxReg - 1] + "\n" +
-                                          nectar_generate_epilogue() + "ret\n";
-                kOrigin += 3UL;  // mov + epilogue (2) + ret
-
-                break;
-              }
-            } else {
-              syntax_tree.fUserValue +=
-                  "mov rax, " + subText + "\n" + nectar_generate_epilogue() + "ret\n";
-              kOrigin += 3UL;
-
-              break;
-            }
-          } else if (!subText.empty()) {
-            syntax_tree.fUserValue += "__NECTAR_LOCAL_RETURN_STRING: db " + subText +
-                                      ", 0\nmov rcx, __NECTAR_LOCAL_RETURN_STRING\n";
-            syntax_tree.fUserValue += "mov rax, rcx\n" + nectar_generate_epilogue() + "ret\n";
-            kOrigin += 4UL;  // mov rcx + mov rax + epilogue (2) + ret
-
-            break;
           }
 
           if (syntax_tree.fUserValue.empty()) {
@@ -1466,11 +1313,10 @@ NECTAR_MODULE(CompilerNectarAMD64) {
   kKeywords.emplace_back("if", CompilerKit::KeywordKind::kKeywordKindIf);
   kKeywords.emplace_back("else", CompilerKit::KeywordKind::kKeywordKindElse);
   kKeywords.emplace_back("else if", CompilerKit::KeywordKind::kKeywordKindElseIf);
-
+  kKeywords.emplace_back("type", CompilerKit::KeywordKind::kKeywordKindGenerics);
   kKeywords.emplace_back("struct", CompilerKit::KeywordKind::kKeywordKindClass);
   kKeywords.emplace_back("typedef", CompilerKit::KeywordKind::kKeywordKindTypedef);
-  kKeywords.emplace_back("using", CompilerKit::KeywordKind::kKeywordKindTypedef);
-  kKeywords.emplace_back("alias", CompilerKit::KeywordKind::kKeywordKindTypedef);
+  kKeywords.emplace_back("typealias", CompilerKit::KeywordKind::kKeywordKindTypedef);
   kKeywords.emplace_back("{", CompilerKit::KeywordKind::kKeywordKindBodyStart);
   kKeywords.emplace_back("}", CompilerKit::KeywordKind::kKeywordKindBodyEnd);
   kKeywords.emplace_back("let", CompilerKit::KeywordKind::kKeywordKindType);

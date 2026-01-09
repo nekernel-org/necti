@@ -18,7 +18,7 @@
 
 /// @author Amlal El Mahrouss (amlal@nekernel.org)
 /// @file Preprocessor+Generic.cc
-/// @brief Preprocessor.
+/// @brief Nectar Preprocessor.
 
 typedef Int32 (*bpp_parser_fn_t)(CompilerKit::STLString& line, std::ifstream& hdr_file,
                                  std::ofstream& pp_out);

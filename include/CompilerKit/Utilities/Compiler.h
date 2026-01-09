@@ -65,7 +65,7 @@ inline void print_warning(STLString reason, STLString file) noexcept {
 /// @internal
 /// @brief Handler for SIGSEGV signal.
 inline void drvi_crash_handler(std::int32_t id) {
-  CompilerKit::STLString verbose_header = "LIBCOMPILER CRASH REPORT - ";
+  CompilerKit::STLString verbose_header = "COMPILERKIT CRASH REPORT - ";
   verbose_header += kDistVersion;
   verbose_header += " - ";
   verbose_header += CompilerKit::current_date();
@@ -90,6 +90,10 @@ inline void drvi_crash_handler(std::int32_t id) {
   kStdOut << "ERRNO(STRING): " << strerror(errno) << std::endl;
 
   switch (id) {
+    default: {
+      kStdOut << "SIGNAL: Unknown Signal (" << id << ")." << kBlank << std::endl;
+      break;
+    }
     case SIGSEGV: {
       kStdOut << "SIGNAL: Segmentation Fault." << kBlank << std::endl;
       break;

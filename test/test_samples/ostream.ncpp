@@ -1,4 +1,4 @@
-export ncpp.ostream;
+export ncpp::ostream;
 import printf, getchar, malloc;
 
 struct iostream
@@ -25,9 +25,7 @@ struct iostream
     }
 };
 
-typedef iostream* iostream_ptr;
-
-iostream_ptr shared_io()
+let shared_io()
 {
 	let io = malloc(sizeof(iostream));
 	return io;

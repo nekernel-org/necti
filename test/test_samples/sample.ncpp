@@ -1,9 +1,10 @@
-import ncpp.ostream;
+import ncpp::ostream;
 
 int main(void)
 {
     let six_seven = 100;
-    shared_io()->consume(six_seven);
+    let eight_nine = 1;
+    shared_io()->consume(1, 67);
 
     return 0;
 }

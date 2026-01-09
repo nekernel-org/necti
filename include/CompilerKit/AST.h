@@ -38,6 +38,7 @@ enum struct KeywordKind {
   kKeywordKindBodyStart,
   kKeywordKindBodyEnd,
   kKeywordKindClass,
+  kKeywordKindGenerics,
   kKeywordKindPtrAccess,
   kKeywordKindAccess,
   kKeywordKindIf,
