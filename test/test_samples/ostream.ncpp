@@ -2,8 +2,16 @@
 
 struct ostream
 {
-    void write(int& val)
+    void consume(int& val)
     {
         printf("%i", val);
     }
+
+    int read()
+    {
+        return getchar();
+    }
 };
+
+ostream out;
+ostream in;

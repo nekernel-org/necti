@@ -24,5 +24,5 @@ Int32 main(Int32 argc, Char** argv) {
 
 TEST(LinkerRun, LinkerExitsCorrectly) {
   EXPECT_TRUE(kArgc > 1);
-  EXPECT_TRUE(DynamicLinker64PEF(kArgc, kArgv) == 0) << "Linker invocation failed";
+  EXPECT_TRUE(DynamicLinker64PEF(kArgc, kArgv) == 0);
 }

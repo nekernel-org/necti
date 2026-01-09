@@ -17,7 +17,7 @@ static auto kPath = "/usr/local/lib/libCompilerKit.dylib";
 static auto kPath = "/usr/lib/libCompilerKit.so";
 #endif
 
-static auto kSymbol = "CompilerCPlusPlusAMD64";
+static auto kSymbol = "CompilerNectarAMD64";
 
 Int32 main(Int32 argc, Char const* argv[]) {
   CompilerKit::DLLLoader dylib;

@@ -2,10 +2,8 @@
 
 int main(void)
 {
-  ostream s;
-  let six_seven = 67;
+    let six_seven = 100;
+    out.consume(six_seven);
 
-  s.write(six_seven);
-
-  return 0;
+    return 0;
 }

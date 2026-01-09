@@ -758,7 +758,7 @@ void bpp_parse_file(std::ifstream& hdr_file, std::ofstream& pp_out) {
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
-NECTAR_MODULE(CPlusPlusPreprocessorMain) {
+NECTAR_MODULE(GenericPreprocessorMain) {
   try {
     bool skip        = false;
     bool double_skip = false;
@@ -791,19 +791,19 @@ NECTAR_MODULE(CPlusPlusPreprocessorMain) {
 
     kMacros.push_back(macro_0);
 
-    Detail::bpp_macro macro_zka;
+    Detail::bpp_macro macro_nectar;
 
-    macro_zka.fName  = "__NECTAR__";
-    macro_zka.fValue = "1";
+    macro_nectar.fName  = "__NECTAR__";
+    macro_nectar.fValue = "1";
 
-    kMacros.push_back(macro_zka);
+    kMacros.push_back(macro_nectar);
 
-    Detail::bpp_macro macro_cxx;
+    Detail::bpp_macro macro_lang;
 
-    macro_cxx.fName  = "__cplusplus";
-    macro_cxx.fValue = "202302L";
+    macro_lang.fName  = "__ncpp";
+    macro_lang.fValue = "202601L";
 
-    kMacros.push_back(macro_cxx);
+    kMacros.push_back(macro_lang);
 
     Detail::bpp_macro macro_size_t;
     macro_size_t.fName  = "__SIZE_TYPE__";
@@ -836,7 +836,7 @@ NECTAR_MODULE(CPlusPlusPreprocessorMain) {
       if (argv[index][0] == '-') {
         if (strcmp(argv[index], "-cpp-ver") == 0) {
           printf("%s\n",
-                 "NeKernel Preprocessor Driver v1.11, (c) Amlal El Mahrouss 2024-2025 all rights "
+                 "Nectar Preprocessor Driver v1.11, (c) Amlal El Mahrouss 2024-2026 all rights "
                  "reserved.");
 
           return NECTAR_SUCCESS;
@@ -844,7 +844,7 @@ NECTAR_MODULE(CPlusPlusPreprocessorMain) {
 
         if (strcmp(argv[index], "-cpp-help") == 0) {
           printf("%s\n",
-                 "NeKernel Preprocessor Driver v1.11, (c) Amlal El Mahrouss 2024-2025 all rights "
+                 "Nectar Preprocessor Driver v1.11, (c) Amlal El Mahrouss 2024-2026 all rights "
                  "reserved.");
           printf("%s\n", "-cpp-working-dir <path>: set directory to working path.");
           printf("%s\n", "-cpp-include-dir <path>: add directory to include path.");

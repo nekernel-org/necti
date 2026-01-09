@@ -9,10 +9,10 @@
 #include <CompilerKit/Detail/Config.h>
 #include <CompilerKit/ErrorID.h>
 
-CK_IMPORT_C int CPlusPlusPreprocessorMain(int argc, char const* argv[]);
+CK_IMPORT_C int GenericPreprocessorMain(int argc, char const* argv[]);
 
 int main(int argc, char const* argv[]) {
-  if (auto code = CPlusPlusPreprocessorMain(argc, argv); code > 0) {
+  if (auto code = GenericPreprocessorMain(argc, argv); code > 0) {
     std::printf("cppdrv: preprocessor exited with code %i.\n", code);
 
     return NECTAR_EXEC_ERROR;

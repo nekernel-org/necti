@@ -26,17 +26,17 @@
 #include <cstdlib>
 #include <filesystem>
 
-/* NeKernel C++ Compiler Driver. */
+/* NeKernel NECTAR Compiler Driver. */
 /* This is part of the CompilerKit. */
 /* (c) Amlal El Mahrouss 2024-2025 */
 
 /// @author Amlal El Mahrouss (amlal@nekernel.org)
-/// @file CPlusPlusCompilerAMD64.cc
-/// @brief C++ Compiler Driver.
+/// @file NectarCompiler+AMD64.cc
+/// @brief NECTAR Compiler Driver.
 
 /////////////////////////////////////
 
-// INTERNALS OF THE C++ COMPILER
+// INTERNALS OF THE NECTAR COMPILER
 
 /////////////////////////////////////
 
@@ -85,7 +85,7 @@ static Int32 kOnClassScope = 0;
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
-// NEW DATA STRUCTURES FOR C++ SUPPORT
+// NEW DATA STRUCTURES FOR NECTAR SUPPORT
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
@@ -206,13 +206,13 @@ static void nectar_process_function_parameters(const std::vector<CompilerKit::ST
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
-/* \brief C++ compiler backend for the NeKernel C++ driver */
-class CompilerFrontendCPlusPlusAMD64 final CK_COMPILER_FRONTEND {
+/* \brief NECTAR compiler backend for the NeKernel NECTAR driver */
+class CompilerFrontendNectarAMD64 final CK_COMPILER_FRONTEND {
  public:
-  explicit CompilerFrontendCPlusPlusAMD64()  = default;
-  ~CompilerFrontendCPlusPlusAMD64() override = default;
+  explicit CompilerFrontendNectarAMD64()  = default;
+  ~CompilerFrontendNectarAMD64() override = default;
 
-  NECTAR_COPY_DEFAULT(CompilerFrontendCPlusPlusAMD64);
+  NECTAR_COPY_DEFAULT(CompilerFrontendNectarAMD64);
 
   /// \brief Parse C symbols and syntax.
   CompilerKit::SyntaxLeafList::SyntaxLeaf Compile(CompilerKit::STLString&       text,
@@ -222,7 +222,7 @@ class CompilerFrontendCPlusPlusAMD64 final CK_COMPILER_FRONTEND {
   const char* Language() override;
 
  public:
-  /// \brief Parse C++ namespaces and objects.
+  /// \brief Parse NECTAR namespaces and objects.
   /// \param CompilerKit::SyntaxLeafList::SyntaxLeaf the leaf to build upon.
   CompilerKit::SyntaxLeafList::SyntaxLeaf CompilePass2(CompilerKit::STLString&       text,
                                                        const CompilerKit::STLString& file,
@@ -231,7 +231,7 @@ class CompilerFrontendCPlusPlusAMD64 final CK_COMPILER_FRONTEND {
 
 /// @internal compiler variables
 
-static CompilerFrontendCPlusPlusAMD64* kFrontend = nullptr;
+static CompilerFrontendNectarAMD64* kFrontend = nullptr;
 
 static std::vector<CompilerKit::STLString> kRegisterMap;
 
@@ -250,7 +250,7 @@ static std::size_t kNamespaceEmbedLevel{};
 
 /// detail namespaces
 
-const char* CompilerFrontendCPlusPlusAMD64::Language() {
+const char* CompilerFrontendNectarAMD64::Language() {
   return "Nectar";
 }
 
@@ -260,11 +260,11 @@ static std::vector<std::pair<CompilerKit::STLString, std::uintptr_t>> kOriginMap
 /////////////////////////////////////////////////////////////////////////////////////////
 
 /// @name Compile
-/// @brief Generate assembly from a C++ source.
+/// @brief Generate assembly from a NECTAR source.
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
-CompilerKit::SyntaxLeafList::SyntaxLeaf CompilerFrontendCPlusPlusAMD64::Compile(
+CompilerKit::SyntaxLeafList::SyntaxLeaf CompilerFrontendNectarAMD64::Compile(
     CompilerKit::STLString& text, const CompilerKit::STLString& file) {
   CompilerKit::SyntaxLeafList::SyntaxLeaf syntax_tree;
 
@@ -733,7 +733,7 @@ CompilerKit::SyntaxLeafList::SyntaxLeaf CompilerFrontendCPlusPlusAMD64::Compile(
         constexpr auto kTrueVal  = "true";
         constexpr auto kFalseVal = "false";
 
-        /// interpet boolean values, since we're on C++
+        /// interpet boolean values, since we're on NECTAR
 
         if (valueOfVar == kTrueVal) {
           valueOfVar = "1";
@@ -907,9 +907,9 @@ CompilerKit::SyntaxLeafList::SyntaxLeaf CompilerFrontendCPlusPlusAMD64::Compile(
   return this->CompilePass2(text, file, syntax_tree);
 }
 
-/// \brief Parse C++ namespaces and objects.
+/// \brief Parse NECTAR namespaces and objects.
 /// \param CompilerKit::SyntaxLeafList::SyntaxLeaf the leaf to build upon.
-CompilerKit::SyntaxLeafList::SyntaxLeaf CompilerFrontendCPlusPlusAMD64::CompilePass2(
+CompilerKit::SyntaxLeafList::SyntaxLeaf CompilerFrontendNectarAMD64::CompilePass2(
     CompilerKit::STLString& text, const CompilerKit::STLString& file,
     CompilerKit::SyntaxLeafList::SyntaxLeaf& syntax_tree) {
   // Handle namespace entry
@@ -1409,17 +1409,19 @@ static void nectar_process_function_parameters(const std::vector<CompilerKit::ST
 /////////////////////////////////////////////////////////////////////////////////////////
 
 /**
- * @brief C++ assembler class.
+ * @brief NECTAR assembler class.
  */
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
-class AssemblyCPlusPlusInterfaceAMD64 final CK_ASSEMBLY_INTERFACE {
- public:
-  explicit AssemblyCPlusPlusInterfaceAMD64()  = default;
-  ~AssemblyCPlusPlusInterfaceAMD64() override = default;
+#define kExtListCxx {".ncpp"}
 
-  NECTAR_COPY_DEFAULT(AssemblyCPlusPlusInterfaceAMD64);
+class AssemblyNectarInterfaceAMD64 final CK_ASSEMBLY_INTERFACE {
+ public:
+  explicit AssemblyNectarInterfaceAMD64()  = default;
+  ~AssemblyNectarInterfaceAMD64() override = default;
+
+  NECTAR_COPY_DEFAULT(AssemblyNectarInterfaceAMD64);
 
   UInt32 Arch() noexcept override { return CompilerKit::AssemblyFactory::kArchAMD64; }
 
@@ -1427,6 +1429,11 @@ class AssemblyCPlusPlusInterfaceAMD64 final CK_ASSEMBLY_INTERFACE {
     if (kFrontend == nullptr) return EXIT_FAILURE;
 
     CompilerKit::STLString dest = src;
+
+    std::vector<CompilerKit::STLString> ext = kExtListCxx;
+
+    dest.erase(dest.find(ext[0]));
+
     dest += ".masm";
 
     std::ofstream out_fp(dest);
@@ -1452,9 +1459,7 @@ class AssemblyCPlusPlusInterfaceAMD64 final CK_ASSEMBLY_INTERFACE {
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
-#define kExtListCxx {".ncpp"}
-
-NECTAR_MODULE(CompilerCPlusPlusAMD64) {
+NECTAR_MODULE(CompilerNectarAMD64) {
   bool skip = false;
 
   kKeywords.emplace_back("if", CompilerKit::KeywordKind::kKeywordKindIf);
@@ -1492,9 +1497,9 @@ NECTAR_MODULE(CompilerCPlusPlusAMD64) {
   kKeywords.emplace_back(",", CompilerKit::KeywordKind::kKeywordKindArgSeparator);
   kKeywords.emplace_back(";", CompilerKit::KeywordKind::kKeywordKindEndInstr);
   kKeywords.emplace_back(":", CompilerKit::KeywordKind::kKeywordKindSpecifier);
-  kKeywords.emplace_back("public:", CompilerKit::KeywordKind::kKeywordKindSpecifier);
-  kKeywords.emplace_back("private:", CompilerKit::KeywordKind::kKeywordKindSpecifier);
-  kKeywords.emplace_back("protected:", CompilerKit::KeywordKind::kKeywordKindSpecifier);
+  kKeywords.emplace_back("public", CompilerKit::KeywordKind::kKeywordKindSpecifier);
+  kKeywords.emplace_back("private", CompilerKit::KeywordKind::kKeywordKindSpecifier);
+  kKeywords.emplace_back("protected", CompilerKit::KeywordKind::kKeywordKindSpecifier);
   kKeywords.emplace_back("final", CompilerKit::KeywordKind::kKeywordKindSpecifier);
   kKeywords.emplace_back("return", CompilerKit::KeywordKind::kKeywordKindReturn);
   kKeywords.emplace_back("/*", CompilerKit::KeywordKind::kKeywordKindCommentMultiLineStart);
@@ -1507,10 +1512,10 @@ NECTAR_MODULE(CompilerCPlusPlusAMD64) {
 
   kErrorLimit = 0;
 
-  kFrontend = new CompilerFrontendCPlusPlusAMD64();
+  kFrontend = new CompilerFrontendNectarAMD64();
 
-  CompilerKit::StrongRef<AssemblyCPlusPlusInterfaceAMD64> mntPnt{
-      new AssemblyCPlusPlusInterfaceAMD64()};
+  CompilerKit::StrongRef<AssemblyNectarInterfaceAMD64> mntPnt{
+      new AssemblyNectarInterfaceAMD64()};
   kAssembler.Mount({mntPnt.Leak()});
 
   CompilerKit::install_signal(SIGSEGV, CompilerKit::Detail::drvi_crash_handler);
@@ -1530,18 +1535,18 @@ NECTAR_MODULE(CompilerCPlusPlusAMD64) {
         continue;
       }
 
-      if (strcmp(argv[index], "-cxx-verbose") == 0) {
+      if (strcmp(argv[index], "-nec-verbose") == 0) {
         kVerbose = true;
         continue;
       }
 
-      if (strcmp(argv[index], "-cxx-dialect") == 0) {
+      if (strcmp(argv[index], "-nec-dialect") == 0) {
         if (kFrontend) std::cout << kFrontend->Language() << "\n";
 
         return NECTAR_SUCCESS;
       }
 
-      if (strcmp(argv[index], "-cxx-max-err") == 0) {
+      if (strcmp(argv[index], "-nec-max-err") == 0) {
         try {
           kErrorLimit = std::strtol(argv[index + 1], nullptr, 10);
         }
@@ -1558,7 +1563,7 @@ NECTAR_MODULE(CompilerCPlusPlusAMD64) {
       CompilerKit::STLString err = "Unknown option: ";
       err += argv[index];
 
-      CompilerKit::Detail::print_error(err, "cxxdrv");
+      CompilerKit::Detail::print_error(err, "necfront");
 
       continue;
     }

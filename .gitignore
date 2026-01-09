@@ -16,6 +16,7 @@ src/*/dbg
 src/*/cppdrv
 src/*/kdbg
 src/*/pef-*-asm
+src/*/pef-*-necdrv
 src/*/pef-*-cxxdrv
 src/*/pef-*-cdrv
 
