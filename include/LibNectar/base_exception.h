@@ -6,23 +6,20 @@
 #ifndef NECTAR_LIBCXX_BASE_EXCEPTION_H
 #define NECTAR_LIBCXX_BASE_EXCEPTION_H
 
-#include <LibC++/__abi.h>
-#include <LibC++/base_process.h>
-#include <LibC++/defines.h>
-#include <iostream>
+#include <LibNectar/__abi.h>
+#include <LibNectar/base_process.h>
+#include <LibNectar/defines.h>
 
 /// @author Amlal El Mahrouss (amlal@nekernel.org)
 
-namespace std::base_exception::abi {
 inline constexpr int __terminate_id = 33;
 
 /// @note This function is internal, don't call it.
 extern void __unwind_object_list();
 
 inline void __throw_general(const char* what) {
-  std::cout << "LibC++: Unwinding exception of kind: " << what << ", aborting here..." << std::endl;
   __unwind_object_list();
-  base_process::exit(__terminate_id);
+  exit(__terminate_id);
 }
 
 inline void __throw_domain_error(const char* what) {
@@ -34,6 +31,5 @@ inline void __throw_bad_array_new_length(const char* what) {
   __throw_general(what);
   __builtin_unreachable();  // prevent from continuing.
 }
-}  // namespace std::base_exception::abi
 
 #endif  // NECTAR_LIBCXX_BASE_EXCEPTION_H

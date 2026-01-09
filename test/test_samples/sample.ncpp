@@ -1,9 +1,9 @@
-#import "ostream.ncpp"
+import ncpp.ostream;
 
 int main(void)
 {
     let six_seven = 100;
-    out.consume(six_seven);
+    out->consume(six_seven);
 
     return 0;
 }

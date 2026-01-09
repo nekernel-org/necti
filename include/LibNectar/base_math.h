@@ -6,7 +6,7 @@
 #ifndef NECTAR_LIBCXX_BASE_MATH_H
 #define NECTAR_LIBCXX_BASE_MATH_H
 
-#include <defines>
+#include <LibNectar/defines.h>
 
 #ifndef NAN
 #define NAN (__builtin_nanf(""))
@@ -21,7 +21,6 @@ typedef double real_type;
 typedef float real_type;
 #endif
 
-namespace std::base_math {
 inline constexpr static auto not_a_number = NAN;
 
 /// =========================================================== ///
@@ -91,7 +90,6 @@ struct complex_domain final {
 };
 
 typename<class Result> using callable_type = Result (*)(size_t n, ...);
-}  // namespace std::base_math
 
 #ifdef __cpp_lib_base_math
 #define __cpp_lib_base_math 1

@@ -14,7 +14,7 @@ TEST(CodegenTest, BasicCodegenTestGrep) {
   EXPECT_TRUE(compile_result == 0) << "C++ compiler driver failed to compile sample.cc";
 
   // Grep for expected entry point symbol in generated assembly
-  auto grep_main = std::system("grep -q '__NECTI_main' ../test_samples/sample.ncpp.masm");
+  auto grep_main = std::system("grep -q '__NECTAR_main' ../test_samples/sample.ncpp.masm");
   EXPECT_TRUE(grep_main == 0) << "Generated assembly missing expected entry point __NECTAR_main";
 
   // Grep for return instruction

@@ -3,12 +3,11 @@
 // file LICENSE or copy at http://www.apache.org/licenses/LICENSE-2.0)
 // Official repository: https://github.com/nekernel-org/nectar
 
-#ifndef NECTAR_LIBCXX_NEW_H
-#define NECTAR_LIBCXX_NEW_H
+#ifndef NECTAR_LIBNECTAR_NEW_H
+#define NECTAR_LIBNECTAR_NEW_H
 
-#include <defines>
+#include <LibNectar/defines.h>
 
-namespace std {
 struct nothrow_t final {
   explicit nothrow_t() = default;
   ~nothrow_t()         = default;
@@ -22,16 +21,15 @@ struct placement_t final {
   int32_t __align{};
   size_t  __size{};
 };
-}  // namespace std
 
 // AMLALE: Define the placement_t feature.
-#ifndef __cpp_has_placement
-#define __cpp_has_placement 1
+#ifndef __nectar_has_placement
+#define __nectar_has_placement 1
 #endif
 
 // AMLALE: Define nothrow
-#ifndef __cpp_has_nothrow
-#define __cpp_has_nothrow 1
+#ifndef __nectar_has_nothrow
+#define __nectar_has_nothrow 1
 #endif
 
 void* operator new(size_t);
@@ -40,8 +38,8 @@ void* operator new[](size_t);
 /// \brief placement_t new and delete operators. Governs how the memory shall be placed.
 /// \note This is a feature that shall be used wisely, failure to do so will produce Undefined
 /// Behaviors at runtime.
-void* operator _placement_new(struct placement_t*);
-void operator _placement_delete(struct placement_t*, void*);
+void* operator pnew(struct placement_t*);
+void operator pdelete(struct placement_t*, void*);
 
 /// \brief For all offsets within the base range and alignement 'align'
 /// \brief Allocate offsets with respect to the `base` interval, apply alignement of `align` value.
@@ -64,4 +62,4 @@ void operator delete(void*, size_t) noexcept;
 
 void operator delete[](void*) noexcept;
 
-#endif  // NECTAR_LIBCXX_NEW_H
+#endif  // NECTAR_LIBNECTAR_NEW_H

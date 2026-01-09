@@ -6,18 +6,13 @@
 #ifndef __NECTAR_FS_H__
 #define __NECTAR_FS_H__
 
-#include <chrono>
-#include <defines>
-
-namespace std {
 class path;
 class filesystem_error;
 class directory_entry;
 class directory_iterator;
-}  // namespace std
 
-#ifndef __cpp_lib_filesystem
-#define __cpp_lib_filesystem 201703L
+#ifndef __nec_lib_filesystem
+#define __nec_lib_filesystem 201703L
 #endif
 
 #endif  // __NECTAR_FS_H__

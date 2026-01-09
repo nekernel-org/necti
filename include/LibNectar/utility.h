@@ -3,10 +3,9 @@
 // file LICENSE or copy at http://www.apache.org/licenses/LICENSE-2.0)
 // Official repository: https://github.com/nekernel-org/nectar
 
-#ifndef LIBCXX_UTILITY_H
-#define LIBCXX_UTILITY_H
+#ifndef LIBNECTAR_UTILITY_H
+#define LIBNECTAR_UTILITY_H
 
-namespace std {
 /// @brief Forward object.
 /// @tparam Args the object type.
 /// @param arg the object.
@@ -24,6 +23,5 @@ template <typename Args>
 inline auto move(Args&& arg) -> Args&& {
   return static_cast<Args&&>(arg);
 }
-}  // namespace std
 
-#endif  // LIBCXX_UTILITY_H
+#endif  // LIBNECTAR_UTILITY_H

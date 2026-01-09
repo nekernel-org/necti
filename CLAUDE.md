@@ -26,7 +26,7 @@ cd src/CommandLine
 nebuild asm.json         # Assembler driver
 nebuild ld64.json        # Linker driver
 nebuild cppdrv.json      # Preprocessor driver
-nebuild pef-amd64-cxxdrv.json  # C++ compiler driver
+nebuild pef-amd64-necdrv.json  # Nectar compiler driver
 ```
 
 ### Testing
@@ -61,7 +61,7 @@ Nectar is a compiler toolchain for the NeKernel operating system, producing **PE
 src/
 ├── CompilerKit/          # Core compiler infrastructure (library)
 │   ├── src/Assemblers/   # Multi-architecture assemblers
-│   ├── src/Compilers/    # C++ compiler frontend
+│   ├── src/Compilers/    # Nectar compiler frontend
 │   ├── src/Linkers/      # Dynamic linker (PEF format)
 │   └── src/Preprocessor/ # Generic preprocessor
 │
@@ -72,25 +72,25 @@ src/
 │   ├── asm.cc            # Assembler driver
 │   ├── ld64.cc           # Linker driver
 │   ├── cppdrv.cc         # Preprocessor driver
-│   ├── pef-amd64-cxxdrv.cc  # C++ compiler driver
+│   ├── pef-amd64-necdrv.cc  # Nectar compiler driver
 │   ├── dbg.cc            # User-space debugger
 │   └── kdbg.cc           # Kernel debugger
 │
-└── LibC++/               # C++ ABI runtime (header-only)
+└── LibNectar/               # Nectar ABI runtime (header-only)
 ```
 
 ### Compilation Pipeline
 
 ```
 Source (.cc) → Preprocessor (cppdrv) → Preprocessed (.pp)
-             → C++ Compiler (pef-amd64-cxxdrv) → Assembly (.masm)
+             → Nectar Compiler (pef-amd64-necdrv) → Assembly (.masm)
              → Assembler (asm) → Object File (.obj, AE format)
              → Linker (ld64) → Executable (.exec, PEF format)
 ```
 
 Example workflow from tests:
 ```bash
-pef-amd64-cxxdrv sample.cc           # Compile to assembly
+pef-amd64-necdrv sample.cc           # Compile to assembly
 asm -asm:x64 sample.cc.pp.masm       # Assemble to object
 ld64 -amd64 sample.cc.pp.obj -start __NECTAR_main -output main.exec  # Link
 ```
@@ -112,7 +112,7 @@ Each architecture has dedicated assembler implementations in `src/CompilerKit/sr
 - **Pattern:** `ClassName+Architecture.cc` or `ClassName+Format.cc`
 - Examples:
   - `Assembler+AMD64.cc` - AMD64 assembler
-  - `CPlusPlusCompiler+AMD64.cc` - C++ compiler frontend for AMD64
+  - `CPlusPlusCompiler+AMD64.cc` - Nectar compiler frontend for AMD64
   - `DynamicLinker64+PEF.cc` - 64-bit linker for PEF format
 
 ### Test Files
@@ -124,7 +124,7 @@ Each architecture has dedicated assembler implementations in `src/CompilerKit/sr
 - Examples: `ck-posix.json`, `dk-osx.json`, `asm.json`
 
 ### File Extensions
-- `.cc` - C++ source
+- `.cc` - Nectar source
 - `.h` - Headers
 - `.inl` - Inline implementations
 - `.obj` - AE object files
@@ -180,7 +180,7 @@ WeakRef<T> weak_ref = strong_ref.Leak();  // Non-owning reference
 ### CompilerKit
 - `/include/CompilerKit/PEF.h` - PEF executable format definitions
 - `/include/CompilerKit/AE.h` - AE object format definitions
-- `/include/CompilerKit/AST.h` - Abstract syntax tree for C++ compiler
+- `/include/CompilerKit/AST.h` - Abstract syntax tree for Nectar compiler
 - `/include/CompilerKit/Detail/<ARCH>.h` - Architecture-specific definitions
 - `/include/CompilerKit/Utilities/Compiler.h` - Common compiler helpers
 - `/include/CompilerKit/ErrorOr.h` - Error handling utilities
@@ -256,8 +256,8 @@ Example JSON configuration:
 - Architecture opcodes: `/include/CompilerKit/Detail/<ARCH>.h`
 - Implementation: `/src/CompilerKit/src/Assemblers/Assembler+<ARCH>.cc`
 
-**Modifying C++ compiler:**
-- Frontend: `/src/CompilerKit/src/Compilers/CPlusPlusCompiler+AMD64.cc`
+**Modifying Nectar compiler:**
+- Frontend: `/src/CompilerKit/src/Compilers/NectarCompiler+AMD64.cc`
 - AST: `/include/CompilerKit/AST.h`
 
 **Modifying linker:**

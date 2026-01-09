@@ -1,6 +1,8 @@
-#import <stdio.h>
+export ncpp.ostream;
 
-struct ostream
+#include <stdio.h>
+
+struct iostream
 {
     void consume(int& val)
     {
@@ -13,5 +15,8 @@ struct ostream
     }
 };
 
-ostream out;
-ostream in;
+typedef iostream* ostream_ptr;
+
+ostream_ptr out;
+ostream_ptr in;
+

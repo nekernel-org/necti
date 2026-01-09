@@ -3,12 +3,11 @@
 // file LICENSE or copy at http://www.apache.org/licenses/LICENSE-2.0)
 // Official repository: https://github.com/nekernel-org/nectar
 
-#ifndef NECTAR_LIBCXX_BASE_ALLOC_H
-#define NECTAR_LIBCXX_BASE_ALLOC_H
+#ifndef NECTAR_LIBNECTAR_BASE_ALLOC_H
+#define NECTAR_LIBNECTAR_BASE_ALLOC_H
 
-#include <LibC++/defines.h>
+#include <LibNectar/defines.h>
 
-namespace std::base_alloc {
 /// @brief allocate a new class.
 /// @tparam KindClass the class type to allocate.
 template <class KindClass, typename... Args>
@@ -40,6 +39,5 @@ template <class KindClass>
 inline void release_nothrow(KindClass ptr) noexcept {
   release(ptr);
 }
-}  // namespace std::base_alloc
 
-#endif  // NECTAR_LIBCXX_BASE_ALLOC_H
+#endif  // NECTAR_LIBNECTAR_BASE_ALLOC_H
