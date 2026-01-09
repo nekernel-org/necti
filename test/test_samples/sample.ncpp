@@ -3,7 +3,7 @@ import ncpp.ostream;
 int main(void)
 {
     let six_seven = 100;
-    out->consume(six_seven);
+    shared_io()->consume(six_seven);
 
     return 0;
 }
