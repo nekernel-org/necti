@@ -194,7 +194,7 @@ static CompilerKit::STLString nectar_get_variable_ref(const CompilerKit::STLStri
 
 // Class/object management
 static void                   nectar_add_class_member(const CompilerKit::STLString& class_name,
-                                                     const CompilerKit::STLString& member_name, Int32 size);
+                                                      const CompilerKit::STLString& member_name, Int32 size);
 static Int32                  nectar_get_class_size(const CompilerKit::STLString& class_name);
 static CompilerKit::STLString nectar_generate_constructor_call(
     const CompilerKit::STLString& class_name, const CompilerKit::STLString& obj_name);
@@ -618,8 +618,8 @@ CompilerKit::SyntaxLeafList::SyntaxLeaf CompilerFrontendNectarAMD64::Compile(
 
             if (pairRight != valueOfVar) {
               if (valueOfVar[0] == '\"') {
-                syntax_tree.fUserValue += "segment .data64 __NECTAR_LOCAL_VAR_" + varName + ": db " +
-                                         valueOfVar + ", 0\n\n";
+                syntax_tree.fUserValue += "segment .data64 __NECTAR_LOCAL_VAR_" + varName +
+                                          ": db " + valueOfVar + ", 0\n\n";
                 syntax_tree.fUserValue += instr + kRegisterList[kRegisterMap.size() - 1] + ", " +
                                           "__NECTAR_LOCAL_VAR_" + varName + "\n";
                 kOrigin += 1UL;
@@ -742,7 +742,7 @@ CompilerKit::SyntaxLeafList::SyntaxLeaf CompilerFrontendNectarAMD64::Compile(
         }
 
         if (CompilerKit::STLString::npos == varName.find("*"))
-            CompilerKit::Detail::print_error("Type not declared: " + varName, file);
+          CompilerKit::Detail::print_error("Type not declared: " + varName, file);
 
         varName = varName.substr(varName.find("*") + 1);
 
@@ -804,7 +804,7 @@ CompilerKit::SyntaxLeafList::SyntaxLeaf CompilerFrontendNectarAMD64::Compile(
                 ++indxReg;
 
                 syntax_tree.fUserValue += "mov rax, " + kRegisterList[indxReg - 1] + "\n" +
-                                         nectar_generate_epilogue() + "ret\n";
+                                          nectar_generate_epilogue() + "ret\n";
                 kOrigin += 3UL;  // mov + epilogue (2) + ret
 
                 break;
@@ -818,7 +818,7 @@ CompilerKit::SyntaxLeafList::SyntaxLeaf CompilerFrontendNectarAMD64::Compile(
             }
           } else if (!subText.empty()) {
             syntax_tree.fUserValue += "__NECTAR_LOCAL_RETURN_STRING: db " + subText +
-                                     ", 0\nmov rcx, __NECTAR_LOCAL_RETURN_STRING\n";
+                                      ", 0\nmov rcx, __NECTAR_LOCAL_RETURN_STRING\n";
             syntax_tree.fUserValue += "mov rax, rcx\n" + nectar_generate_epilogue() + "ret\n";
             kOrigin += 4UL;  // mov rcx + mov rax + epilogue (2) + ret
 
@@ -830,7 +830,7 @@ CompilerKit::SyntaxLeafList::SyntaxLeaf CompilerFrontendNectarAMD64::Compile(
               // Check for namespace resolution
               if (subText.find("::") != CompilerKit::STLString::npos) {
                 auto colonPos = subText.find("::");
-                auto nsName = subText.substr(0, colonPos);
+                auto nsName   = subText.substr(0, colonPos);
                 auto funcPart = subText.substr(colonPos + 2);
 
                 // Trim
@@ -915,7 +915,7 @@ CompilerKit::SyntaxLeafList::SyntaxLeaf CompilerFrontendNectarAMD64::CompilePass
   // Handle namespace entry
   if (text.find("namespace") != CompilerKit::STLString::npos &&
       text.find("{") != CompilerKit::STLString::npos) {
-    auto nsPos = text.find("namespace") + strlen("namespace");
+    auto nsPos    = text.find("namespace") + strlen("namespace");
     auto bracePos = text.find("{");
 
     auto nsName = text.substr(nsPos, bracePos - nsPos);
@@ -948,7 +948,7 @@ CompilerKit::SyntaxLeafList::SyntaxLeaf CompilerFrontendNectarAMD64::CompilePass
     auto colonPos = text.find("::");
 
     // Extract namespace and function name
-    auto nsName = text.substr(0, colonPos);
+    auto nsName     = text.substr(0, colonPos);
     auto restOfText = text.substr(colonPos + 2);
 
     // Trim namespace name
@@ -995,7 +995,8 @@ CompilerKit::SyntaxLeafList::SyntaxLeaf CompilerFrontendNectarAMD64::CompilePass
   if ((text.find("class") != CompilerKit::STLString::npos ||
        text.find("struct") != CompilerKit::STLString::npos) &&
       text.find("{") != CompilerKit::STLString::npos) {
-    CompilerKit::STLString keyword = text.find("class") != CompilerKit::STLString::npos ? "class" : "struct";
+    CompilerKit::STLString keyword =
+        text.find("class") != CompilerKit::STLString::npos ? "class" : "struct";
     auto classPos = text.find(keyword) + keyword.length();
     auto bracePos = text.find("{");
 
@@ -1120,7 +1121,7 @@ static std::vector<CompilerKit::STLString> nectar_extract_function_args(
 
 /// \brief Mangle a function or method name according to Nectar mangling scheme
 static CompilerKit::STLString nectar_mangle_name(const CompilerKit::STLString& identifier,
-                                                const std::vector<CompilerKit::STLString>& args) {
+                                                 const std::vector<CompilerKit::STLString>& args) {
   CompilerKit::STLString mangled = "__NECTAR_";
 
   // Add scope chain
@@ -1302,7 +1303,7 @@ static CompilerKit::STLString nectar_spill_lru_variable() {
 
 /// \brief Add a class member to the struct map
 static void nectar_add_class_member(const CompilerKit::STLString& class_name,
-                                   const CompilerKit::STLString& member_name, Int32 size) {
+                                    const CompilerKit::STLString& member_name, Int32 size) {
   // Find or create struct map entry
   CompilerStructMap* structMap = nullptr;
   for (auto& sm : kContext.fStructMapVector) {
@@ -1514,8 +1515,7 @@ NECTAR_MODULE(CompilerNectarAMD64) {
 
   kFrontend = new CompilerFrontendNectarAMD64();
 
-  CompilerKit::StrongRef<AssemblyNectarInterfaceAMD64> mntPnt{
-      new AssemblyNectarInterfaceAMD64()};
+  CompilerKit::StrongRef<AssemblyNectarInterfaceAMD64> mntPnt{new AssemblyNectarInterfaceAMD64()};
   kAssembler.Mount({mntPnt.Leak()});
 
   CompilerKit::install_signal(SIGSEGV, CompilerKit::Detail::drvi_crash_handler);

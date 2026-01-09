@@ -25,20 +25,20 @@ extern size_t __atexit_lst_cnt;
 
 __fini_decl()
 
-inline int signal(int code) {
-    signal_(code);
-    return -1;
+    inline int signal(int code) {
+  signal_(code);
+  return -1;
 }
 
 inline int32_t exit(const int32_t& code) {
-    for (auto idx = 0UL; idx < __atexit_lst_cnt; ++idx) {
-        __atexit_lst_ptr[idx]();
-    }
+  for (auto idx = 0UL; idx < __atexit_lst_cnt; ++idx) {
+    __atexit_lst_ptr[idx]();
+  }
 
-    if (__atexit_cdecl_ptr) __atexit_cdecl_ptr();
+  if (__atexit_cdecl_ptr) __atexit_cdecl_ptr();
 
-    exit_(code);
-    return -1;
+  exit_(code);
+  return -1;
 }
 
 #endif  // NECTAR_LIBCXX_BASE_PROCESS_H
