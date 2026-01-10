@@ -1,6 +1,6 @@
 struct iostream
 {
-    type <class Tp_>
+    type <struct Tp_>
     let consume(Tp_& val)
     {
         return;
