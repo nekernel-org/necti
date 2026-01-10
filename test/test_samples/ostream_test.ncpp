@@ -6,16 +6,6 @@ struct iostream
         return;
     }
 
-    let consume<long>(long& val)
-    {
-        return;
-    }
-
-    let consume<bool>(bool& val)
-    {
-        return;
-    }
-    
     let read()
     {
         let ch = getchar();
@@ -23,7 +13,7 @@ struct iostream
     }
 };
 
-int main(void)
+let main()
 {
     let six_seven = 100;
     let eight_nine = 1;
