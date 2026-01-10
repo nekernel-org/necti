@@ -401,7 +401,7 @@ CompilerKit::SyntaxLeafList::SyntaxLeaf CompilerFrontendNectarAMD64::Compile(
         }
 
         // Check if this is a function call (ends with ;)
-        if (text.ends_with(";") && text.find("return") == CompilerKit::STLString::npos) {
+        if (text.ends_with(");")) {
           // Handle function call/jump
           auto it = std::find_if(
               kOriginMap.begin(), kOriginMap.end(),
@@ -423,6 +423,7 @@ CompilerKit::SyntaxLeafList::SyntaxLeaf CompilerFrontendNectarAMD64::Compile(
 
         // Extract clean function name
         CompilerKit::STLString cleanFnName = symbol_name_fn;
+
         if (cleanFnName.find("(") != CompilerKit::STLString::npos) {
           cleanFnName = cleanFnName.substr(0, cleanFnName.find("("));
         }
@@ -485,10 +486,9 @@ CompilerKit::SyntaxLeafList::SyntaxLeaf CompilerFrontendNectarAMD64::Compile(
         break;
       }
       case CompilerKit::KeywordKind::kKeywordKindAccess:
-      case CompilerKit::KeywordKind::kKeywordKindPtrAccess:
-      {
-        CompilerKit::STLString valueOfVar = text.substr(text.find(keyword.first.fKeywordName) 
-            + keyword.first.fKeywordName.size());
+      case CompilerKit::KeywordKind::kKeywordKindPtrAccess: {
+        CompilerKit::STLString valueOfVar =
+            text.substr(text.find(keyword.first.fKeywordName) + keyword.first.fKeywordName.size());
 
         auto args = valueOfVar.substr(valueOfVar.find("(") + 1);
 
@@ -501,16 +501,15 @@ CompilerKit::SyntaxLeafList::SyntaxLeaf CompilerFrontendNectarAMD64::Compile(
         syntax_tree.fUserValue += "lea r8, [rbp-1]\n";
 
         CompilerKit::STLString arg;
-        auto index = 9;
-        auto cnter = 0;
+        auto                   index = 9;
+        auto                   cnter = 0;
 
         for (auto& ch : args) {
           if (ch == ',' || ch == ')') {
             if (index <= 15) {
               auto val = nectar_get_variable_ref(arg);
 
-              if (val.empty())
-              {
+              if (val.empty()) {
                 val = arg;
 
                 while (val.find(" ") != CompilerKit::STLString::npos) {
@@ -519,13 +518,13 @@ CompilerKit::SyntaxLeafList::SyntaxLeaf CompilerFrontendNectarAMD64::Compile(
 
                 if (!isnumber(val[0])) {
                   val = "0";
-                  CompilerKit::Detail::print_error("Variable not declared: " + arg, file);
+                  goto fail_call_function;
                 }
               }
 
               if (!arg.empty())
                 syntax_tree.fUserValue += "mov r" + std::to_string(index) + ", " + val + "\n";
-              
+
               arg.clear();
               ++index;
               ++cnter;
@@ -537,10 +536,18 @@ CompilerKit::SyntaxLeafList::SyntaxLeaf CompilerFrontendNectarAMD64::Compile(
           arg += ch;
         }
 
-        // TODO1: Handle more than 7 arguments (stack)
-        // TODO2: valueOfVar should properly form member function calls.
-        syntax_tree.fUserValue += "call " + valueOfVar;
+        auto nameVar = text.substr(0, text.find(keyword.first.fKeywordName));
 
+        while (nameVar.find(" ") != CompilerKit::STLString::npos) {
+          nameVar.erase(nameVar.find(" "), 1);
+        }
+
+        while (nameVar.find("\t") != CompilerKit::STLString::npos) {
+          nameVar.erase(nameVar.find("\t"), 1);
+        }
+
+        syntax_tree.fUserValue += "call " + nectar_get_variable_ref(nameVar) + "\n";
+fail_call_function:
         break;
       }
       case CompilerKit::KeywordKind::kKeywordKindEndInstr:
@@ -649,88 +656,80 @@ CompilerKit::SyntaxLeafList::SyntaxLeaf CompilerFrontendNectarAMD64::Compile(
 
         varName = varName.substr(varName.find("let ") + std::string{"let "}.size());
 
-        nectar_allocate_stack_variable(varName);
-        syntax_tree.fUserValue += instr +
-            nectar_get_variable_ref(varName) + ", " + valueOfVar + "\n";
+        while (varName.find(" ") != CompilerKit::STLString::npos) {
+          varName.erase(varName.find(" "), 1);
+        }
 
+        while (varName.find("\t") != CompilerKit::STLString::npos) {
+          varName.erase(varName.find("\t"), 1);
+        }
+
+        nectar_allocate_stack_variable(varName);
+
+        syntax_tree.fUserValue +=
+            instr + nectar_get_variable_ref(varName) + ", " + valueOfVar + "\n";
+
+        break;
+      }
+      case CompilerKit::KeywordKind::kKeywordKindImport:
+      case CompilerKit::KeywordKind::kKeywordKindExport:
+      {
         break;
       }
       case CompilerKit::KeywordKind::kKeywordKindReturn: {
         try {
-          auto                   pos     = text.find("return") + strlen("return") + 1;
+          auto pos = text.find("return");
+
+          if (pos == CompilerKit::STLString::npos) {
+            syntax_tree.fUserValue += nectar_generate_epilogue() + "ret\n";
+            kOrigin += 2UL;
+            break;
+          }
+
+          pos += std::string("return").size() + 1;
+
           CompilerKit::STLString subText = text.substr(pos);
-          if (subText.find(";") == CompilerKit::STLString::npos) break;
 
           subText        = subText.erase(subText.find(";"));
           size_t indxReg = 0UL;
 
-          // Trim whitespace
-          while (!subText.empty() && (subText.front() == ' ' || subText.front() == '\t')) {
-            subText.erase(0, 1);
-          }
-          while (!subText.empty() && (subText.back() == ' ' || subText.back() == '\t')) {
-            subText.pop_back();
-          }
+          if (subText.ends_with(");")) {
+            // Check for namespace resolution
+            if (subText.find("::") != CompilerKit::STLString::npos) {
+              auto colonPos = subText.find("::");
+              auto nsName   = subText.substr(0, colonPos);
+              auto funcPart = subText.substr(colonPos + 2);
 
-          if (syntax_tree.fUserValue.empty()) {
-            if (subText.find("(") != CompilerKit::STLString::npos) {
-              // Check for namespace resolution
-              if (subText.find("::") != CompilerKit::STLString::npos) {
-                auto colonPos = subText.find("::");
-                auto nsName   = subText.substr(0, colonPos);
-                auto funcPart = subText.substr(colonPos + 2);
-
-                // Trim
-                while (!nsName.empty() && (nsName.front() == ' ' || nsName.front() == '\t')) {
-                  nsName.erase(0, 1);
-                }
-                while (!nsName.empty() && (nsName.back() == ' ' || nsName.back() == '\t')) {
-                  nsName.pop_back();
-                }
-
-                // Extract function name
-                auto funcName = funcPart;
-                if (funcName.find("(") != CompilerKit::STLString::npos) {
-                  funcName = funcName.substr(0, funcName.find("("));
-                }
-
-                // Trim
-                while (!funcName.empty() && (funcName.front() == ' ' || funcName.front() == '\t')) {
-                  funcName.erase(0, 1);
-                }
-                while (!funcName.empty() && (funcName.back() == ' ' || funcName.back() == '\t')) {
-                  funcName.pop_back();
-                }
-
-                // Generate mangled name
-                nectar_push_scope(ScopeKind::kScopeNamespace, nsName);
-                auto mangled = nectar_mangle_name(funcName);
-                nectar_pop_scope();
-
-                syntax_tree.fUserValue +=
-                    "call " + mangled + "\n" + nectar_generate_epilogue() + "ret\n";
-                kOrigin += 3UL;
-                break;
-              } else {
-                // Regular function call
-                subText.erase(subText.find("("));
-
-                auto it = std::find_if(
-                    kOriginMap.begin(), kOriginMap.end(),
-                    [&subText](std::pair<CompilerKit::STLString, std::uintptr_t> pair) -> bool {
-                      return pair.first.find(subText) != CompilerKit::STLString::npos;
-                    });
-
-                if (it != kOriginMap.end()) {
-                  std::stringstream ss;
-                  ss << std::hex << it->second;
-
-                  syntax_tree.fUserValue +=
-                      "call " + ss.str() + "\n" + nectar_generate_epilogue() + "ret\n";
-                  kOrigin += 3UL;
-                  break;
-                }
+              // Trim
+              while (!nsName.empty() && (nsName.front() == ' ' || nsName.front() == '\t')) {
+                nsName.erase(0, 1);
               }
+              while (!nsName.empty() && (nsName.back() == ' ' || nsName.back() == '\t')) {
+                nsName.pop_back();
+              }
+
+              // Extract function name
+              auto funcName = funcPart;
+              if (funcName.find("(") != CompilerKit::STLString::npos) {
+                funcName = funcName.substr(0, funcName.find("("));
+              }
+
+              // Trim
+              while (!funcName.empty() && (funcName.front() == ' ' || funcName.front() == '\t')) {
+                funcName.erase(0, 1);
+              }
+
+              while (!funcName.empty() && (funcName.back() == ' ' || funcName.back() == '\t')) {
+                funcName.pop_back();
+              }
+
+              // Generate mangled name
+              nectar_push_scope(ScopeKind::kScopeNamespace, nsName);
+              auto mangled = nectar_mangle_name(funcName);
+              nectar_pop_scope();
+
+              kOrigin += 3UL;
+              break;
             }
           }
 
@@ -759,85 +758,6 @@ CompilerKit::SyntaxLeafList::SyntaxLeaf CompilerFrontendNectarAMD64::Compile(
 CompilerKit::SyntaxLeafList::SyntaxLeaf CompilerFrontendNectarAMD64::CompilePass2(
     CompilerKit::STLString& text, const CompilerKit::STLString& file,
     CompilerKit::SyntaxLeafList::SyntaxLeaf& syntax_tree) {
-  // Handle namespace entry
-  if (text.find("namespace") != CompilerKit::STLString::npos &&
-      text.find("{") != CompilerKit::STLString::npos) {
-    auto nsPos    = text.find("namespace") + strlen("namespace");
-    auto bracePos = text.find("{");
-
-    auto nsName = text.substr(nsPos, bracePos - nsPos);
-
-    // Trim whitespace
-    while (!nsName.empty() && (nsName.front() == ' ' || nsName.front() == '\t')) {
-      nsName.erase(0, 1);
-    }
-    while (!nsName.empty() && (nsName.back() == ' ' || nsName.back() == '\t')) {
-      nsName.pop_back();
-    }
-
-    if (!nsName.empty()) {
-      nectar_push_scope(ScopeKind::kScopeNamespace, nsName);
-      ++kNamespaceEmbedLevel;
-    }
-  }
-
-  // Handle namespace exit
-  if (text.find("}") != CompilerKit::STLString::npos && kNamespaceEmbedLevel > 0) {
-    if (text.find("//") != CompilerKit::STLString::npos &&
-        text.find("namespace") != CompilerKit::STLString::npos) {
-      --kNamespaceEmbedLevel;
-      nectar_pop_scope();
-    }
-  }
-
-  // Handle namespace resolution (::) - only in non-assignment, non-declaration contexts
-  if (text.find("::") != CompilerKit::STLString::npos) {
-    auto colonPos = text.find("::");
-
-    // Extract namespace and function name
-    auto nsName     = text.substr(0, colonPos);
-    auto restOfText = text.substr(colonPos + 2);
-
-    // Trim namespace name
-    while (!nsName.empty() && (nsName.front() == ' ' || nsName.front() == '\t')) {
-      nsName.erase(0, 1);
-    }
-    while (!nsName.empty() && (nsName.back() == ' ' || nsName.back() == '\t')) {
-      nsName.pop_back();
-    }
-
-    // Extract function name (everything before '(' if exists)
-    auto funcName = restOfText;
-    if (funcName.find("(") != CompilerKit::STLString::npos) {
-      funcName = funcName.substr(0, funcName.find("("));
-    }
-    if (funcName.find(";") != CompilerKit::STLString::npos) {
-      funcName = funcName.substr(0, funcName.find(";"));
-    }
-
-    // Trim function name
-    while (!funcName.empty() && (funcName.front() == ' ' || funcName.front() == '\t')) {
-      funcName.erase(0, 1);
-    }
-    while (!funcName.empty() && (funcName.back() == ' ' || funcName.back() == '\t')) {
-      funcName.pop_back();
-    }
-
-    // Generate mangled name for the call
-    nectar_push_scope(ScopeKind::kScopeNamespace, nsName);
-    auto mangled = nectar_mangle_name(funcName);
-    nectar_pop_scope();
-
-    // Only generate call if in return context or explicit call
-    if (text.find("return") != CompilerKit::STLString::npos) {
-      // This will be handled by the return handler, just update the text to use mangled name
-      // Store this for use by the return handler
-    } else {
-      syntax_tree.fUserValue += "call " + mangled + "\n";
-      kOrigin += 1UL;
-    }
-  }
-
   // Handle class entry
   if ((text.find("class") != CompilerKit::STLString::npos ||
        text.find("struct") != CompilerKit::STLString::npos) &&
@@ -1316,22 +1236,11 @@ NECTAR_MODULE(CompilerNectarAMD64) {
   kKeywords.emplace_back("type", CompilerKit::KeywordKind::kKeywordKindGenerics);
   kKeywords.emplace_back("struct", CompilerKit::KeywordKind::kKeywordKindClass);
   kKeywords.emplace_back("typedef", CompilerKit::KeywordKind::kKeywordKindTypedef);
-  kKeywords.emplace_back("typealias", CompilerKit::KeywordKind::kKeywordKindTypedef);
+  kKeywords.emplace_back("import", CompilerKit::KeywordKind::kKeywordKindImport);
+  kKeywords.emplace_back("export", CompilerKit::KeywordKind::kKeywordKindExport);
   kKeywords.emplace_back("{", CompilerKit::KeywordKind::kKeywordKindBodyStart);
   kKeywords.emplace_back("}", CompilerKit::KeywordKind::kKeywordKindBodyEnd);
   kKeywords.emplace_back("let", CompilerKit::KeywordKind::kKeywordKindType);
-  kKeywords.emplace_back("int", CompilerKit::KeywordKind::kKeywordKindType);
-  kKeywords.emplace_back("bool", CompilerKit::KeywordKind::kKeywordKindType);
-  kKeywords.emplace_back("unsigned", CompilerKit::KeywordKind::kKeywordKindType);
-  kKeywords.emplace_back("short", CompilerKit::KeywordKind::kKeywordKindType);
-  kKeywords.emplace_back("char", CompilerKit::KeywordKind::kKeywordKindType);
-  kKeywords.emplace_back("long", CompilerKit::KeywordKind::kKeywordKindType);
-  kKeywords.emplace_back("float", CompilerKit::KeywordKind::kKeywordKindType);
-  kKeywords.emplace_back("double", CompilerKit::KeywordKind::kKeywordKindType);
-  kKeywords.emplace_back("void", CompilerKit::KeywordKind::kKeywordKindType);
-
-  kKeywords.emplace_back("*", CompilerKit::KeywordKind::kKeywordKindTypePtr);
-
   kKeywords.emplace_back("(", CompilerKit::KeywordKind::kKeywordKindFunctionStart);
   kKeywords.emplace_back(")", CompilerKit::KeywordKind::kKeywordKindFunctionEnd);
   kKeywords.emplace_back("=", CompilerKit::KeywordKind::kKeywordKindVariableAssign);
@@ -1343,11 +1252,6 @@ NECTAR_MODULE(CompilerNectarAMD64) {
   kKeywords.emplace_back(".", CompilerKit::KeywordKind::kKeywordKindAccess);
   kKeywords.emplace_back(",", CompilerKit::KeywordKind::kKeywordKindArgSeparator);
   kKeywords.emplace_back(";", CompilerKit::KeywordKind::kKeywordKindEndInstr);
-  kKeywords.emplace_back(":", CompilerKit::KeywordKind::kKeywordKindSpecifier);
-  kKeywords.emplace_back("public", CompilerKit::KeywordKind::kKeywordKindSpecifier);
-  kKeywords.emplace_back("private", CompilerKit::KeywordKind::kKeywordKindSpecifier);
-  kKeywords.emplace_back("protected", CompilerKit::KeywordKind::kKeywordKindSpecifier);
-  kKeywords.emplace_back("final", CompilerKit::KeywordKind::kKeywordKindSpecifier);
   kKeywords.emplace_back("return", CompilerKit::KeywordKind::kKeywordKindReturn);
   kKeywords.emplace_back("/*", CompilerKit::KeywordKind::kKeywordKindCommentMultiLineStart);
   kKeywords.emplace_back("*/", CompilerKit::KeywordKind::kKeywordKindCommentMultiLineEnd);

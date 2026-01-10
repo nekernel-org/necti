@@ -1,0 +1,37 @@
+struct iostream
+{
+    type <class Tp_>
+    let consume(Tp_& val)
+    {
+        return;
+    }
+
+    let consume<long>(long& val)
+    {
+        return;
+    }
+
+    let consume<bool>(bool& val)
+    {
+        return;
+    }
+    
+    let read()
+    {
+        let ch = getchar();
+        return ch;
+    }
+};
+
+int main(void)
+{
+    let six_seven = 100;
+    let eight_nine = 1;
+
+    let io = iostream();
+
+    io.consume(eight_nine);
+    io.consume(six_seven);
+
+    return 0;
+}
