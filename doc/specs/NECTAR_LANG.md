@@ -16,4 +16,10 @@
 
 ===================================
 
--
+- `&` Checked pointer type.
+- `*` Unchecked pointer type.
+- `struct` Plain Old Data data Structure, implement Trees, Heaps, etc..
+- `import` import module.
+- `export` export module.
+
+
