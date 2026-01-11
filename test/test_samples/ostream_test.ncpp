@@ -1,14 +1,23 @@
 struct iostream
 {
-    type <struct Tp_>
-    let consume(Tp_& val)
+    iostream()
+    {
+        return;
+    }
+
+    ~iostream()
+    {
+        return;
+    }
+
+    let write(let val)
     {
         return;
     }
 
     let read()
     {
-        let ch = getchar();
+        let ch = 'a';
         return ch;
     }
 };
@@ -18,10 +27,10 @@ let main()
     let six_seven = 100;
     let eight_nine = 1;
 
-    let io = iostream();
+    let io = iostream{};
 
-    io.consume(eight_nine);
-    io.consume(six_seven);
+    io.write(eight_nine);
+    six_seven = io.read();
 
     return 0;
 }

@@ -18,6 +18,8 @@
 
 - `&` Checked pointer type.
 - `*` Unchecked pointer type.
+- `.` Checked pointer access.
+- `->` UnChecked pointer access.
 - `struct` Plain Old Data data Structure, implement Trees, Heaps, etc..
 - `import` import module.
 - `export` export module.

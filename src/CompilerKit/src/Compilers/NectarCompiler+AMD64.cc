@@ -25,6 +25,7 @@
 #include <csignal>
 #include <cstdlib>
 #include <filesystem>
+#include <ios>
 
 /* NeKernel NECTAR Compiler Driver. */
 /* This is part of the CompilerKit. */
@@ -224,7 +225,7 @@ class CompilerFrontendNectarAMD64 final CK_COMPILER_FRONTEND {
  public:
   /// \brief Parse NECTAR namespaces and objects.
   /// \param CompilerKit::SyntaxLeafList::SyntaxLeaf the leaf to build upon.
-  CompilerKit::SyntaxLeafList::SyntaxLeaf CompilePass2(CompilerKit::STLString&       text,
+  CompilerKit::SyntaxLeafList::SyntaxLeaf CompileClasses(CompilerKit::STLString&       text,
                                                        const CompilerKit::STLString& file,
                                                        CompilerKit::SyntaxLeafList::SyntaxLeaf&);
 };
@@ -518,7 +519,6 @@ CompilerKit::SyntaxLeafList::SyntaxLeaf CompilerFrontendNectarAMD64::Compile(
 
                 if (!isnumber(val[0])) {
                   val = "0";
-                  goto fail_call_function;
                 }
               }
 
@@ -546,8 +546,9 @@ CompilerKit::SyntaxLeafList::SyntaxLeaf CompilerFrontendNectarAMD64::Compile(
           nameVar.erase(nameVar.find("\t"), 1);
         }
 
-        syntax_tree.fUserValue += "call " + nectar_get_variable_ref(nameVar) + "\n";
-fail_call_function:
+        if (!nectar_get_variable_ref(nameVar).empty())
+          syntax_tree.fUserValue += "call " + nectar_get_variable_ref(nameVar) + "\n";
+        
         break;
       }
       case CompilerKit::KeywordKind::kKeywordKindEndInstr:
@@ -651,9 +652,6 @@ fail_call_function:
           valueOfVar.erase(valueOfVar.find("\t"), 1);
         }
 
-        if (varName.find("let ") == CompilerKit::STLString::npos)
-          CompilerKit::Detail::print_error("Variable not declared: " + varName, file);
-
         varName = varName.substr(varName.find("let ") + std::string{"let "}.size());
 
         while (varName.find(" ") != CompilerKit::STLString::npos) {
@@ -665,6 +663,21 @@ fail_call_function:
         }
 
         nectar_allocate_stack_variable(varName);
+
+        if (valueOfVar.find(".") != CompilerKit::STLString::npos) {
+          auto value = nectar_get_variable_ref(valueOfVar.substr(0, valueOfVar.find(".")));
+          value += " offset ";
+
+          valueOfVar.replace(0, valueOfVar.find(".") + 1, value);
+        } else if (valueOfVar.find("->") != CompilerKit::STLString::npos) {
+          auto value = nectar_get_variable_ref(valueOfVar.substr(0, valueOfVar.find("->")));
+          value += " offset ";
+          
+          valueOfVar.replace(0, valueOfVar.find("->") + 2, value);
+        }
+
+        if (valueOfVar.find("(") != CompilerKit::STLString::npos)
+          valueOfVar.erase(valueOfVar.find("("));
 
         syntax_tree.fUserValue +=
             instr + nectar_get_variable_ref(varName) + ", " + valueOfVar + "\n";
@@ -750,20 +763,17 @@ fail_call_function:
     }
   }
 
-  return this->CompilePass2(text, file, syntax_tree);
+  return this->CompileClasses(text, file, syntax_tree);
 }
 
 /// \brief Parse NECTAR namespaces and objects.
 /// \param CompilerKit::SyntaxLeafList::SyntaxLeaf the leaf to build upon.
-CompilerKit::SyntaxLeafList::SyntaxLeaf CompilerFrontendNectarAMD64::CompilePass2(
+CompilerKit::SyntaxLeafList::SyntaxLeaf CompilerFrontendNectarAMD64::CompileClasses(
     CompilerKit::STLString& text, const CompilerKit::STLString& file,
     CompilerKit::SyntaxLeafList::SyntaxLeaf& syntax_tree) {
   // Handle class entry
-  if ((text.find("class") != CompilerKit::STLString::npos ||
-       text.find("struct") != CompilerKit::STLString::npos) &&
-      text.find("{") != CompilerKit::STLString::npos) {
-    CompilerKit::STLString keyword =
-        text.find("class") != CompilerKit::STLString::npos ? "class" : "struct";
+  if ((text.find("struct") != CompilerKit::STLString::npos)) {
+    CompilerKit::STLString keyword ="struct";
     auto classPos = text.find(keyword) + keyword.length();
     auto bracePos = text.find("{");
 
@@ -784,11 +794,9 @@ CompilerKit::SyntaxLeafList::SyntaxLeaf CompilerFrontendNectarAMD64::CompilePass
   }
 
   // Handle class exit
-  if (text.find("}") != CompilerKit::STLString::npos && kOnClassScope > 0) {
-    if (text.find(";") != CompilerKit::STLString::npos) {
-      --kOnClassScope;
-      nectar_pop_scope();
-    }
+  if (text.find("};") != CompilerKit::STLString::npos) {
+    --kOnClassScope;
+    nectar_pop_scope();
   }
 
   return syntax_tree;
@@ -914,6 +922,7 @@ static CompilerKit::STLString nectar_mangle_name(const CompilerKit::STLString& i
 
   // Check if we're in a class scope for member functions
   bool inClass = false;
+
   for (const auto& scope : kContext.fScopeStack) {
     if (scope.fKind == ScopeKind::kScopeClass) {
       inClass = true;
@@ -921,10 +930,17 @@ static CompilerKit::STLString nectar_mangle_name(const CompilerKit::STLString& i
     }
   }
 
+  CompilerKit::STLString identifierCopy = identifier;
+
+  while (auto pos = identifierCopy.find(" ")) {
+    if (pos == CompilerKit::STLString::npos) break;
+    identifierCopy.replace(pos, 1, "_");
+  }
+
   if (inClass) {
-    mangled += "M_" + identifier;
+    mangled += "M_" + identifierCopy;
   } else {
-    mangled += "F_" + identifier;
+    mangled += "F_" + identifierCopy;
   }
 
   // Add argument types if provided
@@ -1233,7 +1249,6 @@ NECTAR_MODULE(CompilerNectarAMD64) {
   kKeywords.emplace_back("if", CompilerKit::KeywordKind::kKeywordKindIf);
   kKeywords.emplace_back("else", CompilerKit::KeywordKind::kKeywordKindElse);
   kKeywords.emplace_back("else if", CompilerKit::KeywordKind::kKeywordKindElseIf);
-  kKeywords.emplace_back("type", CompilerKit::KeywordKind::kKeywordKindGenerics);
   kKeywords.emplace_back("struct", CompilerKit::KeywordKind::kKeywordKindClass);
   kKeywords.emplace_back("typedef", CompilerKit::KeywordKind::kKeywordKindTypedef);
   kKeywords.emplace_back("import", CompilerKit::KeywordKind::kKeywordKindImport);
