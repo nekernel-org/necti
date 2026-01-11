@@ -24,13 +24,10 @@ struct iostream
 
 let main()
 {
-    let six_seven = 100;
-    let eight_nine = 1;
+    let six_seven = 67;
 
     let io = iostream{};
-
-    io.write(eight_nine);
     six_seven = io.read();
 
-    return 0;
+    return six_seven;
 }

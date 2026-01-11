@@ -706,45 +706,16 @@ CompilerKit::SyntaxLeafList::SyntaxLeaf CompilerFrontendNectarAMD64::Compile(
           subText        = subText.erase(subText.find(";"));
           size_t indxReg = 0UL;
 
-          if (subText.ends_with(");")) {
-            // Check for namespace resolution
-            if (subText.find("::") != CompilerKit::STLString::npos) {
-              auto colonPos = subText.find("::");
-              auto nsName   = subText.substr(0, colonPos);
-              auto funcPart = subText.substr(colonPos + 2);
+          if (subText.find("(") != CompilerKit::STLString::npos)
+            subText.erase(subText.find("("));
 
-              // Trim
-              while (!nsName.empty() && (nsName.front() == ' ' || nsName.front() == '\t')) {
-                nsName.erase(0, 1);
-              }
-              while (!nsName.empty() && (nsName.back() == ' ' || nsName.back() == '\t')) {
-                nsName.pop_back();
-              }
+          auto ref = nectar_get_variable_ref(subText);
 
-              // Extract function name
-              auto funcName = funcPart;
-              if (funcName.find("(") != CompilerKit::STLString::npos) {
-                funcName = funcName.substr(0, funcName.find("("));
-              }
-
-              // Trim
-              while (!funcName.empty() && (funcName.front() == ' ' || funcName.front() == '\t')) {
-                funcName.erase(0, 1);
-              }
-
-              while (!funcName.empty() && (funcName.back() == ' ' || funcName.back() == '\t')) {
-                funcName.pop_back();
-              }
-
-              // Generate mangled name
-              nectar_push_scope(ScopeKind::kScopeNamespace, nsName);
-              auto mangled = nectar_mangle_name(funcName);
-              nectar_pop_scope();
-
-              kOrigin += 3UL;
-              break;
-            }
-          }
+          if (ref.empty() == false)
+            syntax_tree.fUserValue += "mov rax, " + ref + "\n";
+          
+          if (subText.starts_with("'") || isnumber(subText[0]))
+            syntax_tree.fUserValue += "mov rax, " + subText + "\n";
 
           syntax_tree.fUserValue += nectar_generate_epilogue() + "ret\n";
           kOrigin += 2UL;
