@@ -226,8 +226,8 @@ class CompilerFrontendNectarAMD64 final CK_COMPILER_FRONTEND {
   /// \brief Parse NECTAR namespaces and objects.
   /// \param CompilerKit::SyntaxLeafList::SyntaxLeaf the leaf to build upon.
   CompilerKit::SyntaxLeafList::SyntaxLeaf CompileClasses(CompilerKit::STLString&       text,
-                                                       const CompilerKit::STLString& file,
-                                                       CompilerKit::SyntaxLeafList::SyntaxLeaf&);
+                                                         const CompilerKit::STLString& file,
+                                                         CompilerKit::SyntaxLeafList::SyntaxLeaf&);
 };
 
 /// @internal compiler variables
@@ -496,10 +496,21 @@ CompilerKit::SyntaxLeafList::SyntaxLeaf CompilerFrontendNectarAMD64::Compile(
         if (!valueOfVar.find("("))
           CompilerKit::Detail::print_error("Malformed function call: " + text, file);
 
-        valueOfVar.erase(valueOfVar.find("("));
-        valueOfVar += "\n";
+        auto nameVar = text.substr(0, text.find(keyword.first.fKeywordName));
 
-        syntax_tree.fUserValue += "lea r8, [rbp-1]\n";
+        while (nameVar.find(" ") != CompilerKit::STLString::npos) {
+          nameVar.erase(nameVar.find(" "), 1);
+        }
+
+        while (nameVar.find("\t") != CompilerKit::STLString::npos) {
+          nameVar.erase(nameVar.find("\t"), 1);
+        }
+
+        if (!nectar_get_variable_ref(nameVar).empty())
+          syntax_tree.fUserValue += "lea r8, " + nectar_get_variable_ref(nameVar) + "\n";
+
+        auto method = valueOfVar.erase(valueOfVar.find("("));
+        valueOfVar += "\n";
 
         CompilerKit::STLString arg;
         auto                   index = 9;
@@ -536,19 +547,10 @@ CompilerKit::SyntaxLeafList::SyntaxLeaf CompilerFrontendNectarAMD64::Compile(
           arg += ch;
         }
 
-        auto nameVar = text.substr(0, text.find(keyword.first.fKeywordName));
-
-        while (nameVar.find(" ") != CompilerKit::STLString::npos) {
-          nameVar.erase(nameVar.find(" "), 1);
-        }
-
-        while (nameVar.find("\t") != CompilerKit::STLString::npos) {
-          nameVar.erase(nameVar.find("\t"), 1);
-        }
-
         if (!nectar_get_variable_ref(nameVar).empty())
-          syntax_tree.fUserValue += "call " + nectar_get_variable_ref(nameVar) + "\n";
-        
+          syntax_tree.fUserValue +=
+              "call " + nectar_get_variable_ref(nameVar) + " offset " + method + "\n";
+
         break;
       }
       case CompilerKit::KeywordKind::kKeywordKindEndInstr:
@@ -672,7 +674,7 @@ CompilerKit::SyntaxLeafList::SyntaxLeaf CompilerFrontendNectarAMD64::Compile(
         } else if (valueOfVar.find("->") != CompilerKit::STLString::npos) {
           auto value = nectar_get_variable_ref(valueOfVar.substr(0, valueOfVar.find("->")));
           value += " offset ";
-          
+
           valueOfVar.replace(0, valueOfVar.find("->") + 2, value);
         }
 
@@ -685,8 +687,7 @@ CompilerKit::SyntaxLeafList::SyntaxLeaf CompilerFrontendNectarAMD64::Compile(
         break;
       }
       case CompilerKit::KeywordKind::kKeywordKindImport:
-      case CompilerKit::KeywordKind::kKeywordKindExport:
-      {
+      case CompilerKit::KeywordKind::kKeywordKindExport: {
         break;
       }
       case CompilerKit::KeywordKind::kKeywordKindReturn: {
@@ -706,14 +707,12 @@ CompilerKit::SyntaxLeafList::SyntaxLeaf CompilerFrontendNectarAMD64::Compile(
           subText        = subText.erase(subText.find(";"));
           size_t indxReg = 0UL;
 
-          if (subText.find("(") != CompilerKit::STLString::npos)
-            subText.erase(subText.find("("));
+          if (subText.find("(") != CompilerKit::STLString::npos) subText.erase(subText.find("("));
 
           auto ref = nectar_get_variable_ref(subText);
 
-          if (ref.empty() == false)
-            syntax_tree.fUserValue += "mov rax, " + ref + "\n";
-          
+          if (ref.empty() == false) syntax_tree.fUserValue += "mov rax, " + ref + "\n";
+
           if (subText.starts_with("'") || isnumber(subText[0]))
             syntax_tree.fUserValue += "mov rax, " + subText + "\n";
 
@@ -744,9 +743,9 @@ CompilerKit::SyntaxLeafList::SyntaxLeaf CompilerFrontendNectarAMD64::CompileClas
     CompilerKit::SyntaxLeafList::SyntaxLeaf& syntax_tree) {
   // Handle class entry
   if ((text.find("struct") != CompilerKit::STLString::npos)) {
-    CompilerKit::STLString keyword ="struct";
-    auto classPos = text.find(keyword) + keyword.length();
-    auto bracePos = text.find("{");
+    CompilerKit::STLString keyword  = "struct";
+    auto                   classPos = text.find(keyword) + keyword.length();
+    auto                   bracePos = text.find("{");
 
     auto className = text.substr(classPos, bracePos - classPos);
 

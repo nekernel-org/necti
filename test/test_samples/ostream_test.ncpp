@@ -22,12 +22,18 @@ struct iostream
     }
 };
 
+let dread()
+{
+    return 0;
+}
+
 let main()
 {
     let six_seven = 67;
 
     let io = iostream{};
-    six_seven = io.read();
+    io.read();
+    six_seven = dread();
 
     return six_seven;
 }
