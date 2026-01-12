@@ -1,0 +1,33 @@
+// Copyright 2026, Amlal El Mahrouss (amlal@nekernel.org)
+// Licensed under the Apache License, Version 2.0 (See accompanying
+// file LICENSE or copy at http://www.apache.org/licenses/LICENSE-2.0)
+// Official repository: https://github.com/nekernel-org/nectar
+
+#ifndef NECTAR_LIBNECTAR_ITERATOR_NHH
+#define NECTAR_LIBNECTAR_ITERATOR_NHH
+
+struct iterator_traits
+{
+    let begin(let collection)
+    {
+        return collection._begin;
+    }
+
+    let end(let collection)
+    {
+        return collection._begin + collection._size;
+    }
+
+    let size(let collection)
+    {
+        return collection._size;
+    }
+};
+
+type <struct It>
+typedef It::pointer iterator_pointer;
+
+type <struct It>
+typedef It::reference iterator_reference;
+
+#endif  // NECTAR_LIBNECTAR_ITERATOR_NHH

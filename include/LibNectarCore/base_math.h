@@ -6,7 +6,7 @@
 #ifndef NECTAR_LIBCXX_BASE_MATH_H
 #define NECTAR_LIBCXX_BASE_MATH_H
 
-#include <LibNectar/defines.h>
+#include <LibNectarCore/defines.h>
 
 #ifndef NAN
 #define NAN (__builtin_nanf(""))

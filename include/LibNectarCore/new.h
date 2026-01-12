@@ -6,7 +6,7 @@
 #ifndef NECTAR_LIBNECTAR_NEW_H
 #define NECTAR_LIBNECTAR_NEW_H
 
-#include <LibNectar/defines.h>
+#include <LibNectarCore/defines.h>
 
 struct nothrow_t final {
   explicit nothrow_t() = default;

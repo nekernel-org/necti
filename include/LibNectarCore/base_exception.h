@@ -6,9 +6,9 @@
 #ifndef NECTAR_LIBCXX_BASE_EXCEPTION_H
 #define NECTAR_LIBCXX_BASE_EXCEPTION_H
 
-#include <LibNectar/__abi.h>
-#include <LibNectar/base_process.h>
-#include <LibNectar/defines.h>
+#include <LibNectarCore/__abi.h>
+#include <LibNectarCore/base_process.h>
+#include <LibNectarCore/defines.h>
 
 /// @author Amlal El Mahrouss (amlal@nekernel.org)
 

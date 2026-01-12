@@ -76,7 +76,7 @@ src/
 │   ├── dbg.cc            # User-space debugger
 │   └── kdbg.cc           # Kernel debugger
 │
-└── LibNectar/               # Nectar ABI runtime (header-only)
+└── LibNectarCore/               # C++/Nectar ABI runtime (header-only)
 ```
 
 ### Compilation Pipeline

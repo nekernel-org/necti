@@ -6,14 +6,14 @@
 #ifndef NECTAR_LIBCXX_BASE_PROCESS_H
 #define NECTAR_LIBCXX_BASE_PROCESS_H
 
-#include <LibNectar/defines.h>
+#include <LibNectarCore/defines.h>
 
 __init_decl()
 
-    /// @brief CRT exit, with exit code (!!! exits all threads. !!!)
-    /// @param code the exit code.
-    /// @return the return > 0 for non successful.
-    extern int exit_(int code);
+/// @brief CRT exit, with exit code (!!! exits all threads. !!!)
+/// @param code the exit code.
+/// @return the return > 0 for non successful.
+extern int exit_(int code);
 
 /// @brief CRT signal handler.
 /// @param code the signal code.

@@ -6,7 +6,7 @@
 #ifndef NECTAR_LIBNECTAR_BASE_ALLOC_H
 #define NECTAR_LIBNECTAR_BASE_ALLOC_H
 
-#include <LibNectar/defines.h>
+#include <LibNectarCore/defines.h>
 
 /// @brief allocate a new class.
 /// @tparam KindClass the class type to allocate.

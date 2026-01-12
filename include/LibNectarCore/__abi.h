@@ -6,15 +6,15 @@
 #ifndef NECTAR_LIBNECTAR_ABI_H
 #define NECTAR_LIBNECTAR_ABI_H
 
-#include <LibNectar/base_process.h>
-#include <LibNectar/defines.h>
+#include <LibNectarCore/base_process.h>
+#include <LibNectarCore/defines.h>
 
 __init_decl()
 
-    static constexpr int32_t __unreachable_code = 34;
+static constexpr int32_t __unreachable_code = 34;
 
 inline void __compilerkit_unreachable(void) {
-  std::base_process::signal(__unreachable_code);
+  signal(__unreachable_code);
 
   while (1);
 }

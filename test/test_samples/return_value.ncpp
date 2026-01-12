@@ -1,3 +1,5 @@
+#include "../../include/LibNectar/iostream.nhh"
+
 let main()
 {
     let six_seven = 67;

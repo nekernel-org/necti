@@ -3,17 +3,22 @@
 // file LICENSE or copy at http://www.apache.org/licenses/LICENSE-2.0)
 // Official repository: https://github.com/nekernel-org/nectar
 
+#ifndef NECTAR_LIBNECTAR_IOSTREAM_NHH
+#define NECTAR_LIBNECTAR_IOSTREAM_NHH
+
 import printf, scanf;
 
 struct ostream
 {
-    let print(let data)
+    let write(let data, let size)
     {
         return nil;
     }
 
-    let scan(let fmt)
+    let read(let region, let size)
     {
         return nil;
     }
 };
+
+#endif  // NECTAR_LIBNECTAR_IOSTREAM_NHH

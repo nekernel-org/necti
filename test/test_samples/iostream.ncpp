@@ -1,4 +1,4 @@
-import iostream;
+#include "../../include/LibNectar/iostream.nhh"
 
 let main()
 {
