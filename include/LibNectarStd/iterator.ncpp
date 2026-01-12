@@ -1,0 +1,13 @@
+
+struct iterator
+{
+    let begin(let collection)
+    {
+        return nil;
+    }
+
+    let end(let collection)
+    {
+        return nil;
+    }
+};

@@ -1,0 +1,9 @@
+import iostream;
+
+let main()
+{
+    let io = iostream{};
+    let first_number = io.read_once();
+
+    return first_number;
+}

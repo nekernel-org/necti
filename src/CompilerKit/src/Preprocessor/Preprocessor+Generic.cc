@@ -805,21 +805,12 @@ NECTAR_MODULE(GenericPreprocessorMain) {
 
     kMacros.push_back(macro_lang);
 
-    Detail::bpp_macro macro_size_t;
-    macro_size_t.fName  = "__SIZE_TYPE__";
-    macro_size_t.fValue = "unsigned long long int";
+    Detail::bpp_macro macro_nil;
 
-    kMacros.push_back(macro_size_t);
+    macro_nil.fName  = "nil";
+    macro_nil.fValue = "0";
 
-    macro_size_t.fName  = "__UINT32_TYPE__";
-    macro_size_t.fValue = "unsigned int";
-
-    kMacros.push_back(macro_size_t);
-
-    macro_size_t.fName  = "__UINTPTR_TYPE__";
-    macro_size_t.fValue = "unsigned long long int";
-
-    kMacros.push_back(macro_size_t);
+    kMacros.push_back(macro_nil);
 
     for (auto index = 1UL; index < argc; ++index) {
       if (skip) {

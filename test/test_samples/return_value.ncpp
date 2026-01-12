@@ -1,0 +1,6 @@
+let main()
+{
+    let six_seven = 67;
+
+    return six_seven;
+}
