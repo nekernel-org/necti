@@ -6,7 +6,7 @@
 #ifndef NECTAR_LIBNECTAR_ITERATOR_NHH
 #define NECTAR_LIBNECTAR_ITERATOR_NHH
 
-struct iterator_traits
+impl iterator_traits
 {
     let begin(let it)
     {

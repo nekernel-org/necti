@@ -26,6 +26,7 @@
 #include <cstdlib>
 #include <filesystem>
 #include <ios>
+#include "CompilerKit/Detail/Config.h"
 
 /* NeKernel NECTAR Compiler Driver. */
 /* This is part of the CompilerKit. */
@@ -311,17 +312,8 @@ CompilerKit::SyntaxLeafList::SyntaxLeaf CompilerFrontendNectarAMD64::Compile(
     if (text.find(keyword.first.fKeywordName) == CompilerKit::STLString::npos) continue;
 
     switch (keyword.first.fKeywordKind) {
-      case CompilerKit::KeywordKind::kKeywordKindClass: {
+      case CompilerKit::KeywordKind::kKeywordKindImpl: {
         ++kOnClassScope;
-        auto symbol_name_cls = text.substr(text.find(keyword.first.fKeywordName));
-
-        for (auto& key : symbol_name_cls) {
-          if (key == ' ') key = '_';
-          if (key == ':') key = '$';
-        }
-
-        syntax_tree.fUserValue += "public_segment .data64 __NECTAR_" + symbol_name_cls + "\n";
-
         break;
       }
       case CompilerKit::KeywordKind::kKeywordKindIf: {
@@ -488,6 +480,16 @@ CompilerKit::SyntaxLeafList::SyntaxLeaf CompilerFrontendNectarAMD64::Compile(
 
         break;
       }
+      case CompilerKit::KeywordKind::kKeywordKindDelete: {
+        if (auto pos = syntax_tree.fUserValue.find(keyword.first.fKeywordName); pos != CompilerKit::STLString::npos)
+          syntax_tree.fUserValue.replace(pos, keyword.first.fKeywordName.size(), "__operator_release");
+        continue;
+      }
+      case CompilerKit::KeywordKind::kKeywordKindNew: {
+        if (auto pos = syntax_tree.fUserValue.find(keyword.first.fKeywordName); pos != CompilerKit::STLString::npos)
+          syntax_tree.fUserValue.replace(pos, keyword.first.fKeywordName.size(), "__operator_retain");
+        continue;
+      }
       case CompilerKit::KeywordKind::kKeywordKindAccess:
       case CompilerKit::KeywordKind::kKeywordKindPtrAccess: {
         CompilerKit::STLString valueOfVar =
@@ -549,13 +551,14 @@ CompilerKit::SyntaxLeafList::SyntaxLeaf CompilerFrontendNectarAMD64::Compile(
           arg += ch;
         }
 
-        if (!nectar_get_variable_ref(nameVar).empty())
+        if (!nectar_get_variable_ref(nameVar).empty()) {
           syntax_tree.fUserValue +=
-              "call " + nectar_get_variable_ref(nameVar) + " offset " + method + "\n";
+              "call " + nectar_get_variable_ref(nameVar) + (keyword.first.fKeywordName.ends_with('>') ? " ptr offset " : " offset ") + method + "\n";
+        }
 
         break;
       }
-      case CompilerKit::KeywordKind::kKeywordKindEndInstr:
+      case CompilerKit::KeywordKind::kKeywordKindEndLine:
       case CompilerKit::KeywordKind::kKeywordKindVariableInc:
       case CompilerKit::KeywordKind::kKeywordKindVariableDec:
       case CompilerKit::KeywordKind::kKeywordKindVariableAssign: {
@@ -569,7 +572,7 @@ CompilerKit::SyntaxLeafList::SyntaxLeaf CompilerFrontendNectarAMD64::Compile(
         } else if (keyword.first.fKeywordKind ==
                    CompilerKit::KeywordKind::kKeywordKindVariableAssign) {
           valueOfVar = text.substr(text.find(keyword.first.fKeywordName) + keyword.first.fKeywordName.size());
-        } else if (keyword.first.fKeywordKind == CompilerKit::KeywordKind::kKeywordKindEndInstr) {
+        } else if (keyword.first.fKeywordKind == CompilerKit::KeywordKind::kKeywordKindEndLine) {
           break;
         }
 
@@ -578,7 +581,7 @@ CompilerKit::SyntaxLeafList::SyntaxLeaf CompilerFrontendNectarAMD64::Compile(
         }
 
         while (valueOfVar.find(";") != CompilerKit::STLString::npos &&
-               keyword.first.fKeywordKind != CompilerKit::KeywordKind::kKeywordKindEndInstr) {
+               keyword.first.fKeywordKind != CompilerKit::KeywordKind::kKeywordKindEndLine) {
           valueOfVar.erase(valueOfVar.find(";"));
         }
 
@@ -592,7 +595,7 @@ CompilerKit::SyntaxLeafList::SyntaxLeaf CompilerFrontendNectarAMD64::Compile(
         } else if (keyword.first.fKeywordKind ==
                    CompilerKit::KeywordKind::kKeywordKindVariableAssign) {
           varName.erase(varName.find(keyword.first.fKeywordName));
-        } else if (keyword.first.fKeywordKind == CompilerKit::KeywordKind::kKeywordKindEndInstr) {
+        } else if (keyword.first.fKeywordKind == CompilerKit::KeywordKind::kKeywordKindEndLine) {
           varName.erase(varName.find(";"));
         }
 
@@ -630,7 +633,7 @@ CompilerKit::SyntaxLeafList::SyntaxLeaf CompilerFrontendNectarAMD64::Compile(
           continue;
         }
 
-        if (keyword.first.fKeywordKind == CompilerKit::KeywordKind::kKeywordKindEndInstr) {
+        if (keyword.first.fKeywordKind == CompilerKit::KeywordKind::kKeywordKindEndLine) {
           syntax_tree.fUserValue += "\n";
           continue;
         }
@@ -671,14 +674,10 @@ CompilerKit::SyntaxLeafList::SyntaxLeaf CompilerFrontendNectarAMD64::Compile(
         nectar_allocate_stack_variable(varName);
 
         if (valueOfVar.find(".") != CompilerKit::STLString::npos) {
-          auto value = nectar_get_variable_ref(valueOfVar.substr(0, valueOfVar.find(".")));
-          value += " offset ";
-
+          auto value = "offset ";
           valueOfVar.replace(0, valueOfVar.find(".") + 1, value);
         } else if (valueOfVar.find("->") != CompilerKit::STLString::npos) {
-          auto value = nectar_get_variable_ref(valueOfVar.substr(0, valueOfVar.find("->")));
-          value += " offset ";
-
+          auto value = "ptr offset ";
           valueOfVar.replace(0, valueOfVar.find("->") + 2, value);
         }
 
@@ -688,6 +687,9 @@ CompilerKit::SyntaxLeafList::SyntaxLeaf CompilerFrontendNectarAMD64::Compile(
         syntax_tree.fUserValue +=
             instr + nectar_get_variable_ref(varName) + ", " + valueOfVar + "\n";
 
+        break;
+      }
+      case CompilerKit::KeywordKind::kKeywordKindCommentInline: {
         break;
       }
       case CompilerKit::KeywordKind::kKeywordKindReturn: {
@@ -741,9 +743,8 @@ CompilerKit::SyntaxLeafList::SyntaxLeaf CompilerFrontendNectarAMD64::Compile(
 CompilerKit::SyntaxLeafList::SyntaxLeaf CompilerFrontendNectarAMD64::CompileLayout(
     CompilerKit::STLString& text, const CompilerKit::STLString& file,
     CompilerKit::SyntaxLeafList::SyntaxLeaf& syntax_tree) {
-  // Handle class entry
-  if ((text.find("struct") != CompilerKit::STLString::npos)) {
-    CompilerKit::STLString keyword  = "struct";
+  if ((text.find("impl") != CompilerKit::STLString::npos)) {
+    CompilerKit::STLString keyword  = "impl";
     auto                   classPos = text.find(keyword) + keyword.length();
     auto                   bracePos = text.find("{");
 
@@ -1219,7 +1220,7 @@ class AssemblyNectarInterfaceAMD64 final CK_ASSEMBLY_INTERFACE {
 NECTAR_MODULE(CompilerNectarAMD64) {
   bool skip = false;
 
-  kKeywords.emplace_back("struct", CompilerKit::KeywordKind::kKeywordKindClass);
+  kKeywords.emplace_back("impl", CompilerKit::KeywordKind::kKeywordKindImpl);
   kKeywords.emplace_back("{", CompilerKit::KeywordKind::kKeywordKindBodyStart);
   kKeywords.emplace_back("}", CompilerKit::KeywordKind::kKeywordKindBodyEnd);
   kKeywords.emplace_back("(", CompilerKit::KeywordKind::kKeywordKindFunctionStart);
@@ -1229,11 +1230,16 @@ NECTAR_MODULE(CompilerNectarAMD64) {
   kKeywords.emplace_back("-=", CompilerKit::KeywordKind::kKeywordKindVariableDec);
   kKeywords.emplace_back("const", CompilerKit::KeywordKind::kKeywordKindConstant);
   kKeywords.emplace_back("let", CompilerKit::KeywordKind::kKeywordKindVariable);
+  kKeywords.emplace_back("retain", CompilerKit::KeywordKind::kKeywordKindNew);
+  kKeywords.emplace_back("release", CompilerKit::KeywordKind::kKeywordKindDelete);
+  kKeywords.emplace_back("new", CompilerKit::KeywordKind::kKeywordKindNew);
+  kKeywords.emplace_back("delete", CompilerKit::KeywordKind::kKeywordKindDelete);
   kKeywords.emplace_back("->", CompilerKit::KeywordKind::kKeywordKindPtrAccess);
   kKeywords.emplace_back(".", CompilerKit::KeywordKind::kKeywordKindAccess);
   kKeywords.emplace_back(",", CompilerKit::KeywordKind::kKeywordKindArgSeparator);
-  kKeywords.emplace_back(";", CompilerKit::KeywordKind::kKeywordKindEndInstr);
+  kKeywords.emplace_back(";", CompilerKit::KeywordKind::kKeywordKindEndLine);
 
+  kKeywords.emplace_back("//", CompilerKit::KeywordKind::kKeywordKindCommentInline);
   kKeywords.emplace_back("return", CompilerKit::KeywordKind::kKeywordKindReturn);
 
   kKeywords.emplace_back("if", CompilerKit::KeywordKind::kKeywordKindIf);

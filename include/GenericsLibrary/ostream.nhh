@@ -6,18 +6,25 @@
 #ifndef NECTAR_LIBNECTAR_IOSTREAM_NHH
 #define NECTAR_LIBNECTAR_IOSTREAM_NHH
 
-import printf, scanf;
+#include <GenericsLibrary/iterator.nhh>
 
-struct ostream
+impl ostream
 {
+
     let write(let data, let size)
     {
-        return nil;
+        let fd_ := __fd();
+        let written := __write(fd_, data, size);
+
+        return written;
     }
 
     let read(let region, let size)
     {
-        return nil;
+        let fd_ := __fd();
+        let readen := __read(fd_, data, size);
+
+        return readen;
     }
 };
 

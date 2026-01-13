@@ -1,0 +1,8 @@
+#include <GenericsLibrary/iostream.nhh>
+
+let main()
+{
+    let io := ostream{};
+    let arr := io.read(0, 0);
+    return arr[0];
+}

@@ -6,9 +6,10 @@
 
 ===================================
 
-- ABI: PEF
-- Influenced by: C, C++
-- Typing System: Weak
+- ABI: PEF based.
+- Typing System: Weak.
+- Output: NeKernel Assembler.
+- Platforms: POSIX, NeKernel, Windows.
 
 ===================================
 
@@ -20,7 +21,8 @@
 - `*` Unchecked pointer type.
 - `.` Checked pointer access.
 - `->` UnChecked pointer access.
-- `struct` Plain Old Data data Structure, implement Trees, Heaps, etc..
+- `impl` Implementation data structure, useful for proxies, iterators, etc.
+- `struct` Data implementation of `impl` -- useful to store fields and such.
 - `let` Pointer/Reference variable declaration.
 - `const` const `let` declaration.
 

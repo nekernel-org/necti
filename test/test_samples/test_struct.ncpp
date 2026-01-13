@@ -1,0 +1,18 @@
+impl ostream
+{
+    let print_fd_()
+    {
+        return 0;
+    }
+};
+
+let main()
+{
+    let io := new;
+    let first_number := io->print_fd_();
+    first_number -= io.print_fd_();
+
+    io := delete;
+
+    return first_number;
+}
