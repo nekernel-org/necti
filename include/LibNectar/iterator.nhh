@@ -24,10 +24,4 @@ struct iterator_traits
     }
 };
 
-type <struct It>
-typedef It::pointer iterator_pointer;
-
-type <struct It>
-typedef It::reference iterator_reference;
-
 #endif  // NECTAR_LIBNECTAR_ITERATOR_NHH

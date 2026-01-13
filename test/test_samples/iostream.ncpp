@@ -1,9 +1,9 @@
-#include "../../include/LibNectar/iostream.nhh"
 
 let main()
 {
-    let io = iostream{};
-    let first_number = io.read_once();
+    let io := iostream{};
+    let first_number := io.read_once();
+    first_number -= io.read_once();
 
     return first_number;
 }
