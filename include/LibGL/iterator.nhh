@@ -8,19 +8,24 @@
 
 struct iterator_traits
 {
-    let begin(let collection)
+    let begin(let it)
     {
-        return collection._begin;
+        let end := it._begin;
+        return end;
     }
 
-    let end(let collection)
+    let end(let it)
     {
-        return collection._begin + collection._size;
+        let end := it._begin;
+        end += it._end;
+
+        return end;
     }
 
-    let size(let collection)
+    let size(let it)
     {
-        return collection._size;
+        let sz := it._size;
+        return sz;
     }
 };
 

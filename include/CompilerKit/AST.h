@@ -29,7 +29,6 @@ enum struct KeywordKind {
   kKeywordKindFunctionStart,
   kKeywordKindFunctionEnd,
   kKeywordKindVariable,
-  kKeywordKindType,
   kKeywordKindExpressionBegin,
   kKeywordKindExpressionEnd,
   kKeywordKindArgSeparator,

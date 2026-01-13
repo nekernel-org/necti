@@ -24,4 +24,10 @@
 - `let` Pointer/Reference variable declaration.
 - `const` const `let` declaration.
 
+===================================
 
+# 2: Concepts
+
+===================================
+
+Nectar runs using the Generics Library (GL) -- it contains foundational code to run nectar applications and systems.

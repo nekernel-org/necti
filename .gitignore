@@ -240,8 +240,6 @@ nbdist/
 ## VSCode
 .vscode/settings.json
 
-libgl/
-
 CMakeLists.txt.user
 CMakeCache.txt
 CMakeFiles
