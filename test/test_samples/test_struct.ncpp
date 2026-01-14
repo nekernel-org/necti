@@ -1,17 +1,30 @@
-impl ostream
+impl foo
 {
-    let print_fd_()
+    foo()
+    {
+        return;
+    }
+
+    let noop()
     {
         return 0;
     }
 };
 
+let construct_foo()
+{
+    let io := new;
+    io := foo();
+
+    return io;
+}
+
 let main()
 {
     let io := new;
-    let first_number := io->print_fd_();
-    first_number -= io.print_fd_();
-
+    io := construct_foo();
+    
+    let first_number := io->noop();
     io := delete;
 
     return first_number;

@@ -10,6 +10,15 @@
 
 impl ostream
 {
+    ostream()
+    {
+        return;
+    }
+
+    ~ostream()
+    {
+        return;
+    }
 
     let write(let data, let size)
     {

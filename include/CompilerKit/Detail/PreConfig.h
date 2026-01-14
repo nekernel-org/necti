@@ -55,8 +55,6 @@
 
 #define kDistRelease ToString(kDistReleaseBranch)
 
-#ifndef kDistRelease
-
 #define kDistVersion "v0.1.3-compilerkit"
 #define kDistVersionBCD 0x0103
 
@@ -64,8 +62,6 @@
 #define Stringify(X) #X
 
 #define kDistRelease ToString(kDistReleaseBranch)
-
-#endif  // !kDistRelease
 
 #define MUST_PASS(E) assert(E)
 
