@@ -26,6 +26,7 @@
 #include <cstdlib>
 #include <filesystem>
 #include <ios>
+#include "CompilerKit/Detail/Config.h"
 
 /* NeKernel NECTAR Compiler Driver. */
 /* This is part of the CompilerKit. */
@@ -375,7 +376,7 @@ CompilerKit::SyntaxLeafList::SyntaxLeaf CompilerFrontendNectarAMD64::Compile(
       dont_accept_func:
         break;
 
-      accept_func: {
+      accept_func : {
         CompilerKit::STLString symbol_name_fn = text;
         size_t                 indexFnName    = 0;
 
@@ -480,17 +481,20 @@ CompilerKit::SyntaxLeafList::SyntaxLeaf CompilerFrontendNectarAMD64::Compile(
         break;
       }
       case CompilerKit::KeywordKind::kKeywordKindDelete: {
-        if (auto pos = syntax_tree.fUserValue.find(keyword.first.fKeywordName); pos != CompilerKit::STLString::npos)
-          syntax_tree.fUserValue.replace(pos, keyword.first.fKeywordName.size(), "__operator_release");
+        if (auto pos = syntax_tree.fUserValue.find(keyword.first.fKeywordName);
+            pos != CompilerKit::STLString::npos)
+          syntax_tree.fUserValue.replace(pos, keyword.first.fKeywordName.size(),
+                                         "__operator_delete");
         continue;
       }
       case CompilerKit::KeywordKind::kKeywordKindNew: {
-        if (auto pos = syntax_tree.fUserValue.find(keyword.first.fKeywordName); pos != CompilerKit::STLString::npos)
-          syntax_tree.fUserValue.replace(pos, keyword.first.fKeywordName.size(), "__operator_retain");
+        if (auto pos = syntax_tree.fUserValue.find(keyword.first.fKeywordName);
+            pos != CompilerKit::STLString::npos)
+          syntax_tree.fUserValue.replace(pos, keyword.first.fKeywordName.size(),
+                                         "__operator_new");
         continue;
       }
-      case CompilerKit::KeywordKind::kKeywordKindAccess:
-      case CompilerKit::KeywordKind::kKeywordKindPtrAccess: {
+      case CompilerKit::KeywordKind::kKeywordKindAccess: {
         CompilerKit::STLString valueOfVar =
             text.substr(text.find(keyword.first.fKeywordName) + keyword.first.fKeywordName.size());
 
@@ -532,7 +536,7 @@ CompilerKit::SyntaxLeafList::SyntaxLeaf CompilerFrontendNectarAMD64::Compile(
                 }
 
                 if (!isnumber(val[0])) {
-                  val = "0";
+                  val = "0x0";
                 }
               }
 
@@ -552,7 +556,9 @@ CompilerKit::SyntaxLeafList::SyntaxLeaf CompilerFrontendNectarAMD64::Compile(
 
         if (!nectar_get_variable_ref(nameVar).empty()) {
           syntax_tree.fUserValue +=
-              "call " + nectar_get_variable_ref(nameVar) + (keyword.first.fKeywordName.ends_with('>') ? " ptr offset " : " offset ") + method + "\n";
+              "call " + nectar_get_variable_ref(nameVar) +
+              (keyword.first.fKeywordName.ends_with('>') ? " ptr offset " : " offset ") + method +
+              "\n";
         }
 
         break;
@@ -570,7 +576,8 @@ CompilerKit::SyntaxLeafList::SyntaxLeaf CompilerFrontendNectarAMD64::Compile(
           valueOfVar = text.substr(text.find("-=") + 2);
         } else if (keyword.first.fKeywordKind ==
                    CompilerKit::KeywordKind::kKeywordKindVariableAssign) {
-          valueOfVar = text.substr(text.find(keyword.first.fKeywordName) + keyword.first.fKeywordName.size());
+          valueOfVar = text.substr(text.find(keyword.first.fKeywordName) +
+                                   keyword.first.fKeywordName.size());
         } else if (keyword.first.fKeywordKind == CompilerKit::KeywordKind::kKeywordKindEndLine) {
           break;
         }
@@ -673,15 +680,17 @@ CompilerKit::SyntaxLeafList::SyntaxLeaf CompilerFrontendNectarAMD64::Compile(
         nectar_allocate_stack_variable(varName);
 
         if (valueOfVar.find(".") != CompilerKit::STLString::npos) {
-          auto value = "offset ";
+          CompilerKit::STLString value = "offset ";
           valueOfVar.replace(0, valueOfVar.find(".") + 1, value);
-        } else if (valueOfVar.find("->") != CompilerKit::STLString::npos) {
-          auto value = "ptr offset ";
-          valueOfVar.replace(0, valueOfVar.find("->") + 2, value);
         }
 
-        if (valueOfVar.find("(") != CompilerKit::STLString::npos)
-          valueOfVar.erase(valueOfVar.find("("));
+        if (valueOfVar.find(")") != CompilerKit::STLString::npos) {
+          if (valueOfVar.find("(") != CompilerKit::STLString::npos)
+            valueOfVar.erase(valueOfVar.find("("));
+
+          syntax_tree.fUserValue += "call " + valueOfVar + "\nmov rcx, rax\n";
+          valueOfVar = "rcx";
+        }
 
         syntax_tree.fUserValue +=
             instr + nectar_get_variable_ref(varName) + ", " + valueOfVar + "\n";
@@ -1171,7 +1180,8 @@ static void nectar_process_function_parameters(const std::vector<CompilerKit::ST
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
-#define kExtListCxx {".ncpp"}
+#define kExtListCxx \
+  { ".ncpp" }
 
 class AssemblyNectarInterfaceAMD64 final CK_ASSEMBLY_INTERFACE {
  public:
@@ -1229,11 +1239,8 @@ NECTAR_MODULE(CompilerNectarAMD64) {
   kKeywords.emplace_back("-=", CompilerKit::KeywordKind::kKeywordKindVariableDec);
   kKeywords.emplace_back("const", CompilerKit::KeywordKind::kKeywordKindConstant);
   kKeywords.emplace_back("let", CompilerKit::KeywordKind::kKeywordKindVariable);
-  kKeywords.emplace_back("retain", CompilerKit::KeywordKind::kKeywordKindNew);
-  kKeywords.emplace_back("release", CompilerKit::KeywordKind::kKeywordKindDelete);
   kKeywords.emplace_back("new", CompilerKit::KeywordKind::kKeywordKindNew);
   kKeywords.emplace_back("delete", CompilerKit::KeywordKind::kKeywordKindDelete);
-  kKeywords.emplace_back("->", CompilerKit::KeywordKind::kKeywordKindPtrAccess);
   kKeywords.emplace_back(".", CompilerKit::KeywordKind::kKeywordKindAccess);
   kKeywords.emplace_back(",", CompilerKit::KeywordKind::kKeywordKindArgSeparator);
   kKeywords.emplace_back(";", CompilerKit::KeywordKind::kKeywordKindEndLine);

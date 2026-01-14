@@ -578,7 +578,7 @@ bool CompilerKit::EncoderAMD64::WriteNumber(const std::size_t& pos, std::string&
     case 'x': {
       if (auto res = strtol(jump_label.substr(pos + 2).c_str(), nullptr, 16); !res) {
         if (errno != 0) {
-          CompilerKit::Detail::print_error("invalid hex number: " + jump_label, "CompilerKit");
+          CompilerKit::Detail::print_error("Invalid hex number: " + jump_label, "CompilerKit");
           throw std::runtime_error("invalid_hex");
         }
       }
@@ -602,7 +602,7 @@ bool CompilerKit::EncoderAMD64::WriteNumber(const std::size_t& pos, std::string&
     case 'b': {
       if (auto res = strtol(jump_label.substr(pos + 2).c_str(), nullptr, 2); !res) {
         if (errno != 0) {
-          CompilerKit::Detail::print_error("invalid binary number: " + jump_label, "CompilerKit");
+          CompilerKit::Detail::print_error("Invalid binary number: " + jump_label, "CompilerKit");
           throw std::runtime_error("invalid_bin");
         }
       }
@@ -625,7 +625,7 @@ bool CompilerKit::EncoderAMD64::WriteNumber(const std::size_t& pos, std::string&
     case 'o': {
       if (auto res = strtol(jump_label.substr(pos + 2).c_str(), nullptr, 7); !res) {
         if (errno != 0) {
-          CompilerKit::Detail::print_error("invalid octal number: " + jump_label, "CompilerKit");
+          CompilerKit::Detail::print_error("Invalid octal number: " + jump_label, "CompilerKit");
           throw std::runtime_error("invalid_octal");
         }
       }
@@ -778,7 +778,7 @@ bool CompilerKit::EncoderAMD64::WriteNumber16(const std::size_t& pos, std::strin
     case 'x': {
       if (auto res = strtol(jump_label.substr(pos + 2).c_str(), nullptr, 16); !res) {
         if (errno != 0) {
-          CompilerKit::Detail::print_error("invalid hex number: " + jump_label, "CompilerKit");
+          CompilerKit::Detail::print_error("Invalid hex number: " + jump_label, "CompilerKit");
           throw std::runtime_error("invalid_hex");
         }
       }
@@ -802,7 +802,7 @@ bool CompilerKit::EncoderAMD64::WriteNumber16(const std::size_t& pos, std::strin
     case 'b': {
       if (auto res = strtol(jump_label.substr(pos + 2).c_str(), nullptr, 2); !res) {
         if (errno != 0) {
-          CompilerKit::Detail::print_error("invalid binary number: " + jump_label, "CompilerKit");
+          CompilerKit::Detail::print_error("Invalid binary number: " + jump_label, "CompilerKit");
           throw std::runtime_error("invalid_bin");
         }
       }
@@ -825,7 +825,7 @@ bool CompilerKit::EncoderAMD64::WriteNumber16(const std::size_t& pos, std::strin
     case 'o': {
       if (auto res = strtol(jump_label.substr(pos + 2).c_str(), nullptr, 7); !res) {
         if (errno != 0) {
-          CompilerKit::Detail::print_error("invalid octal number: " + jump_label, "CompilerKit");
+          CompilerKit::Detail::print_error("Invalid octal number: " + jump_label, "CompilerKit");
           throw std::runtime_error("invalid_octal");
         }
       }
@@ -880,7 +880,7 @@ bool CompilerKit::EncoderAMD64::WriteNumber8(const std::size_t& pos, std::string
     case 'x': {
       if (auto res = strtol(jump_label.substr(pos + 2).c_str(), nullptr, 16); !res) {
         if (errno != 0) {
-          CompilerKit::Detail::print_error("invalid hex number: " + jump_label, "CompilerKit");
+          CompilerKit::Detail::print_error("Invalid hex number: " + jump_label, "CompilerKit");
           throw std::runtime_error("invalid_hex");
         }
       }
@@ -900,7 +900,7 @@ bool CompilerKit::EncoderAMD64::WriteNumber8(const std::size_t& pos, std::string
     case 'b': {
       if (auto res = strtol(jump_label.substr(pos + 2).c_str(), nullptr, 2); !res) {
         if (errno != 0) {
-          CompilerKit::Detail::print_error("invalid binary number: " + jump_label, "CompilerKit");
+          CompilerKit::Detail::print_error("Invalid binary number: " + jump_label, "CompilerKit");
           throw std::runtime_error("invalid_bin");
         }
       }
@@ -919,7 +919,7 @@ bool CompilerKit::EncoderAMD64::WriteNumber8(const std::size_t& pos, std::string
     case 'o': {
       if (auto res = strtol(jump_label.substr(pos + 2).c_str(), nullptr, 7); !res) {
         if (errno != 0) {
-          CompilerKit::Detail::print_error("invalid octal number: " + jump_label, "CompilerKit");
+          CompilerKit::Detail::print_error("Invalid octal number: " + jump_label, "CompilerKit");
           throw std::runtime_error("invalid_octal");
         }
       }
@@ -1006,30 +1006,34 @@ bool CompilerKit::EncoderAMD64::WriteLine(std::string line, std::string file) {
           std::vector<RegMapAMD64> currentRegList;
 
           for (auto& reg : kRegisterList) {
-            std::vector<char> regExt = {'e', 'r'};
+            std::string registerName;
 
-            for (auto& ext : regExt) {
-              std::string registerName;
+            if (bits == 32) registerName.push_back('e');
+            else if (bits == 64) registerName.push_back('r');
+            else  {
+                CompilerKit::Detail::print_error(
+                    "Invalid size for register, current bit width is: " +
+                        std::to_string(kRegisterBitWidth),
+                    file);
+                throw std::runtime_error("invalid_reg_size");
+            }
 
-              if (bits > 16) registerName.push_back(ext);
+            registerName += reg.fName;
 
-              registerName += reg.fName;
+            while (line.find(registerName) != std::string::npos) {
+              line.erase(line.find(registerName), registerName.size());
 
-              while (line.find(registerName) != std::string::npos) {
-                line.erase(line.find(registerName), registerName.size());
-
-                if (bits == 16) {
-                  if (registerName[0] == 'r') {
-                    CompilerKit::Detail::print_error(
-                        "invalid size for register, current bit width is: " +
-                            std::to_string(kRegisterBitWidth),
-                        file);
-                    throw std::runtime_error("invalid_reg_size");
-                  }
+              if (bits == 16) {
+                if (registerName[0] == 'r') {
+                  CompilerKit::Detail::print_error(
+                      "Invalid size for register, current bit width is: " +
+                          std::to_string(kRegisterBitWidth),
+                      file);
+                  throw std::runtime_error("invalid_reg_size");
                 }
-
-                currentRegList.push_back({.fName = registerName, .fModRM = reg.fModRM});
               }
+
+              currentRegList.push_back({.fName = registerName, .fModRM = reg.fModRM});
             }
           }
 

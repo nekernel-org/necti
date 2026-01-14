@@ -7,7 +7,7 @@ impl foo
 
     let noop()
     {
-        return 0;
+        return 0x0;
     }
 };
 
@@ -21,11 +21,11 @@ let construct_foo()
 
 let main()
 {
-    let io := new;
+    let io := 0x0;
     io := construct_foo();
     
-    let first_number := io->noop();
-    io := delete;
+    let first_number := io.noop();
+    let status := delete(io);
 
     return first_number;
 }
