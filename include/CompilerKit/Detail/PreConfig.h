@@ -61,7 +61,7 @@
 #ifndef kDistRelease
 
 #define kDistVersion "v0.1.3-compilerkit"
-#define kDistVersionBCD 0x0002
+#define kDistVersionBCD 0x0103
 
 #define ToString(X) Stringify(X)
 #define Stringify(X) #X
