@@ -50,9 +50,6 @@
 #include <cassert>
 #include <string>
 
-#define kDistVersion "v0.0.7-compilerkit"
-#define kDistVersionBCD 0x0002
-
 #define ToString(X) Stringify(X)
 #define Stringify(X) #X
 
