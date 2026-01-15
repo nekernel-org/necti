@@ -32,7 +32,7 @@
 #define kPrintF kStdOut
 #define kPrintErr kStdErr
 
-inline static UInt32 kErrorLimit       = 10;
+inline static UInt32 kErrorLimit       = 0;
 inline static UInt32 kAcceptableErrors = 0;
 inline static bool   kVerbose          = false;
 inline static bool   kOutputAsBinary   = false;
@@ -51,9 +51,8 @@ inline void print_error(STLString reason, STLString file) noexcept {
 
   kStdErr << reason << kBlank << std::endl;
 
-  if (kAcceptableErrors > kErrorLimit) std::exit(NECTAR_EXEC_ERROR);
-
   ++kAcceptableErrors;
+  if (kAcceptableErrors > kErrorLimit) std::exit(NECTAR_EXEC_ERROR);
 }
 
 inline void print_warning(STLString reason, STLString file) noexcept {

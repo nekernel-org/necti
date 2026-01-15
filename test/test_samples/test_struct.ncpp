@@ -24,7 +24,7 @@ let main()
     let io := 0x0;
     io := construct_foo();
     
-    let first_number := io.noop();
+    let first_number := io->noop();
     let status := delete(io);
 
     return first_number;

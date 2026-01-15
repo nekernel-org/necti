@@ -25,8 +25,6 @@
 #include <csignal>
 #include <cstdlib>
 #include <filesystem>
-#include <ios>
-#include "CompilerKit/Detail/Config.h"
 
 /* NeKernel NECTAR Compiler Driver. */
 /* This is part of the CompilerKit. */
@@ -123,6 +121,7 @@ struct VariableInfo {
   bool                   fIsParameter{false};
   CompilerKit::STLString fTypeName{};
   UInt32                 fLastUsed{0};
+  bool                   fIsConstant{false};
 };
 
 /// \brief Complete compiler context
@@ -186,13 +185,15 @@ static CompilerKit::STLString nectar_mangle_name(
 // Stack frame management
 static CompilerKit::STLString nectar_generate_prologue();
 static CompilerKit::STLString nectar_generate_epilogue();
-static Int32 nectar_allocate_stack_variable(const CompilerKit::STLString& var_name, Int32 size = 8);
+static Int32 nectar_allocate_stack_variable(const CompilerKit::STLString& var_name, Int32 size = 8,
+                                            bool is_constant = false);
 
 // Register allocation
 static CompilerKit::STLString nectar_allocate_register(const CompilerKit::STLString& var_name);
 static CompilerKit::STLString nectar_spill_lru_variable();
 static VariableInfo*          nectar_find_variable(const CompilerKit::STLString& var_name);
-static CompilerKit::STLString nectar_get_variable_ref(const CompilerKit::STLString& var_name);
+static CompilerKit::STLString nectar_get_variable_ref(const CompilerKit::STLString& var_name,
+                                                      bool                          lookup = false);
 
 // Class/object management
 static void                   nectar_add_class_member(const CompilerKit::STLString& class_name,
@@ -265,6 +266,18 @@ static std::vector<std::pair<CompilerKit::STLString, std::uintptr_t>> kOriginMap
 /// @brief Generate assembly from a NECTAR source.
 
 /////////////////////////////////////////////////////////////////////////////////////////
+
+static auto nectar_get_class_member(const CompilerKit::STLString& class_name,
+                                    const CompilerKit::STLString& member_name) {
+  // Find or create struct map entry
+  for (auto& sm : kContext.fStructMapVector) {
+    if (sm.fName == class_name) {
+      return sm;
+    }
+  }
+
+  return CompilerStructMap{};
+}
 
 CompilerKit::SyntaxLeafList::SyntaxLeaf CompilerFrontendNectarAMD64::Compile(
     CompilerKit::STLString& text, const CompilerKit::STLString& file) {
@@ -493,7 +506,8 @@ CompilerKit::SyntaxLeafList::SyntaxLeaf CompilerFrontendNectarAMD64::Compile(
           syntax_tree.fUserValue.replace(pos, keyword.first.fKeywordName.size(), "__operator_new");
         continue;
       }
-      case CompilerKit::KeywordKind::kKeywordKindAccess: {
+      case CompilerKit::KeywordKind::kKeywordKindAccess:
+      case CompilerKit::KeywordKind::kKeywordKindAccessChecked: {
         CompilerKit::STLString valueOfVar =
             text.substr(text.find(keyword.first.fKeywordName) + keyword.first.fKeywordName.size());
 
@@ -556,8 +570,8 @@ CompilerKit::SyntaxLeafList::SyntaxLeaf CompilerFrontendNectarAMD64::Compile(
         if (!nectar_get_variable_ref(nameVar).empty()) {
           syntax_tree.fUserValue +=
               "call " + nectar_get_variable_ref(nameVar) +
-              (keyword.first.fKeywordName.ends_with('>') ? " ptr offset " : " offset ") + method +
-              "\n";
+              (keyword.first.fKeywordName.ends_with('>') ? " __ptr __offset " : " __offset ") +
+              method + "\n";
         }
 
         break;
@@ -676,19 +690,29 @@ CompilerKit::SyntaxLeafList::SyntaxLeaf CompilerFrontendNectarAMD64::Compile(
           varName.erase(varName.find("\t"), 1);
         }
 
-        nectar_allocate_stack_variable(varName);
+        nectar_allocate_stack_variable(varName, 8,
+                                       text.find("const ") != CompilerKit::STLString::npos);
 
         if (valueOfVar.find(".") != CompilerKit::STLString::npos) {
-          CompilerKit::STLString value = "offset ";
-          valueOfVar.replace(0, valueOfVar.find(".") + 1, value);
+          CompilerKit::STLString value = "__offset ";
+          valueOfVar.replace(valueOfVar.find("."), strlen("."), value);
+          valueOfVar.erase(0, valueOfVar.find("__offset"));
+        }
+
+        if (valueOfVar.find("->") != CompilerKit::STLString::npos) {
+          CompilerKit::STLString value = "__ptr __offset ";
+          valueOfVar.replace(valueOfVar.find("->"), strlen("->"), value);
+          valueOfVar.erase(0, valueOfVar.find("__ptr __offset"));
         }
 
         if (valueOfVar.find(")") != CompilerKit::STLString::npos) {
           if (valueOfVar.find("(") != CompilerKit::STLString::npos)
             valueOfVar.erase(valueOfVar.find("("));
 
-          syntax_tree.fUserValue += "call " + valueOfVar + "\nmov rcx, rax\n";
-          valueOfVar = "rcx";
+          syntax_tree.fUserValue +=
+              instr + nectar_get_variable_ref(varName) + ", __thiscall " + valueOfVar + "\n";
+
+          break;
         }
 
         syntax_tree.fUserValue +=
@@ -946,9 +970,20 @@ static CompilerKit::STLString nectar_generate_epilogue() {
 }
 
 /// \brief Allocate a variable on the stack
-static Int32 nectar_allocate_stack_variable(const CompilerKit::STLString& var_name, Int32 size) {
+static Int32 nectar_allocate_stack_variable(const CompilerKit::STLString& var_name, Int32 size,
+                                            bool is_constant) {
   kContext.fStackOffset -= size;
   kContext.fMaxStackUsed = std::min(kContext.fStackOffset, kContext.fMaxStackUsed);
+
+  if (auto var = nectar_find_variable(var_name); var) {
+    if (var->fIsConstant)
+      CompilerKit::Detail::print_error(
+          "Variable " + var_name.substr(var_name.find("const") + strlen("const")) + " is constant.",
+          "internal");
+
+    if (var->fStackOffset > 0)
+      CompilerKit::Detail::print_error("Variable " + var_name + " is already defined.", "internal");
+  }
 
   VariableInfo varInfo;
   varInfo.fName        = var_name;
@@ -956,6 +991,7 @@ static Int32 nectar_allocate_stack_variable(const CompilerKit::STLString& var_na
   varInfo.fStackOffset = kContext.fStackOffset;
   varInfo.fSize        = size;
   varInfo.fLastUsed    = kContext.fInstructionCounter;
+  varInfo.fIsConstant  = is_constant;
   kContext.fVariables.push_back(varInfo);
 
   return kContext.fStackOffset;
@@ -972,10 +1008,25 @@ static VariableInfo* nectar_find_variable(const CompilerKit::STLString& var_name
 }
 
 /// \brief Get variable reference (register or stack location)
-static CompilerKit::STLString nectar_get_variable_ref(const CompilerKit::STLString& var_name) {
+static CompilerKit::STLString nectar_get_variable_ref(const CompilerKit::STLString& var_name,
+                                                      bool                          lookup) {
   auto* varInfo = nectar_find_variable(var_name);
+
+  if (!varInfo || var_name.empty() || !isnumber(var_name[0])) {
+    if (!isnumber(var_name[0]) && lookup)
+      CompilerKit::Detail::print_error("Variable " + var_name + " not found.", "internal");
+  }
+
   if (!varInfo) {
     return "";
+  }
+
+  if (varInfo->fIsConstant) {
+    CompilerKit::Detail::print_error("Invalid use of constant " +
+                                         var_name.substr(var_name.find("const") + strlen("const")) +
+                                         " as variable.",
+                                     "internal");
+    return "call __abort";
   }
 
   varInfo->fLastUsed = kContext.fInstructionCounter;
@@ -992,6 +1043,7 @@ static CompilerKit::STLString nectar_get_variable_ref(const CompilerKit::STLStri
 static CompilerKit::STLString nectar_allocate_register(const CompilerKit::STLString& var_name) {
   // Check if variable already has a register
   auto* existing = nectar_find_variable(var_name);
+
   if (existing && existing->fLocation == VarLocation::kRegister) {
     return existing->fRegister;
   }
@@ -1009,15 +1061,23 @@ static CompilerKit::STLString nectar_allocate_register(const CompilerKit::STLStr
     if (!inUse) {
       // Allocate this register
       if (existing) {
+        if (existing->fIsConstant) {
+          CompilerKit::Detail::print_error("Invalid use of constant " + var_name + " as variable.",
+                                           "internal");
+          return "__call __abort";
+        }
+
         existing->fLocation = VarLocation::kRegister;
         existing->fRegister = reg;
         existing->fLastUsed = kContext.fInstructionCounter;
       } else {
         VariableInfo varInfo;
-        varInfo.fName     = var_name;
-        varInfo.fLocation = VarLocation::kRegister;
-        varInfo.fRegister = reg;
-        varInfo.fLastUsed = kContext.fInstructionCounter;
+        varInfo.fName       = var_name;
+        varInfo.fLocation   = VarLocation::kRegister;
+        varInfo.fRegister   = reg;
+        varInfo.fLastUsed   = kContext.fInstructionCounter;
+        varInfo.fIsConstant = existing->fIsConstant;
+
         kContext.fVariables.push_back(varInfo);
       }
       return reg;
@@ -1110,7 +1170,8 @@ static Int32 nectar_get_class_size(const CompilerKit::STLString& class_name) {
 static CompilerKit::STLString nectar_generate_constructor_call(
     const CompilerKit::STLString& class_name, const CompilerKit::STLString& obj_name) {
   auto size   = nectar_get_class_size(class_name);
-  auto offset = nectar_allocate_stack_variable(obj_name, size == 0 ? 8 : size);
+  auto offset = nectar_allocate_stack_variable(
+      obj_name, size == 0 ? 8 : size, obj_name.find("_const_") != CompilerKit::STLString::npos);
 
   nectar_push_scope(ScopeKind::kScopeClass, class_name);
   auto ctor_mangled = nectar_mangle_name(class_name);
@@ -1194,9 +1255,8 @@ class AssemblyNectarInterfaceAMD64 final CK_ASSEMBLY_INTERFACE {
   Int32 CompileToFormat(CompilerKit::STLString src, Int32 arch) override {
     if (kFrontend == nullptr) return EXIT_FAILURE;
 
-    CompilerKit::STLString dest = src;
-
-    std::vector<CompilerKit::STLString> ext = kExtListCxx;
+    CompilerKit::STLString              dest = src;
+    std::vector<CompilerKit::STLString> ext  = kExtListCxx;
 
     dest.erase(dest.find(ext[0]));
 
@@ -1214,7 +1274,10 @@ class AssemblyNectarInterfaceAMD64 final CK_ASSEMBLY_INTERFACE {
     out_fp << "%org 0x" << ss.str() << "\n\n";
 
     while (std::getline(src_fp, line_source)) {
-      out_fp << kFrontend->Compile(line_source, src).fUserValue;
+      auto res = kFrontend->Compile(line_source, src).fUserValue;
+      if (kAcceptableErrors > 0) return EXIT_FAILURE;
+
+      out_fp << res;
     }
 
     return EXIT_SUCCESS;
@@ -1236,11 +1299,12 @@ NECTAR_MODULE(CompilerNectarAMD64) {
   kKeywords.emplace_back(":=", CompilerKit::KeywordKind::kKeywordKindVariableAssign);
   kKeywords.emplace_back("+=", CompilerKit::KeywordKind::kKeywordKindVariableInc);
   kKeywords.emplace_back("-=", CompilerKit::KeywordKind::kKeywordKindVariableDec);
-  kKeywords.emplace_back("const", CompilerKit::KeywordKind::kKeywordKindConstant);
+  kKeywords.emplace_back("const", CompilerKit::KeywordKind::kKeywordKindVariable);
   kKeywords.emplace_back("let", CompilerKit::KeywordKind::kKeywordKindVariable);
   kKeywords.emplace_back("new", CompilerKit::KeywordKind::kKeywordKindNew);
   kKeywords.emplace_back("delete", CompilerKit::KeywordKind::kKeywordKindDelete);
   kKeywords.emplace_back(".", CompilerKit::KeywordKind::kKeywordKindAccess);
+  kKeywords.emplace_back("->", CompilerKit::KeywordKind::kKeywordKindAccessChecked);
   kKeywords.emplace_back(",", CompilerKit::KeywordKind::kKeywordKindArgSeparator);
   kKeywords.emplace_back(";", CompilerKit::KeywordKind::kKeywordKindEndLine);
 
@@ -1292,20 +1356,6 @@ NECTAR_MODULE(CompilerNectarAMD64) {
 
       if (strcmp(argv[index], "-nec-import-dir") == 0) {
         kCurrentImportDirs.push_back(argv[index + 1]);
-        skip = true;
-
-        continue;
-      }
-
-      if (strcmp(argv[index], "-nec-max-err") == 0) {
-        try {
-          kErrorLimit = std::strtol(argv[index + 1], nullptr, 10);
-        }
-        // catch anything here
-        catch (...) {
-          kErrorLimit = 0;
-        }
-
         skip = true;
 
         continue;
