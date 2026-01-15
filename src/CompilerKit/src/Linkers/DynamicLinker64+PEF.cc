@@ -20,7 +20,8 @@
 
 #define kPefNoCpu (0U)
 #define kPefNoSubCpu (0U)
-#define kPefDefaultOutput {"a" kPefExt}
+#define kPefDefaultOutput \
+  { "a" kPefExt }
 
 #define kLinkerVersionStr "Nectar 64-Bit Linker (Preferred Executable Format)"
 

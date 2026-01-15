@@ -490,8 +490,7 @@ CompilerKit::SyntaxLeafList::SyntaxLeaf CompilerFrontendNectarAMD64::Compile(
       case CompilerKit::KeywordKind::kKeywordKindNew: {
         if (auto pos = syntax_tree.fUserValue.find(keyword.first.fKeywordName);
             pos != CompilerKit::STLString::npos)
-          syntax_tree.fUserValue.replace(pos, keyword.first.fKeywordName.size(),
-                                         "__operator_new");
+          syntax_tree.fUserValue.replace(pos, keyword.first.fKeywordName.size(), "__operator_new");
         continue;
       }
       case CompilerKit::KeywordKind::kKeywordKindAccess: {

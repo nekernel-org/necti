@@ -46,7 +46,7 @@ enum struct KeywordKind {
   kKeywordKindVariableInc,
   kKeywordKindConstant,
   kKeywordKindTypedef,
-  kKeywordKindEndLine, // Optional in Nectar.
+  kKeywordKindEndLine,  // Optional in Nectar.
   kKeywordKindSpecifier,
   kKeywordKindInvalid,
   kKeywordKindReturn,

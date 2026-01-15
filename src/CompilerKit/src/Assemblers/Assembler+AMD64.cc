@@ -1008,14 +1008,15 @@ bool CompilerKit::EncoderAMD64::WriteLine(std::string line, std::string file) {
           for (auto& reg : kRegisterList) {
             std::string registerName;
 
-            if (bits == 32) registerName.push_back('e');
-            else if (bits == 64) registerName.push_back('r');
-            else  {
-                CompilerKit::Detail::print_error(
-                    "Invalid size for register, current bit width is: " +
-                        std::to_string(kRegisterBitWidth),
-                    file);
-                throw std::runtime_error("invalid_reg_size");
+            if (bits == 32)
+              registerName.push_back('e');
+            else if (bits == 64)
+              registerName.push_back('r');
+            else {
+              CompilerKit::Detail::print_error("Invalid size for register, current bit width is: " +
+                                                   std::to_string(kRegisterBitWidth),
+                                               file);
+              throw std::runtime_error("invalid_reg_size");
             }
 
             registerName += reg.fName;
