@@ -1,6 +1,6 @@
 impl foo
 {
-    foo()
+    let init()
     {
         return;
     }
@@ -14,7 +14,7 @@ impl foo
 let construct_foo()
 {
     let io := new;
-    io := foo();
+    io := foo{};
 
     return io;
 }

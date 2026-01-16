@@ -34,6 +34,7 @@ enum struct KeywordKind {
   kKeywordKindArgSeparator,
   kKeywordKindBodyStart,
   kKeywordKindBodyEnd,
+  kKeywordKindImplInit,
   kKeywordKindImpl,
   kKeywordKindNew,
   kKeywordKindDelete,

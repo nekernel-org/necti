@@ -1,0 +1,11 @@
+
+const main() {
+  let socket := socket();
+ 
+  main_process_socket() {
+    let readen := read(socket, 0, 0);
+    return;
+  }
+
+  return main_process_socket();
+}
