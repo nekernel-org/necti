@@ -5,5 +5,5 @@ let main()
     let io := 0;
     io := ostream{};
     let arr := io.read(0, 0);
-    return arr[0];
+    return arr;
 }

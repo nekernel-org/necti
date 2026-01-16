@@ -1,0 +1,13 @@
+{
+  "compiler_path": "clang++",
+  "compiler_std": "c++20",
+  "headers_path": ["../../include/CompilerKit", "../../include/", "../../include/CompilerKit/src/Detail"],
+  "sources_path": ["mld64.cc"],
+  "output_name": "mld64",
+  "compiler_flags": ["-L/usr/local/lib", "-lCompilerKit"],
+  "cpp_macros": [
+    "__MLD64__=202601",
+    "kDistReleaseBranch=$(git rev-parse --abbrev-ref HEAD)-$(uuidgen)"
+  ]
+}
+

@@ -28,14 +28,8 @@ inline NumberCast32 GetNumber32(STLString lineBuffer, STLString numberKey) {
 
   switch (lineBuffer[pos + 1]) {
     case 'x': {
-      if (auto res = strtol(lineBuffer.substr(pos).c_str(), nullptr, 16); !res) {
-        if (errno != 0) {
-          Detail::print_error("invalid hex number: " + lineBuffer, "CompilerKit");
-          throw std::runtime_error("invalid_hex");
-        }
-      }
-
-      NumberCast32 numOffset(strtol(lineBuffer.substr(pos).c_str(), nullptr, 16));
+      auto         res = strtol(lineBuffer.substr(pos + 2).c_str(), nullptr, 16);
+      NumberCast32 numOffset(strtol(lineBuffer.substr(pos + 2).c_str(), nullptr, 16));
 
       if (kVerbose) {
         kStdOut << "asm: found a base 16 number here: " << lineBuffer.substr(pos) << "\n";
@@ -44,14 +38,8 @@ inline NumberCast32 GetNumber32(STLString lineBuffer, STLString numberKey) {
       return numOffset;
     }
     case 'b': {
-      if (auto res = strtol(lineBuffer.substr(pos).c_str(), nullptr, 2); !res) {
-        if (errno != 0) {
-          Detail::print_error("invalid binary number:" + lineBuffer, "CompilerKit");
-          throw std::runtime_error("invalid_bin");
-        }
-      }
-
-      NumberCast32 numOffset(strtol(lineBuffer.substr(pos).c_str(), nullptr, 2));
+      auto         res = strtol(lineBuffer.substr(pos + 2).c_str(), nullptr, 2);
+      NumberCast32 numOffset(strtol(lineBuffer.substr(pos + 2).c_str(), nullptr, 2));
 
       if (kVerbose) {
         kStdOut << "asm: found a base 2 number here:" << lineBuffer.substr(pos) << "\n";
@@ -60,14 +48,8 @@ inline NumberCast32 GetNumber32(STLString lineBuffer, STLString numberKey) {
       return numOffset;
     }
     case 'o': {
-      if (auto res = strtol(lineBuffer.substr(pos).c_str(), nullptr, 7); !res) {
-        if (errno != 0) {
-          Detail::print_error("invalid octal number: " + lineBuffer, "CompilerKit");
-          throw std::runtime_error("invalid_octal");
-        }
-      }
-
-      NumberCast32 numOffset(strtol(lineBuffer.substr(pos).c_str(), nullptr, 7));
+      auto         res = strtol(lineBuffer.substr(pos + 2).c_str(), nullptr, 8);
+      NumberCast32 numOffset(strtol(lineBuffer.substr(pos + 2).c_str(), nullptr, 8));
 
       if (kVerbose) {
         kStdOut << "asm: found a base 8 number here:" << lineBuffer.substr(pos) << "\n";
@@ -76,14 +58,8 @@ inline NumberCast32 GetNumber32(STLString lineBuffer, STLString numberKey) {
       return numOffset;
     }
     default: {
-      if (auto res = strtol(lineBuffer.substr(pos).c_str(), nullptr, 10); !res) {
-        if (errno != 0) {
-          Detail::print_error("invalid hex number: " + lineBuffer, "CompilerKit");
-          throw std::runtime_error("invalid_hex");
-        }
-      }
-
-      NumberCast32 numOffset(strtol(lineBuffer.substr(pos).c_str(), nullptr, 10));
+      auto         res = strtol(lineBuffer.substr(pos + 2).c_str(), nullptr, 10);
+      NumberCast32 numOffset(strtol(lineBuffer.substr(pos + 2).c_str(), nullptr, 10));
 
       if (kVerbose) {
         kStdOut << "asm: found a base 10 number here:" << lineBuffer.substr(pos) << kStdEndl;

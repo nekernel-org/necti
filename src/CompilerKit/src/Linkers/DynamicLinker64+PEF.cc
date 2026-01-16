@@ -455,7 +455,7 @@ NECTAR_MODULE(DynamicLinker64PEF) {
   date_cmd_hdr.Offset      = output_fc.tellp();
   date_cmd_hdr.VirtualSize = timeStampStr.size();
 
-  command_headers.push_back(date_cmd_hdr);
+  command_headers.push_back(std::move(date_cmd_hdr));
 
   CompilerKit::PEFCommandHeader abi_cmd_hdr{};
 
@@ -488,7 +488,7 @@ NECTAR_MODULE(DynamicLinker64PEF) {
   abi_cmd_hdr.Flags       = 0;
   abi_cmd_hdr.Kind        = CompilerKit::kPefLinkerID;
 
-  command_headers.push_back(abi_cmd_hdr);
+  command_headers.push_back(std::move(abi_cmd_hdr));
 
   CompilerKit::PEFCommandHeader stack_cmd_hdr{0};
 
@@ -499,7 +499,7 @@ NECTAR_MODULE(DynamicLinker64PEF) {
 
   std::memcpy(stack_cmd_hdr.Name, kLinkerStackSizeSymbol, strlen(kLinkerStackSizeSymbol));
 
-  command_headers.push_back(stack_cmd_hdr);
+  command_headers.push_back(std::move(stack_cmd_hdr));
 
   CompilerKit::PEFCommandHeader uuid_cmd_hdr{};
 
@@ -522,7 +522,7 @@ NECTAR_MODULE(DynamicLinker64PEF) {
   uuid_cmd_hdr.Flags       = CompilerKit::kPefLinkerID;
   uuid_cmd_hdr.Kind        = CompilerKit::kPefZero;
 
-  command_headers.push_back(uuid_cmd_hdr);
+  command_headers.push_back(std::move(uuid_cmd_hdr));
 
   // prepare a symbol vector.
   std::vector<CompilerKit::STLString> undef_symbols;
@@ -544,7 +544,7 @@ NECTAR_MODULE(DynamicLinker64PEF) {
 
   end_exec_hdr.VirtualSize = strlen(end_exec_hdr.Name);
 
-  command_headers.push_back(end_exec_hdr);
+  command_headers.push_back(std::move(end_exec_hdr));
 
   // Finally write down the command headers.
   // And check for any duplications
@@ -672,4 +672,4 @@ NECTAR_MODULE(DynamicLinker64PEF) {
   return NECTAR_SUCCESS;
 }
 
-// Last rev 13-1-24
+// Last rev 2026

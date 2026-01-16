@@ -1150,6 +1150,64 @@ bool CompilerKit::EncoderAMD64::WriteLine(std::string line, std::string file) {
 
           break;
         }
+
+        /// Push instruction handler.
+        if (name == "push" || name == "pop") {
+          std::string substr = line.substr(line.find(name) + name.size());
+
+          // Remove leading whitespace
+          while (!substr.empty() && (substr[0] == ' ' || substr[0] == '\t')) {
+            substr.erase(0, 1);
+          }
+
+          i64_byte_t baseOpcode = (name == "push") ? kAsmPushOpcode : kAsmPopOpcode;
+          bool       found      = false;
+
+          // Check for extended registers r8-r15
+          if (substr.size() >= 2 && substr[0] == 'r' && isdigit(substr[1])) {
+            int regNum = 0;
+
+            if (substr.size() >= 3 && isdigit(substr[2])) {
+              regNum = (substr[1] - '0') * 10 + (substr[2] - '0');
+            } else {
+              regNum = substr[1] - '0';
+            }
+
+            if (regNum >= 8 && regNum <= 15) {
+              // REX.B prefix for r8-r15
+              kAppBytes.emplace_back(0x41);
+              kAppBytes.emplace_back(baseOpcode + (regNum - 8));
+              found = true;
+            }
+          }
+
+          // Check for standard 64-bit registers rax-rdi
+          if (!found) {
+            struct RegPushPop {
+              const char* name;
+              i64_byte_t  offset;
+            };
+
+            RegPushPop regs[] = {{"rax", 0}, {"rcx", 1}, {"rdx", 2}, {"rbx", 3},
+                                 {"rsp", 4}, {"rbp", 5}, {"rsi", 6}, {"rdi", 7}};
+
+            for (auto& reg : regs) {
+              if (substr.find(reg.name) != std::string::npos) {
+                kAppBytes.emplace_back(baseOpcode + reg.offset);
+                found = true;
+                break;
+              }
+            }
+          }
+
+          if (!found) {
+            CompilerKit::Detail::print_error("Invalid operand for " + name + ": " + substr,
+                                             "CompilerKit");
+            throw std::runtime_error("invalid_push_pop_operand");
+          }
+
+          break;
+        }
       }
 
       if (name == "int" || name == "into" || name == "intd") {
@@ -1160,9 +1218,7 @@ bool CompilerKit::EncoderAMD64::WriteLine(std::string line, std::string file) {
       } else if (name == "jmp" || name == "call") {
         kAppBytes.emplace_back(opcodeAMD64.fOpcode);
 
-        if (!this->WriteNumber32(line.find(name) + name.size() + 1, line)) {
-          throw std::runtime_error("BUG: WriteNumber32");
-        }
+        this->WriteNumber32(line.find(name) + name.size() + 1, line);
 
         break;
       } else if (name == "syscall") {

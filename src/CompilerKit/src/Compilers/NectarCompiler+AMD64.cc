@@ -835,7 +835,7 @@ CompilerKit::SyntaxLeafList::SyntaxLeaf CompilerFrontendNectarAMD64::CompileLayo
     --kOnClassScope;
     nectar_pop_scope();
 
-  syntax_tree.fUserValue += ";; HINT: END NAMESPACE\n";
+    syntax_tree.fUserValue += ";; HINT: END NAMESPACE\n";
   }
 
   return syntax_tree;
