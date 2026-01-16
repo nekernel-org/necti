@@ -25,13 +25,13 @@
 
 ===================================
 
-# 2: LibC++
+# 2: LibGL
 
 ===================================
 
-- Shall support C++ runtime and ABI for NeKernel.
-- Shall support a basic subset of the C++ library.
-- Shall be written in C++
+- Shall support Nectar runtime and ABI of NeKernel.
+- Shall support a basic subset of the Nectar library.
+- Shall be written in Nectar
 
 
 ===================================

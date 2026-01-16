@@ -25,10 +25,12 @@
 - `struct` Data implementation of `impl` -- useful to store fields and such.
 - `let` Pointer/Reference variable declaration.
 - `const` const `let` declaration.
+- Functions.
+- Nested Stubs.
 
 ===================================
 
-# 2: Concepts
+# 2: The Generics Library
 
 ===================================
 
