@@ -20,7 +20,7 @@
 - `&` Checked pointer type.
 - `*` Unchecked pointer type.
 - `.` Checked pointer access.
-- `->` UnChecked pointer access.
+- `->` Unchecked pointer access.
 - `impl` Implementation data structure, useful for proxies, iterators, etc.
 - `struct` Data implementation of `impl` -- useful to store fields and such.
 - `let` Pointer/Reference variable declaration.
