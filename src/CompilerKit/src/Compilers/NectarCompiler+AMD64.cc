@@ -25,7 +25,6 @@
 #include <csignal>
 #include <cstdlib>
 #include <filesystem>
-#include "CompilerKit/Detail/Config.h"
 
 /* NeKernel NECTAR Compiler Driver. */
 /* This is part of the CompilerKit. */
