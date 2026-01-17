@@ -252,8 +252,9 @@ static std::vector<CompilerKit::STLString> kRegisterConventionCallList = {
     "r8", "r9", "r10", "r11", "r12", "r13", "r14", "r15",
 };
 
-static std::size_t kFunctionEmbedLevel{};
-static std::size_t kNamespaceEmbedLevel{};
+static std::size_t            kFunctionEmbedLevel{};
+static CompilerKit::STLString kCurrentFunctionName{};
+static CompilerKit::STLString kCurrentReturnAddress{};
 
 /// detail namespaces
 
@@ -295,9 +296,6 @@ CompilerKit::SyntaxLeafList::SyntaxLeaf CompilerFrontendNectarAMD64::Compile(
   for (auto& keyword : kKeywords) {
     if (text.find(keyword.fKeywordName) != std::string::npos) {
       switch (keyword.fKeywordKind) {
-        case CompilerKit::KeywordKind::kKeywordKindCommentInline: {
-          break;
-        }
         default:
           break;
       }
@@ -345,39 +343,31 @@ CompilerKit::SyntaxLeafList::SyntaxLeaf CompilerFrontendNectarAMD64::Compile(
           break;
         }
 
-        auto expr = text.substr(openParen + 1, closeParen - openParen - 1);
+        auto left = text.substr(openParen + 1, closeParen - openParen - 1);
 
-        if (expr.find(">=") != CompilerKit::STLString::npos) {
-          auto left = text.substr(
-              text.find(keyword.first.fKeywordName) + keyword.first.fKeywordName.size() + 2,
-              expr.find("<=") + strlen("<="));
-          auto right = text.substr(expr.find(">=") + strlen(">="), text.find(")") - 1);
-
-          // Trim whitespace
-          while (!right.empty() && (right.back() == ' ' || right.back() == '\t')) {
-            right.pop_back();
-          }
-          while (!right.empty() && (right.front() == ' ' || right.front() == '\t')) {
-            right.erase(0, 1);
-          }
-
-          while (!left.empty() && (left.back() == ' ' || left.back() == '\t')) {
-            left.pop_back();
-          }
-          while (!left.empty() && (left.front() == ' ' || left.front() == '\t')) {
-            left.erase(0, 1);
-          }
-
-          if ((!left.empty() && !isdigit(left[0])) || (!right.empty() && !isdigit(right[0]))) {
-            auto indexRight = 0UL;
-
-            auto& valueOfVar = (!left.empty() && !isdigit(left[0])) ? left : right;
-
-            if (!valueOfVar.empty()) {
-              nectar_allocate_register(valueOfVar);
-            }
-          }
+        while (left.find(" ") != CompilerKit::STLString::npos) {
+          left.erase(left.find(" "), 1);
         }
+
+        auto right = left.substr(left.find_first_of("==") + 2);
+
+        auto tmp = left.substr(0, left.find_first_of("=="));
+        left     = std::move(tmp);
+
+        syntax_tree.fUserValue +=
+            "mov rdi, " + (isnumber(left[0]) ? left : (nectar_get_variable_ref(left).empty() ? left : nectar_get_variable_ref(left))) + "\n";
+
+        syntax_tree.fUserValue +=
+            "mov rsi, " + (isnumber(right[0]) ? right : (nectar_get_variable_ref(right).empty() ? right : nectar_get_variable_ref(right))) + "\n";
+
+        syntax_tree.fUserValue += "cmp rdi, rsi\n";
+
+        syntax_tree.fUserValue +=
+            "jne __ret_" + std::to_string(kOrigin) + "_" + kCurrentFunctionName + "\n";
+
+        kCurrentFunctionName = std::to_string(kOrigin) + "_" + kCurrentFunctionName;
+
+        ++kOrigin;
 
         break;
       }
@@ -400,7 +390,7 @@ CompilerKit::SyntaxLeafList::SyntaxLeaf CompilerFrontendNectarAMD64::Compile(
       }
       case CompilerKit::KeywordKind::kKeywordKindFunctionStart: {
         for (auto& ch : text) {
-          if (isdigit(ch)) {
+          if (isnumber(ch)) {
             goto dont_accept_func;
           }
         }
@@ -443,7 +433,6 @@ CompilerKit::SyntaxLeafList::SyntaxLeaf CompilerFrontendNectarAMD64::Compile(
             ss << std::hex << it->second;
 
             syntax_tree.fUserValue += "jmp " + ss.str() + "\n";
-            kOrigin += 1UL;
           }
           break;
         }
@@ -501,6 +490,8 @@ CompilerKit::SyntaxLeafList::SyntaxLeaf CompilerFrontendNectarAMD64::Compile(
         nectar_push_scope(ScopeKind::kScopeFunction, cleanFnName);
 
         ++kFunctionEmbedLevel;
+
+        kCurrentFunctionName = mangled_name;
 
         kOriginMap.push_back({mangled_name, kOrigin});
         kOrigin += 2UL;  // Account for prologue instructions
@@ -730,7 +721,12 @@ CompilerKit::SyntaxLeafList::SyntaxLeaf CompilerFrontendNectarAMD64::Compile(
           valueOfVar.erase(valueOfVar.find("\t"), 1);
         }
 
-        varName = varName.substr(varName.find("let ") + std::string{"let "}.size());
+        auto pos = 0;
+
+        if (varName.find("let ") != CompilerKit::STLString::npos) {
+          pos     = varName.find("let ");
+          varName = varName.substr(pos + std::string{"let "}.size());
+        }
 
         while (varName.find(" ") != CompilerKit::STLString::npos) {
           varName.erase(varName.find(" "), 1);
@@ -795,9 +791,6 @@ CompilerKit::SyntaxLeafList::SyntaxLeaf CompilerFrontendNectarAMD64::Compile(
 
         break;
       }
-      case CompilerKit::KeywordKind::kKeywordKindCommentInline: {
-        break;
-      }
       case CompilerKit::KeywordKind::kKeywordKindReturn: {
         try {
           auto pos = text.find("return");
@@ -838,14 +831,17 @@ CompilerKit::SyntaxLeafList::SyntaxLeaf CompilerFrontendNectarAMD64::Compile(
 
           syntax_tree.fUserValue += nectar_generate_epilogue() + "ret\n";
           kOrigin += 2UL;
-
-          break;
         } catch (...) {
           syntax_tree.fUserValue += nectar_generate_epilogue() + "ret\n";
           kOrigin += 2UL;
-
-          break;
         }
+
+        if (!kNasmOutput)
+          syntax_tree.fUserValue += "public_segment .code64 __ret_" + kCurrentFunctionName + "\n";
+        else
+          syntax_tree.fUserValue += "__ret_" + kCurrentFunctionName + ":\n";
+
+        kCurrentFunctionName.clear();
       }
       default: {
         continue;
@@ -1025,18 +1021,7 @@ static CompilerKit::STLString nectar_mangle_name(const CompilerKit::STLString& i
   if (inClass) {
     mangled += "M_" + identifierCopy;
   } else {
-    if (identifierCopy != "main")
-      mangled += "F_" + identifierCopy;
-    else
-      return identifierCopy;
-  }
-
-  // Add argument types if provided
-  if (!args.empty()) {
-    mangled += "_A" + std::to_string(args.size());
-    for (const auto& arg : args) {
-      mangled += "_" + arg;
-    }
+    return identifierCopy;
   }
 
   return mangled;
@@ -1374,9 +1359,7 @@ class AssemblyNectarInterfaceAMD64 final CK_ASSEMBLY_INTERFACE {
     if (!kNasmOutput)
       out_fp << "%bits 64\n";
     else
-      out_fp << "[BITS 64]\n";
-
-    out_fp << ";; HINT: NECTAR\n";
+      out_fp << "[bits 64]\n";
 
     // For NASM output: emit extern declarations for undefined symbols
     if (kNasmOutput) {
@@ -1420,18 +1403,10 @@ NECTAR_MODULE(CompilerNectarAMD64) {
   kKeywords.emplace_back("delete", CompilerKit::KeywordKind::kKeywordKindDelete);
   kKeywords.emplace_back(".", CompilerKit::KeywordKind::kKeywordKindAccess);
   kKeywords.emplace_back("->", CompilerKit::KeywordKind::kKeywordKindAccessChecked);
-  kKeywords.emplace_back(",", CompilerKit::KeywordKind::kKeywordKindArgSeparator);
   kKeywords.emplace_back(";", CompilerKit::KeywordKind::kKeywordKindEndLine);
-  kKeywords.emplace_back("//", CompilerKit::KeywordKind::kKeywordKindCommentInline);
   kKeywords.emplace_back("return", CompilerKit::KeywordKind::kKeywordKindReturn);
 
   kKeywords.emplace_back("if", CompilerKit::KeywordKind::kKeywordKindIf);
-  kKeywords.emplace_back("else", CompilerKit::KeywordKind::kKeywordKindElse);
-
-  kKeywords.emplace_back("==", CompilerKit::KeywordKind::kKeywordKindEq);
-  kKeywords.emplace_back("!=", CompilerKit::KeywordKind::kKeywordKindNotEq);
-  kKeywords.emplace_back(">=", CompilerKit::KeywordKind::kKeywordKindGreaterEq);
-  kKeywords.emplace_back("<=", CompilerKit::KeywordKind::kKeywordKindLessEq);
 
   kErrorLimit = 0;
 

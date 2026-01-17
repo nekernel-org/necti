@@ -41,8 +41,6 @@ enum struct KeywordKind {
   kKeywordKindAccess,
   kKeywordKindAccessChecked,
   kKeywordKindIf,
-  kKeywordKindElse,
-  kKeywordKindElseIf,
   kKeywordKindVariableAssign,
   kKeywordKindVariableDec,
   kKeywordKindVariableInc,
