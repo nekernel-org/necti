@@ -239,6 +239,7 @@ nbdist/
 .idea/
 
 mld64
+ld64
 
 ## VSCode
 .vscode/settings.json
