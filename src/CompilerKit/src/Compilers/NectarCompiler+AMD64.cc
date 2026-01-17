@@ -25,6 +25,7 @@
 #include <csignal>
 #include <cstdlib>
 #include <filesystem>
+#include <set>
 
 /* NeKernel NECTAR Compiler Driver. */
 /* This is part of the CompilerKit. */
@@ -165,6 +166,10 @@ static bool                         kOnWhileLoop = false;
 static bool                         kOnForLoop   = false;
 static bool                         kInBraces    = false;
 static size_t                       kBracesCount = 0UL;
+
+/// \brief NASM output support: track defined and external symbols
+static std::set<CompilerKit::STLString> kDefinedSymbols;
+static std::set<CompilerKit::STLString> kExternalSymbols;
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
@@ -473,6 +478,9 @@ CompilerKit::SyntaxLeafList::SyntaxLeaf CompilerFrontendNectarAMD64::Compile(
           mangled_name.erase(mangled_name.find(" "), 1);
         }
 
+        // Track defined symbol for NASM extern resolution
+        kDefinedSymbols.insert(mangled_name);
+
         if (!kNasmOutput)
           syntax_tree.fUserValue += "public_segment .code64 " + mangled_name + "\n";
         else
@@ -596,10 +604,24 @@ CompilerKit::SyntaxLeafList::SyntaxLeaf CompilerFrontendNectarAMD64::Compile(
         }
 
         if (!nectar_get_variable_ref(nameVar).empty()) {
-          syntax_tree.fUserValue += "call ";
-          syntax_tree.fUserValue +=
-              (keyword.first.fKeywordName.ends_with('>') ? " __ptr __offset " : " __offset ") +
-              nectar_get_variable_ref(nameVar) + method + "\n";
+          if (!kNasmOutput) {
+            syntax_tree.fUserValue += "call ";
+            syntax_tree.fUserValue +=
+                (keyword.first.fKeywordName.ends_with('>') ? " __ptr __offset " : " __offset ") +
+                nectar_get_variable_ref(nameVar) + method + "\n";
+          } else {
+            // NASM: Generate standard call through computed address
+            auto varRef = nectar_get_variable_ref(nameVar);
+            if (keyword.first.fKeywordName.ends_with('>')) {
+              // Pointer dereference: load pointer then call through it
+              syntax_tree.fUserValue += "mov rax, " + varRef + "\n";
+              syntax_tree.fUserValue += "call [rax + " + method + "]\n";
+            } else {
+              // Direct offset call
+              syntax_tree.fUserValue += "lea rax, " + varRef + "\n";
+              syntax_tree.fUserValue += "call [rax + " + method + "]\n";
+            }
+          }
         }
 
         break;
@@ -724,16 +746,24 @@ CompilerKit::SyntaxLeafList::SyntaxLeaf CompilerFrontendNectarAMD64::Compile(
         CompilerKit::STLString mangled;
 
         if (valueOfVar.find(".") != CompilerKit::STLString::npos) {
-          CompilerKit::STLString value = "__offset ";
-          valueOfVar.erase(0, valueOfVar.find(".") + strlen("."));
-          valueOfVar.insert(0, value, value.size());
+          if (!kNasmOutput) {
+            CompilerKit::STLString value = "__offset ";
+            valueOfVar.erase(0, valueOfVar.find(".") + strlen("."));
+            valueOfVar.insert(0, value, value.size());
+          } else {
+            valueOfVar.erase(0, valueOfVar.find(".") + strlen("."));
+          }
           mangled = "__NECTAR_M_";
         }
 
         if (valueOfVar.find("->") != CompilerKit::STLString::npos) {
-          CompilerKit::STLString value = "__ptr __offset ";
-          valueOfVar.erase(0, valueOfVar.find("->") + strlen("->"));
-          valueOfVar.insert(0, value, value.size());
+          if (!kNasmOutput) {
+            CompilerKit::STLString value = "__ptr __offset ";
+            valueOfVar.erase(0, valueOfVar.find("->") + strlen("->"));
+            valueOfVar.insert(0, value, value.size());
+          } else {
+            valueOfVar.erase(0, valueOfVar.find("->") + strlen("->"));
+          }
           mangled = "__NECTAR_M_";
         }
 
@@ -741,9 +771,19 @@ CompilerKit::SyntaxLeafList::SyntaxLeaf CompilerFrontendNectarAMD64::Compile(
           if (valueOfVar.find("(") != CompilerKit::STLString::npos)
             valueOfVar.erase(valueOfVar.find("("));
 
-          if (!valueOfVar.empty())
-            syntax_tree.fUserValue += instr + nectar_get_variable_ref(varName) + ", __thiscall " +
-                                      mangled + valueOfVar + "\n";
+          if (!valueOfVar.empty()) {
+            // Track as potential external symbol for NASM
+            kExternalSymbols.insert(mangled + valueOfVar);
+
+            if (!kNasmOutput) {
+              syntax_tree.fUserValue += instr + nectar_get_variable_ref(varName) + ", __thiscall " +
+                                        mangled + valueOfVar + "\n";
+            } else {
+              // NASM: Generate call and move result
+              syntax_tree.fUserValue += "call " + mangled + valueOfVar + "\n";
+              syntax_tree.fUserValue += instr + nectar_get_variable_ref(varName) + ", rax\n";
+            }
+          }
 
           break;
         }
@@ -784,8 +824,17 @@ CompilerKit::SyntaxLeafList::SyntaxLeaf CompilerFrontendNectarAMD64::Compile(
           if (subText.starts_with("'") || isnumber(subText[0]))
             syntax_tree.fUserValue += "mov rax, " + subText + "\n";
           else if (text.find("(") != CompilerKit::STLString::npos &&
-                   text.find(");") != CompilerKit::STLString::npos)
-            syntax_tree.fUserValue += "mov rax, __call " + subText + "\n";
+                   text.find(");") != CompilerKit::STLString::npos) {
+            // Track as potential external symbol for NASM
+            kExternalSymbols.insert(subText);
+
+            if (!kNasmOutput) {
+              syntax_tree.fUserValue += "mov rax, __call " + subText + "\n";
+            } else {
+              // NASM: call function, result is in rax
+              syntax_tree.fUserValue += "call " + subText + "\n";
+            }
+          }
 
           syntax_tree.fUserValue += nectar_generate_epilogue() + "ret\n";
           kOrigin += 2UL;
@@ -1309,6 +1358,19 @@ class AssemblyNectarInterfaceAMD64 final CK_ASSEMBLY_INTERFACE {
     std::stringstream ss;
     ss << std::hex << kOrigin;
 
+    // Clear symbol tracking sets for this compilation unit
+    kDefinedSymbols.clear();
+    kExternalSymbols.clear();
+
+    // First pass: compile all lines and collect symbols
+    CompilerKit::STLString compiledCode;
+    while (std::getline(src_fp, line_source)) {
+      auto res = kFrontend->Compile(line_source, src).fUserValue;
+      if (kAcceptableErrors > 0) return EXIT_FAILURE;
+      compiledCode += res;
+    }
+
+    // Output header
     if (!kNasmOutput)
       out_fp << "%bits 64\n";
     else
@@ -1316,11 +1378,21 @@ class AssemblyNectarInterfaceAMD64 final CK_ASSEMBLY_INTERFACE {
 
     out_fp << ";; HINT: NECTAR\n";
 
-    while (std::getline(src_fp, line_source)) {
-      auto res = kFrontend->Compile(line_source, src).fUserValue;
-      if (kAcceptableErrors > 0) return EXIT_FAILURE;
-      out_fp << res;
+    // For NASM output: emit extern declarations for undefined symbols
+    if (kNasmOutput) {
+      for (const auto& sym : kExternalSymbols) {
+        // Only declare as extern if not defined in this file
+        if (kDefinedSymbols.find(sym) == kDefinedSymbols.end() && !sym.empty()) {
+          out_fp << "extern " << sym << "\n";
+        }
+      }
+      if (!kExternalSymbols.empty()) {
+        out_fp << "\n";
+      }
     }
+
+    // Output compiled code
+    out_fp << compiledCode;
 
     return EXIT_SUCCESS;
   }
