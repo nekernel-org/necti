@@ -24,7 +24,7 @@
 - `impl` Implementation data structure, useful for proxies, iterators, etc.
 - `struct` Data implementation of `impl` -- useful to store fields and such.
 - `let` Pointer/Reference variable declaration.
-- `const` const `let` declaration.
+- `const` and `let` declaration.
 - Functions.
 - Nested Stubs.
 
