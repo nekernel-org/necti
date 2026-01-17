@@ -8,6 +8,7 @@
 
 #include <CompilerKit/Detail/Config.h>
 
+#include <mach-o/ldsyms.h>
 #include <mach-o/loader.h>
 #include <mach-o/nlist.h>
 
@@ -17,7 +18,7 @@ namespace MachO {
   /// @brief Mach-O segment names
   constexpr const char* kSegmentText     = "__TEXT";
   constexpr const char* kSegmentData     = "__DATA";
-  constexpr const char* kSegmentLinkedit = "__LINKEDIT";
+  constexpr const char* kSegmentPageZero = "__PAGEZERO";
 
   /// @brief Mach-O section names
   constexpr const char* kSectionText = "__text";

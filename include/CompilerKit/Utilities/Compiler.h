@@ -36,6 +36,7 @@ inline static UInt32 kErrorLimit       = 0;
 inline static UInt32 kAcceptableErrors = 0;
 inline static bool   kVerbose          = false;
 inline static bool   kOutputAsBinary   = false;
+inline static bool   kNasmOutput       = false;
 
 namespace CompilerKit::Detail {
 /// @brief Blob structure

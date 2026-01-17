@@ -473,7 +473,12 @@ CompilerKit::SyntaxLeafList::SyntaxLeaf CompilerFrontendNectarAMD64::Compile(
           mangled_name.erase(mangled_name.find(" "), 1);
         }
 
-        syntax_tree.fUserValue += "public_segment .code64 " + mangled_name + "\n";
+        if (!kNasmOutput)
+          syntax_tree.fUserValue += "public_segment .code64 " + mangled_name + "\n";
+        else
+          syntax_tree.fUserValue +=
+              "section .text\nglobal " + mangled_name + "\n" + mangled_name + ":\n";
+
         syntax_tree.fUserValue += nectar_generate_prologue();
 
         // Initialize function-local state
@@ -1304,8 +1309,11 @@ class AssemblyNectarInterfaceAMD64 final CK_ASSEMBLY_INTERFACE {
     std::stringstream ss;
     ss << std::hex << kOrigin;
 
-    out_fp << "%bits 64\n";
-    out_fp << "%org 0x" << ss.str() << "\n\n";
+    if (!kNasmOutput)
+      out_fp << "%bits 64\n";
+    else
+      out_fp << "[BITS 64]\n";
+
     out_fp << ";; HINT: NECTAR\n";
 
     while (std::getline(src_fp, line_source)) {
@@ -1379,6 +1387,16 @@ NECTAR_MODULE(CompilerNectarAMD64) {
 
       if (strcmp(argv[index], "-nec-verbose") == 0) {
         kVerbose = true;
+        continue;
+      }
+
+      if (strcmp(argv[index], "-nec-masm") == 0) {
+        kNasmOutput = false;
+        continue;
+      }
+
+      if (strcmp(argv[index], "-nec-nasm") == 0) {
+        kNasmOutput = true;
         continue;
       }
 

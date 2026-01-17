@@ -28,6 +28,7 @@
 #define kLinkerDefaultOrigin kPefBaseOrigin
 #define kLinkerId (0x5046FF)
 #define kLinkerAbiContainer "__PEFContainer:ABI:"
+#define kLinkerGuidContainer "__PEFContainer:GUID:"
 
 #define kLinkerSplash() kStdOut << kLinkerVersionStr << kStdEndl
 
@@ -514,8 +515,8 @@ NECTAR_MODULE(DynamicLinker64PEF) {
   uuids::uuid id      = gen();
   auto        uuidStr = uuids::to_string(id);
 
-  std::memcpy(uuid_cmd_hdr.Name, "Container:GUID:4:", strlen("Container:GUID:4:"));
-  std::memcpy(uuid_cmd_hdr.Name + strlen("Container:GUID:4:"), uuidStr.c_str(), uuidStr.size());
+  std::memcpy(uuid_cmd_hdr.Name, kLinkerGuidContainer, strlen(kLinkerGuidContainer));
+  std::memcpy(uuid_cmd_hdr.Name + strlen(kLinkerGuidContainer), uuidStr.c_str(), uuidStr.size());
 
   uuid_cmd_hdr.VirtualSize = strlen(uuid_cmd_hdr.Name);
   uuid_cmd_hdr.Offset      = output_fc.tellp();

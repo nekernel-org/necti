@@ -28,17 +28,17 @@
 
 #define kConsoleOut        \
   (std::cout << "\e[0;31m" \
-             << "ld64: "   \
+             << "mld64: "  \
              << "\e[0;97m")
 
 static CompilerKit::STLString kOutput              = kMachODefaultOutput;
-static cpu_type_t             kCpuType             = CPU_TYPE_ARM64;
-static cpu_subtype_t          kCpuSubType          = CPU_SUBTYPE_ARM64_ALL;
+static cpu_type_t             kCpuType             = CPU_TYPE_X86_64;
+static cpu_subtype_t          kCpuSubType          = CPU_SUBTYPE_X86_64_ALL;
 static bool                   kFatBinaryEnable     = false;
 static bool                   kStartFound          = false;
 static bool                   kDuplicateSymbols    = false;
 static bool                   kIsDylib             = false;
-static Int64                  kMachODefaultStackSz = 8196;
+static Int64                  kMachODefaultStackSz = 0;
 
 static CompilerKit::STLString kLinkerStart = "_main";
 
@@ -346,20 +346,27 @@ NECTAR_MODULE(DynamicLinker64MachO) {
 
   using namespace CompilerKit::MachO;
 
-  // Calculate layout
-  // Commands: LC_SEGMENT_64 (__TEXT) + LC_SEGMENT_64 (__DATA) + LC_SYMTAB + LC_MAIN (if executable)
-  uint32_t numCommands    = kIsDylib ? 3 : 4;
+  uint32_t numCommands = 4;
+
+  if (!kIsDylib) {
+    numCommands += 1;  // LC_MAIN
+  }
+
+  uint32_t dataSegCmdSize =
+      kDataBytes.size() > 0 ? sizeof(segment_command_64) + sizeof(section_64) : 0;
+
+  if (dataSegCmdSize < 1) --numCommands;  // No __DATA segment
+
   uint32_t sizeOfCmds     = 0;
   uint32_t headerSize     = sizeof(mach_header_64);
+  uint32_t pageZeroSize   = sizeof(segment_command_64);
   uint32_t textSegCmdSize = sizeof(segment_command_64) + sizeof(section_64);
-  uint32_t dataSegCmdSize = sizeof(segment_command_64) + sizeof(section_64);
-  uint32_t symtabCmdSize  = sizeof(symtab_command);
+  uint32_t buildCmdSize   = sizeof(build_version_command);
   uint32_t mainCmdSize    = sizeof(entry_point_command);
 
-  sizeOfCmds = textSegCmdSize + dataSegCmdSize + symtabCmdSize;
-  if (!kIsDylib) {
-    sizeOfCmds += mainCmdSize;
-  }
+  sizeOfCmds = pageZeroSize + textSegCmdSize + dataSegCmdSize + buildCmdSize;
+
+  if (!kIsDylib) sizeOfCmds += mainCmdSize;
 
   uint64_t headerAndCmdsSize = headerSize + sizeOfCmds;
   uint64_t textFileOffset    = AlignToPage(headerAndCmdsSize);
@@ -376,19 +383,48 @@ NECTAR_MODULE(DynamicLinker64MachO) {
 
   // Write Mach-O header
   mach_header_64 header{};
+
   header.magic      = MH_MAGIC_64;
   header.cputype    = kCpuType;
   header.cpusubtype = kCpuSubType;
   header.filetype   = kIsDylib ? MH_DYLIB : MH_EXECUTE;
   header.ncmds      = numCommands;
   header.sizeofcmds = sizeOfCmds;
-  header.flags      = MH_NOUNDEFS | MH_DYLDLINK | MH_TWOLEVEL | MH_PIE;
+  header.flags      = MH_PIE;
   header.reserved   = 0;
 
   output_fc.write(reinterpret_cast<const char*>(&header), sizeof(header));
 
   if (kVerbose) {
     kConsoleOut << "Wrote Mach-O header, ncmds: " << numCommands << "\n";
+  }
+
+  segment_command_64 pageZeroSegment{};
+  pageZeroSegment.cmd     = LC_SEGMENT_64;
+  pageZeroSegment.cmdsize = sizeof(segment_command_64);
+  CopySegmentName(pageZeroSegment.segname, kSegmentPageZero);
+  pageZeroSegment.vmaddr   = 0;
+  pageZeroSegment.vmsize   = 0x100000000ULL;
+  pageZeroSegment.fileoff  = 0;
+  pageZeroSegment.filesize = 0;
+  pageZeroSegment.maxprot  = 0;
+  pageZeroSegment.initprot = 0;
+  pageZeroSegment.nsects   = 0;
+  pageZeroSegment.flags    = 0;
+
+  output_fc.write(reinterpret_cast<const char*>(&pageZeroSegment), sizeof(pageZeroSegment));
+
+  build_version_command build = {.cmd      = LC_BUILD_VERSION,
+                                 .cmdsize  = sizeof(struct build_version_command),
+                                 .platform = PLATFORM_MACOS,
+                                 .minos    = (11 << 16),  // macOS 11.0
+                                 .sdk      = (11 << 16),  // macOS 11.0
+                                 .ntools   = 0};
+
+  output_fc.write(reinterpret_cast<const char*>(&build), sizeof(build));
+
+  if (kVerbose) {
+    kConsoleOut << "Wrote LC_BUILD_VERSION, platform: macOS, minos: 11.0, sdk: 11.0\n";
   }
 
   // Write __TEXT segment command
@@ -399,7 +435,7 @@ NECTAR_MODULE(DynamicLinker64MachO) {
   textSegment.vmaddr   = textVMAddr;
   textSegment.vmsize   = textSegmentSize;
   textSegment.fileoff  = textFileOffset;
-  textSegment.filesize = textSize;
+  textSegment.filesize = kPageSize;
   textSegment.maxprot  = VM_PROT_READ | VM_PROT_EXECUTE;
   textSegment.initprot = VM_PROT_READ | VM_PROT_EXECUTE;
   textSegment.nsects   = 1;
@@ -443,7 +479,8 @@ NECTAR_MODULE(DynamicLinker64MachO) {
   dataSegment.nsects   = 1;
   dataSegment.flags    = 0;
 
-  output_fc.write(reinterpret_cast<const char*>(&dataSegment), sizeof(dataSegment));
+  if (dataSegCmdSize > 0)
+    output_fc.write(reinterpret_cast<const char*>(&dataSegment), sizeof(dataSegment));
 
   // Write __data section header
   section_64 dataSection{};
@@ -460,27 +497,12 @@ NECTAR_MODULE(DynamicLinker64MachO) {
   dataSection.reserved2 = 0;
   dataSection.reserved3 = 0;
 
-  output_fc.write(reinterpret_cast<const char*>(&dataSection), sizeof(dataSection));
+  if (dataSegCmdSize > 0)
+    output_fc.write(reinterpret_cast<const char*>(&dataSection), sizeof(dataSection));
 
   if (kVerbose) {
     kConsoleOut << "Wrote __DATA segment, vmaddr: 0x" << std::hex << dataVMAddr << std::dec << "\n";
     kConsoleOut << "  __data section, size: " << dataSize << " bytes\n";
-  }
-
-  // Write LC_SYMTAB command
-  symtab_command symtabCmd{};
-  symtabCmd.cmd     = LC_SYMTAB;
-  symtabCmd.cmdsize = sizeof(symtab_command);
-  symtabCmd.symoff  = static_cast<uint32_t>(symtabFileOffset);
-  symtabCmd.nsyms   = static_cast<uint32_t>(kSymbolTable.size());
-  symtabCmd.stroff  = static_cast<uint32_t>(strtabFileOffset);
-  symtabCmd.strsize = static_cast<uint32_t>(kStringTable.size());
-
-  output_fc.write(reinterpret_cast<const char*>(&symtabCmd), sizeof(symtabCmd));
-
-  if (kVerbose) {
-    kConsoleOut << "Wrote LC_SYMTAB, nsyms: " << symtabCmd.nsyms
-                << ", strsize: " << symtabCmd.strsize << "\n";
   }
 
   // Write LC_MAIN entry point command (executables only)
