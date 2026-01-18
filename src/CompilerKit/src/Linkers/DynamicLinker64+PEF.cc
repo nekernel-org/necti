@@ -16,17 +16,18 @@
 #include <CompilerKit/PEF.h>
 #include <CompilerKit/UUID.h>
 #include <CompilerKit/Utilities/Compiler.h>
-#include <filesystem>
 
-#define kPefNoCpu (0U)
-#define kPefNoSubCpu (0U)
-#define kPefDefaultOutput \
+#define kLinkerPefNoCpu (0U)
+#define kLinkerPefNoSubCpu (0U)
+#define kLinkerPefDefaultOutput \
   { "a" kPefExt }
 
-#define kLinkerVersionStr "Nectar 64-Bit Linker (Preferred Executable Format)"
+#define kLinkerVersionStr "Nectar 64-Bit Linker (NeKernel PEF)"
 
 #define kLinkerDefaultOrigin kPefBaseOrigin
+
 #define kLinkerId (0x5046FF)
+
 #define kLinkerAbiContainer "__PEFContainer:ABI:"
 #define kLinkerGuidContainer "__PEFContainer:GUID:"
 
@@ -40,24 +41,24 @@
              << "ld64: "   \
              << "\e[0;97m")
 
-enum {
+enum struct ABIType : Int32 {
   kABITypeNull    = 0,
   kABITypeStart   = 0x1010, /* The start of ABI list. */
   kABITypeNE      = 0x5046, /* PF (NeKernel.org's PEF ABI) */
   kABITypeInvalid = 0xFFFF,
 };
 
-static CompilerKit::STLString kOutput           = kPefDefaultOutput;
-static Int32                  kAbi              = kABITypeNE;
-static Int32                  kSubArch          = kPefNoSubCpu;
+static CompilerKit::STLString kOutput           = kLinkerPefDefaultOutput;
+static ABIType                kAbi              = ABIType::kABITypeNE;
+static Int32                  kSubArch          = kLinkerPefNoSubCpu;
 static Int32                  kArch             = CompilerKit::kPefArchInvalid;
 static bool                   kFatBinaryEnable  = false;
 static bool                   kStartFound       = false;
 static bool                   kDuplicateSymbols = false;
 
 /* ld64 is to be found, mld is to be found at runtime. */
-static const Char* kLdDefineSymbol = ":UndefinedSymbol:";
-static const Char* kLdDynamicSym   = ":RuntimeSymbol:";
+static const Char* kLinkerDefineSymbol = ":UndefinedSymbol:";
+static const Char* kLinkerDynamicSym   = ":RuntimeSymbol:";
 
 static CompilerKit::STLString kLinkerStart = kPefStart;
 
@@ -202,7 +203,7 @@ NECTAR_MODULE(DynamicLinker64PEF) {
   pef_container.Kind     = is_executable ? CompilerKit::kPefKindExec : CompilerKit::kPefKindDylib;
   pef_container.SubCpu   = kSubArch;
   pef_container.Linker   = kLinkerId;  // Amlal El Mahrouss Linker
-  pef_container.Abi      = kAbi;       // Multi-Processor UX ABI
+  pef_container.Abi      = static_cast<Int32>(kAbi);       // Multi-Processor UX ABI
   pef_container.Magic[0] = kPefMagic[kFatBinaryEnable ? 2 : 0];
   pef_container.Magic[1] = kPefMagic[1];
   pef_container.Magic[2] = kPefMagic[kFatBinaryEnable ? 0 : 2];
@@ -292,7 +293,7 @@ NECTAR_MODULE(DynamicLinker64PEF) {
             cmd_hdr_name.find(kPefZero64) == CompilerKit::STLString::npos) {
           if (cmd_hdr_name.find(kLinkerStart) == CompilerKit::STLString::npos &&
               *command_header.Name == 0) {
-            if (cmd_hdr_name.find(kLdDefineSymbol) != CompilerKit::STLString::npos) {
+            if (cmd_hdr_name.find(kLinkerDefineSymbol) != CompilerKit::STLString::npos) {
               goto ld_mark_header;
             } else {
               continue;
@@ -327,7 +328,7 @@ NECTAR_MODULE(DynamicLinker64PEF) {
       delete[] raw_ae_records;
       raw_ae_records = nullptr;
 
-      std::vector<char> bytes;
+      std::vector<Char> bytes;
       bytes.resize(hdr.fCodeSize);
 
       reader_protocol.fFilePtr.seekg(std::streamsize(hdr.fStartCode));
@@ -367,9 +368,9 @@ NECTAR_MODULE(DynamicLinker64PEF) {
 
   for (auto& command_hdr : command_headers) {
     // check if this symbol needs to be resolved.
-    if (CompilerKit::STLString(command_hdr.Name).find(kLdDefineSymbol) !=
+    if (CompilerKit::STLString(command_hdr.Name).find(kLinkerDefineSymbol) !=
             CompilerKit::STLString::npos &&
-        CompilerKit::STLString(command_hdr.Name).find(kLdDynamicSym) ==
+        CompilerKit::STLString(command_hdr.Name).find(kLinkerDynamicSym) ==
             CompilerKit::STLString::npos) {
       if (kVerbose) kConsoleOut << "Found undefined symbol: " << command_hdr.Name << "\n";
 
@@ -392,10 +393,10 @@ NECTAR_MODULE(DynamicLinker64PEF) {
         it != not_found.end()) {
       CompilerKit::STLString symbol_imp = *it;
 
-      if (symbol_imp.find(kLdDefineSymbol) == CompilerKit::STLString::npos) continue;
+      if (symbol_imp.find(kLinkerDefineSymbol) == CompilerKit::STLString::npos) continue;
 
       // erase the lookup prefix.
-      symbol_imp.erase(0, symbol_imp.find(kLdDefineSymbol) + strlen(kLdDefineSymbol));
+      symbol_imp.erase(0, symbol_imp.find(kLinkerDefineSymbol) + strlen(kLinkerDefineSymbol));
 
       // demangle everything.
       while (symbol_imp.find('$') != CompilerKit::STLString::npos)
@@ -406,7 +407,7 @@ NECTAR_MODULE(DynamicLinker64PEF) {
       for (auto& command_hdr : command_headers) {
         if (CompilerKit::STLString(command_hdr.Name).find(symbol_imp) !=
                 CompilerKit::STLString::npos &&
-            CompilerKit::STLString(command_hdr.Name).find(kLdDefineSymbol) ==
+            CompilerKit::STLString(command_hdr.Name).find(kLinkerDefineSymbol) ==
                 CompilerKit::STLString::npos) {
           CompilerKit::STLString undefined_symbol = command_hdr.Name;
           auto result_of_sym = undefined_symbol.substr(undefined_symbol.find(symbol_imp));
@@ -551,9 +552,9 @@ NECTAR_MODULE(DynamicLinker64PEF) {
   // And check for any duplications
   for (size_t commandHeaderIndex = 0UL; commandHeaderIndex < command_headers.size();
        ++commandHeaderIndex) {
-    if (CompilerKit::STLString(command_headers[commandHeaderIndex].Name).find(kLdDefineSymbol) !=
+    if (CompilerKit::STLString(command_headers[commandHeaderIndex].Name).find(kLinkerDefineSymbol) !=
             CompilerKit::STLString::npos &&
-        CompilerKit::STLString(command_headers[commandHeaderIndex].Name).find(kLdDynamicSym) ==
+        CompilerKit::STLString(command_headers[commandHeaderIndex].Name).find(kLinkerDynamicSym) ==
             CompilerKit::STLString::npos) {
       // ignore :UndefinedSymbol: headers, they do not contain code.
       continue;
@@ -597,9 +598,9 @@ NECTAR_MODULE(DynamicLinker64PEF) {
       if (sub_command_header_index == commandHeaderIndex) continue;
 
       if (CompilerKit::STLString(command_headers[sub_command_header_index].Name)
-                  .find(kLdDefineSymbol) != CompilerKit::STLString::npos &&
+                  .find(kLinkerDefineSymbol) != CompilerKit::STLString::npos &&
           CompilerKit::STLString(command_headers[sub_command_header_index].Name)
-                  .find(kLdDynamicSym) == CompilerKit::STLString::npos) {
+                  .find(kLinkerDynamicSym) == CompilerKit::STLString::npos) {
         if (kVerbose) {
           kConsoleOut << "Ignoring :UndefinedSymbol: headers...\n";
         }

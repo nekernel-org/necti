@@ -25,11 +25,6 @@
 #include <CompilerKit/ErrorID.h>
 #include <CompilerKit/PEF.h>
 #include <CompilerKit/Utilities/Assembler.h>
-#include <algorithm>
-#include <filesystem>
-#include <fstream>
-#include <iostream>
-#include <vector>
 
 /////////////////////
 

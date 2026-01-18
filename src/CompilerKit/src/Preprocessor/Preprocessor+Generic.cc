@@ -20,8 +20,8 @@
 /// @file Preprocessor+Generic.cc
 /// @brief Nectar Preprocessor.
 
-typedef Int32 (*bpp_parser_fn_t)(CompilerKit::STLString& line, std::ifstream& hdr_file,
-                                 std::ofstream& pp_out);
+typedef Int32 (*pp_parser_fn_t)(CompilerKit::STLString& line, std::ifstream& hdr_file,
+                                std::ofstream& pp_out);
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
@@ -41,7 +41,7 @@ enum {
   kCount = 6,
 };
 
-struct bpp_macro_condition final {
+struct pp_macro_condition final {
   int32_t                fType;
   CompilerKit::STLString fTypeName;
 
@@ -51,7 +51,7 @@ struct bpp_macro_condition final {
   }
 };
 
-struct bpp_macro final {
+struct pp_macro final {
   std::vector<CompilerKit::STLString> fArgs;
   CompilerKit::STLString              fName;
   CompilerKit::STLString              fValue;
@@ -68,21 +68,21 @@ struct bpp_macro final {
 }  // namespace Detail
 
 static std::vector<CompilerKit::STLString> kFiles;
-static std::vector<Detail::bpp_macro>      kMacros;
+static std::vector<Detail::pp_macro>       kMacros;
 static std::vector<CompilerKit::STLString> kIncludes;
 
 static CompilerKit::STLString kWorkingDir = "";
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
-// @name bpp_parse_if_condition
+// @name pp_parse_if_condition
 // @brief parse #if condition
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
-int32_t bpp_parse_if_condition(Detail::bpp_macro_condition& cond, Detail::bpp_macro& macro,
-                               bool& inactive_code, bool& defined,
-                               CompilerKit::STLString& macro_str) {
+int32_t pp_parse_if_condition(Detail::pp_macro_condition& cond, Detail::pp_macro& macro,
+                              bool& inactive_code, bool& defined,
+                              CompilerKit::STLString& macro_str) {
   if (cond.fType == Detail::kEqual) {
     auto pos = macro_str.find(macro.fName);
     if (pos == CompilerKit::STLString::npos) return 0;
@@ -241,12 +241,12 @@ std::vector<CompilerKit::STLString> kAllIncludes;
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
-// @name bpp_parse_file
+// @name pp_parse_file
 // @brief parse file to preprocess it.
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
-void bpp_parse_file(std::ifstream& hdr_file, std::ofstream& pp_out) {
+void pp_parse_file(std::ifstream& hdr_file, std::ofstream& pp_out) {
   CompilerKit::STLString hdr_line;
   CompilerKit::STLString line_after_include;
 
@@ -423,7 +423,7 @@ void bpp_parse_file(std::ifstream& hdr_file, std::ofstream& pp_out) {
           }
         }
 
-        Detail::bpp_macro macro;
+        Detail::pp_macro macro;
 
         macro.fArgs  = args;
         macro.fName  = macro_key;
@@ -548,7 +548,7 @@ void bpp_parse_file(std::ifstream& hdr_file, std::ofstream& pp_out) {
                  hdr_line.find("if") != CompilerKit::STLString::npos) {
         inactive_code = true;
 
-        std::vector<Detail::bpp_macro_condition> bpp_macro_condition_list = {
+        std::vector<Detail::pp_macro_condition> pp_macro_condition_list = {
             {
                 .fType     = Detail::kEqual,
                 .fTypeName = "==",
@@ -577,12 +577,12 @@ void bpp_parse_file(std::ifstream& hdr_file, std::ofstream& pp_out) {
 
         int32_t good_to_go = 0;
 
-        for (auto& macro_condition : bpp_macro_condition_list) {
+        for (auto& macro_condition : pp_macro_condition_list) {
           if (hdr_line.find(macro_condition.fTypeName) != CompilerKit::STLString::npos) {
             for (auto& found_macro : kMacros) {
               if (hdr_line.find(found_macro.fName) != CompilerKit::STLString::npos) {
-                good_to_go = bpp_parse_if_condition(macro_condition, found_macro, inactive_code,
-                                                    defined, hdr_line);
+                good_to_go = pp_parse_if_condition(macro_condition, found_macro, inactive_code,
+                                                   defined, hdr_line);
 
                 break;
               }
@@ -727,7 +727,7 @@ void bpp_parse_file(std::ifstream& hdr_file, std::ofstream& pp_out) {
 
             open = true;
 
-            bpp_parse_file(header, pp_out);
+            pp_parse_file(header, pp_out);
 
             break;
           }
@@ -740,7 +740,7 @@ void bpp_parse_file(std::ifstream& hdr_file, std::ofstream& pp_out) {
 
           if (!header.is_open()) throw std::runtime_error("cppdrv: no such include file: " + path);
 
-          bpp_parse_file(header, pp_out);
+          pp_parse_file(header, pp_out);
         }
       } else {
         std::cerr << ("cppdrv: unknown pre-processor directive, " + hdr_line) << "\n";
@@ -763,49 +763,49 @@ NECTAR_MODULE(GenericPreprocessorMain) {
     bool skip        = false;
     bool double_skip = false;
 
-    Detail::bpp_macro macro_1;
+    Detail::pp_macro macro_1;
 
     macro_1.fName  = "__true";
     macro_1.fValue = "1";
 
     kMacros.push_back(macro_1);
 
-    Detail::bpp_macro macro_unreachable;
+    Detail::pp_macro macro_unreachable;
 
     macro_unreachable.fName  = "__unreachable";
     macro_unreachable.fValue = "__compilerkit_unreachable";
 
     kMacros.push_back(macro_unreachable);
 
-    Detail::bpp_macro macro_unused;
+    Detail::pp_macro macro_unused;
 
     macro_unused.fName  = "__unused";
     macro_unused.fValue = "__compilerkit_unused";
 
     kMacros.push_back(macro_unused);
 
-    Detail::bpp_macro macro_0;
+    Detail::pp_macro macro_0;
 
     macro_0.fName  = "__false";
     macro_0.fValue = "0";
 
     kMacros.push_back(macro_0);
 
-    Detail::bpp_macro macro_nectar;
+    Detail::pp_macro macro_nectar;
 
     macro_nectar.fName  = "__NECTAR__";
     macro_nectar.fValue = "1";
 
     kMacros.push_back(macro_nectar);
 
-    Detail::bpp_macro macro_lang;
+    Detail::pp_macro macro_lang;
 
     macro_lang.fName  = "__ncpp";
     macro_lang.fValue = "202601L";
 
     kMacros.push_back(macro_lang);
 
-    Detail::bpp_macro macro_nil;
+    Detail::pp_macro macro_nil;
 
     macro_nil.fName  = "nil";
     macro_nil.fValue = "0";
@@ -880,7 +880,7 @@ NECTAR_MODULE(GenericPreprocessorMain) {
 
           if (is_string) macro_value += "\"";
 
-          Detail::bpp_macro macro;
+          Detail::pp_macro macro;
           macro.fName  = macro_key;
           macro.fValue = macro_value;
 
@@ -903,7 +903,7 @@ NECTAR_MODULE(GenericPreprocessorMain) {
       std::ifstream file_descriptor(file);
       std::ofstream file_descriptor_pp(file + ".pp");
 
-      bpp_parse_file(file_descriptor, file_descriptor_pp);
+      pp_parse_file(file_descriptor, file_descriptor_pp);
     }
 
     return NECTAR_SUCCESS;

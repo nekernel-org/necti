@@ -16,8 +16,6 @@
 #include <CompilerKit/PEF.h>
 #include <CompilerKit/UUID.h>
 #include <CompilerKit/Utilities/Compiler.h>
-#include <filesystem>
-#include <map>
 
 #define kMachODefaultOutput \
   { "a.out" }
@@ -40,7 +38,7 @@ static bool                   kDuplicateSymbols    = false;
 static bool                   kIsDylib             = false;
 static Int64                  kMachODefaultStackSz = 0;
 
-static CompilerKit::STLString kLinkerStart = "_main";
+static CompilerKit::STLString kLinkerStart = "__ImageStart";
 
 /* object code and list. */
 static std::vector<CompilerKit::STLString>    kObjectList;
@@ -49,16 +47,16 @@ static std::vector<CompilerKit::Detail::Blob> kDataBytes;
 
 /* symbol table */
 static std::vector<nlist_64>                      kSymbolTable;
-static std::vector<char>                          kStringTable;
-static std::map<CompilerKit::STLString, uint64_t> kSymbolOffsets;
+static std::vector<Char>                          kStringTable;
+static std::map<CompilerKit::STLString, UInt64> kSymbolOffsets;
 
 /// @brief Structure to hold section information from AE records
 struct SectionInfo {
   CompilerKit::STLString name;
-  uint32_t               kind;
-  std::vector<char>      bytes;
-  uint64_t               address;
-  uint64_t               size;
+  UInt32               kind;
+  std::vector<Char>      bytes;
+  UInt64               address;
+  UInt64               size;
 };
 
 /// @brief Extract clean symbol name from AE record name
@@ -67,7 +65,7 @@ static CompilerKit::STLString ExtractSymbolName(const CompilerKit::STLString& ae
   CompilerKit::STLString name = aeName;
 
   // Remove section prefixes/suffixes
-  const char* sections[] = {".code64", ".data64", ".zero64", "$"};
+  const Char* sections[] = {".code64", ".data64", ".zero64", "$"};
 
   for (const auto& sec : sections) {
     size_t pos;
@@ -88,16 +86,16 @@ static CompilerKit::STLString ExtractSymbolName(const CompilerKit::STLString& ae
 }
 
 /// @brief Add a symbol to the symbol table
-static uint32_t AddSymbol(const CompilerKit::STLString& name, uint8_t type, uint8_t sect,
-                          uint64_t value) {
+static UInt32 AddSymbol(const CompilerKit::STLString& name, uint8_t type, uint8_t sect,
+                          UInt64 value) {
   // Add name to string table (offset 0 is reserved for empty string)
   if (kStringTable.empty()) {
     kStringTable.push_back('\0');  // First byte is null
   }
 
-  uint32_t strOffset = static_cast<uint32_t>(kStringTable.size());
+  UInt32 strOffset = static_cast<UInt32>(kStringTable.size());
 
-  for (char c : name) {
+  for (Char c : name) {
     kStringTable.push_back(c);
   }
   kStringTable.push_back('\0');
@@ -113,7 +111,7 @@ static uint32_t AddSymbol(const CompilerKit::STLString& name, uint8_t type, uint
   kSymbolTable.push_back(sym);
   kSymbolOffsets[name] = value;
 
-  return static_cast<uint32_t>(kSymbolTable.size() - 1);
+  return static_cast<UInt32>(kSymbolTable.size() - 1);
 }
 
 ///	@brief Nectar 64-bit Mach-O Linker.
@@ -293,7 +291,7 @@ NECTAR_MODULE(DynamicLinker64MachO) {
       delete[] raw_ae_records;
 
       // Read the actual code bytes
-      std::vector<char> bytes;
+      std::vector<Char> bytes;
       bytes.resize(hdr.fCodeSize);
 
       reader_protocol.fFilePtr.seekg(std::streamsize(hdr.fStartCode));
@@ -323,8 +321,8 @@ NECTAR_MODULE(DynamicLinker64MachO) {
   }
 
   // Calculate sizes
-  uint64_t textSize = 0;
-  uint64_t dataSize = 0;
+  UInt64 textSize = 0;
+  UInt64 dataSize = 0;
 
   for (auto& blob : kTextBytes) {
     textSize += blob.mBlob.size();
@@ -346,29 +344,29 @@ NECTAR_MODULE(DynamicLinker64MachO) {
 
   using namespace CompilerKit::MachO;
 
-  uint32_t numCommands = 8;  // __PAGEZERO, LC_BUILD_VERSION, __TEXT, __LINKEDIT, LC_LOAD_DYLINKER,
+  UInt32 numCommands = 8;  // __PAGEZERO, LC_BUILD_VERSION, __TEXT, __LINKEDIT, LC_LOAD_DYLINKER,
                              // LC_UUID, LC_SYMTAB, LC_DYSYMTAB
 
   if (!kIsDylib) {
     numCommands += 1;  // LC_MAIN
   }
 
-  uint32_t dataSegCmdSize =
+  UInt32 dataSegCmdSize =
       kDataBytes.size() > 0 ? sizeof(segment_command_64) + sizeof(section_64) : 0;
 
   if (dataSegCmdSize > 0) ++numCommands;  // __DATA segment
 
-  uint32_t sizeOfCmds      = 0;
-  uint32_t headerSize      = sizeof(mach_header_64);
-  uint32_t pageZeroSize    = sizeof(segment_command_64);
-  uint32_t textSegCmdSize  = sizeof(segment_command_64) + sizeof(section_64);
-  uint32_t buildCmdSize    = sizeof(build_version_command);
-  uint32_t mainCmdSize     = sizeof(entry_point_command);
-  uint32_t uuidCmdSize     = sizeof(uuid_command);
-  uint32_t symtabCmdSize   = sizeof(symtab_command);
-  uint32_t dysymtabCmdSize = sizeof(dysymtab_command);
-  uint32_t linkeditCmdSize = sizeof(segment_command_64);  // No sections
-  uint32_t dylinkerCmdSize =
+  UInt32 sizeOfCmds      = 0;
+  UInt32 headerSize      = sizeof(mach_header_64);
+  UInt32 pageZeroSize    = sizeof(segment_command_64);
+  UInt32 textSegCmdSize  = sizeof(segment_command_64) + sizeof(section_64);
+  UInt32 buildCmdSize    = sizeof(build_version_command);
+  UInt32 mainCmdSize     = sizeof(entry_point_command);
+  UInt32 uuidCmdSize     = sizeof(uuid_command);
+  UInt32 symtabCmdSize   = sizeof(symtab_command);
+  UInt32 dysymtabCmdSize = sizeof(dysymtab_command);
+  UInt32 linkeditCmdSize = sizeof(segment_command_64);  // No sections
+  UInt32 dylinkerCmdSize =
       (sizeof(dylinker_command) + 13 + 1 + 7) & ~7;  // "/usr/lib/dyld" + padding to 8-byte align
 
   sizeOfCmds = pageZeroSize + textSegCmdSize + dataSegCmdSize + buildCmdSize + uuidCmdSize +
@@ -376,25 +374,25 @@ NECTAR_MODULE(DynamicLinker64MachO) {
 
   if (!kIsDylib) sizeOfCmds += mainCmdSize;
 
-  uint64_t headerAndCmdsSize = headerSize + sizeOfCmds;
-  uint64_t textFileOffset    = AlignToPage(headerAndCmdsSize);
-  uint64_t textVMAddr        = kDefaultBaseAddress;
-  uint64_t textSegmentSize   = AlignToPage(textSize > 0 ? textSize : kPageSize);
-  uint64_t textVMSize        = textFileOffset + textSegmentSize;  // __TEXT includes header
+  UInt64 headerAndCmdsSize = headerSize + sizeOfCmds;
+  UInt64 textFileOffset    = AlignToPage(headerAndCmdsSize);
+  UInt64 textVMAddr        = kDefaultBaseAddress;
+  UInt64 textSegmentSize   = AlignToPage(textSize > 0 ? textSize : kPageSize);
+  UInt64 textVMSize        = textFileOffset + textSegmentSize;  // __TEXT includes header
 
-  uint64_t dataFileOffset  = textFileOffset + textSegmentSize;
-  uint64_t dataVMAddr      = textVMAddr + textVMSize;
-  uint64_t dataSegmentSize = dataSize > 0 ? AlignToPage(dataSize) : 0;  // 0 if no data
+  UInt64 dataFileOffset  = textFileOffset + textSegmentSize;
+  UInt64 dataVMAddr      = textVMAddr + textVMSize;
+  UInt64 dataSegmentSize = dataSize > 0 ? AlignToPage(dataSize) : 0;  // 0 if no data
 
   // __LINKEDIT segment comes after data segment (or __TEXT if no data)
-  uint64_t linkeditFileOffset =
+  UInt64 linkeditFileOffset =
       dataSegmentSize > 0 ? dataFileOffset + dataSegmentSize : textFileOffset + textSegmentSize;
-  uint64_t linkeditVMAddr =
+  UInt64 linkeditVMAddr =
       dataSegmentSize > 0 ? dataVMAddr + dataSegmentSize : textVMAddr + textVMSize;
-  uint64_t symtabFileOffset = linkeditFileOffset;
-  uint64_t strtabFileOffset = symtabFileOffset + (kSymbolTable.size() * sizeof(nlist_64));
-  uint64_t linkeditFileSize = (kSymbolTable.size() * sizeof(nlist_64)) + kStringTable.size();
-  uint64_t linkeditVMSize   = AlignToPage(linkeditFileSize > 0 ? linkeditFileSize : 1);
+  UInt64 symtabFileOffset = linkeditFileOffset;
+  UInt64 strtabFileOffset = symtabFileOffset + (kSymbolTable.size() * sizeof(nlist_64));
+  UInt64 linkeditFileSize = (kSymbolTable.size() * sizeof(nlist_64)) + kStringTable.size();
+  UInt64 linkeditVMSize   = AlignToPage(linkeditFileSize > 0 ? linkeditFileSize : 1);
 
   // Write Mach-O header
   mach_header_64 header{};
@@ -408,7 +406,7 @@ NECTAR_MODULE(DynamicLinker64MachO) {
   header.flags      = MH_NOUNDEFS | MH_DYLDLINK | MH_TWOLEVEL | MH_PIE;
   header.reserved   = 0;
 
-  output_fc.write(reinterpret_cast<const char*>(&header), sizeof(header));
+  output_fc.write(reinterpret_cast<const Char*>(&header), sizeof(header));
 
   if (kVerbose) {
     kConsoleOut << "Wrote Mach-O header, ncmds: " << numCommands << "\n";
@@ -427,7 +425,7 @@ NECTAR_MODULE(DynamicLinker64MachO) {
   pageZeroSegment.nsects   = 0;
   pageZeroSegment.flags    = 0;
 
-  output_fc.write(reinterpret_cast<const char*>(&pageZeroSegment), sizeof(pageZeroSegment));
+  output_fc.write(reinterpret_cast<const Char*>(&pageZeroSegment), sizeof(pageZeroSegment));
 
   build_version_command build = {.cmd      = LC_BUILD_VERSION,
                                  .cmdsize  = sizeof(build_version_command),
@@ -436,7 +434,7 @@ NECTAR_MODULE(DynamicLinker64MachO) {
                                  .sdk      = (11 << 16),  // macOS 11.0
                                  .ntools   = 0};
 
-  output_fc.write(reinterpret_cast<const char*>(&build), sizeof(build));
+  output_fc.write(reinterpret_cast<const Char*>(&build), sizeof(build));
 
   if (kVerbose) {
     kConsoleOut << "Wrote LC_BUILD_VERSION, platform: macOS, minos: 11.0, sdk: 11.0\n";
@@ -457,7 +455,7 @@ NECTAR_MODULE(DynamicLinker64MachO) {
   textSegment.nsects   = 1;
   textSegment.flags    = 0;
 
-  output_fc.write(reinterpret_cast<const char*>(&textSegment), sizeof(textSegment));
+  output_fc.write(reinterpret_cast<const Char*>(&textSegment), sizeof(textSegment));
 
   // Write __text section header
   section_64 textSection{};
@@ -465,7 +463,7 @@ NECTAR_MODULE(DynamicLinker64MachO) {
   CopySegmentName(textSection.segname, kSegmentText);
   textSection.addr      = textVMAddr + textFileOffset;  // Section is at offset within segment
   textSection.size      = textSize;
-  textSection.offset    = static_cast<uint32_t>(textFileOffset);
+  textSection.offset    = static_cast<UInt32>(textFileOffset);
   textSection.align     = kSectionAlign;
   textSection.reloff    = 0;
   textSection.nreloc    = 0;
@@ -474,7 +472,7 @@ NECTAR_MODULE(DynamicLinker64MachO) {
   textSection.reserved2 = 0;
   textSection.reserved3 = 0;
 
-  output_fc.write(reinterpret_cast<const char*>(&textSection), sizeof(textSection));
+  output_fc.write(reinterpret_cast<const Char*>(&textSection), sizeof(textSection));
 
   if (kVerbose) {
     kConsoleOut << "Wrote __TEXT segment, vmaddr: 0x" << std::hex << textVMAddr << std::dec << "\n";
@@ -496,7 +494,7 @@ NECTAR_MODULE(DynamicLinker64MachO) {
   dataSegment.flags    = 0;
 
   if (dataSegCmdSize > 0)
-    output_fc.write(reinterpret_cast<const char*>(&dataSegment), sizeof(dataSegment));
+    output_fc.write(reinterpret_cast<const Char*>(&dataSegment), sizeof(dataSegment));
 
   // Write __data section header
   section_64 dataSection{};
@@ -504,7 +502,7 @@ NECTAR_MODULE(DynamicLinker64MachO) {
   CopySegmentName(dataSection.segname, kSegmentData);
   dataSection.addr      = dataVMAddr;
   dataSection.size      = dataSize;
-  dataSection.offset    = static_cast<uint32_t>(dataFileOffset);
+  dataSection.offset    = static_cast<UInt32>(dataFileOffset);
   dataSection.align     = kSectionAlign;
   dataSection.reloff    = 0;
   dataSection.nreloc    = 0;
@@ -514,7 +512,7 @@ NECTAR_MODULE(DynamicLinker64MachO) {
   dataSection.reserved3 = 0;
 
   if (dataSegCmdSize > 0)
-    output_fc.write(reinterpret_cast<const char*>(&dataSection), sizeof(dataSection));
+    output_fc.write(reinterpret_cast<const Char*>(&dataSection), sizeof(dataSection));
 
   if (kVerbose) {
     kConsoleOut << "Wrote __DATA segment, vmaddr: 0x" << std::hex << dataVMAddr << std::dec << "\n";
@@ -535,7 +533,7 @@ NECTAR_MODULE(DynamicLinker64MachO) {
   linkeditSegment.nsects   = 0;
   linkeditSegment.flags    = 0;
 
-  output_fc.write(reinterpret_cast<const char*>(&linkeditSegment), sizeof(linkeditSegment));
+  output_fc.write(reinterpret_cast<const Char*>(&linkeditSegment), sizeof(linkeditSegment));
 
   if (kVerbose) {
     kConsoleOut << "Wrote __LINKEDIT segment, vmaddr: 0x" << std::hex << linkeditVMAddr << std::dec
@@ -544,8 +542,8 @@ NECTAR_MODULE(DynamicLinker64MachO) {
   }
 
   // Write LC_LOAD_DYLINKER command
-  const char*       dyldPath = "/usr/lib/dyld";
-  std::vector<char> dylinkerCmd(dylinkerCmdSize, 0);
+  const Char*       dyldPath = "/usr/lib/dyld";
+  std::vector<Char> dylinkerCmd(dylinkerCmdSize, 0);
   dylinker_command* dylinker = reinterpret_cast<dylinker_command*>(dylinkerCmd.data());
   dylinker->cmd              = LC_LOAD_DYLINKER;
   dylinker->cmdsize          = dylinkerCmdSize;
@@ -565,7 +563,7 @@ NECTAR_MODULE(DynamicLinker64MachO) {
     // entryoff is relative to __TEXT segment file offset
     entryCommand.entryoff = textFileOffset + entryCommand.entryoff;
 
-    output_fc.write(reinterpret_cast<const char*>(&entryCommand), sizeof(entryCommand));
+    output_fc.write(reinterpret_cast<const Char*>(&entryCommand), sizeof(entryCommand));
 
     if (kVerbose) {
       kConsoleOut << "Wrote LC_MAIN, entryoff: 0x" << std::hex << entryCommand.entryoff << std::dec
@@ -586,7 +584,7 @@ NECTAR_MODULE(DynamicLinker64MachO) {
   auto                         uuidBytes     = generatedUuid.as_bytes();
   std::memcpy(uuidCmd.uuid, uuidBytes.data(), 16);
 
-  output_fc.write(reinterpret_cast<const char*>(&uuidCmd), sizeof(uuidCmd));
+  output_fc.write(reinterpret_cast<const Char*>(&uuidCmd), sizeof(uuidCmd));
 
   if (kVerbose) {
     kConsoleOut << "Wrote LC_UUID\n";
@@ -596,12 +594,12 @@ NECTAR_MODULE(DynamicLinker64MachO) {
   symtab_command symtabCmd{};
   symtabCmd.cmd     = LC_SYMTAB;
   symtabCmd.cmdsize = sizeof(symtab_command);
-  symtabCmd.symoff  = static_cast<uint32_t>(symtabFileOffset);
-  symtabCmd.nsyms   = static_cast<uint32_t>(kSymbolTable.size());
-  symtabCmd.stroff  = static_cast<uint32_t>(strtabFileOffset);
-  symtabCmd.strsize = static_cast<uint32_t>(kStringTable.size());
+  symtabCmd.symoff  = static_cast<UInt32>(symtabFileOffset);
+  symtabCmd.nsyms   = static_cast<UInt32>(kSymbolTable.size());
+  symtabCmd.stroff  = static_cast<UInt32>(strtabFileOffset);
+  symtabCmd.strsize = static_cast<UInt32>(kStringTable.size());
 
-  output_fc.write(reinterpret_cast<const char*>(&symtabCmd), sizeof(symtabCmd));
+  output_fc.write(reinterpret_cast<const Char*>(&symtabCmd), sizeof(symtabCmd));
 
   if (kVerbose) {
     kConsoleOut << "Wrote LC_SYMTAB, nsyms: " << symtabCmd.nsyms
@@ -616,28 +614,28 @@ NECTAR_MODULE(DynamicLinker64MachO) {
 
   // All symbols are local for now
   dysymtabCmd.ilocalsym = 0;
-  dysymtabCmd.nlocalsym = static_cast<uint32_t>(kSymbolTable.size());
+  dysymtabCmd.nlocalsym = static_cast<UInt32>(kSymbolTable.size());
 
   // External symbols start after locals
-  dysymtabCmd.iextdefsym = static_cast<uint32_t>(kSymbolTable.size());
+  dysymtabCmd.iextdefsym = static_cast<UInt32>(kSymbolTable.size());
   dysymtabCmd.nextdefsym = 0;
 
   // Undefined symbols
-  dysymtabCmd.iundefsym = static_cast<uint32_t>(kSymbolTable.size());
+  dysymtabCmd.iundefsym = static_cast<UInt32>(kSymbolTable.size());
   dysymtabCmd.nundefsym = 0;
 
-  output_fc.write(reinterpret_cast<const char*>(&dysymtabCmd), sizeof(dysymtabCmd));
+  output_fc.write(reinterpret_cast<const Char*>(&dysymtabCmd), sizeof(dysymtabCmd));
 
   if (kVerbose) {
     kConsoleOut << "Wrote LC_DYSYMTAB\n";
   }
 
   // Pad to text section offset
-  uint64_t currentPos = output_fc.tellp();
-  uint64_t padding    = textFileOffset - currentPos;
+  UInt64 currentPos = output_fc.tellp();
+  UInt64 padding    = textFileOffset - currentPos;
 
   if (padding > 0) {
-    std::vector<char> zeros(padding, 0);
+    std::vector<Char> zeros(padding, 0);
     output_fc.write(zeros.data(), zeros.size());
   }
 
@@ -651,7 +649,7 @@ NECTAR_MODULE(DynamicLinker64MachO) {
   padding    = dataFileOffset - currentPos;
 
   if (padding > 0) {
-    std::vector<char> zeros(padding, 0);
+    std::vector<Char> zeros(padding, 0);
     output_fc.write(zeros.data(), zeros.size());
   }
 
@@ -665,13 +663,13 @@ NECTAR_MODULE(DynamicLinker64MachO) {
   padding    = symtabFileOffset - currentPos;
 
   if (padding > 0) {
-    std::vector<char> zeros(padding, 0);
+    std::vector<Char> zeros(padding, 0);
     output_fc.write(zeros.data(), zeros.size());
   }
 
   // Write symbol table (nlist_64 entries)
   for (auto& sym : kSymbolTable) {
-    output_fc.write(reinterpret_cast<const char*>(&sym), sizeof(nlist_64));
+    output_fc.write(reinterpret_cast<const Char*>(&sym), sizeof(nlist_64));
   }
 
   if (kVerbose) {

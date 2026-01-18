@@ -31,13 +31,6 @@
 #include <CompilerKit/AST.h>
 #include <CompilerKit/Detail/AMD64.h>
 #include <CompilerKit/PEF.h>
-#include <algorithm>
-#include <cstdlib>
-#include <filesystem>
-#include <fstream>
-#include <iostream>
-#include <vector>
-
 /////////////////////
 
 // ANSI ESCAPE CODES
