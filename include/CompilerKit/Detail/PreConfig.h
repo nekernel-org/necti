@@ -48,8 +48,8 @@
 #include <time.h>
 #include <unistd.h>
 #include <cassert>
-#include <string>
 #include <fstream>
+#include <string>
 
 #define ToString(X) Stringify(X)
 #define Stringify(X) #X

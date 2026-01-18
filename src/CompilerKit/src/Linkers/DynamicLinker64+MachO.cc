@@ -46,17 +46,17 @@ static std::vector<CompilerKit::Detail::Blob> kTextBytes;
 static std::vector<CompilerKit::Detail::Blob> kDataBytes;
 
 /* symbol table */
-static std::vector<nlist_64>                      kSymbolTable;
-static std::vector<Char>                          kStringTable;
+static std::vector<nlist_64>                    kSymbolTable;
+static std::vector<Char>                        kStringTable;
 static std::map<CompilerKit::STLString, UInt64> kSymbolOffsets;
 
 /// @brief Structure to hold section information from AE records
 struct SectionInfo {
   CompilerKit::STLString name;
-  UInt32               kind;
+  UInt32                 kind;
   std::vector<Char>      bytes;
-  UInt64               address;
-  UInt64               size;
+  UInt64                 address;
+  UInt64                 size;
 };
 
 /// @brief Extract clean symbol name from AE record name
@@ -87,7 +87,7 @@ static CompilerKit::STLString ExtractSymbolName(const CompilerKit::STLString& ae
 
 /// @brief Add a symbol to the symbol table
 static UInt32 AddSymbol(const CompilerKit::STLString& name, uint8_t type, uint8_t sect,
-                          UInt64 value) {
+                        UInt64 value) {
   // Add name to string table (offset 0 is reserved for empty string)
   if (kStringTable.empty()) {
     kStringTable.push_back('\0');  // First byte is null
@@ -345,7 +345,7 @@ NECTAR_MODULE(DynamicLinker64MachO) {
   using namespace CompilerKit::MachO;
 
   UInt32 numCommands = 8;  // __PAGEZERO, LC_BUILD_VERSION, __TEXT, __LINKEDIT, LC_LOAD_DYLINKER,
-                             // LC_UUID, LC_SYMTAB, LC_DYSYMTAB
+                           // LC_UUID, LC_SYMTAB, LC_DYSYMTAB
 
   if (!kIsDylib) {
     numCommands += 1;  // LC_MAIN

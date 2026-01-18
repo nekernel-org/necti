@@ -48,9 +48,9 @@ inline std::vector<CpuOpcodeAMD64> kOpcodesAMD64 = {
         CK_ASM_OPCODE("int3", 0xC3) CK_ASM_OPCODE("iret", 0xCF) CK_ASM_OPCODE("retf", 0xCB)
             CK_ASM_OPCODE("retn", 0xC3) CK_ASM_OPCODE("ret", 0xC3) CK_ASM_OPCODE("sti", 0xfb)
                 CK_ASM_OPCODE("cli", 0xfa) CK_ASM_OPCODE("hlt", 0xf4) CK_ASM_OPCODE("nop", 0x90)
-                    CK_ASM_OPCODE("mov", 0x48) CK_ASM_OPCODE("call", 0xFF)
-                        CK_ASM_OPCODE("syscall", 0x0F) CK_ASM_OPCODE("xor", 0x48) CK_ASM_OPCODE(
-                            "push", kAsmPushOpcode) CK_ASM_OPCODE("pop", kAsmPopOpcode)};
+                    CK_ASM_OPCODE("mov", 0x48) CK_ASM_OPCODE("call", 0xFF) CK_ASM_OPCODE(
+                        "syscall", 0x0F) CK_ASM_OPCODE("xor", 0x48) CK_ASM_OPCODE("cmp", 0x39)
+                        CK_ASM_OPCODE("push", kAsmPushOpcode) CK_ASM_OPCODE("pop", kAsmPopOpcode)};
 
 #define kAsmRegisterLimit 16
 

@@ -1,6 +1,6 @@
 const main() {
-  if (67 == 67) {
-    return 123;
+  if (0x10 == 0x10) {
+    return 0x137;
   }
 
   return 0;

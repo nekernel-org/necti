@@ -569,17 +569,16 @@ bool CompilerKit::EncoderAMD64::WriteNumber(const std::size_t& pos, std::string&
 
   switch (jump_label[pos + 1]) {
     case 'x': {
-      if (auto res = strtol(jump_label.substr(pos + 2).c_str(), nullptr, 16); !res) {
-        if (errno != 0) {
-          CompilerKit::Detail::print_error("Invalid hex number: " + jump_label, "CompilerKit");
-          throw std::runtime_error("invalid_hex");
-        }
+      auto res = strtol(jump_label.substr(pos + 2).c_str(), nullptr, 16);
+      res += kOrigin;
+
+      if (errno != 0) {
+        return false;
       }
 
-      CompilerKit::NumberCast64 num =
-          CompilerKit::NumberCast64(strtol(jump_label.substr(pos + 2).c_str(), nullptr, 16));
+      CompilerKit::NumberCast64 num = CompilerKit::NumberCast64(res);
 
-      for (auto& i : num.number) {
+      for (char& i : num.number) {
         if (i == 0) continue;
 
         kAppBytes.push_back(i);
@@ -593,15 +592,14 @@ bool CompilerKit::EncoderAMD64::WriteNumber(const std::size_t& pos, std::string&
       return true;
     }
     case 'b': {
-      if (auto res = strtol(jump_label.substr(pos + 2).c_str(), nullptr, 2); !res) {
-        if (errno != 0) {
-          CompilerKit::Detail::print_error("Invalid binary number: " + jump_label, "CompilerKit");
-          throw std::runtime_error("invalid_bin");
-        }
+      auto res = strtol(jump_label.substr(pos + 2).c_str(), nullptr, 2);
+      res += kOrigin;
+
+      if (errno != 0) {
+        return false;
       }
 
-      CompilerKit::NumberCast64 num =
-          CompilerKit::NumberCast64(strtol(jump_label.substr(pos + 2).c_str(), nullptr, 2));
+      CompilerKit::NumberCast64 num = CompilerKit::NumberCast64(res);
 
       if (kVerbose) {
         kStdOut << "AssemblerAMD64: Found a base 2 number here: " << jump_label.substr(pos) << "\n";
@@ -616,15 +614,14 @@ bool CompilerKit::EncoderAMD64::WriteNumber(const std::size_t& pos, std::string&
       return true;
     }
     case 'o': {
-      if (auto res = strtol(jump_label.substr(pos + 2).c_str(), nullptr, 7); !res) {
-        if (errno != 0) {
-          CompilerKit::Detail::print_error("Invalid octal number: " + jump_label, "CompilerKit");
-          throw std::runtime_error("invalid_octal");
-        }
+      auto res = strtol(jump_label.substr(pos + 2).c_str(), nullptr, 7);
+      res += kOrigin;
+
+      if (errno != 0) {
+        return false;
       }
 
-      CompilerKit::NumberCast64 num =
-          CompilerKit::NumberCast64(strtol(jump_label.substr(pos + 2).c_str(), nullptr, 7));
+      CompilerKit::NumberCast64 num = CompilerKit::NumberCast64(res);
 
       if (kVerbose) {
         kStdOut << "AssemblerAMD64: Found a base 8 number here: " << jump_label.substr(pos) << "\n";
@@ -643,15 +640,14 @@ bool CompilerKit::EncoderAMD64::WriteNumber(const std::size_t& pos, std::string&
     }
   }
 
-  /* check for errno and stuff like that */
-  if (auto res = strtol(jump_label.substr(pos).c_str(), nullptr, 10); !res) {
-    if (errno != 0) {
-      return false;
-    }
+  auto res = strtol(jump_label.substr(pos).c_str(), nullptr, 10);
+  res += kOrigin;
+
+  if (errno != 0) {
+    return false;
   }
 
-  CompilerKit::NumberCast64 num =
-      CompilerKit::NumberCast64(strtol(jump_label.substr(pos).c_str(), nullptr, 10));
+  CompilerKit::NumberCast64 num = CompilerKit::NumberCast64(res);
 
   for (char& i : num.number) {
     if (i == 0) continue;
@@ -871,15 +867,14 @@ bool CompilerKit::EncoderAMD64::WriteNumber8(const std::size_t& pos, std::string
 
   switch (jump_label[pos + 1]) {
     case 'x': {
-      if (auto res = strtol(jump_label.substr(pos + 2).c_str(), nullptr, 16); !res) {
-        if (errno != 0) {
-          CompilerKit::Detail::print_error("Invalid hex number: " + jump_label, "CompilerKit");
-          throw std::runtime_error("invalid_hex");
-        }
+      auto res = strtol(jump_label.substr(pos + 2).c_str(), nullptr, 16);
+      res += kOrigin;
+
+      if (errno != 0) {
+        return false;
       }
 
-      CompilerKit::NumberCast8 num =
-          CompilerKit::NumberCast8(strtol(jump_label.substr(pos + 2).c_str(), nullptr, 16));
+      CompilerKit::NumberCast8 num = CompilerKit::NumberCast8(res);
 
       kAppBytes.push_back(num.number);
 
@@ -891,15 +886,14 @@ bool CompilerKit::EncoderAMD64::WriteNumber8(const std::size_t& pos, std::string
       return true;
     }
     case 'b': {
-      if (auto res = strtol(jump_label.substr(pos + 2).c_str(), nullptr, 2); !res) {
-        if (errno != 0) {
-          CompilerKit::Detail::print_error("Invalid binary number: " + jump_label, "CompilerKit");
-          throw std::runtime_error("invalid_bin");
-        }
+      auto res = strtol(jump_label.substr(pos + 2).c_str(), nullptr, 2);
+      res += kOrigin;
+
+      if (errno != 0) {
+        return false;
       }
 
-      CompilerKit::NumberCast8 num =
-          CompilerKit::NumberCast8(strtol(jump_label.substr(pos + 2).c_str(), nullptr, 2));
+      CompilerKit::NumberCast8 num = CompilerKit::NumberCast8(res);
 
       if (kVerbose) {
         kStdOut << "AssemblerAMD64: Found a base 2 number here: " << jump_label.substr(pos) << "\n";
@@ -910,15 +904,14 @@ bool CompilerKit::EncoderAMD64::WriteNumber8(const std::size_t& pos, std::string
       return true;
     }
     case 'o': {
-      if (auto res = strtol(jump_label.substr(pos + 2).c_str(), nullptr, 7); !res) {
-        if (errno != 0) {
-          CompilerKit::Detail::print_error("Invalid octal number: " + jump_label, "CompilerKit");
-          throw std::runtime_error("invalid_octal");
-        }
+      auto res = strtol(jump_label.substr(pos + 2).c_str(), nullptr, 7);
+      res += kOrigin;
+
+      if (errno != 0) {
+        return false;
       }
 
-      CompilerKit::NumberCast8 num =
-          CompilerKit::NumberCast8(strtol(jump_label.substr(pos + 2).c_str(), nullptr, 7));
+      CompilerKit::NumberCast8 num = CompilerKit::NumberCast8(res);
 
       if (kVerbose) {
         kStdOut << "AssemblerAMD64: Found a base 8 number here: " << jump_label.substr(pos) << "\n";
@@ -933,15 +926,14 @@ bool CompilerKit::EncoderAMD64::WriteNumber8(const std::size_t& pos, std::string
     }
   }
 
-  /* check for errno and stuff like that */
-  if (auto res = strtol(jump_label.substr(pos).c_str(), nullptr, 10); !res) {
-    if (errno != 0) {
-      return false;
-    }
+  auto res = strtol(jump_label.substr(pos).c_str(), nullptr, 10);
+  res += kOrigin;
+
+  if (errno != 0) {
+    return false;
   }
 
-  CompilerKit::NumberCast8 num =
-      CompilerKit::NumberCast8(strtol(jump_label.substr(pos).c_str(), nullptr, 10));
+  CompilerKit::NumberCast8 num = CompilerKit::NumberCast8(res);
 
   kAppBytes.push_back(num.number);
 
@@ -992,6 +984,194 @@ bool CompilerKit::EncoderAMD64::WriteLine(std::string line, std::string file) {
           if (substr.find(",") == std::string::npos) {
             CompilerKit::Detail::print_error("Syntax error: missing right operand.", "CompilerKit");
             throw std::runtime_error("syntax_err");
+          }
+
+          /// Handle [reg+n] or [reg-n] memory addressing for any register
+          if (substr.find('[') != std::string::npos) {
+            // Parse the memory operand
+            auto bracketStart = substr.find('[');
+            auto bracketEnd   = substr.find(']');
+
+            if (bracketStart == std::string::npos || bracketEnd == std::string::npos) {
+              CompilerKit::Detail::print_error("Syntax error: malformed memory operand.", file);
+              throw std::runtime_error("syntax_err");
+            }
+
+            std::string memOperand = substr.substr(bracketStart + 1, bracketEnd - bracketStart - 1);
+
+            // Register lookup table
+            struct RegInfo {
+              const char* name;
+              i64_byte_t  code;
+            };
+
+            RegInfo regs64[] = {{"rax", 0}, {"rcx", 1}, {"rdx", 2}, {"rbx", 3},
+                                {"rsp", 4}, {"rbp", 5}, {"rsi", 6}, {"rdi", 7}};
+
+            // Find base register in memory operand
+            i64_byte_t baseReg   = 0;
+            bool       foundBase = false;
+
+            for (auto& reg : regs64) {
+              if (memOperand.find(reg.name) != std::string::npos) {
+                baseReg   = reg.code;
+                foundBase = true;
+                break;
+              }
+            }
+
+            if (!foundBase) {
+              CompilerKit::Detail::print_error("Invalid base register in memory operand.", file);
+              throw std::runtime_error("invalid_base_reg");
+            }
+
+            bool isRbp = (baseReg == 5);
+            bool isRsp = (baseReg == 4);
+
+            // Parse displacement
+            int32_t displacement = 0;
+            bool    hasDisp      = false;
+
+            auto plusPos  = memOperand.find('+');
+            auto minusPos = memOperand.find('-');
+
+            if (plusPos != std::string::npos) {
+              std::string dispStr = memOperand.substr(plusPos + 1);
+              displacement        = static_cast<int32_t>(strtol(dispStr.c_str(), nullptr, 0));
+              hasDisp             = true;
+            } else if (minusPos != std::string::npos) {
+              std::string dispStr = memOperand.substr(minusPos + 1);
+              displacement        = -static_cast<int32_t>(strtol(dispStr.c_str(), nullptr, 0));
+              hasDisp             = true;
+            }
+
+            // Determine if destination is memory or register
+            auto commaPos     = substr.find(',');
+            bool destIsMemory = bracketStart < commaPos;
+
+            // Find register in the other operand
+            std::string otherOperand;
+            if (destIsMemory) {
+              otherOperand = substr.substr(commaPos + 1);
+            } else {
+              otherOperand = substr.substr(0, commaPos);
+            }
+
+            // Remove whitespace
+            while (!otherOperand.empty() && (otherOperand[0] == ' ' || otherOperand[0] == '\t')) {
+              otherOperand.erase(0, 1);
+            }
+
+            // Check for register in other operand
+            i64_byte_t regCode     = 0;
+            bool       foundReg    = false;
+            bool       isImmediate = false;
+            int64_t    immValue    = 0;
+
+            for (auto& reg : regs64) {
+              if (otherOperand.find(reg.name) != std::string::npos) {
+                regCode  = reg.code;
+                foundReg = true;
+                break;
+              }
+            }
+
+            if (!foundReg) {
+              // Check if it's an immediate value
+              std::string immStr = otherOperand;
+              while (!immStr.empty() && (immStr[0] == ' ' || immStr[0] == '\t')) {
+                immStr.erase(0, 1);
+              }
+              if (!immStr.empty() && (isdigit(immStr[0]) || immStr[0] == '-')) {
+                isImmediate = true;
+                immValue    = strtol(immStr.c_str(), nullptr, 0);
+              }
+            }
+
+            // Determine mod field based on displacement size
+            // mod=00: [reg] no displacement (except rbp which requires disp8)
+            // mod=01: [reg+disp8]
+            // mod=10: [reg+disp32]
+            i64_byte_t mod = 0;
+            if (!hasDisp && displacement == 0) {
+              // [rbp] requires disp8 with 0, can't use mod=00 (it means RIP-relative)
+              mod = isRbp ? 0x01 : 0x00;
+            } else if (displacement >= -128 && displacement <= 127) {
+              mod = 0x01;  // 8-bit displacement
+            } else {
+              mod = 0x02;  // 32-bit displacement
+            }
+
+            if (destIsMemory) {
+              if (foundReg) {
+                // mov [reg+n], reg
+                kAppBytes.emplace_back(0x48);  // REX.W
+                kAppBytes.emplace_back(0x89);  // MOV r/m64, r64
+
+                // ModR/M: mod | reg << 3 | r/m
+                i64_byte_t modrm = (mod << 6) | (regCode << 3) | baseReg;
+                kAppBytes.emplace_back(modrm);
+
+                // RSP needs SIB byte
+                if (isRsp) {
+                  kAppBytes.emplace_back(0x24);  // SIB: scale=0, index=4(none), base=4(rsp)
+                }
+              } else if (isImmediate) {
+                // mov qword [reg+n], imm32
+                kAppBytes.emplace_back(0x48);  // REX.W
+                kAppBytes.emplace_back(0xC7);  // MOV r/m64, imm32
+
+                // ModR/M: mod | 0 << 3 | r/m (reg field is 0 for this opcode)
+                i64_byte_t modrm = (mod << 6) | (0 << 3) | baseReg;
+                kAppBytes.emplace_back(modrm);
+
+                // RSP needs SIB byte
+                if (isRsp) {
+                  kAppBytes.emplace_back(0x24);
+                }
+              } else {
+                CompilerKit::Detail::print_error("Invalid source operand for mov to memory.", file);
+                throw std::runtime_error("invalid_operand");
+              }
+            } else {
+              // mov reg, [reg+n]
+              kAppBytes.emplace_back(0x48);  // REX.W
+              kAppBytes.emplace_back(0x8B);  // MOV r64, r/m64
+
+              // ModR/M: mod | reg << 3 | r/m
+              i64_byte_t modrm = (mod << 6) | (regCode << 3) | baseReg;
+              kAppBytes.emplace_back(modrm);
+
+              // RSP needs SIB byte
+              if (isRsp) {
+                kAppBytes.emplace_back(0x24);
+              }
+            }
+
+            // Write displacement
+            if (mod == 0x01) {
+              // 8-bit displacement
+              kAppBytes.emplace_back(static_cast<i64_byte_t>(displacement & 0xFF));
+            } else if (mod == 0x02) {
+              // 32-bit displacement
+              kAppBytes.emplace_back(static_cast<i64_byte_t>(displacement & 0xFF));
+              kAppBytes.emplace_back(static_cast<i64_byte_t>((displacement >> 8) & 0xFF));
+              kAppBytes.emplace_back(static_cast<i64_byte_t>((displacement >> 16) & 0xFF));
+              kAppBytes.emplace_back(static_cast<i64_byte_t>((displacement >> 24) & 0xFF));
+            } else if (isRbp) {
+              // rbp with mod=00 still needs disp8=0
+              kAppBytes.emplace_back(0x00);
+            }
+
+            // Write immediate if present
+            if (destIsMemory && isImmediate) {
+              kAppBytes.emplace_back(static_cast<i64_byte_t>(immValue & 0xFF));
+              kAppBytes.emplace_back(static_cast<i64_byte_t>((immValue >> 8) & 0xFF));
+              kAppBytes.emplace_back(static_cast<i64_byte_t>((immValue >> 16) & 0xFF));
+              kAppBytes.emplace_back(static_cast<i64_byte_t>((immValue >> 24) & 0xFF));
+            }
+
+            break;
           }
 
           bool onlyOneReg = true;
@@ -1140,6 +1320,252 @@ bool CompilerKit::EncoderAMD64::WriteLine(std::string line, std::string file) {
           auto modrm = (0x3 << 6 | currentRegList[1].fModRM << 3 | currentRegList[0].fModRM);
 
           kAppBytes.emplace_back(modrm);
+
+          break;
+        }
+
+        /// Compare instruction handler.
+        if (name == "cmp") {
+          std::string substr = line.substr(line.find(name) + name.size());
+
+          if (substr.find(",") == std::string::npos) {
+            CompilerKit::Detail::print_error("Syntax error: missing right operand.", "CompilerKit");
+            throw std::runtime_error("syntax_err");
+          }
+
+          // Register lookup table
+          struct RegInfo {
+            const char* name;
+            i64_byte_t  code;
+          };
+
+          RegInfo regs64[] = {{"rax", 0}, {"rcx", 1}, {"rdx", 2}, {"rbx", 3},
+                              {"rsp", 4}, {"rbp", 5}, {"rsi", 6}, {"rdi", 7}};
+
+          /// Handle [reg+n] memory addressing
+          if (substr.find('[') != std::string::npos) {
+            auto bracketStart = substr.find('[');
+            auto bracketEnd   = substr.find(']');
+
+            if (bracketEnd == std::string::npos) {
+              CompilerKit::Detail::print_error("Syntax error: malformed memory operand.", file);
+              throw std::runtime_error("syntax_err");
+            }
+
+            std::string memOperand = substr.substr(bracketStart + 1, bracketEnd - bracketStart - 1);
+
+            // Find base register
+            i64_byte_t baseReg   = 0;
+            bool       foundBase = false;
+
+            for (auto& reg : regs64) {
+              if (memOperand.find(reg.name) != std::string::npos) {
+                baseReg   = reg.code;
+                foundBase = true;
+                break;
+              }
+            }
+
+            if (!foundBase) {
+              CompilerKit::Detail::print_error("Invalid base register in memory operand.", file);
+              throw std::runtime_error("invalid_base_reg");
+            }
+
+            bool isRbp = (baseReg == 5);
+            bool isRsp = (baseReg == 4);
+
+            // Parse displacement
+            int32_t displacement = 0;
+            bool    hasDisp      = false;
+
+            auto plusPos  = memOperand.find('+');
+            auto minusPos = memOperand.find('-');
+
+            if (plusPos != std::string::npos) {
+              std::string dispStr = memOperand.substr(plusPos + 1);
+              displacement        = static_cast<int32_t>(strtol(dispStr.c_str(), nullptr, 0));
+              hasDisp             = true;
+            } else if (minusPos != std::string::npos) {
+              std::string dispStr = memOperand.substr(minusPos + 1);
+              displacement        = -static_cast<int32_t>(strtol(dispStr.c_str(), nullptr, 0));
+              hasDisp             = true;
+            }
+
+            auto commaPos     = substr.find(',');
+            bool destIsMemory = bracketStart < commaPos;
+
+            std::string otherOperand;
+            if (destIsMemory) {
+              otherOperand = substr.substr(commaPos + 1);
+            } else {
+              otherOperand = substr.substr(0, commaPos);
+            }
+
+            while (!otherOperand.empty() && (otherOperand[0] == ' ' || otherOperand[0] == '\t')) {
+              otherOperand.erase(0, 1);
+            }
+
+            i64_byte_t regCode     = 0;
+            bool       foundReg    = false;
+            bool       isImmediate = false;
+            int64_t    immValue    = 0;
+
+            for (auto& reg : regs64) {
+              if (otherOperand.find(reg.name) != std::string::npos) {
+                regCode  = reg.code;
+                foundReg = true;
+                break;
+              }
+            }
+
+            if (!foundReg) {
+              std::string immStr = otherOperand;
+              while (!immStr.empty() && (immStr[0] == ' ' || immStr[0] == '\t')) {
+                immStr.erase(0, 1);
+              }
+              if (!immStr.empty() && (isdigit(immStr[0]) || immStr[0] == '-')) {
+                isImmediate = true;
+                immValue    = strtol(immStr.c_str(), nullptr, 0);
+              }
+            }
+
+            // Determine mod field
+            i64_byte_t mod = 0;
+            if (!hasDisp && displacement == 0) {
+              mod = isRbp ? 0x01 : 0x00;
+            } else if (displacement >= -128 && displacement <= 127) {
+              mod = 0x01;
+            } else {
+              mod = 0x02;
+            }
+
+            if (destIsMemory) {
+              if (foundReg) {
+                // cmp [reg+n], reg
+                kAppBytes.emplace_back(0x48);  // REX.W
+                kAppBytes.emplace_back(0x39);  // CMP r/m64, r64
+
+                i64_byte_t modrm = (mod << 6) | (regCode << 3) | baseReg;
+                kAppBytes.emplace_back(modrm);
+
+                if (isRsp) {
+                  kAppBytes.emplace_back(0x24);
+                }
+              } else if (isImmediate) {
+                // cmp qword [reg+n], imm32
+                kAppBytes.emplace_back(0x48);  // REX.W
+                kAppBytes.emplace_back(0x81);  // CMP r/m64, imm32
+
+                // reg field = 7 for CMP
+                i64_byte_t modrm = (mod << 6) | (7 << 3) | baseReg;
+                kAppBytes.emplace_back(modrm);
+
+                if (isRsp) {
+                  kAppBytes.emplace_back(0x24);
+                }
+              }
+            } else {
+              // cmp reg, [reg+n]
+              kAppBytes.emplace_back(0x48);  // REX.W
+              kAppBytes.emplace_back(0x3B);  // CMP r64, r/m64
+
+              i64_byte_t modrm = (mod << 6) | (regCode << 3) | baseReg;
+              kAppBytes.emplace_back(modrm);
+
+              if (isRsp) {
+                kAppBytes.emplace_back(0x24);
+              }
+            }
+
+            // Write displacement
+            if (mod == 0x01) {
+              kAppBytes.emplace_back(static_cast<i64_byte_t>(displacement & 0xFF));
+            } else if (mod == 0x02) {
+              kAppBytes.emplace_back(static_cast<i64_byte_t>(displacement & 0xFF));
+              kAppBytes.emplace_back(static_cast<i64_byte_t>((displacement >> 8) & 0xFF));
+              kAppBytes.emplace_back(static_cast<i64_byte_t>((displacement >> 16) & 0xFF));
+              kAppBytes.emplace_back(static_cast<i64_byte_t>((displacement >> 24) & 0xFF));
+            } else if (isRbp) {
+              kAppBytes.emplace_back(0x00);
+            }
+
+            // Write immediate
+            if (destIsMemory && isImmediate) {
+              kAppBytes.emplace_back(static_cast<i64_byte_t>(immValue & 0xFF));
+              kAppBytes.emplace_back(static_cast<i64_byte_t>((immValue >> 8) & 0xFF));
+              kAppBytes.emplace_back(static_cast<i64_byte_t>((immValue >> 16) & 0xFF));
+              kAppBytes.emplace_back(static_cast<i64_byte_t>((immValue >> 24) & 0xFF));
+            }
+
+            break;
+          }
+
+          // Handle register-to-register and register-to-immediate
+          i64_byte_t reg1Code    = 0;
+          i64_byte_t reg2Code    = 0;
+          bool       foundReg1   = false;
+          bool       foundReg2   = false;
+          bool       isImmediate = false;
+          int64_t    immValue    = 0;
+
+          auto        commaPos     = substr.find(',');
+          std::string leftOperand  = substr.substr(0, commaPos);
+          std::string rightOperand = substr.substr(commaPos + 1);
+
+          while (!leftOperand.empty() && (leftOperand[0] == ' ' || leftOperand[0] == '\t')) {
+            leftOperand.erase(0, 1);
+          }
+          while (!rightOperand.empty() && (rightOperand[0] == ' ' || rightOperand[0] == '\t')) {
+            rightOperand.erase(0, 1);
+          }
+
+          for (auto& reg : regs64) {
+            if (leftOperand.find(reg.name) != std::string::npos) {
+              reg1Code  = reg.code;
+              foundReg1 = true;
+              break;
+            }
+          }
+
+          for (auto& reg : regs64) {
+            if (rightOperand.find(reg.name) != std::string::npos) {
+              reg2Code  = reg.code;
+              foundReg2 = true;
+              break;
+            }
+          }
+
+          if (!foundReg2) {
+            if (!rightOperand.empty() && (isdigit(rightOperand[0]) || rightOperand[0] == '-')) {
+              isImmediate = true;
+              immValue    = strtol(rightOperand.c_str(), nullptr, 0);
+            }
+          }
+
+          if (foundReg1 && foundReg2) {
+            // cmp reg1, reg2
+            kAppBytes.emplace_back(0x48);  // REX.W
+            kAppBytes.emplace_back(0x39);  // CMP r/m64, r64
+
+            i64_byte_t modrm = (0x3 << 6) | (reg2Code << 3) | reg1Code;
+            kAppBytes.emplace_back(modrm);
+          } else if (foundReg1 && isImmediate) {
+            // cmp reg, imm
+            kAppBytes.emplace_back(0x48);  // REX.W
+            kAppBytes.emplace_back(0x81);  // CMP r/m64, imm32
+
+            // reg field = 7 for CMP
+            i64_byte_t modrm = (0x3 << 6) | (7 << 3) | reg1Code;
+            kAppBytes.emplace_back(modrm);
+
+            kAppBytes.emplace_back(static_cast<i64_byte_t>(immValue & 0xFF));
+            kAppBytes.emplace_back(static_cast<i64_byte_t>((immValue >> 8) & 0xFF));
+            kAppBytes.emplace_back(static_cast<i64_byte_t>((immValue >> 16) & 0xFF));
+            kAppBytes.emplace_back(static_cast<i64_byte_t>((immValue >> 24) & 0xFF));
+          } else {
+            CompilerKit::Detail::print_error("Invalid operands for cmp instruction.", file);
+            throw std::runtime_error("invalid_cmp_operands");
+          }
 
           break;
         }

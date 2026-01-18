@@ -345,33 +345,59 @@ CompilerKit::SyntaxLeafList::SyntaxLeaf CompilerFrontendNectarAMD64::Compile(
           left.erase(left.find(" "), 1);
         }
 
-        auto right = left.substr(left.find_first_of("==") + 2);
+        std::vector<std::pair<CompilerKit::STLString, CompilerKit::STLString>> operators = {
+            {"==", "je"}, {"!=", "jne"}, {">=", "jge"}, {"<=", "jle"}, {">", "jg"}, {"<", "jl"},
+        };
 
-        auto tmp = left.substr(0, left.find_first_of("=="));
-        left     = std::move(tmp);
+        for (auto& op : operators) {
+          if (left.find(op.first) == CompilerKit::STLString::npos) continue;
 
-        syntax_tree.fUserValue +=
-            "mov rdi, " +
-            (isnumber(left[0])
-                 ? left
-                 : (nectar_get_variable_ref(left).empty() ? left : nectar_get_variable_ref(left))) +
-            "\n";
+          auto right = left.substr(left.find(op.first) + op.first.size());
 
-        syntax_tree.fUserValue += "mov rsi, " +
-                                  (isnumber(right[0]) ? right
-                                                      : (nectar_get_variable_ref(right).empty()
-                                                             ? right
-                                                             : nectar_get_variable_ref(right))) +
-                                  "\n";
+          auto tmp = left.substr(0, left.find(op.first));
+          left     = std::move(tmp);
 
-        syntax_tree.fUserValue += "cmp rdi, rsi\n";
+          if (!nectar_get_variable_ref(left).empty())
+            syntax_tree.fUserValue += "mov rdi, " +
+                                      (isnumber(left[0]) ? left
+                                                         : (nectar_get_variable_ref(left).empty()
+                                                                ? left
+                                                                : nectar_get_variable_ref(left))) +
+                                      "\n";
+          else
+            syntax_tree.fUserValue += "mov rdi, " +
+                                      (isnumber(left[0]) ? left
+                                                         : (nectar_get_variable_ref(left).empty()
+                                                                ? left
+                                                                : nectar_get_variable_ref(left))) +
+                                      "\n";
 
-        syntax_tree.fUserValue +=
-            "jne __ret_" + std::to_string(kOrigin) + "_" + kCurrentFunctionName + "\n";
+          if (!nectar_get_variable_ref(left).empty())
+            syntax_tree.fUserValue +=
+                "lea rsi, " +
+                (isnumber(right[0])
+                     ? right
+                     : (nectar_get_variable_ref(right).empty() ? right
+                                                               : nectar_get_variable_ref(right))) +
+                "\n";
+          else
+            syntax_tree.fUserValue +=
+                "mov rsi, " +
+                (isnumber(right[0])
+                     ? right
+                     : (nectar_get_variable_ref(right).empty() ? right
+                                                               : nectar_get_variable_ref(right))) +
+                "\n";
 
-        kCurrentFunctionName = std::to_string(kOrigin) + "_" + kCurrentFunctionName;
+          syntax_tree.fUserValue += "cmp rdi, rsi\n";
 
-        ++kOrigin;
+          syntax_tree.fUserValue +=
+              op.second + " __ret_" + std::to_string(kOrigin) + "_" + kCurrentFunctionName + "\n";
+
+          kCurrentFunctionName = std::to_string(kOrigin) + "_" + kCurrentFunctionName;
+
+          ++kOrigin;
+        }
 
         break;
       }
@@ -776,8 +802,12 @@ CompilerKit::SyntaxLeafList::SyntaxLeaf CompilerFrontendNectarAMD64::Compile(
             kExternalSymbols.insert(mangled + valueOfVar);
 
             if (!kNasmOutput) {
-              syntax_tree.fUserValue += instr + nectar_get_variable_ref(varName) + ", __thiscall " +
-                                        mangled + valueOfVar + "\n";
+              if (valueOfVar.ends_with(")"))
+                syntax_tree.fUserValue += instr + nectar_get_variable_ref(varName) +
+                                          ", __thiscall " + mangled + valueOfVar + "\n";
+              else
+                syntax_tree.fUserValue +=
+                    instr + nectar_get_variable_ref(varName) + ", " + mangled + valueOfVar + "\n";
             } else {
               // NASM: Generate call and move result
               syntax_tree.fUserValue += "call " + mangled + valueOfVar + "\n";
@@ -816,7 +846,7 @@ CompilerKit::SyntaxLeafList::SyntaxLeaf CompilerFrontendNectarAMD64::Compile(
 
           auto ref = nectar_get_variable_ref(subText);
 
-          if (ref.empty() == false) syntax_tree.fUserValue += "mov rax, " + ref + "\n";
+          if (ref.empty() == false) syntax_tree.fUserValue += "lea rax, " + ref + "\n";
 
           if (subText.starts_with("'") || isnumber(subText[0]))
             syntax_tree.fUserValue += "mov rax, " + subText + "\n";
@@ -841,7 +871,8 @@ CompilerKit::SyntaxLeafList::SyntaxLeaf CompilerFrontendNectarAMD64::Compile(
         }
 
         if (!kNasmOutput)
-          syntax_tree.fUserValue += "public_segment .code64 __ret_" + kCurrentFunctionName + "\n";
+          syntax_tree.fUserValue +=
+              "public_segment .code64 __ret_" + kCurrentFunctionName + "\nnop\n";
         else
           syntax_tree.fUserValue += "__ret_" + kCurrentFunctionName + ":\n";
 
@@ -1033,12 +1064,12 @@ static CompilerKit::STLString nectar_mangle_name(const CompilerKit::STLString& i
 
 /// \brief Generate function prologue
 static CompilerKit::STLString nectar_generate_prologue() {
-  return "push rbp\nmov rbp, rsp\n";
+  return "";
 }
 
 /// \brief Generate function epilogue
 static CompilerKit::STLString nectar_generate_epilogue() {
-  return "mov rsp, rbp\npop rbp\n";
+  return "";
 }
 
 /// \brief Allocate a variable on the stack
@@ -1107,7 +1138,7 @@ static CompilerKit::STLString nectar_get_variable_ref(const CompilerKit::STLStri
     return varInfo->fRegister;
   } else {
     // Stack or spilled
-    return "qword [rbp" + std::to_string(varInfo->fStackOffset) + "]";
+    return "qword [rbp+" + std::to_string(-varInfo->fStackOffset) + "]";
   }
 }
 
@@ -1188,10 +1219,10 @@ static CompilerKit::STLString nectar_spill_lru_variable() {
 
   /// if impl init
   if (!lruVar->fRegister.ends_with("{}"))
-    spillCode =
-        "mov qword [rbp" + std::to_string(kContext.fStackOffset) + "], " + lruVar->fRegister + "\n";
+    spillCode = "mov qword [rbp+" + std::to_string(-kContext.fStackOffset) + "], " +
+                lruVar->fRegister + "\n";
   else
-    spillCode = "mov qword [rbp" + std::to_string(kContext.fStackOffset) + "], rax\n";
+    spillCode = "mov qword [rbp+" + std::to_string(-kContext.fStackOffset) + "], rax\n";
 
   // Update variable info
   lruVar->fLocation    = VarLocation::kStackSpill;
@@ -1255,7 +1286,7 @@ static CompilerKit::STLString nectar_generate_constructor_call(
   nectar_pop_scope();
 
   CompilerKit::STLString code;
-  code += "lea r8, [rbp" + std::to_string(offset) + "]\n";
+  code += "lea r8, [rbp+" + std::to_string(offset) + "]\n";
   code += "call " + ctor_mangled + "\n";
   return code;
 }
@@ -1274,7 +1305,7 @@ static CompilerKit::STLString nectar_generate_destructor_call(
 
   CompilerKit::STLString code;
   if (varInfo->fLocation == VarLocation::kStack || varInfo->fLocation == VarLocation::kStackSpill) {
-    code += "lea r8, [rbp" + std::to_string(varInfo->fStackOffset) + "]\n";
+    code += "lea r8, [rbp+" + std::to_string(varInfo->fStackOffset) + "]\n";
   } else {
     code += "mov r8, " + varInfo->fRegister + "\n";
   }

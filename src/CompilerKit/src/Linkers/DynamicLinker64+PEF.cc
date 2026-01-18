@@ -202,8 +202,8 @@ NECTAR_MODULE(DynamicLinker64PEF) {
   pef_container.Count    = 0UL;
   pef_container.Kind     = is_executable ? CompilerKit::kPefKindExec : CompilerKit::kPefKindDylib;
   pef_container.SubCpu   = kSubArch;
-  pef_container.Linker   = kLinkerId;  // Amlal El Mahrouss Linker
-  pef_container.Abi      = static_cast<Int32>(kAbi);       // Multi-Processor UX ABI
+  pef_container.Linker   = kLinkerId;                 // Nectar Linker
+  pef_container.Abi      = static_cast<Int32>(kAbi);  // Multi-Processor UX ABI
   pef_container.Magic[0] = kPefMagic[kFatBinaryEnable ? 2 : 0];
   pef_container.Magic[1] = kPefMagic[1];
   pef_container.Magic[2] = kPefMagic[kFatBinaryEnable ? 0 : 2];
@@ -552,8 +552,8 @@ NECTAR_MODULE(DynamicLinker64PEF) {
   // And check for any duplications
   for (size_t commandHeaderIndex = 0UL; commandHeaderIndex < command_headers.size();
        ++commandHeaderIndex) {
-    if (CompilerKit::STLString(command_headers[commandHeaderIndex].Name).find(kLinkerDefineSymbol) !=
-            CompilerKit::STLString::npos &&
+    if (CompilerKit::STLString(command_headers[commandHeaderIndex].Name)
+                .find(kLinkerDefineSymbol) != CompilerKit::STLString::npos &&
         CompilerKit::STLString(command_headers[commandHeaderIndex].Name).find(kLinkerDynamicSym) ==
             CompilerKit::STLString::npos) {
       // ignore :UndefinedSymbol: headers, they do not contain code.
