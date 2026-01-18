@@ -355,10 +355,18 @@ CompilerKit::SyntaxLeafList::SyntaxLeaf CompilerFrontendNectarAMD64::Compile(
         left     = std::move(tmp);
 
         syntax_tree.fUserValue +=
-            "mov rdi, " + (isnumber(left[0]) ? left : (nectar_get_variable_ref(left).empty() ? left : nectar_get_variable_ref(left))) + "\n";
+            "mov rdi, " +
+            (isnumber(left[0])
+                 ? left
+                 : (nectar_get_variable_ref(left).empty() ? left : nectar_get_variable_ref(left))) +
+            "\n";
 
-        syntax_tree.fUserValue +=
-            "mov rsi, " + (isnumber(right[0]) ? right : (nectar_get_variable_ref(right).empty() ? right : nectar_get_variable_ref(right))) + "\n";
+        syntax_tree.fUserValue += "mov rsi, " +
+                                  (isnumber(right[0]) ? right
+                                                      : (nectar_get_variable_ref(right).empty()
+                                                             ? right
+                                                             : nectar_get_variable_ref(right))) +
+                                  "\n";
 
         syntax_tree.fUserValue += "cmp rdi, rsi\n";
 

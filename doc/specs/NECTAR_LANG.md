@@ -8,8 +8,8 @@
 
 - ABI: PEF based.
 - Typing System: Weak.
-- Output: NeKernel Assembler.
-- Platforms: POSIX, NeKernel, Windows.
+- Output: NeKernel Assembler/Netwide Assembler.
+- Platforms: OS X, NeKernel.
 
 ===================================
 

@@ -21,9 +21,9 @@ namespace MachO {
   constexpr const char* kSegmentPageZero = "__PAGEZERO";
 
   /// @brief Mach-O section names
-  constexpr const char* kSectionText = "__text";
-  constexpr const char* kSectionData = "__data";
-  constexpr const char* kSectionBss  = "__bss";
+  constexpr const char* kSectionText     = "__text";
+  constexpr const char* kSectionData     = "__data";
+  constexpr const char* kSectionPageZero = "__pagezero";
 
   /// @brief Default base address for Mach-O executables
   constexpr uint64_t kDefaultBaseAddress = 0x100000000ULL;
