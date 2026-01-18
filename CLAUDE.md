@@ -241,6 +241,7 @@ Example JSON configuration:
 ## Project-Specific Context
 
 ### Output Formats
+
 - **PEF (Preferred Executable Format):** Custom executable format for NeKernel
   - Extensions: `.exec` (executable), `.dylib` (shared), `.sys` (driver)
   - Sections: `.code64`, `.data64`, `.zero64` (and 128-bit variants)
@@ -263,6 +264,21 @@ Example JSON configuration:
 **Modifying linker:**
 - Implementation: `/src/CompilerKit/src/Linkers/DynamicLinker64+PEF.cc`
 - Format specs: `/include/CompilerKit/PEF.h` and `/include/CompilerKit/AE.h`
+
+### Tooling Conventions
+
+**Options Flags**:
+- Shall start with `-f`.
+
+**Warnings Flags**:
+- Shall start with `-W`.
+
+**Drivers Flag**:
+- Shall start with `--<drv-name>-`. e.g `--nec-dialect`.
+
+## Command-Line Tools
+
+They are not meant to be used directly. One should use or write its own frontend for that regard. Similar to how mainstream C++ compilers do.
 
 ## Dependencies
 
