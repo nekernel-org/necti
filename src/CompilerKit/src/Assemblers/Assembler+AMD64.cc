@@ -297,7 +297,7 @@ NECTAR_MODULE(AssemblerMainAMD64) {
       if (byte == 0) continue;
 
       if (byte == 0xFF) {
-        byte = 0;
+        byte = 0x00;
       }
 
       file_ptr_out << reinterpret_cast<const char*>(&byte)[0];
@@ -580,7 +580,7 @@ bool CompilerKit::EncoderAMD64::WriteNumber(const std::size_t& pos, std::string&
           CompilerKit::NumberCast64(strtol(jump_label.substr(pos + 2).c_str(), nullptr, 16));
 
       for (auto& i : num.number) {
-        if (i == 0) i = 0xFF;
+        if (i == 0) continue;
 
         kAppBytes.push_back(i);
       }
@@ -608,7 +608,7 @@ bool CompilerKit::EncoderAMD64::WriteNumber(const std::size_t& pos, std::string&
       }
 
       for (char& i : num.number) {
-        if (i == 0) i = 0xFF;
+        if (i == 0) continue;
 
         kAppBytes.push_back(i);
       }
@@ -631,7 +631,7 @@ bool CompilerKit::EncoderAMD64::WriteNumber(const std::size_t& pos, std::string&
       }
 
       for (char& i : num.number) {
-        if (i == 0) i = 0xFF;
+        if (i == 0) continue;
 
         kAppBytes.push_back(i);
       }
@@ -654,7 +654,7 @@ bool CompilerKit::EncoderAMD64::WriteNumber(const std::size_t& pos, std::string&
       CompilerKit::NumberCast64(strtol(jump_label.substr(pos).c_str(), nullptr, 10));
 
   for (char& i : num.number) {
-    if (i == 0) i = 0xFF;
+    if (i == 0) continue;
 
     kAppBytes.push_back(i);
   }
@@ -681,7 +681,7 @@ bool CompilerKit::EncoderAMD64::WriteNumber32(const std::size_t& pos, std::strin
       CompilerKit::NumberCast32 num = CompilerKit::NumberCast32(res);
 
       for (char& i : num.number) {
-        if (i == 0) i = 0xFF;
+        if (i == 0) continue;
 
         kAppBytes.push_back(i);
       }
@@ -708,7 +708,7 @@ bool CompilerKit::EncoderAMD64::WriteNumber32(const std::size_t& pos, std::strin
       }
 
       for (char& i : num.number) {
-        if (i == 0) i = 0xFF;
+        if (i == 0) continue;
 
         kAppBytes.push_back(i);
       }
@@ -730,7 +730,7 @@ bool CompilerKit::EncoderAMD64::WriteNumber32(const std::size_t& pos, std::strin
       }
 
       for (char& i : num.number) {
-        if (i == 0) i = 0xFF;
+        if (i == 0) continue;
 
         kAppBytes.push_back(i);
       }
@@ -752,7 +752,7 @@ bool CompilerKit::EncoderAMD64::WriteNumber32(const std::size_t& pos, std::strin
   CompilerKit::NumberCast32 num = CompilerKit::NumberCast32(res);
 
   for (char& i : num.number) {
-    if (i == 0) i = 0xFF;
+    if (i == 0) continue;
 
     kAppBytes.push_back(i);
   }
@@ -780,7 +780,7 @@ bool CompilerKit::EncoderAMD64::WriteNumber16(const std::size_t& pos, std::strin
           CompilerKit::NumberCast16(strtol(jump_label.substr(pos + 2).c_str(), nullptr, 16));
 
       for (char& i : num.number) {
-        if (i == 0) i = 0xFF;
+        if (i == 0) continue;
 
         kAppBytes.push_back(i);
       }
@@ -808,7 +808,7 @@ bool CompilerKit::EncoderAMD64::WriteNumber16(const std::size_t& pos, std::strin
       }
 
       for (char& i : num.number) {
-        if (i == 0) i = 0xFF;
+        if (i == 0) continue;
 
         kAppBytes.push_back(i);
       }
@@ -831,7 +831,7 @@ bool CompilerKit::EncoderAMD64::WriteNumber16(const std::size_t& pos, std::strin
       }
 
       for (char& i : num.number) {
-        if (i == 0) i = 0xFF;
+        if (i == 0) continue;
 
         kAppBytes.push_back(i);
       }
@@ -854,7 +854,7 @@ bool CompilerKit::EncoderAMD64::WriteNumber16(const std::size_t& pos, std::strin
       CompilerKit::NumberCast16(strtol(jump_label.substr(pos).c_str(), nullptr, 10));
 
   for (char& i : num.number) {
-    if (i == 0) i = 0xFF;
+    if (i == 0) continue;
 
     kAppBytes.push_back(i);
   }
@@ -1194,6 +1194,20 @@ bool CompilerKit::EncoderAMD64::WriteLine(std::string line, std::string file) {
           }
 
           if (!found) {
+            if (isnumber(substr[0])) {
+              kAppBytes.emplace_back(name == "push" ? 0x68 : 0x8F);
+
+              if (kRegisterBitWidth == 64) {
+                this->WriteNumber(0, substr);
+              } else if (kRegisterBitWidth == 32) {
+                this->WriteNumber32(0, substr);
+              } else if (kRegisterBitWidth == 16) {
+                this->WriteNumber16(0, substr);
+              }
+
+              break;
+            }
+
             CompilerKit::Detail::print_error("Invalid operand for " + name + ": " + substr,
                                              "CompilerKit");
             throw std::runtime_error("invalid_push_pop_operand");
@@ -1211,13 +1225,17 @@ bool CompilerKit::EncoderAMD64::WriteLine(std::string line, std::string file) {
       } else if (name == "jmp" || name == "call") {
         kAppBytes.emplace_back(opcodeAMD64.fOpcode);
 
-        this->WriteNumber32(line.find(name) + name.size() + 1, line);
-
+        if (kRegisterBitWidth == 64) {
+          this->WriteNumber(line.find(name) + name.size() + 1, line);
+        } else {
+          this->WriteNumber32(line.find(name) + name.size() + 1, line);
+        }
         break;
-      } else if (name == "syscall") {
+      }
+
+      if (name == "syscall") {
         kAppBytes.emplace_back(opcodeAMD64.fOpcode);
         kAppBytes.emplace_back(0x05);
-
         break;
       } else {
         kAppBytes.emplace_back(opcodeAMD64.fOpcode);
