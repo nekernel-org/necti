@@ -7,7 +7,6 @@
 #define NECTAR_COMPILERKIT_PEF_H
 
 #include <CompilerKit/Detail/Config.h>
-#include <fstream>
 
 // @file PEF.h
 // @brief Preferred Executable Format

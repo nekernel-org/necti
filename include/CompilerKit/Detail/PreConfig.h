@@ -49,6 +49,7 @@
 #include <unistd.h>
 #include <cassert>
 #include <string>
+#include <fstream>
 
 #define ToString(X) Stringify(X)
 #define Stringify(X) #X
