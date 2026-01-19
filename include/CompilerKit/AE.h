@@ -3,17 +3,17 @@
 // file LICENSE or copy at http://www.apache.org/licenses/LICENSE-2.0)
 // Official repository: https://github.com/nekernel-org/nectar
 
-#ifndef _NECTAR_AE_H_
-#define _NECTAR_AE_H_
+#ifndef NECTAR_COMPILERKIT_AE_H
+#define NECTAR_COMPILERKIT_AE_H_
 
 #include <CompilerKit/Detail/Config.h>
 #include <fstream>
 
-#define kAEIdentVersion (0x0122)
+#define kAEIdentVersion (0x0123)
 
-#define kAEMag0 'A'
+#define kAEMag0 'H'
 #define kAEMag1 'E'
-#define kAEMag2 'F'
+#define kAEMag2 'Y'
 
 #define kAESymbolLen (256)
 #define kAEPad (8)
@@ -28,6 +28,7 @@
 // You can also relocate at runtime but that's up to the operating system loader.
 
 namespace CompilerKit {
+
 // @brief Advanced Executable Header
 // One thing to keep in mind.
 // This object format, is reloctable.
@@ -64,15 +65,14 @@ enum {
 
 // provide operator<< for AE
 
+namespace Operators {
 inline std::ofstream& operator<<(std::ofstream& fp, CompilerKit::AEHeader& container) {
   fp.write((char*) &container, sizeof(CompilerKit::AEHeader));
-
   return fp;
 }
 
 inline std::ofstream& operator<<(std::ofstream& fp, CompilerKit::AERecordHeader& container) {
   fp.write((char*) &container, sizeof(CompilerKit::AERecordHeader));
-
   return fp;
 }
 
@@ -85,6 +85,11 @@ inline std::ifstream& operator>>(std::ifstream& fp, CompilerKit::AERecordHeader&
   fp.read((char*) &container, sizeof(CompilerKit::AERecordHeader));
   return fp;
 }
+}  // namespace Operators
+
+#ifndef __CK_NO_USING_OPERATORS__
+using namespace Operators;
+#endif
 
 namespace CompilerKit::Utils {
 /**
@@ -128,6 +133,7 @@ class AEReadableProtocol final {
     return reinterpret_cast<TypeClass*>(raw);
   }
 };
+
 }  // namespace CompilerKit::Utils
 
-#endif /* ifndef _NECTAR_AE_H_ */
+#endif /* ifndef NECTAR_COMPILERKIT_AE_H */

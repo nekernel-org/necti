@@ -256,7 +256,7 @@ static bool                   kCurrentIfCondition{false};
 /// detail namespaces
 
 const char* CompilerFrontendNectarAMD64::Language() {
-  return "Nectar";
+  return "NeKernel Nectar";
 }
 
 static std::uintptr_t                                                 kOrigin = kPefBaseOrigin;

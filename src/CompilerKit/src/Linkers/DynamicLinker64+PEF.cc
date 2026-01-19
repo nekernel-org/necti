@@ -435,7 +435,7 @@ NECTAR_MODULE(DynamicLinker64PEF) {
     if (kVerbose)
       kConsoleOut << "Undefined entrypoint: " << kLinkerStart
                   << ", you may have forget to link "
-                     "against the C++ runtime library.\n";
+                     "against your runtime library.\n";
 
     kConsoleOut << "Undefined entrypoint " << kLinkerStart << " for executable: " << kOutput
                 << "\n";
@@ -587,7 +587,7 @@ NECTAR_MODULE(DynamicLinker64PEF) {
 
     if (kVerbose) {
       kConsoleOut << "Command name: " << name << "\n";
-      kConsoleOut << "VirtualAddress of command content: "
+      kConsoleOut << "Virtual address of command content: "
                   << command_headers[commandHeaderIndex].Offset << "\n";
     }
 
