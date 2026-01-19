@@ -249,8 +249,9 @@ static std::vector<CompilerKit::STLString> kRegisterConventionCallList = {
 };
 
 static std::size_t            kFunctionEmbedLevel{};
-static CompilerKit::STLString kCurrentFunctionName{};
+static CompilerKit::STLString kCurrentIfSymbol{};
 static CompilerKit::STLString kCurrentReturnAddress{};
+static bool                   kCurrentIfCondition{false};
 
 /// detail namespaces
 
@@ -328,6 +329,8 @@ CompilerKit::SyntaxLeafList::SyntaxLeaf CompilerFrontendNectarAMD64::Compile(
         break;
       }
       case CompilerKit::KeywordKind::kKeywordKindIf: {
+        kCurrentIfCondition = true;
+
         std::size_t keywordPos = text.find(keyword.first.fKeywordName);
         std::size_t openParen  = text.find("(", keywordPos);
         std::size_t closeParen = text.find(")", openParen);
@@ -392,9 +395,9 @@ CompilerKit::SyntaxLeafList::SyntaxLeaf CompilerFrontendNectarAMD64::Compile(
           syntax_tree.fUserValue += "cmp rdi, rsi\n";
 
           syntax_tree.fUserValue +=
-              op.second + " __ret_" + std::to_string(kOrigin) + "_" + kCurrentFunctionName + "\n";
+              op.second + " __ret_" + std::to_string(kOrigin) + "_" + kCurrentIfSymbol + "\n";
 
-          kCurrentFunctionName = std::to_string(kOrigin) + "_" + kCurrentFunctionName;
+          kCurrentIfSymbol = std::to_string(kOrigin) + "_" + kCurrentIfSymbol;
 
           ++kOrigin;
         }
@@ -520,8 +523,6 @@ CompilerKit::SyntaxLeafList::SyntaxLeaf CompilerFrontendNectarAMD64::Compile(
         nectar_push_scope(ScopeKind::kScopeFunction, cleanFnName);
 
         ++kFunctionEmbedLevel;
-
-        kCurrentFunctionName = mangled_name;
 
         kOriginMap.push_back({mangled_name, kOrigin});
         kOrigin += 2UL;  // Account for prologue instructions
@@ -870,13 +871,16 @@ CompilerKit::SyntaxLeafList::SyntaxLeaf CompilerFrontendNectarAMD64::Compile(
           kOrigin += 2UL;
         }
 
-        if (!kNasmOutput)
-          syntax_tree.fUserValue +=
-              "public_segment .code64 __ret_" + kCurrentFunctionName + "\nnop\n";
-        else
-          syntax_tree.fUserValue += "__ret_" + kCurrentFunctionName + ":\n";
+        if (kCurrentIfCondition) {
+          if (!kNasmOutput)
+            syntax_tree.fUserValue +=
+                "public_segment .code64 __ret_" + kCurrentIfSymbol + "\nnop\n";
+          else
+            syntax_tree.fUserValue += "__ret_" + kCurrentIfSymbol + ":\n";
 
-        kCurrentFunctionName.clear();
+          kCurrentIfSymbol.clear();
+          kCurrentIfCondition = false;
+        }
       }
       default: {
         continue;

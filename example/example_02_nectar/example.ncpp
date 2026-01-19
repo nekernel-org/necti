@@ -3,5 +3,5 @@ const main() {
     return 0x137;
   }
 
-  return 0;
+  return 0x0;
 }

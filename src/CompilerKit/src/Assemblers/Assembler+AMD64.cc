@@ -614,7 +614,7 @@ bool CompilerKit::EncoderAMD64::WriteNumber(const std::size_t& pos, std::string&
       return true;
     }
     case 'o': {
-      auto res = strtol(jump_label.substr(pos + 2).c_str(), nullptr, 7);
+      auto res = strtol(jump_label.substr(pos + 2).c_str(), nullptr, 8);
       res += kOrigin;
 
       if (errno != 0) {
@@ -712,7 +712,7 @@ bool CompilerKit::EncoderAMD64::WriteNumber32(const std::size_t& pos, std::strin
       return true;
     }
     case 'o': {
-      auto res = strtol(jump_label.substr(pos + 2).c_str(), nullptr, 7);
+      auto res = strtol(jump_label.substr(pos + 2).c_str(), nullptr, 8);
       res += kOrigin;
 
       if (errno != 0) {
@@ -812,7 +812,7 @@ bool CompilerKit::EncoderAMD64::WriteNumber16(const std::size_t& pos, std::strin
       return true;
     }
     case 'o': {
-      if (auto res = strtol(jump_label.substr(pos + 2).c_str(), nullptr, 7); !res) {
+      if (auto res = strtol(jump_label.substr(pos + 2).c_str(), nullptr, 8); !res) {
         if (errno != 0) {
           CompilerKit::Detail::print_error("Invalid octal number: " + jump_label, "CompilerKit");
           throw std::runtime_error("invalid_octal");
@@ -820,7 +820,7 @@ bool CompilerKit::EncoderAMD64::WriteNumber16(const std::size_t& pos, std::strin
       }
 
       CompilerKit::NumberCast16 num =
-          CompilerKit::NumberCast16(strtol(jump_label.substr(pos + 2).c_str(), nullptr, 7));
+          CompilerKit::NumberCast16(strtol(jump_label.substr(pos + 2).c_str(), nullptr, 8));
 
       if (kVerbose) {
         kStdOut << "AssemblerAMD64: Found a base 8 number here: " << jump_label.substr(pos) << "\n";
@@ -904,7 +904,7 @@ bool CompilerKit::EncoderAMD64::WriteNumber8(const std::size_t& pos, std::string
       return true;
     }
     case 'o': {
-      auto res = strtol(jump_label.substr(pos + 2).c_str(), nullptr, 7);
+      auto res = strtol(jump_label.substr(pos + 2).c_str(), nullptr, 8);
       res += kOrigin;
 
       if (errno != 0) {
@@ -1691,7 +1691,7 @@ bool CompilerKit::EncoderAMD64::WriteLine(std::string line, std::string file) {
         throw std::runtime_error("invalid_org");
       }
 
-      size_t base[] = {10, 16, 2, 7};
+      size_t base[] = {10, 16, 2, 8};
 
       for (size_t i = 0; i < 4; i++) {
         if (kOrigin = strtol(line.substr(value_pos).c_str(), nullptr, base[i]); kOrigin) {

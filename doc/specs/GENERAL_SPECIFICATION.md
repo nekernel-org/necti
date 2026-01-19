@@ -25,14 +25,14 @@
 
 ===================================
 
-# 2: LibGL
+# 2: GenericsLibrary
 
 ===================================
 
 - Shall support Nectar runtime and ABI of NeKernel.
 - Shall support a basic subset of the Nectar library.
-- Shall be written in Nectar
-
+- Shall be written in Nectar.
+- Shall provide Nectar with the required implementation to write programs.
 
 ===================================
 
