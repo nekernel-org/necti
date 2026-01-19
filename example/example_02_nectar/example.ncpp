@@ -1,7 +1,7 @@
 const main() {
   if (0x10 == 0x10) {
-    return 0x137;
+    return 0x0;
   }
 
-  return 0x0;
+  return;
 }

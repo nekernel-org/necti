@@ -294,12 +294,6 @@ NECTAR_MODULE(AssemblerMainAMD64) {
 
     // byte from byte, we write this.
     for (auto& byte : kAppBytes) {
-      if (byte == 0) continue;
-
-      if (byte == 0xFF) {
-        byte = 0x00;
-      }
-
       file_ptr_out << reinterpret_cast<const char*>(&byte)[0];
     }
 
@@ -579,8 +573,6 @@ bool CompilerKit::EncoderAMD64::WriteNumber(const std::size_t& pos, std::string&
       CompilerKit::NumberCast64 num = CompilerKit::NumberCast64(res);
 
       for (char& i : num.number) {
-        if (i == 0) continue;
-
         kAppBytes.push_back(i);
       }
 
@@ -606,8 +598,6 @@ bool CompilerKit::EncoderAMD64::WriteNumber(const std::size_t& pos, std::string&
       }
 
       for (char& i : num.number) {
-        if (i == 0) continue;
-
         kAppBytes.push_back(i);
       }
 
@@ -628,8 +618,6 @@ bool CompilerKit::EncoderAMD64::WriteNumber(const std::size_t& pos, std::string&
       }
 
       for (char& i : num.number) {
-        if (i == 0) continue;
-
         kAppBytes.push_back(i);
       }
 
@@ -650,8 +638,6 @@ bool CompilerKit::EncoderAMD64::WriteNumber(const std::size_t& pos, std::string&
   CompilerKit::NumberCast64 num = CompilerKit::NumberCast64(res);
 
   for (char& i : num.number) {
-    if (i == 0) continue;
-
     kAppBytes.push_back(i);
   }
 
@@ -677,8 +663,6 @@ bool CompilerKit::EncoderAMD64::WriteNumber32(const std::size_t& pos, std::strin
       CompilerKit::NumberCast32 num = CompilerKit::NumberCast32(res);
 
       for (char& i : num.number) {
-        if (i == 0) continue;
-
         kAppBytes.push_back(i);
       }
 
@@ -704,8 +688,6 @@ bool CompilerKit::EncoderAMD64::WriteNumber32(const std::size_t& pos, std::strin
       }
 
       for (char& i : num.number) {
-        if (i == 0) continue;
-
         kAppBytes.push_back(i);
       }
 
@@ -726,8 +708,6 @@ bool CompilerKit::EncoderAMD64::WriteNumber32(const std::size_t& pos, std::strin
       }
 
       for (char& i : num.number) {
-        if (i == 0) continue;
-
         kAppBytes.push_back(i);
       }
 
@@ -748,8 +728,6 @@ bool CompilerKit::EncoderAMD64::WriteNumber32(const std::size_t& pos, std::strin
   CompilerKit::NumberCast32 num = CompilerKit::NumberCast32(res);
 
   for (char& i : num.number) {
-    if (i == 0) continue;
-
     kAppBytes.push_back(i);
   }
 
@@ -776,8 +754,6 @@ bool CompilerKit::EncoderAMD64::WriteNumber16(const std::size_t& pos, std::strin
           CompilerKit::NumberCast16(strtol(jump_label.substr(pos + 2).c_str(), nullptr, 16));
 
       for (char& i : num.number) {
-        if (i == 0) continue;
-
         kAppBytes.push_back(i);
       }
 
@@ -804,8 +780,6 @@ bool CompilerKit::EncoderAMD64::WriteNumber16(const std::size_t& pos, std::strin
       }
 
       for (char& i : num.number) {
-        if (i == 0) continue;
-
         kAppBytes.push_back(i);
       }
 
@@ -827,8 +801,6 @@ bool CompilerKit::EncoderAMD64::WriteNumber16(const std::size_t& pos, std::strin
       }
 
       for (char& i : num.number) {
-        if (i == 0) continue;
-
         kAppBytes.push_back(i);
       }
 
@@ -850,8 +822,6 @@ bool CompilerKit::EncoderAMD64::WriteNumber16(const std::size_t& pos, std::strin
       CompilerKit::NumberCast16(strtol(jump_label.substr(pos).c_str(), nullptr, 10));
 
   for (char& i : num.number) {
-    if (i == 0) continue;
-
     kAppBytes.push_back(i);
   }
 
@@ -1258,10 +1228,6 @@ bool CompilerKit::EncoderAMD64::WriteLine(std::string line, std::string file) {
           if (onlyOneReg) {
             auto num = GetNumber32(line, ",");
 
-            for (auto& num_idx : num.number) {
-              if (num_idx == 0) num_idx = 0xFF;
-            }
-
             auto modrm = (0x3 << 6 | currentRegList[0].fModRM);
 
             kAppBytes.emplace_back(0xC7);  // prefixed before placing the modrm and then the number.
@@ -1570,6 +1536,149 @@ bool CompilerKit::EncoderAMD64::WriteLine(std::string line, std::string file) {
           break;
         }
 
+        /// LEA instruction handler.
+        if (name == "lea") {
+          std::string substr = line.substr(line.find(name) + name.size());
+
+          // Remove leading whitespace
+          while (!substr.empty() && (substr[0] == ' ' || substr[0] == '\t')) {
+            substr.erase(0, 1);
+          }
+
+          if (substr.find(",") == std::string::npos || substr.find('[') == std::string::npos) {
+            CompilerKit::Detail::print_error("Syntax error: lea requires reg, [mem] format.", file);
+            throw std::runtime_error("syntax_err");
+          }
+
+          // Register lookup table
+          struct RegInfo {
+            const char* name;
+            i64_byte_t  code;
+          };
+
+          RegInfo regs64[] = {{"rax", 0}, {"rcx", 1}, {"rdx", 2}, {"rbx", 3},
+                              {"rsp", 4}, {"rbp", 5}, {"rsi", 6}, {"rdi", 7}};
+
+          auto        commaPos    = substr.find(',');
+          std::string destOperand = substr.substr(0, commaPos);
+          std::string srcOperand  = substr.substr(commaPos + 1);
+
+          // Remove whitespace
+          while (!destOperand.empty() && (destOperand[0] == ' ' || destOperand[0] == '\t')) {
+            destOperand.erase(0, 1);
+          }
+          while (!srcOperand.empty() && (srcOperand[0] == ' ' || srcOperand[0] == '\t')) {
+            srcOperand.erase(0, 1);
+          }
+
+          // Find destination register
+          i64_byte_t destReg   = 0;
+          bool       foundDest = false;
+
+          for (auto& reg : regs64) {
+            if (destOperand.find(reg.name) != std::string::npos) {
+              destReg   = reg.code;
+              foundDest = true;
+              break;
+            }
+          }
+
+          if (!foundDest) {
+            CompilerKit::Detail::print_error("Invalid destination register for lea.", file);
+            throw std::runtime_error("invalid_dest_reg");
+          }
+
+          // Parse memory operand [base+disp] or [base-disp]
+          auto bracketStart = srcOperand.find('[');
+          auto bracketEnd   = srcOperand.find(']');
+
+          if (bracketStart == std::string::npos || bracketEnd == std::string::npos) {
+            CompilerKit::Detail::print_error("Syntax error: malformed memory operand for lea.",
+                                             file);
+            throw std::runtime_error("syntax_err");
+          }
+
+          std::string memOperand =
+              srcOperand.substr(bracketStart + 1, bracketEnd - bracketStart - 1);
+
+          // Find base register
+          i64_byte_t baseReg   = 0;
+          bool       foundBase = false;
+
+          for (auto& reg : regs64) {
+            if (memOperand.find(reg.name) != std::string::npos) {
+              baseReg   = reg.code;
+              foundBase = true;
+              break;
+            }
+          }
+
+          if (!foundBase) {
+            CompilerKit::Detail::print_error("Invalid base register in memory operand for lea.",
+                                             file);
+            throw std::runtime_error("invalid_base_reg");
+          }
+
+          bool    isRbp        = (baseReg == 5);
+          bool    isRsp        = (baseReg == 4);
+          int32_t displacement = 0;
+          bool    hasDisp      = false;
+
+          // Look for +/- displacement
+          auto plusPos  = memOperand.find('+');
+          auto minusPos = memOperand.find('-');
+
+          if (plusPos != std::string::npos) {
+            std::string dispStr = memOperand.substr(plusPos + 1);
+            displacement        = static_cast<int32_t>(strtol(dispStr.c_str(), nullptr, 0));
+            hasDisp             = true;
+          } else if (minusPos != std::string::npos) {
+            std::string dispStr = memOperand.substr(minusPos + 1);
+            displacement        = -static_cast<int32_t>(strtol(dispStr.c_str(), nullptr, 0));
+            hasDisp             = true;
+          }
+
+          // Determine mod field
+          i64_byte_t mod = 0x00;
+          if (hasDisp || isRbp) {
+            if (displacement >= -128 && displacement <= 127) {
+              mod = 0x01;  // 8-bit displacement
+            } else {
+              mod = 0x02;  // 32-bit displacement
+            }
+          }
+
+          // Emit REX.W prefix for 64-bit
+          kAppBytes.emplace_back(0x48);
+
+          // Emit LEA opcode
+          kAppBytes.emplace_back(0x8D);
+
+          // Emit ModR/M byte
+          i64_byte_t modrm = (mod << 6) | (destReg << 3) | baseReg;
+          kAppBytes.emplace_back(modrm);
+
+          // RSP needs SIB byte
+          if (isRsp) {
+            kAppBytes.emplace_back(0x24);
+          }
+
+          // Emit displacement
+          if (mod == 0x01) {
+            kAppBytes.emplace_back(static_cast<i64_byte_t>(displacement & 0xFF));
+          } else if (mod == 0x02) {
+            kAppBytes.emplace_back(static_cast<i64_byte_t>(displacement & 0xFF));
+            kAppBytes.emplace_back(static_cast<i64_byte_t>((displacement >> 8) & 0xFF));
+            kAppBytes.emplace_back(static_cast<i64_byte_t>((displacement >> 16) & 0xFF));
+            kAppBytes.emplace_back(static_cast<i64_byte_t>((displacement >> 24) & 0xFF));
+          } else if (isRbp) {
+            // RBP with no displacement needs [rbp+0]
+            kAppBytes.emplace_back(0x00);
+          }
+
+          break;
+        }
+
         /// Push instruction handler.
         if (name == "push" || name == "pop") {
           std::string substr = line.substr(line.find(name) + name.size());
@@ -1623,12 +1732,28 @@ bool CompilerKit::EncoderAMD64::WriteLine(std::string line, std::string file) {
             if (isnumber(substr[0])) {
               kAppBytes.emplace_back(name == "push" ? 0x68 : 0x8F);
 
-              if (kRegisterBitWidth == 64) {
-                this->WriteNumber(0, substr);
-              } else if (kRegisterBitWidth == 32) {
-                this->WriteNumber32(0, substr);
+              // push imm always takes a 32-bit immediate (sign-extended in 64-bit mode)
+              // Parse the immediate value without adding kOrigin
+              long imm = 0;
+              if (substr.size() > 2 && substr[0] == '0' && substr[1] == 'x') {
+                imm = strtol(substr.c_str() + 2, nullptr, 16);
+              } else if (substr.size() > 2 && substr[0] == '0' && substr[1] == 'b') {
+                imm = strtol(substr.c_str() + 2, nullptr, 2);
+              } else if (substr.size() > 2 && substr[0] == '0' && substr[1] == 'o') {
+                imm = strtol(substr.c_str() + 2, nullptr, 8);
+              } else {
+                imm = strtol(substr.c_str(), nullptr, 10);
+              }
+
+              CompilerKit::NumberCast32 num(imm);
+              if (kRegisterBitWidth == 64 || kRegisterBitWidth == 32) {
+                kAppBytes.emplace_back(num.number[0]);
+                kAppBytes.emplace_back(num.number[1]);
+                kAppBytes.emplace_back(num.number[2]);
+                kAppBytes.emplace_back(num.number[3]);
               } else if (kRegisterBitWidth == 16) {
-                this->WriteNumber16(0, substr);
+                kAppBytes.emplace_back(num.number[0]);
+                kAppBytes.emplace_back(num.number[1]);
               }
 
               break;
