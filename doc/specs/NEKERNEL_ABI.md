@@ -1,4 +1,4 @@
-# Specification of NeKernel's ABI
+# Specification of NeKernel ABI
 
 The PEF ABI has multiple versions depending on the ISA.
 
