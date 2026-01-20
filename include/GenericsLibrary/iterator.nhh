@@ -8,6 +8,16 @@
 
 impl iterator_traits
 {
+    let init()
+    {
+        return;
+    }
+
+    let dispose()
+    {
+        return;
+    }
+
     let begin(let it)
     {
         let end := it._begin;
