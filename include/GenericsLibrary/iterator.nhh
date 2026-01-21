@@ -6,7 +6,22 @@
 #ifndef NECTAR_LIBNECTAR_ITERATOR_NHH
 #define NECTAR_LIBNECTAR_ITERATOR_NHH
 
-impl iterator_traits
+// Rules for iterator implementation:
+// - _begin is the starting point of the iterator.
+// - _end is the number of elements to iterate over.
+// - _size is the total size of the collection.
+trait iterator_traits
+{
+    let _begin := 0;
+    let _end := 0;
+    let _size := 0;
+
+    let begin();
+    let end();
+    let size();
+};
+
+impl iterator : iterator_traits
 {
     let init()
     {
@@ -18,24 +33,23 @@ impl iterator_traits
         return;
     }
 
-    let begin(let it)
+    let begin()
     {
-        let end := it._begin;
+        let end := _begin;
         return end;
     }
 
-    let end(let it)
+    let end()
     {
-        let end := it._begin;
-        end += it._end;
+        let end :=_begin;
+        end += _end;
 
         return end;
     }
 
-    let size(let it)
+    let size()
     {
-        let sz := it._size;
-        return sz;
+        return _size;
     }
 };
 

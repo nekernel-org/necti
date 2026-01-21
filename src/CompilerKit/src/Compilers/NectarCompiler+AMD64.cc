@@ -1428,6 +1428,7 @@ NECTAR_MODULE(CompilerNectarAMD64) {
   bool skip = false;
 
   kKeywords.emplace_back("impl", CompilerKit::KeywordKind::kKeywordKindImpl);
+  kKeywords.emplace_back("trait", CompilerKit::KeywordKind::kKeywordKindTrait);
   kKeywords.emplace_back("{", CompilerKit::KeywordKind::kKeywordKindBodyStart);
   kKeywords.emplace_back("}", CompilerKit::KeywordKind::kKeywordKindBodyEnd);
   kKeywords.emplace_back("{}", CompilerKit::KeywordKind::kKeywordKindImplInit);

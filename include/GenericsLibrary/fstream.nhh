@@ -8,7 +8,17 @@
 
 #include <GenericsLibrary/iterator.nhh>
 
-impl fstream
+// Rules for fstream implementation:
+// - fd_ is the file descriptor.
+trait fstream_traits
+{
+    let write(let data, let size);
+    let read(let region, let size);
+
+    let fd_ := 0;
+};
+
+impl fstream : fstream_traits
 {
     let init()
     {
@@ -22,7 +32,6 @@ impl fstream
 
     let write(let data, let size)
     {
-        let fd_ := __traits_current_fd(data, size);
         let written := __traits_write(fd_, data, size);
 
         return written;
@@ -30,7 +39,6 @@ impl fstream
 
     let read(let region, let size)
     {
-        let fd_ := __traits_current_fd(region, size);
         let readen := __traits_read(fd_, region, size);
 
         return readen;

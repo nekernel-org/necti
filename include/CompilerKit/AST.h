@@ -36,6 +36,7 @@ enum struct KeywordKind {
   kKeywordKindBodyEnd,
   kKeywordKindImplInit,
   kKeywordKindImpl,
+  kKeywordKindTrait,
   kKeywordKindNew,
   kKeywordKindDelete,
   kKeywordKindAccess,
