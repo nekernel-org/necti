@@ -11,9 +11,9 @@
 
 #define kAEIdentVersion (0x0123)
 
-#define kAEMag0 'H'
+#define kAEMag0 'A'
 #define kAEMag1 'E'
-#define kAEMag2 'Y'
+#define kAEMag2 'O'
 
 #define kAESymbolLen (256)
 #define kAEPad (8)
@@ -56,6 +56,11 @@ typedef struct AERecordHeader final {
   UIntPtr  fOffset;
   Char     fPad[kAEPad];
 } PACKED AERecordHeader, *AERecordHeaderPtr;
+
+enum {
+  kKindImportSymbol   = 0x356,
+  kKindExportSymbol   = 0x237,
+};
 
 enum {
   kKindRelocationByOffset  = 0x23f,

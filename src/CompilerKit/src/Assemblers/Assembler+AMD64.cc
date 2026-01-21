@@ -115,23 +115,24 @@ NECTAR_MODULE(AssemblerMainAMD64) {
 
   for (size_t i = 1; i < argc; ++i) {
     if (argv[i][0] == '-') {
-      if (strcmp(argv[i], "--amd64:ver") == 0 || strcmp(argv[i], "--amd64:v") == 0) {
-        kStdOut << "AssemblerAMD64: AMD64 Assembler Driver.\nAssemblerAMD64: "
-                   "v1.10\nAssemblerAMD64: Copyright "
-                   "(c) Amlal El Mahrouss\n";
-        return 0;
-      } else if (strcmp(argv[i], "--amd64:h") == 0) {
-        kStdOut << "AssemblerAMD64: AMD64 Assembler Driver.\nAssemblerAMD64: Copyright (c) 2024 "
+      if (strcmp(argv[i], "--version") == 0 || strcmp(argv[i], "-v") == 0) {
+        kStdOut << "AssemblerAMD64: AMD64 Assembler Driver.\nAssemblerAMD64: Copyright (c) 2024-2026 "
                    "Amlal El Mahrouss\n";
+        kStdOut << "AssemblerAMD64: This Software is part of the NeKernel project. (nekernel.org)\n";
+        return 0;
+      } else if (strcmp(argv[i], "-help") == 0) {
+        kStdOut << "AssemblerAMD64: AMD64 Assembler Driver.\nAssemblerAMD64: Copyright (c) 2024-2026 "
+                   "Amlal El Mahrouss\n";
+        kStdOut << "AssemblerAMD64: This Software is part of the NeKernel project. (nekernel.org)\n";
         kStdOut << "--version: Print program version.\n";
         kStdOut << "--verbose: Print verbose output.\n";
         kStdOut << "--binary: Output as flat binary.\n";
 
         return 0;
-      } else if (strcmp(argv[i], "--amd64:binary") == 0) {
+      } else if (strcmp(argv[i], "--fbinary") == 0) {
         kOutputAsBinary = true;
         continue;
-      } else if (strcmp(argv[i], "--amd64:verbose") == 0) {
+      } else if (strcmp(argv[i], "--fverbose") == 0) {
         kVerbose = true;
         continue;
       }
@@ -192,7 +193,6 @@ NECTAR_MODULE(AssemblerMainAMD64) {
 
     if (kVerbose) {
       kStdOut << "Compiling: " + asm_input << "\n";
-      kStdOut << "From: " + line << "\n";
     }
 
     while (std::getline(file_ptr, line)) {
@@ -366,13 +366,6 @@ static bool asm_read_attributes(std::string line) {
       kCurrentRecord.fKind = CompilerKit::kPefZero;
     }
 
-    // this is a special case for the start stub.
-    // we want this so that ld can find it.
-
-    if (name == kPefStart) {
-      kCurrentRecord.fKind = CompilerKit::kPefCode;
-    }
-
     // now we can tell the code size of the previous kCurrentRecord.
 
     if (!kRecords.empty()) kRecords[kRecords.size() - 1].fSize = kAppBytes.size();
@@ -418,28 +411,15 @@ static bool asm_read_attributes(std::string line) {
 
     kDefinedSymbols.push_back(name);
 
-    if (name.find(".code64") != std::string::npos) {
+    if (name.find(kPefCode64) != std::string::npos) {
       // data is treated as code.
-
-      name_copy.erase(name_copy.find(".code64"), strlen(".code64"));
       kCurrentRecord.fKind = CompilerKit::kPefCode;
-    } else if (name.find(".data64") != std::string::npos) {
+    } else if (name.find(kPefData64) != std::string::npos) {
       // no code will be executed from here.
-
-      name_copy.erase(name_copy.find(".data64"), strlen(".data64"));
       kCurrentRecord.fKind = CompilerKit::kPefData;
-    } else if (name.find(".zero64") != std::string::npos) {
+    } else if (name.find(kPefZero64) != std::string::npos) {
       // this is a bss section.
-
-      name_copy.erase(name_copy.find(".zero64"), strlen(".zero64"));
       kCurrentRecord.fKind = CompilerKit::kPefZero;
-    }
-
-    // this is a special case for the start stub.
-    // we want this so that ld can find it.
-
-    if (name == kPefStart) {
-      kCurrentRecord.fKind = CompilerKit::kPefCode;
     }
 
     while (name_copy.find(" ") != std::string::npos) name_copy.erase(name_copy.find(" "), 1);
@@ -1204,6 +1184,10 @@ bool CompilerKit::EncoderAMD64::WriteLine(std::string line, std::string file) {
             if (bits == 64 || bits == 32) {
               if (!hasRBasedRegs && bits >= 32) {
                 kAppBytes.emplace_back(opcodeAMD64.fOpcode);
+              } else if (hasRBasedRegs && bits == 32) {
+                CompilerKit::Detail::print_error("Invalid combination of operands and registers.",
+                                                 "CompilerKit");
+                throw std::runtime_error("comb_op_reg");
               }
 
               if (!onlyOneReg) kAppBytes.emplace_back(0x89);
@@ -1808,7 +1792,9 @@ bool CompilerKit::EncoderAMD64::WriteLine(std::string line, std::string file) {
       kRegisterBitWidth = 32U;
     } else if (line.find("bits 16") != std::string::npos) {
       kRegisterBitWidth = 16U;
-    } else if (auto org_pos = line.find("org"); org_pos != std::string::npos) {
+    }
+
+    if (auto org_pos = line.find("org"); org_pos != std::string::npos) {
       auto value_pos = org_pos + strlen("org") + 1;
 
       if (value_pos >= line.size()) {

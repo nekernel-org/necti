@@ -22,7 +22,7 @@ Int32 main(Int32 argc, Char** argv) {
   return RUN_ALL_TESTS();
 }
 
-TEST(LinkerRun, LinkerExitsCorrectly) {
+TEST(LinkerRunPEF, LinkerExitsCorrectly) {
   EXPECT_TRUE(kArgc > 1);
   EXPECT_TRUE(DynamicLinker64PEF(kArgc, kArgv) == 0);
 }

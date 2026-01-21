@@ -9,7 +9,8 @@
     "/usr/include/"
   ],
   "sources_path": [
-    "DynamicLinker+PEF64.test.cc"
+    "DynamicLinker64+PEF64.test.cc",
+    "DynamicLinker64+MachO.test.cc"
   ],
   "output_name": "LinkerTest.o",
   "compiler_flags": [

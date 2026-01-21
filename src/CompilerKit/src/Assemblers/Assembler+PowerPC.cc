@@ -290,15 +290,17 @@ static bool asm_read_attributes(std::string line) {
 
     result += name;
 
-    if (name.find(".code64") != std::string::npos) {
+    kCurrentRecord.fKind = CompilerKit::kKindImportSymbol;
+
+    if (name.find(kPefCode64) != std::string::npos) {
       // data is treated as code.
-      kCurrentRecord.fKind = CompilerKit::kPefCode;
-    } else if (name.find(".data64") != std::string::npos) {
+      kCurrentRecord.fKind |= CompilerKit::kPefCode;
+    } else if (name.find(kPefData64) != std::string::npos) {
       // no code will be executed from here.
-      kCurrentRecord.fKind = CompilerKit::kPefData;
-    } else if (name.find(".zero64") != std::string::npos) {
+      kCurrentRecord.fKind |= CompilerKit::kPefData;
+    } else if (name.find(kPefZero64) != std::string::npos) {
       // this is a bss section.
-      kCurrentRecord.fKind = CompilerKit::kPefZero;
+      kCurrentRecord.fKind |= CompilerKit::kPefZero;
     }
 
     // this is a special case for the start stub.
@@ -341,21 +343,17 @@ static bool asm_read_attributes(std::string line) {
       if (j == ' ') j = '$';
     }
 
-    if (name.find(".code64") != std::string::npos) {
+    kCurrentRecord.fKind = CompilerKit::kKindExportSymbol;
+
+    if (name.find(kPefCode64) != std::string::npos) {
       // data is treated as code.
-
-      name_copy.erase(name_copy.find(".code64"), strlen(".code64"));
-      kCurrentRecord.fKind = CompilerKit::kPefCode;
-    } else if (name.find(".data64") != std::string::npos) {
+      kCurrentRecord.fKind |= CompilerKit::kPefCode;
+    } else if (name.find(kPefData64) != std::string::npos) {
       // no code will be executed from here.
-
-      name_copy.erase(name_copy.find(".data64"), strlen(".data64"));
-      kCurrentRecord.fKind = CompilerKit::kPefData;
-    } else if (name.find(".zero64") != std::string::npos) {
+      kCurrentRecord.fKind |= CompilerKit::kPefData;
+    } else if (name.find(kPefZero64) != std::string::npos) {
       // this is a bss section.
-
-      name_copy.erase(name_copy.find(".zero64"), strlen(".zero64"));
-      kCurrentRecord.fKind = CompilerKit::kPefZero;
+      kCurrentRecord.fKind |= CompilerKit::kPefZero;
     }
 
     // this is a special case for the start stub.

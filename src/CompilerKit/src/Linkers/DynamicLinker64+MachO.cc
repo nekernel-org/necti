@@ -86,7 +86,7 @@ static CompilerKit::STLString macho_extract_symbol_name(const CompilerKit::STLSt
 }
 
 /// @brief Add a symbol to the symbol table
-static UInt32 AddSymbol(const CompilerKit::STLString& name, uint8_t type, uint8_t sect,
+static UInt32 macho_add_symbol(const CompilerKit::STLString& name, uint8_t type, uint8_t sect,
                         UInt64 value) {
   // Add name to string table (offset 0 is reserved for empty string)
   if (kStringTable.empty()) {
@@ -256,16 +256,18 @@ NECTAR_MODULE(DynamicLinker64MachO) {
         if (!symbolName.empty()) {
           // Determine section number (1 = __text, 2 = __data)
           uint8_t sectNum = 0;
-          if (section.kind == CompilerKit::kPefCode) {
+          if (section.kind & CompilerKit::kPefCode) {
             sectNum = 1;  // __text section
-          } else if (section.kind == CompilerKit::kPefData) {
+          } else if (section.kind & CompilerKit::kPefData) {
             sectNum = 2;  // __data section
+          } else if (section.kind & CompilerKit::kPefZero) {
+            sectNum = 3;  // __bss section
           }
 
           // N_EXT = external, N_SECT = defined in section
           uint8_t symType = N_EXT | N_SECT;
 
-          AddSymbol(symbolName, symType, sectNum, ae_records[ae_record_index].fOffset);
+          macho_add_symbol(symbolName, symType, sectNum, ae_records[ae_record_index].fOffset);
 
           if (kVerbose) {
             kConsoleOut << "Added symbol: " << symbolName

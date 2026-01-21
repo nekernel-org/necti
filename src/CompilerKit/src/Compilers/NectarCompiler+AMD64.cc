@@ -525,7 +525,7 @@ CompilerKit::SyntaxLeafList::SyntaxLeaf CompilerFrontendNectarAMD64::Compile(
         ++kFunctionEmbedLevel;
 
         kOriginMap.push_back({mangled_name, kOrigin});
-        kOrigin += 2UL;  // Account for prologue instructions
+        ++kOrigin;
 
         break;
       }
@@ -836,7 +836,7 @@ CompilerKit::SyntaxLeafList::SyntaxLeaf CompilerFrontendNectarAMD64::Compile(
           break;
         }
 
-        if (valueOfVar.ends_with("{}")) valueOfVar = "rax";  // impl init.
+        if (valueOfVar.ends_with("{}")) valueOfVar = "rax";  // impl init returns back to rax.
 
         syntax_tree.fUserValue +=
             instr + nectar_get_variable_ref(varName) + ", " + valueOfVar + "\n";
@@ -849,7 +849,7 @@ CompilerKit::SyntaxLeafList::SyntaxLeaf CompilerFrontendNectarAMD64::Compile(
 
           if (pos == CompilerKit::STLString::npos) {
             syntax_tree.fUserValue += nectar_generate_epilogue() + "ret\n";
-            kOrigin += 2UL;
+            ++kOrigin;
             break;
           }
 
@@ -882,10 +882,10 @@ CompilerKit::SyntaxLeafList::SyntaxLeaf CompilerFrontendNectarAMD64::Compile(
           }
 
           syntax_tree.fUserValue += nectar_generate_epilogue() + "ret\n";
-          kOrigin += 2UL;
+          ++kOrigin;
         } catch (...) {
           syntax_tree.fUserValue += nectar_generate_epilogue() + "ret\n";
-          kOrigin += 2UL;
+          ++kOrigin;
         }
 
         if (kCurrentIfCondition) {

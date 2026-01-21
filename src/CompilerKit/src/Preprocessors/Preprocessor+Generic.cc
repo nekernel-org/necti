@@ -30,7 +30,7 @@ typedef Int32 (*pp_parser_fn_t)(CompilerKit::STLString& line, std::ifstream& hdr
 /////////////////////////////////////////////////////////////////////////////////////////
 
 namespace Detail {
-enum {
+enum PPOperatorType : Int32 {
   kInvalid = 0,
   kEqual   = 100,
   kGreaterEqThan,
@@ -83,7 +83,7 @@ static CompilerKit::STLString kWorkingDir = "";
 int32_t pp_parse_if_condition(Detail::pp_macro_condition& cond, Detail::pp_macro& macro,
                               bool& inactive_code, bool& defined,
                               CompilerKit::STLString& macro_str) {
-  if (cond.fType == Detail::kEqual) {
+  if (cond.fType == Detail::PPOperatorType::kEqual) {
     auto pos = macro_str.find(macro.fName);
     if (pos == CompilerKit::STLString::npos) return 0;
 
@@ -184,7 +184,7 @@ int32_t pp_parse_if_condition(Detail::pp_macro_condition& cond, Detail::pp_macro
     lhs = atol(number.c_str());
   }
 
-  if (cond.fType == Detail::kGreaterThan) {
+  if (cond.fType == Detail::PPOperatorType::kGreaterThan) {
     if (lhs > rhs) {
       defined       = true;
       inactive_code = false;
@@ -195,7 +195,7 @@ int32_t pp_parse_if_condition(Detail::pp_macro_condition& cond, Detail::pp_macro
     return 0;
   }
 
-  if (cond.fType == Detail::kGreaterEqThan) {
+  if (cond.fType == Detail::PPOperatorType::kGreaterEqThan) {
     if (lhs >= rhs) {
       defined       = true;
       inactive_code = false;
@@ -206,7 +206,7 @@ int32_t pp_parse_if_condition(Detail::pp_macro_condition& cond, Detail::pp_macro
     return 0;
   }
 
-  if (cond.fType == Detail::kLesserEqThan) {
+  if (cond.fType == Detail::PPOperatorType::kLesserEqThan) {
     if (lhs <= rhs) {
       defined       = true;
       inactive_code = false;
@@ -217,7 +217,7 @@ int32_t pp_parse_if_condition(Detail::pp_macro_condition& cond, Detail::pp_macro
     return 0;
   }
 
-  if (cond.fType == Detail::kLesserThan) {
+  if (cond.fType == Detail::PPOperatorType::kLesserThan) {
     if (lhs < rhs) {
       defined       = true;
       inactive_code = false;
@@ -550,27 +550,27 @@ void pp_parse_file(std::ifstream& hdr_file, std::ofstream& pp_out) {
 
         std::vector<Detail::pp_macro_condition> pp_macro_condition_list = {
             {
-                .fType     = Detail::kEqual,
+                .fType     = Detail::PPOperatorType::kEqual,
                 .fTypeName = "==",
             },
             {
-                .fType     = Detail::kNotEqual,
+                .fType     = Detail::PPOperatorType::kNotEqual,
                 .fTypeName = "!=",
             },
             {
-                .fType     = Detail::kLesserThan,
+                .fType     = Detail::PPOperatorType::kLesserThan,
                 .fTypeName = "<",
             },
             {
-                .fType     = Detail::kGreaterThan,
+                .fType     = Detail::PPOperatorType::kGreaterThan,
                 .fTypeName = ">",
             },
             {
-                .fType     = Detail::kLesserEqThan,
+                .fType     = Detail::PPOperatorType::kLesserEqThan,
                 .fTypeName = "<=",
             },
             {
-                .fType     = Detail::kGreaterEqThan,
+                .fType     = Detail::PPOperatorType::kGreaterEqThan,
                 .fTypeName = ">=",
             },
         };

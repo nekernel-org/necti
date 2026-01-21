@@ -91,15 +91,7 @@ inline void drvi_crash_handler(std::int32_t id) {
 
   switch (id) {
     default: {
-      kStdOut << "SIGNAL: Unknown Signal (" << id << ")." << kBlank << std::endl;
-      break;
-    }
-    case SIGSEGV: {
-      kStdOut << "SIGNAL: Segmentation Fault." << kBlank << std::endl;
-      break;
-    }
-    case SIGABRT: {
-      kStdOut << "SIGNAL: Aborted." << kBlank << std::endl;
+      kStdOut << "SIGNAL: Signal (" << id << ")." << kBlank << std::endl;
       break;
     }
   }
