@@ -1,0 +1,26 @@
+{
+  "compiler_path": "clang++",
+  "compiler_std": "c++20",
+  "headers_path": [
+    "../../../../include/CompilerKit",
+    "../../../../include/",
+    "../../../../include/CompilerKit/src/",
+    "../../../../include/CompilerKit/src/impl",
+    "/usr/include/"
+  ],
+  "sources_path": [
+    "DynamicLinker64+PEF64.test.cc"
+  ],
+  "output_name": "LinkerTest.o",
+  "compiler_flags": [
+      "-fPIC",
+      "-lgtest",
+      "-lCompilerKit"
+  ],
+  "cpp_macros": [
+    "__NECTAR__=202505",
+    "kDistReleaseBranch=$(git rev-parse --abbrev-ref HEAD)-$(uuidgen)"
+  ],
+  "run_after_build": true
+}
+
