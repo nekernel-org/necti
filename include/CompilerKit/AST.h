@@ -41,6 +41,7 @@ enum struct KeywordKind {
   kKeywordKindDelete,
   kKeywordKindAccess,
   kKeywordKindAccessChecked,
+  kKeywordKindFunctionAccess,
   kKeywordKindIf,
   kKeywordKindVariableAssign,
   kKeywordKindVariableDec,

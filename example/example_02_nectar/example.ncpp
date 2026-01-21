@@ -1,7 +1,8 @@
 const main() {
-  if (0x10 == 0x10) {
-    return 0x0;
-  }
+  _sleep(0x1);
+  _putchar(0x0, 'H');
+  _putchar(0x0, 'i');
+  _putchar(0x0, '!');
 
-  return;
+  return 0;
 }

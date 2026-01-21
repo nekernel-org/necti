@@ -565,14 +565,24 @@ CompilerKit::SyntaxLeafList::SyntaxLeaf CompilerFrontendNectarAMD64::Compile(
         continue;
       }
       case CompilerKit::KeywordKind::kKeywordKindAccess:
+      case CompilerKit::KeywordKind::kKeywordKindFunctionAccess:
       case CompilerKit::KeywordKind::kKeywordKindAccessChecked: {
         CompilerKit::STLString valueOfVar =
             text.substr(text.find(keyword.first.fKeywordName) + keyword.first.fKeywordName.size());
 
-        auto args = valueOfVar.substr(valueOfVar.find("(") + 1);
+        CompilerKit::STLString args;
 
-        if (!valueOfVar.find("("))
-          CompilerKit::Detail::print_error("Malformed function call: " + text, file);
+        if (valueOfVar.find("{") != CompilerKit::STLString::npos) {
+          break;
+        } else if (CompilerKit::KeywordKind::kKeywordKindFunctionAccess == keyword.first.fKeywordKind) {
+          syntax_tree.fUserValue += (kNasmOutput ? "section .text\nextern " : "extern_segment .code64") +
+                                    text.substr(0, text.find(keyword.first.fKeywordName)) + "\n";
+        }
+
+        if (CompilerKit::KeywordKind::kKeywordKindFunctionAccess == keyword.first.fKeywordKind)
+          args = text.substr(text.find(keyword.first.fKeywordName));
+        else
+          args = valueOfVar.substr(valueOfVar.find("(") + 1);
 
         auto nameVar = text.substr(0, text.find(keyword.first.fKeywordName));
 
@@ -584,10 +594,14 @@ CompilerKit::SyntaxLeafList::SyntaxLeaf CompilerFrontendNectarAMD64::Compile(
           nameVar.erase(nameVar.find("\t"), 1);
         }
 
+        auto method = text.substr(0, text.find(keyword.first.fKeywordName));
+
         if (!nectar_get_variable_ref(nameVar).empty())
           syntax_tree.fUserValue += "lea r8, " + nectar_get_variable_ref(nameVar) + "\n";
 
-        auto method = valueOfVar.erase(valueOfVar.find("("));
+        if (CompilerKit::KeywordKind::kKeywordKindFunctionAccess != keyword.first.fKeywordKind)
+          method = valueOfVar.erase(valueOfVar.find("("));
+
         valueOfVar += "\n";
 
         CompilerKit::STLString arg;
@@ -634,6 +648,7 @@ CompilerKit::SyntaxLeafList::SyntaxLeaf CompilerFrontendNectarAMD64::Compile(
           } else {
             // NASM: Generate standard call through computed address
             auto varRef = nectar_get_variable_ref(nameVar);
+
             if (keyword.first.fKeywordName.ends_with('>')) {
               // Pointer dereference: load pointer then call through it
               syntax_tree.fUserValue += "mov rax, " + varRef + "\n";
@@ -644,6 +659,8 @@ CompilerKit::SyntaxLeafList::SyntaxLeaf CompilerFrontendNectarAMD64::Compile(
               syntax_tree.fUserValue += "call [rax + " + method + "]\n";
             }
           }
+        } else {
+          syntax_tree.fUserValue += "call " + method + "\n";
         }
 
         break;
@@ -1443,6 +1460,7 @@ NECTAR_MODULE(CompilerNectarAMD64) {
   kKeywords.emplace_back("delete", CompilerKit::KeywordKind::kKeywordKindDelete);
   kKeywords.emplace_back(".", CompilerKit::KeywordKind::kKeywordKindAccess);
   kKeywords.emplace_back("->", CompilerKit::KeywordKind::kKeywordKindAccessChecked);
+  kKeywords.emplace_back("(", CompilerKit::KeywordKind::kKeywordKindFunctionAccess);
   kKeywords.emplace_back(";", CompilerKit::KeywordKind::kKeywordKindEndLine);
   kKeywords.emplace_back("return", CompilerKit::KeywordKind::kKeywordKindReturn);
 

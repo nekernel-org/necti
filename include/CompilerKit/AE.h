@@ -4,7 +4,7 @@
 // Official repository: https://github.com/nekernel-org/nectar
 
 #ifndef NECTAR_COMPILERKIT_AE_H
-#define NECTAR_COMPILERKIT_AE_H_
+#define NECTAR_COMPILERKIT_AE_H
 
 #include <CompilerKit/Detail/Config.h>
 #include <fstream>

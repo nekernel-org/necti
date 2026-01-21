@@ -61,7 +61,7 @@ struct SectionInfo {
 
 /// @brief Extract clean symbol name from AE record name
 /// AE format: ".code64$symbolname" or "symbolname.code64"
-static CompilerKit::STLString ExtractSymbolName(const CompilerKit::STLString& aeName) {
+static CompilerKit::STLString macho_extract_symbol_name(const CompilerKit::STLString& aeName) {
   CompilerKit::STLString name = aeName;
 
   // Remove section prefixes/suffixes
@@ -251,7 +251,7 @@ NECTAR_MODULE(DynamicLinker64MachO) {
         section.size = ae_records[ae_record_index].fSize;
 
         // Extract clean symbol name and add to symbol table
-        CompilerKit::STLString symbolName = ExtractSymbolName(section.name);
+        CompilerKit::STLString symbolName = macho_extract_symbol_name(section.name);
 
         if (!symbolName.empty()) {
           // Determine section number (1 = __text, 2 = __data)
