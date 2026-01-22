@@ -1,4 +1,4 @@
-# Specification of CompilerKit
+# Specification of Nectar.
 
 ===================================
 

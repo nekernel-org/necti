@@ -34,7 +34,9 @@
 
 ===================================
 
-- `:=` Equals/Assign To operator.
+- `:=` Equals/Assign operator.
+- `==` Equals-To operator.
+- `!=` Not Equals-To operator.
 
 ===================================
 
@@ -44,4 +46,5 @@
 
 Nectar runs using the Generics Library (GL) -- it contains foundational code to run nectar applications and systems.
 
-- //@ Are considered NectarDocs.
+- //@ Are considered NectarDocs comments.
+- NectarDocs are used to describe behavior of the code -- some Javadoc syntax is supported. Such as: @brief, @param.

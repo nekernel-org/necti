@@ -1,4 +1,4 @@
-# Specification of NeKernel Assembler
+# Specification of the NeKernel Assembler.
 
 ===================================
 
