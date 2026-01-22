@@ -38,8 +38,10 @@
 
 ===================================
 
-# 2: The Generics Library
+# 3: The Generics Library
 
 ===================================
 
 Nectar runs using the Generics Library (GL) -- it contains foundational code to run nectar applications and systems.
+
+- //@ Are considered NectarDocs.

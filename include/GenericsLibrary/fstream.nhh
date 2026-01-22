@@ -3,13 +3,13 @@
 // file LICENSE or copy at http://www.apache.org/licenses/LICENSE-2.0)
 // Official repository: https://github.com/nekernel-org/nectar
 
-#ifndef NECTAR_LIBNECTAR_FSTREAM_NHH
-#define NECTAR_LIBNECTAR_FSTREAM_NHH
+#ifndef NECTAR_GL_FSTREAM_NHH
+#define NECTAR_GL_FSTREAM_NHH
 
 #include <GenericsLibrary/iterator.nhh>
 
-// Rules for fstream implementation:
-// - fd_ is the file descriptor.
+//@ Rules for fstream implementation:
+//@ - fd_ is the file descriptor.
 trait fstream_traits
 {
     let write(let data, let size);
@@ -45,4 +45,4 @@ impl fstream : fstream_traits
     }
 };
 
-#endif  // NECTAR_LIBNECTAR_FSTREAM_NHH
+#endif  // NECTAR_GL_FSTREAM_NHH

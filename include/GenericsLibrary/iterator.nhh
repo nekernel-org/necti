@@ -3,13 +3,13 @@
 // file LICENSE or copy at http://www.apache.org/licenses/LICENSE-2.0)
 // Official repository: https://github.com/nekernel-org/nectar
 
-#ifndef NECTAR_LIBNECTAR_ITERATOR_NHH
-#define NECTAR_LIBNECTAR_ITERATOR_NHH
+#ifndef NECTAR_GL_ITERATOR_NHH
+#define NECTAR_GL_ITERATOR_NHH
 
-// Rules for iterator implementation:
-// - _begin is the starting point of the iterator.
-// - _end is the number of elements to iterate over.
-// - _size is the total size of the collection.
+//@ Rules for iterator implementation:
+//@ - _begin is the starting point of the iterator.
+//@ - _end is the number of elements to iterate over.
+//@ - _size is the total size of the collection.
 trait iterator_traits
 {
     let _begin := 0;
@@ -53,4 +53,4 @@ impl iterator : iterator_traits
     }
 };
 
-#endif  // NECTAR_LIBNECTAR_ITERATOR_NHH
+#endif  // NECTAR_GL_ITERATOR_NHH

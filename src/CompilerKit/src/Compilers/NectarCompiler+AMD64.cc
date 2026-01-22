@@ -37,7 +37,7 @@
 
 /////////////////////////////////////
 
-/// @internal
+/// @CompilerKit
 /// @brief Avoids relative_path which could discard parts of the original.
 std::filesystem::path nectar_expand_home(const std::filesystem::path& input) {
   const std::string& raw = input.string();
@@ -94,18 +94,18 @@ enum class ScopeKind {
   kScopeFunction,
 };
 
-/// \brief Compiler scope information
-struct CompilerScope {
-  ScopeKind              fKind{ScopeKind::kScopeGlobal};
-  CompilerKit::STLString fName{};
-  CompilerKit::STLString fMangledPrefix{};
-};
-
 /// \brief Variable location enumeration
 enum class VarLocation {
   kRegister,
   kStack,
   kStackSpill,
+};
+
+/// \brief Compiler scope information
+struct CompilerScope {
+  ScopeKind              fKind{ScopeKind::kScopeGlobal};
+  CompilerKit::STLString fName{};
+  CompilerKit::STLString fMangledPrefix{};
 };
 
 /// \brief Extended variable information
@@ -222,7 +222,8 @@ class CompilerFrontendNectarAMD64 final CK_COMPILER_FRONTEND {
   CompilerKit::SyntaxLeafList::SyntaxLeaf Compile(CompilerKit::STLString&       text,
                                                   const CompilerKit::STLString& file) override;
 
-  /// \brief Contract language
+  /// \brief Returns the language name.
+  /// \return Language name.
   const char* Language() override;
 
  public:
@@ -1103,10 +1104,10 @@ static Int32 nectar_allocate_stack_variable(const CompilerKit::STLString& var_na
     if (var->fIsConstant)
       CompilerKit::Detail::print_error(
           "Variable " + var_name.substr(var_name.find("const") + strlen("const")) + " is constant.",
-          "internal");
+          "CompilerKit");
 
     if (var->fStackOffset > 0)
-      CompilerKit::Detail::print_error("Variable " + var_name + " is already defined.", "internal");
+      CompilerKit::Detail::print_error("Variable " + var_name + " is already defined.", "CompilerKit");
   }
 
   VariableInfo varInfo;
@@ -1138,7 +1139,7 @@ static CompilerKit::STLString nectar_get_variable_ref(const CompilerKit::STLStri
 
   if (!varInfo || var_name.empty() || !isnumber(var_name[0])) {
     if (!isnumber(var_name[0]) && lookup)
-      CompilerKit::Detail::print_error("Variable " + var_name + " not found.", "internal");
+      CompilerKit::Detail::print_error("Variable " + var_name + " not found.", "CompilerKit");
   }
 
   if (!varInfo) {
@@ -1149,7 +1150,7 @@ static CompilerKit::STLString nectar_get_variable_ref(const CompilerKit::STLStri
     CompilerKit::Detail::print_error("Invalid use of constant " +
                                          var_name.substr(var_name.find("const") + strlen("const")) +
                                          " as variable.",
-                                     "internal");
+                                     "CompilerKit");
     return "call __abort";
   }
 
@@ -1187,7 +1188,7 @@ static CompilerKit::STLString nectar_allocate_register(const CompilerKit::STLStr
       if (existing) {
         if (existing->fIsConstant) {
           CompilerKit::Detail::print_error("Invalid use of constant " + var_name + " as variable.",
-                                           "internal");
+                                           "CompilerKit");
           return "__call __abort";
         }
 
@@ -1334,7 +1335,8 @@ static CompilerKit::STLString nectar_generate_destructor_call(
   return code;
 }
 
-/// \brief Process function parameters per PEF calling convention
+/// \brief Process function parameters per PEF calling convention.
+/// \note Assumes args are already extracted.
 static void nectar_process_function_parameters(const std::vector<CompilerKit::STLString>& args) {
   for (size_t i = 0; i < args.size() && i < 8; ++i) {
     VariableInfo param;
@@ -1370,7 +1372,7 @@ static void nectar_process_function_parameters(const std::vector<CompilerKit::ST
 /////////////////////////////////////////////////////////////////////////////////////////
 
 #define kExtListCxx \
-  { ".ncpp" }
+  { ".nc", ".pp.nc" }
 
 class AssemblyNectarInterfaceAMD64 final CK_ASSEMBLY_INTERFACE {
  public:

@@ -686,7 +686,6 @@ NECTAR_MODULE(DynamicLinker64MachO) {
   }
 
   output_fc.flush();
-  output_fc.close();
 
   if (kVerbose) {
     kConsoleOut << "Wrote Mach-O binary: " << kOutput << "\n";
