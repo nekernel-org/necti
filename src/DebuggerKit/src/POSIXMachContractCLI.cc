@@ -9,7 +9,7 @@
 #include <DebuggerKit/POSIXMachContract.h>
 #include <ThirdParty/Dialogs/Dialogs.h>
 
-#ifdef __APPLE__
+#ifdef DK_MACH_DEBUGGER
 #include <DebuggerKit/Common.inl>
 
 /// @internal
@@ -38,7 +38,7 @@ NECTAR_MODULE(DebuggerMachPOSIX) {
     kStdOut << "[+] Image set to: " << kPath << "\n";
   } else {
     kStdOut << "usage: " << argv[0] << " -p <path>\n";
-    kStdOut << "example: " << argv[0] << " -p /path/to/program\n";
+    kStdOut << "example: " << argv[0] << " -p </path/to/program>\n";
 
     return EXIT_FAILURE;
   }

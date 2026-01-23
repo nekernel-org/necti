@@ -1,19 +1,19 @@
-# Specification of Nectar
+# Specification of Nectar.
 
 ===================================
 
-# 0: General Information
+# 0: General Information:
 
 ===================================
 
 - ABI: PEF based.
 - Typing System: Weak.
 - Output: NeKernel Assembler/Netwide Assembler.
-- Platforms: OS X, NeKernel.
+- Platforms: OS X, POSIX, NeKernel.
 
 ===================================
 
-# 1: Concepts
+# 1: Concepts:
 
 ===================================
 
@@ -32,7 +32,7 @@
 
 ===================================
 
-# 2: Operators
+# 2: Operators:
 
 ===================================
 
@@ -42,7 +42,7 @@
 
 ===================================
 
-# 3: The Generics Library
+# 3: The Generics Library:
 
 ===================================
 
@@ -50,3 +50,4 @@ Nectar runs using the Generics Library (GL) -- it contains foundational code to 
 
 - //@ Are considered NectarDocs comments.
 - NectarDocs are used to describe behavior of the code -- some Javadoc syntax is supported. Such as: @brief, @param.
+

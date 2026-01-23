@@ -53,4 +53,4 @@ impl iterator : iterator_traits
     }
 };
 
-#endif  // NECTAR_GL_ITERATOR_NHH
+#endif  //@ NECTAR_GL_ITERATOR_NHH

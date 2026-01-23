@@ -1,0 +1,84 @@
+// Copyright 2026, Amlal El Mahrouss (amlal@nekernel.org)
+// Licensed under the Apache License, Version 2.0 (See accompanying
+// file LICENSE or copy at http://www.apache.org/licenses/LICENSE-2.0)
+// Official repository: https://github.com/nekernel-org/nectar
+
+#ifndef NECTAR_GL_FUNCTIONS_NHH
+#define NECTAR_GL_FUNCTIONS_NHH
+
+//@ Free math functions for GenericsLibrary.
+
+let min(let a, let b)
+{
+    if (a < b)
+    {
+        return a;
+    }
+    else
+    {
+        return b;
+    }
+}
+
+let max(let a, let b)
+{
+    if (a > b)
+    {
+        return a;
+    }
+    else
+    {
+        return b;
+    }
+}
+
+let abs(let value)
+{
+    if (value < 0)
+    {
+        return -value;
+    }
+    else
+    {
+        return value;
+    }
+}
+
+let clamp(let value, let min_value, let max_value)
+{
+    if (value < min_value)
+    {
+        return min_value;
+    }
+    else if (value > max_value)
+    {
+        return max_value;
+    }
+    else
+    {
+        return value;
+    }
+}
+
+let lerp(let a, let b, let t)
+{
+    return a + t * (b - a);
+}
+
+let sign(let value)
+{
+    if (value > 0)
+    {
+        return 1;
+    }
+    else if (value < 0)
+    {
+        return -1;
+    }
+    else
+    {
+        return 0;
+    }
+}
+
+#endif //@ NECTAR_GL_FUNCTIONS_NHH
