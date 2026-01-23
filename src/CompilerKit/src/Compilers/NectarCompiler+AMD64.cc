@@ -285,6 +285,7 @@ static auto nectar_get_impl_member(const CompilerKit::STLString& class_name,
 CompilerKit::SyntaxLeafList::SyntaxLeaf CompilerFrontendNectarAMD64::Compile(
     CompilerKit::STLString& text, const CompilerKit::STLString& file) {
   CompilerKit::SyntaxLeafList::SyntaxLeaf syntax_tree;
+  CompilerKit::STLString syntax_rem_buffer;
 
   if (text.empty()) return syntax_tree;
 
@@ -575,9 +576,6 @@ CompilerKit::SyntaxLeafList::SyntaxLeaf CompilerFrontendNectarAMD64::Compile(
 
         if (valueOfVar.find("{") != CompilerKit::STLString::npos) {
           break;
-        } else if (CompilerKit::KeywordKind::kKeywordKindFunctionAccess == keyword.first.fKeywordKind) {
-          syntax_tree.fUserValue += (kNasmOutput ? "section .text\nextern " : "extern_segment .code64") +
-                                    text.substr(0, text.find(keyword.first.fKeywordName)) + "\n";
         }
 
         if (CompilerKit::KeywordKind::kKeywordKindFunctionAccess == keyword.first.fKeywordKind)
@@ -597,6 +595,20 @@ CompilerKit::SyntaxLeafList::SyntaxLeaf CompilerFrontendNectarAMD64::Compile(
 
         auto method = text.substr(0, text.find(keyword.first.fKeywordName));
 
+        if (method.find("let ") != CompilerKit::STLString::npos) {
+          method.erase(0, method.find("let ") + strlen("let "));
+        } else if (method.find("const ") != CompilerKit::STLString::npos) {
+          method.erase(0, method.find("const ") + strlen("const "));
+        }
+
+        if (method.find(":=") != CompilerKit::STLString::npos) {
+          method.erase(0, method.find(":=") + strlen(":="));
+        }
+
+        while (method.find(" ") != CompilerKit::STLString::npos) {
+          method.erase(method.find(" "), 1);
+        }
+
         if (!nectar_get_variable_ref(nameVar).empty())
           syntax_tree.fUserValue += "lea r8, " + nectar_get_variable_ref(nameVar) + "\n";
 
@@ -608,6 +620,8 @@ CompilerKit::SyntaxLeafList::SyntaxLeaf CompilerFrontendNectarAMD64::Compile(
         CompilerKit::STLString arg;
         auto                   index = 9;
         auto                   cnter = 0;
+
+        CompilerKit::STLString buf;
 
         for (auto& ch : args) {
           if (ch == ',' || ch == ')') {
@@ -626,8 +640,7 @@ CompilerKit::SyntaxLeafList::SyntaxLeaf CompilerFrontendNectarAMD64::Compile(
                 }
               }
 
-              if (!arg.empty())
-                syntax_tree.fUserValue += "mov r" + std::to_string(index) + ", " + val + "\n";
+              if (!arg.empty()) buf += "mov r" + std::to_string(index) + ", " + val + "\n";
 
               arg.clear();
               ++index;
@@ -642,6 +655,7 @@ CompilerKit::SyntaxLeafList::SyntaxLeaf CompilerFrontendNectarAMD64::Compile(
 
         if (!nectar_get_variable_ref(nameVar).empty()) {
           if (!kNasmOutput) {
+            syntax_tree.fUserValue += buf;
             syntax_tree.fUserValue += "call ";
             syntax_tree.fUserValue +=
                 (keyword.first.fKeywordName.ends_with('>') ? " __ptr __offset " : " __offset ") +
@@ -661,7 +675,11 @@ CompilerKit::SyntaxLeafList::SyntaxLeaf CompilerFrontendNectarAMD64::Compile(
             }
           }
         } else {
-          syntax_tree.fUserValue += "call " + method + "\n";
+          auto res = buf;
+          res += "call " + method + "\n";
+          res += syntax_rem_buffer;
+
+          syntax_tree.fUserValue += res;
         }
 
         break;
@@ -821,16 +839,16 @@ CompilerKit::SyntaxLeafList::SyntaxLeaf CompilerFrontendNectarAMD64::Compile(
             kExternalSymbols.insert(mangled + valueOfVar);
 
             if (!kNasmOutput) {
-              if (valueOfVar.ends_with(")"))
+              if (valueOfVar.ends_with(")") &&
+                      valueOfVar.find("->") != CompilerKit::STLString::npos ||
+                  valueOfVar.find(".") != CompilerKit::STLString::npos)
                 syntax_tree.fUserValue += instr + nectar_get_variable_ref(varName) +
                                           ", __thiscall " + mangled + valueOfVar + "\n";
               else
                 syntax_tree.fUserValue +=
                     instr + nectar_get_variable_ref(varName) + ", " + mangled + valueOfVar + "\n";
             } else {
-              // NASM: Generate call and move result
-              syntax_tree.fUserValue += "call " + mangled + valueOfVar + "\n";
-              syntax_tree.fUserValue += instr + nectar_get_variable_ref(varName) + ", rax\n";
+              syntax_rem_buffer = instr + nectar_get_variable_ref(varName) + ", rax\n";
             }
           }
 
@@ -841,6 +859,40 @@ CompilerKit::SyntaxLeafList::SyntaxLeaf CompilerFrontendNectarAMD64::Compile(
 
         syntax_tree.fUserValue +=
             instr + nectar_get_variable_ref(varName) + ", " + valueOfVar + "\n";
+
+        break;
+      }
+      case CompilerKit::KeywordKind::kKeywordKindImport: {
+        auto tmp = text;
+
+        if (tmp.find(";") != CompilerKit::STLString::npos)
+          tmp.erase(tmp.find(";"));
+
+        while (tmp.find(" ") != CompilerKit::STLString::npos) {
+          tmp.erase(tmp.find(" "), 1);
+        }
+
+        if (!kNasmOutput)
+          syntax_tree.fUserValue += "extern_segment .zero64 _" + tmp.substr(tmp.find(keyword.first.fKeywordName) + keyword.first.fKeywordName.size()) + "\n";
+        else
+          syntax_tree.fUserValue += "section .data\nextern _" + tmp.substr(tmp.find(keyword.first.fKeywordName) + keyword.first.fKeywordName.size()) + "\n";
+
+        break;
+      }
+      case CompilerKit::KeywordKind::kKeywordKindExtern: {
+        auto tmp = text;
+
+        if (tmp.find(";") != CompilerKit::STLString::npos)
+          tmp.erase(tmp.find(";"));
+
+        while (tmp.find(" ") != CompilerKit::STLString::npos) {
+          tmp.erase(tmp.find(" "), 1);
+        }
+        
+        if (!kNasmOutput)
+          syntax_tree.fUserValue += "extern_segment .code64 _" + tmp.substr(tmp.find(keyword.first.fKeywordName) + keyword.first.fKeywordName.size()) + "\n";
+        else
+          syntax_tree.fUserValue += "section .text\nextern _" + tmp.substr(tmp.find(keyword.first.fKeywordName) + keyword.first.fKeywordName.size()) + "\n";
 
         break;
       }
@@ -1107,7 +1159,8 @@ static Int32 nectar_allocate_stack_variable(const CompilerKit::STLString& var_na
           "CompilerKit");
 
     if (var->fStackOffset > 0)
-      CompilerKit::Detail::print_error("Variable " + var_name + " is already defined.", "CompilerKit");
+      CompilerKit::Detail::print_error("Variable " + var_name + " is already defined.",
+                                       "CompilerKit");
   }
 
   VariableInfo varInfo;
@@ -1407,10 +1460,29 @@ class AssemblyNectarInterfaceAMD64 final CK_ASSEMBLY_INTERFACE {
 
     // First pass: compile all lines and collect symbols
     CompilerKit::STLString compiledCode;
+    std::size_t            lastRes{};
+    std::string            prevRes;
+    std::string            nextRes;
+
     while (std::getline(src_fp, line_source)) {
-      auto res = kFrontend->Compile(line_source, src).fUserValue;
+      auto res = kFrontend->Compile(line_source, src);
       if (kAcceptableErrors > 0) return EXIT_FAILURE;
-      compiledCode += res;
+
+      if (res.fPlaceType == CompilerKit::SyntaxLeafList::SyntaxLeaf::kPlaceBefore) {
+        compiledCode.insert(compiledCode.find(prevRes), res.fUserValue, 0, res.fUserValue.size());
+      } else if (res.fPlaceType == CompilerKit::SyntaxLeafList::SyntaxLeaf::kPlaceAfter) {
+        nextRes = res.fUserValue;
+        continue;
+      } else {
+        compiledCode += res.fUserValue;
+        if (!nextRes.empty()) {
+          compiledCode += nextRes;
+          nextRes.clear();
+        }
+      }
+
+      lastRes = res.fUserValue.size();
+      prevRes = res.fUserValue;
     }
 
     // Output header
@@ -1465,6 +1537,8 @@ NECTAR_MODULE(CompilerNectarAMD64) {
   kKeywords.emplace_back("(", CompilerKit::KeywordKind::kKeywordKindFunctionAccess);
   kKeywords.emplace_back(";", CompilerKit::KeywordKind::kKeywordKindEndLine);
   kKeywords.emplace_back("return", CompilerKit::KeywordKind::kKeywordKindReturn);
+  kKeywords.emplace_back("extern", CompilerKit::KeywordKind::kKeywordKindExtern);
+  kKeywords.emplace_back("import", CompilerKit::KeywordKind::kKeywordKindImport);
 
   kKeywords.emplace_back("if", CompilerKit::KeywordKind::kKeywordKindIf);
 

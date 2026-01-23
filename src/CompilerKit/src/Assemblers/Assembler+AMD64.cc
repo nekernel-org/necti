@@ -608,7 +608,8 @@ bool CompilerKit::EncoderAMD64::WriteNumber(const std::size_t& pos, std::string&
     }
   }
 
-  auto res = strtol(jump_label.substr(pos).c_str(), nullptr, 10);
+  /// @note We assume base 10 here. As other cases have failed.
+  auto res = strtol(jump_label.substr(pos + 1).c_str(), nullptr, 10);
   res += kOrigin;
 
   if (errno != 0) {
@@ -622,7 +623,7 @@ bool CompilerKit::EncoderAMD64::WriteNumber(const std::size_t& pos, std::string&
   }
 
   if (kVerbose) {
-    kStdOut << "AssemblerAMD64: Found a base 10 number here: " << jump_label.substr(pos) << "\n";
+    kStdOut << "AssemblerAMD64: Found a base 10 number here: " << jump_label.substr(pos + 1) << "\n";
   }
 
   return true;

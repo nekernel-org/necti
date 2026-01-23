@@ -51,6 +51,8 @@ enum struct KeywordKind {
   kKeywordKindSpecifier,
   kKeywordKindInvalid,
   kKeywordKindReturn,
+  kKeywordKindExtern,
+  kKeywordKindImport,
   kKeywordKindCommentInline,
   kKeywordKindCommentMultiLineStart,
   kKeywordKindCommentMultiLineEnd,
@@ -88,17 +90,20 @@ struct SyntaxLeafList final {
     using Reference      = SyntaxLeaf&;
     using ConstReference = const SyntaxLeaf&;
 
+    enum {
+      kPlaceNone = 0,
+      kPlaceBefore = 100,
+      kPlaceAfter,
+    };
+
     /// \brief User data type.
     Int32 fUserType{};
-
     /// \brief User data buffer.
     SyntaxKeyword fUserData{{}, KeywordKind::kKeywordKindInvalid};
-
     /// \brief User data value
     STLString fUserValue{};
-
-    /// \brief Next user data on list.
-    Ptr fNext{nullptr};
+    /// \brief Should this value be placed before or after?
+    Int32 fPlaceType{};
   };
 
   using ArrayType = std::vector<SyntaxLeaf>;

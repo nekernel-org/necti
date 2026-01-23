@@ -26,6 +26,8 @@
 - `let` Pointer/Reference variable declaration.
 - `const` and `let` declaration.
 - Functions support.
+- `import` import bss data.
+- `extern` import text data.
 - Nested Stubs support.
 
 ===================================

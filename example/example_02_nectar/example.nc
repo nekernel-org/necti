@@ -1,8 +1,10 @@
+extern sleep;
+
 const main() {
   _sleep(0x1);
-  _putchar(0x0, 'H');
-  _putchar(0x0, 'i');
-  _putchar(0x0, '!');
+  let _ := _putchar(0x0, '!');
 
-  return 0;
+  let foo := 42;
+
+  return foo;
 }
