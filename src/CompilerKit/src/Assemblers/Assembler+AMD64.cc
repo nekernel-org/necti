@@ -116,14 +116,18 @@ NECTAR_MODULE(AssemblerMainAMD64) {
   for (size_t i = 1; i < argc; ++i) {
     if (argv[i][0] == '-') {
       if (strcmp(argv[i], "--version") == 0 || strcmp(argv[i], "-v") == 0) {
-        kStdOut << "AssemblerAMD64: AMD64 Assembler Driver.\nAssemblerAMD64: Copyright (c) 2024-2026 "
-                   "Amlal El Mahrouss\n";
-        kStdOut << "AssemblerAMD64: This Software is part of the NeKernel project. (nekernel.org)\n";
+        kStdOut
+            << "AssemblerAMD64: AMD64 Assembler Driver.\nAssemblerAMD64: Copyright (c) 2024-2026 "
+               "Amlal El Mahrouss\n";
+        kStdOut
+            << "AssemblerAMD64: This Software is part of the NeKernel project. (nekernel.org)\n";
         return 0;
       } else if (strcmp(argv[i], "-help") == 0) {
-        kStdOut << "AssemblerAMD64: AMD64 Assembler Driver.\nAssemblerAMD64: Copyright (c) 2024-2026 "
-                   "Amlal El Mahrouss\n";
-        kStdOut << "AssemblerAMD64: This Software is part of the NeKernel project. (nekernel.org)\n";
+        kStdOut
+            << "AssemblerAMD64: AMD64 Assembler Driver.\nAssemblerAMD64: Copyright (c) 2024-2026 "
+               "Amlal El Mahrouss\n";
+        kStdOut
+            << "AssemblerAMD64: This Software is part of the NeKernel project. (nekernel.org)\n";
         kStdOut << "--version: Print program version.\n";
         kStdOut << "--verbose: Print verbose output.\n";
         kStdOut << "--binary: Output as flat binary.\n";
@@ -538,13 +542,13 @@ std::string CompilerKit::EncoderAMD64::CheckLine(std::string line, std::string f
   return err_str;
 }
 
+/// @brief Read and write a number to the output array.
 bool CompilerKit::EncoderAMD64::WriteNumber(const std::size_t& pos, std::string& jump_label) {
   if (!isdigit(jump_label[pos])) return false;
 
   switch (jump_label[pos + 1]) {
     case 'x': {
       auto res = strtol(jump_label.substr(pos + 2).c_str(), nullptr, 16);
-      res += kOrigin;
 
       if (errno != 0) {
         return false;
@@ -565,7 +569,6 @@ bool CompilerKit::EncoderAMD64::WriteNumber(const std::size_t& pos, std::string&
     }
     case 'b': {
       auto res = strtol(jump_label.substr(pos + 2).c_str(), nullptr, 2);
-      res += kOrigin;
 
       if (errno != 0) {
         return false;
@@ -583,9 +586,9 @@ bool CompilerKit::EncoderAMD64::WriteNumber(const std::size_t& pos, std::string&
 
       return true;
     }
-    case 'o': {
+    case 'o':
+    case '0': {
       auto res = strtol(jump_label.substr(pos + 2).c_str(), nullptr, 8);
-      res += kOrigin;
 
       if (errno != 0) {
         return false;
@@ -610,7 +613,6 @@ bool CompilerKit::EncoderAMD64::WriteNumber(const std::size_t& pos, std::string&
 
   /// @note We assume base 10 here. As other cases have failed.
   auto res = strtol(jump_label.substr(pos + 1).c_str(), nullptr, 10);
-  res += kOrigin;
 
   if (errno != 0) {
     return false;
@@ -623,7 +625,8 @@ bool CompilerKit::EncoderAMD64::WriteNumber(const std::size_t& pos, std::string&
   }
 
   if (kVerbose) {
-    kStdOut << "AssemblerAMD64: Found a base 10 number here: " << jump_label.substr(pos + 1) << "\n";
+    kStdOut << "AssemblerAMD64: Found a base 10 number here: " << jump_label.substr(pos + 1)
+            << "\n";
   }
 
   return true;
@@ -635,7 +638,6 @@ bool CompilerKit::EncoderAMD64::WriteNumber32(const std::size_t& pos, std::strin
   switch (jump_label[pos + 1]) {
     case 'x': {
       auto res = strtol(jump_label.substr(pos + 2).c_str(), nullptr, 16);
-      res += kOrigin;
 
       if (errno != 0) {
         return false;
@@ -656,7 +658,6 @@ bool CompilerKit::EncoderAMD64::WriteNumber32(const std::size_t& pos, std::strin
     }
     case 'b': {
       auto res = strtol(jump_label.substr(pos + 2).c_str(), nullptr, 2);
-      res += kOrigin;
 
       if (errno != 0) {
         return false;
@@ -676,7 +677,6 @@ bool CompilerKit::EncoderAMD64::WriteNumber32(const std::size_t& pos, std::strin
     }
     case 'o': {
       auto res = strtol(jump_label.substr(pos + 2).c_str(), nullptr, 8);
-      res += kOrigin;
 
       if (errno != 0) {
         return false;
@@ -700,7 +700,6 @@ bool CompilerKit::EncoderAMD64::WriteNumber32(const std::size_t& pos, std::strin
   }
 
   auto res = strtol(jump_label.substr(pos + 2).c_str(), nullptr, 10);
-  res += kOrigin;
 
   if (errno != 0) {
     return false;
@@ -819,7 +818,6 @@ bool CompilerKit::EncoderAMD64::WriteNumber8(const std::size_t& pos, std::string
   switch (jump_label[pos + 1]) {
     case 'x': {
       auto res = strtol(jump_label.substr(pos + 2).c_str(), nullptr, 16);
-      res += kOrigin;
 
       if (errno != 0) {
         return false;
@@ -838,7 +836,6 @@ bool CompilerKit::EncoderAMD64::WriteNumber8(const std::size_t& pos, std::string
     }
     case 'b': {
       auto res = strtol(jump_label.substr(pos + 2).c_str(), nullptr, 2);
-      res += kOrigin;
 
       if (errno != 0) {
         return false;
@@ -856,7 +853,6 @@ bool CompilerKit::EncoderAMD64::WriteNumber8(const std::size_t& pos, std::string
     }
     case 'o': {
       auto res = strtol(jump_label.substr(pos + 2).c_str(), nullptr, 8);
-      res += kOrigin;
 
       if (errno != 0) {
         return false;
@@ -878,7 +874,6 @@ bool CompilerKit::EncoderAMD64::WriteNumber8(const std::size_t& pos, std::string
   }
 
   auto res = strtol(jump_label.substr(pos).c_str(), nullptr, 10);
-  res += kOrigin;
 
   if (errno != 0) {
     return false;
