@@ -91,7 +91,7 @@ struct SyntaxLeafList final {
     using ConstReference = const SyntaxLeaf&;
 
     enum {
-      kPlaceNone = 0,
+      kPlaceNone   = 0,
       kPlaceBefore = 100,
       kPlaceAfter,
     };

@@ -122,15 +122,15 @@ NECTAR_MODULE(AssemblerMainAMD64) {
         kStdOut
             << "AssemblerAMD64: This Software is part of the NeKernel project. (nekernel.org)\n";
         return 0;
-      } else if (strcmp(argv[i], "-help") == 0) {
+      } else if (strcmp(argv[i], "--help") == 0) {
         kStdOut
             << "AssemblerAMD64: AMD64 Assembler Driver.\nAssemblerAMD64: Copyright (c) 2024-2026 "
                "Amlal El Mahrouss\n";
         kStdOut
             << "AssemblerAMD64: This Software is part of the NeKernel project. (nekernel.org)\n";
         kStdOut << "--version: Print program version.\n";
-        kStdOut << "--verbose: Print verbose output.\n";
-        kStdOut << "--binary: Output as flat binary.\n";
+        kStdOut << "--fverbose: Print verbose output.\n";
+        kStdOut << "--fbinary: Output as flat binary.\n";
 
         return 0;
       } else if (strcmp(argv[i], "--fbinary") == 0) {
@@ -452,7 +452,8 @@ static bool asm_read_attributes(std::string line) {
 
 // \brief algorithms and helpers.
 
-namespace CompilerKit::Detail::algorithm {
+namespace CompilerKit::Detail::Algorithm {
+
 // \brief authorize a brief set of characters.
 static inline bool is_not_valid(char c) {
   if ((isalpha(c) || isdigit(c)) ||
@@ -468,7 +469,8 @@ static inline bool is_not_valid(char c) {
 bool is_valid_amd64(std::string str) {
   return std::find_if(str.begin(), str.end(), is_not_valid) == str.end();
 }
-}  // namespace CompilerKit::Detail::algorithm
+
+}  // namespace CompilerKit::Detail::Algorithm
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
@@ -487,7 +489,7 @@ std::string CompilerKit::EncoderAMD64::CheckLine(std::string line, std::string f
       line.erase(line.find(';'));
     } else {
       // now check the line for validity
-      if (!CompilerKit::Detail::algorithm::is_valid_amd64(line)) {
+      if (!CompilerKit::Detail::Algorithm::is_valid_amd64(line)) {
         err_str = "Line contains non valid characters.\nhere -> ";
         err_str += line;
       }
@@ -916,7 +918,7 @@ bool CompilerKit::EncoderAMD64::WriteLine(std::string line, std::string file) {
   for (auto& opcodeAMD64 : kOpcodesAMD64) {
     // strict check here
     if (CompilerKit::ast_find_needle(line, opcodeAMD64.fName) &&
-        CompilerKit::Detail::algorithm::is_valid_amd64(line)) {
+        CompilerKit::Detail::Algorithm::is_valid_amd64(line)) {
       foundInstruction = true;
       std::string name(opcodeAMD64.fName);
 

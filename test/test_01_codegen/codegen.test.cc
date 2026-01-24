@@ -10,8 +10,7 @@
 
 TEST(CodegenTest, BasicCodegenTestGrep) {
   // Compile C++ source to assembly
-  auto compile_result =
-      std::system("pef-amd64-cxxdrv ../test_samples/sample.nc > /dev/null 2>&1");
+  auto compile_result = std::system("pef-amd64-cxxdrv ../test_samples/sample.nc > /dev/null 2>&1");
   EXPECT_TRUE(compile_result == 0) << "C++ compiler driver failed to compile sample.cc";
 
   // Grep for expected entry point symbol in generated assembly

@@ -66,24 +66,24 @@ NECTAR_MODULE(AssemblerMain64x0) {
 
   for (size_t i = 1; i < argc; ++i) {
     if (argv[i][0] == '-') {
-      if (strcmp(argv[i], "-64x0-ver") == 0 || strcmp(argv[i], "-64x0-v") == 0) {
+      if (strcmp(argv[i], "--version") == 0 || strcmp(argv[i], "--v") == 0) {
         kStdOut
             << "Assembler64x0: 64x0 Assembler.\nAssembler64x0: v1.10\nAssembler64x0: Copyright (c) "
                "Amlal El Mahrouss\n";
         return 0;
-      } else if (strcmp(argv[i], "-64x0-h") == 0) {
+      } else if (strcmp(argv[i], "--help") == 0) {
         kStdOut << "Assembler64x0: 64x0 Assembler.\nAssembler64x0: Copyright (c) 2024 Mahrouss "
                    "Logic.\n";
         kStdOut << "--version: Print program version.\n";
-        kStdOut << "--verbose: Print verbose output.\n";
-        kStdOut << "--binary: Output as flat binary.\n";
+        kStdOut << "--fverbose: Print verbose output.\n";
+        kStdOut << "--fbinary: Output as flat binary.\n";
         kStdOut << "--64xxx: Compile for a subset of the X64000.\n";
 
         return 0;
-      } else if (strcmp(argv[i], "-64x0-binary") == 0) {
+      } else if (strcmp(argv[i], "--fbinary") == 0) {
         kOutputAsBinary = true;
         continue;
-      } else if (strcmp(argv[i], "-64x0-verbose") == 0) {
+      } else if (strcmp(argv[i], "--fverbose") == 0) {
         kVerbose = true;
         continue;
       }

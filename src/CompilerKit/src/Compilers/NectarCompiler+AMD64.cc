@@ -285,7 +285,7 @@ static auto nectar_get_impl_member(const CompilerKit::STLString& class_name,
 CompilerKit::SyntaxLeafList::SyntaxLeaf CompilerFrontendNectarAMD64::Compile(
     CompilerKit::STLString& text, const CompilerKit::STLString& file) {
   CompilerKit::SyntaxLeafList::SyntaxLeaf syntax_tree;
-  CompilerKit::STLString syntax_rem_buffer;
+  CompilerKit::STLString                  syntax_rem_buffer;
 
   if (text.empty()) return syntax_tree;
 
@@ -865,34 +865,44 @@ CompilerKit::SyntaxLeafList::SyntaxLeaf CompilerFrontendNectarAMD64::Compile(
       case CompilerKit::KeywordKind::kKeywordKindImport: {
         auto tmp = text;
 
-        if (tmp.find(";") != CompilerKit::STLString::npos)
-          tmp.erase(tmp.find(";"));
+        if (tmp.find(";") != CompilerKit::STLString::npos) tmp.erase(tmp.find(";"));
 
         while (tmp.find(" ") != CompilerKit::STLString::npos) {
           tmp.erase(tmp.find(" "), 1);
         }
 
         if (!kNasmOutput)
-          syntax_tree.fUserValue += "extern_segment .zero64 _" + tmp.substr(tmp.find(keyword.first.fKeywordName) + keyword.first.fKeywordName.size()) + "\n";
+          syntax_tree.fUserValue +=
+              "extern_segment .zero64 _" +
+              tmp.substr(tmp.find(keyword.first.fKeywordName) + keyword.first.fKeywordName.size()) +
+              "\n";
         else
-          syntax_tree.fUserValue += "section .data\nextern _" + tmp.substr(tmp.find(keyword.first.fKeywordName) + keyword.first.fKeywordName.size()) + "\n";
+          syntax_tree.fUserValue +=
+              "section .data\nextern _" +
+              tmp.substr(tmp.find(keyword.first.fKeywordName) + keyword.first.fKeywordName.size()) +
+              "\n";
 
         break;
       }
       case CompilerKit::KeywordKind::kKeywordKindExtern: {
         auto tmp = text;
 
-        if (tmp.find(";") != CompilerKit::STLString::npos)
-          tmp.erase(tmp.find(";"));
+        if (tmp.find(";") != CompilerKit::STLString::npos) tmp.erase(tmp.find(";"));
 
         while (tmp.find(" ") != CompilerKit::STLString::npos) {
           tmp.erase(tmp.find(" "), 1);
         }
-        
+
         if (!kNasmOutput)
-          syntax_tree.fUserValue += "extern_segment .code64 _" + tmp.substr(tmp.find(keyword.first.fKeywordName) + keyword.first.fKeywordName.size()) + "\n";
+          syntax_tree.fUserValue +=
+              "extern_segment .code64 _" +
+              tmp.substr(tmp.find(keyword.first.fKeywordName) + keyword.first.fKeywordName.size()) +
+              "\n";
         else
-          syntax_tree.fUserValue += "section .text\nextern _" + tmp.substr(tmp.find(keyword.first.fKeywordName) + keyword.first.fKeywordName.size()) + "\n";
+          syntax_tree.fUserValue +=
+              "section .text\nextern _" +
+              tmp.substr(tmp.find(keyword.first.fKeywordName) + keyword.first.fKeywordName.size()) +
+              "\n";
 
         break;
       }

@@ -87,7 +87,7 @@ static CompilerKit::STLString macho_extract_symbol_name(const CompilerKit::STLSt
 
 /// @brief Add a symbol to the symbol table
 static UInt32 macho_add_symbol(const CompilerKit::STLString& name, uint8_t type, uint8_t sect,
-                        UInt64 value) {
+                               UInt64 value) {
   // Add name to string table (offset 0 is reserved for empty string)
   if (kStringTable.empty()) {
     kStringTable.push_back('\0');  // First byte is null

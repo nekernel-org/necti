@@ -58,8 +58,8 @@ typedef struct AERecordHeader final {
 } PACKED AERecordHeader, *AERecordHeaderPtr;
 
 enum {
-  kKindImportSymbol   = 0x356,
-  kKindExportSymbol   = 0x237,
+  kKindImportSymbol = 0x356,
+  kKindExportSymbol = 0x237,
 };
 
 enum {
