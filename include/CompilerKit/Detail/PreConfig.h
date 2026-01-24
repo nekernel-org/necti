@@ -50,6 +50,11 @@
 #include <cassert>
 #include <fstream>
 #include <string>
+#include <filesystem>
+
+#ifdef __linux__
+#define isnumber isdigit
+#endif
 
 #define ToString(X) Stringify(X)
 #define Stringify(X) #X

@@ -8,6 +8,8 @@
 /// Last Rev: 2026
 /// @note Outputs Mach-O executables with __TEXT and __DATA segments.
 
+#ifndef __linux__
+
 #include <CompilerKit/AE.h>
 #include <CompilerKit/CodeGenerator.h>
 #include <CompilerKit/Detail/Config.h>
@@ -695,3 +697,5 @@ NECTAR_MODULE(DynamicLinker64MachO) {
 }
 
 // Last rev - 2026
+
+#endif // ifndef __linux__
