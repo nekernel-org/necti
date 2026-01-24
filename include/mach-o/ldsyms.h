@@ -2,14 +2,14 @@
  * Copyright (c) 1999 Apple Computer, Inc. All rights reserved.
  *
  * @APPLE_LICENSE_HEADER_START@
- * 
+ *
  * This file contains Original Code and/or Modifications of Original Code
  * as defined in and that are subject to the Apple Public Source License
  * Version 2.0 (the 'License'). You may not use this file except in
  * compliance with the License. Please obtain a copy of the License at
  * http://www.opensource.apple.com/apsl/ and read it before using this
  * file.
- * 
+ *
  * The Original Code and all software distributed under the License are
  * distributed on an 'AS IS' basis, WITHOUT WARRANTY OF ANY KIND, EITHER
  * EXPRESS OR IMPLIED, AND APPLE HEREBY DISCLAIMS ALL SUCH WARRANTIES,
@@ -17,7 +17,7 @@
  * FITNESS FOR A PARTICULAR PURPOSE, QUIET ENJOYMENT OR NON-INFRINGEMENT.
  * Please see the License for the specific language governing rights and
  * limitations under the License.
- * 
+ *
  * @APPLE_LICENSE_HEADER_END@
  */
 
@@ -51,15 +51,15 @@
  * any file type other than a MH_EXECUTE file type.  The type of the symbol is
  * absolute as the header is not part of any section.
  */
-#define _MH_EXECUTE_SYM	"__mh_execute_header"
-#define MH_EXECUTE_SYM	"_mh_execute_header"
+#define _MH_EXECUTE_SYM "__mh_execute_header"
+#define MH_EXECUTE_SYM "_mh_execute_header"
 extern const struct
 #ifdef __LP64__
-mach_header_64
+    mach_header_64
 #else
-mach_header
+    mach_header
 #endif
-_mh_execute_header;
+        _mh_execute_header;
 
 /*
  * The value of the link editor defined symbol _MH_BUNDLE_SYM is the address
@@ -68,15 +68,15 @@ _mh_execute_header;
  * an N_SECT symbol even thought the header is not part of any section.  This
  * symbol is private to the code in the bundle it is a part of.
  */
-#define _MH_BUNDLE_SYM	"__mh_bundle_header"
-#define MH_BUNDLE_SYM	"_mh_bundle_header"
+#define _MH_BUNDLE_SYM "__mh_bundle_header"
+#define MH_BUNDLE_SYM "_mh_bundle_header"
 extern const struct
 #ifdef __LP64__
-mach_header_64
+    mach_header_64
 #else
-mach_header
+    mach_header
 #endif
-_mh_bundle_header;
+        _mh_bundle_header;
 
 /*
  * The value of the link editor defined symbol _MH_DYLIB_SYM is the address
@@ -85,15 +85,15 @@ _mh_bundle_header;
  * an N_SECT symbol even thought the header is not part of any section.  This
  * symbol is private to the code in the library it is a part of.
  */
-#define _MH_DYLIB_SYM	"__mh_dylib_header"
-#define MH_DYLIB_SYM	"_mh_dylib_header"
+#define _MH_DYLIB_SYM "__mh_dylib_header"
+#define MH_DYLIB_SYM "_mh_dylib_header"
 extern const struct
 #ifdef __LP64__
-mach_header_64
+    mach_header_64
 #else
-mach_header
+    mach_header
 #endif
-_mh_dylib_header;
+        _mh_dylib_header;
 
 /*
  * The value of the link editor defined symbol _MH_DYLINKER_SYM is the address
@@ -102,15 +102,15 @@ _mh_dylib_header;
  * an N_SECT symbol even thought the header is not part of any section.  This
  * symbol is private to the code in the dynamic linker it is a part of.
  */
-#define _MH_DYLINKER_SYM	"__mh_dylinker_header"
-#define MH_DYLINKER_SYM		"_mh_dylinker_header"
+#define _MH_DYLINKER_SYM "__mh_dylinker_header"
+#define MH_DYLINKER_SYM "_mh_dylinker_header"
 extern const struct
 #ifdef __LP64__
-mach_header_64
+    mach_header_64
 #else
-mach_header
+    mach_header
 #endif
-_mh_dylinker_header;
+        _mh_dylinker_header;
 
 /*
  * For the MH_PRELOAD file type the headers are not loaded as part of any
@@ -122,7 +122,7 @@ _mh_dylinker_header;
  * have the form: __SEGNAME__sectname__begin and __SEGNAME__sectname__end
  * where __sectname is the name of the section and __SEGNAME is the segment it
  * is in.
- * 
+ *
  * The above symbols' types are those of the section they are referring to.
  * This is true even for symbols who's values are end's of a section and
  * that value is next address after that section and not really in that

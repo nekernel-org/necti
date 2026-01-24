@@ -365,7 +365,7 @@ CompilerKit::SyntaxLeafList::SyntaxLeaf CompilerFrontendNectarAMD64::Compile(
           if (!nectar_get_variable_ref(left).empty())
             syntax_tree.fUserValue += "mov rdi, " +
                                       (isnumber(left[0]) ? left
-                                                         : (nectar_get_variable_ref(left).empty()
+                                                         : (!nectar_get_variable_ref(left).empty()
                                                                 ? left
                                                                 : nectar_get_variable_ref(left))) +
                                       "\n";
@@ -373,16 +373,16 @@ CompilerKit::SyntaxLeafList::SyntaxLeaf CompilerFrontendNectarAMD64::Compile(
             syntax_tree.fUserValue += "mov rdi, " +
                                       (isnumber(left[0]) ? left
                                                          : (nectar_get_variable_ref(left).empty()
-                                                                ? left
+                                                                ? "0x0"
                                                                 : nectar_get_variable_ref(left))) +
                                       "\n";
 
-          if (!nectar_get_variable_ref(left).empty())
+          if (!nectar_get_variable_ref(right).empty())
             syntax_tree.fUserValue +=
                 "lea rsi, " +
                 (isnumber(right[0])
                      ? right
-                     : (nectar_get_variable_ref(right).empty() ? right
+                     : (!nectar_get_variable_ref(right).empty() ? right
                                                                : nectar_get_variable_ref(right))) +
                 "\n";
           else
@@ -390,7 +390,7 @@ CompilerKit::SyntaxLeafList::SyntaxLeaf CompilerFrontendNectarAMD64::Compile(
                 "mov rsi, " +
                 (isnumber(right[0])
                      ? right
-                     : (nectar_get_variable_ref(right).empty() ? right
+                     : (nectar_get_variable_ref(right).empty() ? "0x0"
                                                                : nectar_get_variable_ref(right))) +
                 "\n";
 
@@ -435,7 +435,10 @@ CompilerKit::SyntaxLeafList::SyntaxLeaf CompilerFrontendNectarAMD64::Compile(
       dont_accept_func:
         break;
 
-      accept_func : {
+      accept_func: {
+        if (kFunctionEmbedLevel > 0)
+          CompilerKit::Detail::print_error("Clojures are a work in progress feature.", file);
+
         CompilerKit::STLString symbol_name_fn = text;
         size_t                 indexFnName    = 0;
 
@@ -569,6 +572,26 @@ CompilerKit::SyntaxLeafList::SyntaxLeaf CompilerFrontendNectarAMD64::Compile(
       case CompilerKit::KeywordKind::kKeywordKindAccess:
       case CompilerKit::KeywordKind::kKeywordKindFunctionAccess:
       case CompilerKit::KeywordKind::kKeywordKindAccessChecked: {
+        if (text.find("return ") != CompilerKit::STLString::npos) {
+          break;
+        }
+
+        if (text.find("if ") != CompilerKit::STLString::npos) {
+          break;
+        }
+
+        if (text.find("const ") != CompilerKit::STLString::npos) {
+          break;
+        }
+
+        if (text.find("let ") != CompilerKit::STLString::npos) {
+          break;
+        }
+
+        if (text.find("):") != CompilerKit::STLString::npos) {
+          break;
+        }
+
         CompilerKit::STLString valueOfVar =
             text.substr(text.find(keyword.first.fKeywordName) + keyword.first.fKeywordName.size());
 
@@ -923,7 +946,38 @@ CompilerKit::SyntaxLeafList::SyntaxLeaf CompilerFrontendNectarAMD64::Compile(
           subText        = subText.erase(subText.find(";"));
           size_t indxReg = 0UL;
 
-          if (subText.find("(") != CompilerKit::STLString::npos) subText.erase(subText.find("("));
+          // Extract and set up call arguments before erasing them
+          if (subText.find("):") != CompilerKit::STLString::npos) {
+            auto argStart = subText.find("(") + 1;
+            auto argEnd   = subText.find("):");
+
+            if (argEnd != CompilerKit::STLString::npos && argEnd > argStart) {
+              auto argsStr = subText.substr(argStart, argEnd - argStart);
+              auto regIdx  = 9;
+
+              CompilerKit::STLString currentArg;
+              for (std::size_t i = 0; i <= argsStr.size(); ++i) {
+                if (i == argsStr.size() || argsStr[i] == ',') {
+                  while (!currentArg.empty() && currentArg[0] == ' ') currentArg.erase(0, 1);
+                  while (!currentArg.empty() && currentArg.back() == ' ') currentArg.pop_back();
+
+                  if (!currentArg.empty() && regIdx <= 15) {
+                    auto val = nectar_get_variable_ref(currentArg);
+                    if (val.empty()) val = currentArg;
+
+                    syntax_tree.fUserValue += "mov r" + std::to_string(regIdx) + ", " + val + "\n";
+                    ++regIdx;
+                  }
+
+                  currentArg.clear();
+                } else {
+                  currentArg += argsStr[i];
+                }
+              }
+            }
+
+            subText.erase(subText.find("("));
+          }
 
           auto ref = nectar_get_variable_ref(subText);
 
@@ -933,7 +987,16 @@ CompilerKit::SyntaxLeafList::SyntaxLeaf CompilerFrontendNectarAMD64::Compile(
             syntax_tree.fUserValue += "mov rax, " + subText + "\n";
           else if (text.find("(") != CompilerKit::STLString::npos &&
                    text.find(");") != CompilerKit::STLString::npos) {
-            // Track as potential external symbol for NASM
+            // Track as potential external symbol for NASM.
+
+            subText.erase(subText.find("("));
+
+            for (const auto& keyword : kKeywords)
+            {
+                if (keyword.fKeywordName == subText)
+                    CompilerKit::Detail::print_error("A Nectar keyword cannot be called.", file);
+            }
+
             kExternalSymbols.insert(subText);
 
             if (!kNasmOutput) {
@@ -1434,8 +1497,7 @@ static void nectar_process_function_parameters(const std::vector<CompilerKit::ST
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
-#define kExtListCxx \
-  { ".nc", ".pp.nc" }
+#define kExtListCxx {".nc", ".pp.nc"}
 
 class AssemblyNectarInterfaceAMD64 final CK_ASSEMBLY_INTERFACE {
  public:

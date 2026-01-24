@@ -48,9 +48,9 @@
 #include <time.h>
 #include <unistd.h>
 #include <cassert>
+#include <filesystem>
 #include <fstream>
 #include <string>
-#include <filesystem>
 
 #ifdef __linux__
 #define isnumber isdigit
@@ -89,8 +89,7 @@
 #define kObjectFileExt ".obj"
 #define kBinaryFileExt ".bin"
 
-#define kAsmFileExts \
-  { ".64x", ".32x", ".masm", ".s", ".S", ".asm", ".x64" }
+#define kAsmFileExts {".64x", ".32x", ".masm", ".s", ".S", ".asm", ".x64"}
 
 #define kAsmFileExtsMax (7U)
 

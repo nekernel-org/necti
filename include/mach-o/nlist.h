@@ -1,15 +1,15 @@
 /*
  * Copyright (c) 1999-2003 Apple Computer, Inc.  All Rights Reserved.
- * 
+ *
  * @APPLE_LICENSE_HEADER_START@
- * 
+ *
  * This file contains Original Code and/or Modifications of Original Code
  * as defined in and that are subject to the Apple Public Source License
  * Version 2.0 (the 'License'). You may not use this file except in
  * compliance with the License. Please obtain a copy of the License at
  * http://www.opensource.apple.com/apsl/ and read it before using this
  * file.
- * 
+ *
  * The Original Code and all software distributed under the License are
  * distributed on an 'AS IS' basis, WITHOUT WARRANTY OF ANY KIND, EITHER
  * EXPRESS OR IMPLIED, AND APPLE HEREBY DISCLAIMS ALL SUCH WARRANTIES,
@@ -17,7 +17,7 @@
  * FITNESS FOR A PARTICULAR PURPOSE, QUIET ENJOYMENT OR NON-INFRINGEMENT.
  * Please see the License for the specific language governing rights and
  * limitations under the License.
- * 
+ *
  * @APPLE_LICENSE_HEADER_END@
  */
 #ifndef _MACHO_NLIST_H_
@@ -74,29 +74,29 @@
  * file.
  */
 struct nlist {
-	union {
+  union {
 #ifndef __LP64__
-		char *n_name;	/* for use when in-core */
+    char* n_name; /* for use when in-core */
 #endif
-		int32_t n_strx;	/* index into the string table */
-	} n_un;
-	uint8_t n_type;		/* type flag, see below */
-	uint8_t n_sect;		/* section number or NO_SECT */
-	int16_t n_desc;		/* see <mach-o/stab.h> */
-	uint32_t n_value;	/* value of this symbol (or stab offset) */
+    int32_t n_strx; /* index into the string table */
+  } n_un;
+  uint8_t  n_type;  /* type flag, see below */
+  uint8_t  n_sect;  /* section number or NO_SECT */
+  int16_t  n_desc;  /* see <mach-o/stab.h> */
+  uint32_t n_value; /* value of this symbol (or stab offset) */
 };
 
 /*
  * This is the symbol table entry structure for 64-bit architectures.
  */
 struct nlist_64 {
-    union {
-        uint32_t  n_strx; /* index into the string table */
-    } n_un;
-    uint8_t n_type;        /* type flag, see below */
-    uint8_t n_sect;        /* section number or NO_SECT */
-    uint16_t n_desc;       /* see <mach-o/stab.h> */
-    uint64_t n_value;      /* value of this symbol (or stab offset) */
+  union {
+    uint32_t n_strx; /* index into the string table */
+  } n_un;
+  uint8_t  n_type;  /* type flag, see below */
+  uint8_t  n_sect;  /* section number or NO_SECT */
+  uint16_t n_desc;  /* see <mach-o/stab.h> */
+  uint64_t n_value; /* value of this symbol (or stab offset) */
 };
 
 /*
@@ -114,10 +114,10 @@ struct nlist_64 {
  *		      N_EXT:1;
  * which are used via the following masks.
  */
-#define	N_STAB	0xe0  /* if any of these bits set, a symbolic debugging entry */
-#define	N_PEXT	0x10  /* private external symbol bit */
-#define	N_TYPE	0x0e  /* mask for the type bits */
-#define	N_EXT	0x01  /* external symbol bit, set for external symbols */
+#define N_STAB 0xe0 /* if any of these bits set, a symbolic debugging entry */
+#define N_PEXT 0x10 /* private external symbol bit */
+#define N_TYPE 0x0e /* mask for the type bits */
+#define N_EXT 0x01  /* external symbol bit, set for external symbols */
 
 /*
  * Only symbolic debugging entries have some of the N_STAB bits set and if any
@@ -129,13 +129,13 @@ struct nlist_64 {
 /*
  * Values for N_TYPE bits of the n_type field.
  */
-#define	N_UNDF	0x0		/* undefined, n_sect == NO_SECT */
-#define	N_ABS	0x2		/* absolute, n_sect == NO_SECT */
-#define	N_SECT	0xe		/* defined in section number n_sect */
-#define	N_PBUD	0xc		/* prebound undefined (defined in a dylib) */
-#define N_INDR	0xa		/* indirect */
+#define N_UNDF 0x0 /* undefined, n_sect == NO_SECT */
+#define N_ABS 0x2  /* absolute, n_sect == NO_SECT */
+#define N_SECT 0xe /* defined in section number n_sect */
+#define N_PBUD 0xc /* prebound undefined (defined in a dylib) */
+#define N_INDR 0xa /* indirect */
 
-/* 
+/*
  * If the type is N_INDR then the symbol is defined to be the same as another
  * symbol.  In this case the n_value field is an index into the string table
  * of the other symbol's name.  When the other symbol is defined then they both
@@ -144,18 +144,18 @@ struct nlist_64 {
 
 /*
  * If the type is N_SECT then the n_sect field contains an ordinal of the
- * section the symbol is defined in.  The sections are numbered from 1 and 
+ * section the symbol is defined in.  The sections are numbered from 1 and
  * refer to sections in order they appear in the load commands for the file
  * they are in.  This means the same ordinal may very well refer to different
  * sections in different files.
  *
  * The n_value field for all symbol table entries (including N_STAB's) gets
  * updated by the link editor based on the value of it's n_sect field and where
- * the section n_sect references gets relocated.  If the value of the n_sect 
+ * the section n_sect references gets relocated.  If the value of the n_sect
  * field is NO_SECT then it's n_value field is not changed by the link editor.
  */
-#define	NO_SECT		0	/* symbol is not in any section */
-#define MAX_SECT	255	/* 1 thru 255 inclusive */
+#define NO_SECT 0    /* symbol is not in any section */
+#define MAX_SECT 255 /* 1 thru 255 inclusive */
 
 /*
  * Common symbols are represented by undefined (N_UNDF) external (N_EXT) types
@@ -167,8 +167,7 @@ struct nlist_64 {
  * the size is used.
  */
 #define GET_COMM_ALIGN(n_desc) (((n_desc) >> 8) & 0x0f)
-#define SET_COMM_ALIGN(n_desc,align) \
-    (n_desc) = (((n_desc) & 0xf0ff) | (((align) & 0x0f) << 8))
+#define SET_COMM_ALIGN(n_desc, align) (n_desc) = (((n_desc) & 0xf0ff) | (((align) & 0x0f) << 8))
 
 /*
  * To support the lazy binding of undefined symbols in the dynamic link-editor,
@@ -190,14 +189,14 @@ struct nlist_64 {
  * REFERENCE_FLAG_DEFINED, is also used.
  */
 /* Reference type bits of the n_desc field of undefined symbols */
-#define REFERENCE_TYPE				0x7
+#define REFERENCE_TYPE 0x7
 /* types of references */
-#define REFERENCE_FLAG_UNDEFINED_NON_LAZY		0
-#define REFERENCE_FLAG_UNDEFINED_LAZY			1
-#define REFERENCE_FLAG_DEFINED				2
-#define REFERENCE_FLAG_PRIVATE_DEFINED			3
-#define REFERENCE_FLAG_PRIVATE_UNDEFINED_NON_LAZY	4
-#define REFERENCE_FLAG_PRIVATE_UNDEFINED_LAZY		5
+#define REFERENCE_FLAG_UNDEFINED_NON_LAZY 0
+#define REFERENCE_FLAG_UNDEFINED_LAZY 1
+#define REFERENCE_FLAG_DEFINED 2
+#define REFERENCE_FLAG_PRIVATE_DEFINED 3
+#define REFERENCE_FLAG_PRIVATE_UNDEFINED_NON_LAZY 4
+#define REFERENCE_FLAG_PRIVATE_UNDEFINED_LAZY 5
 
 /*
  * To simplify stripping of objects that use are used with the dynamic link
@@ -205,7 +204,7 @@ struct nlist_64 {
  * referenced by a dynamicly bound object (dynamic shared libraries, bundles).
  * With this marking strip knows not to strip these symbols.
  */
-#define REFERENCED_DYNAMICALLY	0x0010
+#define REFERENCED_DYNAMICALLY 0x0010
 
 /*
  * For images created by the static link editor with the -twolevel_namespace
@@ -223,18 +222,18 @@ struct nlist_64 {
  * SELF_LIBRARY_ORDINAL.  The EXECUTABLE_ORDINAL refers to the executable
  * image for references from plugins that refer to the executable that loads
  * them.
- * 
+ *
  * The DYNAMIC_LOOKUP_ORDINAL is for undefined symbols in a two-level namespace
  * image that are looked up by the dynamic linker with flat namespace semantics.
  * This ordinal was added as a feature in Mac OS X 10.3 by reducing the
  * value of MAX_LIBRARY_ORDINAL by one.  So it is legal for existing binaries
  * or binaries built with older tools to have 0xfe (254) dynamic libraries.  In
  * this case the ordinal value 0xfe (254) must be treated as a library ordinal
- * for compatibility. 
+ * for compatibility.
  */
 #define GET_LIBRARY_ORDINAL(n_desc) (((n_desc) >> 8) & 0xff)
-#define SET_LIBRARY_ORDINAL(n_desc,ordinal) \
-	(n_desc) = (((n_desc) & 0x00ff) | (((ordinal) & 0xff) << 8))
+#define SET_LIBRARY_ORDINAL(n_desc, ordinal) \
+  (n_desc) = (((n_desc) & 0x00ff) | (((ordinal) & 0xff) << 8))
 #define SELF_LIBRARY_ORDINAL 0x0
 #define MAX_LIBRARY_ORDINAL 0xfd
 #define DYNAMIC_LOOKUP_ORDINAL 0xfe
@@ -246,7 +245,7 @@ struct nlist_64 {
  */
 
 /*
- * The N_NO_DEAD_STRIP bit of the n_desc field only ever appears in a 
+ * The N_NO_DEAD_STRIP bit of the n_desc field only ever appears in a
  * relocatable .o file (MH_OBJECT filetype). And is used to indicate to the
  * static link editor it is never to dead strip the symbol.
  */
@@ -257,14 +256,14 @@ struct nlist_64 {
  * But is used in very rare cases by the dynamic link editor to mark an in
  * memory symbol as discared and longer used for linking.
  */
-#define N_DESC_DISCARDED 0x0020	/* symbol is discarded */
+#define N_DESC_DISCARDED 0x0020 /* symbol is discarded */
 
 /*
  * The N_WEAK_REF bit of the n_desc field indicates to the dynamic linker that
  * the undefined symbol is allowed to be missing and is to have the address of
  * zero when missing.
  */
-#define N_WEAK_REF	0x0040 /* symbol is weak referenced */
+#define N_WEAK_REF 0x0040 /* symbol is weak referenced */
 
 /*
  * The N_WEAK_DEF bit of the n_desc field indicates to the static and dynamic
@@ -272,19 +271,19 @@ struct nlist_64 {
  * also be used which causes the weak definition to be discared.  Currently this
  * is only supported for symbols in coalesed sections.
  */
-#define N_WEAK_DEF	0x0080 /* coalesed symbol is a weak definition */
+#define N_WEAK_DEF 0x0080 /* coalesed symbol is a weak definition */
 
 /*
  * The N_REF_TO_WEAK bit of the n_desc field indicates to the dynamic linker
  * that the undefined symbol should be resolved using flat namespace searching.
  */
-#define	N_REF_TO_WEAK	0x0080 /* reference to a weak symbol */
+#define N_REF_TO_WEAK 0x0080 /* reference to a weak symbol */
 
 /*
  * The N_ARM_THUMB_DEF bit of the n_desc field indicates that the symbol is
  * a defintion of a Thumb function.
  */
-#define N_ARM_THUMB_DEF	0x0008 /* symbol is a Thumb function (ARM) */
+#define N_ARM_THUMB_DEF 0x0008 /* symbol is a Thumb function (ARM) */
 
 #ifndef __STRICT_BSD__
 #if __cplusplus
@@ -293,7 +292,7 @@ extern "C" {
 /*
  * The function nlist(3) from the C library.
  */
-extern int nlist (const char *filename, struct nlist *list);
+extern int nlist(const char* filename, struct nlist* list);
 #if __cplusplus
 }
 #endif /* __cplusplus */

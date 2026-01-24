@@ -21,6 +21,8 @@ src/*/pef-*-necdrv
 src/*/pef-*-cxxdrv
 src/*/pef-*-cdrv
 
+*~
+
 *.pp
 *.masm
 *.creator.user
