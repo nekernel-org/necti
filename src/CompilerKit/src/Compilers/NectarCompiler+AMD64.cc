@@ -383,7 +383,7 @@ CompilerKit::SyntaxLeafList::SyntaxLeaf CompilerFrontendNectarAMD64::Compile(
                 (isnumber(right[0])
                      ? right
                      : (!nectar_get_variable_ref(right).empty() ? right
-                                                               : nectar_get_variable_ref(right))) +
+                                                                : nectar_get_variable_ref(right))) +
                 "\n";
           else
             syntax_tree.fUserValue +=
@@ -991,10 +991,9 @@ CompilerKit::SyntaxLeafList::SyntaxLeaf CompilerFrontendNectarAMD64::Compile(
 
             subText.erase(subText.find("("));
 
-            for (const auto& keyword : kKeywords)
-            {
-                if (keyword.fKeywordName == subText)
-                    CompilerKit::Detail::print_error("A Nectar keyword cannot be called.", file);
+            for (const auto& keyword : kKeywords) {
+              if (keyword.fKeywordName == subText)
+                CompilerKit::Detail::print_error("A Nectar keyword cannot be called.", file);
             }
 
             kExternalSymbols.insert(subText);

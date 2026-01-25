@@ -19,8 +19,7 @@
 #include <CompilerKit/UUID.h>
 #include <CompilerKit/Utilities/Compiler.h>
 
-#define kMachODefaultOutput \
-  { "a.out" }
+#define kMachODefaultOutput {"a.out"}
 
 #define kLinkerVersionStr "Nectar 64-Bit Linker (Mach-O)"
 
@@ -698,4 +697,4 @@ NECTAR_MODULE(DynamicLinker64MachO) {
 
 // Last rev - 2026
 
-#endif // ifndef __linux__
+#endif  // ifndef __linux__

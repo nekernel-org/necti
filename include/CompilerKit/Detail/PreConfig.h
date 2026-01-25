@@ -3,8 +3,8 @@
 // file LICENSE or copy at http://www.apache.org/licenses/LICENSE-2.0)
 // Official repository: https://github.com/nekernel-org/nectar
 
-#ifndef __COMPILERKIT_PRECONFIG_H__
-#define __COMPILERKIT_PRECONFIG_H__
+#ifndef COMPILERKIT_CONFIG_PRECONFIG_H
+#define COMPILERKIT_CONFIG_PRECONFIG_H
 
 #ifndef Yes
 #define Yes true
@@ -119,4 +119,4 @@
 #define CK_IMPORT_C extern "C"
 #define CK_IMPORT extern
 
-#endif  // __COMPILERKIT_PRECONFIG_H__
+#endif  // COMPILERKIT_CONFIG_PRECONFIG_H
