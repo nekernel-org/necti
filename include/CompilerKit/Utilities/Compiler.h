@@ -26,8 +26,8 @@
 #define kWhite "\e[0;97m"
 #define kYellow "\e[0;33m"
 
-#define kStdOut (std::cout << kRed << "drv: " << kWhite)
-#define kStdErr (std::cerr << kYellow << "drv: " << kWhite)
+#define kStdOut (std::cout << kRed << "Nectar: " << kWhite)
+#define kStdErr (std::cerr << kRed << "Nectar: " << kWhite)
 #define kStdEndl std::endl
 #define kPrintF kStdOut
 #define kPrintErr kStdErr
@@ -50,7 +50,7 @@ struct Blob final {
 inline void print_error(STLString reason, STLString file) noexcept {
   if (reason[0] == '\n') reason.erase(0, 1);
 
-  kStdErr << reason << kBlank << std::endl;
+  kStdErr << file << ": " << reason << kBlank << std::endl;
 
   ++kAcceptableErrors;
   if (kAcceptableErrors > kErrorLimit) std::exit(NECTAR_EXEC_ERROR);
@@ -59,7 +59,7 @@ inline void print_error(STLString reason, STLString file) noexcept {
 inline void print_warning(STLString reason, STLString file) noexcept {
   if (reason[0] == '\n') reason.erase(0, 1);
 
-  kStdOut << kYellow << reason << kBlank << std::endl;
+  kStdOut << file << ": " << kYellow << reason << kBlank << std::endl;
 }
 
 /// @internal

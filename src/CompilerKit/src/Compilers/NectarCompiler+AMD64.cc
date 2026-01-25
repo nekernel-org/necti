@@ -334,8 +334,8 @@ CompilerKit::SyntaxLeafList::SyntaxLeaf CompilerFrontendNectarAMD64::Compile(
         kCurrentIfCondition = true;
 
         std::size_t keywordPos = text.find(keyword.first.fKeywordName);
-        std::size_t openParen  = text.find("(", keywordPos);
-        std::size_t closeParen = text.find(")", openParen);
+        std::size_t openParen  = text.find("(");
+        std::size_t closeParen = text.find("):");
 
         if (keywordPos == CompilerKit::STLString::npos ||
             openParen == CompilerKit::STLString::npos ||
@@ -359,40 +359,37 @@ CompilerKit::SyntaxLeafList::SyntaxLeaf CompilerFrontendNectarAMD64::Compile(
 
           auto right = left.substr(left.find(op.first) + op.first.size());
 
+          if (auto res = right.find(":"); res != CompilerKit::STLString::npos) right.erase(res);
+
           auto tmp = left.substr(0, left.find(op.first));
-          left     = std::move(tmp);
 
-          if (!nectar_get_variable_ref(left).empty())
-            syntax_tree.fUserValue += "mov rdi, " +
-                                      (isnumber(left[0]) ? left
-                                                         : (!nectar_get_variable_ref(left).empty()
-                                                                ? left
-                                                                : nectar_get_variable_ref(left))) +
-                                      "\n";
-          else
-            syntax_tree.fUserValue += "mov rdi, " +
-                                      (isnumber(left[0]) ? left
-                                                         : (nectar_get_variable_ref(left).empty()
-                                                                ? "0x0"
-                                                                : nectar_get_variable_ref(left))) +
-                                      "\n";
+          kStdOut << tmp << "\n";
 
-          if (!nectar_get_variable_ref(right).empty())
-            syntax_tree.fUserValue +=
-                "lea rsi, " +
-                (isnumber(right[0])
-                     ? right
-                     : (!nectar_get_variable_ref(right).empty() ? right
-                                                                : nectar_get_variable_ref(right))) +
-                "\n";
-          else
-            syntax_tree.fUserValue +=
-                "mov rsi, " +
-                (isnumber(right[0])
-                     ? right
-                     : (nectar_get_variable_ref(right).empty() ? "0x0"
-                                                               : nectar_get_variable_ref(right))) +
-                "\n";
+          if (auto var = nectar_find_variable(tmp); var) {
+            syntax_tree.fUserValue += "mov rdi, qword " + var->fRegister + "\n";
+            delete var;
+          } else {
+            if (!isnumber(tmp[0])) {
+              CompilerKit::Detail::print_warning("Variable not found, treating as symbol: " + tmp, file);
+            }
+
+            syntax_tree.fUserValue += "mov rdi, " + tmp + "\n";
+          }
+
+          kStdOut << right << "\n";
+
+          if (auto var = nectar_find_variable(right); var) {
+            syntax_tree.fUserValue += "mov rsi, qword " + var->fRegister + "\n";
+            delete var;
+          }
+
+          else {
+            if (!isnumber(right[0])) {
+              CompilerKit::Detail::print_warning("Variable not found, treating as symbol: " + right, file);
+            }
+
+            syntax_tree.fUserValue += "mov rsi, " + right + "\n";
+          }
 
           syntax_tree.fUserValue += "cmp rdi, rsi\n";
 
@@ -1233,6 +1230,8 @@ static Int32 nectar_allocate_stack_variable(const CompilerKit::STLString& var_na
     if (var->fStackOffset > 0)
       CompilerKit::Detail::print_error("Variable " + var_name + " is already defined.",
                                        "CompilerKit");
+
+    delete var;
   }
 
   VariableInfo varInfo;
@@ -1251,7 +1250,7 @@ static Int32 nectar_allocate_stack_variable(const CompilerKit::STLString& var_na
 static VariableInfo* nectar_find_variable(const CompilerKit::STLString& var_name) {
   for (auto& var : kContext.fVariables) {
     if (var.fName == var_name) {
-      return &var;
+      return new VariableInfo(var);
     }
   }
   return nullptr;
@@ -1282,17 +1281,30 @@ static CompilerKit::STLString nectar_get_variable_ref(const CompilerKit::STLStri
   varInfo->fLastUsed = kContext.fInstructionCounter;
 
   if (varInfo->fLocation == VarLocation::kRegister) {
-    return varInfo->fRegister;
+    auto reg = varInfo->fRegister;
+    delete varInfo;
+    return reg;
   } else {
     // Stack or spilled
-    return "qword [rbp+" + std::to_string(-varInfo->fStackOffset) + "]";
+    auto reg = "qword [rbp+" + std::to_string(-varInfo->fStackOffset) + "]";
+    delete varInfo;
+    return reg;
   }
+
+  return "";
 }
 
 /// \brief Allocate a register for a variable
 static CompilerKit::STLString nectar_allocate_register(const CompilerKit::STLString& var_name) {
   // Check if variable already has a register
-  auto* existing = nectar_find_variable(var_name);
+  VariableInfo* existing = nullptr;
+
+  for (auto& var : kContext.fVariables) {
+    if (var.fName == var_name) {
+      existing = &var;
+      break;
+    }
+  }
 
   if (existing && existing->fLocation == VarLocation::kRegister) {
     return existing->fRegister;
@@ -1442,6 +1454,7 @@ static CompilerKit::STLString nectar_generate_constructor_call(
 static CompilerKit::STLString nectar_generate_destructor_call(
     const CompilerKit::STLString& class_name, const CompilerKit::STLString& obj_name) {
   auto* varInfo = nectar_find_variable(obj_name);
+
   if (!varInfo) {
     return "";
   }
@@ -1456,6 +1469,9 @@ static CompilerKit::STLString nectar_generate_destructor_call(
   } else {
     code += "mov r8, " + varInfo->fRegister + "\n";
   }
+
+  delete varInfo;
+
   code += "call " + dtor_mangled + "\n";
   return code;
 }
@@ -1661,7 +1677,7 @@ NECTAR_MODULE(CompilerNectarAMD64) {
       CompilerKit::STLString err = "Unknown option: ";
       err += argv[index];
 
-      CompilerKit::Detail::print_error(err, "necfront");
+      CompilerKit::Detail::print_error(err, "necdrv");
 
       continue;
     }
