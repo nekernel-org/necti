@@ -22,6 +22,7 @@
 #include <CompilerKit/PEF.h>
 #include <CompilerKit/UUID.h>
 #include <CompilerKit/Utilities/Compiler.h>
+#include "CompilerKit/Detail/Config.h"
 
 /* NeKernel NECTAR Compiler Driver. */
 /* This is part of the CompilerKit. */
@@ -363,10 +364,14 @@ CompilerKit::SyntaxLeafList::SyntaxLeaf CompilerFrontendNectarAMD64::Compile(
 
           auto tmp = left.substr(0, left.find(op.first));
 
-          kStdOut << tmp << "\n";
+          while (right.find(" ") != CompilerKit::STLString::npos)
+            tmp.erase(tmp.find(" "), 1);
+
+          while (right.find(" ") != CompilerKit::STLString::npos)
+            right.erase(right.find(" "), 1);
 
           if (auto var = nectar_find_variable(tmp); var) {
-            syntax_tree.fUserValue += "mov rdi, qword " + var->fRegister + "\n";
+            syntax_tree.fUserValue += "mov rdi, qword [rbp+" + std::to_string(-var->fStackOffset) + "]\n";
             delete var;
           } else {
             if (!isnumber(tmp[0])) {
@@ -376,10 +381,8 @@ CompilerKit::SyntaxLeafList::SyntaxLeaf CompilerFrontendNectarAMD64::Compile(
             syntax_tree.fUserValue += "mov rdi, " + tmp + "\n";
           }
 
-          kStdOut << right << "\n";
-
           if (auto var = nectar_find_variable(right); var) {
-            syntax_tree.fUserValue += "mov rsi, qword " + var->fRegister + "\n";
+            syntax_tree.fUserValue += "mov rsi, qword [rbp+" + std::to_string(-var->fStackOffset) + "]\n";
             delete var;
           }
 
@@ -543,11 +546,6 @@ CompilerKit::SyntaxLeafList::SyntaxLeaf CompilerFrontendNectarAMD64::Compile(
 
         // Pop function scope
         nectar_pop_scope();
-
-        // Clear function-local state
-        if (kFunctionEmbedLevel < 1) {
-          kContext.fVariables.clear();
-        }
 
         break;
       }
@@ -1677,7 +1675,7 @@ NECTAR_MODULE(CompilerNectarAMD64) {
       CompilerKit::STLString err = "Unknown option: ";
       err += argv[index];
 
-      CompilerKit::Detail::print_error(err, "necdrv");
+      CompilerKit::Detail::print_error(err, "NectarDriver");
 
       continue;
     }
