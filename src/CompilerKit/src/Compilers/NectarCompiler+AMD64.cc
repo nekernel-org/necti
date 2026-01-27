@@ -1205,12 +1205,12 @@ static CompilerKit::STLString nectar_mangle_name(const CompilerKit::STLString& i
 
 /// \brief Generate function prologue
 static CompilerKit::STLString nectar_generate_prologue() {
-  return "";
+  return "push rbp\nmov rbp, rsp\n";
 }
 
 /// \brief Generate function epilogue
 static CompilerKit::STLString nectar_generate_epilogue() {
-  return "";
+  return "pop rbp\n";
 }
 
 /// \brief Allocate a variable on the stack
