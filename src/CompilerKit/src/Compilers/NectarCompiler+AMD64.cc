@@ -509,10 +509,10 @@ CompilerKit::SyntaxLeafList::SyntaxLeaf CompilerFrontendNectarAMD64::Compile(
         kDefinedSymbols.insert(mangled_name);
 
         if (!kNasmOutput)
-          syntax_tree.fUserValue += "public_segment .code64 " + mangled_name + "\n";
+          syntax_tree.fUserValue += "public_segment .code64 _" + mangled_name + "\n";
         else
           syntax_tree.fUserValue +=
-              "section .text\nglobal " + mangled_name + "\n" + mangled_name + ":\n";
+              "section .text\nglobal _" + mangled_name + "\n_" + mangled_name + ":\n";
 
         syntax_tree.fUserValue += nectar_generate_prologue();
 
@@ -694,7 +694,7 @@ CompilerKit::SyntaxLeafList::SyntaxLeaf CompilerFrontendNectarAMD64::Compile(
           }
         } else {
           auto res = buf;
-          res += "call " + method + "\n";
+          res += "call _" + method + "\n";
           res += syntax_rem_buffer;
 
           syntax_tree.fUserValue += res;
@@ -929,7 +929,8 @@ CompilerKit::SyntaxLeafList::SyntaxLeaf CompilerFrontendNectarAMD64::Compile(
           auto pos = text.find("return");
 
           if (pos == CompilerKit::STLString::npos) {
-            syntax_tree.fUserValue += nectar_generate_epilogue() + "ret\n";
+            syntax_tree.fUserValue += nectar_generate_epilogue();
+            syntax_tree.fUserValue += "ret\n";
             ++kOrigin;
             break;
           }
@@ -1210,7 +1211,7 @@ static CompilerKit::STLString nectar_generate_prologue() {
 
 /// \brief Generate function epilogue
 static CompilerKit::STLString nectar_generate_epilogue() {
-  return "pop rbp\n";
+  return "mov rsp, rbp\npop rbp\n";
 }
 
 /// \brief Allocate a variable on the stack
