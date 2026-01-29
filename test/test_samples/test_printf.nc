@@ -1,9 +1,11 @@
+export main;
+
 let main()
 {
-    if (0x01 <= 0x100) 
+    if (0x01 =: 0x01):
     {
-        return 0x80;
+        return 0;
     }
 
-    return 0x0;
+    return 1;
 }

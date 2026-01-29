@@ -53,6 +53,7 @@ enum struct KeywordKind {
   kKeywordKindReturn,
   kKeywordKindExtern,
   kKeywordKindImport,
+  kKeywordKindExport,
   kKeywordKindCommentInline,
   kKeywordKindCommentMultiLineStart,
   kKeywordKindCommentMultiLineEnd,

@@ -352,7 +352,10 @@ CompilerKit::SyntaxLeafList::SyntaxLeaf CompilerFrontendNectarAMD64::Compile(
         }
 
         std::vector<std::pair<CompilerKit::STLString, CompilerKit::STLString>> operators = {
-            {"==", "je"}, {"!=", "jne"}, {">=", "jge"}, {"<=", "jle"}, {">", "jg"}, {"<", "jl"},
+            {"=:", "jne"},
+            {"!=:", "je"},
+            {">:", "jl"},
+            {"<:", "jg"},
         };
 
         for (auto& op : operators) {
@@ -364,31 +367,33 @@ CompilerKit::SyntaxLeafList::SyntaxLeaf CompilerFrontendNectarAMD64::Compile(
 
           auto tmp = left.substr(0, left.find(op.first));
 
-          while (right.find(" ") != CompilerKit::STLString::npos)
-            tmp.erase(tmp.find(" "), 1);
+          while (tmp.find(" ") != CompilerKit::STLString::npos) tmp.erase(tmp.find(" "), 1);
 
-          while (right.find(" ") != CompilerKit::STLString::npos)
-            right.erase(right.find(" "), 1);
+          while (right.find(" ") != CompilerKit::STLString::npos) right.erase(right.find(" "), 1);
 
           if (auto var = nectar_find_variable(tmp); var) {
-            syntax_tree.fUserValue += "mov rdi, qword [rbp+" + std::to_string(-var->fStackOffset) + "]\n";
+            syntax_tree.fUserValue +=
+                "mov rdi, qword [rbp+" + std::to_string(-var->fStackOffset) + "]\n";
             delete var;
           } else {
             if (!isnumber(tmp[0])) {
-              CompilerKit::Detail::print_warning("Variable not found, treating as symbol: " + tmp, file);
+              CompilerKit::Detail::print_warning("Variable not found, treating as symbol: " + tmp,
+                                                 file);
             }
 
             syntax_tree.fUserValue += "mov rdi, " + tmp + "\n";
           }
 
           if (auto var = nectar_find_variable(right); var) {
-            syntax_tree.fUserValue += "mov rsi, qword [rbp+" + std::to_string(-var->fStackOffset) + "]\n";
+            syntax_tree.fUserValue +=
+                "mov rsi, qword [rbp+" + std::to_string(-var->fStackOffset) + "]\n";
             delete var;
           }
 
           else {
             if (!isnumber(right[0])) {
-              CompilerKit::Detail::print_warning("Variable not found, treating as symbol: " + right, file);
+              CompilerKit::Detail::print_warning("Variable not found, treating as symbol: " + right,
+                                                 file);
             }
 
             syntax_tree.fUserValue += "mov rsi, " + right + "\n";
@@ -435,7 +440,7 @@ CompilerKit::SyntaxLeafList::SyntaxLeaf CompilerFrontendNectarAMD64::Compile(
       dont_accept_func:
         break;
 
-      accept_func: {
+      accept_func : {
         if (kFunctionEmbedLevel > 0)
           CompilerKit::Detail::print_error("Clojures are a work in progress feature.", file);
 
@@ -508,11 +513,15 @@ CompilerKit::SyntaxLeafList::SyntaxLeaf CompilerFrontendNectarAMD64::Compile(
         // Track defined symbol for NASM extern resolution
         kDefinedSymbols.insert(mangled_name);
 
+        if (mangled_name.starts_with("__NECTAR") == false) {
+          mangled_name = "_" + mangled_name;
+        }
+
         if (!kNasmOutput)
-          syntax_tree.fUserValue += "public_segment .code64 _" + mangled_name + "\n";
+          syntax_tree.fUserValue += "public_segment .code64 " + mangled_name + "\n";
         else
           syntax_tree.fUserValue +=
-              "section .text\nglobal _" + mangled_name + "\n_" + mangled_name + ":\n";
+              "section .text\nglobal " + mangled_name + "\n" + mangled_name + ":\n";
 
         syntax_tree.fUserValue += nectar_generate_prologue();
 
@@ -552,14 +561,19 @@ CompilerKit::SyntaxLeafList::SyntaxLeaf CompilerFrontendNectarAMD64::Compile(
       case CompilerKit::KeywordKind::kKeywordKindDelete: {
         if (auto pos = syntax_tree.fUserValue.find(keyword.first.fKeywordName);
             pos != CompilerKit::STLString::npos)
-          syntax_tree.fUserValue.replace(pos, keyword.first.fKeywordName.size(),
-                                         "__operator_delete");
+          if (!kNasmOutput) {
+            syntax_tree.fUserValue.replace(pos, keyword.first.fKeywordName.size(),
+                                           "__operator_delete");
+          }
         continue;
       }
       case CompilerKit::KeywordKind::kKeywordKindNew: {
         if (auto pos = syntax_tree.fUserValue.find(keyword.first.fKeywordName);
             pos != CompilerKit::STLString::npos) {
-          syntax_tree.fUserValue.replace(pos, keyword.first.fKeywordName.size(), "__operator_new");
+          if (!kNasmOutput) {
+            syntax_tree.fUserValue.replace(pos, keyword.first.fKeywordName.size(),
+                                           "__operator_new");
+          }
         }
 
         continue;
@@ -694,7 +708,11 @@ CompilerKit::SyntaxLeafList::SyntaxLeaf CompilerFrontendNectarAMD64::Compile(
           }
         } else {
           auto res = buf;
-          res += "call _" + method + "\n";
+          if (method.starts_with("__NECTAR") == false)
+            res += "call _" + method + "\n";
+          else
+            res += "call " + method + "\n";
+
           res += syntax_rem_buffer;
 
           syntax_tree.fUserValue += res;
@@ -834,7 +852,8 @@ CompilerKit::SyntaxLeafList::SyntaxLeaf CompilerFrontendNectarAMD64::Compile(
           } else {
             valueOfVar.erase(0, valueOfVar.find(".") + strlen("."));
           }
-          mangled = "__NECTAR_M_";
+
+          mangled = "__NECTAR_SM_";
         }
 
         if (valueOfVar.find("->") != CompilerKit::STLString::npos) {
@@ -845,7 +864,7 @@ CompilerKit::SyntaxLeafList::SyntaxLeaf CompilerFrontendNectarAMD64::Compile(
           } else {
             valueOfVar.erase(0, valueOfVar.find("->") + strlen("->"));
           }
-          mangled = "__NECTAR_M_";
+          mangled = "__NECTAR_RM_";
         }
 
         if (valueOfVar.find(")") != CompilerKit::STLString::npos) {
@@ -877,6 +896,28 @@ CompilerKit::SyntaxLeafList::SyntaxLeaf CompilerFrontendNectarAMD64::Compile(
 
         syntax_tree.fUserValue +=
             instr + nectar_get_variable_ref(varName) + ", " + valueOfVar + "\n";
+
+        break;
+      }
+      case CompilerKit::KeywordKind::kKeywordKindExport: {
+        auto tmp = text;
+
+        if (tmp.find(";") != CompilerKit::STLString::npos) tmp.erase(tmp.find(";"));
+
+        while (tmp.find(" ") != CompilerKit::STLString::npos) {
+          tmp.erase(tmp.find(" "), 1);
+        }
+
+        if (!kNasmOutput)
+          syntax_tree.fUserValue +=
+              "public_segment .code64 _" +
+              tmp.substr(tmp.find(keyword.first.fKeywordName) + keyword.first.fKeywordName.size()) +
+              "\n";
+        else
+          syntax_tree.fUserValue +=
+              "section .text\nglobal _" +
+              tmp.substr(tmp.find(keyword.first.fKeywordName) + keyword.first.fKeywordName.size()) +
+              "\n";
 
         break;
       }
@@ -1511,7 +1552,8 @@ static void nectar_process_function_parameters(const std::vector<CompilerKit::ST
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
-#define kExtListCxx {".nc", ".pp.nc"}
+#define kExtListCxx \
+  { ".nc", ".pp.nc" }
 
 class AssemblyNectarInterfaceAMD64 final CK_ASSEMBLY_INTERFACE {
  public:
@@ -1574,8 +1616,10 @@ class AssemblyNectarInterfaceAMD64 final CK_ASSEMBLY_INTERFACE {
     // Output header
     if (!kNasmOutput)
       out_fp << "%bits 64\n";
-    else
+    else {
       out_fp << "[bits 64]\n";
+      out_fp << "extern __operator_new\nextern __operator_delete\n";
+    }
 
     // For NASM output: emit extern declarations for undefined symbols
     if (kNasmOutput) {
@@ -1625,6 +1669,7 @@ NECTAR_MODULE(CompilerNectarAMD64) {
   kKeywords.emplace_back("return", CompilerKit::KeywordKind::kKeywordKindReturn);
   kKeywords.emplace_back("extern", CompilerKit::KeywordKind::kKeywordKindExtern);
   kKeywords.emplace_back("import", CompilerKit::KeywordKind::kKeywordKindImport);
+  kKeywords.emplace_back("export", CompilerKit::KeywordKind::kKeywordKindExport);
 
   kKeywords.emplace_back("if", CompilerKit::KeywordKind::kKeywordKindIf);
 
