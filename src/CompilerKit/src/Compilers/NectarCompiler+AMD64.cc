@@ -22,7 +22,6 @@
 #include <CompilerKit/PEF.h>
 #include <CompilerKit/UUID.h>
 #include <CompilerKit/Utilities/Compiler.h>
-#include "CompilerKit/Detail/Config.h"
 
 /* NeKernel NECTAR Compiler Driver. */
 /* This is part of the CompilerKit. */
