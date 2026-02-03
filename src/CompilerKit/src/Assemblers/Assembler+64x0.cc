@@ -286,13 +286,13 @@ static bool asm_read_attributes(std::string line) {
 
     result += name;
 
-    if (name.find(".code64") != std::string::npos) {
+    if (name.find(kPefCode64) != std::string::npos) {
       // data is treated as code.
       kCurrentRecord.fKind = CompilerKit::kPefCode;
-    } else if (name.find(".data64") != std::string::npos) {
+    } else if (name.find(kPefData64) != std::string::npos) {
       // no code will be executed from here.
       kCurrentRecord.fKind = CompilerKit::kPefData;
-    } else if (name.find(".zero64") != std::string::npos) {
+    } else if (name.find(kPefZero64) != std::string::npos) {
       // this is a bss section.
       kCurrentRecord.fKind = CompilerKit::kPefZero;
     }
