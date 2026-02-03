@@ -12,6 +12,13 @@
 #include <mach-o/loader.h>
 #include <mach-o/nlist.h>
 
+#define kMachOExt ".out"
+#define kMachODylibExt ".dylib"
+#define kMachOLibExt ".a"
+#define kMachOObjectExt ".o"
+#define kMachODebugExt ".o"
+#define kMachODriverExt ".o"
+
 namespace CompilerKit {
 namespace MachO {
 
