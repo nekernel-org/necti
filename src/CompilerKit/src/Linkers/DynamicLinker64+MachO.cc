@@ -170,9 +170,9 @@ NECTAR_MODULE(DynamicLinker64MachO) {
     } else if (std::strcmp(argv[linker_arg], "-dylib") == 0) {
       kIsDylib = true;
 
-      if (kOutput.find(".out") != CompilerKit::STLString::npos) {
-        kOutput.erase(kOutput.find(".out"), strlen(".out"));
-        kOutput += ".dylib";
+      if (kOutput.find(kMachOExt) != CompilerKit::STLString::npos) {
+        kOutput.erase(kOutput.find(kMachOExt), strlen(kMachOExt));
+        kOutput += kMachODylibExt;
       }
 
       continue;

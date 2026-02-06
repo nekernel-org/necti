@@ -439,7 +439,7 @@ CompilerKit::SyntaxLeafList::SyntaxLeaf CompilerFrontendNectarAMD64::Compile(
       dont_accept_func:
         break;
 
-      accept_func : {
+      accept_func: {
         if (kFunctionEmbedLevel > 0)
           CompilerKit::Detail::print_error("Clojures are a work in progress feature.", file);
 
@@ -1551,8 +1551,7 @@ static void nectar_process_function_parameters(const std::vector<CompilerKit::ST
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
-#define kExtListCxx \
-  { ".nc", ".pp.nc" }
+#define kExtListCxx {".nc", ".pp.nc"}
 
 class AssemblyNectarInterfaceAMD64 final CK_ASSEMBLY_INTERFACE {
  public:
