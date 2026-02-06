@@ -8,8 +8,8 @@
 ## Structure:
 
 - `src/CompilerKit` – Compiler Kit written in C++
-- `src/LibC++` – C++ ABI Library.
-- `src/ThirdParty` – Third Party Code.
+- `include/GenericsLibrary` – Nectar Generics Library.
+- `include/ThirdParty` – Third Party Modules.
 - `src/DebuggerKit` – Debugging Kit written in C++
 - `src/CommandLine/` – C/C++ Command Line Tools.
 
