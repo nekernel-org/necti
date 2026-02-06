@@ -467,17 +467,16 @@ NECTAR_MODULE(DynamicLinker64PEF) {
       abi += "MSFT";
       break;
     }
-    case CompilerKit::kPefArchPowerPC: {
-      abi += "SYSV";
-      break;
-    }
+    case CompilerKit::kPefArchPowerPC:
+    case CompilerKit::kPefArchARM64:
+    case CompilerKit::kPefArchRISCV:
     case CompilerKit::kPefArch32000:
     case CompilerKit::kPefArch64000: {
-      abi += "_NEP";
+      abi += "KRNL";
       break;
     }
     default: {
-      abi += "_IDK";
+      abi += "NOOP";
       break;
     }
   }
