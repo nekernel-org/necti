@@ -115,28 +115,28 @@ NECTAR_MODULE(AssemblerMainAMD64) {
 
   for (size_t i = 1; i < argc; ++i) {
     if (argv[i][0] == '-') {
-      if (strcmp(argv[i], "--version") == 0 || strcmp(argv[i], "-v") == 0) {
+      if (strcmp(argv[i], "-version") == 0 || strcmp(argv[i], "-v") == 0) {
         kStdOut
             << "AssemblerAMD64: AMD64 Assembler Driver.\nAssemblerAMD64: Copyright (c) 2024-2026 "
                "Amlal El Mahrouss\n";
         kStdOut
             << "AssemblerAMD64: This Software is part of the NeKernel project. (nekernel.org)\n";
         return 0;
-      } else if (strcmp(argv[i], "--help") == 0) {
+      } else if (strcmp(argv[i], "-help") == 0) {
         kStdOut
             << "AssemblerAMD64: AMD64 Assembler Driver.\nAssemblerAMD64: Copyright (c) 2024-2026 "
                "Amlal El Mahrouss\n";
         kStdOut
             << "AssemblerAMD64: This Software is part of the NeKernel project. (nekernel.org)\n";
-        kStdOut << "--version: Print program version.\n";
-        kStdOut << "--fverbose: Print verbose output.\n";
-        kStdOut << "--fbinary: Output as flat binary.\n";
+        kStdOut << "-version: Print program version.\n";
+        kStdOut << "-fverbose: Print verbose output.\n";
+        kStdOut << "-fbinary: Output as flat binary.\n";
 
         return 0;
-      } else if (strcmp(argv[i], "--fbinary") == 0) {
+      } else if (strcmp(argv[i], "-fbinary") == 0) {
         kOutputAsBinary = true;
         continue;
-      } else if (strcmp(argv[i], "--fverbose") == 0) {
+      } else if (strcmp(argv[i], "-fverbose") == 0) {
         kVerbose = true;
         continue;
       }

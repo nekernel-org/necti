@@ -71,24 +71,24 @@ NECTAR_MODULE(AssemblerMainPower64) {
 
   for (size_t i = 1; i < argc; ++i) {
     if (argv[i][0] == '-') {
-      if (strcmp(argv[i], "--ver") == 0 || strcmp(argv[i], "--v") == 0) {
+      if (strcmp(argv[i], "-version") == 0 || strcmp(argv[i], "-v") == 0) {
         kStdOut << "AssemblerPower: POWER64 Assembler Driver.\nAssemblerPower: " << kDistVersion
                 << "\nAssemblerPower: "
                    "Copyright (c) "
                    "Amlal El Mahrouss\n";
         return 0;
-      } else if (strcmp(argv[i], "--h") == 0) {
+      } else if (strcmp(argv[i], "-h") == 0) {
         kStdOut << "AssemblerPower: POWER64 Assembler Driver.\nAssemblerPower: Copyright (c) 2024 "
                    "Amlal El Mahrouss\n";
-        kStdOut << "--version,/v: print program version.\n";
-        kStdOut << "--verbose: print verbose output.\n";
-        kStdOut << "--binary: output as flat binary.\n";
+        kStdOut << "-version,-v: print program version.\n";
+        kStdOut << "-fverbose: print verbose output.\n";
+        kStdOut << "-fbinary: output as flat binary.\n";
 
         return 0;
-      } else if (strcmp(argv[i], "--binary") == 0) {
+      } else if (strcmp(argv[i], "-fbinary") == 0) {
         kOutputAsBinary = true;
         continue;
-      } else if (strcmp(argv[i], "--verbose") == 0) {
+      } else if (strcmp(argv[i], "-fverbose") == 0) {
         kVerbose = true;
         continue;
       }
