@@ -27,5 +27,5 @@
     "CK_USE_STRUCTS=1",
     "kDistReleaseBranch=$(git rev-parse --abbrev-ref HEAD)-$(uuidgen)"
   ],
-  "description": "CompilerKit for OSX with Asan/Ubsan."
+  "description": "CompilerKit for OSX, with Asan/Ubsan."
 }
