@@ -1,4 +1,4 @@
-// Copyright 2024-2025, Amlal El Mahrouss (amlal@nekernel.org)
+// Copyright 2024-2026, Amlal El Mahrouss (amlal@nekernel.org)
 // Licensed under the Apache License, Version 2.0 (See accompanying
 // file LICENSE or copy at http://www.apache.org/licenses/LICENSE-2.0)
 // Official repository: https://github.com/nekernel-org/nectar
@@ -10,12 +10,12 @@
  * @author Amlal El Mahrouss (amlal@nekernel.org)
  * @brief Nectar Code Generation API
  * @version 0.0.3
- * @copyright Copyright (c) 2024-2025 Amlal El Mahrouss
+ * @copyright Copyright (c) 2024-2026 Amlal El Mahrouss
  *
  */
 
 namespace CompilerKit {
-///! @brief Compile for specific format (ELF, PEF, ZBIN)
+///! @brief Compile for specific format (ELF, PEF, AE)
 Int32 AssemblyFactory::Compile(STLString sourceFile, const Int32& arch) {
   if (sourceFile.length() < 1) return NECTAR_UNIMPLEMENTED;
 
