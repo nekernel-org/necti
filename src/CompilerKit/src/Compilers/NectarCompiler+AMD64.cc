@@ -1695,22 +1695,22 @@ NECTAR_MODULE(CompilerNectarAMD64) {
         continue;
       }
 
-      if (strcmp(argv[index], "-nec-verbose") == 0) {
+      if (strcmp(argv[index], "-fverbose") == 0) {
         kVerbose = true;
         continue;
       }
 
-      if (strcmp(argv[index], "-nec-masm") == 0) {
+      if (strcmp(argv[index], "-fuse-masm") == 0) {
         kNasmOutput = false;
         continue;
       }
 
-      if (strcmp(argv[index], "-nec-nasm") == 0) {
+      if (strcmp(argv[index], "-fuse-nasm") == 0) {
         kNasmOutput = true;
         continue;
       }
 
-      if (strcmp(argv[index], "-nec-dialect") == 0) {
+      if (strcmp(argv[index], "-fprint-dialect") == 0) {
         if (kFrontend) std::cout << kFrontend->Language() << "\n";
 
         return NECTAR_SUCCESS;
@@ -1719,7 +1719,7 @@ NECTAR_MODULE(CompilerNectarAMD64) {
       CompilerKit::STLString err = "Unknown option: ";
       err += argv[index];
 
-      CompilerKit::Detail::print_error(err, "NectarDriver");
+      CompilerKit::Detail::print_error(err, "Nectar");
 
       continue;
     }
