@@ -5,7 +5,7 @@
 
 /// @author Amlal El Mahrouss (amlal@nekernel.org)
 /// @brief NeKernel.org 64-bit PEF Linker.
-/// Last Rev: Sat Apr 19 CET 2025
+/// Last Rev: Sun Feb 8 CET 2026
 /// @note Do not look up for anything with .code64/.data64/.zero64!
 /// It will be loaded when the program loader will start the image.
 
@@ -82,14 +82,14 @@ NECTAR_MODULE(DynamicLinker64PEF) {
       kConsoleOut << "-version: Show linker version.\n";
       kConsoleOut << "-help: Show linker help.\n";
       kConsoleOut << "-verbose: Enable linker trace.\n";
-      kConsoleOut << "-dylib: Output as a Dynamic PEF.\n";
-      kConsoleOut << "-fat: Output as a FAT PEF.\n";
-      kConsoleOut << "-32k: Output as a 32x0 PEF.\n";
-      kConsoleOut << "-64k: Output as a 64x0 PEF.\n";
-      kConsoleOut << "-amd64: Output as a AMD64 PEF.\n";
-      kConsoleOut << "-rv64: Output as a RISC-V PEF.\n";
-      kConsoleOut << "-power64: Output as a POWER PEF.\n";
-      kConsoleOut << "-arm64: Output as a ARM64 PEF.\n";
+      kConsoleOut << "-fdylib: Output as a Dynamic PEF.\n";
+      kConsoleOut << "-ffat: Output as a FAT PEF.\n";
+      kConsoleOut << "-f32k: Output as a 32x0 PEF.\n";
+      kConsoleOut << "-f64k: Output as a 64x0 PEF.\n";
+      kConsoleOut << "-famd64: Output as a AMD64 PEF.\n";
+      kConsoleOut << "-frv64: Output as a RISC-V PEF.\n";
+      kConsoleOut << "-fpower64: Output as a POWER PEF.\n";
+      kConsoleOut << "-farm64: Output as a ARM64 PEF.\n";
       kConsoleOut << "-output: Select the output file name.\n";
 
       return NECTAR_SUCCESS;
@@ -97,38 +97,38 @@ NECTAR_MODULE(DynamicLinker64PEF) {
       kLinkerSplash();
 
       return NECTAR_SUCCESS;
-    } else if (std::strcmp(argv[linker_arg], "-fat") == 0) {
+    } else if (std::strcmp(argv[linker_arg], "-ffat") == 0) {
       kFatBinaryEnable = true;
 
       continue;
-    } else if (std::strcmp(argv[linker_arg], "-64k") == 0) {
+    } else if (std::strcmp(argv[linker_arg], "-f64k") == 0) {
       kArch = CompilerKit::kPefArch64000;
 
       continue;
-    } else if (std::strcmp(argv[linker_arg], "-amd64") == 0) {
+    } else if (std::strcmp(argv[linker_arg], "-famd64") == 0) {
       kArch = CompilerKit::kPefArchAMD64;
 
       continue;
-    } else if (std::strcmp(argv[linker_arg], "-start") == 0) {
+    } else if (std::strcmp(argv[linker_arg], "-fstart") == 0) {
       if (argv[linker_arg + 1] == nullptr || argv[linker_arg + 1][0] == '-') continue;
 
       kLinkerStart = argv[linker_arg + 1];
       linker_arg += 1;
 
       continue;
-    } else if (std::strcmp(argv[linker_arg], "-32k") == 0) {
+    } else if (std::strcmp(argv[linker_arg], "-f32k") == 0) {
       kArch = CompilerKit::kPefArch32000;
 
       continue;
-    } else if (std::strcmp(argv[linker_arg], "-power64") == 0) {
+    } else if (std::strcmp(argv[linker_arg], "-fpower64") == 0) {
       kArch = CompilerKit::kPefArchPowerPC;
 
       continue;
-    } else if (std::strcmp(argv[linker_arg], "-riscv64") == 0) {
+    } else if (std::strcmp(argv[linker_arg], "-friscv64") == 0) {
       kArch = CompilerKit::kPefArchRISCV;
 
       continue;
-    } else if (std::strcmp(argv[linker_arg], "-arm64") == 0) {
+    } else if (std::strcmp(argv[linker_arg], "-farm64") == 0) {
       kArch = CompilerKit::kPefArchARM64;
 
       continue;
@@ -136,7 +136,7 @@ NECTAR_MODULE(DynamicLinker64PEF) {
       kVerbose = true;
 
       continue;
-    } else if (std::strcmp(argv[linker_arg], "-dylib") == 0) {
+    } else if (std::strcmp(argv[linker_arg], "-fdylib") == 0) {
       if (kOutput.empty()) {
         continue;
       }

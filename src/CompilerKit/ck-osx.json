@@ -22,5 +22,6 @@
     "CK_USE_STRUCTS=1",
     "CK_USE_MACHO_LINKER=1",
     "kDistReleaseBranch=$(git rev-parse --abbrev-ref HEAD)-$(uuidgen)"
-  ]
+  ],
+  "description": "CompilerKit for OSX."
 }

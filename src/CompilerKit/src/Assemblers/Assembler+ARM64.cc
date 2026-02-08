@@ -204,7 +204,7 @@ NECTAR_MODULE(AssemblerMainARM64) {
 
         if (kVerbose) kStdOut << "AssemblerARM64: Wrote symbol " << sym << " to file...\n";
 
-        undefined_sym.fKind   = kAENullType;
+        undefined_sym.fKind   = CompilerKit::kKindRelocationAtRuntime;
         undefined_sym.fSize   = sym.size();
         undefined_sym.fOffset = record_count;
 

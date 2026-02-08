@@ -272,7 +272,7 @@ static bool asm_read_attributes(std::string line) {
 
     /// sanity check to avoid stupid linker errors.
     if (name.size() == 0) {
-      CompilerKit::Detail::print_error("Invalid extern_segment", "power-as");
+      CompilerKit::Detail::print_error("Invalid extern_segment", "Nectar");
       throw std::runtime_error("invalid_extern_segment");
     }
 

@@ -39,7 +39,7 @@ static bool                   kDuplicateSymbols    = false;
 static bool                   kIsDylib             = false;
 static Int64                  kMachODefaultStackSz = 0;
 
-static CompilerKit::STLString kLinkerStart = "__ImageStart";
+static CompilerKit::STLString kLinkerStart = "_main";
 
 /* object code and list. */
 static std::vector<CompilerKit::STLString>    kObjectList;
@@ -130,33 +130,33 @@ NECTAR_MODULE(DynamicLinker64MachO) {
       kConsoleOut << "-version: Show linker version.\n";
       kConsoleOut << "-help: Show linker help.\n";
       kConsoleOut << "-verbose: Enable linker trace.\n";
-      kConsoleOut << "-dylib: Output as a Dynamic Library.\n";
-      kConsoleOut << "-fat: Output as a FAT binary.\n";
-      kConsoleOut << "-amd64: Output as an x86_64 Mach-O.\n";
-      kConsoleOut << "-arm64: Output as an ARM64 Mach-O.\n";
+      kConsoleOut << "-fdylib: Output as a Dynamic Library.\n";
+      kConsoleOut << "-ffat: Output as a FAT binary.\n";
+      kConsoleOut << "-famd64: Output as an x86_64 Mach-O.\n";
+      kConsoleOut << "-farm64: Output as an ARM64 Mach-O.\n";
       kConsoleOut << "-output: Select the output file name.\n";
-      kConsoleOut << "-start: Specify entry point symbol.\n";
+      kConsoleOut << "-fstart: Specify entry point symbol.\n";
 
       return NECTAR_SUCCESS;
     } else if (std::strcmp(argv[linker_arg], "-version") == 0) {
       kLinkerSplash();
 
       return NECTAR_SUCCESS;
-    } else if (std::strcmp(argv[linker_arg], "-fat") == 0) {
+    } else if (std::strcmp(argv[linker_arg], "-ffat") == 0) {
       kFatBinaryEnable = true;
 
       continue;
-    } else if (std::strcmp(argv[linker_arg], "-amd64") == 0) {
+    } else if (std::strcmp(argv[linker_arg], "-famd64") == 0) {
       kCpuType    = CPU_TYPE_X86_64;
       kCpuSubType = CPU_SUBTYPE_X86_64_ALL;
 
       continue;
-    } else if (std::strcmp(argv[linker_arg], "-arm64") == 0) {
+    } else if (std::strcmp(argv[linker_arg], "-farm64") == 0) {
       kCpuType    = CPU_TYPE_ARM64;
       kCpuSubType = CPU_SUBTYPE_ARM64_ALL;
 
       continue;
-    } else if (std::strcmp(argv[linker_arg], "-start") == 0) {
+    } else if (std::strcmp(argv[linker_arg], "-fstart") == 0) {
       if (argv[linker_arg + 1] == nullptr || argv[linker_arg + 1][0] == '-') continue;
 
       kLinkerStart = argv[linker_arg + 1];
@@ -167,7 +167,7 @@ NECTAR_MODULE(DynamicLinker64MachO) {
       kVerbose = true;
 
       continue;
-    } else if (std::strcmp(argv[linker_arg], "-dylib") == 0) {
+    } else if (std::strcmp(argv[linker_arg], "-fdylib") == 0) {
       kIsDylib = true;
 
       if (kOutput.find(kMachOExt) != CompilerKit::STLString::npos) {
@@ -271,7 +271,7 @@ NECTAR_MODULE(DynamicLinker64MachO) {
           macho_add_symbol(symbolName, symType, sectNum, ae_records[ae_record_index].fOffset);
 
           if (kVerbose) {
-            kConsoleOut << "Added symbol: " << symbolName
+            kConsoleOut << "added symbol: " << symbolName
                         << " at offset: " << ae_records[ae_record_index].fOffset << "\n";
           }
         }
@@ -286,7 +286,7 @@ NECTAR_MODULE(DynamicLinker64MachO) {
         kStartFound           = true;
 
         if (kVerbose) {
-          kConsoleOut << "Found entry point " << kLinkerStart << " at offset: " << entryIt->second
+          kConsoleOut << "found entry point " << kLinkerStart << " at offset: " << entryIt->second
                       << "\n";
         }
       }
@@ -319,7 +319,7 @@ NECTAR_MODULE(DynamicLinker64MachO) {
 
   // Check for entry point in executables
   if (!kStartFound && !kIsDylib) {
-    kConsoleOut << "Undefined entrypoint " << kLinkerStart << " for executable: " << kOutput
+    kConsoleOut << "undefined entrypoint " << kLinkerStart << " for executable: " << kOutput
                 << "\n";
   }
 

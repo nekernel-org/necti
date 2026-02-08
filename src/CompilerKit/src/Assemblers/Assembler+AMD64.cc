@@ -262,20 +262,20 @@ NECTAR_MODULE(AssemblerMainAMD64) {
       ++record_count;
 
       for (auto& sym : kUndefinedSymbols) {
-        CompilerKit::AERecordHeader _record_hdr{0};
+        CompilerKit::AERecordHeader undefined_sym{0};
 
         if (kVerbose) kStdOut << "AssemblerAMD64: Wrote symbol " << sym << " to file...\n";
 
-        _record_hdr.fKind   = kAENullType;
-        _record_hdr.fSize   = sym.size();
-        _record_hdr.fOffset = record_count;
+        undefined_sym.fKind   = CompilerKit::kKindRelocationAtRuntime;
+        undefined_sym.fSize   = sym.size();
+        undefined_sym.fOffset = record_count;
 
         ++record_count;
 
-        memset(_record_hdr.fPad, kAENullType, kAEPad);
-        memcpy(_record_hdr.fName, sym.c_str(), sym.size());
+        memset(undefined_sym.fPad, kAENullType, kAEPad);
+        memcpy(undefined_sym.fName, sym.c_str(), sym.size());
 
-        file_ptr_out << _record_hdr;
+        file_ptr_out << undefined_sym;
 
         ++kCounter;
       }
@@ -338,16 +338,18 @@ static bool asm_read_attributes(std::string line) {
     auto name_pos = pos + strlen("extern_segment") + 1;
 
     if (pos == std::string::npos || name_pos >= line.size()) {
-      CompilerKit::Detail::print_error("Invalid extern_segment", "power-as");
+      CompilerKit::Detail::print_error("Invalid extern_segment", "Nectar");
       throw std::runtime_error("invalid_extern_segment");
     }
 
     auto name = line.substr(name_pos);
 
     if (name.size() == 0) {
-      CompilerKit::Detail::print_error("Invalid extern_segment", "power-as");
+      CompilerKit::Detail::print_error("Invalid extern_segment", "Nectar");
       throw std::runtime_error("invalid_extern_segment");
     }
+
+    kUndefinedSymbols.push_back(name);
 
     std::string result = std::to_string(name.size());
     result += kUndefinedSymbol;
@@ -1758,11 +1760,18 @@ bool CompilerKit::EncoderAMD64::WriteLine(std::string line, std::string file) {
       } else if (name == "jmp" || name == "call") {
         kAppBytes.emplace_back(opcodeAMD64.fOpcode);
 
+        if (auto it = std::find(kUndefinedSymbols.begin(), kUndefinedSymbols.end(), name);
+            it != kUndefinedSymbols.end()) {
+          auto number_str = std::to_string(kOrigin + name.size());
+          this->WriteNumber(0, number_str);
+        }
+
         if (kRegisterBitWidth == 64) {
           this->WriteNumber(line.find(name) + name.size() + 1, line);
         } else {
           this->WriteNumber32(line.find(name) + name.size() + 1, line);
         }
+
         break;
       }
 
