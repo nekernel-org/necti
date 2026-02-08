@@ -1764,6 +1764,7 @@ bool CompilerKit::EncoderAMD64::WriteLine(std::string line, std::string file) {
             it != kUndefinedSymbols.end()) {
           auto number_str = std::to_string(kOrigin + name.size());
           this->WriteNumber(0, number_str);
+          kOrigin += name.size();
         }
 
         if (kRegisterBitWidth == 64) {
