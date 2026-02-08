@@ -26,9 +26,9 @@ Int32 AssemblyFactory::Compile(STLString sourceFile, const Int32& arch) {
 }
 
 ///! @brief mount assembly backend.
-void AssemblyFactory::Mount(WeakRef<IAssembly> mountPtr) {
-  if (mountPtr && !this->fMounted) {
-    this->fMounted = mountPtr.Leak();
+void AssemblyFactory::Mount(WeakRef<IAssembly> mount_ptr) {
+  if (mount_ptr && !this->fMounted) {
+    this->fMounted = mount_ptr.Leak();
   }
 }
 
