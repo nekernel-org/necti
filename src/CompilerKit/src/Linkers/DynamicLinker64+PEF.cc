@@ -44,6 +44,7 @@ enum struct ABIType : Int32 {
   kABITypeNull    = 0,
   kABITypeStart   = 0x1010, /* The start of ABI list. */
   kABITypeNE      = 0x5046, /* PF (NeKernel.org's PEF ABI) */
+  kABITypeEnd     = kABITypeNull,
   kABITypeInvalid = 0xFFFF,
 };
 
