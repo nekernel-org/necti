@@ -29,6 +29,7 @@
 
 #define kLinkerAbiContainer "__PEFContainer:ABI:"
 #define kLinkerGuidContainer "__PEFContainer:GUID:"
+#define kEndContainer "__PEFContainer:END:"
 
 #define kLinkerSplash() kStdOut << kLinkerVersionStr << kStdEndl
 
@@ -280,7 +281,7 @@ NECTAR_MODULE(DynamicLinker64PEF) {
       size_t org = kLinkerDefaultOrigin;
 
       for (size_t ae_record_index = 0; ae_record_index < cnt; ++ae_record_index) {
-        CompilerKit::PEFCommandHeader command_header{0};
+        CompilerKit::PEFCommandHeader command_header{{}};
         std::size_t                   offset_of_obj = ae_records[ae_record_index].fOffset;
 
         std::memcpy(command_header.Name, ae_records[ae_record_index].fName, kPefNameLen);
@@ -447,7 +448,7 @@ NECTAR_MODULE(DynamicLinker64PEF) {
 
   time_t timestamp = time(nullptr);
 
-  CompilerKit::STLString timeStampStr = "Container:BuildEpoch:";
+  CompilerKit::STLString timeStampStr = "__PEFContainer:BuildEpoch:";
   timeStampStr += std::to_string(timestamp);
 
   strncpy(date_cmd_hdr.Name, timeStampStr.c_str(), timeStampStr.size());
@@ -491,7 +492,7 @@ NECTAR_MODULE(DynamicLinker64PEF) {
 
   command_headers.push_back(std::move(abi_cmd_hdr));
 
-  CompilerKit::PEFCommandHeader stack_cmd_hdr{0};
+  CompilerKit::PEFCommandHeader stack_cmd_hdr{{}};
 
   stack_cmd_hdr.Cpu         = kArch;
   stack_cmd_hdr.Flags       = 0;
@@ -541,7 +542,7 @@ NECTAR_MODULE(DynamicLinker64PEF) {
   end_exec_hdr.Flags  = CompilerKit::kPefLinkerID;
   end_exec_hdr.Kind   = CompilerKit::kPefZero;
 
-  std::memcpy(end_exec_hdr.Name, "Container:Exec:END", strlen("Container:Exec:END"));
+  std::memcpy(end_exec_hdr.Name, kEndContainer, strlen(kEndContainer));
 
   end_exec_hdr.VirtualSize = strlen(end_exec_hdr.Name);
 

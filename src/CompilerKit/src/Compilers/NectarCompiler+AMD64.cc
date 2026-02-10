@@ -1029,7 +1029,7 @@ CompilerKit::SyntaxLeafList::SyntaxLeaf CompilerFrontendNectarAMD64::Compile(
 
             for (const auto& keyword : kKeywords) {
               if (keyword.fKeywordName == subText)
-                CompilerKit::Detail::print_error("A Nectar keyword cannot be called.", file);
+                CompilerKit::Detail::print_error("A nectar keyword cannot be used there.", file);
             }
 
             kExternalSymbols.insert(subText);

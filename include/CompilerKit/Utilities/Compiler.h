@@ -65,7 +65,7 @@ inline void print_warning(STLString reason, STLString file) noexcept {
 /// @internal
 /// @brief Handler for SIGSEGV signal.
 inline void drvi_crash_handler(std::int32_t id) {
-  CompilerKit::STLString verbose_header = "COMPILERKIT CRASH REPORT - ";
+  CompilerKit::STLString verbose_header = "NECTAR CRASH REPORT - ";
   verbose_header += kDistVersion;
   verbose_header += " - ";
   verbose_header += CompilerKit::current_date();
@@ -91,7 +91,7 @@ inline void drvi_crash_handler(std::int32_t id) {
 
   switch (id) {
     default: {
-      kStdOut << "SIGNAL: Signal (" << id << ")." << kBlank << std::endl;
+      kStdOut << "SIGNAL: (" << id << ")." << kBlank << std::endl;
       break;
     }
   }

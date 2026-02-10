@@ -72,13 +72,13 @@ NECTAR_MODULE(AssemblerMainARM64) {
   for (size_t i = 1; i < argc; ++i) {
     if (argv[i][0] == '-') {
       if (strcmp(argv[i], "-version") == 0 || strcmp(argv[i], "-v") == 0) {
-        kStdOut << "AssemblerPower: AARCH64 Assembler Driver.\nAssemblerPower: " << kDistVersion
-                << "\nAssemblerPower: "
+        kStdOut << "ACORN: AARCH64 Assembler Driver.\nACORN: " << kDistVersion
+                << "\nACORN: "
                    "Copyright (c) "
                    "Amlal El Mahrouss\n";
         return 0;
       } else if (strcmp(argv[i], "-help") == 0) {
-        kStdOut << "AssemblerPower: AARCH64 Assembler Driver.\nAssemblerPower: Copyright (c) 2024 "
+        kStdOut << "ACORN: AARCH64 Assembler Driver.\nACORN: Copyright (c) 2024 "
                    "Amlal El Mahrouss\n";
         kStdOut << "-version,--v: print program version.\n";
         kStdOut << "-fverbose: print verbose output.\n";
@@ -93,12 +93,12 @@ NECTAR_MODULE(AssemblerMainARM64) {
         continue;
       }
 
-      kStdOut << "AssemblerPower: ignore " << argv[i] << "\n";
+      kStdOut << "ACORN: ignore " << argv[i] << "\n";
       continue;
     }
 
     if (!std::filesystem::exists(argv[i])) {
-      kStdOut << "AssemblerPower: can't open: " << argv[i] << std::endl;
+      kStdOut << "ACORN: can't open: " << argv[i] << std::endl;
       goto asm_fail_exit;
     }
 
@@ -117,7 +117,7 @@ NECTAR_MODULE(AssemblerMainARM64) {
 
     if (file_ptr_out.bad()) {
       if (kVerbose) {
-        kStdOut << "AssemblerPower: error: " << strerror(errno) << "\n";
+        kStdOut << "ACORN: error: " << strerror(errno) << "\n";
       }
     }
 

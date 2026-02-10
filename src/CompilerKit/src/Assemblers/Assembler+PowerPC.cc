@@ -72,13 +72,13 @@ NECTAR_MODULE(AssemblerMainPower64) {
   for (size_t i = 1; i < argc; ++i) {
     if (argv[i][0] == '-') {
       if (strcmp(argv[i], "-version") == 0 || strcmp(argv[i], "-v") == 0) {
-        kStdOut << "AssemblerPower: POWER64 Assembler Driver.\nAssemblerPower: " << kDistVersion
-                << "\nAssemblerPower: "
+        kStdOut << "POWER: POWER64 Assembler Driver.\nPOWER: " << kDistVersion
+                << "\nPOWER: "
                    "Copyright (c) "
                    "Amlal El Mahrouss\n";
         return 0;
       } else if (strcmp(argv[i], "-h") == 0) {
-        kStdOut << "AssemblerPower: POWER64 Assembler Driver.\nAssemblerPower: Copyright (c) 2024 "
+        kStdOut << "POWER: POWER64 Assembler Driver.\nPOWER: Copyright (c) 2024 "
                    "Amlal El Mahrouss\n";
         kStdOut << "-version,-v: print program version.\n";
         kStdOut << "-fverbose: print verbose output.\n";
@@ -93,12 +93,12 @@ NECTAR_MODULE(AssemblerMainPower64) {
         continue;
       }
 
-      kStdOut << "AssemblerPower: ignore " << argv[i] << "\n";
+      kStdOut << "POWER: ignore " << argv[i] << "\n";
       continue;
     }
 
     if (!std::filesystem::exists(argv[i])) {
-      kStdOut << "AssemblerPower: can't open: " << argv[i] << std::endl;
+      kStdOut << "POWER: can't open: " << argv[i] << std::endl;
       goto asm_fail_exit;
     }
 
@@ -117,7 +117,7 @@ NECTAR_MODULE(AssemblerMainPower64) {
 
     if (file_ptr_out.bad()) {
       if (kVerbose) {
-        kStdOut << "AssemblerPower: error: " << strerror(errno) << "\n";
+        kStdOut << "POWER: error: " << strerror(errno) << "\n";
       }
     }
 
@@ -163,7 +163,7 @@ NECTAR_MODULE(AssemblerMainPower64) {
 
     if (!kOutputAsBinary) {
       if (kVerbose) {
-        kStdOut << "AssemblerPower: Writing object file...\n";
+        kStdOut << "POWER: Writing object file...\n";
       }
 
       // this is the final step, write everything to the file.
@@ -175,8 +175,8 @@ NECTAR_MODULE(AssemblerMainPower64) {
       file_ptr_out << hdr;
 
       if (kRecords.empty()) {
-        kStdErr << "AssemblerPower: At least one record is needed to write an object "
-                   "file.\nAssemblerPower: Make one using `public_segment .code64 foo_bar`.\n";
+        kStdErr << "POWER: At least one record is needed to write an object "
+                   "file.\nPOWER: Make one using `public_segment .code64 foo_bar`.\n";
 
         std::filesystem::remove(object_output);
         return 1;
@@ -193,7 +193,7 @@ NECTAR_MODULE(AssemblerMainPower64) {
 
         file_ptr_out << record_hdr;
 
-        if (kVerbose) kStdOut << "AssemblerPower: Wrote record " << record_hdr.fName << "...\n";
+        if (kVerbose) kStdOut << "POWER: Wrote record " << record_hdr.fName << "...\n";
       }
 
       // increment once again, so that we won't lie about the kUndefinedSymbols.
@@ -202,7 +202,7 @@ NECTAR_MODULE(AssemblerMainPower64) {
       for (auto& sym : kUndefinedSymbols) {
         CompilerKit::AERecordHeader undefined_sym{0};
 
-        if (kVerbose) kStdOut << "AssemblerPower: Wrote symbol " << sym << " to file...\n";
+        if (kVerbose) kStdOut << "POWER: Wrote symbol " << sym << " to file...\n";
 
         undefined_sym.fKind   = kAENullType;
         undefined_sym.fSize   = sym.size();
@@ -230,7 +230,7 @@ NECTAR_MODULE(AssemblerMainPower64) {
       file_ptr_out.seekp(pos_end);
     } else {
       if (kVerbose) {
-        kStdOut << "AssemblerPower: Write raw binary...\n";
+        kStdOut << "POWER: Write raw binary...\n";
       }
     }
 
@@ -239,19 +239,19 @@ NECTAR_MODULE(AssemblerMainPower64) {
       file_ptr_out.write(reinterpret_cast<const char*>(&byte), sizeof(byte));
     }
 
-    if (kVerbose) kStdOut << "AssemblerPower: Wrote file with program in it.\n";
+    if (kVerbose) kStdOut << "POWER: Wrote file with program in it.\n";
 
     file_ptr_out.flush();
     file_ptr_out.close();
 
-    if (kVerbose) kStdOut << "AssemblerPower: Exit succeeded.\n";
+    if (kVerbose) kStdOut << "POWER: Exit succeeded.\n";
 
     return 0;
   }
 
 asm_fail_exit:
 
-  if (kVerbose) kStdOut << "AssemblerPower: Exit failed.\n";
+  if (kVerbose) kStdOut << "POWER: Exit failed.\n";
 
   return NECTAR_EXEC_ERROR;
 }
@@ -323,7 +323,7 @@ static bool asm_read_attributes(std::string line) {
 
     return true;
   }
-  // public_segment is a special keyword used by AssemblerPower to tell the AE output stage to
+  // public_segment is a special keyword used by POWER to tell the AE output stage to
   // mark this section as a header. it currently supports .code64, .data64.,
   // .zero64
   else if (CompilerKit::ast_find_needle(line, "public_segment")) {
@@ -529,7 +529,7 @@ bool CompilerKit::EncoderPowerPC::WriteNumber(const std::size_t& pos, std::strin
       }
 
       if (kVerbose) {
-        kStdOut << "AssemblerPower: found a base 16 number here: " << jump_label.substr(pos)
+        kStdOut << "POWER: found a base 16 number here: " << jump_label.substr(pos)
                 << "\n";
       }
 
@@ -546,7 +546,7 @@ bool CompilerKit::EncoderPowerPC::WriteNumber(const std::size_t& pos, std::strin
       CompilerKit::NumberCast64 num(strtol(jump_label.substr(pos + 2).c_str(), nullptr, 2));
 
       if (kVerbose) {
-        kStdOut << "AssemblerPower: found a base 2 number here: " << jump_label.substr(pos) << "\n";
+        kStdOut << "POWER: found a base 2 number here: " << jump_label.substr(pos) << "\n";
       }
 
       for (char& i : num.number) {
@@ -566,7 +566,7 @@ bool CompilerKit::EncoderPowerPC::WriteNumber(const std::size_t& pos, std::strin
       CompilerKit::NumberCast64 num(strtol(jump_label.substr(pos + 2).c_str(), nullptr, 7));
 
       if (kVerbose) {
-        kStdOut << "AssemblerPower: found a base 8 number here: " << jump_label.substr(pos) << "\n";
+        kStdOut << "POWER: found a base 8 number here: " << jump_label.substr(pos) << "\n";
       }
 
       for (char& i : num.number) {
@@ -594,7 +594,7 @@ bool CompilerKit::EncoderPowerPC::WriteNumber(const std::size_t& pos, std::strin
   }
 
   if (kVerbose) {
-    kStdOut << "AssemblerPower: found a base 10 number here: " << jump_label.substr(pos) << "\n";
+    kStdOut << "POWER: found a base 10 number here: " << jump_label.substr(pos) << "\n";
   }
 
   return true;
@@ -808,8 +808,8 @@ bool CompilerKit::EncoderPowerPC::WriteLine(std::string line, std::string file) 
                 }
 
                 if (kVerbose) {
-                  kStdOut << "AssemblerPower: Found register: " << register_syntax << "\n";
-                  kStdOut << "AssemblerPower: Amount of registers in instruction: "
+                  kStdOut << "POWER: Found register: " << register_syntax << "\n";
+                  kStdOut << "POWER: Amount of registers in instruction: "
                           << found_some_count << "\n";
                 }
 
@@ -875,7 +875,7 @@ bool CompilerKit::EncoderPowerPC::WriteLine(std::string line, std::string file) 
             // remember! register to register!
             if (found_some_count == 1) {
               CompilerKit::Detail::print_error(
-                  "Unrecognized register found.\ntip: each AssemblerPower register "
+                  "Unrecognized register found.\ntip: each POWER register "
                   "starts with 'r'.\nline: " +
                       line,
                   file);
