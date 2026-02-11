@@ -17,10 +17,10 @@ class StrongRef {
   StrongRef() = default;
 
   virtual ~StrongRef() {
-    if (m_Strong) {
-      MUST_PASS(m_Class);
-      if (m_Class) delete m_Class;
-      m_Class = nullptr;
+    if (mStrong) {
+      MUST_PASS(mClass);
+      if (mClass) delete mClass;
+      mClass = nullptr;
     }
   }
 
@@ -29,30 +29,30 @@ class StrongRef {
   using Type = T;
 
  protected:
-  StrongRef(Type* cls, const bool strong) : m_Class(cls), m_Strong(strong) {}
+  StrongRef(Type* cls, const bool strong) : mClass(cls), mStrong(strong) {}
 
  public:
-  StrongRef(Type* cls) : m_Class(cls), m_Strong(true) {}
+  StrongRef(Type* cls) : mClass(cls), mStrong(true) {}
 
   StrongRef& operator=(Type* ref) {
-    m_Class = ref;
+    mClass = ref;
     return *this;
   }
 
  public:
-  Type* operator->() const { return m_Class; }
+  Type* operator->() const { return mClass; }
 
-  Type* Leak() { return m_Class; }
+  Type* Leak() { return mClass; }
 
-  Type* operator*() { return m_Class; }
+  Type* operator*() { return mClass; }
 
-  bool IsStrong() const { return m_Strong; }
+  bool IsStrong() const { return mStrong; }
 
-  explicit operator bool() { return m_Class != nullptr; }
+  explicit operator bool() { return mClass != nullptr; }
 
  private:
-  Type* m_Class{nullptr};
-  bool  m_Strong{false};
+  Type* mClass{nullptr};
+  bool  mStrong{false};
 };
 
 template <typename T>
@@ -75,18 +75,18 @@ template <typename Type>
 class NonNullRef final {
  public:
   explicit NonNullRef() = delete;
-  NonNullRef(Type* ref) : m_Ref(ref, true) {}
+  NonNullRef(Type* ref) : mRef(ref, true) {}
 
   StrongRef<Type>& operator->() {
-    MUST_PASS(m_Ref);
-    return m_Ref;
+    MUST_PASS(mRef);
+    return mRef;
   }
 
   NonNullRef& operator=(const NonNullRef<Type>& ref) = delete;
   NonNullRef(const NonNullRef<Type>& ref)            = default;
 
  private:
-  StrongRef<Type> m_Ref{nullptr};
+  StrongRef<Type> mRef{nullptr};
 };
 
 using StrongAny = StrongRef<VoidPtr>;

@@ -20,11 +20,11 @@ static auto kPath = "/usr/lib/libCompilerKit.so";
 static auto kSymbol = "CompilerNectarAMD64";
 
 Int32 main(Int32 argc, Char const* argv[]) {
-  CompilerKit::DLLLoader dylib;
+  CompilerKit::ModuleLoader dylib;
   dylib(kPath, kSymbol);
 
-  CompilerKit::DLLLoader::EntryT entrypoint_cxx =
-      reinterpret_cast<CompilerKit::DLLLoader::EntryT>(dylib.fEntrypoint);
+  CompilerKit::ModuleLoader::EntryT entrypoint_cxx =
+      reinterpret_cast<CompilerKit::ModuleLoader::EntryT>(dylib.fEntrypoint);
 
   if (!entrypoint_cxx) {
     kStdOut;

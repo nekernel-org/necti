@@ -7,11 +7,14 @@
 #define NECTAR_COMPILERKIT_UTILITIES_DLL_H
 
 #include <CompilerKit/Detail/Config.h>
+#include <CompilerKit/Ref.h>
 #include <dlfcn.h>
 #include <mutex>
 
 namespace CompilerKit {
-class DLLLoader final {
+
+#ifdef CK_POSIX
+class ModuleLoader final {
  public:
   using EntryT  = Int32 (*)(Int32 argc, Char const* argv[]);
   using HandleT = VoidPtr;
@@ -24,40 +27,39 @@ class DLLLoader final {
   MutexT  mMutex;
 
  public:
-  explicit operator bool() { return this->mDLL; }
+  explicit operator bool() { return this->mDLL != nullptr; }
 
-  DLLLoader& operator()(const Char* path, const Char* entrypoint) {
-    if (!path || !entrypoint) return *this;
+  ModuleLoader& operator()(const std::string& path, const std::string& entrypoint) {
+    if (path.empty() || entrypoint.empty()) return *this;
 
     std::lock_guard<MutexT> lock(this->mMutex);
 
     if (this->mDLL) {
-      this->Destroy();
+      this->Reset();
     }
 
-    this->mDLL = ::dlopen(path, RTLD_LAZY);
+    this->mDLL = ::dlopen(path.data(), RTLD_LAZY);
 
     if (!this->mDLL) {
       return *this;
     }
 
-    this->fEntrypoint = reinterpret_cast<EntryT>(::dlsym(this->mDLL, entrypoint));
+    this->fEntrypoint = reinterpret_cast<EntryT>(::dlsym(this->mDLL, entrypoint.data()));
 
     if (!this->fEntrypoint) {
-      this->Destroy();
+      this->Reset();
       return *this;
     }
 
     return *this;
   }
 
-  NECTAR_COPY_DELETE(DLLLoader)
+  NECTAR_COPY_DELETE(ModuleLoader)
 
-  DLLLoader() = default;
-  ~DLLLoader() { this->Destroy(); }
+  ModuleLoader() = default;
+  ~ModuleLoader() { this->Reset(); }
 
- private:
-  void Destroy() noexcept {
+  void Reset() noexcept {
     if (this->mDLL) {
       ::dlclose(this->mDLL);
       this->mDLL = nullptr;
@@ -66,6 +68,13 @@ class DLLLoader final {
     this->fEntrypoint = nullptr;
   }
 };
+
+using StrongDLLRef = StrongRef<ModuleLoader>;
+using WeakDLLRef = WeakRef<ModuleLoader>;
+#else
+#error No ModuleLoader defined.
+#endif
+
 }  // namespace CompilerKit
 
 #endif  // NECTAR_COMPILERKIT_UTILITIES_DLL_H

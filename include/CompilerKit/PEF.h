@@ -21,10 +21,17 @@
 #define kPefDebugExt ".dbg"
 #define kPefDriverExt ".sys"
 
+/// PEF Specific (128-bit)
 #define kPefZero128 ".zero128"
 #define kPefCode128 ".code128"
 #define kPefData128 ".data128"
 
+/// JVM Specific
+#define kPefJZero32 ".jzero32"
+#define kPefJCode32 ".jcode32"
+#define kPefJData32 ".jdata32"
+
+/// PEF Specific (64-bit)
 #define kPefZero64 ".zero64"
 #define kPefCode64 ".code64"
 #define kPefData64 ".data64"
@@ -32,7 +39,7 @@
 /* @note counting the \0 at the end */
 #define kPefMagicLen (5)
 
-#define kPefVersion (0x0500)
+#define kPefVersion (0x0510)
 #define kPefNameLen (255)
 
 #define kPefBaseOrigin (0x40000000)
@@ -41,6 +48,7 @@
 #define kPefStart "__ImageStart"
 
 namespace CompilerKit {
+
 /* @brief Architecture type.  */
 enum {
   kPefArchIntel86S,
@@ -114,6 +122,7 @@ enum {
   kPefLinkerID = 0x1,
   kPefCount    = 4,
 };
+
 }  // namespace CompilerKit
 
 inline std::ofstream& operator<<(std::ofstream& fp, CompilerKit::PEFContainer& container) {
