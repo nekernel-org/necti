@@ -529,8 +529,7 @@ bool CompilerKit::EncoderPowerPC::WriteNumber(const std::size_t& pos, std::strin
       }
 
       if (kVerbose) {
-        kStdOut << "POWER: found a base 16 number here: " << jump_label.substr(pos)
-                << "\n";
+        kStdOut << "POWER: found a base 16 number here: " << jump_label.substr(pos) << "\n";
       }
 
       return true;
@@ -809,8 +808,8 @@ bool CompilerKit::EncoderPowerPC::WriteLine(std::string line, std::string file) 
 
                 if (kVerbose) {
                   kStdOut << "POWER: Found register: " << register_syntax << "\n";
-                  kStdOut << "POWER: Amount of registers in instruction: "
-                          << found_some_count << "\n";
+                  kStdOut << "POWER: Amount of registers in instruction: " << found_some_count
+                          << "\n";
                 }
 
                 if (reg_index >= 10 && reg_index < 20)

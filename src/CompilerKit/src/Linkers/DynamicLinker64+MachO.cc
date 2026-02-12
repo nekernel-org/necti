@@ -545,7 +545,7 @@ NECTAR_MODULE(DynamicLinker64MachO) {
   }
 
   // Write LC_LOAD_DYLINKER command
-  constexpr Char*       dyldPath = "/usr/lib/dyld";
+  constexpr Char*   dyldPath = "/usr/lib/dyld";
   std::vector<Char> dylinkerCmd(dylinkerCmdSize, 0);
   dylinker_command* dylinker = reinterpret_cast<dylinker_command*>(dylinkerCmd.data());
   dylinker->cmd              = LC_LOAD_DYLINKER;

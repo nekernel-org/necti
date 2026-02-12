@@ -18,6 +18,7 @@ trait fstream_traits
     let fd_ := 0;
 };
 
+//@ Implementation of fstream traits.
 impl fstream : fstream_traits
 {
     let init()

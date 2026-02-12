@@ -70,7 +70,7 @@ class ModuleLoader final {
 };
 
 using StrongDLLRef = StrongRef<ModuleLoader>;
-using WeakDLLRef = WeakRef<ModuleLoader>;
+using WeakDLLRef   = WeakRef<ModuleLoader>;
 #else
 #error No ModuleLoader defined.
 #endif
