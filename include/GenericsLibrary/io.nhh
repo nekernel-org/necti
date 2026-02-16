@@ -6,11 +6,11 @@
 #ifndef NECTAR_GL_IO_NHH
 #define NECTAR_GL_IO_NHH
 
-import printf;
+import ncl_printf;
 
 const writefn(let fmt, let args)
 {
-	printf(fmt, {args});
+	ncl_printf(fmt, {args});
 }
 
 #endif
