@@ -19,6 +19,7 @@
 #include <CompilerKit/UUID.h>
 #include <CompilerKit/Utilities/Compiler.h>
 
+#define kMachODefaultEntrypoint "_main"
 #define kMachODefaultOutput {"a" kMachOExt}
 
 #define kLinkerVersionStr "Nectar 64-Bit Linker (OS X Mach-O)"
@@ -39,7 +40,7 @@ static bool                   kDuplicateSymbols    = false;
 static bool                   kIsDylib             = false;
 static Int64                  kMachODefaultStackSz = 0;
 
-static CompilerKit::STLString kLinkerStart = "_main";
+static CompilerKit::STLString kLinkerStart = kMachODefaultEntrypoint;
 
 /* object code and list. */
 static std::vector<CompilerKit::STLString>    kObjectList;

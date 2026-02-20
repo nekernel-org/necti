@@ -1,18 +1,20 @@
 <!-- Read Me of Nectar -->
 
-# Nectar
+# The Nectar System.
+
+## Status: 
 
 ![CI](https://github.com/nekernel-org/nectar/actions/workflows/nectar-dev.yml/badge.svg)
 [![License: GPL-3.0](https://img.shields.io/badge/license-Apache--2.0-blue.svg)](LICENSE)
 
 ## Structure:
 
-- `src/CompilerKit` – Compiler Kit written in C++
+- `src/CompilerKit` – Compiler Kit written in C++.
 - `include/GenericsLibrary` – Nectar Generics Library.
+- `include/CoreRuntimeKit` – Nectar Core Libraries. (C++/Nectar)
 - `include/ThirdParty` – Third Party Modules.
-- `src/DebuggerKit` – Debugging Kit written in C++
-- `src/CommandLine/` – C/C++ Command Line Tools.
-
+- `src/DebuggerKit` – Debugging Kit written in C++.
+- `src/CommandLine` – C/Nectar/C++ Command Line Tools.
 
 ## Requirements:
 
