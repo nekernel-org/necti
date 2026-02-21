@@ -160,7 +160,7 @@ NECTAR_MODULE(DynamicLinker64PEF) {
       continue;
     } else {
       if (argv[linker_arg][0] == '-') {
-        kConsoleOut << "unknown flag: " << argv[linker_arg] << "\n";
+        kConsoleOut << "unknown option: " << argv[linker_arg] << "\n";
         return EXIT_FAILURE;
       }
 
@@ -605,7 +605,7 @@ NECTAR_MODULE(DynamicLinker64PEF) {
           kConsoleOut << "Ignoring :UndefinedSymbol: headers...\n";
         }
 
-        // ignore :UndefinedSymbol: headers, they do not contain code.
+        // Let's ignore :UndefinedSymbol: headers, they do not contain code.
         continue;
       }
 

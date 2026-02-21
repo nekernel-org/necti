@@ -19,6 +19,8 @@
 #include <CompilerKit/UUID.h>
 #include <CompilerKit/Utilities/Compiler.h>
 
+#define kLatestOSX (15)
+
 #define kMachODefaultEntrypoint "_main"
 #define kMachODefaultOutput {"a" kMachOExt}
 
@@ -47,7 +49,7 @@ static std::vector<CompilerKit::STLString>    kObjectList;
 static std::vector<CompilerKit::Detail::Blob> kTextBytes;
 static std::vector<CompilerKit::Detail::Blob> kDataBytes;
 
-/* symbol table */
+/* @brief symbol tables */
 static std::vector<nlist_64>                    kSymbolTable;
 static std::vector<Char>                        kStringTable;
 static std::map<CompilerKit::STLString, UInt64> kSymbolOffsets;
@@ -60,6 +62,8 @@ struct SectionInfo {
   UInt64                 address;
   UInt64                 size;
 };
+
+using SectionInfoVec = std::vector<SectionInfo>;
 
 /// @brief Extract clean symbol name from AE record name
 /// AE format: ".code64$symbolname" or "symbolname.code64"
@@ -116,7 +120,7 @@ static UInt32 macho_add_symbol(const CompilerKit::STLString& name, uint8_t type,
   return static_cast<UInt32>(kSymbolTable.size() - 1);
 }
 
-///	@brief Nectar 64-bit Mach-O Linker.
+/// @brief Nectar 64-bit Mach-O Linker.
 /// @note This linker outputs Mach-O executables for macOS/iOS.
 NECTAR_MODULE(DynamicLinker64MachO) {
   CompilerKit::install_signal(SIGSEGV, CompilerKit::Detail::drvi_crash_handler);
@@ -124,7 +128,7 @@ NECTAR_MODULE(DynamicLinker64MachO) {
   /**
    * @brief parse flags and trigger options.
    */
-  for (size_t linker_arg = 1; linker_arg < argc; ++linker_arg) {
+  for (size_t linker_arg{1}; linker_arg < argc; ++linker_arg) {
     if (std::strcmp(argv[linker_arg], "-help") == 0) {
       kLinkerSplash();
 
@@ -186,7 +190,7 @@ NECTAR_MODULE(DynamicLinker64MachO) {
       continue;
     } else {
       if (argv[linker_arg][0] == '-') {
-        kConsoleOut << "unknown flag: " << argv[linker_arg] << "\n";
+        kConsoleOut << "unknown option: " << argv[linker_arg] << "\n";
         return EXIT_FAILURE;
       }
 
@@ -214,7 +218,7 @@ NECTAR_MODULE(DynamicLinker64MachO) {
     }
   }
 
-  std::vector<SectionInfo>               sections;
+  SectionInfoVec               sections;
   CompilerKit::Utils::AEReadableProtocol reader_protocol{};
 
   entry_point_command entryCommand{};
@@ -371,7 +375,7 @@ NECTAR_MODULE(DynamicLinker64MachO) {
   UInt32 dysymtabCmdSize = sizeof(dysymtab_command);
   UInt32 linkeditCmdSize = sizeof(segment_command_64);  // No sections
   UInt32 dylinkerCmdSize =
-      (sizeof(dylinker_command) + 13 + 1 + 7) & ~7;  // "/usr/lib/dyld" + padding to 8-byte align
+      (strlen(dylinker_command) + 13 + 1 + 7) & ~7;  // "/usr/lib/dyld" + padding to 8-byte align
 
   sizeOfCmds = pageZeroSize + textSegCmdSize + dataSegCmdSize + buildCmdSize + uuidCmdSize +
                symtabCmdSize + dysymtabCmdSize + linkeditCmdSize + dylinkerCmdSize;
@@ -434,8 +438,8 @@ NECTAR_MODULE(DynamicLinker64MachO) {
   build_version_command build = {.cmd      = LC_BUILD_VERSION,
                                  .cmdsize  = sizeof(build_version_command),
                                  .platform = PLATFORM_MACOS,
-                                 .minos    = (11 << 16),  // macOS 11.0
-                                 .sdk      = (11 << 16),  // macOS 11.0
+                                 .minos    = (kLatestOSX << 16),  // macOS 11.0
+                                 .sdk      = (kLatestOSX << 16),  // macOS 11.0
                                  .ntools   = 0};
 
   output_fc.write(reinterpret_cast<const Char*>(&build), sizeof(build));
