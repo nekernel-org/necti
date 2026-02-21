@@ -218,7 +218,7 @@ NECTAR_MODULE(DynamicLinker64MachO) {
     }
   }
 
-  SectionInfoVec               sections;
+  SectionInfoVec                         sections;
   CompilerKit::Utils::AEReadableProtocol reader_protocol{};
 
   entry_point_command entryCommand{};
