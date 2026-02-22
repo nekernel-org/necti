@@ -10,7 +10,6 @@
 </div>
 
 ![CI](https://github.com/nekernel-org/nectar/actions/workflows/nectar-dev.yml/badge.svg)
-[![License: GPL-3.0](https://img.shields.io/badge/license-Apache--2.0-blue.svg)](LICENSE)
 
 ## Getting Started:
 
