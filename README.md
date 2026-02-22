@@ -41,7 +41,7 @@ Always use `format.sh` before commiting and pushing your code!
 Run the following:
 
 ```sh
-git clone git@github.com:nekernel-org/nectar.git
+git clone -j8 git@github.com:nekernel-org/nectar.git
 cd nectar
 # Either build the debugger or compiler libraries/tools using nebuild.
 ```
