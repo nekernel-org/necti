@@ -60,15 +60,15 @@ And build the source tree using the NeBuild system.
 
 ---
 
+### License
+
+This project is licensed under the [Apache-2.0 License](LICENSE).
+
 ### Figures:
 
 #### Figure 1: The Nectar AMD64 Assembler for NeKernel ABI.
 
 <img src="meta/media/pef_amd64_asm.png" alt="Nectar Assembler Assembling" width="1280"/>
-
-### License
-
-This project is licensed under the [Apache-2.0 License](LICENSE).
 
 <div align="center">
   <sub>
