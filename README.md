@@ -1,13 +1,20 @@
 <!-- Read Me of Nectar -->
 
-# The Nectar System.
-
-## Status: 
+<div align="center">
+  <h1>
+    <b>The NeKernel System</b>
+  </h1>
+  <p>
+    <a href="LICENSE"><img src="https://img.shields.io/badge/License-Apache--2.0-blue.svg" alt="License"></a>
+  </p>
+</div>
 
 ![CI](https://github.com/nekernel-org/nectar/actions/workflows/nectar-dev.yml/badge.svg)
 [![License: GPL-3.0](https://img.shields.io/badge/license-Apache--2.0-blue.svg)](LICENSE)
 
-## Structure:
+## Getting Started:
+
+### Structure:
 
 - `src/CompilerKit` – Compiler Kit written in C++.
 - `include/GenericsLibrary` – Nectar Generics Library.
@@ -16,7 +23,7 @@
 - `src/DebuggerKit` – Debugging Kit written in C++.
 - `src/CommandLine` – C/Nectar/C++ Command Line Tools.
 
-## Requirements:
+### Requirements:
 
 - [Clang](https://clang.llvm.org/)
 - [Git](https://git-scm.com/)
@@ -26,11 +33,11 @@
 - CoreUtils
 - [Git](https://git-scm.com/)
 
-## Notice for Contributors:
+### Notice for Contributors:
 
 Always use `format.sh` before commiting and pushing your code!
 
-## Getting Started:
+### Building:
 
 Run the following:
 
@@ -42,19 +49,25 @@ cd nectar
 
 And build the source tree using the NeBuild system.
 
-## Security
+### Security
 
 - **Vulnerability Disclosure:**  
   Please report security issues privately via email or GitHub Security Advisories.
 
-## Authors & Credits
+### Authors & Credits
 
 - **Amlal El Mahrouss** — Lead Developer and Compiler Architect.
 - [Full contributor list](https://github.com/nekernel-org/nectar/graphs/contributors)
 
 ---
 
-## License
+### Figures:
+
+#### Figure 1: The Nectar AMD64 Assembler for NeKernel ABI.
+
+<img src="meta/media/pef_amd64_asm.png" alt="Nectar Assembler Assembling" width="1280"/>
+
+### License
 
 This project is licensed under the [Apache-2.0 License](LICENSE).
 
