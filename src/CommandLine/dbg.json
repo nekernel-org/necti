@@ -2,7 +2,7 @@
   "compiler_path": "clang++",
   "compiler_std": "c++20",
   "headers_path": ["../../include/CompilerKit", "../../include", "../../include/CompilerKit/src/Detail"],
-  "sources_path": ["dbg.cc"],
+  "sources_path": ["dbg.cpp"],
   "output_name": "dbg",
   "compiler_flags": ["-L/usr/lib", "-lDebuggerKit"],
   "cpp_macros": [

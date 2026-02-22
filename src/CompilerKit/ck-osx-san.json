@@ -9,10 +9,10 @@
     "/opt/homebrew/Cellar/boost/1.90.0/include"
   ],
   "sources_path": [
-    "src/*.cc",
-    "src/*/*.cc"
+    "src/*.cpp",
+    "src/*/*.cpp"
   ],
-  "output_name": "/usr/local/lib/libCompilerKit.dylib",
+  "output_name": "/usr/local/lib/libCompilerKit.san.dylib",
   "compiler_flags": [
     "-fPIC",
     "-shared",

@@ -5,7 +5,7 @@
     "../../include/DebuggerKit",
     "../../include"
   ],
-  "sources_path": ["src/*.cc"],
+  "sources_path": ["src/*.cpp"],
   "output_name": "/usr/local/lib/libDebuggerKit.dylib",
   "compiler_flags": ["-fPIC", "-shared"],
   "cpp_macros": [

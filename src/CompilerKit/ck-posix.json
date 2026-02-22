@@ -8,8 +8,8 @@
     "../../include/CompilerKit/src/impl"
   ],
   "sources_path": [
-    "src/*.cc",
-    "src/*/*.cc"
+    "src/*.cpp",
+    "src/*/*.cpp"
   ],
   "output_name": "/usr/lib/libCompilerKit.so",
   "compiler_flags": [

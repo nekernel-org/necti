@@ -2,7 +2,7 @@
   "compiler_path": "clang++",
   "compiler_std": "c++20",
   "headers_path": ["../../include/CompilerKit", "../../include/", "../../include/CompilerKit/src/Detail"],
-  "sources_path": ["kdbg.cc"],
+  "sources_path": ["kdbg.cpp"],
   "output_name": "kdbg",
   "compiler_flags": ["-L/usr/lib", "-lDebuggerKit"],
   "cpp_macros": [

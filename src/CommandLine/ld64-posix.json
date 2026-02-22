@@ -2,7 +2,7 @@
   "compiler_path": "clang++",
   "compiler_std": "c++20",
   "headers_path": ["../../include/CompilerKit", "../../include/", "../../include/CompilerKit/src/Detail"],
-  "sources_path": ["ld64.cc"],
+  "sources_path": ["ld64.cpp"],
   "output_name": "ld64",
   "compiler_flags": ["-L/usr/lib", "-lCompilerKit"],
   "cpp_macros": [

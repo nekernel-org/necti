@@ -7,13 +7,14 @@
     "../include/CompilerKit/src/Detail"
   ],
   "sources_path": [
-    "pef-amd64-necdrv.cc"
+    "pef-amd64-drv.cpp"
   ],
   "output_name": "pef-amd64-necdrv",
   "compiler_flags": [
   ],
   "cpp_macros": [
     "__NECDRV__=202504",
+    "CK_POSIX",
     "kDistReleaseBranch=$(git rev-parse --abbrev-ref HEAD)-$(uuidgen)"
   ]
 }

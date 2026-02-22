@@ -12,16 +12,20 @@
     "src/*.cpp",
     "src/*/*.cpp"
   ],
-  "output_name": "/usr/local/lib/libCompilerKit.dylib",
+  "output_name": "/usr/lib/libCompilerKit.san.so",
   "compiler_flags": [
     "-fPIC",
-    "-shared"
+    "-shared",
+    "-fstack-protector-all",
+    "-fno-omit-frame-pointer",
+    "-g",
+    "-fsanitize=address",
+    "-fsanitize=undefined"
   ],
   "cpp_macros": [
     "__NECTAR__=202505",
     "CK_USE_STRUCTS=1",
-    "CK_USE_MACHO_LINKER=1",
     "kDistReleaseBranch=$(git rev-parse --abbrev-ref HEAD)-$(uuidgen)"
   ],
-  "description": "CompilerKit for OSX. CK is the framework behind Nectar."
+  "description": "CompilerKit for OSX, with Asan/Ubsan. CK is the framework behind Nectar."
 }

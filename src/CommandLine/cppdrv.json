@@ -2,7 +2,7 @@
   "compiler_path": "clang++",
   "compiler_std": "c++20",
   "headers_path": ["../../include/CompilerKit", "../../include/", "../../include/CompilerKit/src/Detail"],
-  "sources_path": ["cppdrv.cc"],
+  "sources_path": ["cppdrv.cpp"],
   "output_name": "cppdrv",
   "compiler_flags": ["-L/usr/local/lib", "-lCompilerKit"],
   "cpp_macros": [
