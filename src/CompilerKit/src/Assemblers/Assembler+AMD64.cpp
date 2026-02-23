@@ -120,14 +120,14 @@ NECTAR_MODULE(AssemblerMainAMD64) {
             << "AssemblerAMD64: AMD64 Assembler Driver.\nAssemblerAMD64: Copyright (c) 2024-2026 "
                "Amlal El Mahrouss\n";
         kStdOut
-            << "AssemblerAMD64: This Software is part of the NeKernel project. (nekernel.org)\n";
+            << "AssemblerAMD64: This software is part of the Ne.org project. (https://www.nekernel.org)\n";
         return 0;
       } else if (strcmp(argv[i], "-help") == 0) {
         kStdOut
             << "AssemblerAMD64: AMD64 Assembler Driver.\nAssemblerAMD64: Copyright (c) 2024-2026 "
                "Amlal El Mahrouss\n";
         kStdOut
-            << "AssemblerAMD64: This Software is part of the NeKernel project. (nekernel.org)\n";
+            << "AssemblerAMD64: This Software is part of the Ne.org project. (https://www.nekernel.org)\n";
         kStdOut << "-version: Print program version.\n";
         kStdOut << "-fverbose: Print verbose output.\n";
         kStdOut << "-fbinary: Output as flat binary.\n";
@@ -368,7 +368,7 @@ static bool asm_read_attributes(std::string line) {
       // no code will be executed from here.
       kCurrentRecord.fKind = CompilerKit::kPefData;
     } else if (name.find(kPefZero64) != std::string::npos) {
-      // this is a bss section.
+      // this will be a bss section.
       kCurrentRecord.fKind = CompilerKit::kPefZero;
     }
 
