@@ -1,12 +1,12 @@
-// Copyright 2024-2025, Amlal El Mahrouss (amlal@nekernel.org)
+// Copyright 2024-2026, Amlal El Mahrouss (amlal@nekernel.org)
 // Licensed under the Apache License, Version 2.0 (See accompanying
 // file LICENSE or copy at http://www.apache.org/licenses/LICENSE-2.0)
 // Official repository: https://github.com/nekernel-org/nectar
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
-/// @file Assembler+AMD64.cc
-/// @author Amlal El Mahrouss
+/// @file Assembler+AMD64.cpp
+/// @author Amlal El Mahrouss. (amlal@nekernel.org)
 /// @brief AMD64 Assembler.
 /// REMINDER: when dealing with an undefined symbol use (string
 /// size):LinkerFindSymbol:(string) so that ld will look for it.

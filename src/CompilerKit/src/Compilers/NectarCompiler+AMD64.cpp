@@ -23,9 +23,9 @@
 #include <CompilerKit/UUID.h>
 #include <CompilerKit/Utilities/Compiler.h>
 
-/* NeKernel NECTAR Compiler Driver. */
+/* NeKernel Nectar Compiler Driver. */
 /* This is part of the CompilerKit. */
-/* (c) Amlal El Mahrouss 2024-2025 */
+/* (c) Amlal El Mahrouss 2024-2026 */
 
 /// @author Amlal El Mahrouss (amlal@nekernel.org)
 /// @file NectarCompiler+AMD64.cc
