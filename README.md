@@ -11,6 +11,10 @@
 
 ![CI](https://github.com/nekernel-org/nectar/actions/workflows/nectar-dev.yml/badge.svg)
 
+## Community:
+
+Join us in our [Discord](https://discord.gg/uD76Qweght), we're quite active and open for contributors!
+
 ## Getting Started:
 
 ### Structure:
