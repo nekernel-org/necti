@@ -2,7 +2,7 @@
 
 <div align="center">
   <h1>
-    <b>The NeKernel System</b>
+    <b>The Nectar System</b>
   </h1>
   <p>
     <a href="LICENSE"><img src="https://img.shields.io/badge/License-Apache--2.0-blue.svg" alt="License"></a>
