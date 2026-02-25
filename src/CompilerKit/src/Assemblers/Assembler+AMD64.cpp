@@ -31,6 +31,7 @@
 #include <CompilerKit/AST.h>
 #include <CompilerKit/Detail/AMD64.h>
 #include <CompilerKit/PEF.h>
+#include <CompilerKit/Utilities/Assembler.h>
 
 /////////////////////
 
@@ -65,14 +66,12 @@ static std::vector<std::string>                 kUndefinedSymbols;
 
 static const std::string kUndefinedSymbol = ":UndefinedSymbol:";
 
-// \brief forward decl.
+// @brief forward decl.
 static bool asm_read_attributes(std::string line);
-
-#include <CompilerKit/Utilities/Assembler.h>
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
-// @brief AMD64 assembler entrypoint, the program/module starts here.
+/// @brief AMD64 assembler entrypoint, the program/module starts here.
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
@@ -86,7 +85,7 @@ NECTAR_MODULE(AssemblerMainAMD64) {
                                           "jng", "jnge", "jnl", "jnle", "jno", "jnp",  "jns", "jnz",
                                           "jo",  "jp",   "jpe", "jpo",  "js",  "jz"};
 
-  for (i64_hword_t i = 0; i < kJumpLimit; i++) {
+  for (i64_hword_t i{}; i < kJumpLimit; i++) {
     CpuOpcodeAMD64 code{.fName   = opcodes_jump[i],
                         .fOpcode = static_cast<i64_hword_t>(kAsmJumpOpcode + i)};
     kOpcodesAMD64.push_back(code);
@@ -95,7 +94,7 @@ NECTAR_MODULE(AssemblerMainAMD64) {
   CpuOpcodeAMD64 code{.fName = "jcxz", .fOpcode = 0xE3};
   kOpcodesAMD64.push_back(code);
 
-  for (i64_hword_t i = kJumpLimitStandard; i < kJumpLimitStandardLimit; i++) {
+  for (i64_hword_t i{kJumpLimitStandard}; i < kJumpLimitStandardLimit; i++) {
     CpuOpcodeAMD64 code{.fName = "jmp", .fOpcode = i};
     kOpcodesAMD64.push_back(code);
   }
@@ -114,7 +113,7 @@ NECTAR_MODULE(AssemblerMainAMD64) {
 
   //////////////// CPU OPCODES END ////////////////
 
-  for (size_t i = 1; i < argc; ++i) {
+  for (i64_hword_t i{}; i < argc; ++i) {
     if (argv[i][0] == '-') {
       if (strcmp(argv[i], "-version") == 0 || strcmp(argv[i], "-v") == 0) {
         kStdOut
