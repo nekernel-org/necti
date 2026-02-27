@@ -8,3 +8,7 @@ Nectar uses the Google C++ Style. But applied to low-level systems. We use C++20
 
 Nectar doesn't limit itself to a C++ paradigm, as we may find fitting solutions by exploring other patterns.
 
+### References:
+
+- Google C++ Style.
+- Zero Overhead Abstraction.

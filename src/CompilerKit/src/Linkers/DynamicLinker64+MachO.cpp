@@ -84,6 +84,7 @@ static CompilerKit::STLString macho_extract_symbol_name(const CompilerKit::STLSt
   while (!name.empty() && (name.front() == ' ' || name.front() == '\t')) {
     name.erase(0, 1);
   }
+
   while (!name.empty() && (name.back() == ' ' || name.back() == '\t')) {
     name.pop_back();
   }
@@ -101,9 +102,10 @@ static UInt32 macho_add_symbol(const CompilerKit::STLString& name, uint8_t type,
 
   UInt32 strOffset = static_cast<UInt32>(kStringTable.size());
 
-  for (Char c : name) {
+  for (const Char& c : name) {
     kStringTable.push_back(c);
   }
+
   kStringTable.push_back('\0');
 
   // Create nlist_64 entry
@@ -237,12 +239,9 @@ NECTAR_MODULE(DynamicLinker64MachO) {
         hdr.fSize == sizeof(CompilerKit::AEHeader) && hdr.fMagic[2] == kAEMag2) {
       std::size_t cnt = hdr.fCount;
 
-      if (kVerbose) kConsoleOut << "header found, record count: " << cnt << "\n";
-
       Char* raw_ae_records = new Char[cnt * sizeof(CompilerKit::AERecordHeader)];
 
       if (!raw_ae_records) {
-        if (kVerbose) kConsoleOut << "allocation failed for records of count: " << cnt << "\n";
         return NECTAR_EXEC_ERROR;
       }
 
@@ -274,11 +273,6 @@ NECTAR_MODULE(DynamicLinker64MachO) {
           uint8_t symType = N_EXT | N_SECT;
 
           macho_add_symbol(symbolName, symType, sectNum, ae_records[ae_record_index].fOffset);
-
-          if (kVerbose) {
-            kConsoleOut << "added symbol: " << symbolName
-                        << " at offset: " << ae_records[ae_record_index].fOffset << "\n";
-          }
         }
 
         sections.push_back(section);
@@ -286,17 +280,14 @@ NECTAR_MODULE(DynamicLinker64MachO) {
 
       // Look up entry point from symbol table
       auto entryIt = kSymbolOffsets.find(kLinkerStart);
+
       if (entryIt != kSymbolOffsets.end()) {
         entryCommand.entryoff = entryIt->second;
         kStartFound           = true;
-
-        if (kVerbose) {
-          kConsoleOut << "found entry point " << kLinkerStart << " at offset: " << entryIt->second
-                      << "\n";
-        }
       }
 
       delete[] raw_ae_records;
+      raw_ae_records = nullptr;
 
       // Read the actual code bytes
       std::vector<Char> bytes;
@@ -344,9 +335,6 @@ NECTAR_MODULE(DynamicLinker64MachO) {
   std::ofstream output_fc(kOutput, std::ofstream::binary);
 
   if (output_fc.bad()) {
-    if (kVerbose) {
-      kConsoleOut << "error: " << strerror(errno) << "\n";
-    }
     return NECTAR_FILE_NOT_FOUND;
   }
 
@@ -416,10 +404,6 @@ NECTAR_MODULE(DynamicLinker64MachO) {
 
   output_fc.write(reinterpret_cast<const Char*>(&header), sizeof(header));
 
-  if (kVerbose) {
-    kConsoleOut << "Wrote Mach-O header, ncmds: " << numCommands << "\n";
-  }
-
   segment_command_64 pageZeroSegment{};
   pageZeroSegment.cmd     = LC_SEGMENT_64;
   pageZeroSegment.cmdsize = sizeof(segment_command_64);
@@ -443,10 +427,6 @@ NECTAR_MODULE(DynamicLinker64MachO) {
                                  .ntools   = 0};
 
   output_fc.write(reinterpret_cast<const Char*>(&build), sizeof(build));
-
-  if (kVerbose) {
-    kConsoleOut << "Wrote LC_BUILD_VERSION, platform: macOS, minos: 11.0, sdk: 11.0\n";
-  }
 
   // Write __TEXT segment command
   segment_command_64 textSegment{};
@@ -481,11 +461,6 @@ NECTAR_MODULE(DynamicLinker64MachO) {
   textSection.reserved3 = 0;
 
   output_fc.write(reinterpret_cast<const Char*>(&textSection), sizeof(textSection));
-
-  if (kVerbose) {
-    kConsoleOut << "Wrote __TEXT segment, vmaddr: 0x" << std::hex << textVMAddr << std::dec << "\n";
-    kConsoleOut << "  __text section, size: " << textSize << " bytes\n";
-  }
 
   // Write __DATA segment command
   segment_command_64 dataSegment{};
@@ -522,11 +497,6 @@ NECTAR_MODULE(DynamicLinker64MachO) {
   if (dataSegCmdSize > 0)
     output_fc.write(reinterpret_cast<const Char*>(&dataSection), sizeof(dataSection));
 
-  if (kVerbose) {
-    kConsoleOut << "Wrote __DATA segment, vmaddr: 0x" << std::hex << dataVMAddr << std::dec << "\n";
-    kConsoleOut << "  __data section, size: " << dataSize << " bytes\n";
-  }
-
   // Write __LINKEDIT segment command (contains symbol/string tables)
   segment_command_64 linkeditSegment{};
   linkeditSegment.cmd     = LC_SEGMENT_64;
@@ -543,12 +513,6 @@ NECTAR_MODULE(DynamicLinker64MachO) {
 
   output_fc.write(reinterpret_cast<const Char*>(&linkeditSegment), sizeof(linkeditSegment));
 
-  if (kVerbose) {
-    kConsoleOut << "Wrote __LINKEDIT segment, vmaddr: 0x" << std::hex << linkeditVMAddr << std::dec
-                << ", fileoff: " << linkeditFileOffset << ", filesize: " << linkeditFileSize
-                << "\n";
-  }
-
   // Write LC_LOAD_DYLINKER command
   constexpr Char*   dyldPath = "/usr/lib/dyld";
   std::vector<Char> dylinkerCmd(dylinkerCmdSize, 0);
@@ -560,10 +524,6 @@ NECTAR_MODULE(DynamicLinker64MachO) {
 
   output_fc.write(dylinkerCmd.data(), dylinkerCmd.size());
 
-  if (kVerbose) {
-    kConsoleOut << "Wrote LC_LOAD_DYLINKER: " << dyldPath << "\n";
-  }
-
   // Write LC_MAIN entry point command (executables only)
   if (!kIsDylib) {
     entryCommand.cmd     = LC_MAIN;
@@ -572,11 +532,6 @@ NECTAR_MODULE(DynamicLinker64MachO) {
     entryCommand.entryoff = textFileOffset + entryCommand.entryoff;
 
     output_fc.write(reinterpret_cast<const Char*>(&entryCommand), sizeof(entryCommand));
-
-    if (kVerbose) {
-      kConsoleOut << "Wrote LC_MAIN, entryoff: 0x" << std::hex << entryCommand.entryoff << std::dec
-                  << ", stacksize: " << entryCommand.stacksize << "\n";
-    }
   }
 
   // Write LC_UUID command
@@ -594,10 +549,6 @@ NECTAR_MODULE(DynamicLinker64MachO) {
 
   output_fc.write(reinterpret_cast<const Char*>(&uuidCmd), sizeof(uuidCmd));
 
-  if (kVerbose) {
-    kConsoleOut << "Wrote LC_UUID\n";
-  }
-
   // Write LC_SYMTAB command
   symtab_command symtabCmd{};
   symtabCmd.cmd     = LC_SYMTAB;
@@ -608,11 +559,6 @@ NECTAR_MODULE(DynamicLinker64MachO) {
   symtabCmd.strsize = static_cast<UInt32>(kStringTable.size());
 
   output_fc.write(reinterpret_cast<const Char*>(&symtabCmd), sizeof(symtabCmd));
-
-  if (kVerbose) {
-    kConsoleOut << "Wrote LC_SYMTAB, nsyms: " << symtabCmd.nsyms
-                << ", strsize: " << symtabCmd.strsize << "\n";
-  }
 
   // Write LC_DYSYMTAB command
   dysymtab_command dysymtabCmd{};
@@ -633,10 +579,6 @@ NECTAR_MODULE(DynamicLinker64MachO) {
   dysymtabCmd.nundefsym = 0;
 
   output_fc.write(reinterpret_cast<const Char*>(&dysymtabCmd), sizeof(dysymtabCmd));
-
-  if (kVerbose) {
-    kConsoleOut << "Wrote LC_DYSYMTAB\n";
-  }
 
   // Pad to text section offset
   UInt64 currentPos = output_fc.tellp();
@@ -680,22 +622,11 @@ NECTAR_MODULE(DynamicLinker64MachO) {
     output_fc.write(reinterpret_cast<const Char*>(&sym), sizeof(nlist_64));
   }
 
-  if (kVerbose) {
-    kConsoleOut << "Wrote symbol table, " << kSymbolTable.size() << " entries\n";
-  }
 
   // Write string table
   output_fc.write(kStringTable.data(), kStringTable.size());
 
-  if (kVerbose) {
-    kConsoleOut << "Wrote string table, " << kStringTable.size() << " bytes\n";
-  }
-
   output_fc.flush();
-
-  if (kVerbose) {
-    kConsoleOut << "Wrote Mach-O binary: " << kOutput << "\n";
-  }
 
   return NECTAR_SUCCESS;
 }

@@ -6,12 +6,13 @@
     "../../include"
   ],
   "sources_path": ["src/*.cpp"],
-  "output_name": "/usr/local/lib/libDebuggerKit.dylib",
+  "output_name": "/usr/lib/libDebuggerKit.so",
   "compiler_flags": ["-fPIC", "-shared"],
   "cpp_macros": [
     "__NECTAR__=202505",
     "DK_USE_STRUCTS=1",
-    "DK_NEKERNEL_DEBUGGER",
+    "DK_NEKERNEL_DEBUGGER=1",
+    "DEBUGGERKIT_LIBSYSTEM=1",
     "kDistReleaseBranch=$(git rev-parse --abbrev-ref HEAD)-$(uuidgen)"
   ]
 }

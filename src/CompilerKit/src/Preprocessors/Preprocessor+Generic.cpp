@@ -258,7 +258,7 @@ void pp_parse_file(std::ifstream& hdr_file, std::ofstream& pp_out) {
       if (inactive_code) {
         if (hdr_line.find("#endif") == CompilerKit::STLString::npos) {
           continue;
-        } else if (hdr_line[0] == kMacroPrefix &&
+        } else if (hdr_line[0] == '#' &&
                    hdr_line.find("#endif") != CompilerKit::STLString::npos) {
           inactive_code = false;
         }
@@ -275,7 +275,7 @@ void pp_parse_file(std::ifstream& hdr_file, std::ofstream& pp_out) {
         hdr_line.erase(hdr_line.find("/*"));
       }
 
-      if (hdr_line[0] == kMacroPrefix && hdr_line.find("endif") != CompilerKit::STLString::npos) {
+      if (hdr_line[0] == '#' && hdr_line.find("endif") != CompilerKit::STLString::npos) {
         if (!defined && inactive_code) {
           inactive_code = false;
           defined       = false;
@@ -361,11 +361,11 @@ void pp_parse_file(std::ifstream& hdr_file, std::ofstream& pp_out) {
         }
       }
 
-      if (hdr_line[0] == kMacroPrefix && hdr_line.find("define ") != CompilerKit::STLString::npos) {
-        auto define_pos = hdr_line.find("define ");
+      if (hdr_line[0] == '#' && hdr_line.find("define") != CompilerKit::STLString::npos) {
+        auto define_pos = hdr_line.find("define");
         if (define_pos == CompilerKit::STLString::npos) continue;
 
-        auto line_after_define = hdr_line.substr(define_pos + strlen("define "));
+        auto line_after_define = hdr_line.substr(define_pos + strlen("define"));
 
         CompilerKit::STLString macro_value;
         CompilerKit::STLString macro_key;
@@ -490,7 +490,7 @@ void pp_parse_file(std::ifstream& hdr_file, std::ofstream& pp_out) {
 
           continue;
         }
-      } else if (hdr_line[0] == kMacroPrefix &&
+      } else if (hdr_line[0] == '#' &&
                  hdr_line.find("else") != CompilerKit::STLString::npos) {
         if (!defined && inactive_code) {
           inactive_code = false;
@@ -503,7 +503,7 @@ void pp_parse_file(std::ifstream& hdr_file, std::ofstream& pp_out) {
 
           continue;
         }
-      } else if (hdr_line[0] == kMacroPrefix &&
+      } else if (hdr_line[0] == '#' &&
                  hdr_line.find("ifdef") != CompilerKit::STLString::npos) {
         auto ifdef_pos = hdr_line.find("ifdef");
         if (ifdef_pos == CompilerKit::STLString::npos) continue;
@@ -544,7 +544,7 @@ void pp_parse_file(std::ifstream& hdr_file, std::ofstream& pp_out) {
             break;
           }
         }
-      } else if (hdr_line[0] == kMacroPrefix &&
+      } else if (hdr_line[0] == '#' &&
                  hdr_line.find("if") != CompilerKit::STLString::npos) {
         inactive_code = true;
 
@@ -629,7 +629,7 @@ void pp_parse_file(std::ifstream& hdr_file, std::ofstream& pp_out) {
             break;
           }
         }
-      } else if (hdr_line[0] == kMacroPrefix &&
+      } else if (hdr_line[0] == '#' &&
                  hdr_line.find("warning") != CompilerKit::STLString::npos) {
         auto warning_pos = hdr_line.find("warning");
         if (warning_pos == CompilerKit::STLString::npos) continue;
@@ -645,8 +645,8 @@ void pp_parse_file(std::ifstream& hdr_file, std::ofstream& pp_out) {
           message += ch;
         }
 
-        std::cout << "warn: " << message << std::endl;
-      } else if (hdr_line[0] == kMacroPrefix &&
+        std::cerr << "warn: " << message << std::endl;
+      } else if (hdr_line[0] == '#' &&
                  hdr_line.find("error") != CompilerKit::STLString::npos) {
         auto error_pos = hdr_line.find("error");
         if (error_pos == CompilerKit::STLString::npos) continue;
@@ -663,7 +663,7 @@ void pp_parse_file(std::ifstream& hdr_file, std::ofstream& pp_out) {
         }
 
         throw std::runtime_error("error: " + message);
-      } else if (hdr_line[0] == kMacroPrefix &&
+      } else if (hdr_line[0] == '#' &&
                  hdr_line.find("include ") != CompilerKit::STLString::npos) {
         auto include_pos = hdr_line.find("include ");
         if (include_pos == CompilerKit::STLString::npos) continue;
