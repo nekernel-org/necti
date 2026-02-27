@@ -76,6 +76,6 @@ This project is licensed under the [Apache-2.0 License](LICENSE).
 
 <div align="center">
   <sub>
-    &copy; 2024-2025 Amlal El Mahrouss & NeKernel contributors. Licensed under the Apache 2.0 license.
+    &copy; 2024-2026 Amlal El Mahrouss & NeKernel contributors. Licensed under the Apache 2.0 license.
   </sub>
 </div>
