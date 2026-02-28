@@ -30,12 +30,12 @@ Join us in our [Discord](https://discord.gg/uD76Qweght), we're quite active and 
 
 - [Clang](https://clang.llvm.org/)
 - [Git](https://git-scm.com/)
-- [Boost](https://boost.org/)
+- [Boost](https://boost.org/) (1.90.0+)
 - [NeBuild](https://github.com/nekernel-org/nebuild)
 - [Doxygen](https://www.doxygen.nl/)
 - GNU CoreUtils
 - [Git](https://git-scm.com/)
-- [OCL.TProc](https://github.com/ocl-org/tproc)
+- [OCL.TProc](https://github.com/ocl-org/tproc) (1.61.0+)
 
 ### Notice for Contributors:
 
@@ -55,7 +55,7 @@ And build the source tree using the NeBuild system.
 
 ### Security
 
-- **Vulnerability Disclosure:**  
+- **Vulnerability Disclosure:**
   Please report security issues privately via email or GitHub Security Advisories.
 
 ### Authors & Credits
