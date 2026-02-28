@@ -33,15 +33,15 @@ namespace CompilerKit {
 // One thing to keep in mind.
 // This object format, is reloctable.
 typedef struct AEHeader final {
-  Char     fMagic[kAEMagLen] = {};
+  char     fMagic[kAEMagLen] = {};
   UInt16   fVersion{kAEIdentVersion};
-  Char     fArch{};
-  Char     fSubArch{};
+  char     fArch{};
+  char     fSubArch{};
   SizeType fCount{};
-  Char     fSize{};
+  char     fSize{};
   SizeType fStartCode{};
   SizeType fCodeSize{};
-  Char     fPad[kAEPad] = {};
+  char     fPad[kAEPad] = {};
 } PACKED AEHeader, *AEHeaderPtr;
 
 // @brief Advanced Executable Record.
@@ -49,12 +49,12 @@ typedef struct AEHeader final {
 // fKind must be filled with PEF fields.
 
 typedef struct AERecordHeader final {
-  Char     fName[kAESymbolLen];
+  char     fName[kAESymbolLen];
   SizeType fKind;
   SizeType fSize;
   SizeType fFlags;
   UIntPtr  fOffset;
-  Char     fPad[kAEPad];
+  char     fPad[kAEPad];
 } PACKED AERecordHeader, *AERecordHeaderPtr;
 
 enum {

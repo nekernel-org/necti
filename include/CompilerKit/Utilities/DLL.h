@@ -16,7 +16,7 @@ namespace CompilerKit {
 #ifdef CK_POSIX
 class ModuleLoader final {
  public:
-  using EntryT  = Int32 (*)(Int32 argc, Char const* argv[]);
+  using EntryT  = Int32 (*)(Int32 argc, char const* argv[]);
   using HandleT = VoidPtr;
   using MutexT  = std::mutex;
 

@@ -58,8 +58,8 @@ static bool                   kStartFound       = false;
 static bool                   kDuplicateSymbols = false;
 
 /* ld64 is to be found, mld is to be found at runtime. */
-static const Char* kLinkerDefineSymbol = ":UndefinedSymbol:";
-static const Char* kLinkerDynamicSym   = ":RuntimeSymbol:";
+static const char* kLinkerDefineSymbol = ":UndefinedSymbol:";
+static const char* kLinkerDynamicSym   = ":RuntimeSymbol:";
 
 static CompilerKit::STLString kLinkerStart = kPefStart;
 
@@ -268,7 +268,7 @@ NECTAR_MODULE(DynamicLinker64PEF) {
 
       pef_container.Count = cnt;
 
-      Char* raw_ae_records = new Char[cnt * sizeof(CompilerKit::AERecordHeader)];
+      char* raw_ae_records = new char[cnt * sizeof(CompilerKit::AERecordHeader)];
 
       if (!raw_ae_records) {
         if (kVerbose) kConsoleOut << "allocation failed for records of count: " << cnt << "\n";
@@ -329,7 +329,7 @@ NECTAR_MODULE(DynamicLinker64PEF) {
       delete[] raw_ae_records;
       raw_ae_records = nullptr;
 
-      std::vector<Char> bytes;
+      std::vector<char> bytes;
       bytes.resize(hdr.fCodeSize);
 
       reader_protocol.fFilePtr.seekg(std::streamsize(hdr.fStartCode));

@@ -81,7 +81,7 @@ union NumberCastBase {
 
   static constexpr auto kLimit = 1;
 
-  Char   number[kLimit];
+  char   number[kLimit];
   UInt64 raw;
 };
 
@@ -93,7 +93,7 @@ union NumberCast64 final {
 
   static constexpr auto kLimit = 8;
 
-  Char   number[kLimit];
+  char   number[kLimit];
   UInt64 raw;
 };
 
@@ -105,7 +105,7 @@ union NumberCast32 final {
 
   static constexpr auto kLimit = 4;
 
-  Char   number[kLimit];
+  char   number[kLimit];
   UInt32 raw;
 };
 
@@ -117,7 +117,7 @@ union NumberCast16 final {
 
   static constexpr auto kLimit = 2;
 
-  Char   number[kLimit];
+  char   number[kLimit];
   UInt16 raw;
 };
 
@@ -127,7 +127,7 @@ union NumberCast8 final {
 
   ~NumberCast8() { raw = 0; }
 
-  Char  number;
+  char  number;
   UInt8 raw;
 };
 

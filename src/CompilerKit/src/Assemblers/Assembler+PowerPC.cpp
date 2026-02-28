@@ -39,7 +39,7 @@
 
 constexpr auto kPowerIPAlignment = 0x1U;
 
-static Char kOutputArch = CompilerKit::kPefArchPowerPC;
+static char kOutputArch = CompilerKit::kPefArchPowerPC;
 
 static std::size_t kCounter = 1UL;
 

@@ -33,8 +33,9 @@ Join us in our [Discord](https://discord.gg/uD76Qweght), we're quite active and 
 - [Boost](https://boost.org/)
 - [NeBuild](https://github.com/nekernel-org/nebuild)
 - [Doxygen](https://www.doxygen.nl/)
-- CoreUtils
+- GNU CoreUtils
 - [Git](https://git-scm.com/)
+- [OCL.TProc](https://github.com/ocl-org/tproc)
 
 ### Notice for Contributors:
 

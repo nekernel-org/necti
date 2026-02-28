@@ -39,7 +39,7 @@
 
 constexpr auto kArm64Alignment = 0x1U;
 
-static Char kOutputArch = CompilerKit::kPefArchARM64;
+static char kOutputArch = CompilerKit::kPefArchARM64;
 
 static std::size_t kCounter = 1UL;
 

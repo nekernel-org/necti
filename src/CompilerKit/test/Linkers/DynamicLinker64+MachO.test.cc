@@ -8,12 +8,12 @@
 #include <CompilerKit/Detail/Config.h>
 #include <gtest/gtest.h>
 
-CK_IMPORT_C Int32 DynamicLinker64MachO(Int32 argc, Char** argv);
+CK_IMPORT_C Int32 DynamicLinker64MachO(Int32 argc, char** argv);
 
 static Int32  kArgc{};
-static Char** kArgv{};
+static char** kArgv{};
 
-Int32 main(Int32 argc, Char** argv) {
+Int32 main(Int32 argc, char** argv) {
   ::testing::InitGoogleTest(&argc, argv);
 
   kArgc = argc;

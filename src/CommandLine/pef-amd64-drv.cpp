@@ -19,7 +19,7 @@ static auto kPath = "/usr/lib/libCompilerKit.so";
 
 static auto kSymbol = "CompilerNectarAMD64";
 
-Int32 main(Int32 argc, Char const* argv[]) {
+Int32 main(Int32 argc, char const* argv[]) {
   CompilerKit::ModuleLoader dylib;
   dylib(kPath, kSymbol);
 

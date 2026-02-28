@@ -261,14 +261,14 @@ namespace Detail {
     size_t     m_byteCount;
   };
 
-  template <typename CharT>
-  inline constexpr CharT empty_guid[37] = "00000000-0000-0000-0000-000000000000";
+  template <typename Char>
+  inline constexpr Char empty_guid[37] = "00000000-0000-0000-0000-000000000000";
 
   template <>
   inline constexpr wchar_t empty_guid<wchar_t>[37] = L"00000000-0000-0000-0000-000000000000";
 
-  template <typename CharT>
-  inline constexpr CharT guid_encoder[17] = "0123456789abcdef";
+  template <typename Char>
+  inline constexpr Char guid_encoder[17] = "0123456789abcdef";
 
   template <>
   inline constexpr wchar_t guid_encoder<wchar_t>[17] = L"0123456789abcdef";
@@ -349,9 +349,9 @@ enum class uuid_version {
 // Forward declare uuid & to_string so that we can declare to_string as a friend
 // later.
 class uuid;
-template <class CharT = char, class Traits = std::char_traits<CharT>,
-          class Allocator = std::allocator<CharT>>
-std::basic_string<CharT, Traits, Allocator> to_string(uuid const& id);
+template <class Char = char, class Traits = std::char_traits<char>,
+          class Allocator = std::allocator<char>>
+std::basic_string<Char, Traits, Allocator> to_string(uuid const& id);
 
 // --------------------------------------------------------------------------------------------------------------------------
 // uuid class
@@ -498,8 +498,8 @@ class uuid {
   friend std::basic_ostream<Elem, Traits>& operator<<(std::basic_ostream<Elem, Traits>& s,
                                                       uuid const&                       id);
 
-  template <class CharT, class Traits, class Allocator>
-  friend std::basic_string<CharT, Traits, Allocator> to_string(uuid const& id);
+  template <class Char, class Traits, class Allocator>
+  friend std::basic_string<Char, Traits, Allocator> to_string(uuid const& id);
 
   friend std::hash<uuid>;
 };
@@ -520,16 +520,16 @@ class uuid {
   return lhs.data < rhs.data;
 }
 
-template <class CharT, class Traits, class Allocator>
-[[nodiscard]] inline std::basic_string<CharT, Traits, Allocator> to_string(uuid const& id) {
-  std::basic_string<CharT, Traits, Allocator> uustr{Detail::empty_guid<CharT>};
+template <class Char, class Traits, class Allocator>
+[[nodiscard]] inline std::basic_string<Char, Traits, Allocator> to_string(uuid const& id) {
+  std::basic_string<char, Traits, Allocator> uustr{Detail::empty_guid<char>};
 
   for (size_t i = 0, index = 0; i < 36; ++i) {
     if (i == 8 || i == 13 || i == 18 || i == 23) {
       continue;
     }
-    uustr[i]   = Detail::guid_encoder<CharT>[id.data[index] >> 4 & 0x0f];
-    uustr[++i] = Detail::guid_encoder<CharT>[id.data[index] & 0x0f];
+    uustr[i]   = Detail::guid_encoder<char>[id.data[index] >> 4 & 0x0f];
+    uustr[++i] = Detail::guid_encoder<char>[id.data[index] & 0x0f];
     index++;
   }
 
@@ -679,11 +679,11 @@ class uuid_name_generator {
     hasher.process_bytes(bytes, 16);
   }
 
-  template <typename CharT, typename Traits>
-  void process_characters(std::basic_string_view<CharT, Traits> const str) {
+  template <typename Char, typename Traits>
+  void process_characters(std::basic_string_view<Char, Traits> const str) {
     for (uint32_t c : str) {
       hasher.process_byte(static_cast<uint8_t>(c & 0xFF));
-      if constexpr (!std::is_same_v<CharT, char>) {
+      if constexpr (!std::is_same_v<Char, char>) {
         hasher.process_byte(static_cast<uint8_t>((c >> 8) & 0xFF));
         hasher.process_byte(static_cast<uint8_t>((c >> 16) & 0xFF));
         hasher.process_byte(static_cast<uint8_t>((c >> 24) & 0xFF));

@@ -13,10 +13,12 @@
 /// =========================================================== ///
 
 #include <CompilerKit/Detail/PreConfig.h>
+#include <ocl/tproc.hpp>
 
 namespace CompilerKit {
 inline static constexpr int kBaseYear = 1900;
-using STLString                       = std::string;
+    using STLString                       = std::string;
+    using RopeString = ocl::tproc::crope;
 
 inline STLString current_date() noexcept {
   auto time_data   = time(nullptr);
@@ -32,7 +34,7 @@ inline STLString current_date() noexcept {
   return fmt;
 }
 
-inline bool to_str(Char* str, Int32 limit, Int32 base) noexcept {
+inline bool to_str(char* str, Int32 limit, Int32 base) noexcept {
   if (limit == 0) return false;
 
   Int32 copy_limit = limit;

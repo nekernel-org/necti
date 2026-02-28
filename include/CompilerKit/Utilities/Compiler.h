@@ -41,7 +41,7 @@ inline static bool   kNasmOutput       = false;
 namespace CompilerKit::Detail {
 /// @brief Blob structure
 struct Blob final {
-  std::vector<Char> mBlob{};       // PEF code/bss/data blob.
+  std::vector<char> mBlob{};       // PEF code/bss/data blob.
   UIntPtr           mOffset{0UL};  // the offset of the PEF container header...
 
   explicit operator bool() { return mBlob.empty() && mOffset > 0UL; }

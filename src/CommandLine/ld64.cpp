@@ -8,8 +8,8 @@
 /// @file ld64.cc
 /// @brief Nectar linker for AE objects.
 
-CK_IMPORT_C Int32 DynamicLinker64PEF(Int32 argc, Char const* argv[]);
+CK_IMPORT_C Int32 DynamicLinker64PEF(Int32 argc, char const* argv[]);
 
-Int32 main(Int32 argc, Char const* argv[]) {
+Int32 main(Int32 argc, char const* argv[]) {
   return DynamicLinker64PEF(argc, argv);
 }
