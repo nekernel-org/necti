@@ -13,10 +13,10 @@ parserArgumentsOpenCL=-ferror-limit=100 -fspell-checking -Wdocumentation -Wunuse
 Name=Clang
 
 [CustomDefinesAndIncludes][ProjectPath0][Includes]
-1=/home/amlal/nekernel-org/nectar/include/
-2=/home/amlal/nekernel-org/nectar/include/CompilerKit/
-3=/home/amlal/nekernel-org/nectar/include/DebuggerKit/
-4=/home/amlal/nekernel-org/nectar/include/CompilerKit/Detail/
+1=/home/amlal/ne-foss-org/nectar/include/
+2=/home/amlal/ne-foss-org/nectar/include/CompilerKit/
+3=/home/amlal/ne-foss-org/nectar/include/DebuggerKit/
+4=/home/amlal/ne-foss-org/nectar/include/CompilerKit/Detail/
 
 [Launch]
 Launch Configurations=Launch Configuration 0
@@ -37,7 +37,7 @@ External Terminal=konsole --noclose --workdir %workdir -e %exe
 Kill Before Executing Again=4194304
 Project Target=
 Use External Terminal=false
-Working Directory=file:///home/amlal/nekernel-org/nectar/src/CompilerKit
+Working Directory=file:///home/amlal/ne-foss-org/nectar/src/CompilerKit
 isExecutable=true
 
 [Project]

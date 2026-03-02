@@ -9,7 +9,7 @@
   </p>
 </div>
 
-![CI](https://github.com/nekernel-org/nectar/actions/workflows/nectar-dev.yml/badge.svg)
+![CI](https://github.com/ne-foss-org/nectar/actions/workflows/nectar-dev.yml/badge.svg)
 
 ## Community:
 
@@ -31,7 +31,7 @@ Join us in our [Discord](https://discord.gg/uD76Qweght), we're quite active and 
 - [Clang](https://clang.llvm.org/)
 - [Git](https://git-scm.com/)
 - [Boost](https://boost.org/) (1.90.0+)
-- [NeBuild](https://github.com/nekernel-org/nebuild)
+- [NeBuild](https://github.com/ne-foss-org/nebuild)
 - [Doxygen](https://www.doxygen.nl/)
 - GNU CoreUtils
 - [Git](https://git-scm.com/)
@@ -61,7 +61,7 @@ And build the source tree using the NeBuild system.
 ### Authors & Credits
 
 - **Amlal El Mahrouss** — Lead Developer and Compiler Architect.
-- [Full contributor list](https://github.com/nekernel-org/nectar/graphs/contributors)
+- [Full contributor list](https://github.com/ne-foss-org/nectar/graphs/contributors)
 
 ---
 

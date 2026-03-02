@@ -10,7 +10,7 @@ identifiers:
   - type: url
     value: 'https://nekernel.org'
     description: NeKernel.org
-repository-code: 'https://github.com/nekernel-org/nectar'
+repository-code: 'https://github.com/ne-foss-org/nectar'
 url: 'https://nekernel.org'
 abstract: >-
   This is NeKernel.org's Operating System toolchain, authored
