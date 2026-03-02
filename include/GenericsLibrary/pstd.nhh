@@ -1,0 +1,17 @@
+// Copyright 2026, Amlal El Mahrouss (amlal@nekernel.org)
+// Licensed under the Apache License, Version 2.0 (See accompanying
+// file LICENSE or copy at http://www.apache.org/licenses/LICENSE-2.0)
+// Official repository: https://github.com/nekernel-org/nectar
+
+#pragma once
+
+extern __nrt_palloc;
+
+#define PALLOC_INVALID 0
+
+let palloc(let type, let sz, let align := 0)
+{
+    return __nrt_palloc(type, sz, align);
+}
+
+
