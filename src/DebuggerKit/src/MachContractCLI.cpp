@@ -49,7 +49,8 @@ NECTAR_MODULE(DebuggerMachPOSIX) {
       continue;
     }
 
-    std::string cmd;
+    CompilerKit::STLString cmd{};
+
     if (!std::getline(std::cin, cmd)) break;
 
     if (cmd == "c" || cmd == "cont" || cmd == "continue") {
@@ -57,7 +58,6 @@ NECTAR_MODULE(DebuggerMachPOSIX) {
         kKeepRunning = true;
 
         kStdOut << "[+] Continuing...\n";
-
         pfd::notify("Debugger Event", "Continuing...");
       }
     }

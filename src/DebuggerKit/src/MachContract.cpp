@@ -30,11 +30,15 @@ NECTAR_MODULE(DebuggerMachPOSIX) {
       "Debugger Event",
       "Userland Debugger\n(C) 2025 Amlal El Mahrouss, licensed under the Apache 2.0 license.");
 
-  if (argc >= 3 && std::string(argv[1]) == "-p" && argv[2] != nullptr) {
+  constexpr auto kMaxArgs = 3;
+
+  if (argc >= kMaxArgs
+      && std::string(argv[1]) == "-p"
+      && argv[2] != nullptr) {
     kPath = argv[2];
     kUserDebugger.SetPath(kPath);
 
-    kStdOut << "[+] Image set to: " << kPath << "\n";
+    kStdOut << "[+] Set image to: " << kPath << "\n";
   } else {
     kStdOut << "usage: " << argv[0] << " -p <path>\n";
     kStdOut << "example: " << argv[0] << " -p </path/to/program>\n";

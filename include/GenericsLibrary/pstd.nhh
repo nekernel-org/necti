@@ -5,10 +5,21 @@
 
 #pragma once
 
-extern __nrt_palloc;
-
 #define PALLOC_INVALID 0
 
+extern __nrt_palloc;
+extern __nrt_pfree;
+
+extern __nrt_pthread_new;
+extern __nrt_pthread_kill;
+
+//@ Parallel free
+let pfree(let ptr)
+{
+    return __nrt_pfree(ptr);
+}
+
+//@ Parallel alloc (bytes)
 let palloc(let type, let sz, let align := 0)
 {
     return __nrt_palloc(type, sz, align);
