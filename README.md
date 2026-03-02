@@ -46,7 +46,7 @@ Always use `format.sh` before commiting and pushing your code!
 Run the following:
 
 ```sh
-git clone -j8 git@github.com:nekernel-org/nectar.git
+git clone -j8 git@github.com:ne-foss-org/nectar.git
 cd nectar
 # Either build the debugger or compiler libraries/tools using nebuild.
 ```
@@ -77,6 +77,6 @@ This project is licensed under the [Apache-2.0 License](LICENSE).
 
 <div align="center">
   <sub>
-    &copy; 2024-2026 Amlal El Mahrouss & NeKernel contributors. Licensed under the Apache 2.0 license.
+    &copy; 2023-2026 Amlal El Mahrouss & Ne.org contributors. Licensed under the Apache 2.0 license.
   </sub>
 </div>
