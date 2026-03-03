@@ -1,0 +1,21 @@
+{
+  "compiler_path": "clang++",
+  "compiler_std": "c++20",
+  "headers_path": [
+    "../include/CompilerKit",
+    "../../include",
+    "../include/CompilerKit/src/Detail"
+  ],
+  "sources_path": [
+    "ptx-drv.cpp"
+  ],
+  "output_name": "ptx-necdrv",
+  "compiler_flags": [
+  ],
+  "cpp_macros": [
+    "__NECDRV__=202504",
+    "CK_POSIX",
+    "kDistReleaseBranch=$(git rev-parse --abbrev-ref HEAD)-$(uuidgen)"
+  ]
+}
+

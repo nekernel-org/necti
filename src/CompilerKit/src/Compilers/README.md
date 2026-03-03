@@ -4,5 +4,6 @@
 
 The following frontend are implemented as of Feb 2026:
 
-- NeKernel Nectar
-- NeKernel Assembler
+- NeKernel Nectar.
+- NeKernel Assembler.
+- NVIDIA PTX.

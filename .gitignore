@@ -16,6 +16,7 @@ tools/cxxdrv
 src/*/dbg
 src/*/cppdrv
 src/*/kdbg
+src/*/ptx-necdrv
 src/*/pef-*-asm
 src/*/pef-*-necdrv
 src/*/pef-*-cxxdrv
@@ -23,6 +24,8 @@ src/*/pef-*-cdrv
 
 *~
 
+*.ptx
+*.fatbin
 *.pp
 *.masm
 *.creator.user
