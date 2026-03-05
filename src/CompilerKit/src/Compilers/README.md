@@ -2,8 +2,7 @@
 
 ## Current Status:
 
-The following frontend are implemented as of Feb 2026:
+The following frontend are implemented as of March 2026:
 
-- NeKernel Nectar.
-- NeKernel Assembler.
+- AMD64/X64.
 - NVIDIA PTX.

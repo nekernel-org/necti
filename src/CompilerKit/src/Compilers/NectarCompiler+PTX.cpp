@@ -268,7 +268,7 @@ static bool                   kCurrentIfCondition{false};
 /// detail namespaces
 
 const char* CompilerFrontendNectarPTX::Language() {
-  return "NeKernel Nectar (NVPTX)";
+  return "Parallel Nectar (NVPTX)";
 }
 
 static std::uintptr_t                                                 kOrigin = 0;
