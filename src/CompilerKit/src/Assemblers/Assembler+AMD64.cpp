@@ -113,7 +113,7 @@ NECTAR_MODULE(AssemblerMainAMD64) {
 
   //////////////// CPU OPCODES END ////////////////
 
-  for (i64_hword_t i{}; i < argc; ++i) {
+  for (i64_hword_t i{1}; i < argc; ++i) { 
     if (argv[i][0] == '-') {
       if (strcmp(argv[i], "-version") == 0 || strcmp(argv[i], "-v") == 0) {
         kStdOut
