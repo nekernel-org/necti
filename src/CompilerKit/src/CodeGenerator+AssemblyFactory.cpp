@@ -17,7 +17,7 @@
 namespace CompilerKit {
 ///! @brief Compile for specific format (ELF, PEF, AE)
 Int32 AssemblyFactory::Compile(STLString sourceFile, const Int32& arch) {
-  if (sourceFile.length() < 1) return NECTAR_UNIMPLEMENTED;
+  if (sourceFile.length() == 0) return NECTAR_UNIMPLEMENTED;
 
   if (!this->fMounted) return NECTAR_UNIMPLEMENTED;
   if (arch != this->fMounted->Arch()) return NECTAR_INVALID_ARCH;
@@ -27,7 +27,7 @@ Int32 AssemblyFactory::Compile(STLString sourceFile, const Int32& arch) {
 
 ///! @brief mount assembly backend.
 void AssemblyFactory::Mount(WeakRef<IAssembly> mount_ptr) {
-  if (mount_ptr && !this->fMounted) {
+  if (mount_ptr.Leak() && !this->fMounted) {
     this->fMounted = mount_ptr.Leak();
   }
 }

@@ -17,11 +17,11 @@
 #define kMacroPrefix '#'
 
 /// @author Amlal El Mahrouss (amlal@nekernel.org)
-/// @file Preprocessor+Generic.cc
+/// @file Preprocessor+Generic.cpp
 /// @brief Nectar Preprocessor.
 
-typedef Int32 (*pp_parser_fn_t)(CompilerKit::STLString& line, std::ifstream& hdr_file,
-                                std::ofstream& pp_out);
+using pp_parser_fn_t = Int32 (*)(CompilerKit::STLString&, std::ifstream&,
+                                std::ofstream&);
 
 /////////////////////////////////////////////////////////////////////////////////////////
 

@@ -147,7 +147,6 @@ NECTAR_MODULE(DynamicLinker64PEF) {
         kOutput.erase(kOutput.find(kPefExt), strlen(kPefExt));
 
       kOutput += kPefDylibExt;
-
       is_executable = false;
 
       continue;
