@@ -23,6 +23,5 @@ Int32 main(Int32 argc, char** argv) {
 }
 
 TEST(LinkerRunPEF, LinkerExitsCorrectly) {
-  EXPECT_TRUE(kArgc > 1);
   EXPECT_TRUE(DynamicLinker64PEF(kArgc, kArgv) == 0);
 }

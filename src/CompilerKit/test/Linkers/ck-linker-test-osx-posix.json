@@ -9,9 +9,9 @@
     "/usr/include/"
   ],
   "sources_path": [
-    "DynamicLinker64+MachO.test.cc"
+    "DynamicLinker64+MachO.test.cpp"
   ],
-  "output_name": "LinkerTest.o",
+  "output_name": "LinkerTest+OSX.o",
   "compiler_flags": [
       "-fPIC",
       "-lgtest",

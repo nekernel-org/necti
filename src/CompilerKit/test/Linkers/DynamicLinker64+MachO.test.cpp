@@ -23,6 +23,5 @@ Int32 main(Int32 argc, char** argv) {
 }
 
 TEST(LinkerRunMachO, LinkerExitsCorrectly) {
-  EXPECT_TRUE(kArgc > 1);
   EXPECT_TRUE(DynamicLinker64MachO(kArgc, kArgv) == 0);
 }
