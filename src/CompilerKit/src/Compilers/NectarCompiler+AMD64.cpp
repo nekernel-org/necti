@@ -440,9 +440,6 @@ CompilerKit::SyntaxLeafList::SyntaxLeaf CompilerFrontendNectarAMD64::Compile(
         break;
 
       accept_func: {
-        if (kFunctionEmbedLevel > 0)
-          CompilerKit::Detail::print_error("Clojures are a work in progress feature.", file);
-
         CompilerKit::STLString symbol_name_fn = text;
         size_t                 indexFnName    = 0;
 
