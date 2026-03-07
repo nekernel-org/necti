@@ -11,11 +11,10 @@
   "sources_path": [
     "DynamicLinker64+PEF.test.cpp"
   ],
-  "output_name": "LinkerTest.o",
+  "output_name": "LinkerTest+PEF.o",
   "compiler_flags": [
       "-fPIC",
-      "-lgtest",
-      "-lCompilerKit"
+      "-lgtest"
   ],
   "cpp_macros": [
     "__NECTAR__=202505",
