@@ -17,8 +17,9 @@
       "-lgtest",
       "-lCompilerKit"
   ],
-  "cpp_macros": [
-    "__NECTAR__=202505",
+    "cpp_macros": [
+	"CK_POSIX",
+    "__NECTAR__=202603",
     "kDistReleaseBranch=$(git rev-parse --abbrev-ref HEAD)-$(uuidgen)"
   ],
   "run_after_build": true
