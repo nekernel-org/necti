@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.10)
-project(NeCTILinkerTest)
+project(NeCTICodeGen)
 
 include(FetchContent)
 FetchContent_Declare(
@@ -13,11 +13,11 @@ FetchContent_MakeAvailable(googletest)
 
 enable_testing()
 
-add_executable(LinkerTestBasic linker.test.cc)
-target_link_libraries(LinkerTestBasic gtest_main)
+add_executable(CodegenTestBasic NectarCodegen.test.cpp)
+target_link_libraries(CodegenTestBasic gtest_main)
 
-set_property(TARGET LinkerTestBasic PROPERTY CXX_STANDARD 20)
-target_include_directories(LinkerTestBasic PUBLIC ../../)
+set_property(TARGET CodegenTestBasic PROPERTY CXX_STANDARD 20)
+target_include_directories(CodegenTestBasic PUBLIC ../../)
 
 include(GoogleTest)
-gtest_discover_tests(LinkerTestBasic)
+gtest_discover_tests(CodegenTestBasic)

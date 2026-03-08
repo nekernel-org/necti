@@ -25,9 +25,10 @@
 #define kRed "\e[0;31m"
 #define kWhite "\e[0;97m"
 #define kYellow "\e[0;33m"
+#define kBlackOverWhite "\E[0;37m"
 
-#define kStdOut (std::cout << kRed << "Nectar: " << kWhite)
-#define kStdErr (std::cerr << kRed << "Nectar: " << kWhite)
+#define kStdOut (std::cout << kRed << "Nectar: " << kBlackOverWhite)
+#define kStdErr (std::cerr << kRed << "Nectar: " << kBlackOverWhite)
 #define kStdEndl std::endl
 #define kPrintF kStdOut
 #define kPrintErr kStdErr
