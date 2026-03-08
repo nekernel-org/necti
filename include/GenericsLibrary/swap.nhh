@@ -13,8 +13,7 @@ let swap(let a, let b)
     let temp := a;
     a := b;
     b := temp;
-
-    return;
+    return temp;
 }
 
 #endif //@ NECTAR_GL_SWAP_NHH
