@@ -306,14 +306,14 @@ NECTAR_MODULE(AssemblerMainAMD64) {
     file_ptr_out.flush();
     file_ptr_out.close();
 
-    if (kVerbose) kStdOut << "AssemblerAMD64: Exit succeeded.\n";
+    if (kVerbose) kStdOut << "AssemblerAMD64: Exiting: Succeeded.\n";
 
     return 0;
   }
 
 asm_fail_exit:
 
-  if (kVerbose) kStdOut << "AssemblerAMD64: Exit failed.\n";
+  if (kVerbose) kStdOut << "AssemblerAMD64: Exiting: Failed.\n";
 
   return 1;
 }
