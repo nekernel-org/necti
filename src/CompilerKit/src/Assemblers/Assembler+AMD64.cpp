@@ -306,14 +306,14 @@ NECTAR_MODULE(AssemblerMainAMD64) {
     file_ptr_out.flush();
     file_ptr_out.close();
 
-    if (kVerbose) kStdOut << "AssemblerAMD64: Exit succeeded.\n";
+    if (kVerbose) kStdOut << "AssemblerAMD64: Exiting: Succeeded.\n";
 
     return 0;
   }
 
 asm_fail_exit:
 
-  if (kVerbose) kStdOut << "AssemblerAMD64: Exit failed.\n";
+  if (kVerbose) kStdOut << "AssemblerAMD64: Exiting: Failed.\n";
 
   return 1;
 }
@@ -325,7 +325,7 @@ asm_fail_exit:
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
-static bool asm_read_attributes(std::string line) {
+static bool asm_read_attributes(CompilerKit::STLString line) {
   // extern_segment is the opposite of public_segment, it signals to the ld
   // that we need this symbol.
   if (CompilerKit::ast_find_needle(line, "extern_segment")) {
@@ -624,8 +624,8 @@ bool CompilerKit::EncoderAMD64::WriteNumber(const std::size_t& pos, std::string&
 
   CompilerKit::NumberCast64 num = CompilerKit::NumberCast64(res);
 
-  for (char& i : num.number) {
-    kAppBytes.push_back(i);
+  for (auto& nidx : num.number) {
+    kAppBytes.push_back(nidx);
   }
 
   if (kVerbose) {
@@ -952,9 +952,9 @@ bool CompilerKit::EncoderAMD64::WriteLine(CompilerKit::STLString line, CompilerK
             std::string memOperand = substr.substr(bracketStart + 1, bracketEnd - bracketStart - 1);
 
             // Register lookup table
-            struct RegInfo {
-              const char* name;
-              i64_byte_t  code;
+            struct RegInfo final {
+              const char* name{};
+              i64_byte_t  code{};
             };
 
             RegInfo regs64[] = {{"rax", 0}, {"rcx", 1}, {"rdx", 2}, {"rbx", 3},
@@ -1003,6 +1003,7 @@ bool CompilerKit::EncoderAMD64::WriteLine(CompilerKit::STLString line, CompilerK
 
             // Find register in the other operand
             std::string otherOperand;
+
             if (destIsMemory) {
               otherOperand = substr.substr(commaPos + 1);
             } else {
@@ -1031,6 +1032,7 @@ bool CompilerKit::EncoderAMD64::WriteLine(CompilerKit::STLString line, CompilerK
             if (!foundReg) {
               // Check if it's an immediate value
               std::string immStr = otherOperand;
+
               while (!immStr.empty() && (immStr[0] == ' ' || immStr[0] == '\t')) {
                 immStr.erase(0, 1);
               }
