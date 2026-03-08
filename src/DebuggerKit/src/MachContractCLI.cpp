@@ -25,7 +25,7 @@ static Void dbgi_ctrlc_handler(std::int32_t _) {
   kKeepRunning = false;
 }
 
-NECTAR_MODULE(DebuggerMachPOSIX) {
+NECTAR_MODULE(DebuggerMach) {
   pfd::notify(
       "Debugger Event",
       "Userland Debugger\n(C) 2025 Amlal El Mahrouss, licensed under the Apache 2.0 license.");
