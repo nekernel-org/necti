@@ -900,7 +900,7 @@ bool CompilerKit::EncoderAMD64::WriteNumber8(const std::size_t& pos, std::string
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
-bool CompilerKit::EncoderAMD64::WriteLine(std::string line, std::string file) {
+bool CompilerKit::EncoderAMD64::WriteLine(CompilerKit::STLString line, CompilerKit::STLString file) {
   if (CompilerKit::ast_find_needle(line, "public_segment ")) return true;
 
   struct RegMapAMD64 {
@@ -926,7 +926,9 @@ bool CompilerKit::EncoderAMD64::WriteLine(std::string line, std::string file) {
 
       /// Move instruction handler.
       if (line.find(name) != std::string::npos) {
-        if (name == "mov" || name == "xor") {
+	if ((line.find(name) + name.size()) > line.size()) continue;
+	 
+        if (name == "mov" || name == "xor") { 
           std::string substr = line.substr(line.find(name) + name.size());
 
           uint64_t bits = kRegisterBitWidth;
@@ -1165,9 +1167,7 @@ bool CompilerKit::EncoderAMD64::WriteLine(std::string line, std::string file) {
 
           bool hasRBasedRegs = false;
 
-          if (!onlyOneReg) {
-            /// very tricky to understand.
-            /// but this checks for a r8 through r15 register.
+          if (!onlyOneReg && currentRegList.size() == 2) {
             if (currentRegList[0].fName[0] == 'r' || currentRegList[1].fName[0] == 'r') {
               if (isdigit(currentRegList[0].fName[1]) && isdigit(currentRegList[1].fName[1])) {
                 kAppBytes.emplace_back(0x4d);
@@ -1796,10 +1796,13 @@ bool CompilerKit::EncoderAMD64::WriteLine(std::string line, std::string file) {
 
     if (line.find("bits 64") != std::string::npos) {
       kRegisterBitWidth = 64U;
+      return true;
     } else if (line.find("bits 32") != std::string::npos) {
       kRegisterBitWidth = 32U;
+      return true;
     } else if (line.find("bits 16") != std::string::npos) {
       kRegisterBitWidth = 16U;
+      return true;
     }
 
     if (auto org_pos = line.find("org"); org_pos != std::string::npos) {
@@ -1827,6 +1830,7 @@ bool CompilerKit::EncoderAMD64::WriteLine(std::string line, std::string file) {
       }
     }
   }
+  
   /// write a dword
   else if (auto pos = line.find(".dword"); pos != std::string::npos) {
     this->WriteNumber32(pos + strlen(".dword") + 1, line);
