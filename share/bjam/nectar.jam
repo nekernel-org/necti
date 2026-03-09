@@ -1,0 +1,15 @@
+#
+#  File: nectar.jam
+#  Author: Amlal El Mahrouss,
+#  Copyright 2025, Amlal El Mahrouss, Licensed under the Boost Software License
+#
+
+import toolset ;
+
+if [ MATCH (--debug-configuration) : [ modules.peek : ARGV ] ]
+{
+    .debug-configuration = true ;
+}
+
+feature.extend toolset : ptx-necdrv ;
+
