@@ -902,8 +902,9 @@ bool CompilerKit::EncoderAMD64::WriteNumber8(const std::size_t& pos, std::string
 
 bool CompilerKit::EncoderAMD64::WriteLine(CompilerKit::STLString line, CompilerKit::STLString file) {
   if (CompilerKit::ast_find_needle(line, "public_segment ")) return true;
-
-  struct RegMapAMD64 {
+  if (CompilerKit::ast_find_needle(line, "extern_segment ")) return true;
+  
+  struct RegMapAMD64 final {
     CompilerKit::STLString fName;
     i64_byte_t             fModRM;
   };
@@ -1132,7 +1133,9 @@ bool CompilerKit::EncoderAMD64::WriteLine(CompilerKit::STLString line, CompilerK
 
           std::vector<RegMapAMD64> currentRegList;
 
-          for (auto& reg : kRegisterList) {
+	  currentRegList.reserve(3);
+
+          for (auto reg : kRegisterList) {
             std::string registerName;
 
             if (bits == 32)
@@ -1211,9 +1214,8 @@ bool CompilerKit::EncoderAMD64::WriteLine(CompilerKit::STLString line, CompilerK
             kAppBytes.emplace_back(0x31);
           }
 
-          if (onlyOneReg) {
+          if (onlyOneReg && currentRegList.size() > 0) {
             auto num = GetNumber32(line, ",");
-
             auto modrm = (0x3 << 6 | currentRegList[0].fModRM);
 
             kAppBytes.emplace_back(0xC7);  // prefixed before placing the modrm and then the number.
@@ -1229,17 +1231,20 @@ bool CompilerKit::EncoderAMD64::WriteLine(CompilerKit::STLString line, CompilerK
             break;
           }
 
-          if (currentRegList[1].fName[0] == 'r' && currentRegList[0].fName[0] == 'e') {
-            CompilerKit::Detail::print_error("Invalid combination of operands and registers.",
-                                             "CompilerKit");
-            throw std::runtime_error("comb_op_reg");
-          }
+	  
+	  if (currentRegList.size() > 0) {
+	    if (currentRegList[1].fName[0] == 'r' && currentRegList[0].fName[0] == 'e') {
+	      CompilerKit::Detail::print_error("Invalid combination of operands and registers.",
+					       "CompilerKit");
+	      throw std::runtime_error("comb_op_reg");
+	    }
 
-          if (currentRegList[0].fName[0] == 'r' && currentRegList[1].fName[0] == 'e') {
-            CompilerKit::Detail::print_error("Invalid combination of operands and registers.",
-                                             "CompilerKit");
-            throw std::runtime_error("comb_op_reg");
-          }
+	    if (currentRegList[0].fName[0] == 'r' && currentRegList[1].fName[0] == 'e') {
+	      CompilerKit::Detail::print_error("Invalid combination of operands and registers.",
+					       "CompilerKit");
+	      throw std::runtime_error("comb_op_reg");
+	    }
+	  }
 
           if (bits == 16) {
             if (currentRegList[0].fName[0] == 'r' || currentRegList[0].fName[0] == 'e') {
@@ -1286,8 +1291,8 @@ bool CompilerKit::EncoderAMD64::WriteLine(CompilerKit::STLString line, CompilerK
           }
 
           // Register lookup table
-          struct RegInfo {
-            const char* name;
+          struct RegInfo final {
+	    CompilerKit::STLString name;
             i64_byte_t  code;
           };
 
@@ -1537,8 +1542,8 @@ bool CompilerKit::EncoderAMD64::WriteLine(CompilerKit::STLString line, CompilerK
           }
 
           // Register lookup table
-          struct RegInfo {
-            const char* name;
+          struct RegInfo final {
+	    CompilerKit::STLString name;
             i64_byte_t  code;
           };
 

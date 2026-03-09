@@ -3,6 +3,8 @@
 // file LICENSE or copy at http://www.apache.org/licenses/LICENSE-2.0)
 // Official repository: https://github.com/ne-foss-org/nectar
 
+/// @note This frontend is based on Nectar's AMD64 frontend.
+
 /// BUGS: 0
 
 ///////////////////////

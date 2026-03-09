@@ -17,8 +17,8 @@
 
 namespace CompilerKit {
 inline static constexpr int kBaseYear = 1900;
-    using STLString                       = std::string;
-    using RopeString = ocl::tproc::crope;
+using STLString                       = std::string;
+using RopeString                      = ocl::tproc::crope;
 
 inline STLString current_date() noexcept {
   auto time_data   = time(nullptr);

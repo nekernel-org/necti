@@ -1,0 +1,14 @@
+#
+#  File: Jamfile.v2
+#  Author: Amlal El Mahrouss,
+#  Copyright 2026, Amlal El Mahrouss, Licensed under the Boost Software License
+#
+
+project gpu_example
+: default-build debug
+: <toolset>ptx-necdrv
+;
+
+exe example.o
+    : example.nc ;
+
