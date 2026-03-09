@@ -4,6 +4,8 @@
 #  Copyright 2025, Amlal El Mahrouss, Licensed under the Boost Software License
 #
 
+# Supports the Nectar compiler for PTX.
+
 import toolset ;
 
 if [ MATCH (--debug-configuration) : [ modules.peek : ARGV ] ]
@@ -12,4 +14,6 @@ if [ MATCH (--debug-configuration) : [ modules.peek : ARGV ] ]
 }
 
 feature.extend toolset : ptx-necdrv ;
+
+
 
