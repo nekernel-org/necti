@@ -19,7 +19,7 @@ Love our work? Give us a star!
 
 ## Community:
 
-Join us in our [Discord](https://discord.gg/uD76Qweght), we're quite active and open for contributors!
+Join our [Discord](https://discord.gg/uD76Qweght), we're quite active and open for contributors!
 
 ## Getting Started:
 
