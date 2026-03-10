@@ -22,6 +22,6 @@
     "CK_POSIX=1",
     "kDistReleaseBranch=$(git rev-parse --abbrev-ref HEAD)-$(uuidgen)"
   ],
-  "description": "CompilerKit for POSIX. The CompilerKit is the framework behind Nectar."
+  "description": "CompilerKit for POSIX. The Compiler Kit is the framework behind Nectar."
 }
 
