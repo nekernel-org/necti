@@ -234,9 +234,11 @@ class CompilerFrontendNectarAMD64 final CK_COMPILER_FRONTEND {
                                                         CompilerKit::SyntaxLeafList::SyntaxLeaf&);
 };
 
-/// @internal compiler variables
+/// @internal compiler variables.
 
-static CompilerFrontendNectarAMD64* kFrontend = nullptr;
+static CompilerFrontendNectarAMD64* kFrontend{};
+
+/// @brief register variables.
 
 static std::vector<CompilerKit::STLString> kRegisterList = {
     "rbx", "rsi", "r10", "r11", "r12", "r13", "r14", "r15", "xmm12", "xmm13", "xmm14", "xmm15",
@@ -250,17 +252,18 @@ static std::vector<CompilerKit::STLString> kRegisterConventionCallList = {
 };
 
 static std::size_t            kFunctionEmbedLevel{};
-static CompilerKit::STLString kCurrentIfSymbol{};
-static CompilerKit::STLString kCurrentReturnAddress{};
-static bool                   kCurrentIfCondition{false};
 
-/// detail namespaces
+static CompilerKit::STLString kCurrentIfSymbol{};
+
+static CompilerKit::STLString kCurrentReturnAddress{};
+
+static bool                   kCurrentIfCondition{false};
 
 const char* CompilerFrontendNectarAMD64::Language() {
   return "Common Nectar (AMD64)";
 }
 
-static std::uintptr_t                                                 kOrigin = kPefBaseOrigin;
+static std::uintptr_t                                                 kOrigin{kPefBaseOrigin};
 static std::vector<std::pair<CompilerKit::STLString, std::uintptr_t>> kOriginMap;
 
 /////////////////////////////////////////////////////////////////////////////////////////
@@ -271,7 +274,7 @@ static std::vector<std::pair<CompilerKit::STLString, std::uintptr_t>> kOriginMap
 /////////////////////////////////////////////////////////////////////////////////////////
 
 static auto nectar_get_impl_member(const CompilerKit::STLString& class_name,
-                                   const CompilerKit::STLString& member_name) {
+                                   const CompilerKit::STLString& member_name) -> CompilerStructMap {
   // Find or create struct map entry
   for (auto& sm : kContext.fStructMapVector) {
     if (sm.fName == class_name) {
@@ -279,7 +282,7 @@ static auto nectar_get_impl_member(const CompilerKit::STLString& class_name,
     }
   }
 
-  return CompilerStructMap{};
+  return {};
 }
 
 CompilerKit::SyntaxLeafList::SyntaxLeaf CompilerFrontendNectarAMD64::Compile(
