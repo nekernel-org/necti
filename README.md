@@ -11,9 +11,9 @@
 
 ![CI](https://github.com/ne-foss-org/nectar/actions/workflows/nectar-dev.yml/badge.svg)
 
-## Helping:
+## Love our work?
 
-Love our work? Give us a star!
+Give us a star on GitHub!
 
 ![GitHub Repo stars](https://img.shields.io/github/stars/ne-foss-org/nectar)
 
