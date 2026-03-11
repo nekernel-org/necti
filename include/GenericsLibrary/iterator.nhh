@@ -21,26 +21,30 @@ trait iterator_traits
     let size();
 };
 
-impl iterator : iterator_traits
+impl iterator : trait iterator_traits
 {
     let init()
     {
-        return;
+        return 0;
     }
 
     let dispose()
     {
-        return;
+        return 0;
     }
 
     let begin()
     {
+	must_pass(_begin != _end);
+	
         let end := _begin;
         return end;
     }
 
     let end()
     {
+	must_pass(_begin != _end);
+	
         let end :=_begin;
         end += _end;
 
@@ -49,6 +53,7 @@ impl iterator : iterator_traits
 
     let size()
     {
+	must_pass(_size > 0);
         return _size;
     }
 };

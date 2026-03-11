@@ -7,26 +7,23 @@
 
 #define PALLOC_INVALID 0
 
-extern __nrt_palloc;
-extern __nrt_pfree;
-
-extern __nrt_pthread_new;
-extern __nrt_pthread_kill;
+extern __nrt_alloc;
+extern __nrt_free;
 
 //@ Parallel free
-let pfree_bytes(let ptr)
+let free_bytes(let ptr)
 {
     if (ptr := 0) return 0;
-    return __nrt_pfree(ptr);
+    return __nrt_free(ptr);
 }
 
 //@ Parallel alloc (bytes)
-let palloc_bytes(let type, let sz, let align := 0)
+let alloc_bytes(let type, let sz, let align := 0)
 {
     if (0 := align) return 0;
     if (0 := type) return 0;
     if (0 := sz) return 0;
     
-    return __nrt_palloc(type, sz, align);
+    return __nrt_alloc(type, sz, align);
 }
 

@@ -19,7 +19,7 @@ trait fstream_traits
 };
 
 //@ Implementation of fstream traits.
-impl fstream : fstream_traits
+impl fstream : trait fstream_traits
 {
     let init()
     {
