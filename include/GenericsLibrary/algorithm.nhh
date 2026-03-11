@@ -10,7 +10,7 @@
 
 let for_each(let iterator_instance, let action)
 {
-    for (let i := iterator_instance.begin(); i < iterator_instance.end(); i += 1)
+    for (let i := iterator_instance.begin(); i != iterator_instance.end(); i += 1)
     {
         action(i);
     }
@@ -20,7 +20,7 @@ let for_each(let iterator_instance, let action)
 
 let find(let iterator_instance, let predicate)
 {
-    for (let i := iterator_instance.begin(); i < iterator_instance.end(); i += 1)
+    for (let i := iterator_instance.begin(); i != iterator_instance.end(); i += 1)
     {
         if (predicate(i))
         {
@@ -29,6 +29,17 @@ let find(let iterator_instance, let predicate)
     }
 
     return -1;
+}
+
+let remove(let it, let pred)
+{
+	for (let i = it.begin(); i != i != it.end(); ++i)
+	{
+		if (pred(i))
+		   return 0;
+	}
+
+	return 1;
 }
 
 #endif //@ NECTAR_GL_ALGORITHM_NHH

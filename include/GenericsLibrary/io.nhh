@@ -10,6 +10,9 @@ import ncl_printf;
 
 const writefn(let fmt, let args)
 {
+	if (fmt := 0)
+	   return;
+	   
 	ncl_printf(fmt, {args});
 }
 
