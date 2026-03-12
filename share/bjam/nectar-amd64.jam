@@ -1,11 +1,11 @@
 # 
 #  SPDX-Identifier: BSL-1.0
-#  File: nectar-ptx.jam
+#  File: nectar-amd64.jam
 #  Author: Amlal El Mahrouss,
 #  Copyright 2026, Amlal El Mahrouss, Licensed under the Boost Software License
 #
 
-# Supports the Nectar compiler for PTX.
+# Supports the Nectar compiler for AMD64.
 
 import toolset ;
 
@@ -14,10 +14,10 @@ if [ MATCH (--debug-configuration) : [ modules.peek : ARGV ] ]
     .debug-configuration = true ;
 }
 
-feature.extend toolset : nectar-ptx ;
+feature.extend toolset : nectar-amd64 ;
 
-action compile-nectar-sources-ptx
+action compile-nectar-sources-amd64
 {
-  $(.NECTAR_CC) $(.NECTAR_PTX_FLAGS) $(.NECTAR_PTX_SOURCES)
+  $(.NECTAR_CC) $(.NECTAR_AMD64_FLAGS) $(.NECTAR_AMD64_SOURCES)
 }
 
