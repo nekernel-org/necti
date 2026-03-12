@@ -87,7 +87,8 @@
 #define kObjectFileExt ".obj"
 #define kBinaryFileExt ".bin"
 
-#define kAsmFileExts {".64x", ".32x", ".masm", ".s", ".S", ".asm", ".x64"}
+#define kAsmFileExts \
+  { ".64x", ".32x", ".masm", ".s", ".S", ".asm", ".x64" }
 
 #define kAsmFileExtsMax (7U)
 
