@@ -1,5 +1,7 @@
 <!-- Read Me of Nectar -->
 
+![Nectar](meta/media/nectar.png)
+
 <div align="center">
   <h1>
     <b>The Nectar System</b>
@@ -8,8 +10,6 @@
     <a href="LICENSE"><img src="https://img.shields.io/badge/License-Apache--2.0-blue.svg" alt="License"></a>
   </p>
 </div>
-
-![Nectar](meta/media/nectar.png)
 
 ![CI](https://github.com/ne-foss-org/nectar/actions/workflows/nectar-dev.yml/badge.svg)
 
