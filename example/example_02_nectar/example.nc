@@ -1,15 +1,13 @@
 extern exit;
 
-trait foo {
-   let exit();
-};
-
-let foo.exit() {
-    exit(0);
+const terminate()
+{
+  let EXIT_TERMINATED = 0x100;
+  exit(EXIT_TERMINATED);
 }
 
-const main() {
-  let self := 0;
-  foo.exit();
+const main()
+{
+  terminate();
   return 0;
 }
