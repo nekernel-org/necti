@@ -9,6 +9,8 @@
   </p>
 </div>
 
+![Nectar](meta/media/nectar.png)
+
 ![CI](https://github.com/ne-foss-org/nectar/actions/workflows/nectar-dev.yml/badge.svg)
 
 ## Love our work?
