@@ -23,7 +23,15 @@ Int32 AssemblyFactory::Compile(STLString sourceFile, const Int32& arch) {
   if (!this->fMounted) return NECTAR_UNIMPLEMENTED;
   if (arch != this->fMounted->Arch()) return NECTAR_INVALID_ARCH;
 
-  return this->fMounted->CompileToFormat(sourceFile, arch);
+  if (!std::filesystem::is_regular_file(sourceFile)) return NECTAR_UNIMPLEMENTED;
+
+  auto compiledUnit = sourceFile + ".ignore";
+
+  std::filesystem::copy(sourceFile, compiledUnit);
+  auto ret = this->fMounted->CompileToFormat(compiledUnit, arch);
+  std::filesystem::remove(compiledUnit);
+
+  return ret;
 }
 
 ///! @brief mount assembly backend.

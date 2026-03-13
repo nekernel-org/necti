@@ -1,0 +1,23 @@
+{
+  "compiler_path": "g++",
+  "compiler_std": "c++20",
+  "headers_path": [
+    "../include/CompilerKit",
+    "../../include",
+    "/usr/local/include/",
+    "/opt/homebrew/Cellar/boost/1.90.0/include",
+    "../include/CompilerKit/src/Detail"
+  ],
+  "sources_path": [
+    "pef-amd64-drv.cpp"
+  ],
+  "output_name": "pef-amd64-necdrv",
+  "compiler_flags": [
+  ],
+  "cpp_macros": [
+    "__NECDRV__=202504",
+    "CK_POSIX",
+    "kDistReleaseBranch=$(git rev-parse --abbrev-ref HEAD)-$(uuidgen)"
+  ]
+}
+
