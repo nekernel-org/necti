@@ -1,10 +1,15 @@
-extern sleep;
-extern putchar;
+extern exit;
+
+trait foo {
+   let exit();
+};
+
+let foo.exit() {
+    exit(0);
+}
 
 const main() {
-  sleep(1);
-  putchar(0, '!');
-
-  let foo := 42;
-  return foo;
+  let self := 0;
+  foo.exit();
+  return 0;
 }
