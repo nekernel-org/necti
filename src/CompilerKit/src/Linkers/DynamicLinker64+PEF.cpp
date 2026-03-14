@@ -6,7 +6,7 @@
 
 /// @author Amlal El Mahrouss (amlal@nekernel.org)
 /// @brief NeKernel.org 64-bit PEF Linker.
-/// Last Rev: Sun Feb 8 CET 2026
+/// @version Last Rev: Sun Feb 8 CET 2026
 /// @note Do not look up for anything with .code64/.data64/.zero64!
 /// It will be loaded when the program loader will start the image.
 

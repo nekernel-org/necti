@@ -6,7 +6,7 @@
 
 /// @author Amlal El Mahrouss (amlal@nekernel.org)
 /// @brief NeKernel.org 64-bit Mach-O Linker.
-/// Last Rev: 2026
+/// @version Last Rev: 2026
 /// @note Outputs Mach-O executables with __TEXT and __DATA segments.
 
 #ifdef CK_USE_MACHO_LINKER

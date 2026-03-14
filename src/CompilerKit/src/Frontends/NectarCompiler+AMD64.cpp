@@ -4,8 +4,6 @@
 // file LICENSE or copy at http://www.apache.org/licenses/LICENSE-2.0)
 // Official repository: https://github.com/ne-foss-org/nectar
 
-/// @note This frontend is based on Nectar's AMD64 frontend.
-
 /// BUGS: 0
 
 ///////////////////////
@@ -16,11 +14,13 @@
 
 ///////////////////////
 
-// MACROS //
+// MACROS            //
 
 ///////////////////////
 
 #include <CompilerKit/AST.h>
+#include <CompilerKit/Detail/AMD64.h>
+#include <CompilerKit/PEF.h>
 #include <CompilerKit/UUID.h>
 #include <CompilerKit/Utilities/Compiler.h>
 
@@ -29,8 +29,8 @@
 /* (c) Amlal El Mahrouss 2024-2026 */
 
 /// @author Amlal El Mahrouss (amlal@nekernel.org)
-/// @file NectarCompiler+PTX.cc
-/// @brief NECTAR Compiler Driver (NVPTX).
+/// @file NectarCompiler+AMD64.cc
+/// @brief NECTAR Compiler Driver.
 
 /////////////////////////////////////
 
@@ -55,7 +55,7 @@ static std::filesystem::path nectar_expand_home(const std::filesystem::path& inp
   return input;
 }
 
-/// \brief Register map, i.e ({foobar, %rd16}, etc...)
+/// \brief Register map, i.e ({foobar, rbp+48}, etc...)
 struct CompilerRegisterMap final {
   CompilerKit::STLString fName{};
   CompilerKit::STLString fReg{};
@@ -141,11 +141,11 @@ static CompilerContext kContext;
 
 /// \brief Target architecture.
 /// \note This shall never change.
-static Int32 kMachine = CompilerKit::AssemblyFactory::kArchUnknown;
+static Int32 kMachine = CompilerKit::AssemblyFactory::kArchAMD64;
 
 /////////////////////////////////////////
 
-// ARGUMENT REGISTERS (PTX)
+// ARGUMENT REGISTERS (R8, R15)
 
 /////////////////////////////////////////
 
@@ -164,7 +164,7 @@ static bool                         kOnForLoop   = false;
 static bool                         kInBraces    = false;
 static size_t                       kBracesCount = 0UL;
 
-/// \brief PTX output support: track defined and external symbols
+/// \brief NASM output support: track defined and external symbols
 static std::set<CompilerKit::STLString> kDefinedSymbols;
 static std::set<CompilerKit::STLString> kExternalSymbols;
 
@@ -187,10 +187,6 @@ static CompilerKit::STLString nectar_mangle_name(
 // Stack frame management
 static CompilerKit::STLString nectar_generate_prologue();
 static CompilerKit::STLString nectar_generate_epilogue();
-static CompilerKit::STLString nectar_generate_function_header(
-    const CompilerKit::STLString& mangled_name, const std::vector<CompilerKit::STLString>& args);
-static CompilerKit::STLString nectar_generate_param_loads(
-    const std::vector<CompilerKit::STLString>& args);
 static Int32 nectar_allocate_stack_variable(const CompilerKit::STLString& var_name, Int32 size = 8,
                                             bool is_constant = false);
 
@@ -210,18 +206,18 @@ static CompilerKit::STLString nectar_generate_constructor_call(
 static CompilerKit::STLString nectar_generate_destructor_call(
     const CompilerKit::STLString& class_name, const CompilerKit::STLString& obj_name);
 
-// PTX calling convention
+// PEF calling convention
 static void nectar_process_function_parameters(const std::vector<CompilerKit::STLString>& args);
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
 /* \brief NECTAR compiler backend for the NeKernel NECTAR driver */
-class CompilerFrontendNectarPTX final CK_COMPILER_FRONTEND {
+class CompilerFrontendNectarAMD64 final CK_COMPILER_FRONTEND {
  public:
-  explicit CompilerFrontendNectarPTX()  = default;
-  ~CompilerFrontendNectarPTX() override = default;
+  explicit CompilerFrontendNectarAMD64()  = default;
+  ~CompilerFrontendNectarAMD64() override = default;
 
-  NECTAR_COPY_DEFAULT(CompilerFrontendNectarPTX);
+  NECTAR_COPY_DEFAULT(CompilerFrontendNectarAMD64);
 
   /// \brief Parse Nectar symbols and syntax.
   CompilerKit::SyntaxLeafList::SyntaxLeaf Compile(CompilerKit::STLString&       text,
@@ -239,42 +235,36 @@ class CompilerFrontendNectarPTX final CK_COMPILER_FRONTEND {
                                                         CompilerKit::SyntaxLeafList::SyntaxLeaf&);
 };
 
-/// @internal compiler variables
+/// @internal compiler variables.
 
-static CompilerFrontendNectarPTX* kFrontend = nullptr;
+static CompilerFrontendNectarAMD64* kFrontend{};
 
-static constexpr const char* kPtxRetReg   = "%rd0";
-static constexpr const char* kPtxTmpRegA  = "%rd1";
-static constexpr const char* kPtxTmpRegB  = "%rd2";
-static constexpr const char* kPtxThisReg  = "%rd3";
-static constexpr const char* kPtxPredReg  = "%p1";
+/// @brief register variables.
 
 static std::vector<CompilerKit::STLString> kRegisterList = {
-    "%rd16", "%rd17", "%rd18", "%rd19", "%rd20", "%rd21", "%rd22", "%rd23",
-    "%rd24", "%rd25", "%rd26", "%rd27", "%rd28", "%rd29", "%rd30", "%rd31",
-    "%rd32", "%rd33", "%rd34", "%rd35", "%rd36", "%rd37", "%rd38", "%rd39",
-    "%rd40", "%rd41", "%rd42", "%rd43", "%rd44", "%rd45", "%rd46", "%rd47",
-    "%rd48", "%rd49", "%rd50", "%rd51", "%rd52", "%rd53", "%rd54", "%rd55",
-    "%rd56", "%rd57", "%rd58", "%rd59", "%rd60", "%rd61", "%rd62", "%rd63",
+    "rbx", "rsi", "r10", "r11", "r12", "r13", "r14", "r15", "xmm12", "xmm13", "xmm14", "xmm15",
 };
 
-/// @brief NVPTX calling convention (params loaded into registers).
+/// @brief The PEF calling convention (caller must save rax, rbp)
+/// @note callee must return via **rax**.
+/// @note caller must read **rax** to grab return value.
 static std::vector<CompilerKit::STLString> kRegisterConventionCallList = {
-    "%rd8", "%rd9", "%rd10", "%rd11", "%rd12", "%rd13", "%rd14", "%rd15",
+    "r8", "r9", "r10", "r11", "r12", "r13", "r14", "r15",
 };
 
 static std::size_t            kFunctionEmbedLevel{};
+
 static CompilerKit::STLString kCurrentIfSymbol{};
+
 static CompilerKit::STLString kCurrentReturnAddress{};
+
 static bool                   kCurrentIfCondition{false};
 
-/// detail namespaces
-
-const char* CompilerFrontendNectarPTX::Language() {
-  return "Parallel Nectar (NVPTX)";
+const char* CompilerFrontendNectarAMD64::Language() {
+  return "Common Nectar (AMD64)";
 }
 
-static std::uintptr_t                                                 kOrigin = 0;
+static std::uintptr_t                                                 kOrigin{kPefBaseOrigin};
 static std::vector<std::pair<CompilerKit::STLString, std::uintptr_t>> kOriginMap;
 
 /////////////////////////////////////////////////////////////////////////////////////////
@@ -285,7 +275,7 @@ static std::vector<std::pair<CompilerKit::STLString, std::uintptr_t>> kOriginMap
 /////////////////////////////////////////////////////////////////////////////////////////
 
 static auto nectar_get_impl_member(const CompilerKit::STLString& class_name,
-                                   const CompilerKit::STLString& member_name) {
+                                   const CompilerKit::STLString& member_name) -> CompilerStructMap {
   // Find or create struct map entry
   for (auto& sm : kContext.fStructMapVector) {
     if (sm.fName == class_name) {
@@ -293,10 +283,10 @@ static auto nectar_get_impl_member(const CompilerKit::STLString& class_name,
     }
   }
 
-  return CompilerStructMap{};
+  return {};
 }
 
-CompilerKit::SyntaxLeafList::SyntaxLeaf CompilerFrontendNectarPTX::Compile(
+CompilerKit::SyntaxLeafList::SyntaxLeaf CompilerFrontendNectarAMD64::Compile(
     CompilerKit::STLString& text, const CompilerKit::STLString& file) {
   CompilerKit::SyntaxLeafList::SyntaxLeaf syntax_tree;
   CompilerKit::STLString                  syntax_rem_buffer;
@@ -365,10 +355,10 @@ CompilerKit::SyntaxLeafList::SyntaxLeaf CompilerFrontendNectarPTX::Compile(
         }
 
         std::vector<std::pair<CompilerKit::STLString, CompilerKit::STLString>> operators = {
-            {"=:", "ne"},
-            {"!=:", "eq"},
-            {">:", "lt"},
-            {"<:", "gt"},
+            {"=:", "jne"},
+            {"!=:", "je"},
+            {">:", "jl"},
+            {"<:", "jg"},
         };
 
         for (auto& op : operators) {
@@ -386,7 +376,7 @@ CompilerKit::SyntaxLeafList::SyntaxLeaf CompilerFrontendNectarPTX::Compile(
 
           if (auto var = nectar_find_variable(tmp); var) {
             syntax_tree.fUserValue +=
-                "mov.u64 " + CompilerKit::STLString{kPtxTmpRegA} + ", " + var->fRegister + ";\n";
+                "mov rdi, qword [rbp+" + std::to_string(-var->fStackOffset) + "]\n";
             delete var;
           } else {
             if (!isnumber(tmp[0])) {
@@ -394,13 +384,12 @@ CompilerKit::SyntaxLeafList::SyntaxLeaf CompilerFrontendNectarPTX::Compile(
                                                  file);
             }
 
-            syntax_tree.fUserValue +=
-                "mov.u64 " + CompilerKit::STLString{kPtxTmpRegA} + ", " + tmp + ";\n";
+            syntax_tree.fUserValue += "mov rdi, " + tmp + "\n";
           }
 
           if (auto var = nectar_find_variable(right); var) {
             syntax_tree.fUserValue +=
-                "mov.u64 " + CompilerKit::STLString{kPtxTmpRegB} + ", " + var->fRegister + ";\n";
+                "mov rsi, qword [rbp+" + std::to_string(-var->fStackOffset) + "]\n";
             delete var;
           }
 
@@ -410,16 +399,13 @@ CompilerKit::SyntaxLeafList::SyntaxLeaf CompilerFrontendNectarPTX::Compile(
                                                  file);
             }
 
-            syntax_tree.fUserValue +=
-                "mov.u64 " + CompilerKit::STLString{kPtxTmpRegB} + ", " + right + ";\n";
+            syntax_tree.fUserValue += "mov rsi, " + right + "\n";
           }
 
-          syntax_tree.fUserValue += "setp." + op.second + ".s64 " +
-                                    CompilerKit::STLString{kPtxPredReg} + ", " +
-                                    CompilerKit::STLString{kPtxTmpRegA} + ", " +
-                                    CompilerKit::STLString{kPtxTmpRegB} + ";\n";
-          syntax_tree.fUserValue += "@"+ CompilerKit::STLString{kPtxPredReg} + " bra __ret_" +
-                                    std::to_string(kOrigin) + "_" + kCurrentIfSymbol + ";\n";
+          syntax_tree.fUserValue += "cmp rdi, rsi\n";
+
+          syntax_tree.fUserValue +=
+              op.second + " __ret_" + std::to_string(kOrigin) + "_" + kCurrentIfSymbol + "\n";
 
           kCurrentIfSymbol = std::to_string(kOrigin) + "_" + kCurrentIfSymbol;
 
@@ -442,7 +428,7 @@ CompilerKit::SyntaxLeafList::SyntaxLeaf CompilerFrontendNectarPTX::Compile(
           res.erase(tmp);
         }
 
-        syntax_tree.fUserValue += "call __NECTAR_M_" + res + ";\n";
+        syntax_tree.fUserValue += "call __NECTAR_M_" + res + "\n";
         break;
       }
       case CompilerKit::KeywordKind::kKeywordKindFunctionStart: {
@@ -486,7 +472,10 @@ CompilerKit::SyntaxLeafList::SyntaxLeaf CompilerFrontendNectarPTX::Compile(
               });
 
           if (it != kOriginMap.end()) {
-            syntax_tree.fUserValue += "call " + it->first + ";\n";
+            std::stringstream ss;
+            ss << std::hex << it->second;
+
+            syntax_tree.fUserValue += "jmp " + ss.str() + "\n";
           }
           break;
         }
@@ -521,14 +510,19 @@ CompilerKit::SyntaxLeafList::SyntaxLeaf CompilerFrontendNectarPTX::Compile(
           mangled_name.erase(mangled_name.find(" "), 1);
         }
 
-        // Track defined symbol for PTX extern resolution
+        // Track defined symbol for NASM extern resolution
         kDefinedSymbols.insert(mangled_name);
 
         if (mangled_name.starts_with("__NECTAR") == false) {
           mangled_name = "_" + mangled_name;
         }
 
-        syntax_tree.fUserValue += nectar_generate_function_header(mangled_name, args);
+        if (!kNasmOutput)
+          syntax_tree.fUserValue += "public_segment .code64 " + mangled_name + "\n";
+        else
+          syntax_tree.fUserValue +=
+              "section .text\nglobal " + mangled_name + "\n" + mangled_name + ":\n";
+
         syntax_tree.fUserValue += nectar_generate_prologue();
 
         // Initialize function-local state
@@ -537,7 +531,6 @@ CompilerKit::SyntaxLeafList::SyntaxLeaf CompilerFrontendNectarPTX::Compile(
         kContext.fMaxStackUsed = 0;
 
         // Process function parameters
-        syntax_tree.fUserValue += nectar_generate_param_loads(args);
         nectar_process_function_parameters(args);
 
         // Push function scope
@@ -554,8 +547,6 @@ CompilerKit::SyntaxLeafList::SyntaxLeaf CompilerFrontendNectarPTX::Compile(
       case CompilerKit::KeywordKind::kKeywordKindFunctionEnd: {
         if (kOnClassScope) --kOnClassScope;
 
-        if (text.find("{") != CompilerKit::STLString::npos) break;
-
         if (text.ends_with(";")) break;
 
         if (kFunctionEmbedLevel) {
@@ -567,28 +558,22 @@ CompilerKit::SyntaxLeafList::SyntaxLeaf CompilerFrontendNectarPTX::Compile(
 
         break;
       }
-      case CompilerKit::KeywordKind::kKeywordKindBodyEnd: {
-        if (kFunctionEmbedLevel) {
-          --kFunctionEmbedLevel;
-          nectar_pop_scope();
-          syntax_tree.fUserValue += "}\n";
-        }
-
-        break;
-      }
       case CompilerKit::KeywordKind::kKeywordKindDelete: {
         if (auto pos = syntax_tree.fUserValue.find(keyword.first.fKeywordName);
-            pos != CompilerKit::STLString::npos) {
-          syntax_tree.fUserValue.replace(pos, keyword.first.fKeywordName.size(),
-                                         "__operator_delete");
-        }
+            pos != CompilerKit::STLString::npos)
+          if (!kNasmOutput) {
+            syntax_tree.fUserValue.replace(pos, keyword.first.fKeywordName.size(),
+                                           "__operator_delete");
+          }
         continue;
       }
       case CompilerKit::KeywordKind::kKeywordKindNew: {
         if (auto pos = syntax_tree.fUserValue.find(keyword.first.fKeywordName);
             pos != CompilerKit::STLString::npos) {
-          syntax_tree.fUserValue.replace(pos, keyword.first.fKeywordName.size(),
-                                         "__operator_new");
+          if (!kNasmOutput) {
+            syntax_tree.fUserValue.replace(pos, keyword.first.fKeywordName.size(),
+                                           "__operator_new");
+          }
         }
 
         continue;
@@ -657,9 +642,7 @@ CompilerKit::SyntaxLeafList::SyntaxLeaf CompilerFrontendNectarPTX::Compile(
         }
 
         if (!nectar_get_variable_ref(nameVar).empty())
-          syntax_tree.fUserValue +=
-              "mov.u64 " + CompilerKit::STLString{kPtxThisReg} + ", " +
-              nectar_get_variable_ref(nameVar) + ";\n";
+          syntax_tree.fUserValue += "lea r8, " + nectar_get_variable_ref(nameVar) + "\n";
 
         if (CompilerKit::KeywordKind::kKeywordKindFunctionAccess != keyword.first.fKeywordKind)
           method = valueOfVar.erase(valueOfVar.find("("));
@@ -667,7 +650,8 @@ CompilerKit::SyntaxLeafList::SyntaxLeaf CompilerFrontendNectarPTX::Compile(
         valueOfVar += "\n";
 
         CompilerKit::STLString arg;
-        auto                   index = 8;
+        auto                   index = 9;
+        auto                   cnter = 0;
 
         CompilerKit::STLString buf;
 
@@ -688,11 +672,11 @@ CompilerKit::SyntaxLeafList::SyntaxLeaf CompilerFrontendNectarPTX::Compile(
                 }
               }
 
-              if (!arg.empty())
-                buf += "mov.u64 %rd" + std::to_string(index) + ", " + val + ";\n";
+              if (!arg.empty()) buf += "mov r" + std::to_string(index) + ", " + val + "\n";
 
               arg.clear();
               ++index;
+              ++cnter;
             }
 
             continue;
@@ -702,18 +686,32 @@ CompilerKit::SyntaxLeafList::SyntaxLeaf CompilerFrontendNectarPTX::Compile(
         }
 
         if (!nectar_get_variable_ref(nameVar).empty()) {
-          syntax_tree.fUserValue += buf;
-          syntax_tree.fUserValue += "call.uni ";
-          syntax_tree.fUserValue +=
-              (keyword.first.fKeywordName.ends_with('>') ? nectar_get_variable_ref(nameVar)
-                                                        : nectar_get_variable_ref(nameVar)) +
-              method + ";\n";
+          if (!kNasmOutput) {
+            syntax_tree.fUserValue += buf;
+            syntax_tree.fUserValue += "call ";
+            syntax_tree.fUserValue +=
+                (keyword.first.fKeywordName.ends_with('>') ? " __ptr __offset " : " __offset ") +
+                nectar_get_variable_ref(nameVar) + method + "\n";
+          } else {
+            // NASM: Generate standard call through computed address
+            auto varRef = nectar_get_variable_ref(nameVar);
+
+            if (keyword.first.fKeywordName.ends_with('>')) {
+              // Pointer dereference: load pointer then call through it
+              syntax_tree.fUserValue += "mov rax, " + varRef + "\n";
+              syntax_tree.fUserValue += "call [rax + " + method + "]\n";
+            } else {
+              // Direct offset call
+              syntax_tree.fUserValue += "lea rax, " + varRef + "\n";
+              syntax_tree.fUserValue += "call [rax + " + method + "]\n";
+            }
+          }
         } else {
           auto res = buf;
           if (method.starts_with("__NECTAR") == false)
-            res += "call _" + method + ";\n";
+            res += "call _" + method + "\n";
           else
-            res += "call " + method + ";\n";
+            res += "call " + method + "\n";
 
           res += syntax_rem_buffer;
 
@@ -779,7 +777,7 @@ CompilerKit::SyntaxLeafList::SyntaxLeaf CompilerFrontendNectarPTX::Compile(
           }
         }
 
-        CompilerKit::STLString instr = "mov.u64 ";
+        CompilerKit::STLString instr = "mov ";
 
         std::vector<CompilerKit::STLString> newVars;
 
@@ -804,10 +802,10 @@ CompilerKit::SyntaxLeafList::SyntaxLeaf CompilerFrontendNectarPTX::Compile(
         }
 
         if (keyword.first.fKeywordKind == CompilerKit::KeywordKind::kKeywordKindVariableInc) {
-          instr = "add.u64 ";
+          instr = "add ";
         } else if (keyword.first.fKeywordKind ==
                    CompilerKit::KeywordKind::kKeywordKindVariableDec) {
-          instr = "sub.u64 ";
+          instr = "sub ";
         }
 
         CompilerKit::STLString varErrCpy = varName;
@@ -847,13 +845,25 @@ CompilerKit::SyntaxLeafList::SyntaxLeaf CompilerFrontendNectarPTX::Compile(
         CompilerKit::STLString mangled;
 
         if (valueOfVar.find(".") != CompilerKit::STLString::npos) {
-          valueOfVar.erase(0, valueOfVar.find(".") + strlen("."));
+          if (!kNasmOutput) {
+            CompilerKit::STLString value = "__offset ";
+            valueOfVar.erase(0, valueOfVar.find(".") + strlen("."));
+            valueOfVar.insert(0, value, value.size());
+          } else {
+            valueOfVar.erase(0, valueOfVar.find(".") + strlen("."));
+          }
 
           mangled = "__NECTAR_SM_";
         }
 
         if (valueOfVar.find("->") != CompilerKit::STLString::npos) {
-          valueOfVar.erase(0, valueOfVar.find("->") + strlen("->"));
+          if (!kNasmOutput) {
+            CompilerKit::STLString value = "__ptr __offset ";
+            valueOfVar.erase(0, valueOfVar.find("->") + strlen("->"));
+            valueOfVar.insert(0, value, value.size());
+          } else {
+            valueOfVar.erase(0, valueOfVar.find("->") + strlen("->"));
+          }
           mangled = "__NECTAR_RM_";
         }
 
@@ -862,23 +872,30 @@ CompilerKit::SyntaxLeafList::SyntaxLeaf CompilerFrontendNectarPTX::Compile(
             valueOfVar.erase(valueOfVar.find("("));
 
           if (!valueOfVar.empty()) {
-            // Track as potential external symbol for PTX
+            // Track as potential external symbol for NASM
             kExternalSymbols.insert(mangled + valueOfVar);
 
-            syntax_tree.fUserValue += "call " + mangled + valueOfVar + ";\n";
-            syntax_tree.fUserValue +=
-                instr + nectar_get_variable_ref(varName) + ", " +
-                CompilerKit::STLString{kPtxRetReg} + ";\n";
+            if (!kNasmOutput) {
+              if (valueOfVar.ends_with(")") &&
+                      valueOfVar.find("->") != CompilerKit::STLString::npos ||
+                  valueOfVar.find(".") != CompilerKit::STLString::npos)
+                syntax_tree.fUserValue += instr + nectar_get_variable_ref(varName) +
+                                          ", __thiscall " + mangled + valueOfVar + "\n";
+              else
+                syntax_tree.fUserValue +=
+                    instr + nectar_get_variable_ref(varName) + ", " + mangled + valueOfVar + "\n";
+            } else {
+              syntax_rem_buffer = instr + nectar_get_variable_ref(varName) + ", rax\n";
+            }
           }
 
           break;
         }
 
-        if (valueOfVar.ends_with("{}"))
-          valueOfVar = CompilerKit::STLString{kPtxRetReg};  // impl init returns back to return reg.
+        if (valueOfVar.ends_with("{}")) valueOfVar = "rax";  // impl init returns back to rax.
 
         syntax_tree.fUserValue +=
-            instr + nectar_get_variable_ref(varName) + ", " + valueOfVar + ";\n";
+            instr + nectar_get_variable_ref(varName) + ", " + valueOfVar + "\n";
 
         break;
       }
@@ -891,10 +908,16 @@ CompilerKit::SyntaxLeafList::SyntaxLeaf CompilerFrontendNectarPTX::Compile(
           tmp.erase(tmp.find(" "), 1);
         }
 
-        syntax_tree.fUserValue +=
-            ".visible .func _" +
-            tmp.substr(tmp.find(keyword.first.fKeywordName) + keyword.first.fKeywordName.size()) +
-            ";\n";
+        if (!kNasmOutput)
+          syntax_tree.fUserValue +=
+              "public_segment .code64 _" +
+              tmp.substr(tmp.find(keyword.first.fKeywordName) + keyword.first.fKeywordName.size()) +
+              "\n";
+        else
+          syntax_tree.fUserValue +=
+              "section .text\nglobal _" +
+              tmp.substr(tmp.find(keyword.first.fKeywordName) + keyword.first.fKeywordName.size()) +
+              "\n";
 
         break;
       }
@@ -907,10 +930,16 @@ CompilerKit::SyntaxLeafList::SyntaxLeaf CompilerFrontendNectarPTX::Compile(
           tmp.erase(tmp.find(" "), 1);
         }
 
-        syntax_tree.fUserValue +=
-            ".extern .func _" +
-            tmp.substr(tmp.find(keyword.first.fKeywordName) + keyword.first.fKeywordName.size()) +
-            ";\n";
+        if (!kNasmOutput)
+          syntax_tree.fUserValue +=
+              "extern_segment .zero64 _" +
+              tmp.substr(tmp.find(keyword.first.fKeywordName) + keyword.first.fKeywordName.size()) +
+              "\n";
+        else
+          syntax_tree.fUserValue +=
+              "section .data\nextern _" +
+              tmp.substr(tmp.find(keyword.first.fKeywordName) + keyword.first.fKeywordName.size()) +
+              "\n";
 
         break;
       }
@@ -923,10 +952,16 @@ CompilerKit::SyntaxLeafList::SyntaxLeaf CompilerFrontendNectarPTX::Compile(
           tmp.erase(tmp.find(" "), 1);
         }
 
-        syntax_tree.fUserValue +=
-            ".extern .func _" +
-            tmp.substr(tmp.find(keyword.first.fKeywordName) + keyword.first.fKeywordName.size()) +
-            ";\n";
+        if (!kNasmOutput)
+          syntax_tree.fUserValue +=
+              "extern_segment .code64 _" +
+              tmp.substr(tmp.find(keyword.first.fKeywordName) + keyword.first.fKeywordName.size()) +
+              "\n";
+        else
+          syntax_tree.fUserValue +=
+              "section .text\nextern _" +
+              tmp.substr(tmp.find(keyword.first.fKeywordName) + keyword.first.fKeywordName.size()) +
+              "\n";
 
         break;
       }
@@ -936,7 +971,7 @@ CompilerKit::SyntaxLeafList::SyntaxLeaf CompilerFrontendNectarPTX::Compile(
 
           if (pos == CompilerKit::STLString::npos) {
             syntax_tree.fUserValue += nectar_generate_epilogue();
-            syntax_tree.fUserValue += "ret;\n";
+            syntax_tree.fUserValue += "ret\n";
             ++kOrigin;
             break;
           }
@@ -945,7 +980,8 @@ CompilerKit::SyntaxLeafList::SyntaxLeaf CompilerFrontendNectarPTX::Compile(
 
           CompilerKit::STLString subText = text.substr(pos);
 
-          subText = subText.erase(subText.find(";"));
+          subText        = subText.erase(subText.find(";"));
+          size_t indxReg = 0UL;
 
           // Extract and set up call arguments before erasing them
           if (subText.find("):") != CompilerKit::STLString::npos) {
@@ -954,7 +990,7 @@ CompilerKit::SyntaxLeafList::SyntaxLeaf CompilerFrontendNectarPTX::Compile(
 
             if (argEnd != CompilerKit::STLString::npos && argEnd > argStart) {
               auto argsStr = subText.substr(argStart, argEnd - argStart);
-              auto regIdx  = 8;
+              auto regIdx  = 9;
 
               CompilerKit::STLString currentArg;
               for (std::size_t i = 0; i <= argsStr.size(); ++i) {
@@ -966,8 +1002,7 @@ CompilerKit::SyntaxLeafList::SyntaxLeaf CompilerFrontendNectarPTX::Compile(
                     auto val = nectar_get_variable_ref(currentArg);
                     if (val.empty()) val = currentArg;
 
-                    syntax_tree.fUserValue +=
-                        "mov.u64 %rd" + std::to_string(regIdx) + ", " + val + ";\n";
+                    syntax_tree.fUserValue += "mov r" + std::to_string(regIdx) + ", " + val + "\n";
                     ++regIdx;
                   }
 
@@ -983,16 +1018,13 @@ CompilerKit::SyntaxLeafList::SyntaxLeaf CompilerFrontendNectarPTX::Compile(
 
           auto ref = nectar_get_variable_ref(subText);
 
-          if (ref.empty() == false)
-            syntax_tree.fUserValue +=
-                "mov.u64 " + CompilerKit::STLString{kPtxRetReg} + ", " + ref + ";\n";
+          if (ref.empty() == false) syntax_tree.fUserValue += "lea rax, " + ref + "\n";
 
           if (subText.starts_with("'") || isnumber(subText[0]))
-            syntax_tree.fUserValue +=
-                "mov.u64 " + CompilerKit::STLString{kPtxRetReg} + ", " + subText + ";\n";
+            syntax_tree.fUserValue += "mov rax, " + subText + "\n";
           else if (text.find("(") != CompilerKit::STLString::npos &&
                    text.find(");") != CompilerKit::STLString::npos) {
-            // Track as potential external symbol for PTX.
+            // Track as potential external symbol for NASM.
 
             subText.erase(subText.find("("));
 
@@ -1003,18 +1035,27 @@ CompilerKit::SyntaxLeafList::SyntaxLeaf CompilerFrontendNectarPTX::Compile(
 
             kExternalSymbols.insert(subText);
 
-            syntax_tree.fUserValue += "call " + subText + ";\n";
+            if (!kNasmOutput) {
+              syntax_tree.fUserValue += "mov rax, __call " + subText + "\n";
+            } else {
+              // NASM: call function, result is in rax
+              syntax_tree.fUserValue += "call " + subText + "\n";
+            }
           }
 
-          syntax_tree.fUserValue += nectar_generate_epilogue() + "ret;\n";
+          syntax_tree.fUserValue += nectar_generate_epilogue() + "ret\n";
           ++kOrigin;
         } catch (...) {
-          syntax_tree.fUserValue += nectar_generate_epilogue() + "ret;\n";
+          syntax_tree.fUserValue += nectar_generate_epilogue() + "ret\n";
           ++kOrigin;
         }
 
         if (kCurrentIfCondition) {
-          syntax_tree.fUserValue += "__ret_" + kCurrentIfSymbol + ":\n";
+          if (!kNasmOutput)
+            syntax_tree.fUserValue +=
+                "public_segment .code64 __ret_" + kCurrentIfSymbol + "\nnop\n";
+          else
+            syntax_tree.fUserValue += "__ret_" + kCurrentIfSymbol + ":\n";
 
           kCurrentIfSymbol.clear();
           kCurrentIfCondition = false;
@@ -1031,7 +1072,7 @@ CompilerKit::SyntaxLeafList::SyntaxLeaf CompilerFrontendNectarPTX::Compile(
 
 /// \brief Parse NECTAR Impls.
 /// \param CompilerKit::SyntaxLeafList::SyntaxLeaf the leaf to build upon.
-CompilerKit::SyntaxLeafList::SyntaxLeaf CompilerFrontendNectarPTX::CompileLayout(
+CompilerKit::SyntaxLeafList::SyntaxLeaf CompilerFrontendNectarAMD64::CompileLayout(
     CompilerKit::STLString& text, const CompilerKit::STLString& file,
     CompilerKit::SyntaxLeafList::SyntaxLeaf& syntax_tree) {
   if ((text.find("impl") != CompilerKit::STLString::npos)) {
@@ -1054,7 +1095,7 @@ CompilerKit::SyntaxLeafList::SyntaxLeaf CompilerFrontendNectarPTX::CompileLayout
       ++kOnClassScope;
     }
 
-    syntax_tree.fUserValue += "// HINT: " + className + "\n";
+    syntax_tree.fUserValue += ";; HINT: " + className + "\n";
   }
 
   // Handle class exit
@@ -1062,7 +1103,7 @@ CompilerKit::SyntaxLeafList::SyntaxLeaf CompilerFrontendNectarPTX::CompileLayout
     --kOnClassScope;
     nectar_pop_scope();
 
-    syntax_tree.fUserValue += "// HINT: END NAMESPACE\n";
+    syntax_tree.fUserValue += ";; HINT: END NAMESPACE\n";
   }
 
   return syntax_tree;
@@ -1206,56 +1247,20 @@ static CompilerKit::STLString nectar_mangle_name(const CompilerKit::STLString& i
 
 /// \brief Generate function prologue
 static CompilerKit::STLString nectar_generate_prologue() {
-  CompilerKit::STLString prologue;
-  prologue += "  .reg .u64 %rd<64>;\n";
-  prologue += "  .reg .pred %p<8>;\n";
-  return prologue;
+  return "push rbp\nmov rbp, rsp\n";
 }
 
 /// \brief Generate function epilogue
 static CompilerKit::STLString nectar_generate_epilogue() {
-  return "";
-}
-
-/// \brief Generate PTX function header
-static CompilerKit::STLString nectar_generate_function_header(
-    const CompilerKit::STLString& mangled_name, const std::vector<CompilerKit::STLString>& args) {
-  CompilerKit::STLString header = ".visible .func " + mangled_name + "(";
-
-  for (size_t i = 0; i < args.size(); ++i) {
-    header += ".param .u64 __arg" + std::to_string(i);
-    if (i + 1 < args.size()) header += ", ";
-  }
-
-  header += ")\n{\n";
-  return header;
-}
-
-/// \brief Emit PTX parameter loads into registers
-static CompilerKit::STLString nectar_generate_param_loads(
-    const std::vector<CompilerKit::STLString>& args) {
-  CompilerKit::STLString loads;
-
-  for (size_t i = 0; i < args.size(); ++i) {
-    CompilerKit::STLString reg;
-    if (i < kRegisterConventionCallList.size()) {
-      reg = kRegisterConventionCallList[i];
-    } else {
-      auto idx = i - kRegisterConventionCallList.size();
-      if (idx < kRegisterList.size()) reg = kRegisterList[idx];
-    }
-
-    if (!reg.empty()) {
-      loads += "  ld.param.u64 " + reg + ", [__arg" + std::to_string(i) + "];\n";
-    }
-  }
-
-  return loads;
+  return "mov rsp, rbp\npop rbp\n";
 }
 
 /// \brief Allocate a variable on the stack
 static Int32 nectar_allocate_stack_variable(const CompilerKit::STLString& var_name, Int32 size,
                                             bool is_constant) {
+  kContext.fStackOffset -= size;
+  kContext.fMaxStackUsed = std::min(kContext.fStackOffset, kContext.fMaxStackUsed);
+
   if (auto var = nectar_find_variable(var_name); var) {
     if (var->fIsConstant)
       CompilerKit::Detail::print_error(
@@ -1271,15 +1276,14 @@ static Int32 nectar_allocate_stack_variable(const CompilerKit::STLString& var_na
 
   VariableInfo varInfo;
   varInfo.fName        = var_name;
-  varInfo.fLocation    = VarLocation::kRegister;
-  varInfo.fStackOffset = 0;
+  varInfo.fLocation    = VarLocation::kStack;
+  varInfo.fStackOffset = kContext.fStackOffset;
   varInfo.fSize        = size;
   varInfo.fLastUsed    = kContext.fInstructionCounter;
   varInfo.fIsConstant  = is_constant;
-  varInfo.fRegister    = nectar_allocate_register(var_name);
   kContext.fVariables.push_back(varInfo);
 
-  return 0;
+  return kContext.fStackOffset;
 }
 
 /// \brief Find a variable by name
@@ -1311,7 +1315,7 @@ static CompilerKit::STLString nectar_get_variable_ref(const CompilerKit::STLStri
                                          var_name.substr(var_name.find("const") + strlen("const")) +
                                          " as variable.",
                                      "CompilerKit");
-    return "0";
+    return "call __abort";
   }
 
   varInfo->fLastUsed = kContext.fInstructionCounter;
@@ -1320,12 +1324,12 @@ static CompilerKit::STLString nectar_get_variable_ref(const CompilerKit::STLStri
     auto reg = varInfo->fRegister;
     delete varInfo;
     return reg;
+  } else {
+    // Stack or spilled
+    auto reg = "qword [rbp+" + std::to_string(-varInfo->fStackOffset) + "]";
+    delete varInfo;
+    return reg;
   }
-
-  // PTX backend keeps locals in registers; no stack references.
-  auto reg = varInfo->fRegister;
-  delete varInfo;
-  return reg;
 
   return "";
 }
@@ -1362,7 +1366,7 @@ static CompilerKit::STLString nectar_allocate_register(const CompilerKit::STLStr
         if (existing->fIsConstant) {
           CompilerKit::Detail::print_error("Invalid use of constant " + var_name + " as variable.",
                                            "CompilerKit");
-          return "0";
+          return "__call __abort";
         }
 
         existing->fLocation = VarLocation::kRegister;
@@ -1374,7 +1378,7 @@ static CompilerKit::STLString nectar_allocate_register(const CompilerKit::STLStr
         varInfo.fLocation   = VarLocation::kRegister;
         varInfo.fRegister   = reg;
         varInfo.fLastUsed   = kContext.fInstructionCounter;
-        varInfo.fIsConstant = false;
+        varInfo.fIsConstant = existing->fIsConstant;
 
         kContext.fVariables.push_back(varInfo);
       }
@@ -1388,7 +1392,44 @@ static CompilerKit::STLString nectar_allocate_register(const CompilerKit::STLStr
 
 /// \brief Spill the least recently used variable to stack
 static CompilerKit::STLString nectar_spill_lru_variable() {
-  return "";
+  CompilerKit::STLString spillCode;
+
+  // Find LRU variable in register (that's not a parameter)
+  VariableInfo* lruVar      = nullptr;
+  UInt32        minLastUsed = UINT32_MAX;
+
+  for (auto& var : kContext.fVariables) {
+    if (var.fLocation == VarLocation::kRegister && !var.fIsParameter &&
+        var.fLastUsed < minLastUsed) {
+      lruVar      = &var;
+      minLastUsed = var.fLastUsed;
+    }
+  }
+
+  if (!lruVar) {
+    return "";  // No variable to spill
+  }
+
+  // Allocate stack space
+  kContext.fStackOffset -= lruVar->fSize;
+  kContext.fMaxStackUsed = std::min(kContext.fStackOffset, kContext.fMaxStackUsed);
+
+  // Generate spill code
+
+  /// if impl init
+  if (!lruVar->fRegister.ends_with("{}"))
+    spillCode = "mov qword [rbp+" + std::to_string(-kContext.fStackOffset) + "], " +
+                lruVar->fRegister + "\n";
+  else
+    spillCode = "mov qword [rbp+" + std::to_string(-kContext.fStackOffset) + "], rax\n";
+
+  // Update variable info
+  lruVar->fLocation    = VarLocation::kStackSpill;
+  lruVar->fStackOffset = kContext.fStackOffset;
+  auto spilledReg      = lruVar->fRegister;
+  lruVar->fRegister    = "";
+
+  return spillCode;
 }
 
 /// \brief Add a class member to the struct map
@@ -1444,11 +1485,8 @@ static CompilerKit::STLString nectar_generate_constructor_call(
   nectar_pop_scope();
 
   CompilerKit::STLString code;
-  auto objReg = nectar_allocate_register(obj_name);
-  if (!objReg.empty()) {
-    code += "mov.u64 " + CompilerKit::STLString{kPtxThisReg} + ", " + objReg + ";\n";
-  }
-  code += "call " + ctor_mangled + ";\n";
+  code += "lea r8, [rbp+" + std::to_string(offset) + "]\n";
+  code += "call " + ctor_mangled + "\n";
   return code;
 }
 
@@ -1466,29 +1504,39 @@ static CompilerKit::STLString nectar_generate_destructor_call(
   nectar_pop_scope();
 
   CompilerKit::STLString code;
-  code += "mov.u64 " + CompilerKit::STLString{kPtxThisReg} + ", " + varInfo->fRegister + ";\n";
+  if (varInfo->fLocation == VarLocation::kStack || varInfo->fLocation == VarLocation::kStackSpill) {
+    code += "lea r8, [rbp+" + std::to_string(varInfo->fStackOffset) + "]\n";
+  } else {
+    code += "mov r8, " + varInfo->fRegister + "\n";
+  }
 
   delete varInfo;
 
-  code += "call " + dtor_mangled + ";\n";
+  code += "call " + dtor_mangled + "\n";
   return code;
 }
 
-/// \brief Process function parameters per PTX calling convention.
+/// \brief Process function parameters per PEF calling convention.
 /// \note Assumes args are already extracted.
 static void nectar_process_function_parameters(const std::vector<CompilerKit::STLString>& args) {
-  for (size_t i = 0; i < args.size(); ++i) {
+  for (size_t i = 0; i < args.size() && i < 8; ++i) {
     VariableInfo param;
     param.fName        = "arg" + std::to_string(i);
     param.fLocation    = VarLocation::kRegister;
-    if (i < kRegisterConventionCallList.size()) {
-      param.fRegister = kRegisterConventionCallList[i];
-    } else {
-      auto idx = i - kRegisterConventionCallList.size();
-      if (idx < kRegisterList.size()) {
-        param.fRegister = kRegisterList[idx];
-      }
-    }
+    param.fRegister    = kRegisterConventionCallList[i];
+    param.fIsParameter = true;
+    param.fTypeName    = args[i];
+    param.fLastUsed    = kContext.fInstructionCounter;
+    kContext.fVariables.push_back(param);
+  }
+
+  // Args beyond r15 go on stack
+  for (size_t i = 8; i < args.size(); ++i) {
+    Int32        offset = 16 + (i - 8) * 8;
+    VariableInfo param;
+    param.fName        = "arg" + std::to_string(i);
+    param.fLocation    = VarLocation::kStack;
+    param.fStackOffset = offset;  // Positive (before rbp)
     param.fIsParameter = true;
     param.fTypeName    = args[i];
     param.fLastUsed    = kContext.fInstructionCounter;
@@ -1506,14 +1554,14 @@ static void nectar_process_function_parameters(const std::vector<CompilerKit::ST
 
 #define kExtListCxx {".nc", ".pp.nc"}
 
-class AssemblyNectarInterfacePTX final CK_ASSEMBLY_INTERFACE {
+class AssemblyNectarInterfaceAMD64 final CK_ASSEMBLY_INTERFACE {
  public:
-  explicit AssemblyNectarInterfacePTX()  = default;
-  ~AssemblyNectarInterfacePTX() override = default;
+  explicit AssemblyNectarInterfaceAMD64()  = default;
+  ~AssemblyNectarInterfaceAMD64() override = default;
 
-  NECTAR_COPY_DEFAULT(AssemblyNectarInterfacePTX);
+  NECTAR_COPY_DEFAULT(AssemblyNectarInterfaceAMD64);
 
-  UInt32 Arch() noexcept override { return CompilerKit::AssemblyFactory::kArchUnknown; }
+  UInt32 Arch() noexcept override { return CompilerKit::AssemblyFactory::kArchAMD64; }
 
   Int32 CompileToFormat(CompilerKit::STLString src, Int32 arch) override {
     if (kFrontend == nullptr) return EXIT_FAILURE;
@@ -1523,12 +1571,15 @@ class AssemblyNectarInterfacePTX final CK_ASSEMBLY_INTERFACE {
 
     dest.erase(dest.find(ext[0]));
 
-    dest += ".ptx";
+    dest += ".masm";
 
     std::ofstream out_fp(dest);
     std::ifstream src_fp = std::ifstream(src);
 
     CompilerKit::STLString line_source;
+
+    std::stringstream ss;
+    ss << std::hex << kOrigin;
 
     // Clear symbol tracking sets for this compilation unit
     kDefinedSymbols.clear();
@@ -1562,18 +1613,24 @@ class AssemblyNectarInterfacePTX final CK_ASSEMBLY_INTERFACE {
     }
 
     // Output header
-    out_fp << ".version 7.0\n";
-    out_fp << ".target sm_50\n";
-    out_fp << ".address_size 64\n\n";
-
-    // Emit extern declarations for undefined symbols
-    for (const auto& sym : kExternalSymbols) {
-      if (kDefinedSymbols.find(sym) == kDefinedSymbols.end() && !sym.empty()) {
-        out_fp << ".extern .func " << sym << ";\n";
-      }
+    if (!kNasmOutput)
+      out_fp << "%bits 64\n";
+    else {
+      out_fp << "[bits 64]\n";
+      out_fp << "extern __operator_new\nextern __operator_delete\n";
     }
-    if (!kExternalSymbols.empty()) {
-      out_fp << "\n";
+
+    // For NASM output: emit extern declarations for undefined symbols
+    if (kNasmOutput) {
+      for (const auto& sym : kExternalSymbols) {
+        // Only declare as extern if not defined in this file
+        if (kDefinedSymbols.find(sym) == kDefinedSymbols.end() && !sym.empty()) {
+          out_fp << "extern " << sym << "\n";
+        }
+      }
+      if (!kExternalSymbols.empty()) {
+        out_fp << "\n";
+      }
     }
 
     // Output compiled code
@@ -1587,7 +1644,7 @@ class AssemblyNectarInterfacePTX final CK_ASSEMBLY_INTERFACE {
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
-NECTAR_MODULE(CompilerNectarPTX) {
+NECTAR_MODULE(CompilerNectarAMD64) {
   bool skip = false;
 
   kKeywords.emplace_back("impl", CompilerKit::KeywordKind::kKeywordKindImpl);
@@ -1617,9 +1674,9 @@ NECTAR_MODULE(CompilerNectarPTX) {
 
   kErrorLimit = 0;
 
-  kFrontend = new CompilerFrontendNectarPTX();
+  kFrontend = new CompilerFrontendNectarAMD64();
 
-  CompilerKit::StrongRef<AssemblyNectarInterfacePTX> mntPnt{new AssemblyNectarInterfacePTX()};
+  CompilerKit::StrongRef<AssemblyNectarInterfaceAMD64> mntPnt{new AssemblyNectarInterfaceAMD64()};
   kAssembler.Mount({mntPnt.Leak()});
 
   CompilerKit::install_signal(SIGSEGV, CompilerKit::Detail::drvi_crash_handler);
@@ -1641,6 +1698,16 @@ NECTAR_MODULE(CompilerNectarPTX) {
 
       if (strcmp(argv[index], "-fverbose") == 0) {
         kVerbose = true;
+        continue;
+      }
+
+      if (strcmp(argv[index], "-fuse-masm") == 0) {
+        kNasmOutput = false;
+        continue;
+      }
+
+      if (strcmp(argv[index], "-fuse-nasm") == 0) {
+        kNasmOutput = true;
         continue;
       }
 
