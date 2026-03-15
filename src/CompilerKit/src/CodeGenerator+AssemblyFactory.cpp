@@ -16,6 +16,7 @@
  */
 
 namespace CompilerKit {
+  
 ///! @brief Compile for specific format (ELF, PEF, AE)
 Int32 AssemblyFactory::Compile(STLString sourceFile, const Int32& arch) {
   if (sourceFile.length() == 0) return NECTAR_UNIMPLEMENTED;
@@ -51,4 +52,5 @@ WeakRef<IAssembly> AssemblyFactory::Unmount() noexcept {
 
   return WeakRef<IAssembly>{mount_prev};
 }
+
 }  // namespace CompilerKit

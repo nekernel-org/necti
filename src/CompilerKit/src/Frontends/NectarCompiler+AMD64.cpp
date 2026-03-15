@@ -6,25 +6,13 @@
 
 /// BUGS: 0
 
-///////////////////////
-
-// ANSI ESCAPE CODES //
-
-///////////////////////
-
-///////////////////////
-
-// MACROS            //
-
-///////////////////////
-
 #include <CompilerKit/AST.h>
 #include <CompilerKit/Detail/AMD64.h>
 #include <CompilerKit/PEF.h>
 #include <CompilerKit/UUID.h>
 #include <CompilerKit/Utilities/Compiler.h>
 
-/* NeKernel Nectar Compiler Driver. */
+/* Nectar Compiler Driver. */
 /* This is part of the CompilerKit. */
 /* (c) Amlal El Mahrouss 2024-2026 */
 
