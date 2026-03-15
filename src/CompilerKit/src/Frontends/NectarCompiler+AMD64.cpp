@@ -1720,7 +1720,7 @@ NECTAR_MODULE(CompilerNectarAMD64) {
       CompilerKit::STLString err = "Unknown option: ";
       err += argv[index];
 
-      CompilerKit::Detail::print_error(err, "Nectar");
+      CompilerKit::Detail::print_error(err, "frontend");
 
       continue;
     }

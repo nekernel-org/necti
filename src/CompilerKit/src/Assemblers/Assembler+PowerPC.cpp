@@ -1,4 +1,4 @@
-// Copyright 2024-2025, Amlal El Mahrouss (amlal@nekernel.org)
+// Copyright 2024-2026, Amlal El Mahrouss (amlal@nekernel.org)
 // Licensed under the Apache License, Version 2.0 (See accompanying
 // file LICENSE or copy at http://www.apache.org/licenses/LICENSE-2.0)
 // Official repository: https://github.com/ne-foss-org/nectar
@@ -25,17 +25,6 @@
 #include <CompilerKit/ErrorID.h>
 #include <CompilerKit/PEF.h>
 #include <CompilerKit/Utilities/Assembler.h>
-
-/////////////////////
-
-// ANSI ESCAPE CODES
-
-/////////////////////
-
-#define kBlank "\e[0;30m"
-#define kRed "\e[0;31m"
-#define kWhite "\e[0;97m"
-#define kYellow "\e[0;33m"
 
 constexpr auto kPowerIPAlignment = 0x1U;
 

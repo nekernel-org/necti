@@ -21,14 +21,14 @@
 #define kCode128Section ".code128"
 #define kData128Section ".data128"
 
-#define kBlank "\e[0;30m"
+#define kBlank "\e[0;0m"
 #define kRed "\e[0;31m"
 #define kWhite "\e[0;97m"
 #define kYellow "\e[0;33m"
-#define kBlackOverWhite "\E[0;37m"
+#define kReset kBlank
 
-#define kStdOut (std::cout << kRed << "Nectar: " << kBlackOverWhite)
-#define kStdErr (std::cerr << kRed << "Nectar: " << kBlackOverWhite)
+#define kStdOut (std::cout << kRed << "nectar: " << kReset)
+#define kStdErr (std::cerr << kRed << "nectar: " << kReset)
 #define kStdEndl std::endl
 #define kPrintF kStdOut
 #define kPrintErr kStdErr
@@ -75,24 +75,22 @@ inline void drvi_crash_handler(std::int32_t id) {
     std::cout << '=';
   }
 
-  std::cout << std::endl;
-
-  std::cout << verbose_header << std::endl;
+  kStdOut << kStdEndl;
+  kStdOut << verbose_header << kStdEndl;
 
   for (auto& ch : verbose_header) {
     std::cout << '=';
   }
 
-  std::cout << std::endl;
+  kStdOut << kStdEndl;
 
-  kStdOut << "DATE: " << CompilerKit::current_date() << std::endl;
-  kStdOut << "VERSION: " << kDistVersion << std::endl;
-  kStdOut << "ERRNO: " << errno << std::endl;
-  kStdOut << "ERRNO(STRING): " << strerror(errno) << std::endl;
+  kStdOut << "DATE: " << CompilerKit::current_date() << kStdEndl;
+  kStdOut << "VERSION: " << kDistVersion << kStdEndl;
+  kStdOut << "ERRNO: " << errno << kStdEndl;
 
   switch (id) {
     default: {
-      kStdOut << "SIGNAL: (" << id << ")." << kBlank << std::endl;
+        kStdOut << "SIGNAL: (" << id << ")." << kBlank << kStdEndl;
       break;
     }
   }

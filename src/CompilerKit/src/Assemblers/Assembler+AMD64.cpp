@@ -34,17 +34,6 @@
 #include <CompilerKit/PEF.h>
 #include <CompilerKit/Utilities/Assembler.h>
 
-/////////////////////
-
-// ANSI ESCAPE CODES
-
-/////////////////////
-
-#define kBlank "\e[0;30m"
-#define kRed "\e[0;31m"
-#define kWhite "\e[0;97m"
-#define kYellow "\e[0;33m"
-
 static char kOutputArch = CompilerKit::kPefArchAMD64;
 
 static constexpr auto kIPAlignement = 0x1U;
