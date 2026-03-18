@@ -34,7 +34,9 @@ Int32 AssemblyFactory::Compile(STLString sourceFile, const Int32& arch) {
     std::filesystem::remove(compiledUnit);
     return ret;
   } catch (...) {
+    auto ret = this->fMounted->CompileToFormat(compiledUnit, arch);
     std::filesystem::remove(compiledUnit);
+    return ret;
   }
 
   return NECTAR_UNIMPLEMENTED;

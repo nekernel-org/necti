@@ -55,16 +55,16 @@ CK_IMPORT_C bool NectarCheckFrontend(CompilerKit::STLString& input) {
     }
   }
 
-  if (input.starts_with("let ") && !input.ends_with(";")) {
-    if (input.find(":=") != CompilerKit::STLString::npos) {
-      Detail::print_error("A declaration must always end with ';'", "check");
+  if (input.find("let ") != CompilerKit::STLString::npos && input.ends_with(";")) {
+    if (input.find(":=") == CompilerKit::STLString::npos) {
+      Detail::print_error("A declaration must always include with ':='", "check");
       return false;
     }
   }
 
-  if (input.starts_with("const ") && !input.ends_with(";")) {
-    if (input.find(":=") != CompilerKit::STLString::npos) {
-      Detail::print_error("A declaration must always end with ';'", "check");
+  if (input.find("const ") != CompilerKit::STLString::npos && input.ends_with(";")) {
+    if (input.find(":=") == CompilerKit::STLString::npos) {
+      Detail::print_error("A declaration must always end with ':='", "check");
       return false;
     }
   }
