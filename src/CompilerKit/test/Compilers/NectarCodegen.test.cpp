@@ -11,11 +11,13 @@
 
 TEST(CodegenTest, BasicCodegenTestGrep) {
   // Compile C++ source to assembly
-  auto compile_result = std::system("pef-amd64-necdrv ../../../../snippets/test_snippets/inner.nc > /dev/null 2>&1");
+  auto compile_result =
+      std::system("pef-amd64-necdrv ../../../../snippets/test_snippets/inner.nc > /dev/null 2>&1");
   EXPECT_TRUE(compile_result == 0) << "C++ compiler driver failed to compile sample.cc";
 }
 
 TEST(CodegenTest, BasicCodegenTestAssemble) {
-  auto expr = std::system("pef-amd64-asm ../../../../snippets/test_snippets/inner.masm > /dev/null 2>&1");
+  auto expr =
+      std::system("pef-amd64-asm ../../../../snippets/test_snippets/inner.masm > /dev/null 2>&1");
   EXPECT_TRUE(expr == 0) << "ASM Driver did not compile the easy ASM unit.";
 }

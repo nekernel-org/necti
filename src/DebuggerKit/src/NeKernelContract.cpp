@@ -15,7 +15,7 @@
 using namespace DebuggerKit::Detail;
 using namespace DebuggerKit::NeKernel;
 
-NeKernelContract::NeKernelContract() = default;
+NeKernelContract::NeKernelContract()  = default;
 NeKernelContract::~NeKernelContract() = default;
 
 bool NeKernelContract::Attach(CompilerKit::STLString path, CompilerKit::STLString argv,

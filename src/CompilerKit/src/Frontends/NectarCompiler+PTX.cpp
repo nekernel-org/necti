@@ -231,18 +231,17 @@ class CompilerFrontendNectarPTX final CK_COMPILER_FRONTEND {
 
 static CompilerFrontendNectarPTX* kFrontend = nullptr;
 
-static constexpr const char* kPtxRetReg   = "%rd0";
-static constexpr const char* kPtxTmpRegA  = "%rd1";
-static constexpr const char* kPtxTmpRegB  = "%rd2";
-static constexpr const char* kPtxThisReg  = "%rd3";
-static constexpr const char* kPtxPredReg  = "%p1";
+static constexpr const char* kPtxRetReg  = "%rd0";
+static constexpr const char* kPtxTmpRegA = "%rd1";
+static constexpr const char* kPtxTmpRegB = "%rd2";
+static constexpr const char* kPtxThisReg = "%rd3";
+static constexpr const char* kPtxPredReg = "%p1";
 
 static std::vector<CompilerKit::STLString> kRegisterList = {
-    "%rd16", "%rd17", "%rd18", "%rd19", "%rd20", "%rd21", "%rd22", "%rd23",
-    "%rd24", "%rd25", "%rd26", "%rd27", "%rd28", "%rd29", "%rd30", "%rd31",
-    "%rd32", "%rd33", "%rd34", "%rd35", "%rd36", "%rd37", "%rd38", "%rd39",
-    "%rd40", "%rd41", "%rd42", "%rd43", "%rd44", "%rd45", "%rd46", "%rd47",
-    "%rd48", "%rd49", "%rd50", "%rd51", "%rd52", "%rd53", "%rd54", "%rd55",
+    "%rd16", "%rd17", "%rd18", "%rd19", "%rd20", "%rd21", "%rd22", "%rd23", "%rd24", "%rd25",
+    "%rd26", "%rd27", "%rd28", "%rd29", "%rd30", "%rd31", "%rd32", "%rd33", "%rd34", "%rd35",
+    "%rd36", "%rd37", "%rd38", "%rd39", "%rd40", "%rd41", "%rd42", "%rd43", "%rd44", "%rd45",
+    "%rd46", "%rd47", "%rd48", "%rd49", "%rd50", "%rd51", "%rd52", "%rd53", "%rd54", "%rd55",
     "%rd56", "%rd57", "%rd58", "%rd59", "%rd60", "%rd61", "%rd62", "%rd63",
 };
 
@@ -406,7 +405,7 @@ CompilerKit::SyntaxLeafList::SyntaxLeaf CompilerFrontendNectarPTX::Compile(
                                     CompilerKit::STLString{kPtxPredReg} + ", " +
                                     CompilerKit::STLString{kPtxTmpRegA} + ", " +
                                     CompilerKit::STLString{kPtxTmpRegB} + ";\n";
-          syntax_tree.fUserValue += "@"+ CompilerKit::STLString{kPtxPredReg} + " bra __ret_" +
+          syntax_tree.fUserValue += "@" + CompilerKit::STLString{kPtxPredReg} + " bra __ret_" +
                                     std::to_string(kOrigin) + "_" + kCurrentIfSymbol + ";\n";
 
           kCurrentIfSymbol = std::to_string(kOrigin) + "_" + kCurrentIfSymbol;
@@ -575,8 +574,7 @@ CompilerKit::SyntaxLeafList::SyntaxLeaf CompilerFrontendNectarPTX::Compile(
       case CompilerKit::KeywordKind::kKeywordKindNew: {
         if (auto pos = syntax_tree.fUserValue.find(keyword.first.fKeywordName);
             pos != CompilerKit::STLString::npos) {
-          syntax_tree.fUserValue.replace(pos, keyword.first.fKeywordName.size(),
-                                         "__operator_new");
+          syntax_tree.fUserValue.replace(pos, keyword.first.fKeywordName.size(), "__operator_new");
         }
 
         continue;
@@ -645,9 +643,8 @@ CompilerKit::SyntaxLeafList::SyntaxLeaf CompilerFrontendNectarPTX::Compile(
         }
 
         if (!nectar_get_variable_ref(nameVar).empty())
-          syntax_tree.fUserValue +=
-              "mov.u64 " + CompilerKit::STLString{kPtxThisReg} + ", " +
-              nectar_get_variable_ref(nameVar) + ";\n";
+          syntax_tree.fUserValue += "mov.u64 " + CompilerKit::STLString{kPtxThisReg} + ", " +
+                                    nectar_get_variable_ref(nameVar) + ";\n";
 
         if (CompilerKit::KeywordKind::kKeywordKindFunctionAccess != keyword.first.fKeywordKind)
           method = valueOfVar.erase(valueOfVar.find("("));
@@ -676,8 +673,7 @@ CompilerKit::SyntaxLeafList::SyntaxLeaf CompilerFrontendNectarPTX::Compile(
                 }
               }
 
-              if (!arg.empty())
-                buf += "mov.u64 %rd" + std::to_string(index) + ", " + val + ";\n";
+              if (!arg.empty()) buf += "mov.u64 %rd" + std::to_string(index) + ", " + val + ";\n";
 
               arg.clear();
               ++index;
@@ -694,7 +690,7 @@ CompilerKit::SyntaxLeafList::SyntaxLeaf CompilerFrontendNectarPTX::Compile(
           syntax_tree.fUserValue += "call.uni ";
           syntax_tree.fUserValue +=
               (keyword.first.fKeywordName.ends_with('>') ? nectar_get_variable_ref(nameVar)
-                                                        : nectar_get_variable_ref(nameVar)) +
+                                                         : nectar_get_variable_ref(nameVar)) +
               method + ";\n";
         } else {
           auto res = buf;
@@ -854,9 +850,8 @@ CompilerKit::SyntaxLeafList::SyntaxLeaf CompilerFrontendNectarPTX::Compile(
             kExternalSymbols.insert(mangled + valueOfVar);
 
             syntax_tree.fUserValue += "call " + mangled + valueOfVar + ";\n";
-            syntax_tree.fUserValue +=
-                instr + nectar_get_variable_ref(varName) + ", " +
-                CompilerKit::STLString{kPtxRetReg} + ";\n";
+            syntax_tree.fUserValue += instr + nectar_get_variable_ref(varName) + ", " +
+                                      CompilerKit::STLString{kPtxRetReg} + ";\n";
           }
 
           break;
@@ -1432,7 +1427,7 @@ static CompilerKit::STLString nectar_generate_constructor_call(
   nectar_pop_scope();
 
   CompilerKit::STLString code;
-  auto objReg = nectar_allocate_register(obj_name);
+  auto                   objReg = nectar_allocate_register(obj_name);
   if (!objReg.empty()) {
     code += "mov.u64 " + CompilerKit::STLString{kPtxThisReg} + ", " + objReg + ";\n";
   }
@@ -1467,8 +1462,8 @@ static CompilerKit::STLString nectar_generate_destructor_call(
 static void nectar_process_function_parameters(const std::vector<CompilerKit::STLString>& args) {
   for (size_t i = 0; i < args.size(); ++i) {
     VariableInfo param;
-    param.fName        = "arg" + std::to_string(i);
-    param.fLocation    = VarLocation::kRegister;
+    param.fName     = "arg" + std::to_string(i);
+    param.fLocation = VarLocation::kRegister;
     if (i < kRegisterConventionCallList.size()) {
       param.fRegister = kRegisterConventionCallList[i];
     } else {

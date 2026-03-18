@@ -103,21 +103,21 @@ NECTAR_MODULE(AssemblerMainAMD64) {
 
   //////////////// CPU OPCODES END ////////////////
 
-  for (i64_hword_t i{1}; i < argc; ++i) { 
+  for (i64_hword_t i{1}; i < argc; ++i) {
     if (argv[i][0] == '-') {
       if (strcmp(argv[i], "-version") == 0 || strcmp(argv[i], "-v") == 0) {
         kStdOut
             << "AssemblerAMD64: AMD64 Assembler Driver.\nAssemblerAMD64: Copyright (c) 2024-2026 "
                "Amlal El Mahrouss\n";
-        kStdOut
-            << "AssemblerAMD64: This software is part of the Ne.org project. (https://www.nekernel.org)\n";
+        kStdOut << "AssemblerAMD64: This software is part of the Ne.org project. "
+                   "(https://www.nekernel.org)\n";
         return 0;
       } else if (strcmp(argv[i], "-help") == 0) {
         kStdOut
             << "AssemblerAMD64: AMD64 Assembler Driver.\nAssemblerAMD64: Copyright (c) 2024-2026 "
                "Amlal El Mahrouss\n";
-        kStdOut
-            << "AssemblerAMD64: This Software is part of the Ne.org project. (https://www.nekernel.org)\n";
+        kStdOut << "AssemblerAMD64: This Software is part of the Ne.org project. "
+                   "(https://www.nekernel.org)\n";
         kStdOut << "-version: Print program version.\n";
         kStdOut << "-fverbose: Print verbose output.\n";
         kStdOut << "-fbinary: Output as flat binary.\n";
@@ -890,10 +890,11 @@ bool CompilerKit::EncoderAMD64::WriteNumber8(const std::size_t& pos, std::string
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
-bool CompilerKit::EncoderAMD64::WriteLine(CompilerKit::STLString line, CompilerKit::STLString file) {
+bool CompilerKit::EncoderAMD64::WriteLine(CompilerKit::STLString line,
+                                          CompilerKit::STLString file) {
   if (CompilerKit::ast_find_needle(line, "public_segment ")) return true;
   if (CompilerKit::ast_find_needle(line, "extern_segment ")) return true;
-  
+
   struct RegMapAMD64 final {
     CompilerKit::STLString fName;
     i64_byte_t             fModRM;
@@ -917,9 +918,9 @@ bool CompilerKit::EncoderAMD64::WriteLine(CompilerKit::STLString line, CompilerK
 
       /// Move instruction handler.
       if (line.find(name) != std::string::npos) {
-	if ((line.find(name) + name.size()) > line.size()) continue;
-	 
-        if (name == "mov" || name == "xor") { 
+        if ((line.find(name) + name.size()) > line.size()) continue;
+
+        if (name == "mov" || name == "xor") {
           std::string substr = line.substr(line.find(name) + name.size());
 
           uint64_t bits = kRegisterBitWidth;
@@ -1123,7 +1124,7 @@ bool CompilerKit::EncoderAMD64::WriteLine(CompilerKit::STLString line, CompilerK
 
           std::vector<RegMapAMD64> currentRegList;
 
-	  currentRegList.reserve(3);
+          currentRegList.reserve(3);
 
           for (auto reg : kRegisterList) {
             std::string registerName;
@@ -1205,7 +1206,7 @@ bool CompilerKit::EncoderAMD64::WriteLine(CompilerKit::STLString line, CompilerK
           }
 
           if (onlyOneReg && currentRegList.size() > 0) {
-            auto num = GetNumber32(line, ",");
+            auto num   = GetNumber32(line, ",");
             auto modrm = (0x3 << 6 | currentRegList[0].fModRM);
 
             kAppBytes.emplace_back(0xC7);  // prefixed before placing the modrm and then the number.
@@ -1221,20 +1222,19 @@ bool CompilerKit::EncoderAMD64::WriteLine(CompilerKit::STLString line, CompilerK
             break;
           }
 
-	  
-	  if (currentRegList.size() > 0) {
-	    if (currentRegList[1].fName[0] == 'r' && currentRegList[0].fName[0] == 'e') {
-	      CompilerKit::Detail::print_error("Invalid combination of operands and registers.",
-					       "CompilerKit");
-	      throw std::runtime_error("comb_op_reg");
-	    }
+          if (currentRegList.size() > 0) {
+            if (currentRegList[1].fName[0] == 'r' && currentRegList[0].fName[0] == 'e') {
+              CompilerKit::Detail::print_error("Invalid combination of operands and registers.",
+                                               "CompilerKit");
+              throw std::runtime_error("comb_op_reg");
+            }
 
-	    if (currentRegList[0].fName[0] == 'r' && currentRegList[1].fName[0] == 'e') {
-	      CompilerKit::Detail::print_error("Invalid combination of operands and registers.",
-					       "CompilerKit");
-	      throw std::runtime_error("comb_op_reg");
-	    }
-	  }
+            if (currentRegList[0].fName[0] == 'r' && currentRegList[1].fName[0] == 'e') {
+              CompilerKit::Detail::print_error("Invalid combination of operands and registers.",
+                                               "CompilerKit");
+              throw std::runtime_error("comb_op_reg");
+            }
+          }
 
           if (bits == 16) {
             if (currentRegList[0].fName[0] == 'r' || currentRegList[0].fName[0] == 'e') {
@@ -1282,8 +1282,8 @@ bool CompilerKit::EncoderAMD64::WriteLine(CompilerKit::STLString line, CompilerK
 
           // Register lookup table
           struct RegInfo final {
-	    CompilerKit::STLString name;
-            i64_byte_t  code;
+            CompilerKit::STLString name;
+            i64_byte_t             code;
           };
 
           RegInfo regs64[] = {{"rax", 0}, {"rcx", 1}, {"rdx", 2}, {"rbx", 3},
@@ -1533,8 +1533,8 @@ bool CompilerKit::EncoderAMD64::WriteLine(CompilerKit::STLString line, CompilerK
 
           // Register lookup table
           struct RegInfo final {
-	    CompilerKit::STLString name;
-            i64_byte_t  code;
+            CompilerKit::STLString name;
+            i64_byte_t             code;
           };
 
           RegInfo regs64[] = {{"rax", 0}, {"rcx", 1}, {"rdx", 2}, {"rbx", 3},
@@ -1827,7 +1827,7 @@ bool CompilerKit::EncoderAMD64::WriteLine(CompilerKit::STLString line, CompilerK
       }
     }
   }
-  
+
   /// write a dword
   else if (auto pos = line.find(".dword"); pos != std::string::npos) {
     this->WriteNumber32(pos + strlen(".dword") + 1, line);

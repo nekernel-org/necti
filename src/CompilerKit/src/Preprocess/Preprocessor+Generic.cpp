@@ -21,8 +21,7 @@
 /// @file Preprocessor+Generic.cpp
 /// @brief Nectar Preprocessor.
 
-using pp_parser_fn_t = Int32 (*)(CompilerKit::STLString&, std::ifstream&,
-                                std::ofstream&);
+using pp_parser_fn_t = Int32 (*)(CompilerKit::STLString&, std::ifstream&, std::ofstream&);
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
@@ -259,8 +258,7 @@ void pp_parse_file(std::ifstream& hdr_file, std::ofstream& pp_out) {
       if (inactive_code) {
         if (hdr_line.find("#endif") == CompilerKit::STLString::npos) {
           continue;
-        } else if (hdr_line[0] == '#' &&
-                   hdr_line.find("#endif") != CompilerKit::STLString::npos) {
+        } else if (hdr_line[0] == '#' && hdr_line.find("#endif") != CompilerKit::STLString::npos) {
           inactive_code = false;
         }
       }
@@ -491,8 +489,7 @@ void pp_parse_file(std::ifstream& hdr_file, std::ofstream& pp_out) {
 
           continue;
         }
-      } else if (hdr_line[0] == '#' &&
-                 hdr_line.find("else") != CompilerKit::STLString::npos) {
+      } else if (hdr_line[0] == '#' && hdr_line.find("else") != CompilerKit::STLString::npos) {
         if (!defined && inactive_code) {
           inactive_code = false;
           defined       = true;
@@ -504,8 +501,7 @@ void pp_parse_file(std::ifstream& hdr_file, std::ofstream& pp_out) {
 
           continue;
         }
-      } else if (hdr_line[0] == '#' &&
-                 hdr_line.find("ifdef") != CompilerKit::STLString::npos) {
+      } else if (hdr_line[0] == '#' && hdr_line.find("ifdef") != CompilerKit::STLString::npos) {
         auto ifdef_pos = hdr_line.find("ifdef");
         if (ifdef_pos == CompilerKit::STLString::npos) continue;
 
@@ -545,8 +541,7 @@ void pp_parse_file(std::ifstream& hdr_file, std::ofstream& pp_out) {
             break;
           }
         }
-      } else if (hdr_line[0] == '#' &&
-                 hdr_line.find("if") != CompilerKit::STLString::npos) {
+      } else if (hdr_line[0] == '#' && hdr_line.find("if") != CompilerKit::STLString::npos) {
         inactive_code = true;
 
         std::vector<Detail::pp_macro_condition> pp_macro_condition_list = {
@@ -630,8 +625,7 @@ void pp_parse_file(std::ifstream& hdr_file, std::ofstream& pp_out) {
             break;
           }
         }
-      } else if (hdr_line[0] == '#' &&
-                 hdr_line.find("warning") != CompilerKit::STLString::npos) {
+      } else if (hdr_line[0] == '#' && hdr_line.find("warning") != CompilerKit::STLString::npos) {
         auto warning_pos = hdr_line.find("warning");
         if (warning_pos == CompilerKit::STLString::npos) continue;
 
@@ -647,8 +641,7 @@ void pp_parse_file(std::ifstream& hdr_file, std::ofstream& pp_out) {
         }
 
         std::cerr << "warn: " << message << std::endl;
-      } else if (hdr_line[0] == '#' &&
-                 hdr_line.find("error") != CompilerKit::STLString::npos) {
+      } else if (hdr_line[0] == '#' && hdr_line.find("error") != CompilerKit::STLString::npos) {
         auto error_pos = hdr_line.find("error");
         if (error_pos == CompilerKit::STLString::npos) continue;
 
@@ -664,8 +657,7 @@ void pp_parse_file(std::ifstream& hdr_file, std::ofstream& pp_out) {
         }
 
         throw std::runtime_error("error: " + message);
-      } else if (hdr_line[0] == '#' &&
-                 hdr_line.find("include ") != CompilerKit::STLString::npos) {
+      } else if (hdr_line[0] == '#' && hdr_line.find("include ") != CompilerKit::STLString::npos) {
         auto include_pos = hdr_line.find("include ");
         if (include_pos == CompilerKit::STLString::npos) continue;
 

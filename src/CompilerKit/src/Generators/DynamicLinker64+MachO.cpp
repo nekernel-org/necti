@@ -363,8 +363,7 @@ NECTAR_MODULE(DynamicLinker64MachO) {
   UInt32 symtabCmdSize   = sizeof(symtab_command);
   UInt32 dysymtabCmdSize = sizeof(dysymtab_command);
   UInt32 linkeditCmdSize = sizeof(segment_command_64);  // No sections
-  UInt32 dylinkerCmdSize =
-    (13 + 1 + 7) & ~7;  // "/usr/lib/dyld" + padding to 8-byte align
+  UInt32 dylinkerCmdSize = (13 + 1 + 7) & ~7;           // "/usr/lib/dyld" + padding to 8-byte align
 
   sizeOfCmds = pageZeroSize + textSegCmdSize + dataSegCmdSize + buildCmdSize + uuidCmdSize +
                symtabCmdSize + dysymtabCmdSize + linkeditCmdSize;
@@ -515,12 +514,12 @@ NECTAR_MODULE(DynamicLinker64MachO) {
   output_fc.write(reinterpret_cast<const char*>(&linkeditSegment), sizeof(linkeditSegment));
 
   // Write LC_LOAD_DYLINKER command
-  constexpr const char*   dyldPath = "/usr/lib/dyld";
-  std::vector<char> dylinkerCmd(dylinkerCmdSize, 0);
-  dylinker_command* dylinker = reinterpret_cast<dylinker_command*>(dylinkerCmd.data());
-  dylinker->cmd              = LC_LOAD_DYLINKER;
-  dylinker->cmdsize          = dylinkerCmdSize;
-  dylinker->name.offset      = sizeof(dylinker_command);
+  constexpr const char* dyldPath = "/usr/lib/dyld";
+  std::vector<char>     dylinkerCmd(dylinkerCmdSize, 0);
+  dylinker_command*     dylinker = reinterpret_cast<dylinker_command*>(dylinkerCmd.data());
+  dylinker->cmd                  = LC_LOAD_DYLINKER;
+  dylinker->cmdsize              = dylinkerCmdSize;
+  dylinker->name.offset          = sizeof(dylinker_command);
   std::memcpy(dylinkerCmd.data() + sizeof(dylinker_command), dyldPath, strlen(dyldPath) + 1);
 
   output_fc.write(dylinkerCmd.data(), dylinkerCmd.size());
@@ -622,7 +621,6 @@ NECTAR_MODULE(DynamicLinker64MachO) {
   for (auto& sym : kSymbolTable) {
     output_fc.write(reinterpret_cast<const char*>(&sym), sizeof(nlist_64));
   }
-
 
   // Write string table
   output_fc.write(kStringTable.data(), kStringTable.size());

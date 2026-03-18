@@ -240,13 +240,13 @@ static std::vector<CompilerKit::STLString> kRegisterConventionCallList = {
     "r8", "r9", "r10", "r11", "r12", "r13", "r14", "r15",
 };
 
-static std::size_t            kFunctionEmbedLevel{};
+static std::size_t kFunctionEmbedLevel{};
 
 static CompilerKit::STLString kCurrentIfSymbol{};
 
 static CompilerKit::STLString kCurrentReturnAddress{};
 
-static bool                   kCurrentIfCondition{false};
+static bool kCurrentIfCondition{false};
 
 const char* CompilerFrontendNectarAMD64::Language() {
   return "Common Nectar (AMD64)";

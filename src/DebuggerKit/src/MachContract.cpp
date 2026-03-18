@@ -33,9 +33,7 @@ NECTAR_MODULE(DebuggerMachPOSIX) {
 
   constexpr auto kMaxArgs = 3;
 
-  if (argc >= kMaxArgs
-      && std::string(argv[1]) == "-p"
-      && argv[2] != nullptr) {
+  if (argc >= kMaxArgs && std::string(argv[1]) == "-p" && argv[2] != nullptr) {
     kPath = argv[2];
     kUserDebugger.SetPath(kPath);
 

@@ -90,7 +90,7 @@ inline void drvi_crash_handler(std::int32_t id) {
 
   switch (id) {
     default: {
-        kStdOut << "SIGNAL: (" << id << ")." << kBlank << kStdEndl;
+      kStdOut << "SIGNAL: (" << id << ")." << kBlank << kStdEndl;
       break;
     }
   }

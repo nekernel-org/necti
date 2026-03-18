@@ -43,7 +43,9 @@ namespace MachO {
   constexpr uint32_t kSectionAlign = 4;
 
   /// @brief Helper to align a value to page boundary
-  inline uint64_t AlignToPage(uint64_t value) { return (value + kPageSize - 1) & ~(kPageSize - 1); }
+  inline uint64_t AlignToPage(uint64_t value) {
+    return (value + kPageSize - 1) & ~(kPageSize - 1);
+  }
 
   /// @brief Helper to copy segment/section name safely
   inline void CopySegmentName(char* dest, const char* src) {
