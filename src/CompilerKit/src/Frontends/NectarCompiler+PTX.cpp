@@ -272,7 +272,7 @@ static std::vector<std::pair<CompilerKit::STLString, std::uintptr_t>> kOriginMap
 /////////////////////////////////////////////////////////////////////////////////////////
 
 static auto nectar_get_impl_member(const CompilerKit::STLString& class_name,
-                                   const CompilerKit::STLString& member_name) {
+                                   const CompilerKit::STLString& member_name) -> CompilerStructMap {
   // Find or create struct map entry
   for (auto& sm : kContext.fStructMapVector) {
     if (sm.fName == class_name) {
@@ -280,7 +280,7 @@ static auto nectar_get_impl_member(const CompilerKit::STLString& class_name,
     }
   }
 
-  return CompilerStructMap{};
+  return {};
 }
 
 CompilerKit::SyntaxLeafList::SyntaxLeaf CompilerFrontendNectarPTX::Compile(
@@ -288,7 +288,7 @@ CompilerKit::SyntaxLeafList::SyntaxLeaf CompilerFrontendNectarPTX::Compile(
   CompilerKit::SyntaxLeafList::SyntaxLeaf syntax_tree;
   CompilerKit::STLString                  syntax_rem_buffer;
 
-  if (text.empty()) return syntax_tree;
+  if (!NectarCheckFrontend(text)) return syntax_tree;
 
   std::size_t                                                     index{};
   std::vector<std::pair<CompilerKit::SyntaxKeyword, std::size_t>> keywords_list;

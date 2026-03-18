@@ -17,7 +17,7 @@
 /* (c) Amlal El Mahrouss 2024-2026 */
 
 /// @author Amlal El Mahrouss (amlal@nekernel.org)
-/// @file NectarCompiler+AMD64.cc
+/// @file NectarCompiler+AMD64.cpp
 /// @brief NECTAR Compiler Driver.
 
 /////////////////////////////////////
@@ -65,6 +65,8 @@ struct CompilerState final {
 };
 
 static CompilerState kState;
+
+static bool kFreestandingMode = true;
 
 /// \brief Embed Scope of a class.
 static Int32 kOnClassScope = 0;
@@ -279,7 +281,7 @@ CompilerKit::SyntaxLeafList::SyntaxLeaf CompilerFrontendNectarAMD64::Compile(
   CompilerKit::SyntaxLeafList::SyntaxLeaf syntax_tree;
   CompilerKit::STLString                  syntax_rem_buffer;
 
-  if (text.empty()) return syntax_tree;
+  if (!NectarCheckFrontend(text)) return syntax_tree;
 
   std::size_t                                                     index{};
   std::vector<std::pair<CompilerKit::SyntaxKeyword, std::size_t>> keywords_list;
@@ -1600,12 +1602,14 @@ class AssemblyNectarInterfaceAMD64 final CK_ASSEMBLY_INTERFACE {
       prevRes = res.fUserValue;
     }
 
-    // Output header
+    // Output bits and imports.
     if (!kNasmOutput)
       out_fp << "%bits 64\n";
     else {
       out_fp << "[bits 64]\n";
-      out_fp << "extern __operator_new\nextern __operator_delete\n";
+      if (kFreestandingMode) {
+        out_fp << "extern __operator_new\nextern __operator_delete\n";
+      }
     }
 
     // For NASM output: emit extern declarations for undefined symbols
