@@ -18,6 +18,9 @@
 #define CK_ASSEMBLY_INTERFACE : public ::CompilerKit::IAssembly
 #define CK_ENCODER : public ::CompilerKit::IAssemblyEncoder
 
+/// @brief This function is for internal uses only, do not call it without a wrapper!
+CK_IMPORT_C bool NectarCheckFrontend(CompilerKit::STLString& input);
+
 namespace CompilerKit {
 class AssemblyFactory;
 class IAssembly;

@@ -28,11 +28,16 @@ Int32 AssemblyFactory::Compile(STLString sourceFile, const Int32& arch) {
 
   auto compiledUnit = sourceFile + ".ignore";
 
-  std::filesystem::copy(sourceFile, compiledUnit);
-  auto ret = this->fMounted->CompileToFormat(compiledUnit, arch);
-  std::filesystem::remove(compiledUnit);
+  try {
+    std::filesystem::copy(sourceFile, compiledUnit);
+    auto ret = this->fMounted->CompileToFormat(compiledUnit, arch);
+    std::filesystem::remove(compiledUnit);
+    return ret;
+  } catch (...) {
+    std::filesystem::remove(compiledUnit);
+  }
 
-  return ret;
+  return NECTAR_UNIMPLEMENTED;
 }
 
 ///! @brief mount assembly backend.

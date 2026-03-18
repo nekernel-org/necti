@@ -14,4 +14,68 @@
 
 /* Nectar Compiler Check Driver. */
 /* This is part of the CompilerKit. */
-/* (c) Amlal El Mahrouss 2024-2026 */
+/* (c) Amlal El Mahrouss 2026 */
+
+using namespace CompilerKit;
+
+static bool kInIfBody  = false;
+static bool kInCtxBody = false;
+
+CK_IMPORT_C bool NectarCheckFrontend(CompilerKit::STLString& input) {
+  if (input.empty()) return false;
+
+  if (input.ends_with(":")) {
+    if (!input.ends_with("):")) {
+      Detail::print_error("Invalid keyword 'else if' is not a Nectar keyword!", "check");
+      return false;
+    }
+
+    kInIfBody = true;
+  }
+
+  if (input.find("(") != CompilerKit::STLString::npos) {
+    if (input.find(")") == CompilerKit::STLString::npos) {
+      Detail::print_error("Invalid call to function, Nectar expects the ')' character at the end!",
+                          "check");
+      return false;
+    }
+  }
+
+  if (input.find("let ") != CompilerKit::STLString::npos && !input.ends_with(";")) {
+    if (input.find(":=") != CompilerKit::STLString::npos) {
+      Detail::print_error("A declaration must always end with ';'", "check");
+      return false;
+    }
+  }
+
+  if (input.find("const ") != CompilerKit::STLString::npos && !input.ends_with(";")) {
+    if (input.find(":=") != CompilerKit::STLString::npos) {
+      Detail::print_error("A declaration must always end with ';'", "check");
+      return false;
+    }
+  }
+
+  if (input.starts_with("let ") && !input.ends_with(";")) {
+    if (input.find(":=") != CompilerKit::STLString::npos) {
+      Detail::print_error("A declaration must always end with ';'", "check");
+      return false;
+    }
+  }
+
+  if (input.starts_with("const ") && !input.ends_with(";")) {
+    if (input.find(":=") != CompilerKit::STLString::npos) {
+      Detail::print_error("A declaration must always end with ';'", "check");
+      return false;
+    }
+  }
+
+  if (input == "}" || input == "}\n" || input == "}\r\n") {
+    if (kInIfBody) kInIfBody = false;
+  }
+
+  if (input == "}" || input == "}\n" || input == "}\r\n") {
+    if (kInCtxBody) kInCtxBody = false;
+  }
+
+  return true;
+}

@@ -10,6 +10,8 @@
 #include <ThirdParty/Dialogs/Dialogs.h>
 
 #ifdef DK_MACH_DEBUGGER
+
+/// @brief a terrible way to import globals.
 #include <DebuggerKit/Common.inl>
 
 /// @internal
