@@ -1,0 +1,22 @@
+// SPDX-License-Identifier: Apache-2.0
+// Copyright 2026, Amlal El Mahrouss (amlal@nekernel.org)
+// Licensed under the Apache License, Version 2.0 (See accompanying
+// file LICENSE or copy at http://www.apache.org/licenses/LICENSE-2.0)
+// Official repository: https://github.com/ne-foss-org/nectar
+
+#ifndef NECTAR_GL_THREAD_NHH
+#define NECTAR_GL_THREAD_NHH
+
+trait thread_traits
+{
+	let join();
+	let detach();
+	let get();
+}
+
+let create_thread(let entrypoint, let id);
+let exit_thread(let id);
+
+let get_status_thread(let id);
+
+#endif
