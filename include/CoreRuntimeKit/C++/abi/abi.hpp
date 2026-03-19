@@ -10,7 +10,7 @@
 
 __init_decl()
 
-    static constexpr int32_t __unreachable_code = 34;
+static constexpr int32_t __unreachable_code = 34;
 
 inline void __compilerkit_unreachable(void) {
   std::base_process::signal(__unreachable_code);

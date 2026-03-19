@@ -8,6 +8,7 @@
 #include <defines>
 
 namespace std {
+
 struct nothrow_t final {
   explicit nothrow_t() = default;
   ~nothrow_t()         = default;
@@ -21,6 +22,7 @@ struct placement_t final {
   int32_t __align{};
   size_t  __size{};
 };
+
 }  // namespace std
 
 // AMLALE: Define the placement_t feature.

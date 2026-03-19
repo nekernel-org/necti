@@ -8,6 +8,7 @@
 #include <defines>
 
 namespace std::base_alloc {
+
 /// @brief allocate a new class.
 /// @tparam KindClass the class type to allocate.
 template <class KindClass, typename... Args>
@@ -39,4 +40,5 @@ template <class KindClass>
 inline void release_nothrow(KindClass ptr) noexcept {
   release(ptr);
 }
+  
 }  // namespace std::base_alloc

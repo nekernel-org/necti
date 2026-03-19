@@ -5,3 +5,11 @@
 // Official repository: https://github.com/ne-foss-org/nectar
 
 #pragma once
+
+#include <CoreRuntimeKit/C++/abi/abi.hpp>
+#include <CoreRuntimeKit/C++/abi/new.hpp>
+
+/// @brief The Nectar FFI.
+namespace nectar_lang {
+
+}
