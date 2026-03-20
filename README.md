@@ -1,27 +1,14 @@
 <!-- Read Me of Nectar -->
 
-![Nectar](meta/media/nectar.png)
+# 🍯 The Nectar Language
 
-<div align="center">
-  <h1>
-    <b>The Nectar System</b>
-  </h1>
-  <p>
-    <a href="LICENSE"><img src="https://img.shields.io/badge/License-Apache--2.0-blue.svg" alt="License"></a>
-  </p>
-</div>
-
+<a href="LICENSE"><img src="https://img.shields.io/badge/License-Apache--2.0-blue.svg" alt="License"></a>
 ![CI](https://github.com/ne-foss-org/nectar/actions/workflows/nectar-dev.yml/badge.svg)
-
-## Love our work?
-
-Give us a star on GitHub!
-
 ![GitHub Repo stars](https://img.shields.io/github/stars/ne-foss-org/nectar)
 
-## Community:
+# About:
 
-Join our [Discord](https://discord.gg/uD76Qweght), we're quite active and open for contributors!
+A systems programming language for the 21st century.
 
 ## Getting Started:
 
@@ -71,17 +58,21 @@ And build the source tree using the NeBuild system.
 - **Amlal El Mahrouss** — Lead Developer and Compiler Architect.
 - [Full contributor list](https://github.com/ne-foss-org/nectar/graphs/contributors)
 
----
+## Community:
 
-### License
-
-This project is licensed under the [Apache-2.0 License](LICENSE).
+Join our [Discord](https://discord.gg/uD76Qweght), we're quite active and open for contributors!
 
 ### Figures:
 
 #### Figure 1: The Nectar AMD64 Assembler for NeKernel ABI.
 
 <img src="meta/media/pef_amd64_asm.png" alt="Nectar Assembler Assembling" width="1280"/>
+
+---
+
+### License
+
+This project is licensed under the [Apache-2.0 License](LICENSE).
 
 <div align="center">
   <sub>
