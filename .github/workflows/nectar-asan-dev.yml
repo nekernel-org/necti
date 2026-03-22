@@ -1,10 +1,10 @@
-name: Kits CI (Nectar,Stable)
+name: Kits (Nectar,Develop)
 
 on:
   push:
-    branches: [ "stable" ]
+    branches: [ "develop" ]
   pull_request:
-    branches: [ "stable" ]
+    branches: [ "develop" ]
 
 jobs:
   build:
@@ -13,8 +13,10 @@ jobs:
 
     steps:
     - uses: actions/checkout@v4
-    - name: Build CI
+    - name: Attempt NeBuild
+      run: sudo curl https://github.com/ne-foss-org/nebuild/releases/download/v0.0.6-apple-m1/nebuild-debian -o sanity-test
+    - name: Build CompilerKit and DebuggerKit
       run: sudo curl https://github.com/ne-foss-org/nebuild/releases/download/v0.0.6-apple-m1/nebuild-debian -o /bin/nebuild && sudo chmod +x /bin/nebuild && sudo apt update && sudo apt install build-essential && sudo apt install libboost-dev &&
-          cd src/CompilerKit && nebuild ck-posix.json &&
+          cd src/CompilerKit && nebuild ck-posix-san.json &&
           cd ../DebuggerKit && nebuild dk-posix.json
 

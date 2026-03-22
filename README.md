@@ -2,9 +2,11 @@
 
 # 🍯 The Nectar Language
 
-<a href="LICENSE"><img src="https://img.shields.io/badge/License-Apache--2.0-blue.svg" alt="License"></a>
+<a href="LICENSE"><img src="https://img.shields.io/badge/LICENSE-Apache--2.0-blue.svg" alt="License"></a>
+
+![CI](https://github.com/ne-foss-org/nectar/actions/workflows/nectar-asan-dev.yml/badge.svg)
 ![CI](https://github.com/ne-foss-org/nectar/actions/workflows/nectar-dev.yml/badge.svg)
-![GitHub Repo stars](https://img.shields.io/github/stars/ne-foss-org/nectar)
+![GitHub Stars](https://img.shields.io/github/stars/ne-foss-org/nectar)
 
 # About:
 
