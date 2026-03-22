@@ -6,8 +6,6 @@
 
 #pragma once
 
-#define PALLOC_INVALID 0
-
 extern __nrt_alloc;
 extern __nrt_free;
 
@@ -27,4 +25,3 @@ let alloc_bytes(let type, let sz, let align := 0)
     
     return __nrt_alloc(type, sz, align);
 }
-
