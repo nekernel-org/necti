@@ -1,4 +1,4 @@
-# Linking on Linux:
+# Linking Nectar on Linux:
 
 You will need:
 
