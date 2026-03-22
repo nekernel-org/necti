@@ -9,14 +9,14 @@
 extern __nrt_alloc;
 extern __nrt_free;
 
-//@ Parallel free
+//@ Standard free
 let free_bytes(let ptr)
 {
     if (ptr := 0) return 0;
     return __nrt_free(ptr);
 }
 
-//@ Parallel alloc (bytes)
+//@ Standard alloc (bytes)
 let alloc_bytes(let type, let sz, let align := 0)
 {
     if (0 := align) return 0;
