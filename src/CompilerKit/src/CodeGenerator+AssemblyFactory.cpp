@@ -30,7 +30,8 @@ Int32 AssemblyFactory::Compile(STLString sourceFile, const Int32& arch) {
 
   try {
     std::filesystem::copy(sourceFile, compiledUnit);
-  } catch (...) {}
+  } catch (...) {
+  }
 
   auto ret = this->fMounted->CompileToFormat(compiledUnit, arch);
 

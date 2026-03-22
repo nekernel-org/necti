@@ -16,6 +16,7 @@
 #include <ocl/tproc.hpp>
 
 namespace CompilerKit {
+
 inline static constexpr int kBaseYear = 1900;
 using STLString                       = std::string;
 using RopeString                      = ocl::tproc::crope;
@@ -63,6 +64,10 @@ inline bool install_signal(Int32 signal, void (*handler)(int)) noexcept {
 
   return true;
 }
+
 }  // namespace CompilerKit
+
+/// @brief This function is for internal uses only, do not call it without a wrapper!
+CK_IMPORT_C bool NectarCheckFrontend(CompilerKit::STLString& input);
 
 #endif  // __COMPILERKIT_CONFIG_H__
