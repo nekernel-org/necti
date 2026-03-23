@@ -4,11 +4,11 @@
 
 <Describe briefly your PR here.>
 
-### PR Rationale:
+## PR Rationale:
 
 <Describe the rationale here>
 
-### PR Process:
+## PR Process:
 
 <Describe your process here>
 
@@ -16,7 +16,7 @@
 
 <Describe the results here>
 
-### Additional Informations:
+## Additional Information:
 
 <Describe additional information (Optional)>
 
