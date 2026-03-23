@@ -1,6 +1,6 @@
 <!-- Read Me of Nectar -->
 
-# 🍯 The Nectar Language
+# 🍯 The Nectar Systems Language.
 
 <a href="LICENSE"><img src="https://img.shields.io/badge/LICENSE-Apache--2.0-blue.svg" alt="License"></a>
 
@@ -13,6 +13,12 @@
 A systems programming language for the 21st century.
 
 ## Getting Started:
+
+### Quick Install:
+
+```sh
+curl -fsSL http://install.nectar.nekernel.org | sh
+```
 
 ### Structure:
 
