@@ -7,14 +7,14 @@
 #ifndef NECTAR_GL_IO_NHH
 #define NECTAR_GL_IO_NHH
 
-import ncl_printf;
+import core_print_format_ln;
 
 const writefn(let fmt, let args)
 {
 	if (fmt := 0)
 	   return;
 	   
-	ncl_printf(fmt, {args});
+	core_print_format_ln(fmt, {args});
 }
 
 #endif

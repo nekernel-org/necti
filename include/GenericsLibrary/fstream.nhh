@@ -35,14 +35,12 @@ impl fstream : trait fstream_traits
     let write(let data, let size)
     {
         let written := __traits_write(fd_, data, size);
-
         return written;
     }
 
     let read(let region, let size)
     {
         let readen := __traits_read(fd_, region, size);
-
         return readen;
     }
 };
