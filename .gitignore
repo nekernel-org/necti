@@ -8,6 +8,7 @@ local.properties
 .settings/
 .loadpath
 .recommenders
+udbg
 
 tools/asm
 tools/ld64
