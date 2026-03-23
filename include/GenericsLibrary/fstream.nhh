@@ -22,25 +22,15 @@ trait fstream_traits
 //@ Implementation of fstream traits.
 impl fstream : trait fstream_traits
 {
-    let init()
+    let write(let self, let data, let size)
     {
-        return;
-    }
-
-    let dispose()
-    {
-        return;
-    }
-
-    let write(let data, let size)
-    {
-        let written := __traits_write(fd_, data, size);
+        let written := __traits_write(self.fd_, data, size);
         return written;
     }
 
-    let read(let region, let size)
+    let read(let self, let data, let size)
     {
-        let readen := __traits_read(fd_, region, size);
+        let readen := __traits_read(self.fd_, data, size);
         return readen;
     }
 };
