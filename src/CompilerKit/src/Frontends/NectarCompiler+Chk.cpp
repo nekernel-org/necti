@@ -58,7 +58,9 @@ CK_IMPORT_C bool NectarCheckLine(CompilerKit::STLString& input) {
 
   if (input.find("(") != CompilerKit::STLString::npos &&
       input.find("const") == CompilerKit::STLString::npos &&
-      input.find("let") == CompilerKit::STLString::npos) {
+      input.find("let") == CompilerKit::STLString::npos &&
+      input.find("if") == CompilerKit::STLString::npos &&
+      input.find("else") == CompilerKit::STLString::npos) {
     if (input.find(";") == CompilerKit::STLString::npos) {
       Detail::print_error("A function call must always end with ';'", "check");
       return false;

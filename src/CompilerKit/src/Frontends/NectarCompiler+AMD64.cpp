@@ -348,10 +348,7 @@ CompilerKit::SyntaxLeafList::SyntaxLeaf CompilerFrontendNectarAMD64::Compile(
         }
 
         std::vector<std::pair<CompilerKit::STLString, CompilerKit::STLString>> operators = {
-            {"=:", "jne"},
-            {"!=:", "je"},
-            {">:", "jl"},
-            {"<:", "jg"},
+            {"!==", "ne"}, {"===", "eq"}, {">", "jl"}, {"<", "jg"}, {">=", "jle"}, {"<=", "jge"},
         };
 
         for (auto& op : operators) {
@@ -1650,6 +1647,7 @@ NECTAR_MODULE(CompilerNectarAMD64) {
   kKeywords.emplace_back("(", CompilerKit::KeywordKind::kKeywordKindFunctionStart);
   kKeywords.emplace_back(")", CompilerKit::KeywordKind::kKeywordKindFunctionEnd);
   kKeywords.emplace_back(":=", CompilerKit::KeywordKind::kKeywordKindVariableAssign);
+  kKeywords.emplace_back(":==", CompilerKit::KeywordKind::kKeywordKindVariableEquals);
   kKeywords.emplace_back("+=", CompilerKit::KeywordKind::kKeywordKindVariableInc);
   kKeywords.emplace_back("-=", CompilerKit::KeywordKind::kKeywordKindVariableDec);
   kKeywords.emplace_back("const", CompilerKit::KeywordKind::kKeywordKindVariable);

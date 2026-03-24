@@ -355,10 +355,7 @@ CompilerKit::SyntaxLeafList::SyntaxLeaf CompilerFrontendNectarPTX::Compile(
         }
 
         std::vector<std::pair<CompilerKit::STLString, CompilerKit::STLString>> operators = {
-            {"=:", "ne"},
-            {"!=:", "eq"},
-            {">:", "lt"},
-            {"<:", "gt"},
+            {"!==", "ne"}, {"===", "eq"}, {">", "lt"}, {"<", "gt"}, {">=", "lte"}, {"<=", "gte"},
         };
 
         for (auto& op : operators) {
@@ -1594,6 +1591,7 @@ NECTAR_MODULE(CompilerNectarPTX) {
   kKeywords.emplace_back("->", CompilerKit::KeywordKind::kKeywordKindAccessChecked);
   kKeywords.emplace_back("(", CompilerKit::KeywordKind::kKeywordKindFunctionAccess);
   kKeywords.emplace_back(";", CompilerKit::KeywordKind::kKeywordKindEndLine);
+  kKeywords.emplace_back(":==", CompilerKit::KeywordKind::kKeywordKindVariableEquals);
   kKeywords.emplace_back("return", CompilerKit::KeywordKind::kKeywordKindReturn);
   kKeywords.emplace_back("extern", CompilerKit::KeywordKind::kKeywordKindExtern);
   kKeywords.emplace_back("import", CompilerKit::KeywordKind::kKeywordKindImport);

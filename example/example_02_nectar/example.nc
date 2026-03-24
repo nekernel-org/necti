@@ -2,6 +2,9 @@ extern exit;
 
 const main()
 {
-	let foo := exit(0);
+	let _ := exit(0);
+	if (_ === 0): {
+		return 0;
+	}
 	return 0;
 }
