@@ -48,8 +48,8 @@ CK_IMPORT_C bool NectarCheckFrontend(CompilerKit::STLString& input) {
     }
   }
 
-  if (input.find("(") != CompilerKit::STLString::npos && !input.ends_with(";")) {
-    if (input.find(":=") == CompilerKit::STLString::npos) {
+  if (input.find("(") != CompilerKit::STLString::npos) {
+    if (input.find(";") == CompilerKit::STLString::npos) {
       Detail::print_error("A function call must always end with ';'", "check");
       return false;
     }
