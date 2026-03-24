@@ -8,7 +8,7 @@
 
 #include <CompilerKit/AST.h>
 #include <CompilerKit/CodeGenerator.h>
-#include <CompilerKit/Utilities/Compiler.h>
+#include <CompilerKit/Utils/Compiler.h>
 
 namespace CompilerKit {
 /// @brief Get Number from lineBuffer.

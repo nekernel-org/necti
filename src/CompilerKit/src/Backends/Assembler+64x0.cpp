@@ -24,7 +24,7 @@
 #include <CompilerKit/AST.h>
 #include <CompilerKit/Detail/64x0.h>
 #include <CompilerKit/PEF.h>
-#include <CompilerKit/Utilities/Compiler.h>
+#include <CompilerKit/Utils/Compiler.h>
 
 static char kOutputArch = CompilerKit::kPefArch64000;
 

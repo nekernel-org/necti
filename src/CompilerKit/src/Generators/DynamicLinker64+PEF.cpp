@@ -16,7 +16,7 @@
 #include <CompilerKit/ErrorID.h>
 #include <CompilerKit/PEF.h>
 #include <CompilerKit/UUID.h>
-#include <CompilerKit/Utilities/Compiler.h>
+#include <CompilerKit/Utils/Compiler.h>
 
 #define kLinkerPefNoCpu (0U)
 #define kLinkerPefNoSubCpu (0U)

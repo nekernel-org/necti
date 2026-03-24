@@ -18,7 +18,7 @@
 #include <CompilerKit/MachO.h>
 #include <CompilerKit/PEF.h>
 #include <CompilerKit/UUID.h>
-#include <CompilerKit/Utilities/Compiler.h>
+#include <CompilerKit/Utils/Compiler.h>
 
 #define kLatestOSX (15)
 

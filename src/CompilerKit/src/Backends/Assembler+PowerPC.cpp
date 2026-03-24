@@ -24,7 +24,7 @@
 #include <CompilerKit/Detail/Power64.h>
 #include <CompilerKit/ErrorID.h>
 #include <CompilerKit/PEF.h>
-#include <CompilerKit/Utilities/Assembler.h>
+#include <CompilerKit/Utils/Assembler.h>
 
 constexpr auto kPowerIPAlignment = 0x1U;
 

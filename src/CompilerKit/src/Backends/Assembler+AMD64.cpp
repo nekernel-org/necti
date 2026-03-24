@@ -32,7 +32,7 @@
 #include <CompilerKit/AST.h>
 #include <CompilerKit/Detail/AMD64.h>
 #include <CompilerKit/PEF.h>
-#include <CompilerKit/Utilities/Assembler.h>
+#include <CompilerKit/Utils/Assembler.h>
 
 static char kOutputArch = CompilerKit::kPefArchAMD64;
 

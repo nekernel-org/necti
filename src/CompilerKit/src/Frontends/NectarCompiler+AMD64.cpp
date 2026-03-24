@@ -10,7 +10,7 @@
 #include <CompilerKit/Detail/AMD64.h>
 #include <CompilerKit/PEF.h>
 #include <CompilerKit/UUID.h>
-#include <CompilerKit/Utilities/Compiler.h>
+#include <CompilerKit/Utils/Compiler.h>
 
 /* Nectar Compiler Driver. */
 /* This is part of the CompilerKit. */

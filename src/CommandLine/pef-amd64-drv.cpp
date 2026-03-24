@@ -8,8 +8,8 @@
 
 #include <CompilerKit/Detail/Config.h>
 #include <CompilerKit/ErrorID.h>
-#include <CompilerKit/Utilities/Compiler.h>
-#include <CompilerKit/Utilities/DLL.h>
+#include <CompilerKit/Utils/Compiler.h>
+#include <CompilerKit/Utils/DLL.h>
 
 #ifdef __APPLE__
 static auto kPath = "/usr/local/lib/libCompilerKit.dylib";

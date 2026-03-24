@@ -10,7 +10,7 @@
 #include <CompilerKit/Detail/AMD64.h>
 #include <CompilerKit/PEF.h>
 #include <CompilerKit/UUID.h>
-#include <CompilerKit/Utilities/Compiler.h>
+#include <CompilerKit/Utils/Compiler.h>
 
 /* Nectar Compiler Check Driver. */
 /* This is part of the CompilerKit. */
@@ -19,7 +19,8 @@
 using namespace CompilerKit;
 
 static bool kInIfBody  = false;
-static bool kInCtxBody = false;
+static bool kInElseBody  = false;
+static bool kInTraitBody = false;
 
 CK_IMPORT_C bool NectarCheckFrontend(CompilerKit::STLString& input) {
   if (input.empty()) return false;
@@ -81,7 +82,7 @@ CK_IMPORT_C bool NectarCheckFrontend(CompilerKit::STLString& input) {
   }
 
   if (input == "}" || input == "}\n" || input == "}\r\n") {
-    if (kInCtxBody) kInCtxBody = false;
+    if (kInTraitBody) kInTraitBody = false;
   }
 
   return true;

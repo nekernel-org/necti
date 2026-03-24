@@ -24,7 +24,7 @@
 #include <CompilerKit/Detail/Config.h>
 #include <CompilerKit/ErrorID.h>
 #include <CompilerKit/PEF.h>
-#include <CompilerKit/Utilities/Assembler.h>
+#include <CompilerKit/Utils/Assembler.h>
 
 constexpr auto kArm64Alignment = 0x1U;
 
