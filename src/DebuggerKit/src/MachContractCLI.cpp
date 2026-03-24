@@ -6,7 +6,7 @@
 
 #ifdef DK_MACH_DEBUGGER
 
-#include <DebuggerKit/POSIXMachContract.h>
+#include <DebuggerKit/MachContract.h>
 #include <ThirdParty/Dialogs/Dialogs.h>
 
 #ifdef DK_MACH_DEBUGGER
@@ -84,7 +84,7 @@ NECTAR_MODULE(DebuggerMach) {
       std::getline(std::cin, cmd);
 
       if (kUserDebugger.BreakAt(cmd)) {
-        pfd::notify("Debugger Event", "Add BreakAt at: " + cmd);
+        pfd::notify("Debugger Event", "Add breakpoint at: " + cmd);
       }
     }
   }
