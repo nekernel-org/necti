@@ -82,7 +82,7 @@ NECTAR_MODULE(DebuggerNeKernel) {
         std::getline(std::cin, cmd);
 
         if (kKernelDebugger.BreakAt(cmd)) {
-          pfd::notify("Debugger Event", "Add BreakAt at: " + cmd);
+          pfd::notify("Debugger Event", "Add breakpoint at: " + cmd);
         }
       }
     }

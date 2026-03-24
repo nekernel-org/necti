@@ -4,12 +4,11 @@
 // file LICENSE or copy at http://www.apache.org/licenses/LICENSE-2.0)
 // Official repository: https://github.com/ne-foss-org/nectar
 
-#ifdef DK_MACH_DEBUGGER
+#ifdef DK_POSIX_DEBUGGER
 
-#include <DebuggerKit/MachContract.h>
+#include <DebuggerKit/POSIXContract.h>
 #include <ThirdParty/Dialogs/Dialogs.h>
 
-/// @brief a terrible way to import globals.
 #include <DebuggerKit/Common.inl>
 
 /// @internal
@@ -26,18 +25,16 @@ static Void dbgi_ctrlc_handler(std::int32_t _) {
   kKeepRunning = false;
 }
 
-NECTAR_MODULE(DebuggerMachPOSIX) {
+NECTAR_MODULE(DebuggerPOSIX) {
   pfd::notify(
       "Debugger Event",
       "Userland Debugger\n(C) 2025 Amlal El Mahrouss, licensed under the Apache 2.0 license.");
 
-  constexpr auto kMaxArgs = 3;
-
-  if (argc >= kMaxArgs && std::string(argv[1]) == "-p" && argv[2] != nullptr) {
+  if (argc >= 3 && std::string(argv[1]) == "-p" && argv[2] != nullptr) {
     kPath = argv[2];
     kUserDebugger.SetPath(kPath);
 
-    kStdOut << "[+] Set image to: " << kPath << "\n";
+    kStdOut << "[+] Image set to: " << kPath << "\n";
   } else {
     kStdOut << "usage: " << argv[0] << " -p <path>\n";
     kStdOut << "example: " << argv[0] << " -p </path/to/program>\n";
@@ -52,7 +49,8 @@ NECTAR_MODULE(DebuggerMachPOSIX) {
       continue;
     }
 
-    std::string cmd;
+    CompilerKit::STLString cmd{};
+
     if (!std::getline(std::cin, cmd)) break;
 
     if (cmd == "c" || cmd == "cont" || cmd == "continue") {
@@ -60,7 +58,6 @@ NECTAR_MODULE(DebuggerMachPOSIX) {
         kKeepRunning = true;
 
         kStdOut << "[+] Continuing...\n";
-
         pfd::notify("Debugger Event", "Continuing...");
       }
     }
@@ -86,7 +83,7 @@ NECTAR_MODULE(DebuggerMachPOSIX) {
       std::getline(std::cin, cmd);
 
       if (kUserDebugger.BreakAt(cmd)) {
-        pfd::notify("Debugger Event", "Add BreakAt at: " + cmd);
+        pfd::notify("Debugger Event", "Add breakpoint at: " + cmd);
       }
     }
   }
