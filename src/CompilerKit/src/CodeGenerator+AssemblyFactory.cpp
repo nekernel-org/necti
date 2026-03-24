@@ -30,14 +30,15 @@ Int32 AssemblyFactory::Compile(STLString sourceFile, const Int32& arch) {
 
   try {
     std::filesystem::copy(sourceFile, compiledUnit);
+    auto ret = this->fMounted->CompileToFormat(compiledUnit, arch);
+
+    std::filesystem::remove(compiledUnit);
+    return ret;
   } catch (...) {
+    std::filesystem::remove(compiledUnit);
   }
 
-  auto ret = this->fMounted->CompileToFormat(compiledUnit, arch);
-
-  std::filesystem::remove(compiledUnit);
-
-  return ret;
+  return NECTAR_INVALID_ARCH;
 }
 
 ///! @brief mount assembly backend.

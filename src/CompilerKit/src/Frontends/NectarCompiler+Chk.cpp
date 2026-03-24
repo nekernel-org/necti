@@ -18,11 +18,11 @@
 
 using namespace CompilerKit;
 
-static bool kInIfBody  = false;
+static bool kInIfBody    = false;
 static bool kInElseBody  = false;
 static bool kInTraitBody = false;
 
-CK_IMPORT_C bool NectarCheckFrontend(CompilerKit::STLString& input) {
+CK_IMPORT_C bool NectarCheckLine(CompilerKit::STLString& input) {
   if (input.empty()) return false;
 
   if (input.ends_with(":")) {
@@ -49,7 +49,16 @@ CK_IMPORT_C bool NectarCheckFrontend(CompilerKit::STLString& input) {
     }
   }
 
-  if (input.find("(") != CompilerKit::STLString::npos) {
+  if (input.find(":=") != CompilerKit::STLString::npos) {
+    if (input.find(";") == CompilerKit::STLString::npos) {
+      Detail::print_error("An assignment call must always end with ';'", "check");
+      return false;
+    }
+  }
+
+  if (input.find("(") != CompilerKit::STLString::npos &&
+      input.find("const") == CompilerKit::STLString::npos &&
+      input.find("let") == CompilerKit::STLString::npos) {
     if (input.find(";") == CompilerKit::STLString::npos) {
       Detail::print_error("A function call must always end with ';'", "check");
       return false;

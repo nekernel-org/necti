@@ -122,6 +122,9 @@ struct CompilerContext {
   UInt32                         fInstructionCounter{0};
 };
 
+/// @brief This function is for internal uses only, do not call it without a wrapper!
+CK_IMPORT_C bool NectarCheckLine(CompilerKit::STLString& input);
+
 /// \brief Global compiler context (replaces kState)
 static CompilerContext kContext;
 
@@ -288,7 +291,7 @@ CompilerKit::SyntaxLeafList::SyntaxLeaf CompilerFrontendNectarPTX::Compile(
   CompilerKit::SyntaxLeafList::SyntaxLeaf syntax_tree;
   CompilerKit::STLString                  syntax_rem_buffer;
 
-  if (!NectarCheckFrontend(text)) return syntax_tree;
+  if (!NectarCheckLine(text)) return syntax_tree;
 
   std::size_t                                                     index{};
   std::vector<std::pair<CompilerKit::SyntaxKeyword, std::size_t>> keywords_list;
