@@ -1,15 +1,15 @@
-name: Nectar Kits Linux (Nectar,Develop)
+name: Nectar Kits OS X (Nectar,Develop)
 
 on:
   push:
-    branches: [ "develop" ]
+    branches: [ "develop-osx" ]
   pull_request:
-    branches: [ "develop" ]
+    branches: [ "madevelop-osxster" ]
 
 jobs:
   build:
 
-    runs-on: ubuntu-latest
+    runs-on: macos-latest
 
     steps:
     - uses: actions/checkout@v4
@@ -17,6 +17,6 @@ jobs:
       run: sudo curl https://github.com/ne-foss-org/nebuild/releases/download/v0.0.6-apple-m1/nebuild-debian -o sanity-test
     - name: Build CompilerKit and DebuggerKit
       run: sudo curl https://github.com/ne-foss-org/nebuild/releases/download/v0.0.6-apple-m1/nebuild-debian -o /bin/nebuild && sudo chmod +x /bin/nebuild && sudo apt update && sudo apt install build-essential && sudo apt install libboost-dev &&
-          cd src/CompilerKit && nebuild ck-posix.json &&
-          cd ../DebuggerKit && nebuild dk-posix.json
+          cd src/CompilerKit && nebuild ck-osx-san.json &&
+          cd ../DebuggerKit && nebuild dk-osx.json
 
