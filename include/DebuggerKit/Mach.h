@@ -3,26 +3,24 @@
 // file LICENSE or copy at http://www.apache.org/licenses/LICENSE-2.0)
 // Official repository: https://github.com/ne-foss-org/nectar
 
-#ifndef NECTAR_DEBUGGERKIT_POSIXMACHCONTRACT_H
-#define NECTAR_DEBUGGERKIT_POSIXMACHCONTRACT_H
+#ifndef NECTAR_DEBUGGERKIT_MACHCONTRACT_H
+#define NECTAR_DEBUGGERKIT_MACHCONTRACT_H
 
 #ifdef DK_MACH_DEBUGGER
 
-/// @file POSIXMachContract.h
+/// @file MachDebugger.h
 /// @brief POSIX Mach debugger.
 
-#include <DebuggerKit/DebuggerContract.h>
+#include <DebuggerKit/IDebugger.h>
 #include <filesystem>
 #include <vector>
 
-#ifdef __APPLE__
 CK_IMPORT_C kern_return_t mach_vm_write(vm_map_t target_task, mach_vm_address_t address,
                                         vm_offset_t data, mach_msg_type_number_t dataCnt);
 
 CK_IMPORT_C kern_return_t mach_vm_protect(vm_map_t target_task, mach_vm_address_t address,
                                           mach_vm_size_t size, boolean_t set_maximum,
                                           vm_prot_t new_protection);
-#endif
 
 #define PTRACE_ATTACH PT_ATTACHEXC
 #define PTRACE_DETACH PT_DETACH
@@ -32,20 +30,20 @@ CK_IMPORT_C kern_return_t mach_vm_protect(vm_map_t target_task, mach_vm_address_
 
 namespace DebuggerKit::POSIX {
 /// =========================================================== ///
-/// \brief POSIXMachContract engine class in C++
+/// \brief MachDebugger engine class in C++
 /// \author Amlal El Mahrouss
 /// =========================================================== ///
-class POSIXMachContract final DK_DEBUGGER_CONTRACT {
+class MachDebugger DK_DEBUGGER_CONTRACT {
  public:
-  explicit POSIXMachContract()  = default;
-  ~POSIXMachContract() override = default;
+  explicit MachDebugger()  = default;
+  ~MachDebugger() override = default;
 
  public:
-  POSIXMachContract& operator=(const POSIXMachContract&) = default;
-  POSIXMachContract(const POSIXMachContract&)            = default;
+  MachDebugger& operator=(const MachDebugger&) = default;
+  MachDebugger(const MachDebugger&)            = default;
 
  public:
-  bool Attach(CompilerKit::STLString path, CompilerKit::STLString argv,
+  bool Attach(const CompilerKit::STLString& path, const CompilerKit::STLString& argv,
               ProcessID& pid) noexcept override {
     pid = fork();
 
@@ -74,7 +72,7 @@ class POSIXMachContract final DK_DEBUGGER_CONTRACT {
     return true;
   }
 
-  void SetPath(CompilerKit::STLString path) noexcept {
+  void SetPath(const CompilerKit::STLString& path) noexcept {
     if (path.empty()) {
       return;
     }
@@ -82,7 +80,7 @@ class POSIXMachContract final DK_DEBUGGER_CONTRACT {
     m_path = path;
   }
 
-  bool BreakAt(CompilerKit::STLString symbol) noexcept override {
+  bool BreakAt(const CompilerKit::STLString& symbol) noexcept override {
     if (!m_path.empty() && std::filesystem::exists(m_path) &&
         std::filesystem::is_regular_file(m_path)) {
       auto handle = dlopen(m_path.c_str(), RTLD_LAZY);
@@ -97,10 +95,10 @@ class POSIXMachContract final DK_DEBUGGER_CONTRACT {
         return false;
       }
 
-#ifdef __APPLE__
       task_read_t task;
       task_for_pid(mach_task_self(), mPid, &task);
 
+#ifdef __x86_64__
       uint32_t brk_inst = 0xD43E0000;
 
       mach_vm_protect(task, (mach_vm_address_t) addr, sizeof(uint32_t), false,
@@ -115,7 +113,6 @@ class POSIXMachContract final DK_DEBUGGER_CONTRACT {
     return false;
   }
 
-#ifdef __APPLE__
   bool Break() noexcept override {
     task_read_t task;
     task_for_pid(mach_task_self(), mPid, &task);
@@ -144,7 +141,6 @@ class POSIXMachContract final DK_DEBUGGER_CONTRACT {
 
     return kr = KERN_SUCCESS;
   }
-#endif
 
  private:
   ProcessID              mPid{0};
@@ -154,4 +150,4 @@ class POSIXMachContract final DK_DEBUGGER_CONTRACT {
 
 #endif  // DK_MACH_DEBUGGER
 
-#endif  // NECTAR_DEBUGGERKIT_POSIXMACHCONTRACT_H
+#endif  // NECTAR_DEBUGGERKIT_MACHCONTRACT_H
