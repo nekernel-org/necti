@@ -1689,6 +1689,27 @@ NECTAR_MODULE(CompilerNectarAMD64) {
         continue;
       }
 
+      if (strcmp(argv[index], "--help") == 0 || strcmp(argv[index], "-h") == 0) {
+        std::cout << "====================================================\n";
+        std::cout << "NECTAR X64 FRONTEND:\n";
+        std::cout << "====================================================\n";
+        std::cout << "-fverbose: Enable Verbose output.\n";
+        std::cout << "-fuse-masm: Use the NeSystem Assembler syntax.\n";
+        std::cout << "-fprint-dialect: Prints the current Nectar dialect.\n";
+        std::cout << "-fuse-nasm: Use the Netwide Assembler syntax.\n";
+        std::cout << "====================================================\n";
+
+        continue;
+      }
+
+      if (strcmp(argv[index], "--version") == 0 || strcmp(argv[index], "-v") == 0) {
+        std::cout << "====================================================\n";
+        std::cout << "NECTAR X64 FRONTEND:\nDIST RELEASE:";
+        std::cout << kDistRelease << "\n";
+        std::cout << "====================================================\n";
+        continue;
+      }
+
       if (strcmp(argv[index], "-fverbose") == 0) {
         kVerbose = true;
         continue;

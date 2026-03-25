@@ -38,7 +38,7 @@ Int32 AssemblyFactory::Compile(STLString sourceFile, const Int32& arch) {
     std::filesystem::remove(compiledUnit);
   }
 
-  return NECTAR_INVALID_ARCH;
+  return NECTAR_INVALID_DATA;
 }
 
 ///! @brief mount assembly backend.

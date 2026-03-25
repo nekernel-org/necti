@@ -1623,6 +1623,26 @@ NECTAR_MODULE(CompilerNectarPTX) {
         continue;
       }
 
+      if (strcmp(argv[index], "--help") == 0 || 
+        strcmp(argv[index], "-h") == 0) {
+        std::cout << "====================================================\n";
+        std::cout << "NECTAR PTX FRONTEND:\n";
+        std::cout << "====================================================\n";
+        std::cout << "-fverbose: Enable Verbose output.\n";
+        std::cout << "-fprint-dialect: Prints the current Nectar dialect.\n";
+        std::cout << "====================================================\n";
+
+        continue;
+      }
+
+      if (strcmp(argv[index], "--version") == 0 || strcmp(argv[index], "-v") == 0) {
+        std::cout << "====================================================\n";
+        std::cout << "NECTAR PTX FRONTEND:\nDIST RELEASE:";
+        std::cout << kDistRelease << "\n";
+        std::cout << "====================================================\n";
+        continue;
+      }
+
       if (strcmp(argv[index], "-fverbose") == 0) {
         kVerbose = true;
         continue;

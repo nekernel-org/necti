@@ -30,9 +30,9 @@
 #define kLinkerSplash() kStdOut << kLinkerVersionStr << kStdEndl
 
 #define kConsoleOut        \
-  (std::cout << "\e[0;31m" \
-             << "mld64: "  \
-             << "\e[0;97m")
+  (std::cout << kRed \
+             << "ld: "  \
+             << kReset)
 
 static CompilerKit::STLString kOutput              = kMachODefaultOutput;
 static cpu_type_t             kCpuType             = CPU_TYPE_X86_64;
@@ -132,21 +132,23 @@ NECTAR_MODULE(DynamicLinker64MachO) {
    * @brief parse flags and trigger options.
    */
   for (size_t linker_arg{1}; linker_arg < argc; ++linker_arg) {
-    if (std::strcmp(argv[linker_arg], "-help") == 0) {
+    if (std::strcmp(argv[linker_arg], "--help") == 0 ||
+   std::strcmp(argv[linker_arg], "-h") == 0) {
       kLinkerSplash();
 
-      kConsoleOut << "-version: Show linker version.\n";
-      kConsoleOut << "-help: Show linker help.\n";
-      kConsoleOut << "-verbose: Enable linker trace.\n";
+      kConsoleOut << "--version: Show linker version.\n";
+      kConsoleOut << "--help: Show linker help.\n";
+      kConsoleOut << "--verbose: Enable linker trace.\n";
       kConsoleOut << "-fdylib: Output as a Dynamic Library.\n";
       kConsoleOut << "-ffat: Output as a FAT binary.\n";
       kConsoleOut << "-famd64: Output as an x86_64 Mach-O.\n";
       kConsoleOut << "-farm64: Output as an ARM64 Mach-O.\n";
-      kConsoleOut << "-output: Select the output file name.\n";
+      kConsoleOut << "--output: Select the output file name.\n";
       kConsoleOut << "-fstart: Specify entry point symbol.\n";
 
       return NECTAR_SUCCESS;
-    } else if (std::strcmp(argv[linker_arg], "-version") == 0) {
+    } else if (std::strcmp(argv[linker_arg], "--version") == 0 ||
+  std::strcmp(argv[linker_arg], "-v") == 0) {
       kLinkerSplash();
 
       return NECTAR_SUCCESS;
@@ -171,7 +173,7 @@ NECTAR_MODULE(DynamicLinker64MachO) {
       linker_arg += 1;
 
       continue;
-    } else if (std::strcmp(argv[linker_arg], "-verbose") == 0) {
+    } else if (std::strcmp(argv[linker_arg], "--verbose") == 0) {
       kVerbose = true;
 
       continue;
@@ -184,7 +186,7 @@ NECTAR_MODULE(DynamicLinker64MachO) {
       }
 
       continue;
-    } else if (std::strcmp(argv[linker_arg], "-output") == 0) {
+    } else if (std::strcmp(argv[linker_arg], "--output") == 0) {
       if ((linker_arg + 1) > argc) continue;
 
       kOutput = argv[linker_arg + 1];

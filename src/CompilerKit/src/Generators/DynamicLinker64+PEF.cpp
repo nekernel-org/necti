@@ -38,9 +38,9 @@
 #define kLinkerStackSizeSymbol "__PEFSizeOfReserveStack"
 
 #define kConsoleOut        \
-  (std::cout << "\e[0;31m" \
-             << "ld64: "   \
-             << "\e[0;97m")
+  (std::cout << kRed \
+             << "ld: "  \
+             << kReset)
 
 enum struct ABIType : Int32 {
   kABITypeNull    = 0,
@@ -79,12 +79,13 @@ NECTAR_MODULE(DynamicLinker64PEF) {
    * @brief parse flags and trigger options.
    */
   for (size_t linker_arg = 1; linker_arg < argc; ++linker_arg) {
-    if (std::strcmp(argv[linker_arg], "-help") == 0) {
+    if (std::strcmp(argv[linker_arg], "--help") == 0 ||
+  std::strcmp(argv[linker_arg], "-h") == 0) {
       kLinkerSplash();
 
-      kConsoleOut << "-version: Show linker version.\n";
-      kConsoleOut << "-help: Show linker help.\n";
-      kConsoleOut << "-verbose: Enable linker trace.\n";
+      kConsoleOut << "--version: Show linker version.\n";
+      kConsoleOut << "--help: Show linker help.\n";
+      kConsoleOut << "--verbose: Enable linker trace.\n";
       kConsoleOut << "-fdylib: Output as a Dynamic PEF.\n";
       kConsoleOut << "-ffat: Output as a FAT PEF.\n";
       kConsoleOut << "-f32k: Output as a 32x0 PEF.\n";
@@ -93,10 +94,11 @@ NECTAR_MODULE(DynamicLinker64PEF) {
       kConsoleOut << "-frv64: Output as a RISC-V PEF.\n";
       kConsoleOut << "-fpower64: Output as a POWER PEF.\n";
       kConsoleOut << "-farm64: Output as a ARM64 PEF.\n";
-      kConsoleOut << "-output: Select the output file name.\n";
+      kConsoleOut << "--output: Select the output file name.\n";
 
       return NECTAR_SUCCESS;
-    } else if (std::strcmp(argv[linker_arg], "-version") == 0) {
+    } else if (std::strcmp(argv[linker_arg], "--version") == 0 ||
+  std::strcmp(argv[linker_arg], "-v") == 0) {
       kLinkerSplash();
 
       return NECTAR_SUCCESS;
@@ -135,7 +137,7 @@ NECTAR_MODULE(DynamicLinker64PEF) {
       kArch = CompilerKit::kPefArchARM64;
 
       continue;
-    } else if (std::strcmp(argv[linker_arg], "-verbose") == 0) {
+    } else if (std::strcmp(argv[linker_arg], "--verbose") == 0) {
       kVerbose = true;
 
       continue;
@@ -151,7 +153,7 @@ NECTAR_MODULE(DynamicLinker64PEF) {
       is_executable = false;
 
       continue;
-    } else if (std::strcmp(argv[linker_arg], "-output") == 0) {
+    } else if (std::strcmp(argv[linker_arg], "--output") == 0) {
       if ((linker_arg + 1) > argc) continue;
 
       kOutput = argv[linker_arg + 1];
