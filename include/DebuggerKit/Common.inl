@@ -13,9 +13,17 @@
 inline bool kKeepRunning = false;
 
 #ifdef DK_NEKERNEL_DEBUGGER
-inline DebuggerKit::NeKernel::NeKernelContract kKernelDebugger;
+inline DebuggerKit::NeKernel::NeSystemDebugger kKernelDebugger;
 #else
-inline DebuggerKit::POSIX::POSIXMachContract kUserDebugger;
+#ifdef DK_MACH_DEBUGGER
+
+inline DebuggerKit::POSIX::MachDebugger kUserDebugger;
+
+#else
+
+inline DebuggerKit::POSIX::POSIXDebugger kUserDebugger;
+
+#endif
 #endif
 
 static DebuggerKit::ProcessID kPID           = 0L;

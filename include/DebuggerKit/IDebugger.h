@@ -10,27 +10,27 @@
 #include <DebuggerKit/Detail/Config.h>
 #include <unordered_map>
 
-#define DK_DEBUGGER_CONTRACT : public ::DebuggerKit::IDebuggerContract
+#define DK_DEBUGGER_CONTRACT : public ::DebuggerKit::IDebugger
 
 namespace DebuggerKit {
-class IDebuggerContract;
+class IDebugger;
 
 /// =========================================================== ///
 /// \brief Debugger contract class in C++, as per the design states.
 /// \author Amlal El Mahrouss
 /// =========================================================== ///
-class IDebuggerContract {
+class IDebugger {
  public:
-  explicit IDebuggerContract() = default;
-  virtual ~IDebuggerContract() = default;
+  explicit IDebugger() = default;
+  virtual ~IDebugger() = default;
 
  public:
-  IDebuggerContract& operator=(const IDebuggerContract&) = default;
-  IDebuggerContract(const IDebuggerContract&)            = default;
+  IDebugger& operator=(const IDebugger&) = default;
+  IDebugger(const IDebugger&)            = default;
 
  public:
-  virtual bool Attach(std::string path, std::string argv, ProcessID& pid) noexcept = 0;
-  virtual bool BreakAt(std::string symbol) noexcept                                = 0;
+  virtual bool Attach(const CompilerKit::STLString& path, const CompilerKit::STLString& argv, ProcessID& pid) noexcept = 0;
+  virtual bool BreakAt(const CompilerKit::STLString& symbol) noexcept                                = 0;
   virtual bool Break() noexcept                                                    = 0;
   virtual bool Continue() noexcept                                                 = 0;
   virtual bool Detach() noexcept                                                   = 0;

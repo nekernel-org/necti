@@ -13,23 +13,23 @@
 #ifdef DK_NEKERNEL_DEBUGGER
 
 #include <CompilerKit/Detail/Config.h>
-#include <DebuggerKit/DebuggerContract.h>
+#include <DebuggerKit/IDebugger.h>
 
 namespace DebuggerKit::NeKernel {
-class NeKernelContract;
+class NeSystemDebugger;
 
 /// =========================================================== ///
 /// \brief NeKernel Debugger Contract
 /// \author Amlal El Mahrouss
 /// =========================================================== ///
-class NeKernelContract final DK_DEBUGGER_CONTRACT {
+class NeSystemDebugger final DK_DEBUGGER_CONTRACT {
  public:
-  NeKernelContract();
-  virtual ~NeKernelContract() override;
+  NeSystemDebugger();
+  virtual ~NeSystemDebugger() override;
 
  public:
-  NeKernelContract& operator=(const NeKernelContract&) = default;
-  NeKernelContract(const NeKernelContract&)            = default;
+  NeSystemDebugger& operator=(const NeSystemDebugger&) = default;
+  NeSystemDebugger(const NeSystemDebugger&)            = default;
 
  public:
   bool Attach(CompilerKit::STLString path, CompilerKit::STLString arg_v,

@@ -9,16 +9,16 @@
 /// @author Amlal El Mahrouss
 /// @brief Kernel Debugger Protocol
 
-#include <DebuggerKit/NeKernelContract.h>
+#include <DebuggerKit/NeSystem.h>
 #include <ThirdParty/Dialogs/Dialogs.h>
 
 using namespace DebuggerKit::Detail;
 using namespace DebuggerKit::NeKernel;
 
-NeKernelContract::NeKernelContract()  = default;
-NeKernelContract::~NeKernelContract() = default;
+NeSystemDebugger::NeSystemDebugger()  = default;
+NeSystemDebugger::~NeSystemDebugger() = default;
 
-bool NeKernelContract::Attach(CompilerKit::STLString path, CompilerKit::STLString argv,
+bool NeSystemDebugger::Attach(CompilerKit::STLString path, CompilerKit::STLString argv,
                               ProcessID& pid) noexcept {
   if (path.empty() || argv.empty()) return NO;
 
@@ -44,7 +44,7 @@ bool NeKernelContract::Attach(CompilerKit::STLString path, CompilerKit::STLStrin
   return ret;
 }
 
-bool NeKernelContract::BreakAt(CompilerKit::STLString symbol) noexcept {
+bool NeSystemDebugger::BreakAt(CompilerKit::STLString symbol) noexcept {
   CompilerKit::STLString pkt = Detail::kDebugMagic;
   pkt += ";SYM=\"";
   pkt += symbol;
@@ -56,7 +56,7 @@ bool NeKernelContract::BreakAt(CompilerKit::STLString symbol) noexcept {
   return ret;
 }
 
-bool NeKernelContract::Break() noexcept {
+bool NeSystemDebugger::Break() noexcept {
   CompilerKit::STLString pkt = Detail::kDebugMagic;
   pkt += ";BRK=1;\r";
 
@@ -64,7 +64,7 @@ bool NeKernelContract::Break() noexcept {
   return ret;
 }
 
-bool NeKernelContract::Continue() noexcept {
+bool NeSystemDebugger::Continue() noexcept {
   CompilerKit::STLString pkt = Detail::kDebugMagic;
   pkt += ";CONT=1;\r";
 
@@ -73,7 +73,7 @@ bool NeKernelContract::Continue() noexcept {
   return NO;
 }
 
-bool NeKernelContract::Detach() noexcept {
+bool NeSystemDebugger::Detach() noexcept {
   CompilerKit::STLString pkt = Detail::kDebugMagic;
   pkt += ";DTCH=1;\r";
 
