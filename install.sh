@@ -20,4 +20,4 @@ sudo cp ptx-necdrv /usr/local/bin/
 
 echo "== WELCOME TO NECTAR =="
 echo "== HELP =="
-echo "== HELP NEEDED: NECTAR NEEDS MORE CONTRIBUTORS! JOIN US ON GITHUB! =="
+echo "pef-amd64-necdrv <FLAGS> <FILES>"

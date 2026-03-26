@@ -18,7 +18,7 @@ using namespace DebuggerKit::NeKernel;
 NeSystemDebugger::NeSystemDebugger()  = default;
 NeSystemDebugger::~NeSystemDebugger() = default;
 
-bool NeSystemDebugger::Attach(CompilerKit::STLString path, CompilerKit::STLString argv,
+bool NeSystemDebugger::Attach(const CompilerKit::STLString& path, const CompilerKit::STLString& argv,
                               ProcessID& pid) noexcept {
   if (path.empty() || argv.empty()) return NO;
 
@@ -44,7 +44,7 @@ bool NeSystemDebugger::Attach(CompilerKit::STLString path, CompilerKit::STLStrin
   return ret;
 }
 
-bool NeSystemDebugger::BreakAt(CompilerKit::STLString symbol) noexcept {
+bool NeSystemDebugger::BreakAt(const CompilerKit::STLString& symbol) noexcept {
   CompilerKit::STLString pkt = Detail::kDebugMagic;
   pkt += ";SYM=\"";
   pkt += symbol;

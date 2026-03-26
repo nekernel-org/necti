@@ -22,7 +22,7 @@ class NeSystemDebugger;
 /// \brief NeKernel Debugger Contract
 /// \author Amlal El Mahrouss
 /// =========================================================== ///
-class NeSystemDebugger final DK_DEBUGGER_CONTRACT {
+class NeSystemDebugger DK_DEBUGGER_CONTRACT {
  public:
   NeSystemDebugger();
   virtual ~NeSystemDebugger() override;
@@ -32,9 +32,9 @@ class NeSystemDebugger final DK_DEBUGGER_CONTRACT {
   NeSystemDebugger(const NeSystemDebugger&)            = default;
 
  public:
-  bool Attach(CompilerKit::STLString path, CompilerKit::STLString arg_v,
+  bool Attach(const CompilerKit::STLString& path, const CompilerKit::STLString& arg_v,
               ProcessID& pid) noexcept override;
-  bool BreakAt(CompilerKit::STLString symbol) noexcept override;
+  bool BreakAt(const CompilerKit::STLString& symbol) noexcept override;
   bool Break() noexcept override;
   bool Continue() noexcept override;
   bool Detach() noexcept override;
