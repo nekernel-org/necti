@@ -1623,8 +1623,7 @@ NECTAR_MODULE(CompilerNectarPTX) {
         continue;
       }
 
-      if (strcmp(argv[index], "--help") == 0 || 
-        strcmp(argv[index], "-h") == 0) {
+      if (strcmp(argv[index], "--help") == 0 || strcmp(argv[index], "-h") == 0) {
         std::cout << "====================================================\n";
         std::cout << "NECTAR PTX FRONTEND:\n";
         std::cout << "====================================================\n";

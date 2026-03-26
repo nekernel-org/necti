@@ -29,10 +29,7 @@
 
 #define kLinkerSplash() kStdOut << kLinkerVersionStr << kStdEndl
 
-#define kConsoleOut        \
-  (std::cout << kRed \
-             << "ld: "  \
-             << kReset)
+#define kConsoleOut (std::cout << kRed << "ld: " << kReset)
 
 static CompilerKit::STLString kOutput              = kMachODefaultOutput;
 static cpu_type_t             kCpuType             = CPU_TYPE_X86_64;
@@ -132,8 +129,7 @@ NECTAR_MODULE(DynamicLinker64MachO) {
    * @brief parse flags and trigger options.
    */
   for (size_t linker_arg{1}; linker_arg < argc; ++linker_arg) {
-    if (std::strcmp(argv[linker_arg], "--help") == 0 ||
-   std::strcmp(argv[linker_arg], "-h") == 0) {
+    if (std::strcmp(argv[linker_arg], "--help") == 0 || std::strcmp(argv[linker_arg], "-h") == 0) {
       kLinkerSplash();
 
       kConsoleOut << "--version: Show linker version.\n";
@@ -148,7 +144,7 @@ NECTAR_MODULE(DynamicLinker64MachO) {
 
       return NECTAR_SUCCESS;
     } else if (std::strcmp(argv[linker_arg], "--version") == 0 ||
-  std::strcmp(argv[linker_arg], "-v") == 0) {
+               std::strcmp(argv[linker_arg], "-v") == 0) {
       kLinkerSplash();
 
       return NECTAR_SUCCESS;

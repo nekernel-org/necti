@@ -9,6 +9,9 @@
 extern __nrt_alloc;
 extern __nrt_free;
 
+/// Installs an error canary to catch any exceptions coming from C++ or Nectar.
+#define try if (__nsan_install_error_canary() :== 0):
+
 //@ Standard free
 let free_bytes(let ptr)
 {

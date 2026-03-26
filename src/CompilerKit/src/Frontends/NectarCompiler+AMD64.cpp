@@ -675,6 +675,9 @@ CompilerKit::SyntaxLeafList::SyntaxLeaf CompilerFrontendNectarAMD64::Compile(
           arg += ch;
         }
 
+        if (keyword.first.fKeywordKind == CompilerKit::KeywordKind::kKeywordKindAccessChecked)
+          syntax_tree.fUserValue += "call __nsan__begin\n";
+
         if (!nectar_get_variable_ref(nameVar).empty()) {
           if (!kNasmOutput) {
             syntax_tree.fUserValue += buf;
@@ -706,6 +709,9 @@ CompilerKit::SyntaxLeafList::SyntaxLeaf CompilerFrontendNectarAMD64::Compile(
           res += syntax_rem_buffer;
 
           syntax_tree.fUserValue += res;
+
+          if (keyword.first.fKeywordKind == CompilerKit::KeywordKind::kKeywordKindAccessChecked)
+            syntax_tree.fUserValue += "call __nsan_end\n";
         }
 
         break;

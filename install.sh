@@ -17,6 +17,9 @@ sudo cp ld64 /usr/local/bin/ld64-nectar
 sudo cp pef-amd64-asm /usr/local/bin/
 sudo cp pef-amd64-necdrv /usr/local/bin/
 sudo cp ptx-necdrv /usr/local/bin/
+sudo cp -r include/GenericsLibrary /usr/local/include/
+chmod +x share/bin/nectar
+sudo cp share/bin/nectar /usr/local/bin/
 
 echo "== WELCOME TO NECTAR =="
 echo "== HELP =="

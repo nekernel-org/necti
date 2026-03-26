@@ -1,0 +1,4 @@
+#!/bin/sh
+
+cpp -P $1.nc -o $1.nc.pp
+pef-amd64-necdrv $1.nc.pp

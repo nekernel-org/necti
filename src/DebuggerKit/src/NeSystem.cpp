@@ -18,8 +18,8 @@ using namespace DebuggerKit::NeKernel;
 NeSystemDebugger::NeSystemDebugger()  = default;
 NeSystemDebugger::~NeSystemDebugger() = default;
 
-bool NeSystemDebugger::Attach(const CompilerKit::STLString& path, const CompilerKit::STLString& argv,
-                              ProcessID& pid) noexcept {
+bool NeSystemDebugger::Attach(const CompilerKit::STLString& path,
+                              const CompilerKit::STLString& argv, ProcessID& pid) noexcept {
   if (path.empty() || argv.empty()) return NO;
 
   m_socket = ::socket(AF_INET, SOCK_STREAM, 0);

@@ -29,11 +29,12 @@ class IDebugger {
   IDebugger(const IDebugger&)            = default;
 
  public:
-  virtual bool Attach(const CompilerKit::STLString& path, const CompilerKit::STLString& argv, ProcessID& pid) noexcept = 0;
-  virtual bool BreakAt(const CompilerKit::STLString& symbol) noexcept                                = 0;
-  virtual bool Break() noexcept                                                    = 0;
-  virtual bool Continue() noexcept                                                 = 0;
-  virtual bool Detach() noexcept                                                   = 0;
+  virtual bool Attach(const CompilerKit::STLString& path, const CompilerKit::STLString& argv,
+                      ProcessID& pid) noexcept                        = 0;
+  virtual bool BreakAt(const CompilerKit::STLString& symbol) noexcept = 0;
+  virtual bool Break() noexcept                                       = 0;
+  virtual bool Continue() noexcept                                    = 0;
+  virtual bool Detach() noexcept                                      = 0;
 
   using BreakpointMap = std::unordered_map<uintptr_t, uintptr_t>;
 

@@ -37,10 +37,7 @@
 /// @brief PEF stack size symbol.
 #define kLinkerStackSizeSymbol "__PEFSizeOfReserveStack"
 
-#define kConsoleOut        \
-  (std::cout << kRed \
-             << "ld: "  \
-             << kReset)
+#define kConsoleOut (std::cout << kRed << "ld: " << kReset)
 
 enum struct ABIType : Int32 {
   kABITypeNull    = 0,
@@ -79,8 +76,7 @@ NECTAR_MODULE(DynamicLinker64PEF) {
    * @brief parse flags and trigger options.
    */
   for (size_t linker_arg = 1; linker_arg < argc; ++linker_arg) {
-    if (std::strcmp(argv[linker_arg], "--help") == 0 ||
-  std::strcmp(argv[linker_arg], "-h") == 0) {
+    if (std::strcmp(argv[linker_arg], "--help") == 0 || std::strcmp(argv[linker_arg], "-h") == 0) {
       kLinkerSplash();
 
       kConsoleOut << "--version: Show linker version.\n";
@@ -98,7 +94,7 @@ NECTAR_MODULE(DynamicLinker64PEF) {
 
       return NECTAR_SUCCESS;
     } else if (std::strcmp(argv[linker_arg], "--version") == 0 ||
-  std::strcmp(argv[linker_arg], "-v") == 0) {
+               std::strcmp(argv[linker_arg], "-v") == 0) {
       kLinkerSplash();
 
       return NECTAR_SUCCESS;
