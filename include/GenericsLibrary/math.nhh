@@ -4,8 +4,8 @@
 // file LICENSE or copy at http://www.apache.org/licenses/LICENSE-2.0)
 // Official repository: https://github.com/ne-foss-org/nectar
 
-#ifndef NECTAR_GL_FUNCTIONS_NHH
-#define NECTAR_GL_FUNCTIONS_NHH
+#ifndef NECTAR_GL_MATHS_NHH
+#define NECTAR_GL_MATHS_NHH
 
 //@ Free math functions for GenericsLibrary.
 
@@ -82,4 +82,4 @@ let sign(let value)
     }
 }
 
-#endif //@ NECTAR_GL_FUNCTIONS_NHH
+#endif //@ NECTAR_GL_MATHS_NHH
