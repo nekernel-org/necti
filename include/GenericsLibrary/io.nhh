@@ -11,7 +11,7 @@ import core_print_format_ln;
 
 const writefn(let fmt, let args)
 {
-	if (fmt := 0)
+	if (fmt === 0)
 	   return;
 	   
 	core_print_format_ln(fmt, {args});

@@ -11,7 +11,7 @@
 
 let for_each(let it, let action)
 {
-    for (let i := it.begin(); i != it.end(); i += 1)
+    for (let i := it.begin(); i !== it.end(); i += 1)
     {
         action(i);
     }
@@ -21,7 +21,7 @@ let for_each(let it, let action)
 
 let find(let it, let predicate)
 {
-    for (let i := it.begin(); i != it.end(); i += 1)
+    for (let i := it.begin(); i !== it.end(); i += 1)
     {
         if (predicate(i))
         {
@@ -34,7 +34,7 @@ let find(let it, let predicate)
 
 let remove(let it, let pred)
 {
-	for (let i = it.begin(); i != it.end(); ++i)
+	for (let i = it.begin(); i !== it.end(); ++i)
 	{
 		if (pred(i))
         {
