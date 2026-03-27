@@ -1,4 +1,8 @@
 #!/bin/sh
 
+ifeq ($1, )
+    die "nectar: bad argument"
+endif
+
 cpp -P $1.nc -o $1.nc.pp
-pef-amd64-necdrv $1.nc.pp
+pef-amd64-necdrv $2 $1.nc.pp

@@ -6,8 +6,8 @@
 
 #pragma once
 
-#include <CoreRuntimeKit/C++/abi/abi.hpp>
-#include <CoreRuntimeKit/C++/abi/new.hpp>
+#include <CoreRuntime/C++/abi/abi.hpp>
+#include <CoreRuntime/C++/abi/new.hpp>
 
 /// @brief The Nectar FFI.
 namespace nectar_lang {

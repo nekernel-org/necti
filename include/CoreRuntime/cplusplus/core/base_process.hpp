@@ -5,7 +5,7 @@
 
 #pragma once
 
-#include <defines>
+#include <CoreRuntime/cplusplus/defines.hpp>
 
 __init_decl()
 

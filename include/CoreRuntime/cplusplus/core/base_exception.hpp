@@ -5,9 +5,9 @@
 
 #pragma once
 
-#include <abi>
-#include <base_process>
-#include <defines>
+#include <CoreRuntime/cplusplus/abi/abi.hpp>
+#include <CoreRuntime/cplusplus/core/base_process.hpp>
+#include <CoreRuntime/cplusplus/defines.hpp>
 #include <iostream>
 
 /// @author Amlal El Mahrouss (amlal@nekernel.org)

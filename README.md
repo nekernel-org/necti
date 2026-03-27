@@ -24,7 +24,7 @@ curl -fsSL http://install.nectar.nekernel.org | sh
 
 - `src/CompilerKit` – Compiler Kit written in C++.
 - `include/GenericsLibrary` – Nectar Generics Library.
-- `include/CoreRuntimeKit` – Nectar Core Libraries. (C++/Nectar)
+- `include/CoreRuntime` – Nectar Core Libraries. (C++/Nectar)
 - `include/ThirdParty` – Third Party Modules.
 - `src/DebuggerKit` – Debugging Kit written in C++.
 - `src/CommandLine` – C/Nectar/C++ Command Line Tools.

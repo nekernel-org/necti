@@ -5,7 +5,7 @@
 
 #pragma once
 
-#include <defines>
+#include <CoreRuntime/cplusplus/defines.hpp>
 
 #ifndef NAN
 #define NAN (__builtin_nanf(""))

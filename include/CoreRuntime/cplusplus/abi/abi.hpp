@@ -5,8 +5,8 @@
 
 #pragma once
 
-#include <base_process>
-#include <defines>
+#include <CoreRuntime/cplusplus/core/base_process.hpp>
+#include <CoreRuntime/cplusplus/defines.hpp>
 
 __init_decl()
 
