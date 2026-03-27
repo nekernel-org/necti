@@ -1,4 +1,9 @@
 #!/bin/sh
 
+if [ -z "$1" ]
+  then
+    echo "No argument supplied"
+fi
+
 cpp -P $1.nc -o $1.nc.pp
 pef-amd64-necdrv $2 $1.nc.pp
