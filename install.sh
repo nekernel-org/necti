@@ -1,6 +1,10 @@
 #! /bin/sh
 
-echo "INSTALLING NECTAR..."
+echo "==> WELCOME TO NECTAR."
+echo "==> INSTALLING NECTAR..."
+
+sudo apt update
+sudo apt install nasm build-essential cmake libboost-dev
 
 git clone -j8 https://github.com/ne-foss-org/nectar
 cd nectar
@@ -23,6 +27,6 @@ sudo cp pef-amd64-asm /usr/local/bin/
 sudo cp pef-amd64-necdrv /usr/local/bin/
 sudo cp ptx-necdrv /usr/local/bin/
 
-echo "== WELCOME TO NECTAR =="
-echo "== HELP =="
-echo "pef-amd64-necdrv <FLAGS> <FILES>"
+echo "==> WELCOME TO NECTAR"
+echo "==> HELP"
+echo "nectar <FILES>"

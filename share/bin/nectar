@@ -2,8 +2,11 @@
 
 if [ -z "$1" ]
   then
-    echo "No argument supplied"
+    echo "nectar: No argument supplied"
 fi
 
-cpp -P $1.nc -o $1.nc.pp
-pef-amd64-necdrv $2 $1.nc.pp
+for index in "$@"
+do
+  cpp -P $index.nc -o $index.nc.pp
+  pef-amd64-necdrv $2 $index.nc.pp
+done
