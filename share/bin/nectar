@@ -7,6 +7,7 @@ fi
 
 for index in "$@"
 do
-  cpp -P $index.nc -o $index.nc.pp
-  pef-amd64-necdrv $2 $index.nc.pp
+  cpp -P $index.nc -o $index.pp.nc
+  pef-amd64-necdrv -fuse-nasm $index.pp.nc
+  echo $index.nc.pp
 done

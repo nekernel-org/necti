@@ -10,7 +10,11 @@ local.properties
 .recommenders
 udbg
 
+
+*.pp.nc
+
 tools/asm
+
 tools/ld64
 tools/cxxdrv
 
