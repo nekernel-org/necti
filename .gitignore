@@ -12,6 +12,7 @@ udbg
 
 
 *.pp.nc
+*.ignore
 
 tools/asm
 
