@@ -109,14 +109,14 @@ NECTAR_MODULE(AssemblerMainAMD64) {
         kStdOut
             << "AssemblerAMD64: AMD64 Assembler Driver.\nAssemblerAMD64: Copyright (c) 2024-2026 "
                "Amlal El Mahrouss\n";
-        kStdOut << "AssemblerAMD64: This software is part of the Ne.org project. "
+        kStdOut << "AssemblerAMD64: This software is part of the Ne.app. "
                    "(https://www.nekernel.org)\n";
         return 0;
       } else if (strcmp(argv[i], "-help") == 0) {
         kStdOut
             << "AssemblerAMD64: AMD64 Assembler Driver.\nAssemblerAMD64: Copyright (c) 2024-2026 "
                "Amlal El Mahrouss\n";
-        kStdOut << "AssemblerAMD64: This Software is part of the Ne.org project. "
+        kStdOut << "AssemblerAMD64: This Software is part of the Ne.app. "
                    "(https://www.nekernel.org)\n";
         kStdOut << "-version: Print program version.\n";
         kStdOut << "-fverbose: Print verbose output.\n";
