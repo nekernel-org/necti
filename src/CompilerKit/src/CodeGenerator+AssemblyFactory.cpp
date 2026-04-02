@@ -18,24 +18,24 @@
 namespace CompilerKit {
 
 ///! @brief Compile for specific format (ELF, PEF, AE)
-Int32 AssemblyFactory::Compile(STLString sourceFile, const Int32& arch) {
-  if (sourceFile.length() == 0) return NECTAR_UNIMPLEMENTED;
+Int32 AssemblyFactory::Compile(STLString source_file, const Int32& arch) {
+  if (source_file.length() == 0) return NECTAR_UNIMPLEMENTED;
 
   if (!this->fMounted) return NECTAR_UNIMPLEMENTED;
   if (arch != this->fMounted->Arch()) return NECTAR_INVALID_ARCH;
 
-  if (!std::filesystem::is_regular_file(sourceFile)) return NECTAR_UNIMPLEMENTED;
+  if (!std::filesystem::is_regular_file(source_file)) return NECTAR_UNIMPLEMENTED;
 
-  auto compiledUnit = sourceFile + ".ignore";
+  auto compiled_unit = source_file + ".ignore";
 
   try {
-    std::filesystem::copy(sourceFile, compiledUnit);
-    auto ret = this->fMounted->CompileToFormat(compiledUnit, arch);
+    std::filesystem::copy(source_file, compiled_unit);
+    auto ret = this->fMounted->CompileToFormat(compiled_unit, arch);
 
-    std::filesystem::remove(compiledUnit);
+    std::filesystem::remove(compiled_unit);
     return ret;
   } catch (...) {
-    std::filesystem::remove(compiledUnit);
+    std::filesystem::remove(compiled_unit);
   }
 
   return NECTAR_INVALID_DATA;

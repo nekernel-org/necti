@@ -1,6 +1,6 @@
 cff-version: 1.2.0
-title: NeKernel.org Compiler Toolchain Infrastructure
-message: The toolchain of NeKernel.org
+title: Ne.app Compiler Toolchain Infrastructure
+message: The toolchain of Ne.app
 type: software
 authors:
   - given-names: Amlal
@@ -9,17 +9,18 @@ authors:
 identifiers:
   - type: url
     value: 'https://nekernel.org'
-    description: NeKernel.org
+    description: Ne.app
 repository-code: 'https://github.com/ne-foss-org/nectar'
 url: 'https://nekernel.org'
 abstract: >-
-  This is NeKernel.org's Operating System toolchain, authored
+  This is Ne.app' Nectar toolchain for OS X, NeSystem, and Linux. Authored
   by Amlal El Mahrouss.
 keywords:
   - toolchain
   - linker
   - compiler
   - assembler
+  - nectar
   - cpp
 license: Apache-2.0
 

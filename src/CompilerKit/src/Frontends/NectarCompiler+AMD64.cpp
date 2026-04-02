@@ -33,8 +33,8 @@ static std::filesystem::path nectar_expand_home(const std::filesystem::path& inp
 
   if (!raw.empty() && raw[0] == '~') {
     const char* home = std::getenv("HOME");
-    if (!home) home = std::getenv("USERPROFILE");
 
+    if (!home) home = std::getenv("USERPROFILE");
     if (!home) throw std::runtime_error("Home directory not found in environment variables");
 
     return std::filesystem::path(home) / raw.substr(1);
