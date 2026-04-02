@@ -1197,7 +1197,7 @@ static CompilerKit::STLString nectar_generate_prologue() {
 
 /// \brief Generate function epilogue
 static CompilerKit::STLString nectar_generate_epilogue() {
-  return "";
+  return {};
 }
 
 /// \brief Generate PTX function header
@@ -1286,7 +1286,7 @@ static CompilerKit::STLString nectar_get_variable_ref(const CompilerKit::STLStri
   }
 
   if (!varInfo) {
-    return "";
+    return {};
   }
 
   if (varInfo->fIsConstant) {
@@ -1310,7 +1310,7 @@ static CompilerKit::STLString nectar_get_variable_ref(const CompilerKit::STLStri
   delete varInfo;
   return reg;
 
-  return "";
+  return {};
 }
 
 /// \brief Allocate a register for a variable
@@ -1366,12 +1366,12 @@ static CompilerKit::STLString nectar_allocate_register(const CompilerKit::STLStr
   }
 
   // No free register
-  return "";
+  return {};
 }
 
 /// \brief Spill the least recently used variable to stack
 static CompilerKit::STLString nectar_spill_lru_variable() {
-  return "";
+  return {};
 }
 
 /// \brief Add a class member to the struct map
@@ -1441,7 +1441,7 @@ static CompilerKit::STLString nectar_generate_destructor_call(
   auto* varInfo = nectar_find_variable(obj_name);
 
   if (!varInfo) {
-    return "";
+    return {};
   }
 
   nectar_push_scope(ScopeKind::kScopeClass, class_name);
