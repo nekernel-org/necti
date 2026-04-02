@@ -6,10 +6,10 @@
 
 #pragma once
 
-#include <CoreRuntime/C++/abi/abi.hpp>
-#include <CoreRuntime/C++/abi/new.hpp>
+#include <CoreRuntime/cplusplus/abi/abi.hpp>
+#include <CoreRuntime/cplusplus/abi/new.hpp>
 
 /// @brief The Nectar FFI.
-namespace nectar_lang {
+namespace nec::abi {
 
 }

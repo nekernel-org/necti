@@ -1,0 +1,27 @@
+{
+  "compiler_path": "g++",
+  "compiler_std": "c++20",
+  "headers_path": [
+    "../../include/CompilerKit",
+    "../../include/",
+    "../../include/CompilerKit/src/",
+    "../../include/CompilerKit/src/impl"
+  ],
+  "sources_path": [
+    "src/*.cpp",
+    "src/*/*.cpp"
+  ],
+  "output_name": "Ne-app.CompilerKit.dll",
+  "compiler_flags": [
+    "-fPIC",
+    "-shared"
+  ],
+  "cpp_macros": [
+    "__NECTAR__=202602",
+    "CK_USE_STRUCTS=1",
+    "CK_WINDOWS=1",
+    "kDistReleaseBranch=$(git rev-parse --abbrev-ref HEAD)-$(uuidgen)"
+  ],
+  "description": "CompilerKit for Windows NT. The Compiler Kit is the framework behind Nectar."
+}
+

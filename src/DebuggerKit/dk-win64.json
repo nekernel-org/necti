@@ -1,0 +1,19 @@
+{
+  "compiler_path": "clang++",
+  "compiler_std": "c++20",
+  "headers_path": [
+    "../../include/DebuggerKit",
+    "../../include"
+  ],
+  "sources_path": [ "src/*.cpp" ],
+  "output_name": "Ne-app.DebuggerKit.dll",
+  "compiler_flags": [ "-fPIC", "-shared" ],
+  "cpp_macros": [
+    "__NECTAR__=202505",
+    "CK_USE_STRUCTS=1",
+    "DEBUGGERKIT_WINDOWS=1",
+    "DK_NEKERNEL_DEBUGGER=1",
+    "kDistReleaseBranch=$(git rev-parse --abbrev-ref HEAD)-$(uuidgen)"
+  ]
+}
+

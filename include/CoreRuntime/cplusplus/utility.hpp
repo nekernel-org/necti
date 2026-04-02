@@ -3,10 +3,11 @@
 // Licensed under the Apache License, Version 2.0 (see LICENSE file)
 // Official repository: https://github.com/ne-foss-org/nectar
 
-#ifndef LIBCXX_UTILITY_H
-#define LIBCXX_UTILITY_H
+#ifndef CRK_UTILITY_HPP
+#define CRK_UTILITY_HPP
 
 namespace std {
+
 /// @brief Forward object.
 /// @tparam Args the object type.
 /// @param arg the object.
@@ -24,6 +25,7 @@ template <typename Args>
 inline auto move(Args&& arg) -> Args&& {
   return static_cast<Args&&>(arg);
 }
+
 }  // namespace std
 
-#endif  // LIBCXX_UTILITY_H
+#endif  // CRK_UTILITY_HPP

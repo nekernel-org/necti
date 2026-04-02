@@ -39,7 +39,7 @@
 /* @note counting the \0 at the end */
 #define kPefMagicLen (5)
 
-#define kPefVersion (0x0510)
+#define kPefVersion (0x0500)
 #define kPefNameLen (255)
 
 #define kPefBaseOrigin (0x40000000)
