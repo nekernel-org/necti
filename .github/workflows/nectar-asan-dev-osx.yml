@@ -2,9 +2,9 @@ name: Nectar Kits OS X (Nectar,Develop)
 
 on:
   push:
-    branches: [ "develop-osx" ]
+    branches: [ "develop" ]
   pull_request:
-    branches: [ "madevelop-osxster" ]
+    branches: [ "develop" ]
 
 jobs:
   build:

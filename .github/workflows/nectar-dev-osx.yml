@@ -1,10 +1,10 @@
-name: Nectar Kits OS X(Nectar,Develop)
+name: Nectar Kits OS X (Nectar,Develop)
 
 on:
   push:
-    branches: [ "develop-osx" ]
+    branches: [ "develop" ]
   pull_request:
-    branches: [ "develop-osx" ]
+    branches: [ "develop" ]
 
 jobs:
   build:
