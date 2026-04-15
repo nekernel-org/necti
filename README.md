@@ -38,7 +38,7 @@ curl -fsSL http://install.nectar.nekernel.org | sh
 - [Doxygen](https://www.doxygen.nl/)
 - GNU CoreUtils
 - [Git](https://git-scm.com/)
-- [OCL.TProc](https://github.com/ocl-org/tproc) (1.61.0+)
+- [OCL.TProc](https://github.com/ocl-foss/tproc) (1.61.0+)
 
 ### Notice for Contributors:
 

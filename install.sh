@@ -9,11 +9,11 @@ sudo apt install nasm build-essential cmake libboost-dev
 git clone -j8 https://github.com/ne-foss-org/nectar
 cd nectar
 
-sudo cp -r include/GenericsLibrary /usr/local/include/
-chmod +x share/bin/nectar
-sudo cp share/bin/nectar /usr/local/bin/
+sudo cp -r public/GenericsLibrary /usr/local/include/
+chmod +x public/share/bin/nectar
+sudo cp public/share/bin/nectar /usr/local/bin/
 
-cd src/CompilerKit
+cd private/src/CompilerKit
 sudo nebuild ck-posix.json
 cd ..
 cd DebuggerKit

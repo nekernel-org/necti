@@ -17,6 +17,6 @@ jobs:
       run: sudo curl https://github.com/ne-foss/ne-build/releases/download/v0.0.6-apple-m1/nebuild-debian -o sanity-test
     - name: Build CompilerKit and DebuggerKit
       run: sudo curl https://github.com/ne-foss/ne-build/releases/download/v0.0.6-apple-m1/nebuild-debian -o /bin/nebuild && sudo chmod +x /bin/nebuild && sudo apt update && sudo apt install build-essential && sudo apt install libboost-dev &&
-          cd src/CompilerKit && nebuild ck-posix-san.json &&
+          cd private/src/CompilerKit && nebuild ck-posix-san.json &&
           cd ../DebuggerKit && nebuild dk-posix.json
 

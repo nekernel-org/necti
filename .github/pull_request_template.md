@@ -1,4 +1,4 @@
-# [PR]: <Title of PR>
+# [PR]: <Title of the PR>
 
 ## Description:
 
