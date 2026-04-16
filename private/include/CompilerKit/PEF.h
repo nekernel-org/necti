@@ -15,7 +15,7 @@
 #define kPefMagicFat "nepO"
 
 #define kPefExt ".exe"
-#define kPefDylibExt ".dll"
+#define kPefDylibExt ".dylib"
 #define kPefLibExt ".lib"
 #define kPefObjectExt ".obj"
 #define kPefDebugExt ".dbg"
