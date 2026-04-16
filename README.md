@@ -14,7 +14,7 @@ A systems programming language for the 21st century.
 
 ## Getting Started:
 
-### Quick Install:
+### Quick Install: (POSIX)
 
 ```sh
 curl -fsSL http://install.nectar.nekernel.org | sh

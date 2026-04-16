@@ -6,7 +6,7 @@ echo "==> INSTALLING NECTAR..."
 sudo apt update
 sudo apt install nasm build-essential cmake libboost-dev
 
-git clone -j8 https://github.com/ne-foss-org/nectar
+git clone -j8 https://github.com/ne-foss/nectar
 cd nectar
 
 sudo cp -r public/GenericsLibrary /usr/local/include/
