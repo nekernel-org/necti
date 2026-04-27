@@ -19,7 +19,7 @@ inline constexpr int __terminate_id = 33;
 extern void __unwind_object_list();
 
 inline void __throw_general(const char* what) {
-  std::cout << "LibC++: Unwinding exception of kind: " << what << ", aborting here..." << std::endl;
+  std::cout << "CoreRT: Unwinding exception of kind: " << what << ", aborting here..." << std::endl;
   __unwind_object_list();
   base_process::exit(__terminate_id);
 }
