@@ -6,5 +6,3 @@ const main()
     let sz := 8;
     cudaMalloc(ptr, sz)
 }
-
-
