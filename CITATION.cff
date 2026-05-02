@@ -10,7 +10,7 @@ identifiers:
   - type: url
     value: 'https://nekernel.org'
     description: Ne.app
-repository-code: 'https://github.com/ne-foss-org/nectar'
+repository-code: 'https://github.com/ne-foss/nectar'
 url: 'https://nekernel.org'
 abstract: >-
   This is Ne.app' Nectar toolchain for OS X, NeSystem, and Linux. Authored
