@@ -29,7 +29,7 @@
 
 ===================================
 
-- Shall support Nectar runtime and ABI of NeKernel.
+- Shall support Nectar runtime and ABI of NeSystem.
 - Shall support a basic subset of the Nectar library.
 - Shall be written in Nectar.
 - Shall provide Nectar with the required implementation to write programs.

@@ -5,7 +5,7 @@
 // Official repository: https://github.com/ne-foss-org/nectar
 
 /// @author Amlal El Mahrouss (amlal@nekernel.org)
-/// @brief NeKernel.org 64-bit Mach-O Linker.
+/// @brief Ne.app 64-bit Mach-O Linker.
 /// @version Last Rev: 2026
 /// @note Outputs Mach-O executables with __TEXT and __DATA segments.
 

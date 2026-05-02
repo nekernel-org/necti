@@ -38,7 +38,7 @@ src/*/pef-*-cdrv
 
 Examples/
 
-# NeKernel executable
+# NeSystem executable
 *.exec
 *.bin
 

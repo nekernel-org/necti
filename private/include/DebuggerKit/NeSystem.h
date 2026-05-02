@@ -7,7 +7,7 @@
 #ifndef DK_NEKERNEL_CONTRACT_H
 #define DK_NEKERNEL_CONTRACT_H
 
-/// @brief NeKernel Debugging Protocol
+/// @brief NeSystem Debugging Protocol
 /// @author Amlal El Mahrouss
 
 #ifdef DK_NEKERNEL_DEBUGGER
@@ -15,11 +15,11 @@
 #include <CompilerKit/Detail/Config.h>
 #include <DebuggerKit/IDebugger.h>
 
-namespace DebuggerKit::NeKernel {
+namespace DebuggerKit::NeSystem {
 class NeSystemDebugger;
 
 /// =========================================================== ///
-/// \brief NeKernel Debugger Contract
+/// \brief NeSystem Debugger Contract
 /// \author Amlal El Mahrouss
 /// =========================================================== ///
 class NeSystemDebugger DK_DEBUGGER_CONTRACT {
@@ -43,7 +43,7 @@ class NeSystemDebugger DK_DEBUGGER_CONTRACT {
   CompilerKit::STLString m_kernel_path{};
   Detail::dk_socket_type m_socket{0};
 };
-}  // namespace DebuggerKit::NeKernel
+}  // namespace DebuggerKit::NeSystem
 
 #endif  // ifdef DK_NEKERNEL_DEBUGGER
 

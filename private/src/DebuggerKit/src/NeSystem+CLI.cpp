@@ -11,7 +11,7 @@
 
 #include <DebuggerKit/Common.inl>
 
-using namespace DebuggerKit::NeKernel;
+using namespace DebuggerKit::NeSystem;
 
 static void dbgi_ctrlc_handler(std::int32_t _) {
   if (!kPID || kPath.empty()) {
@@ -27,7 +27,7 @@ static void dbgi_ctrlc_handler(std::int32_t _) {
 
 NECTAR_MODULE(DebuggerNeKernel) {
   pfd::notify("Debugger Event",
-              "Nectar Debugger\n(C) 2025 Amlal El Mahrouss and NeKernel.org contributors, all "
+              "Nectar Debugger\n(C) 2025 Amlal El Mahrouss and Ne.app contributors, all "
               "rights reserved.");
 
   if (argc >= 5 && std::string(argv[1]) == "-k" && argv[2] != nullptr &&

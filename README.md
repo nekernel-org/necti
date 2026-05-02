@@ -72,7 +72,7 @@ Join our [Discord](https://discord.gg/uD76Qweght), we're quite active and open f
 
 ### Figures:
 
-#### Figure 1: The Nectar AMD64 Assembler for NeKernel ABI.
+#### Figure 1: The Nectar AMD64 Assembler for NeSystem ABI.
 
 <img src="meta/media/pef_amd64_asm.png" alt="Nectar Assembler Assembling" width="1280"/>
 

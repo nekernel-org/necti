@@ -2,7 +2,7 @@
 public_segment .code64 main
 
 ; This example shows how to write "Hello World" to stdout using
-; OS X syscall interface in x86-64 assembly (NeKernel syntax).
+; OS X syscall interface in x86-64 assembly (NeSystem syntax).
 
 mov [rsp+0],  0x48
 mov [rsp+1],  0x65

@@ -5,7 +5,7 @@
 // Official repository: https://github.com/ne-foss-org/nectar
 
 /// @author Amlal El Mahrouss (amlal@nekernel.org)
-/// @brief NeKernel.org 64-bit PEF Linker.
+/// @brief Ne.app 64-bit PEF Linker.
 /// @version Last Rev: Sun Feb 8 CET 2026
 /// @note Do not look up for anything with .code64/.data64/.zero64!
 /// It will be loaded when the program loader will start the image.
@@ -22,7 +22,7 @@
 #define kLinkerPefNoSubCpu (0U)
 #define kLinkerPefDefaultOutput {"a" kPefExt}
 
-#define kLinkerVersionStr "Nectar 64-Bit Linker (NeKernel PEF)"
+#define kLinkerVersionStr "Nectar 64-Bit Linker (NeSystem PEF)"
 
 #define kLinkerDefaultOrigin kPefBaseOrigin
 
@@ -42,7 +42,7 @@
 enum struct ABIType : Int32 {
   kABITypeNull    = 0,
   kABITypeStart   = 0x1010, /* The start of ABI list. */
-  kABITypeNE      = 0x5046, /* PF (NeKernel.org's PEF ABI) */
+  kABITypeNE      = 0x5046, /* PF (Ne.app's PEF ABI) */
   kABITypeEnd     = kABITypeNull,
   kABITypeInvalid = 0xFFFF,
 };

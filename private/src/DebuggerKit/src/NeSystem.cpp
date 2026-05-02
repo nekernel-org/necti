@@ -13,7 +13,7 @@
 #include <ThirdParty/Dialogs/Dialogs.h>
 
 using namespace DebuggerKit::Detail;
-using namespace DebuggerKit::NeKernel;
+using namespace DebuggerKit::NeSystem;
 
 NeSystemDebugger::NeSystemDebugger()  = default;
 NeSystemDebugger::~NeSystemDebugger() = default;
