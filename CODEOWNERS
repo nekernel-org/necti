@@ -1,8 +1,5 @@
 # CompilerKit is managed by Amlal, this can be owned by someone else though.
 
-/src/CompilerKit/ @amlel-el-mahrouss
-/src/LibC++/ @amlel-el-mahrouss
-/src/DebuggerKit @amlel-el-mahrouss
+/private/src/CompilerKit/ @amlel-el-mahrouss
 
-# LibC++, and DebuggerKit needs ownership.
 
