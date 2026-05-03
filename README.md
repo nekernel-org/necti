@@ -3,10 +3,10 @@
 # 🍯 The Nectar Systems Language.
 
 <a href="LICENSE"><img src="https://img.shields.io/badge/LICENSE-Apache--2.0-blue.svg?style=for-the-badge" alt="License"></a>
-![GitHub Stars](https://img.shields.io/github/stars/ne-foss-org/nectar?style=for-the-badge)
+![GitHub Stars](https://img.shields.io/github/stars/ne-foss/nectar?style=for-the-badge)
 
-![CI](https://github.com/ne-foss-org/nectar/actions/workflows/nectar-asan-dev.yml/badge.svg)
-![CI](https://github.com/ne-foss-org/nectar/actions/workflows/nectar-dev.yml/badge.svg)
+![CI](https://github.com/ne-foss/nectar/actions/workflows/nectar-asan-dev.yml/badge.svg)
+![CI](https://github.com/ne-foss/nectar/actions/workflows/nectar-dev.yml/badge.svg)
 
 # About:
 
@@ -34,7 +34,7 @@ curl -fsSL http://install.nectar.nekernel.org | sh
 - [Clang](https://clang.llvm.org/)
 - [Git](https://git-scm.com/)
 - [Boost](https://boost.org/) (1.90.0+)
-- [NeBuild](https://github.com/ne-foss-org/nebuild)
+- [NeBuild](https://github.com/ne-foss/nebuild)
 - [Doxygen](https://www.doxygen.nl/)
 - GNU CoreUtils
 - [Git](https://git-scm.com/)
@@ -49,7 +49,7 @@ Always use `format.sh` before commiting and pushing your code!
 Run the following:
 
 ```sh
-git clone -j8 git@github.com:ne-foss-org/nectar.git
+git clone -j8 git@github.com:ne-foss/nectar.git
 cd nectar
 # Either build the debugger or compiler libraries/tools using nebuild.
 ```
@@ -64,7 +64,7 @@ And build the source tree using the NeBuild system.
 ### Authors & Credits
 
 - **Amlal El Mahrouss** — Lead Developer and Compiler Architect.
-- [Full contributor list](https://github.com/ne-foss-org/nectar/graphs/contributors)
+- [Full contributor list](https://github.com/ne-foss/nectar/graphs/contributors)
 
 ## Community:
 

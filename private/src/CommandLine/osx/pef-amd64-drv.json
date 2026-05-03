@@ -17,6 +17,7 @@
   "cpp_macros": [
     "__NECDRV__=202504",
     "CK_POSIX",
+    "CK_APPLE",
     "kDistReleaseBranch=$(git rev-parse --abbrev-ref HEAD)-$(uuidgen)"
   ]
 }
