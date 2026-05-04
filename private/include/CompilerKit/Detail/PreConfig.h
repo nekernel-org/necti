@@ -62,11 +62,6 @@
 #define kDistVersion "v0.1.3-compilerkit"
 #define kDistVersionBCD 0x0103
 
-#define ToString(X) Stringify(X)
-#define Stringify(X) #X
-
-#define kDistRelease ToString(kDistReleaseBranch)
-
 #define MUST_PASS(E) assert(E)
 
 #ifndef __FORCE_STRLEN
