@@ -90,7 +90,7 @@
 
 #ifdef _MSC_VER
 #pragma scalar_storage_order big - endian
-#endif  // ifdef MSVC
+#endif  // ifdef _MSC_VER
 
 #define NECTAR_COPY_DELETE(KLASS)          \
   KLASS& operator=(const KLASS&) = delete; \
