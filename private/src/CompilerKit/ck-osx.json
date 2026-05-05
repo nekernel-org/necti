@@ -20,8 +20,8 @@
   ],
   "cpp_macros": [
     "__NECTAR__=202505",
-    "CK_USE_STRUCTS=1",
-    "CK_USE_MACHO_LINKER=1",
+    "NC_USE_STRUCTS=1",
+    "NC_USE_MACHO_LINKER=1",
     "kDistReleaseBranch=$(git rev-parse --abbrev-ref HEAD)-$(uuidgen)"
   ],
   "description": "CompilerKit for OS X. The Compiler Kit is the framework behind Nectar."

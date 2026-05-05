@@ -92,7 +92,7 @@ inline std::ifstream& operator>>(std::ifstream& fp, CompilerKit::AERecordHeader&
 }
 }  // namespace Operators
 
-#ifndef __CK_NO_USING_OPERATORS__
+#ifndef __NC_NO_USING_OPERATORS__
 using namespace Operators;
 #endif
 

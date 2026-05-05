@@ -22,7 +22,7 @@ static bool kInIfBody    = false;
 static bool kInElseBody  = false;
 static bool kInTraitBody = false;
 
-CK_IMPORT_C bool NectarCheckLine(CompilerKit::STLString& input) {
+NC_IMPORT_C bool NectarCheckLine(CompilerKit::STLString& input) {
   if (input.empty()) return false;
 
   if (input.ends_with(":")) {

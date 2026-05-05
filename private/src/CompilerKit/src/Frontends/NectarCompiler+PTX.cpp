@@ -123,7 +123,7 @@ struct CompilerContext {
 };
 
 /// @brief This function is for internal uses only, do not call it without a wrapper!
-CK_IMPORT_C bool NectarCheckLine(CompilerKit::STLString& input);
+NC_IMPORT_C bool NectarCheckLine(CompilerKit::STLString& input);
 
 /// \brief Global compiler context (replaces kState)
 static CompilerContext kContext;
@@ -207,7 +207,7 @@ static void nectar_process_function_parameters(const std::vector<CompilerKit::ST
 /////////////////////////////////////////////////////////////////////////////////////////
 
 /* \brief NECTAR compiler backend for the NeSystem NECTAR driver */
-class CompilerFrontendNectarPTX final CK_COMPILER_FRONTEND {
+class CompilerFrontendNectarPTX final NC_COMPILER_FRONTEND {
  public:
   explicit CompilerFrontendNectarPTX()  = default;
   ~CompilerFrontendNectarPTX() override = default;
@@ -1489,7 +1489,7 @@ static void nectar_process_function_parameters(const std::vector<CompilerKit::ST
 
 #define kExtListCxx {".nc", ".pp.nc"}
 
-class AssemblyNectarInterfacePTX final CK_ASSEMBLY_INTERFACE {
+class AssemblyNectarInterfacePTX final NC_ASSEMBLY_INTERFACE {
  public:
   explicit AssemblyNectarInterfacePTX()  = default;
   ~AssemblyNectarInterfacePTX() override = default;

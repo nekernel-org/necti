@@ -9,7 +9,7 @@
 /// @version Last Rev: 2026
 /// @note Outputs Mach-O executables with __TEXT and __DATA segments.
 
-#ifdef CK_USE_MACHO_LINKER
+#ifdef NC_USE_MACHO_LINKER
 
 #include <CompilerKit/AE.h>
 #include <CompilerKit/CodeGenerator.h>
@@ -630,4 +630,4 @@ NECTAR_MODULE(DynamicLinker64MachO) {
 
 // Last rev - 2026
 
-#endif  // ifdef CK_USE_MACHO_LINKER
+#endif  // ifdef NC_USE_MACHO_LINKER

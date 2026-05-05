@@ -108,8 +108,8 @@
   KLASS& operator=(KLASS&&) = default; \
   KLASS(KLASS&&)            = default;
 
-#define CK_IMPORT_CXX extern "C++"
-#define CK_IMPORT_C extern "C"
-#define CK_IMPORT extern
+#define NC_IMPORT_CXX extern "C++"
+#define NC_IMPORT_C extern "C"
+#define NC_IMPORT extern
 
 #endif  // COMPILERKIT_CONFIG_PRECONFIG_H

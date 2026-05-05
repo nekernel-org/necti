@@ -7,7 +7,7 @@
   "compiler_flags": ["-L/usr/lib"],
   "cpp_macros": [
     "__DRV_ASM__=202601",
-    "CK_POSIX",
+    "NC_POSIX",
     "kDistReleaseBranch=$(git rev-parse --abbrev-ref HEAD)-$(uuidgen)"
   ]
 }

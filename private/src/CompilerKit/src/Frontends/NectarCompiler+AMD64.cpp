@@ -125,7 +125,7 @@ struct CompilerContext {
 };
 
 /// @brief This function is for internal uses only, do not call it without a wrapper!
-CK_IMPORT_C bool NectarCheckLine(CompilerKit::STLString& input);
+NC_IMPORT_C bool NectarCheckLine(CompilerKit::STLString& input);
 
 /// \brief Global compiler context (replaces kState)
 static CompilerContext kContext;
@@ -205,7 +205,7 @@ static void nectar_process_function_parameters(const std::vector<CompilerKit::ST
 /////////////////////////////////////////////////////////////////////////////////////////
 
 /* \brief NECTAR compiler backend for the NeSystem NECTAR driver */
-class CompilerFrontendNectarAMD64 final CK_COMPILER_FRONTEND {
+class CompilerFrontendNectarAMD64 final NC_COMPILER_FRONTEND {
  public:
   explicit CompilerFrontendNectarAMD64()  = default;
   ~CompilerFrontendNectarAMD64() override = default;
@@ -1550,7 +1550,7 @@ static void nectar_process_function_parameters(const std::vector<CompilerKit::ST
 
 #define kExtListCxx {".nc", ".pp.nc"}
 
-class AssemblyNectarInterfaceAMD64 final CK_ASSEMBLY_INTERFACE {
+class AssemblyNectarInterfaceAMD64 final NC_ASSEMBLY_INTERFACE {
  public:
   explicit AssemblyNectarInterfaceAMD64()  = default;
   ~AssemblyNectarInterfaceAMD64() override = default;

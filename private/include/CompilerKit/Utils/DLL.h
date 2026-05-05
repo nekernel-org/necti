@@ -14,7 +14,7 @@
 
 namespace CompilerKit {
 
-#ifdef CK_POSIX
+#ifdef NC_POSIX
 class ModuleLoader final {
  public:
   using EntryT  = Int32 (*)(Int32 argc, char const* argv[]);

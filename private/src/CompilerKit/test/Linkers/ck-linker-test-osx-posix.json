@@ -18,7 +18,7 @@
       "-lCompilerKit"
   ],
     "cpp_macros": [
-	"CK_POSIX",
+	"NC_POSIX",
     "__NECTAR__=202603",
     "kDistReleaseBranch=$(git rev-parse --abbrev-ref HEAD)-$(uuidgen)"
   ],

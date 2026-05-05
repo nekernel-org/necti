@@ -10,7 +10,7 @@
 #include <CompilerKit/CodeGenerator.h>
 #include <vector>
 
-#define CK_COMPILER_FRONTEND : public ::CompilerKit::ICompilerFrontend
+#define NC_COMPILER_FRONTEND : public ::CompilerKit::ICompilerFrontend
 
 namespace CompilerKit {
 inline static constexpr auto kInvalidFrontend = "(null)";

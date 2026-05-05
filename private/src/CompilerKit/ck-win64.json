@@ -18,8 +18,8 @@
   ],
   "cpp_macros": [
     "__NECTAR__=202602",
-    "CK_USE_STRUCTS=1",
-    "CK_WINDOWS=1",
+    "NC_USE_STRUCTS=1",
+    "NC_WINDOWS=1",
     "kDistReleaseBranch=$(git rev-parse --abbrev-ref HEAD)-$(uuidgen)"
   ],
   "description": "CompilerKit for Windows NT. The Compiler Kit is the framework behind Nectar."

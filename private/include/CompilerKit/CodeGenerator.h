@@ -15,8 +15,8 @@
 
 #include <cstring>
 
-#define CK_ASSEMBLY_INTERFACE : public ::CompilerKit::IAssembly
-#define CK_ENCODER : public ::CompilerKit::IAssemblyEncoder
+#define NC_ASSEMBLY_INTERFACE : public ::CompilerKit::IAssembly
+#define NC_ENCODER : public ::CompilerKit::IAssemblyEncoder
 
 namespace CompilerKit {
 class AssemblyFactory;

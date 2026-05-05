@@ -11,7 +11,7 @@
 #include <CompilerKit/Utils/Compiler.h>
 #include <CompilerKit/Utils/DLL.h>
 
-#ifdef CK_APPLE
+#ifdef NC_APPLE
 static auto kPath = "/usr/local/lib/libCompilerKit.dylib";
 #else
 static auto kPath = "/usr/lib/libCompilerKit.so";

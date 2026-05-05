@@ -12,7 +12,7 @@
 /// @brief AMD64 support.
 /// @file Detail/AMD64.h
 
-#define CK_ASM_OPCODE(__NAME, __OPCODE) {.fName = __NAME, .fOpcode = __OPCODE},
+#define NC_ASM_OPCODE(__NAME, __OPCODE) {.fName = __NAME, .fOpcode = __OPCODE},
 
 typedef char     i64_character_t;
 typedef uint8_t  i64_byte_t;
@@ -44,13 +44,13 @@ struct CpuOpcodeAMD64 {
 #define kAsmPopOpcode 0x58
 
 inline std::vector<CpuOpcodeAMD64> kOpcodesAMD64 = {
-    CK_ASM_OPCODE("int", 0xCD) CK_ASM_OPCODE("into", 0xCE) CK_ASM_OPCODE("intd", 0xF1)
-        CK_ASM_OPCODE("int3", 0xC3) CK_ASM_OPCODE("iret", 0xCF) CK_ASM_OPCODE("retf", 0xCB)
-            CK_ASM_OPCODE("retn", 0xC3) CK_ASM_OPCODE("ret", 0xC3) CK_ASM_OPCODE("sti", 0xfb)
-                CK_ASM_OPCODE("cli", 0xfa) CK_ASM_OPCODE("hlt", 0xf4) CK_ASM_OPCODE("nop", 0x90)
-                    CK_ASM_OPCODE("mov", 0x48) CK_ASM_OPCODE("call", 0xFF) CK_ASM_OPCODE(
-                        "syscall", 0x0F) CK_ASM_OPCODE("xor", 0x48) CK_ASM_OPCODE("cmp", 0x39)
-                        CK_ASM_OPCODE("push", kAsmPushOpcode) CK_ASM_OPCODE("pop", kAsmPopOpcode)};
+    NC_ASM_OPCODE("int", 0xCD) NC_ASM_OPCODE("into", 0xCE) NC_ASM_OPCODE("intd", 0xF1)
+        NC_ASM_OPCODE("int3", 0xC3) NC_ASM_OPCODE("iret", 0xCF) NC_ASM_OPCODE("retf", 0xCB)
+            NC_ASM_OPCODE("retn", 0xC3) NC_ASM_OPCODE("ret", 0xC3) NC_ASM_OPCODE("sti", 0xfb)
+                NC_ASM_OPCODE("cli", 0xfa) NC_ASM_OPCODE("hlt", 0xf4) NC_ASM_OPCODE("nop", 0x90)
+                    NC_ASM_OPCODE("mov", 0x48) NC_ASM_OPCODE("call", 0xFF) NC_ASM_OPCODE(
+                        "syscall", 0x0F) NC_ASM_OPCODE("xor", 0x48) NC_ASM_OPCODE("cmp", 0x39)
+                        NC_ASM_OPCODE("push", kAsmPushOpcode) NC_ASM_OPCODE("pop", kAsmPopOpcode)};
 
 #define kAsmRegisterLimit 16
 
