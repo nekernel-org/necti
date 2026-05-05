@@ -88,7 +88,7 @@
 
 #define NECTAR_MODULE(name) extern "C" int name(int argc, char** argv)
 
-#ifdef MSVC
+#ifdef _MSC_VER
 #pragma scalar_storage_order big - endian
 #endif  // ifdef MSVC
 
