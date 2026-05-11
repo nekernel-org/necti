@@ -8,11 +8,7 @@
 ![CI](https://github.com/ne-foss/nectar/actions/workflows/nectar-asan-dev.yml/badge.svg)
 ![CI](https://github.com/ne-foss/nectar/actions/workflows/nectar-dev.yml/badge.svg)
 
-# About:
-
-A systems programming language for the 21st century.
-
-## Getting Started:
+## Getting Started
 
 ### Quick Install: (POSIX)
 
@@ -20,16 +16,7 @@ A systems programming language for the 21st century.
 curl -fsSL http://install.nectar.nekernel.org | sh
 ```
 
-### Structure:
-
-- `src/CompilerKit` – Compiler Kit written in C++.
-- `include/GenericsLibrary` – Nectar Generics Library.
-- `include/CoreRuntime` – Nectar Core Libraries. (C++/Nectar)
-- `include/ThirdParty` – Third Party Modules.
-- `src/DebuggerKit` – Debugging Kit written in C++.
-- `src/CommandLine` – C/Nectar/C++ Command Line Tools.
-
-### Requirements:
+### Requirements
 
 - [Clang](https://clang.llvm.org/)
 - [Git](https://git-scm.com/)
@@ -40,11 +27,7 @@ curl -fsSL http://install.nectar.nekernel.org | sh
 - [Git](https://git-scm.com/)
 - [OCL.TProc](https://github.com/ocl-foss/tproc) (1.61.0+)
 
-### Notice for Contributors:
-
-Always use `format.sh` before commiting and pushing your code!
-
-### Building:
+### Building
 
 Run the following:
 
@@ -54,36 +37,14 @@ cd nectar
 # Either build the debugger or compiler libraries/tools using nebuild.
 ```
 
-And build the source tree using the NeBuild system.
+### Community
 
-### Security
-
-- **Vulnerability Disclosure:**
-  Please report security issues privately via email or GitHub Security Advisories.
-
-### Authors & Credits
-
-- **Amlal El Mahrouss** — Lead Developer and Compiler Architect.
-- [Full contributor list](https://github.com/ne-foss/nectar/graphs/contributors)
-
-## Community:
-
-Join our [Discord](https://discord.gg/uD76Qweght), we're quite active and open for contributors!
-
-### Figures:
-
-#### Figure 1: The Nectar AMD64 Assembler for NeSystem ABI.
-
-<img src="meta/media/pef_amd64_asm.png" alt="Nectar Assembler Assembling" width="1280"/>
+Join Ne.app's community [discord](https://discord.gg/uD76Qweght) to chat with contributors.
 
 ---
 
-### License
-
-This project is licensed under the [Apache-2.0 License](LICENSE).
-
 <div align="center">
   <sub>
-    &copy; 2023-2026 Amlal El Mahrouss & Ne.app contributors. Licensed under the Apache 2.0 license.
+    &copy; 2023-2026 Amlal El Mahrouss. Licensed under the Apache 2.0 license.
   </sub>
 </div>
