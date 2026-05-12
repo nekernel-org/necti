@@ -7,6 +7,8 @@
 #ifndef NECTAR_GL_THREAD_NHH
 #define NECTAR_GL_THREAD_NHH
 
+extern __thread_id;
+
 trait thread_traits
 {
 	let join();
@@ -18,5 +20,8 @@ let create_thread(let entrypoint, let id);
 let exit_thread(let id);
 
 let get_status_thread(let id);
+
+///@ \brief The 'seth' object designates the current thread.
+#define seth __thread_id
 
 #endif

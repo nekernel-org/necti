@@ -7,7 +7,7 @@
 #ifndef NECTAR_GL_IO_NHH
 #define NECTAR_GL_IO_NHH
 
-import core_write_format_ln;
+import _core_write_format_ln;
 
 extern stdout;
 extern stderr;
@@ -17,7 +17,7 @@ const logfn(let fmt, let args)
 	if (fmt === 0)
 	   return;
 	   
-	core_write_format_ln(stderr, fmt, {args});
+	_core_write_format_ln(stderr, fmt, {args});
 }
 
 
@@ -26,7 +26,7 @@ const writefn(let fmt, let args)
 	if (fmt === 0)
 	   return;
 	   
-	core_write_format_ln(stdout, fmt, {args});
+	_core_write_format_ln(stdout, fmt, {args});
 }
 
 #endif
