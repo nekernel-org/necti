@@ -11,7 +11,6 @@
 #include <CompilerKit/PEF.h>
 #include <CompilerKit/UUID.h>
 #include <CompilerKit/Utils/Compiler.h>
-#include <numeric>
 
 /* Nectar Compiler Driver. */
 /* This is part of the CompilerKit. */
