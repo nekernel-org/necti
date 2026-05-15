@@ -1,9 +1,4 @@
 -std=c++20
--Iinclude/
--Ivendor/
--I./
+-Iprivate/include/
 -DNC_USE_STRUCTS
 -xc++
--DDK_NEKERNEL_DEBUGGER
--DDK_MACH_DEBUGGER
--DDEBUGGERKIT_POSIX
