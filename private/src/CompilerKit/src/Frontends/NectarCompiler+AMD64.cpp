@@ -420,7 +420,7 @@ CompilerKit::SyntaxLeafList::SyntaxLeaf CompilerFrontendNectarAMD64::Compile(
         break;
       }
       case CompilerKit::KeywordKind::kKeywordKindFunctionStart: {
-        for (auto& ch : text) {
+        for (const auto& ch : text) {
           if (isnumber(ch)) {
             goto dont_accept_func;
           }
