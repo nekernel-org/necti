@@ -1,7 +1,5 @@
 <!-- Read Me of Nectar -->
 
-# 🍯 The Nectar Systems Language.
-
 <a href="LICENSE"><img src="https://img.shields.io/badge/LICENSE-Apache--2.0-blue.svg?style=for-the-badge" alt="License"></a>
 ![GitHub Stars](https://img.shields.io/github/stars/ne-foss/nectar?style=for-the-badge)
 
@@ -10,7 +8,7 @@
 
 ## Getting Started
 
-### Quick Install: (POSIX)
+### Quick Install (POSIX)
 
 ```sh
 curl -fsSL http://install.nectar.nekernel.org | sh
