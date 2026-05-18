@@ -1710,7 +1710,8 @@ NECTAR_MODULE(CompilerNectarAMD64) {
         continue;
       }
 
-      if (strcmp(argv[index], "-fuse-masm") == 0) {
+      if (strcmp(argv[index], "-fuse-masm") == 0 ||
+          strcmp(argv[index], "-fuse-ant-asm") == 0) {
         kNasmOutput = false;
         continue;
       }
