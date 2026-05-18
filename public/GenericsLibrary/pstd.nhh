@@ -30,4 +30,3 @@ let palloc_bytes(let type, let sz, let align := 0)
     
     return __nrt_palloc(type, sz, align);
 }
-

@@ -16,4 +16,3 @@ let _start()
 {
     return main(argc, argv);
 }
-
