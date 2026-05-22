@@ -37,6 +37,7 @@ inline STLString current_date() noexcept {
 
 inline bool to_str(char* str, Int32 limit, Int32 base) noexcept {
   if (limit == 0) return false;
+  if (!str) return false;
 
   Int32 copy_limit = limit;
   Int32 cnt        = 0;
