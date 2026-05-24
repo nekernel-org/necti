@@ -58,10 +58,8 @@ struct CompilerStructMap final {
 
 /// \brief State machine of the compiler.
 struct CompilerState final {
-  std::vector<CompilerRegisterMap> fStackMapVector;
-  std::vector<CompilerStructMap>   fStructMapVector;
-  CompilerKit::STLString           fLastFile{};
-  CompilerKit::STLString           fLastError{};
+  CompilerKit::STLString fLastFile{};
+  CompilerKit::STLString fLastError{};
 };
 
 static CompilerState kState;
@@ -277,7 +275,7 @@ static std::vector<std::pair<CompilerKit::STLString, std::uintptr_t>> kOriginMap
 static auto nectar_get_impl_member(const CompilerKit::STLString& class_name,
                                    const CompilerKit::STLString& member_name) -> CompilerStructMap {
   // Find or create struct map entry
-  for (auto& sm : kContext.fStructMapVector) {
+  for (const auto& sm : kContext.fStructMapVector) {
     if (sm.fName == class_name) {
       return sm;
     }
@@ -293,40 +291,40 @@ CompilerKit::SyntaxLeafList::SyntaxLeaf CompilerFrontendNectarPTX::Compile(
 
   if (!NectarCheckLine(text)) return syntax_tree;
 
-  std::size_t                                                     index{};
+  std::size_t                                                     index2{};
   std::vector<std::pair<CompilerKit::SyntaxKeyword, std::size_t>> keywords_list;
 
-  for (auto& keyword : kKeywords) {
-    if (text.find(keyword.fKeywordName) != std::string::npos) {
-      switch (keyword.fKeywordKind) {
+  for (auto& keyword2 : kKeywords) {
+    if (text.find(keyword2.fKeywordName) != std::string::npos) {
+      switch (keyword2.fKeywordKind) {
         default:
           break;
       }
 
-      std::size_t pos = text.find(keyword.fKeywordName);
+      std::size_t pos = text.find(keyword2.fKeywordName);
       if (pos == std::string::npos) continue;
 
       // can't go before start of string
       if (pos > 0 && text[pos - 1] == '+' &&
-          keyword.fKeywordKind == CompilerKit::KeywordKind::kKeywordKindVariableAssign)
+          keyword2.fKeywordKind == CompilerKit::KeywordKind::kKeywordKindVariableAssign)
         continue;
 
       if (pos > 0 && text[pos - 1] == '-' &&
-          keyword.fKeywordKind == CompilerKit::KeywordKind::kKeywordKindVariableAssign)
+          keyword2.fKeywordKind == CompilerKit::KeywordKind::kKeywordKindVariableAssign)
         continue;
 
       // don't go out of range
-      if ((pos + keyword.fKeywordName.size()) < text.size() &&
-          text[pos + keyword.fKeywordName.size()] == '=' &&
-          keyword.fKeywordKind == CompilerKit::KeywordKind::kKeywordKindVariableAssign)
+      if ((pos + keyword2.fKeywordName.size()) < text.size() &&
+          text[pos + keyword2.fKeywordName.size()] == '=' &&
+          keyword2.fKeywordKind == CompilerKit::KeywordKind::kKeywordKindVariableAssign)
         continue;
 
-      keywords_list.emplace_back(std::make_pair(keyword, index));
-      ++index;
+      keywords_list.emplace_back(std::make_pair(keyword2, index2));
+      ++index2;
     }
   }
 
-  for (auto& keyword : keywords_list) {
+  for (const auto& keyword : keywords_list) {
     if (text.find(keyword.first.fKeywordName) == CompilerKit::STLString::npos) continue;
 
     switch (keyword.first.fKeywordKind) {
@@ -358,7 +356,7 @@ CompilerKit::SyntaxLeafList::SyntaxLeaf CompilerFrontendNectarPTX::Compile(
             {"!==", "ne"}, {"===", "eq"}, {">", "lt"}, {"<", "gt"}, {">=", "lte"}, {"<=", "gte"},
         };
 
-        for (auto& op : operators) {
+        for (const auto& op : operators) {
           if (left.find(op.first) == CompilerKit::STLString::npos) continue;
 
           auto right = left.substr(left.find(op.first) + op.first.size());
@@ -445,11 +443,11 @@ CompilerKit::SyntaxLeafList::SyntaxLeaf CompilerFrontendNectarPTX::Compile(
         break;
 
       accept_func: {
-        CompilerKit::STLString symbol_name_fn = text;
-        size_t                 indexFnName    = 0;
+        CompilerKit::STLString symbol_name_fn;
+        size_t                 indexFnName = 0;
 
         // this one is for the type.
-        for (auto& ch : text) {
+        for (const auto& ch : text) {
           ++indexFnName;
 
           if (ch == '\t') break;
@@ -656,7 +654,7 @@ CompilerKit::SyntaxLeafList::SyntaxLeaf CompilerFrontendNectarPTX::Compile(
 
         CompilerKit::STLString buf;
 
-        for (auto& ch : args) {
+        for (const auto& ch : args) {
           if (ch == ',' || ch == ')') {
             if (index <= 15) {
               auto val = nectar_get_variable_ref(arg);
@@ -688,10 +686,9 @@ CompilerKit::SyntaxLeafList::SyntaxLeaf CompilerFrontendNectarPTX::Compile(
         if (!nectar_get_variable_ref(nameVar).empty()) {
           syntax_tree.fUserValue += buf;
           syntax_tree.fUserValue += "call.uni ";
-          syntax_tree.fUserValue +=
-              (keyword.first.fKeywordName.ends_with('>') ? nectar_get_variable_ref(nameVar)
-                                                         : nectar_get_variable_ref(nameVar)) +
-              method + ";\n";
+          syntax_tree.fUserValue += (keyword.first.fKeywordName.ends_with('>')
+                                         ? nectar_get_variable_ref(nameVar)
+                                         : (nectar_get_variable_ref(nameVar)) + method + ";\n");
         } else {
           auto res = buf;
           if (method.starts_with("__NECTAR") == false)
@@ -750,10 +747,10 @@ CompilerKit::SyntaxLeafList::SyntaxLeaf CompilerFrontendNectarPTX::Compile(
 
         static bool typeFound = false;
 
-        for (auto& keyword : kKeywords) {
-          if (keyword.fKeywordKind == CompilerKit::KeywordKind::kKeywordKindVariable) {
-            if (text.find(keyword.fKeywordName) != CompilerKit::STLString::npos) {
-              if (text[text.find(keyword.fKeywordName)] == ' ') {
+        for (auto& keyword2 : kKeywords) {
+          if (keyword2.fKeywordKind == CompilerKit::KeywordKind::kKeywordKindVariable) {
+            if (text.find(keyword2.fKeywordName) != CompilerKit::STLString::npos) {
+              if (text[text.find(keyword2.fKeywordName)] == ' ') {
                 typeFound = false;
                 continue;
               }
@@ -764,8 +761,6 @@ CompilerKit::SyntaxLeafList::SyntaxLeaf CompilerFrontendNectarPTX::Compile(
         }
 
         CompilerKit::STLString instr = "mov.u64 ";
-
-        std::vector<CompilerKit::STLString> newVars;
 
         if (typeFound &&
             keyword.first.fKeywordKind != CompilerKit::KeywordKind::kKeywordKindVariableInc &&
@@ -796,8 +791,6 @@ CompilerKit::SyntaxLeafList::SyntaxLeaf CompilerFrontendNectarPTX::Compile(
 
         CompilerKit::STLString varErrCpy = varName;
 
-        std::size_t indxReg = 0UL;
-
         while (!valueOfVar.empty() && (valueOfVar[0] == ' ' || valueOfVar[0] == '\t')) {
           valueOfVar.erase(0, 1);
         }
@@ -810,11 +803,10 @@ CompilerKit::SyntaxLeafList::SyntaxLeaf CompilerFrontendNectarPTX::Compile(
           valueOfVar.erase(valueOfVar.find("\t"), 1);
         }
 
-        auto pos = 0;
-
         if (varName.find("let ") != CompilerKit::STLString::npos) {
-          pos     = varName.find("let ");
-          varName = varName.substr(pos + std::string{"let "}.size());
+          auto pos = 0ULL;
+          pos      = varName.find("let ");
+          varName  = varName.substr(pos + std::string{"let "}.size());
         }
 
         while (varName.find(" ") != CompilerKit::STLString::npos) {
@@ -979,9 +971,9 @@ CompilerKit::SyntaxLeafList::SyntaxLeaf CompilerFrontendNectarPTX::Compile(
 
             subText.erase(subText.find("("));
 
-            for (const auto& keyword : kKeywords) {
-              if (keyword.fKeywordName == subText)
-                CompilerKit::Detail::print_error("A nectar keyword cannot be used there.", file);
+            for (const auto& keyword2 : kKeywords) {
+              if (keyword2.fKeywordName == subText)
+                CompilerKit::Detail::print_error("A nectar keyword2 cannot be used there.", file);
             }
 
             kExternalSymbols.insert(subText);
@@ -1018,8 +1010,8 @@ CompilerKit::SyntaxLeafList::SyntaxLeaf CompilerFrontendNectarPTX::CompileLayout
     CompilerKit::STLString& text, const CompilerKit::STLString& file,
     CompilerKit::SyntaxLeafList::SyntaxLeaf& syntax_tree) {
   if ((text.find("impl") != CompilerKit::STLString::npos)) {
-    CompilerKit::STLString keyword  = "impl";
-    auto                   classPos = text.find(keyword) + keyword.length();
+    CompilerKit::STLString keyword2 = "impl";
+    auto                   classPos = text.find(keyword2) + keyword2.length();
     auto                   bracePos = text.find("{");
 
     auto className = text.substr(classPos, bracePos - classPos);
@@ -1169,8 +1161,8 @@ static CompilerKit::STLString nectar_mangle_name(const CompilerKit::STLString& i
 
   if (auto pos = identifierCopy.find("let "); pos != CompilerKit::STLString::npos) {
     identifierCopy = identifierCopy.substr(pos + 3);
-  } else if (auto pos = identifierCopy.find("const "); pos != CompilerKit::STLString::npos) {
-    identifierCopy = identifierCopy.substr(pos + 5);
+  } else if (auto pos2 = identifierCopy.find("const "); pos2 != CompilerKit::STLString::npos) {
+    identifierCopy = identifierCopy.substr(pos2 + 5);
   }
 
   while (auto pos = identifierCopy.find(" ")) {
@@ -1519,7 +1511,6 @@ class AssemblyNectarInterfacePTX final NC_ASSEMBLY_INTERFACE {
 
     // First pass: compile all lines and collect symbols
     CompilerKit::STLString compiledCode;
-    std::size_t            lastRes{};
     std::string            prevRes;
     std::string            nextRes;
 
@@ -1540,7 +1531,6 @@ class AssemblyNectarInterfacePTX final NC_ASSEMBLY_INTERFACE {
         }
       }
 
-      lastRes = res.fUserValue.size();
       prevRes = res.fUserValue;
     }
 
