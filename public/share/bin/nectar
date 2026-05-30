@@ -1,5 +1,10 @@
 #!/bin/sh
 
+clear
+echo "==================================="
+echo "NCC: Nectar Compiler Collection"
+echo "==================================="
+
 if [ -z "$1" ]
   then
     echo "nectar: No argument supplied"
