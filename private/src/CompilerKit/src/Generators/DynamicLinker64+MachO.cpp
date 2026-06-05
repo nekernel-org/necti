@@ -169,7 +169,7 @@ NECTAR_MODULE(DynamicLinker64MachO) {
       linker_arg += 1;
 
       continue;
-    } else if (std::strcmp(argv[linker_arg], "--verbose") == 0) {
+    } else if (std::strcmp(argv[linker_arg], "-fverbose") == 0) {
       kVerbose = true;
 
       continue;
@@ -182,7 +182,7 @@ NECTAR_MODULE(DynamicLinker64MachO) {
       }
 
       continue;
-    } else if (std::strcmp(argv[linker_arg], "--output") == 0) {
+    } else if (std::strcmp(argv[linker_arg], "-foutput") == 0) {
       if ((linker_arg + 1) > argc) continue;
 
       kOutput = argv[linker_arg + 1];
