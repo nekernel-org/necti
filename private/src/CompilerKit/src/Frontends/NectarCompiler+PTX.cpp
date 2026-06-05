@@ -17,7 +17,7 @@
 /* (c) Amlal El Mahrouss 2024-2026 */
 
 /// @author Amlal El Mahrouss (amlal@nekernel.org)
-/// @file NectarCompiler+PTX.cc
+/// @file NectarCompiler+PTX.cpp
 /// @brief NECTAR Compiler Driver (NVPTX).
 
 /////////////////////////////////////
