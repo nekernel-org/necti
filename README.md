@@ -1,10 +1,10 @@
 <!-- Read Me of Nectar -->
 
 <a href="LICENSE"><img src="https://img.shields.io/badge/LICENSE-Apache--2.0-blue.svg?style=for-the-badge" alt="License"></a>
-![GitHub Stars](https://img.shields.io/github/stars/ne-foss/nectar?style=for-the-badge)
+![GitHub Stars](https://img.shields.io/github/stars/ne-app-eu/ncc?style=for-the-badge)
 
-![CI](https://github.com/ne-foss/nectar/actions/workflows/nectar-asan-dev.yml/badge.svg)
-![CI](https://github.com/ne-foss/nectar/actions/workflows/nectar-dev.yml/badge.svg)
+![CI](https://github.com/ne-app-eu/ncc/actions/workflows/nectar-asan-dev.yml/badge.svg)
+![CI](https://github.com/ne-app-eu/ncc/actions/workflows/nectar-dev.yml/badge.svg)
 
 ## Getting Started
 
@@ -30,7 +30,7 @@ curl -fsSL http://install.nectar.nekernel.org | sh
 Run the following:
 
 ```sh
-git clone -j8 git@github.com:ne-foss/nectar.git
+git clone -j8 git@github.com:ne-app-eu/ncc.git
 cd nectar
 # Either build the debugger or compiler libraries/tools using nebuild.
 ```
