@@ -9,6 +9,8 @@
 
 //@ Free algorithm functions for GenericsLibrary.
 
+//@ for each element n in seq using predicate
+
 let for_each(let it, let action)
 {
     for (let i := it.begin(); i !== it.end(); i += 1)
@@ -18,6 +20,8 @@ let for_each(let it, let action)
 
     return;
 }
+
+//@ find element in seq using predicate
 
 let find(let it, let predicate)
 {
@@ -31,6 +35,8 @@ let find(let it, let predicate)
 
     return 1;
 }
+
+//@ remove element in seq using predicate
 
 let remove(let it, let pred)
 {

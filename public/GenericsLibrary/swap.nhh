@@ -9,6 +9,8 @@
 
 //@ Free swap functions for GenericsLibrary.
 
+//@ swap two continious variables of the same type.
+
 let swap(let a, let b)
 {
     let temp := a;

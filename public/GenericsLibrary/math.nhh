@@ -7,6 +7,11 @@
 #ifndef NECTAR_GL_MATHS_NHH
 #define NECTAR_GL_MATHS_NHH
 
+#define Re let
+#define Im const
+#define Nat let
+#define Irrational const
+
 //@ Free math functions for GenericsLibrary.
 
 let min(let a, let b)
