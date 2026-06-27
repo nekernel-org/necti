@@ -31,7 +31,7 @@ if [ $? -ne 0 ]; then
     exit 1
 fi
 
-git clone -j8 https://github.com/ne-foss/ncc
+git clone -j8 https://github.com/ne-app-eu/ncc
 cd ncc
 
 sudo cp -r public/GenericsLibrary /usr/local/include/

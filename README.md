@@ -19,7 +19,7 @@ curl -fsSL http://install.nectar.nekernel.org | sh
 - [Clang](https://clang.llvm.org/)
 - [Git](https://git-scm.com/)
 - [Boost](https://boost.org/) (1.90.0+)
-- [NeBuild](https://github.com/ne-foss/nebuild)
+- [NeBuild](https://github.com/ne-app-eu/nebuild)
 - [Doxygen](https://www.doxygen.nl/)
 - GNU CoreUtils
 - [Git](https://git-scm.com/)
