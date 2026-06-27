@@ -19,7 +19,7 @@ curl -fsSL http://install.nectar.nekernel.org | sh
 - [Clang](https://clang.llvm.org/)
 - [Git](https://git-scm.com/)
 - [Boost](https://boost.org/) (1.90.0+)
-- [NeBuild](https://github.com/ne-app-eu/nebuild)
+- [NeBuild](https://github.com/ne-app-eu/bld)
 - [Doxygen](https://www.doxygen.nl/)
 - GNU CoreUtils
 - [Git](https://git-scm.com/)
@@ -32,7 +32,7 @@ Run the following:
 ```sh
 git clone -j8 git@github.com:ne-app-eu/ncc.git
 cd nectar
-# Either build the debugger or compiler libraries/tools using nebuild.
+# Either build the debugger or compiler libraries/tools using bld.
 ```
 
 ### Community
