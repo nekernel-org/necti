@@ -43,6 +43,9 @@ static std::filesystem::path nectar_expand_home(const std::filesystem::path& inp
   return input;
 }
 
+/// @brief This function is for internal uses only, do not call it without a wrapper!
+NC_IMPORT_C bool NectarCheckLine(CompilerKit::STLString& input);
+
 /// \brief Register map, i.e ({foobar, rbp+48}, etc...)
 struct CompilerRegisterMap final {
   CompilerKit::STLString fName{};
@@ -61,13 +64,6 @@ struct CompilerState final {
   CompilerKit::STLString fLastFile{};
   CompilerKit::STLString fLastError{};
 };
-
-static CompilerState kState;
-
-static bool kFreestandingMode = true;
-
-/// \brief Embed Scope of a class.
-static Int32 kOnClassScope = 0;
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
@@ -122,8 +118,12 @@ struct CompilerContext {
   UInt32                         fInstructionCounter{0};
 };
 
-/// @brief This function is for internal uses only, do not call it without a wrapper!
-NC_IMPORT_C bool NectarCheckLine(CompilerKit::STLString& input);
+static CompilerState kState;
+
+static bool kFreestandingMode = true;
+
+/// \brief Embed Scope of a class.
+static Int32 kOnClassScope = 0;
 
 /// \brief Global compiler context (replaces kState)
 static CompilerContext kContext;
