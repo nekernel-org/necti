@@ -17,4 +17,4 @@ jobs:
       run: sudo curl https://github.com/ne-app-eu/bld/releases/download/v0.0.6-apple-m1/bld-debian -o sanity-test
     - name: Build CompilerKit and DebuggerKit
       run: sudo curl https://github.com/ne-app-eu/bld/releases/download/v0.0.6-apple-m1/bld-debian -o /bin/bld && sudo chmod +x /bin/bld && sudo apt update && sudo apt install build-essential && sudo apt install libboost-dev &&
-          cd private/src/CompilerKit && bld ck-posix-san.json
+          cd private/src/CompilerKit && nebld ck-posix-san.json
