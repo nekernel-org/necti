@@ -7,7 +7,7 @@
 #include <CompilerKit/CodeGenerator.h>
 
 /**
- * @file AssemblyFactory.cpp
+ * @file CodeGenerator+AssemblyFactory.cpp
  * @author Amlal El Mahrouss (amlal@nekernel.org)
  * @brief Nectar Code Generation API
  * @version 0.0.3
