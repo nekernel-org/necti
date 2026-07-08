@@ -8,18 +8,26 @@
 
 /// =========================================================== ///
 /// @file detail/Config.h
-/// @author Amlal El Mahrouss
+/// @author Amlal El Mahrouss (ne-app)
 /// @brief Basic defines and types for CompilerKit.
 /// =========================================================== ///
 
 #include <CompilerKit/Detail/PreConfig.h>
+
+#ifdef __NCC_USE_TPROC__
 #include <ocl/tproc.hpp>
+#endif
 
 namespace CompilerKit {
 
 inline static constexpr int kBaseYear = 1900;
 using STLString                       = std::string;
+
+#ifdef __NCC_USE_TPROC__
 using RopeString                      = ocl::tproc::crope;
+#else
+using RopeString = STLString;
+#endif
 
 inline STLString current_date() noexcept {
   auto time_data   = time(nullptr);
