@@ -19,14 +19,14 @@ tools/asm
 tools/ld64
 tools/cxxdrv
 
-src/*/dbg
-src/*/cppdrv
-src/*/kdbg
-src/*/ptx-necdrv
-src/*/pef-*-asm
-src/*/pef-*-necdrv
-src/*/pef-*-cxxdrv
-src/*/pef-*-cdrv
+*/src/*/dbg
+*/src/*/cppdrv
+*/src/*/kdbg
+*/src/*/ptx-necdrv
+*/src/*/pef-*-asm
+*/src/*/pef-*-necdrv
+*/src/*/pef-*-cxxdrv
+*/src/*/pef-*-cdrv
 
 *~
 

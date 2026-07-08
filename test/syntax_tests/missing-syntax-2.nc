@@ -1,4 +1,4 @@
-import cudaMalloc;
+let import cudaMalloc;
 
 const main()
 {
