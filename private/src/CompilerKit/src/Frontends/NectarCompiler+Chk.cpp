@@ -42,6 +42,27 @@ NC_IMPORT_C bool NectarCheckLine(CompilerKit::STLString& input) {
     }
   }
 
+  if (input.find("export ") != CompilerKit::STLString::npos && !input.ends_with(";")) {
+    if (input.find(":=") != CompilerKit::STLString::npos) {
+      Detail::print_error("A declaration must always end with ';'", "check");
+      return false;
+    }
+  }
+
+  if (input.find("import ") != CompilerKit::STLString::npos && !input.ends_with(";")) {
+    if (input.find(":=") != CompilerKit::STLString::npos) {
+      Detail::print_error("A declaration must always end with ';'", "check");
+      return false;
+    }
+  }
+  
+  if (input.find("extern ") != CompilerKit::STLString::npos && !input.ends_with(";")) {
+    if (input.find(":=") != CompilerKit::STLString::npos) {
+      Detail::print_error("A declaration must always end with ';'", "check");
+      return false;
+    }
+  }
+
   if (input.find("let ") != CompilerKit::STLString::npos && !input.ends_with(";")) {
     if (input.find(":=") != CompilerKit::STLString::npos) {
       Detail::print_error("A declaration must always end with ';'", "check");
