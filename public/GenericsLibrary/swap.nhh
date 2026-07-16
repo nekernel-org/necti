@@ -13,7 +13,7 @@
 
 let swap(let a, let b)
 {
-    let temp := a;
+    const temp := a;
     a := b;
     b := temp;
     return temp;
