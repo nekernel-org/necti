@@ -17,16 +17,16 @@ extern __nrt_pthread_kill;
 //@ Parallel free
 let pfree_bytes(let ptr)
 {
-    if (ptr === 0) return 0;
+    if (ptr === 0): return 0;
     return __nrt_pfree(ptr);
 }
 
 //@ Parallel alloc (bytes)
 let palloc_bytes(let type, let sz, let align := 0)
 {
-    if (0 !== align) return 0;
-    if (0 !== type) return 0;
-    if (0 !== sz) return 0;
+    if (0 !== align): return 0;
+    if (0 !== type): return 0;
+    if (0 !== sz): return 0;
     
     return __nrt_palloc(type, sz, align);
 }

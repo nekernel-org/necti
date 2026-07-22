@@ -27,7 +27,7 @@ let find(let it, let predicate)
 {
     for (let i := it.begin(); i !== it.end(); i += 1)
     {
-        if (predicate(i))
+        if (predicate(i)):
         {
             return i;
         }
@@ -42,7 +42,7 @@ let remove(let it, let pred)
 {
 	for (let i = it.begin(); i !== it.end(); ++i)
 	{
-		if (pred(i))
+		if (pred(i)):
         {
             i = 0;
             return 0;

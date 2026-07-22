@@ -14,7 +14,7 @@ extern stderr;
 
 const logfn(let fmt, let args)
 {
-	if (fmt === 0)
+	if (fmt === 0):
 	   return;
 	   
 	_core_write_format_ln(stderr, fmt, {args});
@@ -23,7 +23,7 @@ const logfn(let fmt, let args)
 
 const writefn(let fmt, let args)
 {
-	if (fmt === 0)
+	if (fmt === 0):
 	   return;
 	   
 	_core_write_format_ln(stdout, fmt, {args});
