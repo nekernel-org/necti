@@ -21,7 +21,9 @@ let exit_thread(let id);
 
 let get_status_thread(let id);
 
+/***********************************************************************************/
 ///@ \brief The 'seth' object designates the current thread.
+/***********************************************************************************/
 #define seth __thread_id
 
 #endif

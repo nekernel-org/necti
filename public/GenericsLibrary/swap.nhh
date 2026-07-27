@@ -7,9 +7,10 @@
 #ifndef NECTAR_GL_SWAP_NHH
 #define NECTAR_GL_SWAP_NHH
 
+/***********************************************************************************/
 //@ Free swap functions for GenericsLibrary.
-
 //@ swap two continious variables of the same type.
+/***********************************************************************************/
 
 let swap(let a, let b)
 {

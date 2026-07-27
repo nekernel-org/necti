@@ -34,7 +34,9 @@
 
 #define kLinkerSplash() kStdOut << kLinkerVersionStr << kStdEndl
 
+/***********************************************************************************/
 /// @brief PEF stack size symbol.
+/***********************************************************************************/
 #define kLinkerStackSizeSymbol "__PEFSizeOfReserveStack"
 
 #define kConsoleOut (std::cout << kRed << "ld: " << kReset)
