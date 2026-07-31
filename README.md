@@ -39,6 +39,10 @@ cd nectar
 
 Join Ne.app's community [discord](https://discord.gg/uD76Qweght) to chat with contributors.
 
+## Professional Services
+
+Ne.app NCC services are available under Ne.app, custom modules, licensing, et al for your use cases.
+
 ---
 
 <div align="center">
