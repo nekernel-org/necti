@@ -47,6 +47,6 @@ Ne.app NCC services are available under Ne.app, custom modules, licensing, et al
 
 <div align="center">
   <sub>
-    &copy; 2023-2026 Amlal El Mahrouss. Licensed under the Apache 2.0 license.
+    &copy; 2023-2026 Amlal El Mahrouss and Ne.app. Licensed under the Apache 2.0 license.
   </sub>
 </div>
