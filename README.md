@@ -1,6 +1,6 @@
 <!-- Read Me of Nectar -->
 
-# Nectar Compiler Collection
+# Ne.app Nectar Compiler Collection
 
 ### Notice
 
