@@ -36,7 +36,7 @@ curl -fsSL http://install.nectar.nekernel.org | sh
 Run the following:
 
 ```sh
-git clone -j8 git@github.com:ne-app-eu/ncc.git
+git clone -j8 git@github.com:ne-app-open/ncc.git
 cd nectar
 # Either build the debugger or compiler libraries/tools using bld.
 ```
@@ -47,6 +47,7 @@ Join Ne.app's community [discord](https://discord.gg/uD76Qweght) to chat with co
 
 ## Professional Services
 
+Warning: NCC is now under LTS, its successor VN is available through Ne.app VN SDK.
 Ne.app NCC services are available under Ne.app, custom module development, et al for your use cases.
 
 ---
