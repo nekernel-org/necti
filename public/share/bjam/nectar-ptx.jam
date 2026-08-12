@@ -18,6 +18,6 @@ feature.extend toolset : nectar-ptx ;
 
 action compile-nectar-sources-ptx
 {
-  $(.NECTAR_PTX) $(.NECTAR_PTX_FLAGS) $(.NECTAR_PTX_SOURCES)
+  $(.NCC_PTX) $(.NCC_PTX_FLAGS) $(.NCC_PTX_SOURCES)
 }
 

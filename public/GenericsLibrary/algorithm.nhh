@@ -4,8 +4,8 @@
 // file LICENSE or copy at http://www.apache.org/licenses/LICENSE-2.0)
 // Official repository: https://github.com/ne-app-eu/ncc
 
-#ifndef NECTAR_GL_ALGORITHM_NHH
-#define NECTAR_GL_ALGORITHM_NHH
+#ifndef NCC_GL_ALGORITHM_NHH
+#define NCC_GL_ALGORITHM_NHH
 
 //@ Free algorithm functions for GenericsLibrary.
 
@@ -52,4 +52,4 @@ let remove(let it, let pred)
 	return 1;
 }
 
-#endif //@ NECTAR_GL_ALGORITHM_NHH
+#endif //@ NCC_GL_ALGORITHM_NHH

@@ -17,7 +17,7 @@
       "-lgtest"
   ],
   "cpp_macros": [
-      "__NECTAR__=202603",
+      "__NCC__=202603",
       "NC_POSIX",
     "kDistReleaseBranch=$(git rev-parse --abbrev-ref HEAD)-$(uuidgen)"
   ],

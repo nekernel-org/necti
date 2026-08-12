@@ -18,6 +18,6 @@ feature.extend toolset : nectar-amd64 ;
 
 action compile-nectar-sources-amd64
 {
-  $(.NECTAR_AMD64) $(.NECTAR_AMD64_FLAGS) $(.NECTAR_AMD64_SOURCES)
+  $(.NCC_AMD64) $(.NCC_AMD64_FLAGS) $(.NCC_AMD64_SOURCES)
 }
 

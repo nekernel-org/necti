@@ -3,8 +3,8 @@
 // file LICENSE or copy at http://www.apache.org/licenses/LICENSE-2.0)
 // Official repository: https://github.com/ne-app-eu/ncc
 
-#ifndef NECTAR_COMPILERKIT_UTILITIES_COMPILER_H
-#define NECTAR_COMPILERKIT_UTILITIES_COMPILER_H
+#ifndef NCC_COMPILERKIT_UTILITIES_COMPILER_H
+#define NCC_COMPILERKIT_UTILITIES_COMPILER_H
 
 #include <CompilerKit/AST.h>
 #include <CompilerKit/CodeGenerator.h>
@@ -54,7 +54,7 @@ inline void print_error(STLString reason, STLString file) noexcept {
   kStdErr << file << ": " << reason << kBlank << std::endl;
 
   ++kAcceptableErrors;
-  if (kAcceptableErrors > kErrorLimit) std::exit(NECTAR_EXEC_ERROR);
+  if (kAcceptableErrors > kErrorLimit) std::exit(NCC_EXEC_ERROR);
 }
 
 inline void print_warning(STLString reason, STLString file) noexcept {
@@ -66,7 +66,7 @@ inline void print_warning(STLString reason, STLString file) noexcept {
 /// @internal
 /// @brief Handler for SIGSEGV signal.
 inline void drvi_crash_handler(std::int32_t id) {
-  CompilerKit::STLString verbose_header = "NECTAR CRASH REPORT - ";
+  CompilerKit::STLString verbose_header = "NCC CRASH REPORT - ";
   verbose_header += kDistVersion;
   verbose_header += " - ";
   verbose_header += CompilerKit::current_date();
@@ -111,8 +111,8 @@ inline void drvi_crash_handler(std::int32_t id) {
 
   std::cout << std::endl;
 
-  std::exit(NECTAR_EXEC_ERROR);
+  std::exit(NCC_EXEC_ERROR);
 }
 }  // namespace CompilerKit::Detail
 
-#endif  // NECTAR_COMPILERKIT_UTILITIES_COMPILER_H
+#endif  // NCC_COMPILERKIT_UTILITIES_COMPILER_H

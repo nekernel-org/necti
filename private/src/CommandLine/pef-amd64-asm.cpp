@@ -33,5 +33,5 @@ Int32 main(Int32 argc, char const* argv[]) {
     return EXIT_FAILURE;
   }
 
-  return (entrypoint_cxx(argc, argv) == NECTAR_SUCCESS) ? EXIT_SUCCESS : EXIT_FAILURE;
+  return (entrypoint_cxx(argc, argv) == NCC_SUCCESS) ? EXIT_SUCCESS : EXIT_FAILURE;
 }

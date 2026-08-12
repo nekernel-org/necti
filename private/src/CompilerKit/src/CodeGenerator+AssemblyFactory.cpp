@@ -19,12 +19,12 @@ namespace CompilerKit {
 
 ///! @brief Compile for specific format (ELF, PEF, AE)
 Int32 AssemblyFactory::Compile(STLString source_file, const Int32& arch) {
-  if (source_file.length() == 0) return NECTAR_UNIMPLEMENTED;
+  if (source_file.length() == 0) return NCC_UNIMPLEMENTED;
 
-  if (!this->fMounted) return NECTAR_UNIMPLEMENTED;
-  if (arch != this->fMounted->Arch()) return NECTAR_INVALID_ARCH;
+  if (!this->fMounted) return NCC_UNIMPLEMENTED;
+  if (arch != this->fMounted->Arch()) return NCC_INVALID_ARCH;
 
-  if (!std::filesystem::is_regular_file(source_file)) return NECTAR_UNIMPLEMENTED;
+  if (!std::filesystem::is_regular_file(source_file)) return NCC_UNIMPLEMENTED;
 
   auto compiled_unit = source_file + ".ignore";
 
@@ -38,7 +38,7 @@ Int32 AssemblyFactory::Compile(STLString source_file, const Int32& arch) {
     std::filesystem::remove(compiled_unit);
   }
 
-  return NECTAR_INVALID_DATA;
+  return NCC_INVALID_DATA;
 }
 
 ///! @brief mount assembly backend.

@@ -4,8 +4,8 @@
 // file LICENSE or copy at http://www.apache.org/licenses/LICENSE-2.0)
 // Official repository: https://github.com/ne-app-eu/ncc
 
-#ifndef NECTAR_GL_IO_NHH
-#define NECTAR_GL_IO_NHH
+#ifndef NCC_GL_IO_NHH
+#define NCC_GL_IO_NHH
 
 import _core_write_format_ln;
 

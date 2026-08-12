@@ -3,8 +3,8 @@
 // file LICENSE or copy at http://www.apache.org/licenses/LICENSE-2.0)
 // Official repository: https://github.com/ne-app-eu/ncc
 
-#ifndef NECTAR_COMPILERKIT_AE_H
-#define NECTAR_COMPILERKIT_AE_H
+#ifndef NCC_COMPILERKIT_AE_H
+#define NCC_COMPILERKIT_AE_H
 
 #include <CompilerKit/Detail/Config.h>
 #include <fstream>
@@ -109,7 +109,7 @@ class AEReadableProtocol final {
   explicit AEReadableProtocol() = default;
   ~AEReadableProtocol()         = default;
 
-  NECTAR_COPY_DELETE(AEReadableProtocol)
+  NCC_COPY_DELETE(AEReadableProtocol)
 
   /**
    * @brief Reads the AE Record headers.
@@ -141,4 +141,4 @@ class AEReadableProtocol final {
 
 }  // namespace CompilerKit::Utils
 
-#endif /* ifndef NECTAR_COMPILERKIT_AE_H */
+#endif /* ifndef NCC_COMPILERKIT_AE_H */

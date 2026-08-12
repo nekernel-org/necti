@@ -17,7 +17,7 @@
     "-shared"
   ],
   "cpp_macros": [
-    "__NECTAR__=202602",
+    "__NCC__=202602",
     "NC_USE_STRUCTS=1",
     "NC_WINDOWS=1",
     "kDistReleaseBranch=$(git rev-parse --abbrev-ref HEAD)-$(uuidgen)"

@@ -3,8 +3,8 @@
 // file LICENSE or copy at http://www.apache.org/licenses/LICENSE-2.0)
 // Official repository: https://github.com/ne-app-eu/ncc
 
-#ifndef NECTAR_COMPILERKIT_ERROROR_H
-#define NECTAR_COMPILERKIT_ERROROR_H
+#ifndef NCC_COMPILERKIT_ERROROR_H
+#define NCC_COMPILERKIT_ERROROR_H
 
 /// =========================================================== ///
 /// @file ErrorOr.h
@@ -41,7 +41,7 @@ class ErrorOr final {
 
   ErrorT Error() { return mId; }
 
-  bool HasError() { return mId != NECTAR_SUCCESS; }
+  bool HasError() { return mId != NCC_SUCCESS; }
 
   explicit operator bool() { return mRef; }
 
@@ -54,4 +54,4 @@ using ErrorOrAny    = ErrorOr<VoidPtr>;
 using ErrorOrString = ErrorOr<STLString>;
 }  // namespace CompilerKit
 
-#endif  // NECTAR_COMPILERKIT_ERROROR_H
+#endif  // NCC_COMPILERKIT_ERROROR_H

@@ -18,11 +18,11 @@
 
 /// @author Amlal El Mahrouss (amlal@nekernel.org)
 /// @file NectarCompiler+AMD64.cpp
-/// @brief NECTAR Compiler Driver.
+/// @brief NCC Compiler Driver.
 
 /////////////////////////////////////
 
-// INTERNALS OF THE NECTAR COMPILER
+// INTERNALS OF THE NCC COMPILER
 
 /////////////////////////////////////
 
@@ -67,7 +67,7 @@ struct CompilerState final {
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
-// NEW DATA STRUCTURES FOR NECTAR SUPPORT
+// NEW DATA STRUCTURES FOR NCC SUPPORT
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
@@ -202,13 +202,13 @@ static void nectar_process_function_parameters(const std::vector<CompilerKit::ST
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
-/* \brief NECTAR compiler backend for the NeSystem NECTAR driver */
+/* \brief NCC compiler backend for the NeSystem NCC driver */
 class CompilerFrontendNectarAMD64 final NC_COMPILER_FRONTEND {
  public:
   explicit CompilerFrontendNectarAMD64()  = default;
   ~CompilerFrontendNectarAMD64() override = default;
 
-  NECTAR_COPY_DEFAULT(CompilerFrontendNectarAMD64);
+  NCC_COPY_DEFAULT(CompilerFrontendNectarAMD64);
 
   /// \brief Parse Nectar symbols and syntax.
   CompilerKit::SyntaxLeafList::SyntaxLeaf Compile(CompilerKit::STLString&       text,
@@ -219,7 +219,7 @@ class CompilerFrontendNectarAMD64 final NC_COMPILER_FRONTEND {
   const char* Language() override;
 
  public:
-  /// \brief Parse NECTAR namespaces and Impls.
+  /// \brief Parse NCC namespaces and Impls.
   /// \param CompilerKit::SyntaxLeafList::SyntaxLeaf the leaf to build upon.
   CompilerKit::SyntaxLeafList::SyntaxLeaf CompileLayout(CompilerKit::STLString&       text,
                                                         const CompilerKit::STLString& file,
@@ -261,7 +261,7 @@ static std::vector<std::pair<CompilerKit::STLString, std::uintptr_t>> kOriginMap
 /////////////////////////////////////////////////////////////////////////////////////////
 
 /// @name Compile
-/// @brief Generate assembly from a NECTAR source.
+/// @brief Generate assembly from a NCC source.
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
@@ -415,7 +415,7 @@ CompilerKit::SyntaxLeafList::SyntaxLeaf CompilerFrontendNectarAMD64::Compile(
           res.erase(tmp);
         }
 
-        syntax_tree.fUserValue += "call __NECTAR_M_" + res + "\n";
+        syntax_tree.fUserValue += "call __NCC_M_" + res + "\n";
         break;
       }
       case CompilerKit::KeywordKind::kKeywordKindFunctionStart: {
@@ -500,7 +500,7 @@ CompilerKit::SyntaxLeafList::SyntaxLeaf CompilerFrontendNectarAMD64::Compile(
         // Track defined symbol for NASM extern resolution
         kDefinedSymbols.insert(mangled_name);
 
-        if (mangled_name.starts_with("__NECTAR") == false) {
+        if (mangled_name.starts_with("__NCC") == false) {
           mangled_name = "_" + mangled_name;
         }
 
@@ -698,7 +698,7 @@ CompilerKit::SyntaxLeafList::SyntaxLeaf CompilerFrontendNectarAMD64::Compile(
           }
         } else {
           auto res = buf;
-          if (method.starts_with("__NECTAR") == false)
+          if (method.starts_with("__NCC") == false)
             res += "call _" + method + "\n";
           else
             res += "call " + method + "\n";
@@ -841,7 +841,7 @@ CompilerKit::SyntaxLeafList::SyntaxLeaf CompilerFrontendNectarAMD64::Compile(
             valueOfVar.erase(0, valueOfVar.find(".") + strlen("."));
           }
 
-          mangled = "__NECTAR_SM_";
+          mangled = "__NCC_SM_";
         }
 
         if (valueOfVar.find("->") != CompilerKit::STLString::npos) {
@@ -852,7 +852,7 @@ CompilerKit::SyntaxLeafList::SyntaxLeaf CompilerFrontendNectarAMD64::Compile(
           } else {
             valueOfVar.erase(0, valueOfVar.find("->") + strlen("->"));
           }
-          mangled = "__NECTAR_RM_";
+          mangled = "__NCC_RM_";
         }
 
         if (valueOfVar.find(")") != CompilerKit::STLString::npos) {
@@ -1058,7 +1058,7 @@ CompilerKit::SyntaxLeafList::SyntaxLeaf CompilerFrontendNectarAMD64::Compile(
   return this->CompileLayout(text, file, syntax_tree);
 }
 
-/// \brief Parse NECTAR Impls.
+/// \brief Parse NCC Impls.
 /// \param CompilerKit::SyntaxLeafList::SyntaxLeaf the leaf to build upon.
 CompilerKit::SyntaxLeafList::SyntaxLeaf CompilerFrontendNectarAMD64::CompileLayout(
     CompilerKit::STLString& text, const CompilerKit::STLString& file,
@@ -1192,7 +1192,7 @@ static std::vector<CompilerKit::STLString> nectar_extract_function_args(
 /// \brief Mangle a function or method name according to Nectar mangling scheme
 static CompilerKit::STLString nectar_mangle_name(const CompilerKit::STLString& identifier,
                                                  const std::vector<CompilerKit::STLString>& args) {
-  CompilerKit::STLString mangled{"__NECTAR_"};
+  CompilerKit::STLString mangled{"__NCC_"};
   CompilerKit::STLString prefix{"N_"};
 
   std::for_each(kContext.fScopeStack.begin(), kContext.fScopeStack.end(),
@@ -1534,7 +1534,7 @@ static void nectar_process_function_parameters(const std::vector<CompilerKit::ST
 /////////////////////////////////////////////////////////////////////////////////////////
 
 /**
- * @brief NECTAR assembler class.
+ * @brief NCC assembler class.
  */
 
 /////////////////////////////////////////////////////////////////////////////////////////
@@ -1546,7 +1546,7 @@ class AssemblyNectarInterfaceAMD64 final NC_ASSEMBLY_INTERFACE {
   explicit AssemblyNectarInterfaceAMD64()  = default;
   ~AssemblyNectarInterfaceAMD64() override = default;
 
-  NECTAR_COPY_DEFAULT(AssemblyNectarInterfaceAMD64);
+  NCC_COPY_DEFAULT(AssemblyNectarInterfaceAMD64);
 
   UInt32 Arch() noexcept override { return CompilerKit::AssemblyFactory::kArchAMD64; }
 
@@ -1631,7 +1631,7 @@ class AssemblyNectarInterfaceAMD64 final NC_ASSEMBLY_INTERFACE {
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
-NECTAR_MODULE(CompilerNectarAMD64) {
+NCC_MODULE(CompilerNectarAMD64) {
   bool skip = false;
 
   kKeywords.emplace_back("impl", CompilerKit::KeywordKind::kKeywordKindImpl);
@@ -1686,7 +1686,7 @@ NECTAR_MODULE(CompilerNectarAMD64) {
 
       if (strcmp(argv[index], "--help") == 0 || strcmp(argv[index], "-h") == 0) {
         std::cout << "====================================================\n";
-        std::cout << "NECTAR X64 FRONTEND:\n";
+        std::cout << "NCC X64 FRONTEND:\n";
         std::cout << "====================================================\n";
         std::cout << "-fverbose: Enable Verbose output.\n";
         std::cout << "-fuse-masm: Use the NeSystem Assembler syntax.\n";
@@ -1699,7 +1699,7 @@ NECTAR_MODULE(CompilerNectarAMD64) {
 
       if (strcmp(argv[index], "--version") == 0 || strcmp(argv[index], "-v") == 0) {
         std::cout << "====================================================\n";
-        std::cout << "NECTAR X64 FRONTEND:\nDIST RELEASE:";
+        std::cout << "NCC X64 FRONTEND:\nDIST RELEASE:";
         std::cout << kDistRelease << "\n";
         std::cout << "====================================================\n";
         continue;
@@ -1724,7 +1724,7 @@ NECTAR_MODULE(CompilerNectarAMD64) {
       if (strcmp(argv[index], "-fprint-dialect") == 0) {
         if (kFrontend) std::cout << kFrontend->Language() << "\n";
 
-        return NECTAR_SUCCESS;
+        return NCC_SUCCESS;
       }
 
       CompilerKit::STLString err = "Unknown option: ";
@@ -1742,7 +1742,7 @@ NECTAR_MODULE(CompilerNectarAMD64) {
     for (CompilerKit::STLString ext : exts) {
       if (argv_i.ends_with(ext)) {
         if (kAssembler.Compile(argv_i, kMachine) != EXIT_SUCCESS) {
-          return NECTAR_INVALID_DATA;
+          return NCC_INVALID_DATA;
         }
 
         break;
@@ -1752,7 +1752,7 @@ NECTAR_MODULE(CompilerNectarAMD64) {
 
   kAssembler.Unmount();
 
-  return NECTAR_SUCCESS;
+  return NCC_SUCCESS;
 }
 
 //

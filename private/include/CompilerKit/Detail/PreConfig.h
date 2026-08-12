@@ -86,25 +86,25 @@
 
 #define kAsmFileExtsMax (7U)
 
-#define NECTAR_MODULE(name) extern "C" int name(int argc, char** argv)
+#define NCC_MODULE(name) extern "C" int name(int argc, char** argv)
 
 #ifdef _MSC_VER
 #pragma scalar_storage_order big-endian
 #endif  // ifdef _MSC_VER
 
-#define NECTAR_COPY_DELETE(KLASS)          \
+#define NCC_COPY_DELETE(KLASS)          \
   KLASS& operator=(const KLASS&) = delete; \
   KLASS(const KLASS&)            = delete;
 
-#define NECTAR_COPY_DEFAULT(KLASS)          \
+#define NCC_COPY_DEFAULT(KLASS)          \
   KLASS& operator=(const KLASS&) = default; \
   KLASS(const KLASS&)            = default;
 
-#define NECTAR_MOVE_DELETE(KLASS)     \
+#define NCC_MOVE_DELETE(KLASS)     \
   KLASS& operator=(KLASS&&) = delete; \
   KLASS(KLASS&&)            = delete;
 
-#define NECTAR_MOVE_DEFAULT(KLASS)     \
+#define NCC_MOVE_DEFAULT(KLASS)     \
   KLASS& operator=(KLASS&&) = default; \
   KLASS(KLASS&&)            = default;
 

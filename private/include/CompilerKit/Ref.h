@@ -3,8 +3,8 @@
 // file LICENSE or copy at http://www.apache.org/licenses/LICENSE-2.0)
 // Official repository: https://github.com/ne-app-eu/ncc
 
-#ifndef NECTAR_COMPILERKIT_REF_H
-#define NECTAR_COMPILERKIT_REF_H
+#ifndef NCC_COMPILERKIT_REF_H
+#define NCC_COMPILERKIT_REF_H
 
 #include <CompilerKit/Detail/Config.h>
 
@@ -24,7 +24,7 @@ class StrongRef {
     }
   }
 
-  NECTAR_COPY_DEFAULT(StrongRef)
+  NCC_COPY_DEFAULT(StrongRef)
 
   using Type = T;
 
@@ -61,7 +61,7 @@ class WeakRef final : public StrongRef<T> {
   WeakRef()  = delete;
   ~WeakRef() = default;
 
-  NECTAR_COPY_DEFAULT(WeakRef)
+  NCC_COPY_DEFAULT(WeakRef)
 
  public:
   using Type = T;
@@ -93,4 +93,4 @@ using StrongAny = StrongRef<VoidPtr>;
 using WeakAny   = WeakRef<VoidPtr>;
 }  // namespace CompilerKit
 
-#endif  // NECTAR_COMPILERKIT_REF_H
+#endif  // NCC_COMPILERKIT_REF_H

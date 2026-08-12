@@ -3,8 +3,8 @@
 // file LICENSE or copy at http://www.apache.org/licenses/LICENSE-2.0)
 // Official repository: https://github.com/ne-app-eu/ncc
 
-#ifndef NECTAR_COMPILERKIT_DETAIL_32X0_H
-#define NECTAR_COMPILERKIT_DETAIL_32X0_H
+#ifndef NCC_COMPILERKIT_DETAIL_32X0_H
+#define NCC_COMPILERKIT_DETAIL_32X0_H
 
 #include <CompilerKit/Detail/Config.h>
 #include <vector>
@@ -93,4 +93,4 @@ inline std::vector<CpuCode32x0> kOpcodes32x0 = {
 
 ////////////////////////////////
 
-#endif  // NECTAR_COMPILERKIT_DETAIL_32X0_H
+#endif  // NCC_COMPILERKIT_DETAIL_32X0_H

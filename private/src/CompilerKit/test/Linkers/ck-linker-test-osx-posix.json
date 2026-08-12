@@ -19,7 +19,7 @@
   ],
     "cpp_macros": [
 	"NC_POSIX",
-    "__NECTAR__=202603",
+    "__NCC__=202603",
     "kDistReleaseBranch=$(git rev-parse --abbrev-ref HEAD)-$(uuidgen)"
   ],
   "run_after_build": true

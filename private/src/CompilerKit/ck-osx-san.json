@@ -24,7 +24,7 @@
     "-fsanitize=undefined"
   ],
   "cpp_macros": [
-    "__NECTAR__=202505",
+    "__NCC__=202505",
     "NC_USE_STRUCTS=1",
     "kDistReleaseBranch=$(git rev-parse --abbrev-ref HEAD)-$(uuidgen)"
   ],

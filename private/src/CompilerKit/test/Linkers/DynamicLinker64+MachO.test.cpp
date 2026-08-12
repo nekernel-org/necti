@@ -47,7 +47,7 @@ TEST(LinkerRunMachO, LinkerExitsCorrectly) {
     return;
   }
 
-  auto ret = (entrypoint_cxx(argc, const_cast<const char**>(argv)) == NECTAR_SUCCESS)
+  auto ret = (entrypoint_cxx(argc, const_cast<const char**>(argv)) == NCC_SUCCESS)
                  ? EXIT_SUCCESS
                  : EXIT_FAILURE;
   EXPECT_TRUE(ret == EXIT_SUCCESS);

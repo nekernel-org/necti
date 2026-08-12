@@ -8,8 +8,8 @@
 
 ======================================== */
 
-#ifndef NECTAR_COMPILERKIT_DETAIL_POWER64_H
-#define NECTAR_COMPILERKIT_DETAIL_POWER64_H
+#ifndef NCC_COMPILERKIT_DETAIL_POWER64_H
+#define NCC_COMPILERKIT_DETAIL_POWER64_H
 
 #include <stdint.h>
 
@@ -1557,4 +1557,4 @@ inline CpuOpcodePPC kOpcodesPowerPC[] = {
 /* return address register */
 #define kAsmRetRegister 19
 
-#endif  // NECTAR_COMPILERKIT_DETAIL_POWER64_H
+#endif  // NCC_COMPILERKIT_DETAIL_POWER64_H

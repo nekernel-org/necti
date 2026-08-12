@@ -4,8 +4,8 @@
 // file LICENSE or copy at http://www.apache.org/licenses/LICENSE-2.0)
 // Official repository: https://github.com/ne-app-eu/ncc
 
-#ifndef NECTAR_GL_ITERATOR_NHH
-#define NECTAR_GL_ITERATOR_NHH
+#ifndef NCC_GL_ITERATOR_NHH
+#define NCC_GL_ITERATOR_NHH
 
 //@ Rules for iterator implementation:
 //@ - _begin is the starting point of the iterator.
@@ -48,4 +48,4 @@ impl iterator : trait iterator_traits
     }
 };
 
-#endif  //@ NECTAR_GL_ITERATOR_NHH
+#endif  //@ NCC_GL_ITERATOR_NHH

@@ -4,8 +4,8 @@
 // file LICENSE or copy at http://www.apache.org/licenses/LICENSE-2.0)
 // Official repository: https://github.com/ne-app-eu/ncc
 
-#ifndef NECTAR_COMPILERKIT_AST_H
-#define NECTAR_COMPILERKIT_AST_H
+#ifndef NCC_COMPILERKIT_AST_H
+#define NCC_COMPILERKIT_AST_H
 
 #include <CompilerKit/CodeGenerator.h>
 #include <vector>
@@ -79,7 +79,7 @@ struct SyntaxKeyword {
   ~SyntaxKeyword() = default;
   SyntaxKeyword()  = delete;
 
-  NECTAR_COPY_DEFAULT(SyntaxKeyword);
+  NCC_COPY_DEFAULT(SyntaxKeyword);
 
   STLString   fKeywordName{};
   KeywordKind fKeywordKind{KeywordKind::kKeywordKindInvalid};
@@ -150,7 +150,7 @@ class ICompilerFrontend {
   explicit ICompilerFrontend() = default;
   virtual ~ICompilerFrontend() = default;
 
-  NECTAR_COPY_DEFAULT(ICompilerFrontend)
+  NCC_COPY_DEFAULT(ICompilerFrontend)
 
   /// =========================================================== ///
   /// NOTE: cast this to your user defined ast.
@@ -177,4 +177,4 @@ class ICompilerFrontend {
 
 #include <CompilerKit/AST.inl>
 
-#endif  // NECTAR_COMPILERKIT_AST_H
+#endif  // NCC_COMPILERKIT_AST_H

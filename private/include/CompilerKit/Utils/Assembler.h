@@ -3,8 +3,8 @@
 // file LICENSE or copy at http://www.apache.org/licenses/LICENSE-2.0)
 // Official repository: https://github.com/ne-app-eu/ncc
 
-#ifndef NECTAR_COMPILERKIT_UTILITIES_ASSEMBLER_H
-#define NECTAR_COMPILERKIT_UTILITIES_ASSEMBLER_H
+#ifndef NCC_COMPILERKIT_UTILITIES_ASSEMBLER_H
+#define NCC_COMPILERKIT_UTILITIES_ASSEMBLER_H
 
 #include <CompilerKit/AST.h>
 #include <CompilerKit/CodeGenerator.h>
@@ -71,4 +71,4 @@ inline NumberCast32 GetNumber32(STLString lineBuffer, STLString numberKey) {
 }
 }  // namespace CompilerKit
 
-#endif  // NECTAR_COMPILERKIT_UTILITIES_ASSEMBLER_H
+#endif  // NCC_COMPILERKIT_UTILITIES_ASSEMBLER_H

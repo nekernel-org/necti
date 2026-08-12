@@ -4,8 +4,8 @@
 // file LICENSE or copy at http://www.apache.org/licenses/LICENSE-2.0)
 // Official repository: https://github.com/ne-app-eu/ncc
 
-#ifndef NECTAR_GL_FSTREAM_NHH
-#define NECTAR_GL_FSTREAM_NHH
+#ifndef NCC_GL_FSTREAM_NHH
+#define NCC_GL_FSTREAM_NHH
 
 #include <GenericsLibrary/iterator.nhh>
 
@@ -35,4 +35,4 @@ impl fstream : trait fstream_traits
     }
 };
 
-#endif  //@ NECTAR_GL_FSTREAM_NHH
+#endif  //@ NCC_GL_FSTREAM_NHH

@@ -3,8 +3,8 @@
 // file LICENSE or copy at http://www.apache.org/licenses/LICENSE-2.0)
 // Official repository: https://github.com/ne-app-eu/ncc
 
-#ifndef NECTAR_COMPILERKIT_AST_INL
-#define NECTAR_COMPILERKIT_AST_INL
+#ifndef NCC_COMPILERKIT_AST_INL
+#define NCC_COMPILERKIT_AST_INL
 
 namespace CompilerKit {
 /// find the perfect matching word in a haystack.

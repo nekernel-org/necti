@@ -3,8 +3,8 @@
 # Author: Makarov
 # Imported-By: Amlal
 
-echo "==> WELCOME TO NECTAR."
-echo "==> INSTALLING NECTAR..."
+echo "==> WELCOME TO NCC."
+echo "==> INSTALLING NCC..."
 
 if command -v dnf >/dev/null 2>&1; then
     sudo dnf groupinstall "Development Tools" -y
@@ -52,6 +52,6 @@ sudo cp pef-amd64-asm /usr/local/bin/
 sudo cp pef-amd64-necdrv /usr/local/bin/
 sudo cp ptx-necdrv /usr/local/bin/
 
-echo "==> WELCOME TO NECTAR"
+echo "==> WELCOME TO NCC"
 echo "==> HELP"
 echo "nectar <FILES>"

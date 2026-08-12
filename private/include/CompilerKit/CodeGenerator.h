@@ -4,8 +4,8 @@
 // file LICENSE or copy at http://www.apache.org/licenses/LICENSE-2.0)
 // Official repository: https://github.com/ne-app-eu/ncc
 
-#ifndef NECTAR_COMPILERKIT_CODEGENERATOR_H
-#define NECTAR_COMPILERKIT_CODEGENERATOR_H
+#ifndef NCC_COMPILERKIT_CODEGENERATOR_H
+#define NCC_COMPILERKIT_CODEGENERATOR_H
 
 #include <CompilerKit/Detail/Config.h>
 #include <CompilerKit/Macros.h>
@@ -30,7 +30,7 @@ class AssemblyFactory final {
   explicit AssemblyFactory() = default;
   ~AssemblyFactory()         = default;
 
-  NECTAR_COPY_DEFAULT(AssemblyFactory);
+  NCC_COPY_DEFAULT(AssemblyFactory);
 
  public:
   enum {
@@ -62,7 +62,7 @@ class IAssembly {
   explicit IAssembly() = default;
   virtual ~IAssembly() = default;
 
-  NECTAR_COPY_DEFAULT(IAssembly);
+  NCC_COPY_DEFAULT(IAssembly);
 
   virtual UInt32 Arch() noexcept { return AssemblyFactory::kArchAMD64; }
 
@@ -140,7 +140,7 @@ class IAssemblyEncoder {
   explicit IAssemblyEncoder() = default;
   virtual ~IAssemblyEncoder() = default;
 
-  NECTAR_COPY_DEFAULT(IAssemblyEncoder);
+  NCC_COPY_DEFAULT(IAssemblyEncoder);
 
   virtual STLString CheckLine(STLString line, STLString file)                 = 0;
   virtual bool      WriteLine(STLString line, STLString file)                 = 0;
@@ -158,7 +158,7 @@ class EncoderAMD64 final : public IAssemblyEncoder {
   explicit EncoderAMD64()  = default;
   ~EncoderAMD64() override = default;
 
-  NECTAR_COPY_DEFAULT(EncoderAMD64);
+  NCC_COPY_DEFAULT(EncoderAMD64);
 
   virtual STLString CheckLine(STLString line, STLString file) override;
   virtual bool      WriteLine(STLString line, STLString file) override;
@@ -178,7 +178,7 @@ class EncoderARM64 final : public IAssemblyEncoder {
   explicit EncoderARM64()  = default;
   ~EncoderARM64() override = default;
 
-  NECTAR_COPY_DEFAULT(EncoderARM64);
+  NCC_COPY_DEFAULT(EncoderARM64);
 
   virtual STLString CheckLine(STLString line, STLString file) override;
   virtual bool      WriteLine(STLString line, STLString file) override;
@@ -194,7 +194,7 @@ class Encoder64x0 final : public IAssemblyEncoder {
   explicit Encoder64x0()  = default;
   ~Encoder64x0() override = default;
 
-  NECTAR_COPY_DEFAULT(Encoder64x0);
+  NCC_COPY_DEFAULT(Encoder64x0);
 
   virtual STLString CheckLine(STLString line, STLString file) override;
   virtual bool      WriteLine(STLString line, STLString file) override;
@@ -210,7 +210,7 @@ class Encoder32x0 final : public IAssemblyEncoder {
   explicit Encoder32x0()  = default;
   ~Encoder32x0() override = default;
 
-  NECTAR_COPY_DEFAULT(Encoder32x0);
+  NCC_COPY_DEFAULT(Encoder32x0);
 
   virtual STLString CheckLine(STLString line, STLString file) override;
   virtual bool      WriteLine(STLString line, STLString file) override;
@@ -226,7 +226,7 @@ class EncoderPowerPC final : public IAssemblyEncoder {
   explicit EncoderPowerPC()  = default;
   ~EncoderPowerPC() override = default;
 
-  NECTAR_COPY_DEFAULT(EncoderPowerPC);
+  NCC_COPY_DEFAULT(EncoderPowerPC);
 
   virtual STLString CheckLine(STLString line, STLString file) override;
   virtual bool      WriteLine(STLString line, STLString file) override;
@@ -236,4 +236,4 @@ class EncoderPowerPC final : public IAssemblyEncoder {
 #endif  // __ASM_NEED_32x0__
 }  // namespace CompilerKit
 
-#endif  // NECTAR_COMPILERKIT_CODEGENERATOR_H
+#endif  // NCC_COMPILERKIT_CODEGENERATOR_H

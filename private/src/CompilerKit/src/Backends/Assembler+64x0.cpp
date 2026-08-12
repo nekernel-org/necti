@@ -55,7 +55,7 @@ static bool asm_read_attributes(std::string line);
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
-NECTAR_MODULE(AssemblerMain64x0) {
+NCC_MODULE(AssemblerMain64x0) {
   CompilerKit::install_signal(SIGSEGV, CompilerKit::Detail::drvi_crash_handler);
 
   for (size_t i = 1; i < argc; ++i) {

@@ -4,8 +4,8 @@
 // file LICENSE or copy at http://www.apache.org/licenses/LICENSE-2.0)
 // Official repository: https://github.com/ne-app-eu/ncc
 
-#ifndef NECTAR_GL_MATHS_NHH
-#define NECTAR_GL_MATHS_NHH
+#ifndef NCC_GL_MATHS_NHH
+#define NCC_GL_MATHS_NHH
 
 #define Re let
 #define Im const
@@ -89,4 +89,4 @@ let sign(let value)
     }
 }
 
-#endif //@ NECTAR_GL_MATHS_NHH
+#endif //@ NCC_GL_MATHS_NHH

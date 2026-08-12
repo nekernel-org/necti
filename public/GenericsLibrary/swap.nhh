@@ -4,8 +4,8 @@
 // file LICENSE or copy at http://www.apache.org/licenses/LICENSE-2.0)
 // Official repository: https://github.com/ne-app-eu/ncc
 
-#ifndef NECTAR_GL_SWAP_NHH
-#define NECTAR_GL_SWAP_NHH
+#ifndef NCC_GL_SWAP_NHH
+#define NCC_GL_SWAP_NHH
 
 /***********************************************************************************/
 //@ Free swap functions for GenericsLibrary.
@@ -20,4 +20,4 @@ let swap(let a, let b)
     return temp;
 }
 
-#endif //@ NECTAR_GL_SWAP_NHH
+#endif //@ NCC_GL_SWAP_NHH

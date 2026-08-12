@@ -55,7 +55,7 @@ static bool asm_read_attributes(std::string line);
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
-NECTAR_MODULE(AssemblerMainARM64) {
+NCC_MODULE(AssemblerMainARM64) {
   CompilerKit::install_signal(SIGSEGV, CompilerKit::Detail::drvi_crash_handler);
 
   for (size_t i = 1; i < argc; ++i) {
@@ -242,7 +242,7 @@ asm_fail_exit:
 
   if (kVerbose) kStdOut << "AssemblerARM64: Exit failed.\n";
 
-  return NECTAR_EXEC_ERROR;
+  return NCC_EXEC_ERROR;
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////

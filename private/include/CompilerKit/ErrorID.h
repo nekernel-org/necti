@@ -3,8 +3,8 @@
 // file LICENSE or copy at http://www.apache.org/licenses/LICENSE-2.0)
 // Official repository: https://github.com/ne-app-eu/ncc
 
-#ifndef NECTAR_COMPILERKIT_ERRORID_H
-#define NECTAR_COMPILERKIT_ERRORID_H
+#ifndef NCC_COMPILERKIT_ERRORID_H
+#define NCC_COMPILERKIT_ERRORID_H
 
 #include <CompilerKit/Detail/Config.h>
 
@@ -14,15 +14,15 @@
 /// @brief Error IDs for CompilerKit.
 /// =========================================================== ///
 
-#define NECTAR_SUCCESS 0
-#define NECTAR_EXEC_ERROR -30
-#define NECTAR_FILE_NOT_FOUND -31
-#define NECTAR_DIR_NOT_FOUND -32
-#define NECTAR_FILE_EXISTS -33
-#define NECTAR_TOO_LONG -34
-#define NECTAR_INVALID_DATA -35
-#define NECTAR_UNIMPLEMENTED -36
-#define NECTAR_FAT_ERROR -37
-#define NECTAR_INVALID_ARCH -38
+#define NCC_SUCCESS 0
+#define NCC_EXEC_ERROR -30
+#define NCC_FILE_NOT_FOUND -31
+#define NCC_DIR_NOT_FOUND -32
+#define NCC_FILE_EXISTS -33
+#define NCC_TOO_LONG -34
+#define NCC_INVALID_DATA -35
+#define NCC_UNIMPLEMENTED -36
+#define NCC_FAT_ERROR -37
+#define NCC_INVALID_ARCH -38
 
-#endif  // NECTAR_COMPILERKIT_ERRORID_H
+#endif  // NCC_COMPILERKIT_ERRORID_H

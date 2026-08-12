@@ -3,8 +3,8 @@
 // file LICENSE or copy at http://www.apache.org/licenses/LICENSE-2.0)
 // Official repository: https://github.com/ne-app-eu/ncc
 
-#ifndef NECTAR_COMPILERKIT_PEF_H
-#define NECTAR_COMPILERKIT_PEF_H
+#ifndef NCC_COMPILERKIT_PEF_H
+#define NCC_COMPILERKIT_PEF_H
 
 #include <CompilerKit/Detail/Config.h>
 
@@ -145,4 +145,4 @@ inline std::ifstream& operator>>(std::ifstream& fp, CompilerKit::PEFCommandHeade
   return fp;
 }
 
-#endif  // NECTAR_COMPILERKIT_PEF_H
+#endif  // NCC_COMPILERKIT_PEF_H

@@ -4,8 +4,8 @@
 // file LICENSE or copy at http://www.apache.org/licenses/LICENSE-2.0)
 // Official repository: https://github.com/ne-app-eu/ncc
 
-#ifndef _NECTAR_MACHO_H_
-#define _NECTAR_MACHO_H_
+#ifndef _NCC_MACHO_H_
+#define _NCC_MACHO_H_
 
 #include <CompilerKit/Detail/Config.h>
 
@@ -56,4 +56,4 @@ namespace MachO {
 }  // namespace MachO
 }  // namespace CompilerKit
 
-#endif  // ifndef _NECTAR_MACHO_H_
+#endif  // ifndef _NCC_MACHO_H_

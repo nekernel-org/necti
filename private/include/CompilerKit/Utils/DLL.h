@@ -4,8 +4,8 @@
 // file LICENSE or copy at http://www.apache.org/licenses/LICENSE-2.0)
 // Official repository: https://github.com/ne-app-eu/ncc
 
-#ifndef NECTAR_COMPILERKIT_UTILITIES_DLL_H
-#define NECTAR_COMPILERKIT_UTILITIES_DLL_H
+#ifndef NCC_COMPILERKIT_UTILITIES_DLL_H
+#define NCC_COMPILERKIT_UTILITIES_DLL_H
 
 #include <CompilerKit/Detail/Config.h>
 #include <CompilerKit/Ref.h>
@@ -55,7 +55,7 @@ class ModuleLoader final {
     return *this;
   }
 
-  NECTAR_COPY_DELETE(ModuleLoader)
+  NCC_COPY_DELETE(ModuleLoader)
 
   ModuleLoader() = default;
   ~ModuleLoader() { this->Reset(); }
@@ -78,4 +78,4 @@ using WeakDLLRef   = WeakRef<ModuleLoader>;
 
 }  // namespace CompilerKit
 
-#endif  // NECTAR_COMPILERKIT_UTILITIES_DLL_H
+#endif  // NCC_COMPILERKIT_UTILITIES_DLL_H

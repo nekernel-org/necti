@@ -122,7 +122,7 @@ static UInt32 macho_add_symbol(const CompilerKit::STLString& name, uint8_t type,
 
 /// @brief Nectar 64-bit Mach-O Linker.
 /// @note This linker outputs Mach-O executables for macOS/iOS.
-NECTAR_MODULE(DynamicLinker64MachO) {
+NCC_MODULE(DynamicLinker64MachO) {
   CompilerKit::install_signal(SIGSEGV, CompilerKit::Detail::drvi_crash_handler);
 
   /**
@@ -142,12 +142,12 @@ NECTAR_MODULE(DynamicLinker64MachO) {
       kConsoleOut << "--output: Select the output file name.\n";
       kConsoleOut << "-fstart: Specify entry point symbol.\n";
 
-      return NECTAR_SUCCESS;
+      return NCC_SUCCESS;
     } else if (std::strcmp(argv[linker_arg], "--version") == 0 ||
                std::strcmp(argv[linker_arg], "-v") == 0) {
       kLinkerSplash();
 
-      return NECTAR_SUCCESS;
+      return NCC_SUCCESS;
     } else if (std::strcmp(argv[linker_arg], "-ffat") == 0) {
       kFatBinaryEnable = true;
 
@@ -203,10 +203,10 @@ NECTAR_MODULE(DynamicLinker64MachO) {
 
   if (kOutput.empty()) {
     kConsoleOut << "no output filename set." << std::endl;
-    return NECTAR_EXEC_ERROR;
+    return NCC_EXEC_ERROR;
   } else if (kObjectList.empty()) {
     kConsoleOut << "no input files." << std::endl;
-    return NECTAR_EXEC_ERROR;
+    return NCC_EXEC_ERROR;
   } else {
     namespace FS = std::filesystem;
 
@@ -214,7 +214,7 @@ NECTAR_MODULE(DynamicLinker64MachO) {
     for (auto& obj : kObjectList) {
       if (!FS::exists(obj)) {
         kConsoleOut << "no such file: " << obj << std::endl;
-        return NECTAR_EXEC_ERROR;
+        return NCC_EXEC_ERROR;
       }
     }
   }
@@ -241,7 +241,7 @@ NECTAR_MODULE(DynamicLinker64MachO) {
       char* raw_ae_records = new char[cnt * sizeof(CompilerKit::AERecordHeader)];
 
       if (!raw_ae_records) {
-        return NECTAR_EXEC_ERROR;
+        return NCC_EXEC_ERROR;
       }
 
       std::memset(raw_ae_records, 0, cnt * sizeof(CompilerKit::AERecordHeader));
@@ -309,7 +309,7 @@ NECTAR_MODULE(DynamicLinker64MachO) {
     }
 
     kConsoleOut << "not an object container: " << objectFile << std::endl;
-    return NECTAR_EXEC_ERROR;
+    return NCC_EXEC_ERROR;
   }
 
   // Check for entry point in executables
@@ -334,7 +334,7 @@ NECTAR_MODULE(DynamicLinker64MachO) {
   std::ofstream output_fc(kOutput, std::ofstream::binary);
 
   if (output_fc.bad()) {
-    return NECTAR_FILE_NOT_FOUND;
+    return NCC_FILE_NOT_FOUND;
   }
 
   using namespace CompilerKit::MachO;
@@ -625,7 +625,7 @@ NECTAR_MODULE(DynamicLinker64MachO) {
 
   output_fc.flush();
 
-  return NECTAR_SUCCESS;
+  return NCC_SUCCESS;
 }
 
 // Last rev - 2026

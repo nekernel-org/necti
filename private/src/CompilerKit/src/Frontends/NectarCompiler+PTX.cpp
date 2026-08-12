@@ -18,11 +18,11 @@
 
 /// @author Amlal El Mahrouss (amlal@nekernel.org)
 /// @file NectarCompiler+PTX.cpp
-/// @brief NECTAR Compiler Driver (NVPTX).
+/// @brief NCC Compiler Driver (NVPTX).
 
 /////////////////////////////////////
 
-// INTERNALS OF THE NECTAR COMPILER
+// INTERNALS OF THE NCC COMPILER
 
 /////////////////////////////////////
 
@@ -69,7 +69,7 @@ static Int32 kOnClassScope = 0;
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
-// NEW DATA STRUCTURES FOR NECTAR SUPPORT
+// NEW DATA STRUCTURES FOR NCC SUPPORT
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
@@ -204,13 +204,13 @@ static void nectar_process_function_parameters(const std::vector<CompilerKit::ST
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
-/* \brief NECTAR compiler backend for the NeSystem NECTAR driver */
+/* \brief NCC compiler backend for the NeSystem NCC driver */
 class CompilerFrontendNectarPTX final NC_COMPILER_FRONTEND {
  public:
   explicit CompilerFrontendNectarPTX()  = default;
   ~CompilerFrontendNectarPTX() override = default;
 
-  NECTAR_COPY_DEFAULT(CompilerFrontendNectarPTX);
+  NCC_COPY_DEFAULT(CompilerFrontendNectarPTX);
 
   /// \brief Parse Nectar symbols and syntax.
   CompilerKit::SyntaxLeafList::SyntaxLeaf Compile(CompilerKit::STLString&       text,
@@ -221,7 +221,7 @@ class CompilerFrontendNectarPTX final NC_COMPILER_FRONTEND {
   const char* Language() override;
 
  public:
-  /// \brief Parse NECTAR namespaces and Impls.
+  /// \brief Parse NCC namespaces and Impls.
   /// \param CompilerKit::SyntaxLeafList::SyntaxLeaf the leaf to build upon.
   CompilerKit::SyntaxLeafList::SyntaxLeaf CompileLayout(CompilerKit::STLString&       text,
                                                         const CompilerKit::STLString& file,
@@ -268,7 +268,7 @@ static std::vector<std::pair<CompilerKit::STLString, std::uintptr_t>> kOriginMap
 /////////////////////////////////////////////////////////////////////////////////////////
 
 /// @name Compile
-/// @brief Generate assembly from a NECTAR source.
+/// @brief Generate assembly from a NCC source.
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
@@ -427,7 +427,7 @@ CompilerKit::SyntaxLeafList::SyntaxLeaf CompilerFrontendNectarPTX::Compile(
           res.erase(tmp);
         }
 
-        syntax_tree.fUserValue += "call __NECTAR_M_" + res + ";\n";
+        syntax_tree.fUserValue += "call __NCC_M_" + res + ";\n";
         break;
       }
       case CompilerKit::KeywordKind::kKeywordKindFunctionStart: {
@@ -509,7 +509,7 @@ CompilerKit::SyntaxLeafList::SyntaxLeaf CompilerFrontendNectarPTX::Compile(
         // Track defined symbol for PTX extern resolution
         kDefinedSymbols.insert(mangled_name);
 
-        if (mangled_name.starts_with("__NECTAR") == false) {
+        if (mangled_name.starts_with("__NCC") == false) {
           mangled_name = "_" + mangled_name;
         }
 
@@ -691,7 +691,7 @@ CompilerKit::SyntaxLeafList::SyntaxLeaf CompilerFrontendNectarPTX::Compile(
                                          : (nectar_get_variable_ref(nameVar)) + method + ";\n");
         } else {
           auto res = buf;
-          if (method.starts_with("__NECTAR") == false)
+          if (method.starts_with("__NCC") == false)
             res += "call _" + method + ";\n";
           else
             res += "call " + method + ";\n";
@@ -825,12 +825,12 @@ CompilerKit::SyntaxLeafList::SyntaxLeaf CompilerFrontendNectarPTX::Compile(
         if (valueOfVar.find(".") != CompilerKit::STLString::npos) {
           valueOfVar.erase(0, valueOfVar.find(".") + strlen("."));
 
-          mangled = "__NECTAR_SM_";
+          mangled = "__NCC_SM_";
         }
 
         if (valueOfVar.find("->") != CompilerKit::STLString::npos) {
           valueOfVar.erase(0, valueOfVar.find("->") + strlen("->"));
-          mangled = "__NECTAR_RM_";
+          mangled = "__NCC_RM_";
         }
 
         if (valueOfVar.find(")") != CompilerKit::STLString::npos) {
@@ -1004,7 +1004,7 @@ CompilerKit::SyntaxLeafList::SyntaxLeaf CompilerFrontendNectarPTX::Compile(
   return this->CompileLayout(text, file, syntax_tree);
 }
 
-/// \brief Parse NECTAR Impls.
+/// \brief Parse NCC Impls.
 /// \param CompilerKit::SyntaxLeafList::SyntaxLeaf the leaf to build upon.
 CompilerKit::SyntaxLeafList::SyntaxLeaf CompilerFrontendNectarPTX::CompileLayout(
     CompilerKit::STLString& text, const CompilerKit::STLString& file,
@@ -1138,7 +1138,7 @@ static std::vector<CompilerKit::STLString> nectar_extract_function_args(
 /// \brief Mangle a function or method name according to Nectar mangling scheme
 static CompilerKit::STLString nectar_mangle_name(const CompilerKit::STLString& identifier,
                                                  const std::vector<CompilerKit::STLString>& args) {
-  CompilerKit::STLString mangled = "__NECTAR_";
+  CompilerKit::STLString mangled = "__NCC_";
 
   // Add scope chain
   for (const auto& scope : kContext.fScopeStack) {
@@ -1474,7 +1474,7 @@ static void nectar_process_function_parameters(const std::vector<CompilerKit::ST
 /////////////////////////////////////////////////////////////////////////////////////////
 
 /**
- * @brief NECTAR assembler class.
+ * @brief NCC assembler class.
  */
 
 /////////////////////////////////////////////////////////////////////////////////////////
@@ -1486,7 +1486,7 @@ class AssemblyNectarInterfacePTX final NC_ASSEMBLY_INTERFACE {
   explicit AssemblyNectarInterfacePTX()  = default;
   ~AssemblyNectarInterfacePTX() override = default;
 
-  NECTAR_COPY_DEFAULT(AssemblyNectarInterfacePTX);
+  NCC_COPY_DEFAULT(AssemblyNectarInterfacePTX);
 
   UInt32 Arch() noexcept override { return CompilerKit::AssemblyFactory::kArchUnknown; }
 
@@ -1560,7 +1560,7 @@ class AssemblyNectarInterfacePTX final NC_ASSEMBLY_INTERFACE {
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
-NECTAR_MODULE(CompilerNectarPTX) {
+NCC_MODULE(CompilerNectarPTX) {
   bool skip = false;
 
   kKeywords.emplace_back("impl", CompilerKit::KeywordKind::kKeywordKindImpl);
@@ -1615,7 +1615,7 @@ NECTAR_MODULE(CompilerNectarPTX) {
 
       if (strcmp(argv[index], "--help") == 0 || strcmp(argv[index], "-h") == 0) {
         std::cout << "====================================================\n";
-        std::cout << "NECTAR PTX FRONTEND:\n";
+        std::cout << "NCC PTX FRONTEND:\n";
         std::cout << "====================================================\n";
         std::cout << "-fverbose: Enable Verbose output.\n";
         std::cout << "-fprint-dialect: Prints the current Nectar dialect.\n";
@@ -1626,7 +1626,7 @@ NECTAR_MODULE(CompilerNectarPTX) {
 
       if (strcmp(argv[index], "--version") == 0 || strcmp(argv[index], "-v") == 0) {
         std::cout << "====================================================\n";
-        std::cout << "NECTAR PTX FRONTEND:\nDIST RELEASE:";
+        std::cout << "NCC PTX FRONTEND:\nDIST RELEASE:";
         std::cout << kDistRelease << "\n";
         std::cout << "====================================================\n";
         continue;
@@ -1640,7 +1640,7 @@ NECTAR_MODULE(CompilerNectarPTX) {
       if (strcmp(argv[index], "-fprint-dialect") == 0) {
         if (kFrontend) std::cout << kFrontend->Language() << "\n";
 
-        return NECTAR_SUCCESS;
+        return NCC_SUCCESS;
       }
 
       CompilerKit::STLString err = "Unknown option: ";
@@ -1658,7 +1658,7 @@ NECTAR_MODULE(CompilerNectarPTX) {
     for (CompilerKit::STLString ext : exts) {
       if (argv_i.ends_with(ext)) {
         if (kAssembler.Compile(argv_i, kMachine) != EXIT_SUCCESS) {
-          return NECTAR_INVALID_DATA;
+          return NCC_INVALID_DATA;
         }
 
         break;
@@ -1668,7 +1668,7 @@ NECTAR_MODULE(CompilerNectarPTX) {
 
   kAssembler.Unmount();
 
-  return NECTAR_SUCCESS;
+  return NCC_SUCCESS;
 }
 
 //
