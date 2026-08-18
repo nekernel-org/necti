@@ -8,4 +8,3 @@ COPY ./ ./src
 
 EXPOSE 8081/tcp
 EXPOSE 8081/udp
-
