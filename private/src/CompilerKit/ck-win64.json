@@ -11,7 +11,7 @@
     "src/*.cpp",
     "src/*/*.cpp"
   ],
-  "output_name": "Ne-app.CompilerKit.dll",
+  "output_name": "CompilerKit.dll",
   "compiler_flags": [
     "-fPIC",
     "-shared"
