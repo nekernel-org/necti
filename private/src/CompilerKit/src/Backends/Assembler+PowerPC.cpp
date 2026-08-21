@@ -64,11 +64,11 @@ NCC_MODULE(AssemblerMainPower64) {
         kStdOut << "POWER: POWER64 Assembler Driver.\nPOWER: " << kDistVersion
                 << "\nPOWER: "
                    "Copyright (c) "
-                   "Amlal El Mahrouss\n";
+                   "Ne.app\n";
         return 0;
       } else if (strcmp(argv[i], "-h") == 0) {
         kStdOut << "POWER: POWER64 Assembler Driver.\nPOWER: Copyright (c) 2024 "
-                   "Amlal El Mahrouss\n";
+                   "Ne.app\n";
         kStdOut << "-version,-v: print program version.\n";
         kStdOut << "-fverbose: print verbose output.\n";
         kStdOut << "-fbinary: output as flat binary.\n";

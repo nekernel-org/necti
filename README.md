@@ -43,7 +43,7 @@ cd nectar
 
 ### Community
 
-Join Ne.app's community [discord](https://discord.gg/uD76Qweght) to chat with contributors.
+Join Ne.app's User Group [discord](https://discord.gg/uD76Qweght) to chat with contributors.
 
 ## Professional Services
 

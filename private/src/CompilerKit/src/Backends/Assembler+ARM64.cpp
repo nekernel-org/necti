@@ -64,11 +64,11 @@ NCC_MODULE(AssemblerMainARM64) {
         kStdOut << "ACORN: AARCH64 Assembler Driver.\nACORN: " << kDistVersion
                 << "\nACORN: "
                    "Copyright (c) "
-                   "Amlal El Mahrouss\n";
+                   "Ne.app\n";
         return 0;
       } else if (strcmp(argv[i], "-help") == 0) {
         kStdOut << "ACORN: AARCH64 Assembler Driver.\nACORN: Copyright (c) 2024 "
-                   "Amlal El Mahrouss\n";
+                   "Ne.app\n";
         kStdOut << "-version,--v: print program version.\n";
         kStdOut << "-fverbose: print verbose output.\n";
         kStdOut << "-fbinary: output as flat binary.\n";
