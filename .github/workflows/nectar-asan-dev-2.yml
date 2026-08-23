@@ -1,4 +1,4 @@
-name: Ne.app Nectar Kits Linux (ASAN) (Nectar, Develop)
+name: Ne.app Nectar Kits Linux (ASAN) (Nectar, Stable)
 
 on:
   push:
