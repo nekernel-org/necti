@@ -1,0 +1,20 @@
+name: Ne.app Nectar Kits Linux (ASAN) (Nectar, Stable)
+
+on:
+  push:
+    branches: [ "stable" ]
+  pull_request:
+    branches: [ "stable" ]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v4
+    - name: Attempt NeBuild
+      run: sudo curl https://github.com/ne-app-eu/bld/releases/download/v0.0.6-apple-m1/nebuild-debian -o sanity-test
+    - name: Build CompilerKit and DebuggerKit
+      run: sudo curl https://github.com/ne-app-eu/bld/releases/download/v0.0.6-apple-m1/nebuild-debian -o /bin/nebuild && sudo chmod +x /bin/nebuild && sudo apt update && sudo apt install build-essential && sudo apt install libboost-dev &&
+          cd private/src/CompilerKit && nebuild ck-posix-san.json
