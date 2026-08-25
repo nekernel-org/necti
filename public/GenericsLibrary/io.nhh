@@ -10,23 +10,28 @@
 import _core_write_format_ln;
 
 extern stdout;
+extern stdin;
 extern stderr;
 
-const logfn(let fmt, let args)
+const logfn(let fmt, let args, const f)
 {
 	if (fmt === 0):
 	   return;
 	   
-	_core_write_format_ln(stderr, fmt, {args});
+	_core_write_format_ln(f, fmt, {args});
 }
 
 
-const writefn(let fmt, let args)
+const writefn(let fmt, let args, const f)
 {
 	if (fmt === 0):
 	   return;
 	   
-	_core_write_format_ln(stdout, fmt, {args});
+	_core_write_format_ln(f, fmt, {args});
 }
+
+const openf(let path, let flags);
+
+const closef(const f);
 
 #endif
