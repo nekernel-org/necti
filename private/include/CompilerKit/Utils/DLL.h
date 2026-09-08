@@ -9,8 +9,13 @@
 
 #include <CompilerKit/Detail/Config.h>
 #include <CompilerKit/Ref.h>
-#include <dlfcn.h>
 #include <mutex>
+
+#ifdef NC_POSIX
+
+#include <dlfcn.h>
+
+#endif
 
 namespace CompilerKit {
 
