@@ -4,7 +4,7 @@
 // file LICENSE or copy at http://www.apache.org/licenses/LICENSE-2.0)
 // Official repository: https://github.com/ne-app-eu/ncc
 
-/// BUGS: 0
+/// BUGS: ?
 
 #include <CompilerKit/AST.h>
 #include <CompilerKit/Detail/AMD64.h>

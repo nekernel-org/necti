@@ -8,6 +8,10 @@
 
 #include <CompilerKit/Detail/Config.h>
 
+#ifndef PEF_ALIGN
+#define PEF_ALIGN(x) alignas(x)
+#endif 
+
 // @file PEF.h
 // @brief Preferred Executable Format
 
@@ -94,7 +98,7 @@ typedef struct PEFContainer final {
   SizeType HdrSz;    /* Size of header */
   SizeType Count;    /* container header count */
   UInt32   Checksum; /* Whole binary checksum */
-} PACKED PEFContainer, *PEFContainerPtr;
+} PACKED PEF_ALIGN(8) PEFContainer, *PEFContainerPtr;
 
 /* First PEFCommandHeader starts after PEFContainer */
 /* Last container is __exec_end */
@@ -112,7 +116,7 @@ typedef struct PEFCommandHeader final {
   SizeType OffsetSize;
   UIntPtr  VirtualAddress; /* Virtual Address */
   SizeType VirtualSize;    /* Virtual Size */
-} PACKED PEFCommandHeader, *PEFCommandHeaderPtr;
+} PACKED PEF_ALIGN(8) PEFCommandHeader, *PEFCommandHeaderPtr;
 
 enum {
   kPefInvalid  = 0x0,
