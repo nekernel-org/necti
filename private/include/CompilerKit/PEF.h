@@ -9,7 +9,7 @@
 #include <CompilerKit/Detail/Config.h>
 
 #ifndef PEF_ALIGN
-#define PEF_ALIGN(x) alignas(x)
+#define PEF_ALIGN(x) __attribute__((aligned(x)))
 #endif 
 
 // @file PEF.h
